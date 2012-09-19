@@ -46,11 +46,18 @@
 		
 				<p>The code is mainly based on the <a href="http://nlaplante.github.com/angular-google-maps/">Angular Google Maps</a> library, and most of the features are based on the same features developed on that library.</p>
 				
-				<h3>Usage</h3>
-			    <p>You can use the directive with the custom tag <code>&lt;leaflet&gt;</code> and some attributes, let's see them:</p>
-				<p>If you find any bug in the product, or would like a feature implemented, use the 
-				<a href="https://github.com/nlaplante/angular-google-maps/issues" rel="external">issue tracker</a> over
-				at the GitHub repository.</p>									
+                <h3>Usage</h3>
+                <p>Before using <strong>angular-leaflet-directive</strong>, you
+                must include some files to your main HTML: the main Angular.js
+                library, the Leaflet library and the
+                angular-leaflet-directive.js script. Something like this:</p>
+                <pre class="prettyprint lang-html">&lt;script src="/path/to//leaflet.js"&gt;&lt;/script&gt;
+&lt;script src="/path/to/angular.min.js"&gt;&lt;/script&gt;
+&lt;script src="/path/to/angular-leaflet-directive.js"&lt;&gt;/script&gt;
+&lt;script src="/path/to/your-angular-controller.js"&lt;&gt;/script&lt;</pre>
+
+                <p>Optionally you can include the CSS files of <strong>leaflet</strong> and <strong>angular-leaflet-directive</strong>.
+			    <p>Now, you can use the directive with the custom tag <code>&lt;leaflet&gt;</code> and some attributes, let's see them on the examples.</p>
 
 				<h3>Simple Demo</h3>
                 <p>You can see the map embeded on the right-side of this page.
