@@ -4,7 +4,7 @@
 
 	leafletDirective.directive("leaflet", function ($http, $log) {
 		return {
-			restrict: "EC",
+			restrict: "E",
 			replace: true,
 			transclude: true,
 			scope: {
@@ -13,21 +13,17 @@
 				message: "=message",
 				zoom: "=zoom"
 			},
-			templateUrl: "/pln/templates/joinmap.html",
+			template: '<div class="thumbnail"><div class="map"></div></div>',
 			link: function (scope, element, attrs, ctrl) {
-
-                if (!attrs.marker) {
-                    element.find(".locate").remove();
-                }
-
-                if (attrs.nodes) {
-                    element.find(".map").addClass("large");
-                }
 
                 var $el = element.find(".map")[0],
 				    map = new L.Map($el);
 
 			    L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 12 }).addTo(map);
+
+                // Default center of the map
+                var point = new L.LatLng(40.094882122321145, -3.8232421874999996);
+                map.setView(point, 5);
 
                 scope.$watch("center", function(center) {
                     if (center === undefined) return;
@@ -51,15 +47,52 @@
                         }
 		            }
 
+                    // Listen for map drags
+                    var dragging_map = false;
+                    map.on("dragstart", function(e) {
+                        dragging_map = true;
+                    });
+
+		            map.on("drag", function (e) {
+			            scope.$apply(function (s) {
+				            s.center.lat = map.getCenter().lat;
+				            s.center.lng = map.getCenter().lng;
+			            });
+		            });
+
+                    map.on("dragend", function(e) {
+                        dragging_map= false;
+                    });
+
+                    scope.$watch("center.lng", function (newValue, oldValue) {
+                        if (dragging_map) return;
+                        map.setView(new L.LatLng(map.getCenter().lat, newValue), map.getZoom());
+                    });
+
+                    scope.$watch("center.lat", function (newValue, oldValue) {
+                        if (dragging_map) return;
+                        map.setView(new L.LatLng(newValue, map.getCenter().lng), map.getZoom());
+                    });
+
+                    // Listen for zoom
+                    scope.$watch("zoom", function (newValue, oldValue) {
+                        map.setZoom(newValue);
+                    });
+
+		            map.on("zoomend", function (e) {
+			            scope.zoom = map.getZoom();
+			            scope.$apply();
+		            });
+
                     if (attrs.marker) {   
 
-                        var dragging = false;
+                        var dragging_marker = false;
 
-		                // Listen for drags
+		                // Listen for marker drags
 			            (function () {						
 
                             marker.on("dragstart", function(e) {
-                                dragging = true;
+                                dragging_marker = true;
                             });
 
 				            marker.on("drag", function (e) {
@@ -71,7 +104,7 @@
 
                             marker.on("dragend", function(e) {
                                 marker.openPopup();
-                                dragging = false;
+                                dragging_marker = false;
                             });
 
                             map.on("click", function(e) {
@@ -83,57 +116,22 @@
 					            });
                             });
 
-                            scope.$watch("zoom", function (newValue, oldValue) {
-                                map.setZoom(newValue);
-                            });
-
                             scope.$watch("marker.lng", function (newValue, oldValue) {
-                                if (dragging) return;
+                                if (dragging_marker) return;
                                 marker.setLatLng(new L.LatLng(marker.getLatLng().lat, newValue));
                             });
 
                             scope.$watch("marker.lat", function (newValue, oldValue) {
-                                if (dragging) return;
+                                if (dragging_marker) return;
                                 marker.setLatLng(new L.LatLng(newValue, marker.getLatLng().lng));
                             });
 
 			            }());
 
-                        // Listen for drag
-		                map.on("zoomend", function (e) {
-			                scope.zoom = map.getZoom();
-			                scope.$apply();
-		                });
 		            }				
-
-                    scope.locate = function() {
-                        map.locate({ setView: true });
-                        map.on("locationfound", function(data) {
-                            marker.setLatLng(data.latlng);
-					        scope.$apply(function (s) {
-                                s.marker.lat = data.latlng.lat;
-                                s.marker.lng = data.latlng.lng;
-                            });
-                        });
-                    };
 
                 });
 
-                if (attrs.nodes) {
-                    var markers = new L.MarkerClusterGroup();
-                    $http.get(attrs.nodes).success(function(data) {
-                        for (var index in data) {
-                            var node  = data[index];
-                            var title = '<p><strong>' + node.name + '</strong></p><p><a href="/pln/link">Link to this node</a></p>';
-                            var marker = new L.Marker(new L.LatLng(node.lat, node.lng), {
-                                title: title
-                            });
-                            marker.bindPopup(title);
-                            markers.addLayer(marker);
-                        }
-                        map.addLayer(markers);
-                    });
-                }
             }
 		};
 	});
