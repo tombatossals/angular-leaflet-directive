@@ -1,5 +1,5 @@
 (function () {
-	
+
 	var leafletDirective = angular.module("leaflet-directive", []);
 
 	leafletDirective.directive("leaflet", function ($http, $log) {
@@ -13,10 +13,9 @@
 				message: "=message",
 				zoom: "=zoom"
 			},
-			template: '<div class="thumbnail"><div class="map"></div></div>',
+			template: '<div class="map"></div>',
 			link: function (scope, element, attrs, ctrl) {
-
-                var $el = element.find(".map")[0],
+                var $el = element[0],
 				    map = new L.Map($el);
 
 			    L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 12 }).addTo(map);
@@ -84,12 +83,12 @@
 			            scope.$apply();
 		            });
 
-                    if (attrs.marker) {   
+                    if (attrs.marker) {
 
                         var dragging_marker = false;
 
 		                // Listen for marker drags
-			            (function () {						
+			            (function () {
 
                             marker.on("dragstart", function(e) {
                                 dragging_marker = true;
@@ -128,12 +127,12 @@
 
 			            }());
 
-		            }				
+		            }
 
                 });
 
             }
 		};
 	});
-	
+
 }());
