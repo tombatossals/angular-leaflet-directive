@@ -1,0 +1,50 @@
+<html ng-app="demoapp">
+	<head>
+		<script src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.1/angular.min.js"></script>
+		<script src="angular-leaflet-directive.js"></script>
+		<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.css" />
+		<link rel="stylesheet" href="angular-leaflet-directive.css" />
+		<!--[if lte IE 8]>
+		<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.4/leaflet.ie.css" />
+		<![endif]-->
+		<script>
+			angular.module("demoapp", ["leaflet-directive"]);
+			function DemoController($scope) {
+				angular.extend($scope, {
+					cen: {
+						lat: 51.505,
+						lng: -0.09,
+					},
+					mark: {
+						lat: 51.505,
+						lng: -0.09,
+					},
+					msg: "Hello World!",
+				});
+			};
+		</script>
+		<style>
+			div.map {
+				width: 640px;
+				height: 480px;
+			}
+		</style>
+	</head>
+	<body ng-controller="DemoController">
+		<leaflet center="cen" marker="mark" zoom="zoom" message="msg">
+		</leaflet>
+
+		Center:
+		<input type="text" ng-model="cen.lng"/>
+		<input type="text" ng-model="cen.lat"/>
+		<input type="text" ng-model="zoom"/>
+		</br>
+		Marker:
+		<input type="text" ng-model="mark.lng"/>
+		<input type="text" ng-model="mark.lat"/>
+		</br>
+		Message:
+		<input type="text" ng-model="msg"/>
+	</body>
+</html>
