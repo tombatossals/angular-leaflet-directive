@@ -36,14 +36,16 @@
 			        if (attrs.markcenter || attrs.marker) {
                         map.addLayer(marker);
 
-                        if (scope.message) {
-                            marker.bindPopup("<strong>" + scope.message + "</strong>", { closeButton: false });
-                            marker.openPopup();
-                        }
                         if (attrs.marker) {
                             scope.marker.lat = marker.getLatLng().lat;
                             scope.marker.lng = marker.getLatLng().lng;
                         }
+
+						scope.$watch("message", function(newValue) {
+                            marker.bindPopup("<strong>" + newValue + "</strong>",
+								{ closeButton: false });
+                            marker.openPopup();
+						});
 		            }
 
                     // Listen for map drags
