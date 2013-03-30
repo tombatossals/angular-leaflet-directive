@@ -25,6 +25,7 @@
                 map.setView(point, 5);
 
                 scope.$watch("center", function(center) {
+					console.log("hhhaaa", center);
                     if (center === undefined) return;
 
                     // Center of the map
@@ -78,10 +79,11 @@
                         map.setZoom(newValue);
                     });
 
-		            map.on("zoomend", function (e) {
-			            scope.zoom = map.getZoom();
-			            scope.$apply();
-		            });
+					map.on("zoomend", function (e) {
+						scope.$apply(function (s) {
+							s.zoom = map.getZoom();
+						});
+					});
 
                     if (attrs.marker) {
 
