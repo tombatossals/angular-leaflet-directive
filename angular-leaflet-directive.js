@@ -25,7 +25,6 @@
                 map.setView(point, 5);
 
                 scope.$watch("center", function(center) {
-					console.log("hhhaaa", center);
                     if (center === undefined) return;
 
                     // Center of the map
