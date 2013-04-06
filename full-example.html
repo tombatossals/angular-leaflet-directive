@@ -12,15 +12,29 @@
 			angular.module("demoapp", ["leaflet-directive"]);
 			function DemoController($scope) {
 				angular.extend($scope, {
+					// set up map center
 					cen: {
 						lat: 51.505,
 						lng: -0.09,
 					},
+					// set up main marker
 					mark: {
 						lat: 51.505,
 						lng: -0.09,
 					},
 					msg: "Hello World!",
+					// set up multiple markers on map
+					multimarkers: {
+						'm1': {
+							lat: 51,
+							lng: 0,
+							draggable: true,
+						},
+						'm2': {
+							lat: 51.2,
+							lng: -0.01,
+						},
+					},
 				});
 			};
 		</script>
@@ -32,19 +46,33 @@
 		</style>
 	</head>
 	<body ng-controller="DemoController">
-		<leaflet center="cen" marker="mark" zoom="zoom" message="msg">
+		<leaflet center="cen" zoom="zoom" message="msg"
+				marker="mark" multimarkers="multimarkers">
 		</leaflet>
+		</br>
 
 		Center:
 		<input type="text" ng-model="cen.lng"/>
 		<input type="text" ng-model="cen.lat"/>
 		<input type="text" ng-model="zoom"/>
 		</br>
+
 		Marker:
 		<input type="text" ng-model="mark.lng"/>
 		<input type="text" ng-model="mark.lat"/>
 		</br>
+
 		Message:
 		<input type="text" ng-model="msg"/>
+		</br>
+
+		<p>Markers</p>
+		<div ng-repeat="(name, m) in multimarkers">
+			<b>{{name}}</b>:
+			lng: <input type="text" ng-model="m.lng"/>
+			lat: <input type="text" ng-model="m.lat"/>
+			<b>{{m.draggable && 'draggable'}}</b>
+		</div>
+
 	</body>
 </html>
