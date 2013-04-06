@@ -11,7 +11,8 @@
 				center: "=center",
 				marker: "=marker",
 				message: "=message",
-				zoom: "=zoom"
+				zoom: "=zoom",
+				multiMarkers: "=multimarkers",
 			},
 			template: '<div class="map"></div>',
 			link: function (scope, element, attrs, ctrl) {
@@ -32,7 +33,9 @@
                     var zoom = scope.zoom || 8;
                     map.setView(center, zoom);
 
-                    var marker = new L.marker(scope.center, { draggable: attrs.markcenter ? false:true });
+					var marker = new L.marker(scope.center, {
+						draggable: attrs.markcenter ? false:true
+					});
 			        if (attrs.markcenter || attrs.marker) {
                         map.addLayer(marker);
 
@@ -128,13 +131,50 @@
                                 marker.setLatLng(new L.LatLng(newValue, marker.getLatLng().lng));
                             });
 
-			            }());
+						}());
 
-		            }
+					}
+				});
 
-                });
+				if (attrs.multimarkers) {
+					var markers_dict = [];
+					scope.$watch("multiMarkers", function(newMarkerList) {
+						for (var mkey in scope.multiMarkers) {
+							(function(mkey) {
+								var mark_dat = scope.multiMarkers[mkey];
+								var marker = new L.marker(
+									scope.multiMarkers[mkey],
+									{
+										draggable: mark_dat.draggable ? true:false
+									}
+								);
 
-            }
+								marker.on("dragstart", function(e) {
+									dragging_marker = true;
+								});
+
+								marker.on("drag", function (e) {
+									scope.$apply(function (s) {
+										mark_dat.lat = marker.getLatLng().lat;
+										mark_dat.lng = marker.getLatLng().lng;
+									});
+								});
+
+								marker.on("dragend", function(e) {
+									dragging_marker = false;
+								});
+
+								scope.$watch('multiMarkers.'+mkey, function() {
+									marker.setLatLng(scope.multiMarkers[mkey]);
+								}, true);
+
+								map.addLayer(marker);
+								markers_dict[mkey] = marker;
+							})(mkey);
+						} // for mkey in multiMarkers
+					}); // watch multiMarkers
+				} // if attrs.multiMarkers
+			} // end of link function
 		};
 	});
 
