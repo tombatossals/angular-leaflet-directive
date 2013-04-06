@@ -1,8 +1,6 @@
-angular-leaflet-directive
-=========================
+angular-leaflet-directive github pages
+================================
 
-AngularJS directive for the Leaflet Javascript Library. See the main page with
-examples and some documentation here:
+This is the GitHub pages branch of the [angular-leaflet-directive](https://github.com/tombatossals/angular-leaflet-directive) repository.
 
- * http://tombatossals.github.com/angular-leaflet-directive
-
+[View the full site here](http://tombatossals.github.com/angular-leaflet-directive/)
