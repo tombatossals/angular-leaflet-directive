@@ -13,6 +13,7 @@
 				message: "=message",
 				zoom: "=zoom",
 				multiMarkers: "=multimarkers",
+				mainPath: "=mainpath",
 			},
 			template: '<div class="map"></div>',
 			link: function (scope, element, attrs, ctrl) {
@@ -174,6 +175,19 @@
 						} // for mkey in multiMarkers
 					}); // watch multiMarkers
 				} // if attrs.multiMarkers
+
+				if (attrs.mainpath) {
+					var mp_polyline = new L.Polyline([], {});
+					map.addLayer(mp_polyline);
+					scope.$watch("mainPath", function(newMainPath) {
+						mp_polyline.setLatLngs(scope.mainPath.latlngs);
+						mp_polyline.setStyle({
+							smoothFactor: scope.mainPath.smoothFactor,
+							color: scope.mainPath.color,
+						});
+					}, true);
+				} // end of attrs.path
+
 			} // end of link function
 		};
 	});
