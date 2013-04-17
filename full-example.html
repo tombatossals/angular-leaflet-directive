@@ -5,6 +5,7 @@
 		<script src="angular-leaflet-directive.js"></script>
 		<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.css" />
 		<link rel="stylesheet" href="angular-leaflet-directive.css" />
+		<link rel="stylesheet" href="full-example.css" />
 		<!--[if lte IE 8]>
 		<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.4/leaflet.ie.css" />
 		<![endif]-->
@@ -26,14 +27,23 @@
 					// set up multiple markers on map
 					multimarkers: {
 						'm1': {
+							lat: 51.2,
+							lng: -0.01,
+						},
+						'm2': {
 							lat: 51,
 							lng: 0,
 							draggable: true,
 						},
-						'm2': {
-							lat: 51.2,
-							lng: -0.01,
-						},
+					},
+					path: {
+						color: 'red',
+						smoothFactor: 1,
+						latlngs: [
+							{lat: 51.2, lng: -0.01},
+							{lat: 51.1, lng: -0.2},
+							{lat: 51, lng: 0},
+						]
 					},
 				});
 			};
@@ -46,32 +56,52 @@
 		</style>
 	</head>
 	<body ng-controller="DemoController">
-		<leaflet center="cen" zoom="zoom" message="msg"
-				marker="mark" multimarkers="multimarkers">
-		</leaflet>
-		</br>
+		<div id="right">
+			<leaflet center="cen" zoom="zoom" message="msg"
+				marker="mark" multimarkers="multimarkers"
+				mainpath="path">
+			</leaflet>
+		</div>
 
-		Center:
-		<input type="text" ng-model="cen.lng"/>
-		<input type="text" ng-model="cen.lat"/>
-		<input type="text" ng-model="zoom"/>
-		</br>
+		<div id="left">
+			<div class="panel">
+				<h4>Center</h4>
+				lng: <input type="text" ng-model="cen.lng"/>
+				lat: <input type="text" ng-model="cen.lat"/>
+				</br>
+				zoom: <input type="text" ng-model="zoom"/>
+			</div>
 
-		Marker:
-		<input type="text" ng-model="mark.lng"/>
-		<input type="text" ng-model="mark.lat"/>
-		</br>
+			<div class="panel">
+				<h4>Marker</h4>
+				lng: <input type="text" ng-model="mark.lng"/>
+				lat: <input type="text" ng-model="mark.lat"/>
+			</div>
 
-		Message:
-		<input type="text" ng-model="msg"/>
-		</br>
+			<div class="panel">
+				<h4>Message<h4>
+				<input type="text" ng-model="msg"/>
+			</div>
 
-		<p>Markers</p>
-		<div ng-repeat="(name, m) in multimarkers">
-			<b>{{name}}</b>:
-			lng: <input type="text" ng-model="m.lng"/>
-			lat: <input type="text" ng-model="m.lat"/>
-			<b>{{m.draggable && 'draggable'}}</b>
+			<div class="panel">
+				<h4>Markers</h4>
+				<div ng-repeat="(name, m) in multimarkers">
+					<p><b>{{name}}</b>{{m.draggable && ' (draggable) '}}:<p>
+					lng: <input type="text" ng-model="m.lng"/>
+					lat: <input type="text" ng-model="m.lat"/>
+				</div>
+			</div>
+
+			<div class="panel">
+				<h4>Path</h4>
+				color: <input type="text" ng-model="path.color"/>
+				smooth facor: <input type="text" ng-model="path.smoothFactor"/>
+				<div ng-repeat="p in path.latlngs">
+					(point {{$index}})
+					lng: <input type="text" ng-model="p.lng"/>
+					lat: <input type="text" ng-model="p.lat"/>
+				</div>
+			</div>
 		</div>
 
 	</body>
