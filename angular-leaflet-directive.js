@@ -69,12 +69,12 @@
 
                 scope.$watch("center.lng", function (newValue, oldValue) {
                   if (dragging_map) return;
-                    map.setView(new L.LatLng(map.getCenter().lat, newValue), map.getZoom());
+                  map.setView(new L.LatLng(map.getCenter().lat, newValue), map.getZoom());
                 });
 
                 scope.$watch("center.lat", function (newValue, oldValue) {
                   if (dragging_map) return;
-                    map.setView(new L.LatLng(newValue, map.getCenter().lng), map.getZoom());
+                  map.setView(new L.LatLng(newValue, map.getCenter().lng), map.getZoom());
                 });
 
                 // Listen for zoom
@@ -127,62 +127,62 @@
                       if (dragging_marker) return;
                         marker.setLatLng(new L.LatLng(newValue, marker.getLatLng().lng));
                     });
-						}());
-					}
-				});
+                  }());
+                }
+              });
 
-				if (attrs.multimarkers) {
-					var markers_dict = [];
-					scope.$watch("multiMarkers", function(newMarkerList) {
-						for (var mkey in scope.multiMarkers) {
-							(function(mkey) {
-								var mark_dat = scope.multiMarkers[mkey];
-								var marker = new L.marker(
-									scope.multiMarkers[mkey],
-									{
-										draggable: mark_dat.draggable ? true:false
-									}
-								);
+              if (attrs.multimarkers) {
+                var markers_dict = [];
+                scope.$watch("multiMarkers", function(newMarkerList) {
+                  for (var mkey in scope.multiMarkers) {
+                    (function(mkey) {
+                      var mark_dat = scope.multiMarkers[mkey];
+                      var marker = new L.marker(
+                        scope.multiMarkers[mkey],
+                        {
+                          draggable: mark_dat.draggable ? true:false
+                        }
+                      );
 
-								marker.on("dragstart", function(e) {
-									dragging_marker = true;
-								});
+                      marker.on("dragstart", function(e) {
+                        dragging_marker = true;
+                      });
 
-								marker.on("drag", function (e) {
-									scope.$apply(function (s) {
-										mark_dat.lat = marker.getLatLng().lat;
-										mark_dat.lng = marker.getLatLng().lng;
-									});
-								});
+                      marker.on("drag", function (e) {
+                        scope.$apply(function (s) {
+                          mark_dat.lat = marker.getLatLng().lat;
+                          mark_dat.lng = marker.getLatLng().lng;
+                        });
+                      });
 
-								marker.on("dragend", function(e) {
-									dragging_marker = false;
-								});
+                      marker.on("dragend", function(e) {
+                        dragging_marker = false;
+                      });
 
-								scope.$watch('multiMarkers.'+mkey, function() {
-									marker.setLatLng(scope.multiMarkers[mkey]);
-								}, true);
+                      scope.$watch('multiMarkers.'+mkey, function() {
+                        marker.setLatLng(scope.multiMarkers[mkey]);
+                      }, true);
 
-								map.addLayer(marker);
-								markers_dict[mkey] = marker;
-							})(mkey);
-						} // for mkey in multiMarkers
-					}); // watch multiMarkers
-				} // if attrs.multiMarkers
+                      map.addLayer(marker);
+                      markers_dict[mkey] = marker;
+                    })(mkey);
+                  } // for mkey in multiMarkers
+                }); // watch multiMarkers
+              } // if attrs.multiMarkers
 
-				if (attrs.mainpath) {
-					var mp_polyline = new L.Polyline([], {});
-					map.addLayer(mp_polyline);
-					scope.$watch("mainPath", function(newMainPath) {
-						mp_polyline.setLatLngs(scope.mainPath.latlngs);
-						mp_polyline.setStyle({
-							smoothFactor: scope.mainPath.smoothFactor,
-							color: scope.mainPath.color,
-						});
-					}, true);
-				} // end of attrs.path
-			} // end of link function
-		};
-	});
-
-}());
+              if (attrs.mainpath) {
+                var mp_polyline = new L.Polyline([], {});
+                map.addLayer(mp_polyline);
+                scope.$watch("mainPath", function(newMainPath) {
+                  mp_polyline.setLatLngs(scope.mainPath.latlngs);
+                  mp_polyline.setStyle({
+                    smoothFactor: scope.mainPath.smoothFactor,
+                    color: scope.mainPath.color,
+                  });
+                }, true);
+              } // end of attrs.path
+            } // end of link function
+      };
+    });
+  }()
+);
