@@ -1,7 +1,7 @@
 <html ng-app="demoapp">
 	<head>
 		<script src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
-		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.1/angular.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js"></script>
 		<script src="angular-leaflet-directive.js"></script>
 		<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.css" />
 		<link rel="stylesheet" href="angular-leaflet-directive.css" />
@@ -11,7 +11,23 @@
 		<![endif]-->
 		<script>
 			angular.module("demoapp", ["leaflet-directive"]);
+
 			function DemoController($scope) {
+				$scope.addMultiMarker = function() {
+					var m_name = document.getElementById('new_mm_name').value;
+					$scope.multimarkers[m_name] = {
+						lat: document.getElementById('new_mm_lat').value,
+						lng: document.getElementById('new_mm_lng').value,
+					};
+				}
+
+				$scope.addPointToMainPath = function() {
+					$scope.path.latlngs.push({
+						lat: document.getElementById('new_mp_lat').value,
+						lng: document.getElementById('new_mp_lng').value,
+					});
+				}
+
 				angular.extend($scope, {
 					// set up map center
 					cen: {
@@ -49,7 +65,7 @@
 			};
 		</script>
 		<style>
-			div.map {
+			div.angular-leaflet-map {
 				width: 640px;
 				height: 480px;
 			}
@@ -90,6 +106,12 @@
 					lng: <input type="text" ng-model="m.lng"/>
 					lat: <input type="text" ng-model="m.lat"/>
 				</div>
+				</br>
+				name: <input id="new_mm_name" type="text" size="8"/>
+				lng: <input id="new_mm_lng" type="text" size="10"/>
+				lat: <input id="new_mm_lat" type="text" size="10"/>
+				<input type="button" value="Add marker"
+					ng-click="addMultiMarker();"/>
 			</div>
 
 			<div class="panel">
@@ -101,6 +123,11 @@
 					lng: <input type="text" ng-model="p.lng"/>
 					lat: <input type="text" ng-model="p.lat"/>
 				</div>
+				</br>
+				lng: <input id="new_mp_lng" type="text" size="10"/>
+				lat: <input id="new_mp_lat" type="text" size="10"/>
+				<input type="button" value="Add point"
+					ng-click="addPointToMainPath();"/>
 			</div>
 		</div>
 

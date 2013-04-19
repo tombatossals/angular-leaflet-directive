@@ -135,6 +135,11 @@
                 var markers_dict = [];
                 scope.$watch("multiMarkers", function(newMarkerList) {
                   for (var mkey in scope.multiMarkers) {
+                    if (markers_dict[mkey]) {
+                        // skip already added marker
+                        continue;
+                    }
+
                     (function(mkey) {
                       var mark_dat = scope.multiMarkers[mkey];
                       var marker = new L.marker(
@@ -167,7 +172,7 @@
                       markers_dict[mkey] = marker;
                     })(mkey);
                   } // for mkey in multiMarkers
-                }); // watch multiMarkers
+                }, true); // watch multiMarkers
               } // if attrs.multiMarkers
 
               if (attrs.mainpath) {
