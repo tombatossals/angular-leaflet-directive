@@ -1,22 +1,22 @@
 (function () {
 
-	var leafletDirective = angular.module("leaflet-directive", []);
+  var leafletDirective = angular.module("leaflet-directive", []);
 
-	leafletDirective.directive("leaflet", function ($http, $log) {
-		return {
-			restrict: "E",
-			replace: true,
-			transclude: true,
-			scope: {
-				center: "=center",
-				marker: "=marker",
-				message: "=message",
-				zoom: "=zoom",
-				multiMarkers: "=multimarkers",
-				mainPath: "=mainpath",
-			},
-			template: '<div class="angular-leaflet-map"></div>',
-			link: function (scope, element, attrs, ctrl) {
+  leafletDirective.directive("leaflet", function ($http, $log) {
+    return {
+      restrict: "E",
+      replace: true,
+      transclude: true,
+      scope: {
+        center: "=center",
+        marker: "=marker",
+        message: "=message",
+        zoom: "=zoom",
+        multiMarkers: "=multimarkers",
+        mainPath: "=mainpath",
+      },
+      template: '<div class="angular-leaflet-map"></div>',
+      link: function (scope, element, attrs, ctrl) {
               var $el = element[0], map = new L.Map($el);
               L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 12 }).addTo(map);
 
@@ -48,7 +48,7 @@
                     marker.bindPopup("<strong>" + newValue + "</strong>", { closeButton: false });
                     marker.openPopup();
                   });
-		            }
+                }
 
                 // Listen for map drags
                 var dragging_map = false;
@@ -56,12 +56,12 @@
                   dragging_map = true;
                 });
 
-		            map.on("drag", function (e) {
-			            scope.$apply(function (s) {
-				            s.center.lat = map.getCenter().lat;
-				            s.center.lng = map.getCenter().lng;
-			            });
-		            });
+                map.on("drag", function (e) {
+                  scope.$apply(function (s) {
+                    s.center.lat = map.getCenter().lat;
+                    s.center.lng = map.getCenter().lng;
+                  });
+                });
 
                 map.on("dragend", function(e) {
                   dragging_map= false;
@@ -91,18 +91,18 @@
                 if (attrs.marker) {
                   var dragging_marker = false;
 
-		                // Listen for marker drags
-			            (function () {
+                  // Listen for marker drags
+                  (function () {
                     marker.on("dragstart", function(e) {
                       dragging_marker = true;
                     });
 
-				            marker.on("drag", function (e) {
-					            scope.$apply(function (s) {
-						            s.marker.lat = marker.getLatLng().lat;
-						            s.marker.lng = marker.getLatLng().lng;
-					            });
-				            });
+                    marker.on("drag", function (e) {
+                      scope.$apply(function (s) {
+                        s.marker.lat = marker.getLatLng().lat;
+                        s.marker.lng = marker.getLatLng().lng;
+                      });
+                    });
 
                     marker.on("dragend", function(e) {
                       marker.openPopup();
@@ -112,10 +112,10 @@
                     map.on("click", function(e) {
                       marker.setLatLng(e.latlng);
                       marker.openPopup();
-					            scope.$apply(function (s) {
-						            s.marker.lat = marker.getLatLng().lat;
-						            s.marker.lng = marker.getLatLng().lng;
-					            });
+                      scope.$apply(function (s) {
+                        s.marker.lat = marker.getLatLng().lat;
+                        s.marker.lng = marker.getLatLng().lng;
+                      });
                     });
 
                     scope.$watch("marker.lng", function (newValue, oldValue) {
