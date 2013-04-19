@@ -21,6 +21,13 @@
 					};
 				}
 
+				$scope.addPointToMainPath = function() {
+					$scope.path.latlngs.push({
+						lat: document.getElementById('new_mp_lat').value,
+						lng: document.getElementById('new_mp_lng').value,
+					});
+				}
+
 				angular.extend($scope, {
 					// set up map center
 					cen: {
@@ -116,6 +123,11 @@
 					lng: <input type="text" ng-model="p.lng"/>
 					lat: <input type="text" ng-model="p.lat"/>
 				</div>
+				</br>
+				lng: <input id="new_mp_lng" type="text" size="10"/>
+				lat: <input id="new_mp_lat" type="text" size="10"/>
+				<input type="button" value="Add point"
+					ng-click="addPointToMainPath();"/>
 			</div>
 		</div>
 
