@@ -1,0 +1,25 @@
+{
+  "name": "angular-leaflet-directive",
+  "version": "0.1.0",
+  "author": "David Rubert <david.rubert@gmail.com>",
+  "contributors": [
+    {
+      "name": "Qingping Dave Hou",
+      "email": "dave2008713@gmail.com"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tombatossals/angular-leaflet-directive"
+  },
+  "keywords": [
+    "angularjs",
+    "leaflet",
+    "cli"
+  },
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "grunt-cli": "latest"
+  }
+}
