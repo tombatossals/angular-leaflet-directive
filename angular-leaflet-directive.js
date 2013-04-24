@@ -132,12 +132,18 @@ leafletDirective.directive("leaflet", function ($http, $log) {
             if (attrs.multimarkers) {
                 var markers_dict = [];
                 scope.$watch("multiMarkers", function(newMarkerList) {
+                    // find deleted markers
+                    for (var mkey in markers_dict) {
+                        if (!scope.multiMarkers[mkey]) {
+                            map.removeLayer(markers_dict[mkey]);
+                        }
+                    }
+                    // add new markers
                     for (var mkey in scope.multiMarkers) {
                         if (markers_dict[mkey]) {
                             // skip already added marker
                             continue;
                         }
-
                         (function(mkey) {
                             var mark_dat = scope.multiMarkers[mkey];
                             var marker = new L.marker(
