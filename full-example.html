@@ -26,13 +26,15 @@
 
             function DemoController($scope) {
                 $scope.addMultiMarker = function() {
-                    var m_name = document.getElementById('new_mm_name').value;
-                    $scope.multimarkers[m_name] = {
+                    var m_key = document.getElementById('new_mm_name').value;
+                    $scope.multimarkers[m_key] = {
                         lat: document.getElementById('new_mm_lat').value,
                         lng: document.getElementById('new_mm_lng').value,
                     };
                 }
-
+                $scope.deleteMultiMarker = function(m_key) {
+                    delete $scope.multimarkers[m_key];
+                }
                 $scope.addPointToMainPath = function() {
                     $scope.path.latlngs.push({
                         lat: document.getElementById('new_mp_lat').value,
@@ -116,12 +118,14 @@
                     <p><b>{{name}}</b>{{m.draggable && ' (draggable) '}}:<p>
                     lng: <input type="text" ng-model="m.lng"/>
                     lat: <input type="text" ng-model="m.lat"/>
+                    <input type="button" value="X"
+                        ng-click="deleteMultiMarker(name)"/>
                 </div>
                 <input id="new_mm_name" type="text" placeholder="name" size="8"/>
                 <input id="new_mm_lng" type="text" placeholder="lng" size="10"/>
                 <input id="new_mm_lat" type="text" placeholder="lat" size="10"/>
                 <input type="button" value="Add marker"
-                    ng-click="addMultiMarker();"/>
+                    ng-click="addMultiMarker()"/>
             </div>
 
             <div class="panel">
@@ -137,7 +141,7 @@
                 <input id="new_mp_lng" type="text" placeholder="lng" size="10"/>
                 <input id="new_mp_lat" type="text" placeholder="lat" size="10"/>
                 <input type="button" value="Add point"
-                ng-click="addPointToMainPath();"/>
+                ng-click="addPointToMainPath()"/>
             </div>
         </div>
     </body>
