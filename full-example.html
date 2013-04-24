@@ -94,10 +94,9 @@
 		<div id="left">
 			<div class="panel">
 				<h4>Center</h4>
-				lng: <input type="text" ng-model="cen.lng"/>
-				lat: <input type="text" ng-model="cen.lat"/>
-				</br>
-				zoom: <input type="text" ng-model="zoom"/>
+				lng: <input type="text" ng-model="cen.lng" size="8"/>
+				lat: <input type="text" ng-model="cen.lat" size="8"/>
+				zoom: <input type="text" ng-model="zoom" size="8"/>
 			</div>
 
 			<div class="panel">
@@ -118,26 +117,25 @@
 					lng: <input type="text" ng-model="m.lng"/>
 					lat: <input type="text" ng-model="m.lat"/>
 				</div>
-				</br>
-				name: <input id="new_mm_name" type="text" size="8"/>
-				lng: <input id="new_mm_lng" type="text" size="10"/>
-				lat: <input id="new_mm_lat" type="text" size="10"/>
+				<input id="new_mm_name" type="text" placeholder="name" size="8"/>
+				<input id="new_mm_lng" type="text" placeholder="lng" size="10"/>
+				<input id="new_mm_lat" type="text" placeholder="lat" size="10"/>
 				<input type="button" value="Add marker"
 					ng-click="addMultiMarker();"/>
 			</div>
 
 			<div class="panel">
 				<h4>Path</h4>
-				color: <input type="text" ng-model="path.color"/>
-				smooth facor: <input type="text" ng-model="path.smoothFactor"/>
+				color: <input type="text" ng-model="path.color" size="8"/>
+                smooth facor: <input type="text" ng-model="path.smoothFactor"
+                    size="8"/>
 				<div ng-repeat="p in path.latlngs">
 					(point {{$index}})
 					lng: <input type="text" ng-model="p.lng"/>
 					lat: <input type="text" ng-model="p.lat"/>
 				</div>
-				</br>
-				lng: <input id="new_mp_lng" type="text" size="10"/>
-				lat: <input id="new_mp_lat" type="text" size="10"/>
+				<input id="new_mp_lng" type="text" placeholder="lng" size="10"/>
+				<input id="new_mp_lat" type="text" placeholder="lat" size="10"/>
 				<input type="button" value="Add point"
 					ng-click="addPointToMainPath();"/>
 			</div>
