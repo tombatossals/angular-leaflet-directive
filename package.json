@@ -23,6 +23,7 @@
     "grunt-contrib-copy": "latest",
     "grunt-contrib-watch": "latest",
     "grunt-contrib-concat": "latest",
+    "grunt-karma": "latest",
     "mocha": "latest",
     "karma": "latest"
   }
