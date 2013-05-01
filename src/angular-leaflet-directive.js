@@ -10,13 +10,15 @@ leafletDirective.directive("leaflet", function ($http, $log) {
             marker: "=marker",
             message: "=message",
             zoom: "=zoom",
+            tilelayer: "=tilelayer",
             multiMarkers: "=multimarkers",
             mainPath: "=mainpath"
         },
         template: '<div class="angular-leaflet-map"></div>',
         link: function (scope, element, attrs, ctrl) {
             var $el = element[0], map = new L.Map($el);
-            L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 12 }).addTo(map);
+            var tilelayer = scope.tilelayer || 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+            L.tileLayer(tilelayer, { maxZoom: 12 }).addTo(map);
 
             // Default center of the map
             var point = new L.LatLng(40.094882122321145, -3.8232421874999996);
@@ -133,9 +135,9 @@ leafletDirective.directive("leaflet", function ($http, $log) {
                 var markers_dict = [];
                 scope.$watch("multiMarkers", function(newMarkerList) {
                     // find deleted markers
-                    for (var mkey in markers_dict) {
-                        if (!scope.multiMarkers[mkey]) {
-                            map.removeLayer(markers_dict[mkey]);
+                    for (var delkey in markers_dict) {
+                        if (!scope.multiMarkers[delkey]) {
+                            map.removeLayer(markers_dict[delkey]);
                         }
                     }
                     // add new markers
@@ -143,38 +145,11 @@ leafletDirective.directive("leaflet", function ($http, $log) {
                         if (markers_dict[mkey]) {
                             // skip already added marker
                             continue;
-                        }
-                        (function(mkey) {
-                            var mark_dat = scope.multiMarkers[mkey];
-                            var marker = new L.marker(
-                                scope.multiMarkers[mkey],
-                                {
-                                    draggable: mark_dat.draggable ? true:false
-                                }
-                            );
-
-                            marker.on("dragstart", function(e) {
-                                dragging_marker = true;
-                            });
-
-                            marker.on("drag", function (e) {
-                                scope.$apply(function (s) {
-                                    mark_dat.lat = marker.getLatLng().lat;
-                                    mark_dat.lng = marker.getLatLng().lng;
-                                });
-                            });
-
-                            marker.on("dragend", function(e) {
-                                dragging_marker = false;
-                            });
-
-                            scope.$watch('multiMarkers.'+mkey, function() {
-                                marker.setLatLng(scope.multiMarkers[mkey]);
-                            }, true);
-
+                        } else {
+                            var marker = this.addAndLinkMarker(mkey, scope);
                             map.addLayer(marker);
-                            markers_dict[mkey] = marker;
-                        })(mkey);
+                            markers_dict[addkey] = marker;
+                        }
                     } // for mkey in multiMarkers
                 }, true); // watch multiMarkers
             } // if attrs.multiMarkers
@@ -190,6 +165,36 @@ leafletDirective.directive("leaflet", function ($http, $log) {
                     });
                 }, true);
             } // end of attrs.path
-        } // end of link function
+        }, // end of link function
+        createAndLinkMarker: function(mkey, scope) {
+            var markerData = scope.multiMarkers[mkey];
+            var marker = new L.marker(
+                scope.multiMarkers[mkey],
+                {
+                    draggable: markerData.draggable ? true:false
+                }
+            );
+
+            marker.on("dragstart", function(e) {
+                dragging_marker = true;
+            });
+
+            marker.on("drag", function (e) {
+                scope.$apply(function (s) {
+                    markerData.lat = marker.getLatLng().lat;
+                    markerData.lng = marker.getLatLng().lng;
+                });
+            });
+
+            marker.on("dragend", function(e) {
+                dragging_marker = false;
+            });
+
+            scope.$watch('multiMarkers.'+mkey, function() {
+                marker.setLatLng(scope.multiMarkers[mkey]);
+            }, true);
+
+            return marker;
+        } // end of create and link marker
     };
 });
