@@ -17,6 +17,7 @@ leafletDirective.directive("leaflet", function ($http, $log) {
         template: '<div class="angular-leaflet-map"></div>',
         link: function (scope, element, attrs, ctrl) {
             var $el = element[0], map = new L.Map($el);
+
             var tilelayer = scope.tilelayer || 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
             L.tileLayer(tilelayer, { maxZoom: 12 }).addTo(map);
 
@@ -83,6 +84,7 @@ leafletDirective.directive("leaflet", function ($http, $log) {
                 });
 
                 map.on("zoomend", function (e) {
+                    if (scope.zoom === undefined) return;
                     scope.$apply(function (s) {
                         s.zoom = map.getZoom();
                     });
