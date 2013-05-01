@@ -4,9 +4,13 @@ basePath = '.';
 
 // list of files / patterns to load in the browser
 files = [
-  MOCHA,
-  MOCHA_ADAPTER,
-  'src/angular-leaflet-directive.js'
+  JASMINE,
+  JASMINE_ADAPTER,
+  'test/lib/leaflet.js',
+  'test/lib/angular/angular.js',
+  'test/lib/angular/angular-mocks.js',
+  'src/angular-leaflet-directive.js',
+  'test/unit/**/*.js'
 ];
 
 // list of files to exclude

@@ -24,7 +24,7 @@
     "grunt-contrib-watch": "latest",
     "grunt-contrib-concat": "latest",
     "grunt-karma": "latest",
-    "mocha": "latest",
+    "jasmine-node": "latest",
     "karma": "latest"
   }
 }

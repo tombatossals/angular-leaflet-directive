@@ -1,6 +1,5 @@
 module.exports = function(grunt) {
 
-    grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-uglify');
@@ -35,10 +34,6 @@ module.exports = function(grunt) {
                 configFile: 'karma.conf.js',
                 autoWatch: true
             }
-        },
-        watch: {
-            files: ['<%= jshint.files %>'],
-            tasks: ['jshint', 'qunit']
         }
     });
 
