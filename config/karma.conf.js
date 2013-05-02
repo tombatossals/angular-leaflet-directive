@@ -1,6 +1,6 @@
 
 // base path, that will be used to resolve files and exclude
-basePath = '.';
+basePath = '../';
 
 // list of files / patterns to load in the browser
 files = [
@@ -50,4 +50,4 @@ autoWatch = false;
 
 // Continuous Integration mode
 // if true, it capture browsers, run tests and exit
-singleRun = false;
+singleRun = true;
