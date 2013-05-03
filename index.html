@@ -4,75 +4,80 @@
 
 <head>
 	<meta charset="UTF-8">
-	
-	<meta name="keywords" content="angular.js,lealfet,openstreetmaps,javascript,plugin">
-	<meta name="description" content="Leaflet directive for your Angular.js application">
-	
+	<meta name="keywords" content="angularjs,lealfet,openstreetmap,javascript,plugin">
+	<meta name="description" content="Leaflet directive for your AngularJS application">
 	<title>Leaflet directive for AngularJS</title>
-	
-	<link rel="stylesheet" href="css/prettify.css">
-	<link rel="stylesheet" href="css/bootstrap.min.css">
-	<link rel="stylesheet" href="css/angular-leaflet-directive.css">
-	<link rel="stylesheet" href="css/bootstrap-responsive.min.css">
-    <link rel="stylesheet" href="js/leaflet/leaflet.css" />
+    <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="//cdn.leafletjs.com/leaflet-0.5.1/leaflet.css" />
     <!--[if lte IE 8]>
-        <link rel="stylesheet" href="js/leaflet/leaflet.ie.css" />
+        <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.ie.css" />
     <![endif]-->
+    <style>
+        body {
+            padding-top: 20px;
+            font-size: 1em;
+        }
+        .angular-leaflet-map {
+            height: 400px;
+            border: 4px #fff solid;
+            margin-bottom: 20px;
+            box-shadow: 0 0 5px -1px rgba(0, 0, 0, 1);
+        }
+    </style>
 </head>
 
 <body ng-controller="DemoController" ng-cloak>
-	
+
 	<div class="container">
 		<div class="hero-unit">
-			<h1>Leaflet directive for Angular.js</h1>
-			
-			<p>Simple to use <a href="http://angularjs.org/"
-            rel="external">Angular.js</a> directive to work with <a
+			<h1>Leaflet directive for AngularJS</h1>
+			<p style="margin: .2em 0;">Simple to use <a href="http://angularjs.org/"
+            rel="external">AngularJS</a> directive to work with <a
             href="http://leaflet.cloudmade.com/">leaflet
             library</a> and <a href="http://www.openstreetmap.org/">Open Street
             Maps</a> inside your applications.</p>
-			
 			<hr>
-			
 			<div class="pull-right">
-                <a class="btn btn-large" href="https://github.com/tombatossals/angular-leaflet-directive"><i class="icon-github"></i> Code on Github</a>
-                <a class="btn btn-large btn-primary" href="https://raw.github.com/tombatossals/angular-leaflet-directive/master/angular-leaflet-directive.js"><i class="icon-download-alt icon-white"></i> Download</a>
-			</div>			
+                <a class="btn" href="https://github.com/tombatossals/angular-leaflet-directive"><i class="icon-github"></i> Code on Github</a>
+                <a class="btn btn-primary" href="https://raw.github.com/tombatossals/angular-leaflet-directive/master/dist/angular-leaflet-directive.min.js"><i class="icon-download-alt icon-white"></i> Download</a>
+			</div>
 		</div>
-		
+
 		<div class="row">
 			<div class="span7">
-				<p>This is a very simple <a href="http://angularjs.org/">AngularJS</a> directive developed to embed and interact with an <a href="http://www.openstreetmap.org/">OSM map</a> managed by the great <a href="http://leaflet.cloudmade.com/">leaflet library</a>. Its not intended as a complete a full-of-features library, although its a simple and working directive which has been fun to develop and has served me as the starting point to learn to develop a directive in AngularJS.</p>
-		
-				<p>The code is mainly based on the <a href="http://nlaplante.github.com/angular-google-maps/">Angular Google Maps</a> library, and most of the features are based on the same features developed on that library.</p>
-				
+				<p>This is a very simple <a href="http://angularjs.org/">AngularJS</a> directive developed to embed and interact with an <a href="http://www.openstreetmap.org/">map</a> managed by the <a href="http://leaflet.cloudmade.com/">leaflet map library</a>. Its not intended as a complete or full-of-features library, although its a simple and easy to use directive, which has been fun to develop and has a good starting point to learn to develop a directive to the great AngularJS library.</p>
+
+				<p>The code of the library and this page has been inspired on the <a href="http://nlaplante.github.com/angular-google-maps/">Angular Google Maps</a> library by <a href="https://github.com/nlaplante">nlaplante</a>, and most of the features are based on the same features developed on that library.</p>
+
                 <h3>Usage</h3>
                 <p>Before using <strong>angular-leaflet-directive</strong>, you
-                must include some files to your main HTML: the main Angular.js
+                must include some javascript files to your main HTML: the main AngularJS
                 library, the Leaflet library and the
                 angular-leaflet-directive.js script. Something like this:</p>
-                <pre class="prettyprint lang-html">&lt;script src="/path/to//leaflet.js"&gt;&lt;/script&gt;
+                <pre class="prettyprint lang-html">&lt;script src="/path/to/leaflet.js"&gt;&lt;/script&gt;
 &lt;script src="/path/to/angular.min.js"&gt;&lt;/script&gt;
 &lt;script src="/path/to/angular-leaflet-directive.js"&gt;&lt;/script&gt;
 &lt;script src="/path/to/your-angular-controller.js"&gt;&lt;/script&lt;</pre>
 
-                <p>Optionally you can include the CSS files of <strong>leaflet</strong> and <strong>angular-leaflet-directive</strong>.
-			    <p>Now, you can use the directive with the custom tag <code>&lt;leaflet&gt;</code> and some attributes, let's see them on the examples.</p>
+                <p>Also, you must include the CSS files of <strong>leaflet</strong></p>
+                <pre class="prettyprint lang-html">&lt;link rel="stylesheet" href="/path/to//leaflet.css" /&gt;
+</pre>
+
+                <p>And that's all. Now you can use the directive with the custom tag <code>&lt;leaflet&gt;</code> and some attributes, let's see them on the examples.</p>
 
 				<h3>Simple Demo</h3>
                 <p>You can see the map embeded on the right-side of this page.
                 This is accomplished width this directive:</p>
                 <code>&lt;leaflet&gt;&lt;/leaflet&gt;</code>
-                <p style="margin-top: 1em;">You can also see a simple code of this feature in the <a href="example.html">example demo</a>.</p>
+                <p style="margin-top: 1em;">You can also see a simple code of this feature in the <a href="examples/simple-example.html">simple example demo</a>.</p>
 			</div>
             <div class="span5">
                 <leaflet></leaflet>
-            </div>	
-        </div>		
+            </div>
+        </div>
         <hr style="clear: both;" />
 		<div class="row">
 			<div class="span7">
-                <br style="clear: both;" />
 				<h3>More complex Demo</h3>
                 <p>You can interact with a leaflet marker with this code on
                 your HTML:</p>
@@ -88,8 +93,8 @@ angular.extend($scope, {
 			</div>
             <div class="span5">
                 <leaflet marker="marker" center="center" zoom="zoom" draggable="true" message="message"></leaflet>
-            </div>	
-		</div>		
+            </div>
+		</div>
 
         <br style="clear: both;" />
 
@@ -135,43 +140,52 @@ angular.extend($scope, {
                 </div>
             </form>
         </div>
-				
+
 		<footer>
 			<div class="row">
 				<div class="span6">
-					<a rel="author external" href="https://plus.google.com/100184619238119414805/?rel=author">David Rubert</a>.
+					<a rel="author external" href="https://plus.google.com/100184619238119414805/?rel=author">+David Rubert</a>, <a href="https://github.com/houqp">{Qingping,Dave} Hou</a>, and <a href="https://github.com/tombatossals/angular-leaflet-directive/graphs/contributors">others</a>.
 				</div>
-				
+
 				<div class="span6 pull-right">
-					Built using <a href="http://angularjs.org" rel="external">Angular.js</a>
+					Built using <a href="http://angularjs.org" rel="external">AngularJS</a>
 					and <a href="http://twitter.github.com/bootstrap" rel="external">Twitter Bootstrap</a>.
 				</div>
 			</div>
 		</footer>
-		
+
 	</div>
-	
+
 	<a id="forkme" href="https://github.com/tombatossals/angular-leaflet-directive" rel="external">
-		<img style="position: fixed; top: 0; right: 0; border: 0; z-index: 1040" 
+		<img style="position: fixed; top: 0; right: 0; border: 0; z-index: 1040"
 			src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub">
 	</a>
-	
-	<script src="js/jquery.min.js"></script>
-	<script src="js/leaflet/leaflet.js"></script>
-	<script src="js/prettify.js"></script>
-	<script src="js/bootstrap.min.js"></script>
-	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.2/angular.min.js"></script>
-	<script src="js/angular-ui.min.js"></script>
-	<script src="js/angular-leaflet-directive.js"></script>
-	<!--<script src="//raw.github.com/tombatossals/angular-leaflet-directive/master/src/angular-leaflet-directive.js"></script>-->
-	<script src="js/demo-controller.js"></script>
+
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+	<script src="//cdn.leafletjs.com/leaflet-0.5.1/leaflet.js"></script>
+    <script src="//google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
+    <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js"></script>
+	<script src="dist/angular-leaflet-directive.min.js"></script>
 	<script>
 		$(function () {
-			prettyPrint();			
 			$("a[rel~=external]").attr("target", "_blank");
 		});
+
+        (function (angular) {
+            var module = angular.module("angular-leaflet-directive-demo", ["leaflet-directive"]);
+        })(window.angular);
+
+        function DemoController($scope) {
+            angular.extend($scope, {
+                center: { lat: 40.094882122321145, lng: -3.8232421874999996 },
+                marker: { lat: 40.094882122321145, lng: -3.8232421874999996 },
+                message: "Drag me to your position",
+                zoom: 4
+            });
+        }
 	</script>
-	
+
 </body>
 
 </html>
