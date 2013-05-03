@@ -23,6 +23,17 @@
             margin-bottom: 20px;
             box-shadow: 0 0 5px -1px rgba(0, 0, 0, 1);
         }
+
+        footer {
+            font-size: .9em;
+            margin-top: 40px;
+            padding: 20px 0;
+            border-top: 1px #eee solid;
+        }
+
+        footer .pull-right {
+            text-align: right;
+        }
     </style>
 </head>
 
@@ -95,8 +106,6 @@ angular.extend($scope, {
                 <leaflet marker="marker" center="center" zoom="zoom" draggable="true" message="message"></leaflet>
             </div>
 		</div>
-
-        <br style="clear: both;" />
 
         <div class="row">
             <p>See how the form inputs change with the map interaction and
