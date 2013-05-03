@@ -159,7 +159,10 @@ leafletDirective.directive("leaflet", function ($http, $log) {
                     marker.on("dragend", function(e) {
                         dragging_marker = false;
                     });
-
+                    marker.on("click",function(e){
+                        marker.bindPopup("" + markerData.name + "", { closeButton: true });
+                        marker.openPopup();
+                    });
                     scope.$watch('multiMarkers.'+mkey, function() {
                         marker.setLatLng(scope.multiMarkers[mkey]);
                     }, true);
