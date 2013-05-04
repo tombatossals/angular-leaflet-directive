@@ -29,6 +29,7 @@
                     $scope.multimarkers[m_key] = {
                         lat: document.getElementById('new_mm_lat').value,
                         lng: document.getElementById('new_mm_lng').value,
+                        message: document.getElementById('new_mm_msg').value,
                     };
                 }
                 $scope.deleteMultiMarker = function(m_key) {
@@ -58,6 +59,7 @@
                         'm1': {
                             lat: 51.2,
                             lng: -0.01,
+                            message: 'I am marker 1',
                         },
                         'm2': {
                             lat: 51,
@@ -123,6 +125,7 @@
                 <input id="new_mm_name" type="text" placeholder="name" size="8"/>
                 <input id="new_mm_lng" type="text" placeholder="lng" size="10"/>
                 <input id="new_mm_lat" type="text" placeholder="lat" size="10"/>
+                <input id="new_mm_msg" type="text" placeholder="message" size="10"/>
                 <input type="button" value="Add marker"
                     ng-click="addMultiMarker()"/>
             </div>
