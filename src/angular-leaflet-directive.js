@@ -160,9 +160,9 @@ leafletDirective.directive("leaflet", function ($http, $log) {
                         dragging_marker = false;
                     });
 
-                    if (markerData.name) {
+                    if (markerData.message) {
                         marker.on("click",function(e){
-                            marker.bindPopup("" + markerData.name + "",
+                            marker.bindPopup("" + markerData.message + "",
                                 { closeButton: true });
                             marker.openPopup();
                         });
