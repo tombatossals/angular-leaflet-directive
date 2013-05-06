@@ -12,14 +12,22 @@ leafletDirective.directive("leaflet", function ($http, $log) {
             zoom: "=zoom",
             tilelayer: "=tilelayer",
             multiMarkers: "=multimarkers",
-            mainPath: "=mainpath"
+            mainPath: "=mainpath",
+            maxZ: "=maxz"
         },
         template: '<div class="angular-leaflet-map"></div>',
         link: function (scope, element, attrs, ctrl) {
             var $el = element[0], map = new L.Map($el);
 
             var tilelayer = scope.tilelayer || 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-            L.tileLayer(tilelayer, { maxZoom: 12 }).addTo(map);
+            if(attrs.maxz)
+            {
+                L.tileLayer(tilelayer, { maxZoom: scope.maxZ }).addTo(map);
+            }
+            else
+            {
+                L.tileLayer(tilelayer, { maxZoom: 12 }).addTo(map);
+            }
 
             // Default center of the map
             var point = new L.LatLng(40.094882122321145, -3.8232421874999996);
