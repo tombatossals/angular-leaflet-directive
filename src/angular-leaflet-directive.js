@@ -9,7 +9,7 @@ leafletDirective.directive("leaflet", function ($http, $log) {
             center: "=center",
             tilelayer: "=tilelayer",
             markers: "=markers",
-            paths: "=paths"
+            path: "=path"
         },
         template: '<div class="angular-leaflet-map"></div>',
         link: function (scope, element, attrs, ctrl) {
