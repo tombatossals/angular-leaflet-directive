@@ -16,13 +16,20 @@ leafletDirective.directive("leaflet", function ($http, $log) {
             var $el = element[0],
                 map = new L.Map($el);
 
-            // Default center of the map
-            var point = new L.LatLng(40.094882122321145, -3.8232421874999996);
+            var maxZoom = 12;
+            if (scope.maxZoom) {
+                maxZoom = scope.maxZoom;
+            }
+
+            var point = new L.LatLng(0, 0);
             map.setView(point, 1);
+
+            // Default center of the map
+            map.locate({ setView: true, maxZoom: maxZoom });
 
             // Set tile layer
             var tilelayer = scope.tilelayer || 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-            L.tileLayer(tilelayer, { maxZoom: 12 }).addTo(map);
+            L.tileLayer(tilelayer, { maxZoom: maxZoom }).addTo(map);
 
             // Manage map center events
             if (attrs.center) {
@@ -71,15 +78,19 @@ leafletDirective.directive("leaflet", function ($http, $log) {
                 // Listen for zoom on DOM
                 scope.$watch("center.zoom", function (newValue, oldValue) {
                     if (zooming_map) return;
-                    map.setZoom(newValue);
+                    if (!scope.$$phase) {
+                        map.setZoom(newValue);
+                    }
                 });
 
                 map.on("zoomend", function (e) {
                     if (scope.center === undefined || scope.center.zoom === undefined) return;
-                    scope.$apply(function (s) {
-                        s.center.zoom = map.getZoom();
-                    });
-                    zooming_map = false;
+                    if (!scope.$$phase) {
+                        scope.$apply(function (s) {
+                            s.center.zoom = map.getZoom();
+                        });
+                        zooming_map = false;
+                    }
                 });
             }
 
@@ -167,7 +178,14 @@ leafletDirective.directive("leaflet", function ($http, $log) {
                 var mp_polyline = new L.Polyline([], {});
                 map.addLayer(mp_polyline);
                 scope.$watch("path", function(newPath) {
-                    mp_polyline.setLatLngs(scope.path.latlngs);
+                    var latlngs = newPath.latlngs;
+                    for (var idx=0, length=latlngs.length; idx < length; idx++) {
+                        if (latlngs[idx] === undefined || latlngs[idx].lat === undefined || latlngs[idx].lng === undefined) {
+                            $log.warn("Bad path point inn the $scope.path array ");
+                            latlngs.splice(idx, 1);
+                        }
+                    }
+                    mp_polyline.setLatLngs(latlngs);
                     mp_polyline.setStyle({
                         smoothFactor: scope.path.smoothFactor,
                         color: scope.path.color

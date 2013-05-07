@@ -40,6 +40,15 @@
                     };
                 }
                 $scope.deleteMultiMarker = function(m_key) {
+                    var marker = $scope.markers[m_key];
+
+                    for (var idx in $scope.path.latlngs) {
+                        var p = $scope.path.latlngs[idx];
+                        if (p.lat === marker.lat && p.lng === marker.lng) {
+                            delete $scope.path.latlngs[idx];
+                        }
+                    }
+
                     delete $scope.markers[m_key];
                 }
                 $scope.addPointToMainPath = function() {
