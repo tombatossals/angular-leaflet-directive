@@ -18,20 +18,17 @@ leafletDirective.directive("leaflet", function ($http, $log) {
         template: '<div class="angular-leaflet-map"></div>',
         link: function (scope, element, attrs, ctrl) {
             var $el = element[0], map = new L.Map($el);
+            
+            var maxZoom = 12;
+            if (attrs.maxz) {
+                maxZoom = scope.maxZ;
+            }
 
             var tilelayer = scope.tilelayer || 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-            if(attrs.maxz)
-            {
-                L.tileLayer(tilelayer, { maxZoom: scope.maxZ }).addTo(map);
-            }
-            else
-            {
-                L.tileLayer(tilelayer, { maxZoom: 12 }).addTo(map);
-            }
+            L.tileLayer(tilelayer, { maxZoom: maxZoom }).addTo(map);
 
             // Default center of the map
-            var point = new L.LatLng(40.094882122321145, -3.8232421874999996);
-            map.setView(point, 5);
+            map.locate({ setView: true, maxZoom: maxZoom });
 
             scope.$watch("center", function(center) {
                 if (center === undefined) return;
