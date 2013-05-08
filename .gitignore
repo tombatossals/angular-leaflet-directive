@@ -2,4 +2,4 @@ temp
 node_modules
 *.swp
 .*.swp
-
+.DS_store
