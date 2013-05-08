@@ -66,7 +66,7 @@ leafletDirective.directive("leaflet", function ($http, $log) {
                     scope.$apply(function (s) {
                         s.bounds = map.getBounds();
                     });
-                })
+                });
 
                 scope.$watch("center.lng", function (newValue, oldValue) {
                     if (dragging_map) return;
