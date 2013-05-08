@@ -10,7 +10,7 @@ leafletDirective.directive("leaflet", function ($http, $log) {
             tilelayer: "=tilelayer",
             markers: "=markers",
             path: "=path",
-             maxZoom: "=maxzoom",
+            maxZoom: "=maxzoom",
             bounds:"=bounds"
 
         },
@@ -62,7 +62,7 @@ leafletDirective.directive("leaflet", function ($http, $log) {
                     dragging_map= false;
                 });
 
-                map.on('moveend',function(s){
+                map.on('moveend',function(e){
                     scope.$apply(function (s) {
                         s.bounds = map.getBounds();
                     });
