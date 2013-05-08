@@ -13,7 +13,8 @@ leafletDirective.directive("leaflet", function ($http, $log) {
             tilelayer: "=tilelayer",
             multiMarkers: "=multimarkers",
             mainPath: "=mainpath",
-            maxZ: "=maxz"
+            maxZ: "=maxz",
+            bounds:"=bounds"
         },
         template: '<div class="angular-leaflet-map"></div>',
         link: function (scope, element, attrs, ctrl) {
@@ -58,7 +59,7 @@ leafletDirective.directive("leaflet", function ($http, $log) {
                         marker.openPopup();
                     });
                 }
-
+                scope.bounds = map.getBounds();
                 // Listen for map drags
                 var dragging_map = false;
                 map.on("dragstart", function(e) {
@@ -69,6 +70,7 @@ leafletDirective.directive("leaflet", function ($http, $log) {
                     scope.$apply(function (s) {
                         s.center.lat = map.getCenter().lat;
                         s.center.lng = map.getCenter().lng;
+                        s.bounds = map.getBounds();
                     });
                 });
 
@@ -95,6 +97,7 @@ leafletDirective.directive("leaflet", function ($http, $log) {
                     if (scope.zoom === undefined) return;
                     scope.$apply(function (s) {
                         s.zoom = map.getZoom();
+                        s.bounds = map.getBounds();
                     });
                 });
 
