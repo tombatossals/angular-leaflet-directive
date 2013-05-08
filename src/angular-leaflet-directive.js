@@ -177,6 +177,7 @@ leafletDirective.directive("leaflet", function ($http, $log) {
                     for (var delkey in markers_dict) {
                         if (!scope.markers[delkey]) {
                             map.removeLayer(markers_dict[delkey]);
+                            delete markers_dict[delkey];
                         }
                     }
                     // add new markers
