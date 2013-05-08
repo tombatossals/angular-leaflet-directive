@@ -20,9 +20,7 @@
                 opacity: .8;
                 border-radius: 8px;
             }
-            #left { float: left; }
-            #right { float: right; }
-            input { margin-bottom: 5px; }
+            input[type=number] { width: 90px }
             div.angular-leaflet-map {
                 width: 100%;
                 height: 100%;
@@ -32,20 +30,24 @@
             angular.module("demoapp", ["leaflet-directive"]);
 
             function DemoController($scope) {
-                $scope.addMultiMarker = function() {
+                $scope.addMarker = function() {
                     var m_key = document.getElementById('new_mm_name').value;
+		    if ($scope.markers[m_key]) return;
                     $scope.markers[m_key] = {
                         lat: document.getElementById('new_mm_lat').value,
                         lng: document.getElementById('new_mm_lng').value,
+                        draggable: true
                     };
+		    $scope.path.latlngs.push($scope.markers[m_key]);
                 }
-                $scope.deleteMultiMarker = function(m_key) {
+
+                $scope.deleteMarker = function(m_key) {
                     var marker = $scope.markers[m_key];
 
                     for (var idx in $scope.path.latlngs) {
                         var p = $scope.path.latlngs[idx];
                         if (p.lat === marker.lat && p.lng === marker.lng) {
-                            delete $scope.path.latlngs[idx];
+                            $scope.path.latlngs.splice(idx, 1);
                         }
                     }
 
@@ -69,7 +71,8 @@
                     markers: {
                         London : {
                             lat: 51.50,
-                            lng: -0.082
+                            lng: -0.082,
+                            draggable: false
                         },
                         Manchester: {
                             lat: 53.48,
@@ -81,8 +84,8 @@
 
                 angular.extend($scope, {
                     path: {
-                        color: 'red',
-                        smoothFactor: 1,
+                        color: '#000000',
+                        weight: 4,
                         latlngs: [ $scope.markers.London, $scope.markers.Manchester ]
                     },
                 });
@@ -94,41 +97,33 @@
         <div id="control">
             <div class="panel">
                 <h3>Center</h3>
-                lng: <input type="text" ng-model="cen.lng" size="8"/>
-                lat: <input type="text" ng-model="cen.lat" size="8"/>
-                zoom: <input type="text" ng-model="cen.zoom" size="8"/>
+                lat: <input type="number" step="any" ng-model="cen.lat" size="8"/>
+                lng: <input type="number" step="any" ng-model="cen.lng" size="8"/>
+                zoom: <input type="number" ng-model="cen.zoom" size="8"/>
             </div>
 
             <div class="panel">
                 <h3>Markers</h3>
                 <div ng-repeat="(name, m) in markers">
-                    <p><b>{{name}}</b>{{m.draggable && ' (draggable) '}}:<p>
-                    lng: <input type="text" ng-model="m.lng"/>
-                    lat: <input type="text" ng-model="m.lat"/>
-                    <input type="button" value="X"
-                        ng-click="deleteMultiMarker(name)"/>
+                    <p><b>{{name}}</b> ({{ !m.draggable && 'not ' || '' }}draggable):<p>
+                    <input type="checkbox" ng-model="m.draggable"/>
+                    lat: <input type="number" ng-disabled="!m.draggable" ng-model="m.lat"/>
+                    lng: <input type="number" ng-disabled="!m.draggable" ng-model="m.lng"/>
+                    <input type="button" value="del" ng-click="deleteMarker(name)"/>
                 </div>
                 <input id="new_mm_name" type="text" placeholder="name" size="8"/>
-                <input id="new_mm_lng" type="text" placeholder="lng" size="10"/>
                 <input id="new_mm_lat" type="text" placeholder="lat" size="10"/>
+                <input id="new_mm_lng" type="text" placeholder="lng" size="10"/>
                 <input type="button" value="Add marker"
-                    ng-click="addMultiMarker()"/>
+                    ng-click="addMarker()"/>
             </div>
 
             <div class="panel">
-                <h4>Path</h4>
-                color: <input type="text" ng-model="path.color" size="8"/>
-                smooth factor: <input type="text" ng-model="path.smoothFactor"
-                size="8"/>
-                <div ng-repeat="p in path.latlngs">
-                    (point {{$index}})
-                    lng: <input type="text" ng-model="p.lng"/>
-                    lat: <input type="text" ng-model="p.lat"/>
-                </div>
-                <input id="new_mp_lng" type="text" placeholder="lng" size="10"/>
-                <input id="new_mp_lat" type="text" placeholder="lat" size="10"/>
-                <input type="button" value="Add point"
-                ng-click="addPointToMainPath()"/>
+                <h3>Path</h3>
+                <p style="display: inline;">color: <input type="color" ng-model="path.color" /> weight: <input type="number" ng-model="path.weight" /></p>
+                <ul>
+                  <li ng-repeat="p in path.latlngs">(point {{$index}}) lat: <strong>{{ p.lat | number: 4 }}</strong> lng: <strong>{{ p.lng | number: 4}}</strong></li>
+                </ul>
             </div>
         </div>
         <leaflet center="cen" markers="markers" path="path"></leaflet>

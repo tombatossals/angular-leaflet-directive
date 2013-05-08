@@ -77,7 +77,7 @@ leafletDirective.directive("leaflet", function ($http, $log) {
 
                 // Listen for zoom on DOM
                 scope.$watch("center.zoom", function (newValue, oldValue) {
-                    if (zooming_map) return;
+                    if (zooming_map || !newValue) return;
                     if (!scope.$$phase) {
                         map.setZoom(newValue);
                     }
@@ -118,41 +118,46 @@ leafletDirective.directive("leaflet", function ($http, $log) {
                         });
                     }
 
-                    if (markerData.draggable) {
-                        var dragging_marker = false;
-                        marker.on("dragstart", function(e) {
-                            dragging_marker = true;
+                    scope.$watch("markers." + mkey + ".draggable", function (newValue, oldValue) {
+                        if (newValue === false) {
+                            marker.dragging.disable();
+                        } else {
+                            marker.dragging.enable();
+                        }
+                    });
+
+                    var dragging_marker = false;
+                    marker.on("dragstart", function(e) {
+                        dragging_marker = true;
+                    });
+
+                    marker.on("drag", function (e) {
+                        scope.$apply(function (s) {
+                            markerData.lat = marker.getLatLng().lat;
+                            markerData.lng = marker.getLatLng().lng;
                         });
+                    });
 
-                        marker.on("drag", function (e) {
-                            scope.$apply(function (s) {
-                                markerData.lat = marker.getLatLng().lat;
-                                markerData.lng = marker.getLatLng().lng;
-                            });
-                        });
+                    marker.on("dragend", function(e) {
+                        dragging_marker = false;
+                        if (markerData.message) {
+                            marker.openPopup();
+                        }
+                    });
 
-                        marker.on("dragend", function(e) {
-                            dragging_marker = false;
-                            if (markerData.message) {
-                                marker.openPopup();
-                            }
-                        });
+                    scope.$watch('markers.' + mkey, function() {
+                        marker.setLatLng(scope.markers[mkey]);
+                    }, true);
 
-                        scope.$watch('markers.' + mkey, function() {
-                            marker.setLatLng(scope.markers[mkey]);
-                        }, true);
+                    scope.$watch("markers" + mkey + ".lng", function (newValue, oldValue) {
+                        if (dragging_marker || !newValue) return;
+                        marker.setLatLng(new L.LatLng(marker.getLatLng().lat, newValue));
+                    });
 
-                        scope.$watch("markers" + mkey + ".lng", function (newValue, oldValue) {
-                            if (dragging_marker || !newValue) return;
-                            marker.setLatLng(new L.LatLng(marker.getLatLng().lat, newValue));
-                        });
-
-                        scope.$watch("markers" + mkey + ".lat", function (newValue, oldValue) {
-                            if (dragging_marker || !newValue) return;
-                            marker.setLatLng(new L.LatLng(newValue, marker.getLatLng().lng));
-                        });
-                    }
-
+                    scope.$watch("markers" + mkey + ".lat", function (newValue, oldValue) {
+                        if (dragging_marker || !newValue) return;
+                        marker.setLatLng(new L.LatLng(newValue, marker.getLatLng().lng));
+                    });
                     return marker;
                 }; // end of create and link marker
 
@@ -175,20 +180,27 @@ leafletDirective.directive("leaflet", function ($http, $log) {
             } // if attrs.markers
 
             if (attrs.path) {
-                var mp_polyline = new L.Polyline([], {});
-                map.addLayer(mp_polyline);
-                scope.$watch("path", function(newPath) {
-                    var latlngs = newPath.latlngs;
+                var polyline = new L.Polyline([], { weight: 10, opacity: 1});
+                map.addLayer(polyline);
+                scope.$watch("path.latlngs", function(latlngs) {
                     for (var idx=0, length=latlngs.length; idx < length; idx++) {
                         if (latlngs[idx] === undefined || latlngs[idx].lat === undefined || latlngs[idx].lng === undefined) {
                             $log.warn("Bad path point inn the $scope.path array ");
                             latlngs.splice(idx, 1);
                         }
                     }
-                    mp_polyline.setLatLngs(latlngs);
-                    mp_polyline.setStyle({
-                        smoothFactor: scope.path.smoothFactor,
-                        color: scope.path.color
+                    polyline.setLatLngs(latlngs);
+		}, true);
+
+                scope.$watch("path.weight", function(weight) {
+                    polyline.setStyle({
+                        weight: weight
+                    });
+                }, true);
+
+                scope.$watch("path.color", function(color) {
+                    polyline.setStyle({
+                        color: color
                     });
                 }, true);
             } // end of attrs.path
