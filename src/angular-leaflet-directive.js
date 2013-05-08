@@ -70,13 +70,18 @@ leafletDirective.directive("leaflet", function ($http, $log) {
                     scope.$apply(function (s) {
                         s.center.lat = map.getCenter().lat;
                         s.center.lng = map.getCenter().lng;
-                        s.bounds = map.getBounds();
                     });
                 });
 
                 map.on("dragend", function(e) {
                     dragging_map= false;
+                    
                 });
+                map.on('moveend',function(s){
+                    scope.$apply(function (s) {
+                        s.bounds = map.getBounds();
+                    });
+                })
 
                 scope.$watch("center.lng", function (newValue, oldValue) {
                     if (dragging_map) return;
