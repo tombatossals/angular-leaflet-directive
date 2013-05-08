@@ -10,7 +10,9 @@ leafletDirective.directive("leaflet", function ($http, $log) {
             tilelayer: "=tilelayer",
             markers: "=markers",
             path: "=path",
+             maxZoom: "=maxzoom",
             bounds:"=bounds"
+
         },
         template: '<div class="angular-leaflet-map"></div>',
         link: function (scope, element, attrs, ctrl) {
@@ -169,6 +171,7 @@ leafletDirective.directive("leaflet", function ($http, $log) {
                     for (var delkey in markers_dict) {
                         if (!scope.markers[delkey]) {
                             map.removeLayer(markers_dict[delkey]);
+                            delete markers_dict[delkey];
                         }
                     }
                     // add new markers
