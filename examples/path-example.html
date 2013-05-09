@@ -1,0 +1,131 @@
+<html ng-app="demoapp">
+    <head>
+        <script src="//cdn.leafletjs.com/leaflet-0.5.1/leaflet.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js"></script>
+        <script src="../src/angular-leaflet-directive.js"></script>
+        <link rel="stylesheet" href="//cdn.leafletjs.com/leaflet-0.5.1/leaflet.css" />
+        <!--[if lte IE 8]>
+        <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.4/leaflet.ie.css" />
+        <![endif]-->
+        <style type="text/css">
+            p, h4 { margin: 10px 0; padding: 0; }
+            body { margin: 5px; }
+            div#control {
+                z-index: 100;
+                position: absolute;
+                bottom: 1em;
+                left: 1em;
+                background: white;
+                padding: .4em 1em;
+                opacity: .8;
+                border-radius: 8px;
+            }
+            input[type=number] { width: 90px }
+            div.angular-leaflet-map {
+                width: 100%;
+                height: 100%;
+            }
+        </style>
+        <script>
+            angular.module("demoapp", ["leaflet-directive"]);
+
+            function DemoController($scope) {
+                $scope.addMarker = function() {
+                    var m_key = document.getElementById('new_mm_name').value;
+		    if ($scope.markers[m_key]) return;
+                    $scope.markers[m_key] = {
+                        lat: document.getElementById('new_mm_lat').value,
+                        lng: document.getElementById('new_mm_lng').value,
+                        draggable: true
+                    };
+		    $scope.path.latlngs.push($scope.markers[m_key]);
+                }
+
+                $scope.deleteMarker = function(m_key) {
+                    var marker = $scope.markers[m_key];
+
+                    for (var idx in $scope.path.latlngs) {
+                        var p = $scope.path.latlngs[idx];
+                        if (p.lat === marker.lat && p.lng === marker.lng) {
+                            $scope.path.latlngs.splice(idx, 1);
+                        }
+                    }
+
+                    delete $scope.markers[m_key];
+                }
+                $scope.addPointToMainPath = function() {
+                    $scope.path.latlngs.push({
+                        lat: document.getElementById('new_mp_lat').value,
+                        lng: document.getElementById('new_mp_lng').value,
+                    });
+                }
+
+                angular.extend($scope, {
+                    // set up map center
+                    cen: {
+                        lat: 53,
+                        lng: -3,
+                        zoom: 6
+                    },
+                    // set up multiple markers on map
+                    markers: {
+                        London : {
+                            lat: 51.50,
+                            lng: -0.082,
+                            draggable: false
+                        },
+                        Manchester: {
+                            lat: 53.48,
+                            lng: -2.24,
+                            draggable: true
+                        },
+                    }
+                });
+
+                angular.extend($scope, {
+                    path: {
+                        color: '#000000',
+                        weight: 4,
+                        latlngs: [ $scope.markers.London, $scope.markers.Manchester ]
+                    },
+                });
+
+            };
+        </script>
+    </head>
+    <body ng-controller="DemoController">
+        <div id="control">
+            <div class="panel">
+                <h3>Center</h3>
+                lat: <input type="number" step="any" ng-model="cen.lat" size="8"/>
+                lng: <input type="number" step="any" ng-model="cen.lng" size="8"/>
+                zoom: <input type="number" ng-model="cen.zoom" size="8"/>
+            </div>
+
+            <div class="panel">
+                <h3>Markers</h3>
+                <div ng-repeat="(name, m) in markers">
+                    <p><b>{{name}}</b> ({{ !m.draggable && 'not ' || '' }}draggable):<p>
+                    <input type="checkbox" ng-model="m.draggable"/>
+                    lat: <input type="number" ng-disabled="!m.draggable" ng-model="m.lat"/>
+                    lng: <input type="number" ng-disabled="!m.draggable" ng-model="m.lng"/>
+                    <input type="button" value="del" ng-click="deleteMarker(name)"/>
+                </div>
+                <input id="new_mm_name" type="text" placeholder="name" size="8"/>
+                <input id="new_mm_lat" type="text" placeholder="lat" size="10"/>
+                <input id="new_mm_lng" type="text" placeholder="lng" size="10"/>
+                <input type="button" value="Add marker"
+                    ng-click="addMarker()"/>
+            </div>
+
+            <div class="panel">
+                <h3>Path</h3>
+                <p style="display: inline;">color: <input type="color" ng-model="path.color" /> weight: <input type="number" ng-model="path.weight" /></p>
+                <ul>
+                  <li ng-repeat="p in path.latlngs">(point {{$index}}) lat: <strong>{{ p.lat | number: 4 }}</strong> lng: <strong>{{ p.lng | number: 4}}</strong></li>
+                </ul>
+            </div>
+        </div>
+        <leaflet center="cen" markers="markers" path="path"></leaflet>
+    </body>
+</html>

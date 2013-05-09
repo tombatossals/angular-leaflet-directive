@@ -1,5 +1,6 @@
 temp
 node_modules
+libpeerconnection.log
 *.swp
 .*.swp
 
