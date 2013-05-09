@@ -10,8 +10,8 @@ leafletDirective.directive("leaflet", function ($http, $log) {
             tilelayer: "=tilelayer",
             markers: "=markers",
             path: "=path",
-            maxZoom: "=maxzoom",
-            bounds:"=bounds"
+            maxZoom: "@maxzoom",
+            bounds: "=bounds"
         },
         template: '<div class="angular-leaflet-map"></div>',
         link: function (scope, element, attrs, ctrl) {
@@ -25,9 +25,7 @@ leafletDirective.directive("leaflet", function ($http, $log) {
 
             var point = new L.LatLng(0, 0);
             map.setView(point, 1);
-
-            // Default center of the map
-            map.locate({ setView: true, maxZoom: maxZoom });
+            map.locate({ maxZoom: maxZoom });
 
             // Set tile layer
             var tilelayer = scope.tilelayer || 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
@@ -45,14 +43,9 @@ leafletDirective.directive("leaflet", function ($http, $log) {
 
             // Manage map center events
             if (attrs.center) {
-                scope.$watch("center", function(center) {
-                    if (center === undefined) return;
-
-                    // Center of the map
-                    center = new L.LatLng(scope.center.lat, scope.center.lng);
-                    var zoom = scope.center.zoom || 8;
-                    map.setView(center, zoom);
-                });
+                if (scope.center.autoDiscover === true) {
+                    map.locate({ setView: true });
+                }
 
                 // Listen for map drags
                 var dragging_map = false;
@@ -71,15 +64,19 @@ leafletDirective.directive("leaflet", function ($http, $log) {
                     dragging_map= false;
                 });
 
-                scope.$watch("center.lng", function (newValue, oldValue) {
-                    if (dragging_map) return;
-                    map.setView(new L.LatLng(map.getCenter().lat, newValue), map.getZoom());
-                });
+                if (scope.center.lng) {
+                    scope.$watch("center.lng", function (newValue, oldValue) {
+                        if (dragging_map) return;
+                        map.setView(new L.LatLng(map.getCenter().lat, newValue), map.getZoom());
+                    });
+                }
 
-                scope.$watch("center.lat", function (newValue, oldValue) {
-                    if (dragging_map) return;
-                    map.setView(new L.LatLng(newValue, map.getCenter().lng), map.getZoom());
-                });
+                if (scope.center.lat) {
+                    scope.$watch("center.lat", function (newValue, oldValue) {
+                        if (dragging_map) return;
+                        map.setView(new L.LatLng(newValue, map.getCenter().lng), map.getZoom());
+                    });
+                }
 
                 // Manage zoom events
                 var zooming_map = false;
@@ -92,9 +89,9 @@ leafletDirective.directive("leaflet", function ($http, $log) {
                     if (zooming_map || !newValue) return;
                     if (!scope.$$phase) {
                         map.setZoom(newValue);
-                        scope.$apply(function (s) {
-                            s.bounds = map.getBounds();
-                        });
+//                        scope.$apply(function (s) {
+//                            s.bounds = map.getBounds();
+//                        });
                     }
                 });
 
@@ -136,7 +133,7 @@ leafletDirective.directive("leaflet", function ($http, $log) {
                     scope.$watch("markers." + mkey + ".draggable", function (newValue, oldValue) {
                         if (newValue === false) {
                             marker.dragging.disable();
-                        } else {
+                        } else if (newValue === true) {
                             marker.dragging.enable();
                         }
                     });
