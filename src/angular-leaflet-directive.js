@@ -1,6 +1,6 @@
 var leafletDirective = angular.module("leaflet-directive", []);
 
-leafletDirective.directive("leaflet", function ($http, $log) {
+leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
     return {
         restrict: "E",
         replace: true,
@@ -219,4 +219,4 @@ leafletDirective.directive("leaflet", function ($http, $log) {
             } // end of attrs.path
         } // end of link function
     };
-});
+}]);
