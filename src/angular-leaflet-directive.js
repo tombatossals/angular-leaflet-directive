@@ -33,6 +33,16 @@ leafletDirective.directive("leaflet", function ($http, $log) {
             var tilelayer = scope.tilelayer || 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
             L.tileLayer(tilelayer, { maxZoom: maxZoom }).addTo(map);
 
+            // Manage map bounds
+            if (attrs.bounds) {
+                scope.bounds = map.getBounds();
+                map.on('moveend',function(s){
+                    scope.$apply(function (s) {
+                        s.bounds = map.getBounds();
+                    });
+                });
+            }
+
             // Manage map center events
             if (attrs.center) {
                 scope.$watch("center", function(center) {
@@ -43,7 +53,7 @@ leafletDirective.directive("leaflet", function ($http, $log) {
                     var zoom = scope.center.zoom || 8;
                     map.setView(center, zoom);
                 });
-                scope.bounds = map.getBounds();
+
                 // Listen for map drags
                 var dragging_map = false;
                 map.on("dragstart", function(e) {
@@ -59,12 +69,6 @@ leafletDirective.directive("leaflet", function ($http, $log) {
 
                 map.on("dragend", function(e) {
                     dragging_map= false;
-                });
-
-                map.on('moveend',function(s){
-                    scope.$apply(function (s) {
-                        s.bounds = map.getBounds();
-                    });
                 });
 
                 scope.$watch("center.lng", function (newValue, oldValue) {
