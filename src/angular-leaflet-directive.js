@@ -18,14 +18,15 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
             var $el = element[0],
                 map = new L.Map($el);
 
-            var maxZoom = 12;
-            if (scope.maxZoom) {
-                maxZoom = scope.maxZoom;
+            // Expose the map object, for testing purposes
+            if (attrs.map) {
+                scope.map = map;
             }
 
+            var maxZoom = scope.maxZoom || 12;
             var point = new L.LatLng(0, 0);
+
             map.setView(point, 1);
-            map.locate({ maxZoom: maxZoom });
 
             // Set tile layer
             var tilelayer = scope.tilelayer || 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
@@ -42,9 +43,9 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
             }
 
             // Manage map center events
-            if (attrs.center) {
+            if (attrs.center !== undefined && scope.center !== undefined) {
                 if (scope.center.autoDiscover === true) {
-                    map.locate({ setView: true });
+                    map.locate({ setView: true, maxZoom: maxZoom });
                 }
 
                 // Listen for map drags
