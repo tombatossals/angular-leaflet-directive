@@ -61,17 +61,17 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
                 var markers = {};
 
                 var createAndLinkMarker = function(key, scope) {
-                    var markerData = scope.markers[key];
+                    var data = scope.markers[key];
                     var marker = new L.marker(
                         scope.markers[key],
                         {
-                            draggable: markerData.draggable ? true:false
+                            draggable: data.draggable ? true:false
                         }
                     );
 
-                    if (markerData.message) {
+                    if (data.message) {
                         scope.$watch("markers." + key + ".message", function(newValue) {
-                            marker.bindPopup(markerData.message);
+                            marker.bindPopup(data.message);
                         });
 
                         scope.$watch("markers." + key + ".focus", function(newValue) {
@@ -91,9 +91,9 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
 
                     marker.on("dragend", function(e) {
                         scope.$apply(function (s) {
-                            markerData.lat = marker.getLatLng().lat;
-                            markerData.lng = marker.getLatLng().lng;
-                            if (markerData.message) {
+                            data.lat = marker.getLatLng().lat;
+                            data.lng = marker.getLatLng().lng;
+                            if (data.message) {
                                 marker.openPopup();
                             }
                         });
