@@ -44,6 +44,11 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
 
             // Manage map center events
             if (attrs.center !== undefined && scope.center !== undefined) {
+
+                if (scope.center.lat !== undefined && scope.center.lng !== undefined && scope.center.zoom !== undefined) {
+                    map.setView(new L.LatLng(scope.center.lat, scope.center.lng), scope.center.zoom);
+                }
+
                 if (scope.center.autoDiscover === true) {
                     map.locate({ setView: true, maxZoom: maxZoom });
                 }
@@ -65,14 +70,12 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
                     dragging_map= false;
                 });
 
-                if (scope.center.lng) {
+                if (scope.center.lng !== undefined && scope.center.lat !== undefined) {
                     scope.$watch("center.lng", function (newValue, oldValue) {
                         if (dragging_map) return;
                         map.setView(new L.LatLng(map.getCenter().lat, newValue), map.getZoom());
                     });
-                }
 
-                if (scope.center.lat) {
                     scope.$watch("center.lat", function (newValue, oldValue) {
                         if (dragging_map) return;
                         map.setView(new L.LatLng(newValue, map.getCenter().lng), map.getZoom());
@@ -204,7 +207,7 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
                         }
                     }
                     polyline.setLatLngs(latlngs);
-		}, true);
+		        }, true);
 
                 scope.$watch("path.weight", function(weight) {
                     polyline.setStyle({
