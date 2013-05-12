@@ -10,8 +10,7 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
             tilelayer: "=tilelayer",
             markers: "=markers",
             path: "=path",
-            maxZoom: "@maxzoom",
-            bounds: "=bounds"
+            maxZoom: "@maxzoom"
         },
         template: '<div class="angular-leaflet-map"></div>',
         link: function (scope, element, attrs, ctrl) {
@@ -44,6 +43,11 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
                     scope.$apply(function (s) {
                         s.center.lat = map.getCenter().lat;
                         s.center.lng = map.getCenter().lng;
+                    });
+                });
+
+                map.on("zoomend", function(e) {
+                    scope.$apply(function (s) {
                         s.center.zoom = map.getZoom();
                     });
                 });
