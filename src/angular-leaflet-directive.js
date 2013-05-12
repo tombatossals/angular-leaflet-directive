@@ -57,8 +57,8 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
                 }, true);
             }
 
-            if (attrs.markers !== undefined) {
-                var markers_dict = [];
+            if (attrs.markers && scope.markers) {
+                var markers = {};
 
                 var createAndLinkMarker = function(mkey, scope) {
                     var markerData = scope.markers[mkey];
@@ -89,23 +89,14 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
                         }
                     });
 
-                    var dragging_marker = false;
-                    marker.on("dragstart", function(e) {
-                        dragging_marker = true;
-                    });
-
-                    marker.on("drag", function (e) {
+                    marker.on("dragend", function(e) {
                         scope.$apply(function (s) {
                             markerData.lat = marker.getLatLng().lat;
                             markerData.lng = marker.getLatLng().lng;
+                            if (markerData.message) {
+                                marker.openPopup();
+                            }
                         });
-                    });
-
-                    marker.on("dragend", function(e) {
-                        dragging_marker = false;
-                        if (markerData.message) {
-                            marker.openPopup();
-                        }
                     });
 
                     scope.$watch('markers.' + mkey, function() {
@@ -113,12 +104,12 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
                     }, true);
 
                     scope.$watch("markers" + mkey + ".lng", function (newValue, oldValue) {
-                        if (dragging_marker || !newValue) return;
+                        if (!newValue) return;
                         marker.setLatLng(new L.LatLng(marker.getLatLng().lat, newValue));
                     });
 
                     scope.$watch("markers" + mkey + ".lat", function (newValue, oldValue) {
-                        if (dragging_marker || !newValue) return;
+                        if (!newValue) return;
                         marker.setLatLng(new L.LatLng(newValue, marker.getLatLng().lng));
                     });
                     return marker;
@@ -126,18 +117,18 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
 
                 scope.$watch("markers", function(newMarkerList) {
                     // find deleted markers
-                    for (var delkey in markers_dict) {
+                    for (var delkey in markers) {
                         if (!scope.markers[delkey]) {
-                            map.removeLayer(markers_dict[delkey]);
-                            delete markers_dict[delkey];
+                            map.removeLayer(markers[delkey]);
+                            delete markers[delkey];
                         }
                     }
                     // add new markers
                     for (var mkey in scope.markers) {
-                        if (markers_dict[mkey] === undefined) {
+                        if (markers[mkey] === undefined) {
                             var marker = createAndLinkMarker(mkey, scope);
                             map.addLayer(marker);
-                            markers_dict[mkey] = marker;
+                            markers[mkey] = marker;
                         }
                     } // for mkey in markers
                 }, true); // watch markers
