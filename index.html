@@ -56,7 +56,7 @@
     </style>
 </head>
 
-<body ng-controller="DemoController" ng-cloak>
+<body ng-cloak>
     <div class="container">
         <div class="hero-unit">
             <h1>Leaflet directive for AngularJS</h1>
@@ -109,7 +109,7 @@
                 <h3>Dragging marker demo</h3>
             </div>
         </div>
-        <div class="row">
+        <div class="row" ng-controller="DragMarkerController">
             <div class="span5 offset1">
                 <leaflet markers="markers" center="center"></leaflet>
                 <form class="form">
@@ -173,11 +173,68 @@ angular.extend($scope, {
         }
     }
 });</pre>
-            <p>See how the form inputs change with the map interaction and viceversa. You can also see the code demonstrating this feature in the <a href="examples/markers-example.html">markers example demo</a>.</p>
+                <p>See how the form inputs change with the map interaction and viceversa. You can also see the code demonstrating this feature in the <a href="examples/markers-example.html">markers example demo</a>.</p>
             </div>
-
         </div>
 
+        <div class="row">
+            <div class="span10 offset1">
+                <hr />
+                <h3>Path demo</h3>
+            </div>
+        </div>
+        <div class="row" ng-controller="PathController">
+            <div class="span5 offset1">
+                <p>You can draw a path on the map with following code in
+                your HTML:</p>
+                <pre class="prettyprint lang-html">&lt;leaflet path="path" center="center"&gt;&lt;/leaflet&gt;</pre>
+                <p>And following code in your controller:</p>
+                <pre class="prettyprint lang-javascript">
+angular.extend($scope, {
+    center: {
+        lat: 53,
+        lng: -3,
+        zoom: 6
+    },
+    path: {
+        color: '#008000',
+        weight: 3,
+        latlngs: [
+            { lat: 51.50, lng: -0.082 },
+            { lat: 51.751, lng: -1.255 },
+            { lat: 53.48, lng: -2.24 },
+        ],
+    },
+});
+                </pre>
+                <p>
+                    Points that construct the path is given in an array. You might also want to checkout a
+                    <a href="examples/path-example.html">
+                        more complex demo mixes markers and path
+                    </a>.
+                </p>
+            </div>
+            <div class="span5">
+                <leaflet path="path" center="center"></leaflet>
+                <div class="control-group span5">
+                    <form class="form-horizontal" ng-repeat="p in path.latlngs">
+                        <label class="control-label">
+                            point {{$index + 1}}:
+                        </label>
+                        <div class="controls">
+                            <div class="input-prepend">
+                                <span class="add-on">lat</span>
+                                <input class="input-mini" type="number" ng-model="p.lat"/>
+                            </div>
+                            <div class="input-prepend">
+                                <span class="add-on">lng</span>
+                                <input class="input-mini" type="number" ng-model="p.lng"/>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
         <footer>
             <div class="row">
                 <div class="span6">
@@ -190,7 +247,6 @@ angular.extend($scope, {
                 </div>
             </div>
         </footer>
-
     </div>
 
     <a id="forkme" href="https://github.com/tombatossals/angular-leaflet-directive" rel="external">
@@ -213,7 +269,7 @@ angular.extend($scope, {
             var module = angular.module("angular-leaflet-directive-demo", ["leaflet-directive"]);
         })(window.angular);
 
-        function DemoController($scope) {
+        function DragMarkerController($scope) {
             angular.extend($scope, {
                 center: {
                     lat: 40.095,
@@ -229,6 +285,25 @@ angular.extend($scope, {
                         draggable: true
                     }
                 }
+            });
+        }
+
+        function PathController($scope) {
+            angular.extend($scope, {
+                center: {
+                    lat: 53,
+                    lng: -3,
+                    zoom: 6
+                },
+                path: {
+                    color: '#008000',
+                    weight: 3,
+                    latlngs: [
+                        { lat: 51.50, lng: -0.082 },
+                        { lat: 51.751, lng: -1.255 },
+                        { lat: 53.48, lng: -2.24 },
+                    ],
+                },
             });
         }
     </script>
