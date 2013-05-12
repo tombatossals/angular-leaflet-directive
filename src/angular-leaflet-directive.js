@@ -69,26 +69,6 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
                         }
                     );
 
-                    if (data.message) {
-                        scope.$watch("markers." + key + ".message", function(newValue) {
-                            marker.bindPopup(data.message);
-                        });
-
-                        scope.$watch("markers." + key + ".focus", function(newValue) {
-                            if (newValue) {
-                                marker.openPopup();
-                            }
-                        });
-                    }
-
-                    scope.$watch("markers." + key + ".draggable", function (newValue, oldValue) {
-                        if (newValue === false) {
-                            marker.dragging.disable();
-                        } else if (newValue === true) {
-                            marker.dragging.enable();
-                        }
-                    });
-
                     marker.on("dragend", function(e) {
                         scope.$apply(function (s) {
                             data.lat = marker.getLatLng().lat;
@@ -99,30 +79,34 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
                         });
                     });
 
-                    scope.$watch('markers.' + key, function() {
-                        marker.setLatLng(scope.markers[key]);
+                    scope.$watch('markers.' + key, function(newval, oldval) {
+                        if (!newval) {
+                            map.removeLayer(markers[key]);
+                            delete markers[key];
+                            return;
+                        }
+
+                        if (newval.draggable !== undefined && newval.draggable !== oldval.draggable) {
+                            newval.draggable ?  marker.dragging.enable() : marker.dragging.disable();
+                        }
+
+                        if (newval.focus !== undefined && newval.focus !== oldval.focus) {
+                            newval.focus ?  marker.openPopup() : marker.closePopup();
+                        }
+
+                        if (newval.message !== undefined && newval.message !== oldval.message) {
+                            marker.bindPopup(newval);
+                        }
+
+                        if (newval.lat !== oldval.lat || newval.lng !== oldval.lng) {
+                            marker.setLatLng(new L.LatLng(newval.lat, newval.lng));
+                        }
                     }, true);
 
-                    scope.$watch("markers" + key + ".lng", function (newValue, oldValue) {
-                        if (!newValue) return;
-                        marker.setLatLng(new L.LatLng(marker.getLatLng().lat, newValue));
-                    });
-
-                    scope.$watch("markers" + key + ".lat", function (newValue, oldValue) {
-                        if (!newValue) return;
-                        marker.setLatLng(new L.LatLng(newValue, marker.getLatLng().lng));
-                    });
                     return marker;
                 }; // end of create and link marker
 
                 scope.$watch("markers", function(newMarkerList) {
-                    // find deleted markers
-                    for (var delkey in markers) {
-                        if (!scope.markers[delkey]) {
-                            map.removeLayer(markers[delkey]);
-                            delete markers[delkey];
-                        }
-                    }
                     // add new markers
                     for (var key in scope.markers) {
                         if (markers[key] === undefined) {
@@ -130,8 +114,8 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
                             map.addLayer(marker);
                             markers[key] = marker;
                         }
-                    } // for key in markers
-                }, true); // watch markers
+                    }
+                }, true);
             } // if attrs.markers
 
             if (attrs.path) {
