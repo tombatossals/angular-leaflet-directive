@@ -25,7 +25,7 @@ describe('Directive: leaflet', function() {
         });
     });
 
-    it('should update the map center if changed the scope properties', function() {
+    it('should update the map center if the initial center scope properties are set', function() {
         inject(function($rootScope, $compile) {
             var center = {
                 lat: 0.966,
@@ -36,10 +36,32 @@ describe('Directive: leaflet', function() {
             var element = angular.element('<leaflet center="center" map="map"></leaflet>');
             element = $compile(element)($rootScope);
             var map = element.scope().map;
-            $rootScope.$digest();
             expect(map.getZoom()).toEqual(center.zoom);
-            expect(map.getCenter().lat).toBeCloseTo(center.lat);
-            expect(map.getCenter().lng).toBeCloseTo(center.lng);
+            expect(map.getCenter().lat).toBeCloseTo(0.966);
+            expect(map.getCenter().lng).toBeCloseTo(2.02);
         });
     });
+
+    it('should update the map center if the scope center properties changes', function() {
+        inject(function($rootScope, $compile) {
+            var center = {
+                lat: 0.966,
+                lng: 2.02,
+                zoom: 4
+            }
+            angular.extend($rootScope, { center: center });
+            var element = angular.element('<leaflet center="center" map="map"></leaflet>');
+            element = $compile(element)($rootScope);
+            var map = element.scope().map;
+            center.lat = 2.02;
+            center.lng = 4.04;
+            center.zoom = 8;
+            $rootScope.$watch(function() {
+                expect(map.getCenter().lat).toBeCloseTo(2.02);
+                expect(map.getCenter().lng).toBeCloseTo(4.04);
+                expect(map.getZoom()).toEqual(8);
+            });
+        });
+    });
+
 });

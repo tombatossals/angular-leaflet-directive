@@ -10,8 +10,7 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
             tilelayer: "=tilelayer",
             markers: "=markers",
             path: "=path",
-            maxZoom: "@maxzoom",
-            bounds: "=bounds"
+            maxZoom: "@maxzoom"
         },
         template: '<div class="angular-leaflet-map"></div>',
         link: function (scope, element, attrs, ctrl) {
@@ -23,91 +22,39 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
                 scope.map = map;
             }
 
-            var maxZoom = scope.maxZoom || 12;
-            var point = new L.LatLng(0, 0);
-
-            map.setView(point, 1);
+            // Set initial view
+            map.setView([0, 0], 1);
 
             // Set tile layer
             var tilelayer = scope.tilelayer || 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+            var maxZoom = scope.maxZoom || 12;
             L.tileLayer(tilelayer, { maxZoom: maxZoom }).addTo(map);
 
-            // Manage map bounds
-            if (attrs.bounds) {
-                scope.bounds = map.getBounds();
-                map.on('moveend',function(s){
-                    scope.$apply(function (s) {
-                        s.bounds = map.getBounds();
-                    });
-                });
-            }
-
             // Manage map center events
-            if (attrs.center !== undefined && scope.center !== undefined) {
+            if (attrs.center && scope.center) {
 
-                if (scope.center.lat !== undefined && scope.center.lng !== undefined && scope.center.zoom !== undefined) {
+                if (scope.center.lat && scope.center.lng && scope.center.zoom) {
                     map.setView(new L.LatLng(scope.center.lat, scope.center.lng), scope.center.zoom);
-                }
-
-                if (scope.center.autoDiscover === true) {
+                } else if (scope.center.autoDiscover === true) {
                     map.locate({ setView: true, maxZoom: maxZoom });
                 }
 
-                // Listen for map drags
-                var dragging_map = false;
-                map.on("dragstart", function(e) {
-                    dragging_map = true;
-                });
-
-                map.on("drag", function (e) {
+                map.on("dragend", function(e) {
                     scope.$apply(function (s) {
                         s.center.lat = map.getCenter().lat;
                         s.center.lng = map.getCenter().lng;
                     });
                 });
 
-                map.on("dragend", function(e) {
-                    dragging_map= false;
-                });
-
-                if (scope.center.lng !== undefined && scope.center.lat !== undefined) {
-                    scope.$watch("center.lng", function (newValue, oldValue) {
-                        if (dragging_map) return;
-                        map.setView(new L.LatLng(map.getCenter().lat, newValue), map.getZoom());
+                map.on("zoomend", function(e) {
+                    scope.$apply(function (s) {
+                        s.center.zoom = map.getZoom();
                     });
-
-                    scope.$watch("center.lat", function (newValue, oldValue) {
-                        if (dragging_map) return;
-                        map.setView(new L.LatLng(newValue, map.getCenter().lng), map.getZoom());
-                    });
-                }
-
-                // Manage zoom events
-                var zooming_map = false;
-                map.on("zoomstart", function (e) {
-                    zooming_map = true;
                 });
 
-                // Listen for zoom on DOM
-                scope.$watch("center.zoom", function (newValue, oldValue) {
-                    if (zooming_map || !newValue) return;
-                    if (!scope.$$phase) {
-                        map.setZoom(newValue);
-//                        scope.$apply(function (s) {
-//                            s.bounds = map.getBounds();
-//                        });
-                    }
-                });
-
-                map.on("zoomend", function (e) {
-                    if (scope.center === undefined || scope.center.zoom === undefined) return;
-                    if (!scope.$$phase) {
-                        scope.$apply(function (s) {
-                            s.center.zoom = map.getZoom();
-                        });
-                        zooming_map = false;
-                    }
-                });
+                scope.$watch("center", function (center, oldValue) {
+                    map.setView([center.lat, center.lng], center.zoom);
+                }, true);
             }
 
             if (attrs.markers !== undefined) {
@@ -207,7 +154,7 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
                         }
                     }
                     polyline.setLatLngs(latlngs);
-		        }, true);
+                }, true);
 
                 scope.$watch("path.weight", function(weight) {
                     polyline.setStyle({
