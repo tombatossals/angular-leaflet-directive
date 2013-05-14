@@ -13,6 +13,16 @@ describe('Directive: leaflet', function() {
         });
     });
 
+    it('should set the max zoom if specified', function() {
+        inject(function($rootScope, $compile) {
+            angular.extend($rootScope, {});
+            var element = angular.element('<leaflet center="center" maxzoom="15" map="map"></leaflet>');
+            element = $compile(element)($rootScope);
+            var map = element.scope().map;
+            expect(map.getMaxZoom()).toEqual(15);
+        });
+    });
+
     it('should have default parameters on the map if not specified', function() {
         inject(function($rootScope, $compile) {
             angular.extend($rootScope, {});
@@ -63,5 +73,4 @@ describe('Directive: leaflet', function() {
             });
         });
     });
-
 });
