@@ -22,6 +22,11 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
                 scope.map = map;
             }
 
+            // Set maxZoom from attrs
+            if (attrs.maxzoom){
+                scope.maxZoom = parseInt(attrs.maxzoom)
+            }
+
             // Set initial view
             map.setView([0, 0], 1);
 
