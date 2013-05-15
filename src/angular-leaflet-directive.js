@@ -39,7 +39,7 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
             if (attrs.center && scope.center) {
 
                 if (scope.center.lat && scope.center.lng && scope.center.zoom) {
-                    map.setView(new L.LatLng(scope.center.lat, scope.center.lng), scope.center.zoom);
+                    map.setView([scope.center.lat, scope.center.lng], scope.center.zoom);
                 } else if (scope.center.autoDiscover === true) {
                     map.locate({ setView: true, maxZoom: maxZoom });
                 }
@@ -52,9 +52,11 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
                 });
 
                 map.on("zoomend", function(e) {
-                    scope.$apply(function (s) {
-                        s.center.zoom = map.getZoom();
-                    });
+                    if(scope.center.zoom !== map.getZoom()){
+                        scope.$apply(function (s) {
+                            s.center.zoom = map.getZoom();
+                        });
+                    }
                 });
 
                 scope.$watch("center", function (center, oldValue) {
