@@ -9,7 +9,6 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
             center: "=center",
             tilelayer: "=tilelayer",
             markers: "=markers",
-            leafletMarkers: "=leafletMarkers",
             path: "=path",
             maxZoom: "@maxzoom"
         },
@@ -19,7 +18,7 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
                 map = new L.Map($el);
 
             // Expose the map object, for testing purposes
-            if (attrs.map) {
+            if (attrs.testing) {
                 scope.map = map;
             }
 
@@ -91,7 +90,7 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
                         if (!newval) {
                             map.removeLayer(markers[key]);
                             delete leafletMarkers[key];
-                            if (attrs.leafletMarkers) {
+                            if (attrs.testing) {
                                 delete scope.leafletMarkers[key];
                             }
                             return;
@@ -127,8 +126,8 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
 
                 var leafletMarkers = {};
 
-                // Expose the map object, for testing purposes
-                if (attrs.leafletMarkers) {
+                // Expose the markers object, for testing purposes
+                if (attrs.testing) {
                     scope.leafletMarkers = {};
                 }
 
@@ -137,7 +136,7 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
                     var marker = createAndLinkMarker(key, scope);
                     map.addLayer(marker);
                     leafletMarkers[key] = marker;
-                    if (attrs.leafletMarkers) {
+                    if (attrs.testing) {
                         scope.leafletMarkers[key] = marker;
                     }
                 }
@@ -149,7 +148,7 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
                             var marker = createAndLinkMarker(key, scope);
                             map.addLayer(marker);
                             leafletMarkers[key] = marker;
-                            if (attrs.leafletMarkers) {
+                            if (attrs.testing) {
                                 scope.leafletMarkers[key] = marker;
                             }
                         }
@@ -157,8 +156,14 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
                 }, true);
             } // if attrs.markers
 
-            if (attrs.path) {
+            if (attrs.path && scope.path) {
                 var polyline = new L.Polyline([], { weight: 10, opacity: 1});
+
+                // For testing purposes
+                if (attrs.testing) {
+                    scope.polyline = polyline;
+                }
+
                 map.addLayer(polyline);
                 scope.$watch("path.latlngs", function(latlngs) {
                     for (var idx=0, length=latlngs.length; idx < length; idx++) {

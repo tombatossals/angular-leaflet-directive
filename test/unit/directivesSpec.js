@@ -16,7 +16,7 @@ describe('Directive: leaflet', function() {
     it('should set the max zoom if specified', function() {
         inject(function($rootScope, $compile) {
             angular.extend($rootScope, {});
-            var element = angular.element('<leaflet center="center" maxzoom="15" map="map"></leaflet>');
+            var element = angular.element('<leaflet center="center" maxzoom="15" testing="testing"></leaflet>');
             element = $compile(element)($rootScope);
             var map = element.scope().map;
             expect(map.getMaxZoom()).toEqual(15);
@@ -26,7 +26,7 @@ describe('Directive: leaflet', function() {
     it('should have default parameters on the map if not specified', function() {
         inject(function($rootScope, $compile) {
             angular.extend($rootScope, {});
-            var element = angular.element('<leaflet center="center" map="map"></leaflet>');
+            var element = angular.element('<leaflet center="center" testing="testing"></leaflet>');
             element = $compile(element)($rootScope);
             var map = element.scope().map;
             expect(map.getZoom()).toEqual(1);
@@ -43,7 +43,7 @@ describe('Directive: leaflet', function() {
                 zoom: 4
             }
             angular.extend($rootScope, { center: center, map: undefined });
-            var element = angular.element('<leaflet center="center" map="map"></leaflet>');
+            var element = angular.element('<leaflet center="center" testing="testing"></leaflet>');
             element = $compile(element)($rootScope);
             var map = element.scope().map;
             expect(map.getZoom()).toEqual(center.zoom);
@@ -60,7 +60,7 @@ describe('Directive: leaflet', function() {
                 zoom: 4
             }
             angular.extend($rootScope, { center: center });
-            var element = angular.element('<leaflet center="center" map="map"></leaflet>');
+            var element = angular.element('<leaflet center="center" testing="testing"></leaflet>');
             element = $compile(element)($rootScope);
             var map = element.scope().map;
             center.lat = 2.02;
@@ -87,7 +87,7 @@ describe('Directive: leaflet', function() {
                 }
             }
             angular.extend($rootScope, { markers: markers });
-            var element = angular.element('<leaflet markers="markers" map="map" leaflet-markers="leafletMarkers"></leaflet>');
+            var element = angular.element('<leaflet markers="markers" testing="testing"></leaflet>');
             element = $compile(element)($rootScope);
             var map = element.scope().map;
             var leafletMarkers = element.scope().leafletMarkers;
@@ -96,6 +96,32 @@ describe('Directive: leaflet', function() {
             expect(leafletMarkers.paris.getLatLng().lng).toBeCloseTo(2.02);
             expect(leafletMarkers.madrid.getLatLng().lat).toBeCloseTo(2.02);
             expect(leafletMarkers.madrid.getLatLng().lng).toBeCloseTo(4.04);
+        });
+    });
+
+    // Polyline
+    it('should create polyline on the map', function() {
+        inject(function($rootScope, $compile) {
+            var latlngs = {
+                paris: {
+                    lat: 0.966,
+                    lng: 2.02
+                },
+                madrid: {
+                    lat: 2.02,
+                    lng: 4.04
+                }
+            }
+            angular.extend($rootScope, { path : { latlngs : latlngs }});
+            var element = angular.element('<leaflet path="path" testing="testing"></leaflet>');
+            element = $compile(element)($rootScope);
+            var map = element.scope().map;
+            var polyline = element.scope().polyline;
+            $rootScope.$digest();
+            expect(polyline.getLatLngs().paris.lat).toBeCloseTo(0.966);
+            expect(polyline.getLatLngs().paris.lng).toBeCloseTo(2.02);
+            expect(polyline.getLatLngs().madrid.lat).toBeCloseTo(2.02);
+            expect(polyline.getLatLngs().madrid.lng).toBeCloseTo(4.04);
         });
     });
 });
