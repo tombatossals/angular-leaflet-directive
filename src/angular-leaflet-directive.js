@@ -23,8 +23,8 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
             }
 
             // Set maxZoom from attrs
-            if (attrs.maxzoom){
-                scope.maxZoom = parseInt(attrs.maxzoom)
+            if (attrs.maxzoom) {
+                scope.maxZoom = parseInt(attrs.maxzoom, 10);
             }
 
             // Set initial view
@@ -92,11 +92,19 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
                         }
 
                         if (newval.draggable !== undefined && newval.draggable !== oldval.draggable) {
-                            newval.draggable ?  marker.dragging.enable() : marker.dragging.disable();
+                            if (newval.draggable === true) {
+                                marker.dragging.enable();
+                            } else {
+                                marker.dragging.disable();
+                            }
                         }
 
                         if (newval.focus !== undefined && newval.focus !== oldval.focus) {
-                            newval.focus ?  marker.openPopup() : marker.closePopup();
+                            if (newval.focus === true) {
+                                marker.openPopup();
+                            } else {
+                                marker.closePopup();
+                            }
                         }
 
                         if (newval.message !== undefined && newval.message !== oldval.message) {
