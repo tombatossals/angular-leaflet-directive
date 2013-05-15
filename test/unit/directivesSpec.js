@@ -42,7 +42,7 @@ describe('Directive: leaflet', function() {
                 lng: 2.02,
                 zoom: 4
             }
-            angular.extend($rootScope, { center: center });
+            angular.extend($rootScope, { center: center, map: undefined });
             var element = angular.element('<leaflet center="center" map="map"></leaflet>');
             element = $compile(element)($rootScope);
             var map = element.scope().map;
@@ -66,11 +66,36 @@ describe('Directive: leaflet', function() {
             center.lat = 2.02;
             center.lng = 4.04;
             center.zoom = 8;
-            $rootScope.$watch(function() {
-                expect(map.getCenter().lat).toBeCloseTo(2.02);
-                expect(map.getCenter().lng).toBeCloseTo(4.04);
-                expect(map.getZoom()).toEqual(8);
-            });
+            $rootScope.$digest();
+            expect(map.getCenter().lat).toBeCloseTo(2.02);
+            expect(map.getCenter().lng).toBeCloseTo(4.04);
+            expect(map.getZoom()).toEqual(8);
+        });
+    });
+
+    // Markers
+    it('should create markers on the map', function() {
+        inject(function($rootScope, $compile) {
+            var markers = {
+                paris: {
+                    lat: 0.966,
+                    lng: 2.02
+                },
+                madrid: {
+                    lat: 2.02,
+                    lng: 4.04
+                }
+            }
+            angular.extend($rootScope, { markers: markers });
+            var element = angular.element('<leaflet markers="markers" map="map" leaflet-markers="leafletMarkers"></leaflet>');
+            element = $compile(element)($rootScope);
+            var map = element.scope().map;
+            var leafletMarkers = element.scope().leafletMarkers;
+            $rootScope.$digest();
+            expect(leafletMarkers.paris.getLatLng().lat).toBeCloseTo(0.966);
+            expect(leafletMarkers.paris.getLatLng().lng).toBeCloseTo(2.02);
+            expect(leafletMarkers.madrid.getLatLng().lat).toBeCloseTo(2.02);
+            expect(leafletMarkers.madrid.getLatLng().lng).toBeCloseTo(4.04);
         });
     });
 });
