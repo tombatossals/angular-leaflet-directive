@@ -66,15 +66,10 @@ describe('Directive: leaflet', function() {
             center.lat = 2.02;
             center.lng = 4.04;
             center.zoom = 8;
-            $rootScope.$watch("map", function(map) {
-                expect(map.getCenter().lat).toBeCloseTo(2.02);
-                expect(map.getCenter().lng).toBeCloseTo(4.04);
-                expect(map.getZoom()).toEqual(8);
-            });
-            waits(5000);
-            runs(function() {
-                expect(map.getZoom()).toEqual(8);
-            });
+            $rootScope.$digest();
+            expect(map.getCenter().lat).toBeCloseTo(2.02);
+            expect(map.getCenter().lng).toBeCloseTo(4.04);
+            expect(map.getZoom()).toEqual(8);
         });
     });
 
@@ -96,11 +91,11 @@ describe('Directive: leaflet', function() {
             element = $compile(element)($rootScope);
             var map = element.scope().map;
             var leafletMarkers = element.scope().leafletMarkers;
-            $rootScope.$watch("leafletMarkers", function(leafletMarkers) {
-                expect(leafletMarkers["paris"].lat.toBeCloseTo(0.966));
-            });
-            waits(1000);
-            runs(function() {});
+            $rootScope.$digest();
+            expect(leafletMarkers.paris.getLatLng().lat).toBeCloseTo(0.966);
+            expect(leafletMarkers.paris.getLatLng().lng).toBeCloseTo(2.02);
+            expect(leafletMarkers.madrid.getLatLng().lat).toBeCloseTo(2.02);
+            expect(leafletMarkers.madrid.getLatLng().lng).toBeCloseTo(4.04);
         });
     });
 });
