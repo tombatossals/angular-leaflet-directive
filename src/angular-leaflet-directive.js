@@ -58,7 +58,9 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
                 });
 
                 scope.$watch("center", function (center, oldValue) {
-                    map.setView([center.lat, center.lng], center.zoom);
+                    if(center.lat && center.lng && center.zoom){
+                        map.setView([center.lat, center.lng], center.zoom);
+                    }
                 }, true);
             }
 
