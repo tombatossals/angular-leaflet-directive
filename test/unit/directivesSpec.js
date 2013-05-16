@@ -99,6 +99,26 @@ describe('Directive: leaflet', function() {
         });
     });
 
+    it('should bind popup to marker if message is given', function() {
+        inject(function($rootScope, $compile) {
+            var markers = {
+                paris: {
+                    lat: 0.966,
+                    lng: 2.02,
+                    message: 'this is paris',
+                },
+            }
+            angular.extend($rootScope, { markers: markers});
+            var element = angular.element('<leaflet markers="markers" testing="testing"></leaflet>');
+            element = $compile(element)($rootScope);
+            var map = element.scope().map;
+            var leafletMarkers = element.scope().leafletMarkers;
+            $rootScope.$digest();
+            expect(leafletMarkers.paris._popup._source._latlng.message)
+                .toEqual('this is paris');
+        });
+    });
+
     // Polyline
     it('should create polyline on the map', function() {
         inject(function($rootScope, $compile) {
