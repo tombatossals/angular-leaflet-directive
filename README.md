@@ -1,10 +1,7 @@
 # angular-leaflet-directive
-# [AngularJS](http://angularjs.org/) - [Leaflet](http://leaflet.cloudmade.com)
 
-
-
-AngularJS directive for the Leaflet Javascript Library. This software aims to 
-easily embed maps managed by leaflet on your AngularJS project.
+[AngularJS](http://angularjs.org/) directive for the Leaflet Javascript Library. This software aims to 
+easily embed maps managed by leaflet on your [Leaflet](http://leaflet.cloudmade.com) project.
 
 See some basic examples:
 
