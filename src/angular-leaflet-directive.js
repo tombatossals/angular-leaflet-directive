@@ -76,14 +76,18 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
                         }
                     );
 
+                    if (data.message) {
+                        marker.bindPopup(data.message);
+                    }
+
                     marker.on("dragend", function(e) {
                         scope.$apply(function (s) {
                             data.lat = marker.getLatLng().lat;
                             data.lng = marker.getLatLng().lng;
-                            if (data.message) {
-                                marker.openPopup();
-                            }
                         });
+                        if (data.message) {
+                            marker.openPopup();
+                        }
                     });
 
                     scope.$watch('markers.' + key, function(newval, oldval) {
