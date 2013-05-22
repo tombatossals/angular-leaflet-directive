@@ -10,7 +10,7 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
             retinaUrl: 'http://cdn.leafletjs.com/leaflet-0.5.1/images/marker-icon@2x.png',
             size: [25, 41],
             anchor: [12, 40],
-            popup: [-3, -76],
+            popup: [0, -40],
             shadow: {
                 url: 'http://cdn.leafletjs.com/leaflet-0.5.1/images/marker-shadow.png',
                 retinaUrl: 'http://cdn.leafletjs.com/leaflet-0.5.1/images/marker-shadow.png',
