@@ -1,18 +1,19 @@
 var leafletDirective = angular.module("leaflet-directive", []);
 
 leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
+
     var defaults = {
-        maxZoom: 10,
+        maxZoom: 14,
         tileLayer: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
         icon: {
-            url: 'img/leaflet/marker-icon.png',
-            retinaUrl: 'img/leaflet/marker-icon-2x.png',
+            url: 'http://cdn.leafletjs.com/leaflet-0.5.1/images/marker-icon.png',
+            retinaUrl: 'http://cdn.leafletjs.com/leaflet-0.5.1/images/marker-icon@2x.png',
             size: [25, 41],
             anchor: [12, 40],
             popup: [-3, -76],
             shadow: {
-                url: 'img/leaflet/marker-shadow.png',
-                retinaUrl: 'img/leaflet/marker-shadow.png',
+                url: 'http://cdn.leafletjs.com/leaflet-0.5.1/images/marker-shadow.png',
+                retinaUrl: 'http://cdn.leafletjs.com/leaflet-0.5.1/images/marker-shadow.png',
                 size: [41, 41],
                 anchor: [12, 40]
             }
@@ -22,6 +23,7 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
             opacity: 1
         }
     };
+
     return {
         restrict: "E",
         replace: true,
@@ -98,12 +100,12 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
                     if (currentMarkers[name] === undefined) {
                         var marker = buildMarker(name);
 
-                        marker.on("dragend", function (/* event */) {
-                            $scope.$apply(function (/* scope */) {
-                                data.lat = marker.getLatLng().lat;
-                                data.lng = marker.getLatLng().lng;
+                        marker.on("dragend", function () {
+                            $scope.$apply(function (scope) {
+                                markers[name].lat = marker.getLatLng().lat;
+                                markers[name].lng = marker.getLatLng().lng;
                             });
-                            if (data.message) {
+                            if (markers[name].message) {
                                 marker.openPopup();
                             }
                         });
@@ -162,7 +164,7 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
             }
 
             function buildIcon() {
-                return L.icon({
+                return defaults.icon ? L.icon({
                     iconUrl: defaults.icon.url,
                     iconRetinaUrl: defaults.icon.retinaUrl,
                     iconSize: defaults.icon.size,
@@ -172,7 +174,7 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
                     shadowRetinaUrl: defaults.icon.shadow.retinaUrl,
                     shadowSize: defaults.icon.shadow.size,
                     shadowAnchor: defaults.icon.shadow.anchor
-                });
+                }) : undefined;
             }
 
             function setupPath() {
