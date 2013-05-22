@@ -31,6 +31,7 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
         scope: {
             center: '=center',
             markers: '=markers',
+            defaults: '=defaults',
             path: '=path'
         },
         template: '<div class="angular-leaflet-map"></div>',
@@ -40,9 +41,8 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
 
             $scope.leaflet = {};
             $scope.leaflet.map = !!attrs.testing ? map : 'Add testing="testing" to <leaflet> tag to inspect this object';
-            $scope.leaflet.maxZoom = !!attrs.maxzoom ? parseInt(attrs.maxzoom, defaults.maxZoom) : defaults.maxZoom;
-            $scope.leaflet.tileLayer = attrs.tileLayer || defaults.tileLayer;
-
+            $scope.leaflet.maxZoom = !!(attrs.defaults && $scope.defaults.maxZoom) ? parseInt($scope.defaults.maxZoom, 10) : defaults.maxZoom;
+            $scope.leaflet.tileLayer = !!(attrs.defaults && $scope.defaults.tileLayer) ? $scope.defaults.tileLayer : defaults.tileLayer;
             L.tileLayer($scope.leaflet.tileLayer, { maxZoom: $scope.leaflet.maxZoom }).addTo(map);
 
             setupCenter();

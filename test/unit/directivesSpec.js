@@ -15,8 +15,8 @@ describe('Directive: leaflet', function() {
 
     it('should set the max zoom if specified', function() {
         inject(function($rootScope, $compile) {
-            angular.extend($rootScope, {});
-            var element = angular.element('<leaflet center="center" maxzoom="15" testing="testing"></leaflet>');
+            angular.extend($rootScope, { defaults: { maxZoom: 15 } });
+            var element = angular.element('<leaflet defaults="defaults" testing="testing"></leaflet>');
             element = $compile(element)($rootScope);
             var map = element.scope().leaflet.map;
             expect(map.getMaxZoom()).toEqual(15);

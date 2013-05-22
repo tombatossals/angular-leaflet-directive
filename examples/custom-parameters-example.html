@@ -16,7 +16,9 @@
                     lng: -0.09,
                     zoom: 8
                 },
-                opencyclemap: "http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png"
+                defaults: {
+                    tileLayer: "http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png"
+                }
             });
         };
     </script>
@@ -28,6 +30,6 @@
     </style>
   </head>
   <body ng-controller="DemoController">
-    <leaflet center="london" tilelayer="opencyclemap"></leaflet>
+    <leaflet center="london" defaults="defaults"></leaflet>
   </body>
 </html>
