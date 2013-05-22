@@ -121,6 +121,7 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
                                 } else {
                                     marker.dragging.disable();
                                 }
+                            }
 
                             if (data.focus !== undefined && data.focus !== oldData.focus) {
                                 if (data.focus === true) {
@@ -128,6 +129,7 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
                                 } else {
                                     marker.closePopup();
                                 }
+                            }
 
                             if (data.message !== undefined && data.message !== oldData.message) {
                                 marker.bindPopup(data);
@@ -140,6 +142,7 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
                         map.addLayer(marker);
                         currentMarkers[name] = marker;
                     }
+                }
             }
 
             function buildMarker(name) {
@@ -178,7 +181,9 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
                 if (!$scope.path) {
                     return;
                 }
+
                 $log.warn("[AngularJS - Leaflet] Creating polylines and adding them to the map will break the directive's scope's inspection in AngularJS Batarang");
+
                 var polyline = new L.Polyline([], { weight: defaults.path.weight, opacity: defaults.path.opacity});
                 $scope.leaflet.path = !!attrs.testing ? polyline : 'Add testing="testing" to <leaflet> tag to inspect this object';
 
