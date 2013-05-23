@@ -1,5 +1,7 @@
 'use strict';
 
+/*jshint -W117 */
+/*jshint globalstrict: true*/
 /* jasmine specs for directives go here */
 
 describe('Directive: leaflet', function() {
@@ -41,7 +43,7 @@ describe('Directive: leaflet', function() {
                 lat: 0.966,
                 lng: 2.02,
                 zoom: 4
-            }
+            };
             angular.extend($rootScope, { center: center, map: undefined });
             var element = angular.element('<leaflet center="center" testing="testing"></leaflet>');
             element = $compile(element)($rootScope);
@@ -58,7 +60,7 @@ describe('Directive: leaflet', function() {
                 lat: 0.966,
                 lng: 2.02,
                 zoom: 4
-            }
+            };
             angular.extend($rootScope, { center: center });
             var element = angular.element('<leaflet center="center" testing="testing"></leaflet>');
             element = $compile(element)($rootScope);
@@ -85,7 +87,7 @@ describe('Directive: leaflet', function() {
                     lat: 2.02,
                     lng: 4.04
                 }
-            }
+            };
             angular.extend($rootScope, { markers: markers });
             var element = angular.element('<leaflet markers="markers" testing="testing"></leaflet>');
             element = $compile(element)($rootScope);
@@ -107,7 +109,7 @@ describe('Directive: leaflet', function() {
                     lng: 2.02,
                     message: 'this is paris',
                 },
-            }
+            };
             angular.extend($rootScope, { markers: markers});
             var element = angular.element('<leaflet markers="markers" testing="testing"></leaflet>');
             element = $compile(element)($rootScope);
@@ -125,14 +127,14 @@ describe('Directive: leaflet', function() {
             var latlngs = [
                 { lat: 0.966, lng: 2.02 },
                 { lat: 2.02, lng: 4.04 }
-            ]
+            ];
             angular.extend($rootScope, { path : { latlngs : latlngs }});
             var element = angular.element('<leaflet path="path" testing="testing"></leaflet>');
             element = $compile(element)($rootScope);
             var map = element.scope().leaflet.map;
             var polyline = element.scope().leaflet.path;
             $rootScope.$digest();
-            var latlngs = polyline.getLatLngs();
+            latlngs = polyline.getLatLngs();
             expect(latlngs[0].lat).toBeCloseTo(0.966);
             expect(latlngs[0].lng).toBeCloseTo(2.02);
             expect(latlngs[1].lat).toBeCloseTo(2.02);
