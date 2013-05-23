@@ -15,3 +15,56 @@ To see it in action, go to the main page where you can find more examples and so
 
  * http://tombatossals.github.com/angular-leaflet-directive
 
+
+## How to use it
+
+You must include the leaflet-directive dependency on your angular module:
+```
+var app = angular.module("demoapp", ["leaflet-directive"]);
+```
+
+After that, you can change the default values of the directive (if you want) on your angular controller. For example, you can chage the tiles source, the maxzoom on the leaflet map or the polyline path properties.
+
+```
+angular.extend($scope, {
+    defaults: {
+        tileLayer: "http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png",
+        maxZoom: 14,
+        path: {
+            weight: 10,
+            opacity: 1
+        }
+    }
+});
+```
+
+Finally, you must include the markup directive on your HTML page, like this:
+```
+<leaflet defaults="defaults"></leaflet>
+```
+
+## How to contribute
+
+You can use grunt/karma to test your code, and grunt/jshint to lint your code.
+
+```
+# Inside the project dir, install the dependencies
+$ npm install
+
+# Set the PATH for the binaries of grunt
+$ export PATH=$PATH:node_modules/.bin
+
+# JSHINT
+$ grunt jshint
+Running "jshint:files" (jshint) task
+>> 2 files lint free.
+
+Done, without errors.
+
+# KARMA
+$ grunt karma
+Running "karma:unit" (karma) task
+INFO [karma]: Karma server started at http://localhost:9018/
+INFO [launcher]: Starting browser PhantomJS
+INFO [PhantomJS 1.9 (Linux)]: Connected on socket id y6MlOmYdWFtvS-F83ZHu
+PhantomJS 1.9 (Linux): Executed 8 of 8 SUCCESS (0.438 secs / 0.137 secs)
