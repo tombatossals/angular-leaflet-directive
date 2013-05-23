@@ -95,9 +95,9 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
                 }
 
                 $scope.$watch("markers", function (newMarkers /*, oldMarkers*/) {
-                    for (var name in newMarkers) {
-                        if (markers[name] === undefined) {
-                            markers[name] = createMarker(name, newMarkers[name], map);
+                    for (var new_name in newMarkers) {
+                        if (markers[new_name] === undefined) {
+                            markers[new_name] = createMarker(new_name, newMarkers[new_name], map);
                         }
                     }
 
