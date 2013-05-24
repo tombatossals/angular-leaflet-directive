@@ -50,6 +50,10 @@
             border-top: 1px #eee solid;
         }
 
+	strong.title {
+            line-height: 30px;
+        }
+
         footer .pull-right {
             text-align: right;
         }
@@ -113,39 +117,33 @@
             <div class="span5 offset1">
                 <leaflet markers="markers" center="center"></leaflet>
                 <form class="form">
-                    <div class="control-group span5">
-                        <strong class="span1 big">Center</strong>
-                        <div class="span1">
-                            <label class="control-label">Lat</label>
-                            <div class="controls">
+                    <div class="control-group span6">
+                        <strong class="span1 title">Center</strong>
+                        <div class="controls">
+                            <div class="input-prepend">
+                                <span class="add-on">lat</span>
                                 <input class="input-mini" type="number" step="any" ng-model="center.lat" />
                             </div>
-                        </div>
-                        <div class="span1">
-                            <label class="control-label">Lon</label>
-                            <div class="controls">
+                            <div class="input-prepend">
+                                <span class="add-on">lon</span>
                                 <input class="input-mini" type="number" step="any" ng-model="center.lng" />
                             </div>
-                        </div>
-                        <div class="span1">
-                            <label class="control-label">Zoom</label>
-                            <div class="controls">
+                            <div class="input-prepend">
+                                <span class="add-on">zoom</span>
                                 <input class="input-mini"  type="number" ng-model="center.zoom" />
                             </div>
                         </div>
                     </div>
                     <div class="control-group span5">
-                        <strong class="span1 big">Marker</strong>
-                        <div class="span1">
-                            <label class="control-label">Lat</label>
-                            <div class="controls">
-                                <input type="number" class="input-mini" step="any" ng-model="markers.Madrid.lat" />
+                        <strong class="span1 title">Marker</strong>
+                        <div class="controls">
+                            <div class="input-prepend">
+                                <span class="add-on">lat</span>
+                                <input class="input-mini" type="number" step="any" ng-model="markers.Madrid.lat" />
                             </div>
-                        </div>
-                        <div class="span1">
-                            <label class="control-label">Lon</label>
-                            <div class="controls">
-                                <input type="number" class="input-mini" step="any" ng-model="markers.Madrid.lng" />
+                            <div class="input-prepend">
+                                <span class="add-on">long</span>
+                                <input class="input-mini" type="number" step="any" ng-model="markers.Madrid.lng"/>
                             </div>
                         </div>
                     </div>
@@ -258,7 +256,7 @@ angular.extend($scope, {
     <script src="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.js"></script>
     <script src="http://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
     <script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
-    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
     <script src="dist/angular-leaflet-directive.min.js"></script>
     <script>
         $(function () {

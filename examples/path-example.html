@@ -1,8 +1,8 @@
 <html ng-app="demoapp">
     <head>
         <script src="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.js"></script>
-        <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js"></script>
-        <script src="../dist/angular-leaflet-directive.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+        <script src="../src/angular-leaflet-directive.js"></script>
         <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.css" />
         <!--[if lte IE 8]>
         <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.4/leaflet.ie.css" />
@@ -32,13 +32,13 @@
             function DemoController($scope) {
                 $scope.addMarker = function() {
                     var m_key = document.getElementById('new_mm_name').value;
-		    if ($scope.markers[m_key]) return;
+                    if ($scope.markers[m_key]) return;
                     $scope.markers[m_key] = {
                         lat: document.getElementById('new_mm_lat').value,
                         lng: document.getElementById('new_mm_lng').value,
                         draggable: true
                     };
-		    $scope.path.latlngs.push($scope.markers[m_key]);
+                    $scope.path.latlngs.push($scope.markers[m_key]);
                 }
 
                 $scope.deleteMarker = function(m_key) {
@@ -52,12 +52,6 @@
                     }
 
                     delete $scope.markers[m_key];
-                }
-                $scope.addPointToMainPath = function() {
-                    $scope.path.latlngs.push({
-                        lat: document.getElementById('new_mp_lat').value,
-                        lng: document.getElementById('new_mp_lng').value,
-                    });
                 }
 
                 angular.extend($scope, {
@@ -84,7 +78,7 @@
 
                 angular.extend($scope, {
                     path: {
-                        color: '#000000',
+                        color: '#008000',
                         weight: 4,
                         latlngs: [ $scope.markers.London, $scope.markers.Manchester ]
                     },
