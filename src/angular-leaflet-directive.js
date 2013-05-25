@@ -113,6 +113,11 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
 
             function createMarker(name, scopeMarker, map) {
                 var marker = buildMarker(name, scopeMarker);
+                map.addLayer(marker);
+
+                if (scopeMarker.focus === true) {
+                    marker.openPopup();
+                }
 
                 marker.on("dragend", function () {
                     $scope.$apply(function (scope) {
@@ -156,7 +161,6 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
                         }
                     }
                 }, true);
-                map.addLayer(marker);
                 return marker;
             }
 
