@@ -30,7 +30,7 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
         transclude: true,
         scope: {
             center: '=center',
-            maxBounds: '=maxBounds',
+            maxBounds: '=maxbounds',
             markers: '=markers',
             defaults: '=defaults',
             path: '=path'
