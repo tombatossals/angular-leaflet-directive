@@ -41,8 +41,8 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
 
             $scope.leaflet = {};
             $scope.leaflet.map = !!attrs.testing ? map : 'Add testing="testing" to <leaflet> tag to inspect this object';
-            $scope.leaflet.maxZoom = !!(attrs.defaults && $scope.defaults.maxZoom) ? parseInt($scope.defaults.maxZoom, 10) : defaults.maxZoom;
-            $scope.leaflet.tileLayer = !!(attrs.defaults && $scope.defaults.tileLayer) ? $scope.defaults.tileLayer : defaults.tileLayer;
+            $scope.leaflet.maxZoom = !!(attrs.defaults && $scope.defaults && $scope.defaults.maxZoom) ? parseInt($scope.defaults.maxZoom, 10) : defaults.maxZoom;
+            $scope.leaflet.tileLayer = !!(attrs.defaults && $scope.defaults && $scope.defaults.tileLayer) ? $scope.defaults.tileLayer : defaults.tileLayer;
             L.tileLayer($scope.leaflet.tileLayer, { maxZoom: $scope.leaflet.maxZoom }).addTo(map);
 
             setupCenter();
@@ -56,6 +56,13 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
 
                 if ($scope.center.lat && $scope.center.lng && $scope.center.zoom) {
                     map.setView([$scope.center.lat, $scope.center.lng], $scope.center.zoom);
+                } else if ($scope.center.maxBounds && $scope.center.maxBounds.southWest && $scope.center.maxBounds.southWest.lat && $scope.center.maxBounds.southWest.lng && $scope.center.maxBounds.northEast && $scope.center.maxBounds.northEast.lat && $scope.center.maxBounds.northEast.lng ) {
+                    map.setMaxBounds(
+                        new L.LatLngBounds(
+                            new L.LatLng($scope.center.maxBounds.southWest.lat, $scope.center.maxBounds.southWest.lng),
+                            new L.LatLng($scope.center.maxBounds.northEast.lat, $scope.center.maxBounds.northEast.lng)
+                        )
+                    );
                 } else if ($scope.center.autoDiscover === true) {
                     map.locate({ setView: true, maxZoom: $scope.leaflet.maxZoom });
                 }
@@ -78,6 +85,13 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
                 $scope.$watch("center", function (center /*, oldValue */) {
                     if (center.lat && center.lng && center.zoom) {
                         map.setView([center.lat, center.lng], center.zoom);
+                    } else if (center.maxBounds && center.maxBounds.southWest && center.maxBounds.northEast && center.maxBounds.southWest.lat && center.maxBounds.southWest.lng && center.maxBounds.northEast.lat && center.maxBounds.northEast.lng) {
+                        map.setMaxBounds(
+                            new L.LatLngBounds(
+                                new L.LatLng(center.maxBounds.southWest.lat, center.maxBounds.southWest.lng),
+                                new L.LatLng(center.maxBounds.northEast.lat, center.maxBounds.northEast.lng)
+                            )
+                        );
                     }
                 }, true);
             }
