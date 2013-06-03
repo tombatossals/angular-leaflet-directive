@@ -30,7 +30,7 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
         transclude: true,
         scope: {
             center: '=center',
-            maxbounds: '=maxbounds',
+            maxBounds: '=maxBounds',
             markers: '=markers',
             defaults: '=defaults',
             path: '=path'
@@ -52,23 +52,23 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
             setupPath();
 
             function setupMaxBounds() {
-                if (!$scope.maxbounds) {
+                if (!$scope.maxBounds) {
                     return;
                 }
-                if ($scope.maxbounds && $scope.maxbounds.southWest && $scope.maxbounds.southWest.lat && $scope.maxbounds.southWest.lng && $scope.maxbounds.northEast && $scope.maxbounds.northEast.lat && $scope.maxbounds.northEast.lng ) {
+                if ($scope.maxBounds && $scope.maxBounds.southWest && $scope.maxBounds.southWest.lat && $scope.maxBounds.southWest.lng && $scope.maxBounds.northEast && $scope.maxBounds.northEast.lat && $scope.maxBounds.northEast.lng ) {
                     map.setMaxBounds(
                         new L.LatLngBounds(
-                            new L.LatLng($scope.maxbounds.southWest.lat, $scope.maxbounds.southWest.lng),
-                            new L.LatLng($scope.maxbounds.northEast.lat, $scope.maxbounds.northEast.lng)
+                            new L.LatLng($scope.maxBounds.southWest.lat, $scope.maxBounds.southWest.lng),
+                            new L.LatLng($scope.maxBounds.northEast.lat, $scope.maxBounds.northEast.lng)
                         )
                     );
 
-                    $scope.$watch("maxbounds", function (maxbounds /*, oldValue */) {
-                        if (maxbounds.southWest && maxbounds.northEast && maxbounds.southWest.lat && maxbounds.southWest.lng && maxbounds.northEast.lat && maxbounds.northEast.lng) {
+                    $scope.$watch("maxBounds", function (maxBounds /*, oldValue */) {
+                        if (maxBounds.southWest && maxBounds.northEast && maxBounds.southWest.lat && maxBounds.southWest.lng && maxBounds.northEast.lat && maxBounds.northEast.lng) {
                             map.setMaxBounds(
                                 new L.LatLngBounds(
-                                    new L.LatLng(maxbounds.southWest.lat, maxbounds.southWest.lng),
-                                    new L.LatLng(maxbounds.northEast.lat, maxbounds.northEast.lng)
+                                    new L.LatLng(maxBounds.southWest.lat, maxBounds.southWest.lng),
+                                    new L.LatLng(maxBounds.northEast.lat, maxBounds.northEast.lng)
                                 )
                             );
                         }
