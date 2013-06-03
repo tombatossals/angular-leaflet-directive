@@ -30,6 +30,7 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
         transclude: true,
         scope: {
             center: '=center',
+            maxbounds: '=maxbounds',
             markers: '=markers',
             defaults: '=defaults',
             path: '=path'
@@ -46,8 +47,34 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
             L.tileLayer($scope.leaflet.tileLayer, { maxZoom: $scope.leaflet.maxZoom }).addTo(map);
 
             setupCenter();
+            setupMaxBounds();
             setupMarkers();
             setupPath();
+
+            function setupMaxBounds() {
+                if (!$scope.maxbounds) {
+                    return;
+                }
+                if ($scope.maxbounds && $scope.maxbounds.southWest && $scope.maxbounds.southWest.lat && $scope.maxbounds.southWest.lng && $scope.maxbounds.northEast && $scope.maxbounds.northEast.lat && $scope.maxbounds.northEast.lng ) {
+                    map.setMaxBounds(
+                        new L.LatLngBounds(
+                            new L.LatLng($scope.maxbounds.southWest.lat, $scope.maxbounds.southWest.lng),
+                            new L.LatLng($scope.maxbounds.northEast.lat, $scope.maxbounds.northEast.lng)
+                        )
+                    );
+
+                    $scope.$watch("maxbounds", function (maxbounds /*, oldValue */) {
+                        if (maxbounds.southWest && maxbounds.northEast && maxbounds.southWest.lat && maxbounds.southWest.lng && maxbounds.northEast.lat && maxbounds.northEast.lng) {
+                            map.setMaxBounds(
+                                new L.LatLngBounds(
+                                    new L.LatLng(maxbounds.southWest.lat, maxbounds.southWest.lng),
+                                    new L.LatLng(maxbounds.northEast.lat, maxbounds.northEast.lng)
+                                )
+                            );
+                        }
+                    });
+                }
+            }
 
             function setupCenter() {
                 if (!$scope.center) {
@@ -56,13 +83,6 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
 
                 if ($scope.center.lat && $scope.center.lng && $scope.center.zoom) {
                     map.setView([$scope.center.lat, $scope.center.lng], $scope.center.zoom);
-                } else if ($scope.center.maxBounds && $scope.center.maxBounds.southWest && $scope.center.maxBounds.southWest.lat && $scope.center.maxBounds.southWest.lng && $scope.center.maxBounds.northEast && $scope.center.maxBounds.northEast.lat && $scope.center.maxBounds.northEast.lng ) {
-                    map.setMaxBounds(
-                        new L.LatLngBounds(
-                            new L.LatLng($scope.center.maxBounds.southWest.lat, $scope.center.maxBounds.southWest.lng),
-                            new L.LatLng($scope.center.maxBounds.northEast.lat, $scope.center.maxBounds.northEast.lng)
-                        )
-                    );
                 } else if ($scope.center.autoDiscover === true) {
                     map.locate({ setView: true, maxZoom: $scope.leaflet.maxZoom });
                 }
@@ -85,13 +105,6 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
                 $scope.$watch("center", function (center /*, oldValue */) {
                     if (center.lat && center.lng && center.zoom) {
                         map.setView([center.lat, center.lng], center.zoom);
-                    } else if (center.maxBounds && center.maxBounds.southWest && center.maxBounds.northEast && center.maxBounds.southWest.lat && center.maxBounds.southWest.lng && center.maxBounds.northEast.lat && center.maxBounds.northEast.lng) {
-                        map.setMaxBounds(
-                            new L.LatLngBounds(
-                                new L.LatLng(center.maxBounds.southWest.lat, center.maxBounds.southWest.lng),
-                                new L.LatLng(center.maxBounds.northEast.lat, center.maxBounds.northEast.lng)
-                            )
-                        );
                     }
                 }, true);
             }

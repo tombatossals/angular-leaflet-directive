@@ -11,16 +11,14 @@
         angular.module("demoapp", ["leaflet-directive"]);
         function DemoController($scope) {
             angular.extend($scope, {
-                center: {
-                    maxBounds: {
-                        southWest: {
-                            lat: 47.200,
-                            lng: 15.200
-                        },
-                        northEast: {
-                            lat: 47.700,
-                            lng: 15.500
-                        }
+                maxbounds: {
+                    southWest: {
+                        lat: 47.200,
+                        lng: 15.200
+                    },
+                    northEast: {
+                        lat: 47.700,
+                        lng: 15.500
                     }
                 }
             });
@@ -34,6 +32,6 @@
     </style>
   </head>
   <body ng-controller="DemoController">
-    <leaflet center="center"></leaflet>
+    <leaflet maxbounds="maxbounds"></leaflet>
   </body>
 </html>
