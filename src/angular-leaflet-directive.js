@@ -1,4 +1,4 @@
-var leafletDirective = angular.module("leaflet-directive", []);
+﻿var leafletDirective = angular.module("leaflet-directive", []);
 
 leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
 
@@ -100,6 +100,8 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
                     if ($scope.center.zoom !== map.getZoom()) {
                         $scope.$apply(function (s) {
                             s.center.zoom = map.getZoom();
+                            s.center.lat = map.getCenter().lat;
+                            s.center.lng = map.getCenter().lng;
                         });
                     }
                 });
