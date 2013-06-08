@@ -107,8 +107,8 @@ describe('Directive: leaflet', function() {
                 paris: {
                     lat: 0.966,
                     lng: 2.02,
-                    message: 'this is paris',
-                },
+                    message: 'this is paris'
+                }
             };
             angular.extend($rootScope, { markers: markers});
             var element = angular.element('<leaflet markers="markers" testing="testing"></leaflet>');
