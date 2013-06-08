@@ -77,15 +77,17 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
             }
 
             function setupCenter() {
-                if (!$scope.center) {
-                    return;
-                }
+                $scope.$watch("center", function (center /*, oldValue */) {
+                    if (!center) {
+                        return;
+                    }
 
-                if ($scope.center.lat && $scope.center.lng && $scope.center.zoom) {
-                    map.setView([$scope.center.lat, $scope.center.lng], $scope.center.zoom);
-                } else if ($scope.center.autoDiscover === true) {
-                    map.locate({ setView: true, maxZoom: $scope.leaflet.maxZoom });
-                }
+                    if (center.lat && center.lng && center.zoom) {
+                        map.setView([center.lat, center.lng], center.zoom);
+                    } else if (center.autoDiscover === true) {
+                        map.locate({ setView: true, maxZoom: $scope.leaflet.maxZoom });
+                    }
+                }, true);
 
                 map.on("dragend", function (/* event */) {
                     $scope.$apply(function (scope) {
@@ -101,12 +103,6 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
                         });
                     }
                 });
-
-                $scope.$watch("center", function (center /*, oldValue */) {
-                    if (center.lat && center.lng && center.zoom) {
-                        map.setView([center.lat, center.lng], center.zoom);
-                    }
-                }, true);
             }
 
             function setupMarkers() {
