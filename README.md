@@ -27,7 +27,7 @@ After that, you can change the default values of the directive (if you want) on
 your angular controller. For example, you can change the tiles source, the
 maxzoom on the leaflet map or the polyline path properties.
 
-```
+```javascript
 angular.extend($scope, {
     defaults: {
         tileLayer: "http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png",
@@ -43,7 +43,7 @@ angular.extend($scope, {
 If you want to set the start of the map to a precise position, you can define
 the "center" property of the scope (lat, lng, zoom). It will be updated
 interacting on the scope and on the leaflet map in two-way binding. Example:
-```
+```javascript
 angular.extend($scope, {
     center: {
         lat: 51.505,
@@ -55,7 +55,7 @@ angular.extend($scope, {
 ```
 
 Finally, you must include the markup directive on your HTML page, like this:
-```
+```html
 <leaflet defaults="defaults" center="center"></leaflet>
 ```
 
