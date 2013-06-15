@@ -124,21 +124,32 @@ describe('Directive: leaflet', function() {
     // Polyline
     it('should create polyline on the map', function() {
         inject(function($rootScope, $compile) {
-            var latlngs = [
+            var latlngs1 = [
                 { lat: 0.966, lng: 2.02 },
                 { lat: 2.02, lng: 4.04 }
             ];
-            angular.extend($rootScope, { path : { latlngs : latlngs }});
-            var element = angular.element('<leaflet path="path" testing="testing"></leaflet>');
+            var latlngs2 = [
+                { lat: 0.466, lng: 1.02 },
+                { lat: 1.02, lng: 3.04 }
+            ];
+            angular.extend($rootScope, { paths : { p1: { latlngs : latlngs1 }, p2: { latlngs : latlngs2 }}});
+            var element = angular.element('<leaflet paths="paths" testing="testing"></leaflet>');
             element = $compile(element)($rootScope);
             var map = element.scope().leaflet.map;
-            var polyline = element.scope().leaflet.path;
+            var polyline1 = element.scope().leaflet.paths.p1;
+            var polyline2 = element.scope().leaflet.paths.p2;
             $rootScope.$digest();
-            latlngs = polyline.getLatLngs();
-            expect(latlngs[0].lat).toBeCloseTo(0.966);
-            expect(latlngs[0].lng).toBeCloseTo(2.02);
-            expect(latlngs[1].lat).toBeCloseTo(2.02);
-            expect(latlngs[1].lng).toBeCloseTo(4.04);
+            latlngs1 = polyline1.getLatLngs();
+            expect(latlngs1[0].lat).toBeCloseTo(0.966);
+            expect(latlngs1[0].lng).toBeCloseTo(2.02);
+            expect(latlngs1[1].lat).toBeCloseTo(2.02);
+            expect(latlngs1[1].lng).toBeCloseTo(4.04);
+
+            latlngs2 = polyline2.getLatLngs();
+            expect(latlngs2[0].lat).toBeCloseTo(0.466);
+            expect(latlngs2[0].lng).toBeCloseTo(1.02);
+            expect(latlngs2[1].lat).toBeCloseTo(1.02);
+            expect(latlngs2[1].lng).toBeCloseTo(3.04);
         });
     });
 });

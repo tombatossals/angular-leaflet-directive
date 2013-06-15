@@ -34,6 +34,7 @@ angular.extend($scope, {
         maxZoom: 14,
         path: {
             weight: 10,
+            color: '#800000',
             opacity: 1
         }
     }
