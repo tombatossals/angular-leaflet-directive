@@ -47,6 +47,7 @@ describe('Directive: leaflet', function() {
             angular.extend($rootScope, { center: center, map: undefined });
             var element = angular.element('<leaflet center="center" testing="testing"></leaflet>');
             element = $compile(element)($rootScope);
+            $rootScope.$digest();
             var map = element.scope().leaflet.map;
             expect(map.getZoom()).toEqual(center.zoom);
             expect(map.getCenter().lat).toBeCloseTo(0.966);
