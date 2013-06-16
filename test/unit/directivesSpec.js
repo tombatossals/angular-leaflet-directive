@@ -25,6 +25,24 @@ describe('Directive: leaflet', function() {
         });
     });
 
+    it('should set tileLayer options if specified', function() {
+        inject(function($rootScope, $compile) {
+            angular.extend($rootScope, {
+                defaults: {
+                    tileLayerOptions: {
+                        detectRetina: true,
+                        opacity: 0.8,
+                    }
+                }
+            });
+            var element = angular.element('<leaflet defaults="defaults" testing="testing"></leaflet>');
+            element = $compile(element)($rootScope);
+            var tileLayerObj = element.scope().leaflet.tileLayerObj;
+            expect(tileLayerObj.options.detectRetina).toEqual(true);
+            expect(tileLayerObj.options.opacity).toEqual(0.8);
+        });
+    });
+
     it('should have default parameters on the map if not specified', function() {
         inject(function($rootScope, $compile) {
             angular.extend($rootScope, {});
@@ -47,6 +65,7 @@ describe('Directive: leaflet', function() {
             angular.extend($rootScope, { center: center, map: undefined });
             var element = angular.element('<leaflet center="center" testing="testing"></leaflet>');
             element = $compile(element)($rootScope);
+            $rootScope.$digest();
             var map = element.scope().leaflet.map;
             expect(map.getZoom()).toEqual(center.zoom);
             expect(map.getCenter().lat).toBeCloseTo(0.966);
