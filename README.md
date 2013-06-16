@@ -1,7 +1,8 @@
 # angular-leaflet-directive
 
-[AngularJS](http://angularjs.org/) directive for the Leaflet Javascript Library. This software aims to
-easily embed maps managed by leaflet on your [Leaflet](http://leaflet.cloudmade.com) project.
+[AngularJS](http://angularjs.org/) directive for the Leaflet Javascript
+Library. This software aims to easily embed maps managed by leaflet on your
+[Leaflet](http://leaflet.cloudmade.com) project.
 
 See some basic examples:
 
@@ -11,7 +12,8 @@ See some basic examples:
 * [Polyline example](http://tombatossals.github.io/angular-leaflet-directive/examples/path-example.html)
 
 
-To see it in action, go to the main page where you can find more examples and some documentation:
+To see it in action, go to the main page where you can find more examples and
+some documentation:
 
  * http://tombatossals.github.com/angular-leaflet-directive
 
@@ -74,6 +76,7 @@ Also remember to set the dimension of the map:
 ## How to contribute
 
 You can use grunt/karma to test your code, and grunt/jshint to lint your code.
+First, make sure you have npm and grunt-cli installed globally.
 
 ```
 # Inside the project dir, install the dependencies
