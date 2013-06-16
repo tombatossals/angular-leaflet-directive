@@ -1,10 +1,12 @@
-﻿var leafletDirective = angular.module("leaflet-directive", []);
+var leafletDirective = angular.module("leaflet-directive", []);
 
 leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
 
     var defaults = {
         maxZoom: 14,
         tileLayer: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        tileLayerOptions: {
+        },
         icon: {
             url: 'http://cdn.leafletjs.com/leaflet-0.5.1/images/marker-icon.png',
             retinaUrl: 'http://cdn.leafletjs.com/leaflet-0.5.1/images/marker-icon@2x.png',
@@ -38,14 +40,27 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
         },
         template: '<div class="angular-leaflet-map"></div>',
         link: function ($scope, element, attrs /*, ctrl */) {
-            var map = new L.Map(element[0]);
+            $scope.leaflet = {};
+            $scope.leaflet.maxZoom = !!(attrs.defaults && $scope.defaults && $scope.defaults.maxZoom) ? parseInt($scope.defaults.maxZoom, 10) : defaults.maxZoom;
+
+            var map = new L.Map(element[0], {
+                maxZoom: $scope.leaflet.maxZoom});
             map.setView([0, 0], 1);
 
-            $scope.leaflet = {};
-            $scope.leaflet.map = !!attrs.testing ? map : 'Add testing="testing" to <leaflet> tag to inspect this object';
-            $scope.leaflet.maxZoom = !!(attrs.defaults && $scope.defaults && $scope.defaults.maxZoom) ? parseInt($scope.defaults.maxZoom, 10) : defaults.maxZoom;
             $scope.leaflet.tileLayer = !!(attrs.defaults && $scope.defaults && $scope.defaults.tileLayer) ? $scope.defaults.tileLayer : defaults.tileLayer;
-            L.tileLayer($scope.leaflet.tileLayer, { maxZoom: $scope.leaflet.maxZoom }).addTo(map);
+            $scope.leaflet.map = !!attrs.testing ? map : 'Add testing="testing" to <leaflet> tag to inspect this object';
+
+            // build custom options for tileLayer
+            if ($scope.defaults && $scope.defaults.tileLayerOptions) {
+                for (var key in $scope.defaults.tileLayerOptions) {
+                    defaults.tileLayerOptions[key] = $scope.defaults.tileLayerOptions[key];
+                }
+            }
+            var tileLayerObj = L.tileLayer(
+                    $scope.leaflet.tileLayer, defaults.tileLayerOptions);
+            tileLayerObj.addTo(map);
+            $scope.leaflet.tileLayerObj = !!attrs.testing ?
+                tileLayerObj : 'Add testing="testing" to <leaflet> tag to inspect this object';
 
             setupCenter();
             setupMaxBounds();
