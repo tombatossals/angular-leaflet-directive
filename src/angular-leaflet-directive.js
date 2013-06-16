@@ -20,7 +20,8 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
         },
         path: {
             weight: 10,
-            opacity: 1
+            opacity: 1,
+            color: '#0000ff'
         }
     };
 
@@ -33,7 +34,7 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
             maxBounds: '=maxbounds',
             markers: '=markers',
             defaults: '=defaults',
-            path: '=path'
+            paths: '=paths'
         },
         template: '<div class="angular-leaflet-map"></div>',
         link: function ($scope, element, attrs /*, ctrl */) {
@@ -49,7 +50,7 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
             setupCenter();
             setupMaxBounds();
             setupMarkers();
-            setupPath();
+            setupPaths();
 
             function setupMaxBounds() {
                 if (!$scope.maxBounds) {
@@ -216,38 +217,96 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
                 });
             }
 
-            function setupPath() {
-                // TODO Create as many polylines as paths defined in model
-                // TODO Manage opacity changes with another $watch block
-                if (!$scope.path) {
+            function setupPaths() {
+                var paths = {};
+                $scope.leaflet.paths = !!attrs.testing ? paths : 'Add testing="testing" to <leaflet> tag to inspect this object';
+
+                if (!$scope.paths) {
                     return;
                 }
 
                 $log.warn("[AngularJS - Leaflet] Creating polylines and adding them to the map will break the directive's scope's inspection in AngularJS Batarang");
 
-                var polyline = new L.Polyline([], { weight: defaults.path.weight, opacity: defaults.path.opacity});
-                $scope.leaflet.path = !!attrs.testing ? polyline : 'Add testing="testing" to <leaflet> tag to inspect this object';
+                for (var name in $scope.paths) {
+                    paths[name] = createPath(name, $scope.paths[name], map);
+                }
+
+                $scope.$watch("paths", function (newPaths /*, oldMarkers*/) {
+                    for (var new_name in newPaths) {
+                        if (paths[new_name] === undefined) {
+                            paths[new_name] = createPath(new_name, newPaths[new_name], map);
+                        }
+                    }
+
+                    // Delete markers from the array
+                    for (var name in paths) {
+                        if (newPaths[name] === undefined) {
+                            delete paths[name];
+                        }
+                    }
+
+                }, true);
+            }
+
+            function createPath(name, scopePath, map) {
+                var polyline = new L.Polyline([], { weight: defaults.path.weight, color: defaults.path.color, opacity: defaults.path.opacity });
+
+                if (scopePath.latlngs !== undefined) {
+                    var latlngs = convertToLeafletLatLngs(scopePath.latlngs);
+                    polyline.setLatLngs(latlngs);
+                }
+
+                if (scopePath.weight !== undefined) {
+                    polyline.setStyle({ weight: scopePath.weight });
+                }
+
+                if (scopePath.color !== undefined) {
+                    polyline.setStyle({ color: scopePath.color });
+                }
+
+                if (scopePath.opacity !== undefined) {
+                    polyline.setStyle({ opacity: scopePath.opacity });
+                }
 
                 map.addLayer(polyline);
 
-                $scope.$watch("path.latlngs", function (latlngs) {
-                    var leafletLatLngs = latlngs
-                            .filter(function (latlng) {
-                                return !!latlng.lat && !!latlng.lng;
-                            })
-                            .map(function (latlng) {
-                                return new L.LatLng(latlng.lat, latlng.lng);
-                            });
-                    polyline.setLatLngs(leafletLatLngs);
-                }, true);
+                $scope.$watch('paths.' + name, function (data, oldData) {
+                    if (!data) {
+                        map.removeLayer(polyline);
+                        return;
+                    }
 
-                $scope.$watch("path.weight", function (weight) {
-                    polyline.setStyle({ weight: weight });
-                }, true);
+                    if (oldData) {
+                        if (data.latlngs !== undefined && data.latlngs !== oldData.latlngs) {
+                            var latlngs = convertToLeafletLatLngs(data.latlngs);
+                            polyline.setLatLngs(latlngs);
+                        }
 
-                $scope.$watch("path.color", function (color) {
-                    polyline.setStyle({ color: color });
+                        if (data.weight !== undefined && data.weight !== oldData.weight) {
+                            polyline.setStyle({ weight: data.weight });
+                        }
+
+                        if (data.color !== undefined && data.color !== oldData.color) {
+                            polyline.setStyle({ color: data.color });
+                        }
+
+                        if (data.opacity !== undefined && data.opacity !== oldData.opacity) {
+                            polyline.setStyle({ opacity: data.opacity });
+                        }
+                    }
                 }, true);
+                return polyline;
+            }
+
+            function convertToLeafletLatLngs(latlngs) {
+                var leafletLatLngs = latlngs
+                    .filter(function (latlng) {
+                        return !!latlng.lat && !!latlng.lng;
+                    })
+                    .map(function (latlng) {
+                        return new L.LatLng(latlng.lat, latlng.lng);
+                    });
+                return leafletLatLngs;
             }
         }
     };

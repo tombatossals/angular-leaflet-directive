@@ -73,15 +73,27 @@
                             lng: -2.24,
                             draggable: true
                         },
+                        Lincoln: {
+                            lat: 53.230495,
+                            lng: -0.53936,
+                            draggable: true
+                        }
                     }
                 });
 
                 angular.extend($scope, {
-                    path: {
-                        color: '#008000',
-                        weight: 4,
-                        latlngs: [ $scope.markers.London, $scope.markers.Manchester ]
-                    },
+                    paths: {
+                        p1: {
+                            color: '#008000',
+                            weight: 4,
+                            latlngs: [ $scope.markers.London, $scope.markers.Manchester ]
+                        },
+                        p2: {
+                            weight: 3,
+                            opacity: 0.5,
+                            latlngs: [ $scope.markers.London, $scope.markers.Lincoln ]
+                        }
+                    }
                 });
 
             };
@@ -113,13 +125,15 @@
             </div>
 
             <div class="panel">
-                <h3>Path</h3>
-                <p style="display: inline;">color: <input type="color" ng-model="path.color" /> weight: <input type="number" ng-model="path.weight" /></p>
-                <ul>
-                  <li ng-repeat="p in path.latlngs">(point {{$index}}) lat: <strong>{{ p.lat | number: 4 }}</strong> lng: <strong>{{ p.lng | number: 4}}</strong></li>
-                </ul>
+                <h3>Paths</h3>
+                <div ng-repeat="path in paths">
+                    <p style="display: inline;">color: <input type="color" ng-model="path.color" /> weight: <input type="number" ng-model="path.weight" /></p>
+                    <ul>
+                        <li ng-repeat="p in path.latlngs">(point {{$index}}) lat: <strong>{{ p.lat | number: 4 }}</strong> lng: <strong>{{ p.lng | number: 4}}</strong></li>
+                    </ul>
+                </div>
             </div>
         </div>
-        <leaflet center="cen" markers="markers" path="path"></leaflet>
+        <leaflet center="cen" markers="markers" paths="paths"></leaflet>
     </body>
 </html>
