@@ -246,14 +246,13 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
                     paths[name] = createPath(name, $scope.paths[name], map);
                 }
 
-                $scope.$watch("paths", function (newPaths /*, oldMarkers*/) {
+                $scope.$watch("paths", function (newPaths) {
                     for (var new_name in newPaths) {
                         if (paths[new_name] === undefined) {
                             paths[new_name] = createPath(new_name, newPaths[new_name], map);
                         }
                     }
-
-                    // Delete markers from the array
+                    // Delete paths from the array
                     for (var name in paths) {
                         if (newPaths[name] === undefined) {
                             delete paths[name];
