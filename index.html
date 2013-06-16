@@ -185,7 +185,7 @@ angular.extend($scope, {
             <div class="span5 offset1">
                 <p>You can draw a path on the map with following code in
                 your HTML:</p>
-                <pre class="prettyprint lang-html">&lt;leaflet path="path" center="center"&gt;&lt;/leaflet&gt;</pre>
+                <pre class="prettyprint lang-html">&lt;leaflet paths="paths" center="center"&gt;&lt;/leaflet&gt;</pre>
                 <p>And following code in your controller:</p>
                 <pre class="prettyprint lang-javascript">
 angular.extend($scope, {
@@ -194,15 +194,17 @@ angular.extend($scope, {
         lng: -3,
         zoom: 6
     },
-    path: {
-        color: '#008000',
-        weight: 3,
-        latlngs: [
-            { lat: 51.50, lng: -0.082 },
-            { lat: 51.751, lng: -1.255 },
-            { lat: 53.48, lng: -2.24 },
-        ],
-    },
+    paths: {
+        p1: {
+            color: '#008000',
+            weight: 3,
+            latlngs: [
+                { lat: 51.50, lng: -0.082 },
+                { lat: 51.751, lng: -1.255 },
+                { lat: 53.48, lng: -2.24 },
+            ],
+        },
+    }
 });
                 </pre>
                 <p>
@@ -213,9 +215,9 @@ angular.extend($scope, {
                 </p>
             </div>
             <div class="span5">
-                <leaflet path="path" center="center"></leaflet>
+                <leaflet paths="paths" center="center"></leaflet>
                 <div class="control-group span5">
-                    <form class="form-horizontal" ng-repeat="p in path.latlngs">
+                    <form class="form-horizontal" ng-repeat="p in paths.p1.latlngs">
                         <label class="control-label">
                             point {{$index + 1}}:
                         </label>
@@ -293,14 +295,16 @@ angular.extend($scope, {
                     lng: -3,
                     zoom: 6
                 },
-                path: {
-                    color: '#008000',
-                    weight: 3,
-                    latlngs: [
-                        { lat: 51.50, lng: -0.082 },
-                        { lat: 51.751, lng: -1.255 },
-                        { lat: 53.48, lng: -2.24 },
-                    ],
+                paths: {
+                    p1: {
+                        color: '#008000',
+                        weight: 3,
+                        latlngs: [
+                            { lat: 51.50, lng: -0.082 },
+                            { lat: 51.751, lng: -1.255 },
+                            { lat: 53.48, lng: -2.24 },
+                        ],
+                    }
                 },
             });
         }
