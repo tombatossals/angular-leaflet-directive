@@ -1,0 +1,2 @@
+angular-leaflet-directive (0.3)
+* Add multiple paths binding support. Now path attribute is discarded and paths should be used instead. See path-example.html for more details.
