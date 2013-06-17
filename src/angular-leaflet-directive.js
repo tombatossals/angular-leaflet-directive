@@ -1,6 +1,6 @@
 var leafletDirective = angular.module("leaflet-directive", []);
 
-leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
+leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($http, $log, $parse) {
 
     var defaults = {
         maxZoom: 14,
@@ -66,7 +66,7 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
             setupMaxBounds();
             setupMarkers();
             setupPaths();
-
+	    
             function setupMaxBounds() {
                 if (!$scope.maxBounds) {
                     return;
@@ -92,12 +92,18 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
                 }
             }
 
+	    var centerModel = {
+		lat:$parse("center.lat"),
+		lng:$parse("center.lng"),
+		zoom:$parse("center.zoom")
+	    };
+	    
             function setupCenter() {
                 $scope.$watch("center", function (center /*, oldValue */) {
                     if (!center) {
+			$log.warn("[AngularJS - Leaflet] 'center' is undefined in the current scope, did you forget to initialize it?");
                         return;
                     }
-
                     if (center.lat && center.lng && center.zoom) {
                         map.setView([center.lat, center.lng], center.zoom);
                     } else if (center.autoDiscover === true) {
@@ -107,17 +113,20 @@ leafletDirective.directive("leaflet", ["$http", "$log", function ($http, $log) {
 
                 map.on("dragend", function (/* event */) {
                     $scope.$apply(function (scope) {
-                        scope.center.lat = map.getCenter().lat;
-                        scope.center.lng = map.getCenter().lng;
+			centerModel.lat.assign(scope, map.getCenter().lat);
+			centerModel.lng.assign(scope, map.getCenter().lng);
                     });
                 });
 
                 map.on("zoomend", function (/* event */) {
-                    if ($scope.center.zoom !== map.getZoom()) {
+		    if(angular.isUndefined($scope.center)){
+			$log.warn("[AngularJS - Leaflet] 'center' is undefined in the current scope, did you forget to initialize it?");
+		    }
+                    if (angular.isUndefined($scope.center) || $scope.center.zoom !== map.getZoom()) {
                         $scope.$apply(function (s) {
-                            s.center.zoom = map.getZoom();
-                            s.center.lat = map.getCenter().lat;
-                            s.center.lng = map.getCenter().lng;
+			    centerModel.zoom.assign(s,map.getZoom());
+			    centerModel.lat.assign(s,map.getCenter().lat);
+			    centerModel.lng.assign(s,map.getCenter().lng);
                         });
                     }
                 });
