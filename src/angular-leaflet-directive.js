@@ -95,7 +95,7 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
             var centerModel = {
                 lat:$parse("center.lat"),
                 lng:$parse("center.lng"),
-                 zoom:$parse("center.zoom")
+                zoom:$parse("center.zoom")
             };
         
             function setupCenter() {
