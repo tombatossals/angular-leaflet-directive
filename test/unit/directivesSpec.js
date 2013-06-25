@@ -171,4 +171,29 @@ describe('Directive: leaflet', function() {
             expect(latlngs2[1].lng).toBeCloseTo(3.04);
         });
     });
+
+    it('should call map method on leafletDirectiveSetMap event', function() {
+        inject(function($rootScope, $compile) {
+            var center = {
+                lat: 0.966,
+                lng: 2.02,
+                zoom: 4
+            };
+            angular.extend($rootScope, { center: center });
+            var element = angular.element('<leaflet center="center" testing="testing"></leaflet>');
+            element = $compile(element)($rootScope);
+
+            var map = element.scope().leaflet.map,
+                southWest = new L.LatLng(40.97989806962013, -74.53125),
+                northEast = new L.LatLng(40.97989806962013, -74.53125),
+                bounds = new L.LatLngBounds(southWest, northEast);
+
+            expect(map.getBounds().equals(bounds)).toEqual(false);
+
+            $rootScope.$broadcast('leafletDirectiveSetMap',
+                ['fitBounds', bounds]);
+
+            expect(map.getBounds().equals(bounds)).toEqual(true);
+        });
+    });
 });
