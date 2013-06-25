@@ -66,7 +66,12 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
             setupMaxBounds();
             setupMarkers();
             setupPaths();
-            
+
+            $scope.$on('leafletDirectiveSetMap', function(event, message) {
+                var meth = message.shift();
+                map[meth].apply(map, message);
+            });
+
             function setupMaxBounds() {
                 if (!$scope.maxBounds) {
                     return;
@@ -97,7 +102,7 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
                 lng:$parse("center.lng"),
                 zoom:$parse("center.zoom")
             };
-        
+
             function setupCenter() {
                 $scope.$watch("center", function (center /*, oldValue */) {
                     if (!center) {
@@ -124,9 +129,9 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
                     }
                     if (angular.isUndefined($scope.center) || $scope.center.zoom !== map.getZoom()) {
                         $scope.$apply(function (s) {
-                            centerModel.zoom.assign(s,map.getZoom());
-                            centerModel.lat.assign(s,map.getCenter().lat);
-                            centerModel.lng.assign(s,map.getCenter().lng);
+                            centerModel.zoom.assign(s, map.getZoom());
+                            centerModel.lat.assign(s, map.getCenter().lat);
+                            centerModel.lng.assign(s, map.getCenter().lng);
                         });
                     }
                 });
