@@ -43,8 +43,8 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
         template: '<div class="angular-leaflet-map"></div>',
         link: function ($scope, element, attrs /*, ctrl */) {
 
-            if (attrs.width) {element.css('width', attrs.width)};
-            if (attrs.height) {element.css('height', attrs.height)};
+            if (attrs.width) {element.css('width', attrs.width);}
+            if (attrs.height) {element.css('height', attrs.height);}
 
             $scope.leaflet = {};
             $scope.leaflet.maxZoom = !!(attrs.defaults && $scope.defaults && $scope.defaults.maxZoom) ? parseInt($scope.defaults.maxZoom, 10) : defaults.maxZoom;
@@ -78,10 +78,8 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
                 }
 
                 if ($scope.tiles) {
-                    if ($scope.tiles.tileLayer) {$scope.leaflet.tileLayer = $scope.tiles.tileLayer};
-                    if ($scope.tiles.tileLayerOptions.attribution) {
-                        defaults.tileLayerOptions.attribution = $scope.tiles.tileLayerOptions.attribution;
-                    };
+                    if ($scope.tiles.tileLayer) {$scope.leaflet.tileLayer = $scope.tiles.tileLayer;}
+                    if ($scope.tiles.tileLayerOptions.attribution) {defaults.tileLayerOptions.attribution = $scope.tiles.tileLayerOptions.attribution;}
 
                 }
 
