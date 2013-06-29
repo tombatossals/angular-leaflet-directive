@@ -6,6 +6,7 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
         maxZoom: 14,
         tileLayer: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
         tileLayerOptions: {
+            attribution: 'Tiles &copy; Open Street Maps'
         },
         icon: {
             url: 'http://cdn.leafletjs.com/leaflet-0.5.1/images/marker-icon.png',
@@ -36,13 +37,17 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
             maxBounds: '=maxbounds',
             markers: '=markers',
             defaults: '=defaults',
-            paths: '=paths'
+            paths: '=paths',
+            tiles: '=tiles'
         },
         template: '<div class="angular-leaflet-map"></div>',
         link: function ($scope, element, attrs /*, ctrl */) {
+
+            if (attrs.width) {element.css('width', attrs.width);}
+            if (attrs.height) {element.css('height', attrs.height);}
+
             $scope.leaflet = {};
             $scope.leaflet.maxZoom = !!(attrs.defaults && $scope.defaults && $scope.defaults.maxZoom) ? parseInt($scope.defaults.maxZoom, 10) : defaults.maxZoom;
-
             var map = new L.Map(element[0], {
                 maxZoom: $scope.leaflet.maxZoom});
             map.setView([0, 0], 1);
@@ -50,18 +55,7 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
             $scope.leaflet.tileLayer = !!(attrs.defaults && $scope.defaults && $scope.defaults.tileLayer) ? $scope.defaults.tileLayer : defaults.tileLayer;
             $scope.leaflet.map = !!attrs.testing ? map : 'Add testing="testing" to <leaflet> tag to inspect this object';
 
-            // build custom options for tileLayer
-            if ($scope.defaults && $scope.defaults.tileLayerOptions) {
-                for (var key in $scope.defaults.tileLayerOptions) {
-                    defaults.tileLayerOptions[key] = $scope.defaults.tileLayerOptions[key];
-                }
-            }
-            var tileLayerObj = L.tileLayer(
-                    $scope.leaflet.tileLayer, defaults.tileLayerOptions);
-            tileLayerObj.addTo(map);
-            $scope.leaflet.tileLayerObj = !!attrs.testing ?
-                tileLayerObj : 'Add testing="testing" to <leaflet> tag to inspect this object';
-
+            setupTiles();
             setupCenter();
             setupMaxBounds();
             setupMarkers();
@@ -73,6 +67,28 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
                 var meth = message.shift();
                 map[meth].apply(map, message);
             });
+
+            function setupTiles(){
+                 // TODO build custom object for tiles, actually only the tile string
+
+                 if ($scope.defaults && $scope.defaults.tileLayerOptions) {
+                    for (var key in $scope.defaults.tileLayerOptions) {
+                        defaults.tileLayerOptions[key] = $scope.defaults.tileLayerOptions[key];
+                    }
+                }
+
+                if ($scope.tiles) {
+                    if ($scope.tiles.tileLayer) {$scope.leaflet.tileLayer = $scope.tiles.tileLayer;}
+                    if ($scope.tiles.tileLayerOptions.attribution) {defaults.tileLayerOptions.attribution = $scope.tiles.tileLayerOptions.attribution;}
+
+                }
+
+                var tileLayerObj = L.tileLayer(
+                $scope.leaflet.tileLayer, defaults.tileLayerOptions);
+                tileLayerObj.addTo(map);
+                $scope.leaflet.tileLayerObj = !!attrs.testing ?
+                tileLayerObj : 'Add testing="testing" to <leaflet> tag to inspect this object';
+            }
 
             function setupMaxBounds() {
                 if (!$scope.maxBounds) {
@@ -223,10 +239,10 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
 
             function buildMarker(name, data) {
                 var marker = new L.marker($scope.markers[name],
-                        {
-                            icon: buildIcon(),
-                            draggable: data.draggable ? true : false
-                        }
+                    {
+                        icon: buildIcon(),
+                        draggable: data.draggable ? true : false
+                    }
                 );
                 if (data.message) {
                     marker.bindPopup(data.message);
@@ -330,12 +346,12 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
 
             function convertToLeafletLatLngs(latlngs) {
                 var leafletLatLngs = latlngs
-                    .filter(function (latlng) {
-                        return !!latlng.lat && !!latlng.lng;
-                    })
-                    .map(function (latlng) {
-                        return new L.LatLng(latlng.lat, latlng.lng);
-                    });
+                .filter(function (latlng) {
+                    return !!latlng.lat && !!latlng.lng;
+                })
+                .map(function (latlng) {
+                    return new L.LatLng(latlng.lat, latlng.lng);
+                });
                 return leafletLatLngs;
             }
         }
