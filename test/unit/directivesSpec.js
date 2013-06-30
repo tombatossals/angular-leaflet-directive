@@ -11,7 +11,7 @@ describe('Directive: leaflet', function() {
         inject(function($rootScope, $compile) {
             var element = angular.element('<leaflet></leaflet>');
             element = $compile(element)($rootScope);
-            expect(element.text()).toEqual('+-Powered by Leaflet');
+            expect(element.text()).toEqual('+-Powered by Leaflet — Tiles © Open Street Maps');
         });
     });
 
