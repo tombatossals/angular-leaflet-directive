@@ -9,17 +9,10 @@
     <![endif]-->
     <script>
         var app = angular.module("demoapp", ["leaflet-directive"]);
-        app.controller("DemoController", [ "$scope", function($scope) {
-        }]);
+        app.controller("DemoController", [ "$scope", function($scope) {}]);
     </script>
-    <style>
-        .angular-leaflet-map {
-            width: 640px;
-            height: 480px;
-        }
-    </style>
   </head>
   <body ng-controller="DemoController">
-    <leaflet></leaflet>
+    <leaflet width="640px" height="480px"></leaflet>
   </body>
 </html>
