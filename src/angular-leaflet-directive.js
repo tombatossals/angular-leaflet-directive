@@ -37,6 +37,7 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
         scope: {
             center: '=center',
             maxBounds: '=maxbounds',
+            marker: '=marker',
             markers: '=markers',
             defaults: '=defaults',
             paths: '=paths',
@@ -44,15 +45,23 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
         },
         template: '<div class="angular-leaflet-map"></div>',
         link: function ($scope, element, attrs /*, ctrl */) {
+            var centerModel = {
+                lat:$parse("center.lat"),
+                lng:$parse("center.lng"),
+                zoom:$parse("center.zoom")
+            };
 
-            if (attrs.width) {element.css('width', attrs.width);}
-            if (attrs.height) {element.css('height', attrs.height);}
+            if (attrs.width) {
+                element.css('width', attrs.width);
+            }
+            if (attrs.height) {
+                element.css('height', attrs.height);
+            }
 
             $scope.leaflet = {};
             $scope.leaflet.maxZoom = !!(attrs.defaults && $scope.defaults && $scope.defaults.maxZoom) ?
                 parseInt($scope.defaults.maxZoom, 10) : defaults.maxZoom;
-            var map = new L.Map(element[0], {
-                maxZoom: $scope.leaflet.maxZoom});
+            var map = new L.Map(element[0], { maxZoom: $scope.leaflet.maxZoom });
             map.setView([0, 0], 1);
 
             $scope.leaflet.tileLayer = !!(attrs.defaults && $scope.defaults && $scope.defaults.tileLayer) ?
@@ -121,12 +130,6 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
                     });
                 }
             }
-
-            var centerModel = {
-                lat:$parse("center.lat"),
-                lng:$parse("center.lng"),
-                zoom:$parse("center.zoom")
-            };
 
             function setupCenter() {
                 $scope.$watch("center", function (center) {
