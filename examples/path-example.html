@@ -2,7 +2,8 @@
     <head>
         <script src="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
-        <script src="../dist/angular-leaflet-directive.min.js"></script>
+        <!--<script src="../dist/angular-leaflet-directive.min.js"></script>-->
+        <script src="../src/angular-leaflet-directive.js"></script>
         <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.css" />
         <!--[if lte IE 8]>
         <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.4/leaflet.ie.css" />
@@ -38,16 +39,18 @@
                         lng: document.getElementById('new_mm_lng').value,
                         draggable: true
                     };
-                    $scope.path.latlngs.push($scope.markers[m_key]);
+                    $scope.paths.p1.latlngs.push($scope.markers[m_key]);
                 }
 
                 $scope.deleteMarker = function(m_key) {
                     var marker = $scope.markers[m_key];
 
-                    for (var idx in $scope.path.latlngs) {
-                        var p = $scope.path.latlngs[idx];
-                        if (p.lat === marker.lat && p.lng === marker.lng) {
-                            $scope.path.latlngs.splice(idx, 1);
+                    for (var pkey in $scope.paths) {
+                        for (var j in $scope.paths[pkey].latlngs) {
+                            var p = $scope.paths[pkey].latlngs[j];
+                            if (p === marker) {
+                                $scope.paths[pkey].latlngs.splice(j, 1);
+                            }
                         }
                     }
 
