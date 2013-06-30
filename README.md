@@ -56,20 +56,9 @@ angular.extend($scope, {
 });
 
 ```
-
 Finally, you must include the markup directive on your HTML page, like this:
 ```html
-<leaflet defaults="defaults" center="center"></leaflet>
-```
-
-Also remember to set the dimension of the map:
-```css
-<style>
-    .angular-leaflet-map {
-        width: 640px;
-        height: 480px;
-    }
-</style>
+<leaflet defaults="defaults" center="center" height="480px" width="640px"></leaflet>
 ```
 
 

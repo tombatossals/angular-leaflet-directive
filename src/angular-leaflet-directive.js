@@ -28,6 +28,8 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
         }
     };
 
+    var str_inspect_hint = 'Add testing="testing" to <leaflet> tag to inspect this object';
+
     return {
         restrict: "E",
         replace: true,
@@ -35,6 +37,8 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
         scope: {
             center: '=center',
             maxBounds: '=maxbounds',
+            bounds: '=bounds',
+            marker: '=marker',
             markers: '=markers',
             defaults: '=defaults',
             paths: '=paths',
@@ -42,22 +46,33 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
         },
         template: '<div class="angular-leaflet-map"></div>',
         link: function ($scope, element, attrs /*, ctrl */) {
+            var centerModel = {
+                lat:$parse("center.lat"),
+                lng:$parse("center.lng"),
+                zoom:$parse("center.zoom")
+            };
 
-            if (attrs.width) {element.css('width', attrs.width);}
-            if (attrs.height) {element.css('height', attrs.height);}
+            if (attrs.width) {
+                element.css('width', attrs.width);
+            }
+            if (attrs.height) {
+                element.css('height', attrs.height);
+            }
 
             $scope.leaflet = {};
-            $scope.leaflet.maxZoom = !!(attrs.defaults && $scope.defaults && $scope.defaults.maxZoom) ? parseInt($scope.defaults.maxZoom, 10) : defaults.maxZoom;
-            var map = new L.Map(element[0], {
-                maxZoom: $scope.leaflet.maxZoom});
+            $scope.leaflet.maxZoom = !!(attrs.defaults && $scope.defaults && $scope.defaults.maxZoom) ?
+                parseInt($scope.defaults.maxZoom, 10) : defaults.maxZoom;
+            var map = new L.Map(element[0], { maxZoom: $scope.leaflet.maxZoom });
             map.setView([0, 0], 1);
 
-            $scope.leaflet.tileLayer = !!(attrs.defaults && $scope.defaults && $scope.defaults.tileLayer) ? $scope.defaults.tileLayer : defaults.tileLayer;
-            $scope.leaflet.map = !!attrs.testing ? map : 'Add testing="testing" to <leaflet> tag to inspect this object';
+            $scope.leaflet.tileLayer = !!(attrs.defaults && $scope.defaults && $scope.defaults.tileLayer) ?
+                $scope.defaults.tileLayer : defaults.tileLayer;
+            $scope.leaflet.map = !!attrs.testing ? map : str_inspect_hint;
 
             setupTiles();
             setupCenter();
             setupMaxBounds();
+            setupBounds();
             setupMarkers();
             setupPaths();
 
@@ -67,6 +82,15 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
                 var meth = message.shift();
                 map[meth].apply(map, message);
             });
+
+            $scope.safeApply = function(fn) {
+                var phase = this.$root.$$phase;
+                if (phase == '$apply' || phase == '$digest') {
+                    $scope.$eval(fn);
+                } else {
+                    $scope.$apply(fn);
+                }
+            };
 
             function setupTiles(){
                  // TODO build custom object for tiles, actually only the tile string
@@ -78,23 +102,26 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
                 }
 
                 if ($scope.tiles) {
-                    if ($scope.tiles.tileLayer) {$scope.leaflet.tileLayer = $scope.tiles.tileLayer;}
-                    if ($scope.tiles.tileLayerOptions.attribution) {defaults.tileLayerOptions.attribution = $scope.tiles.tileLayerOptions.attribution;}
-
+                    if ($scope.tiles.tileLayer) {
+                        $scope.leaflet.tileLayer = $scope.tiles.tileLayer;
+                    }
+                    if ($scope.tiles.tileLayerOptions.attribution) {
+                        defaults.tileLayerOptions.attribution = $scope.tiles.tileLayerOptions.attribution;
+                    }
                 }
 
                 var tileLayerObj = L.tileLayer(
-                $scope.leaflet.tileLayer, defaults.tileLayerOptions);
+                    $scope.leaflet.tileLayer, defaults.tileLayerOptions);
                 tileLayerObj.addTo(map);
-                $scope.leaflet.tileLayerObj = !!attrs.testing ?
-                tileLayerObj : 'Add testing="testing" to <leaflet> tag to inspect this object';
+
+                $scope.leaflet.tileLayerObj = !!attrs.testing ? tileLayerObj : str_inspect_hint;
             }
 
             function setupMaxBounds() {
                 if (!$scope.maxBounds) {
                     return;
                 }
-                if ($scope.maxBounds && $scope.maxBounds.southWest && $scope.maxBounds.southWest.lat && $scope.maxBounds.southWest.lng && $scope.maxBounds.northEast && $scope.maxBounds.northEast.lat && $scope.maxBounds.northEast.lng ) {
+                if ($scope.maxBounds.southWest && $scope.maxBounds.southWest.lat && $scope.maxBounds.southWest.lng && $scope.maxBounds.northEast && $scope.maxBounds.northEast.lat && $scope.maxBounds.northEast.lng) {
                     map.setMaxBounds(
                         new L.LatLngBounds(
                             new L.LatLng($scope.maxBounds.southWest.lat, $scope.maxBounds.southWest.lng),
@@ -102,7 +129,7 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
                         )
                     );
 
-                    $scope.$watch("maxBounds", function (maxBounds /*, oldValue */) {
+                    $scope.$watch("maxBounds", function (maxBounds) {
                         if (maxBounds.southWest && maxBounds.northEast && maxBounds.southWest.lat && maxBounds.southWest.lng && maxBounds.northEast.lat && maxBounds.northEast.lng) {
                             map.setMaxBounds(
                                 new L.LatLngBounds(
@@ -115,14 +142,29 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
                 }
             }
 
-            var centerModel = {
-                lat:$parse("center.lat"),
-                lng:$parse("center.lng"),
-                zoom:$parse("center.zoom")
-            };
+            function tryFitBounds(bounds) {
+                if (bounds) {
+                    var southWest = bounds.southWest;
+                    var northEast = bounds.northEast;
+                    if (southWest && northEast && southWest.lat && southWest.lng && northEast.lat && northEast.lng) {
+                        var sw_latlng = new L.LatLng(southWest.lat, southWest.lng);
+                        var ne_latlng = new L.LatLng(northEast.lat, northEast.lng);
+                        map.fitBounds(new L.LatLngBounds(sw_latlng, ne_latlng));
+                    }
+                }
+            }
+
+            function setupBounds() {
+                if (!$scope.bounds) {
+                    return;
+                }
+                $scope.$watch('bounds', function (new_bounds) {
+                    tryFitBounds(new_bounds);
+                });
+            }
 
             function setupCenter() {
-                $scope.$watch("center", function (center /*, oldValue */) {
+                $scope.$watch("center", function (center) {
                     if (!center) {
                         $log.warn("[AngularJS - Leaflet] 'center' is undefined in the current scope, did you forget to initialize it?");
                         return;
@@ -135,7 +177,7 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
                 }, true);
 
                 map.on("dragend", function (/* event */) {
-                    $scope.$apply(function (scope) {
+                    $scope.safeApply(function (scope) {
                         centerModel.lat.assign(scope, map.getCenter().lat);
                         centerModel.lng.assign(scope, map.getCenter().lng);
                     });
@@ -146,7 +188,7 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
                         $log.warn("[AngularJS - Leaflet] 'center' is undefined in the current scope, did you forget to initialize it?");
                     }
                     if (angular.isUndefined($scope.center) || $scope.center.zoom !== map.getZoom()) {
-                        $scope.$apply(function (s) {
+                        $scope.safeApply(function (s) {
                             centerModel.zoom.assign(s, map.getZoom());
                             centerModel.lat.assign(s, map.getCenter().lat);
                             centerModel.lng.assign(s, map.getCenter().lng);
@@ -157,7 +199,7 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
 
             function setupMarkers() {
                 var markers = {};
-                $scope.leaflet.markers = !!attrs.testing ? markers : 'Add testing="testing" to <leaflet> tag to inspect this object';
+                $scope.leaflet.markers = !!attrs.testing ? markers : str_inspect_hint;
 
                 if (!$scope.markers) {
                     return;
@@ -167,7 +209,7 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
                     markers[name] = createMarker(name, $scope.markers[name], map);
                 }
 
-                $scope.$watch("markers", function (newMarkers /*, oldMarkers*/) {
+                $scope.$watch("markers", function (newMarkers) {
                     for (var new_name in newMarkers) {
                         if (markers[new_name] === undefined) {
                             markers[new_name] = createMarker(new_name, newMarkers[new_name], map);
@@ -193,7 +235,7 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
                 }
 
                 marker.on("dragend", function () {
-                    $scope.$apply(function (scope) {
+                    $scope.safeApply(function (scope) {
                         scopeMarker.lat = marker.getLatLng().lat;
                         scopeMarker.lng = marker.getLatLng().lng;
                     });
@@ -202,9 +244,10 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
                     }
                 });
 
-                $scope.$watch('markers.' + name, function (data, oldData) {
+                var clearWatch = $scope.$watch('markers.'+name, function (data, oldData) {
                     if (!data) {
                         map.removeLayer(marker);
+                        clearWatch();
                         return;
                     }
 
@@ -266,7 +309,7 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
 
             function setupPaths() {
                 var paths = {};
-                $scope.leaflet.paths = !!attrs.testing ? paths : 'Add testing="testing" to <leaflet> tag to inspect this object';
+                $scope.leaflet.paths = !!attrs.testing ? paths : str_inspect_hint;
 
                 if (!$scope.paths) {
                     return;
@@ -295,7 +338,11 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
             }
 
             function createPath(name, scopePath, map) {
-                var polyline = new L.Polyline([], { weight: defaults.path.weight, color: defaults.path.color, opacity: defaults.path.opacity });
+                var polyline = new L.Polyline([], {
+                    weight: defaults.path.weight,
+                    color: defaults.path.color,
+                    opacity: defaults.path.opacity
+                });
 
                 if (scopePath.latlngs !== undefined) {
                     var latlngs = convertToLeafletLatLngs(scopePath.latlngs);
@@ -316,9 +363,10 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
 
                 map.addLayer(polyline);
 
-                $scope.$watch('paths.' + name, function (data, oldData) {
+                var clearWatch = $scope.$watch('paths.' + name, function (data, oldData) {
                     if (!data) {
                         map.removeLayer(polyline);
+                        clearWatch();
                         return;
                     }
 
@@ -345,13 +393,12 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
             }
 
             function convertToLeafletLatLngs(latlngs) {
-                var leafletLatLngs = latlngs
-                .filter(function (latlng) {
+                var leafletLatLngs = latlngs.filter(function (latlng) {
                     return !!latlng.lat && !!latlng.lng;
-                })
-                .map(function (latlng) {
+                }).map(function (latlng) {
                     return new L.LatLng(latlng.lat, latlng.lng);
                 });
+
                 return leafletLatLngs;
             }
         }
