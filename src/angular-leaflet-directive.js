@@ -331,9 +331,10 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
 
                 map.addLayer(polyline);
 
-                $scope.$watch('paths.' + name, function (data, oldData) {
+                var clearWatch = $scope.$watch('paths.' + name, function (data, oldData) {
                     if (!data) {
                         map.removeLayer(polyline);
+                        clearWatch();
                         return;
                     }
 
