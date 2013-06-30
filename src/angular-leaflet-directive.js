@@ -37,6 +37,7 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
         scope: {
             center: '=center',
             maxBounds: '=maxbounds',
+            bounds: '=bounds',
             marker: '=marker',
             markers: '=markers',
             defaults: '=defaults',
@@ -71,6 +72,7 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
             setupTiles();
             setupCenter();
             setupMaxBounds();
+            setupBounds();
             setupMarkers();
             setupPaths();
 
@@ -80,6 +82,15 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
                 var meth = message.shift();
                 map[meth].apply(map, message);
             });
+
+            $scope.safeApply = function(fn) {
+                var phase = this.$root.$$phase;
+                if (phase == '$apply' || phase == '$digest') {
+                    $scope.$eval(fn);
+                } else {
+                    $scope.$apply(fn);
+                }
+            };
 
             function setupTiles(){
                  // TODO build custom object for tiles, actually only the tile string
@@ -131,6 +142,27 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
                 }
             }
 
+            function tryFitBounds(bounds) {
+                if (bounds) {
+                    var southWest = bounds.southWest;
+                    var northEast = bounds.northEast;
+                    if (southWest && northEast && southWest.lat && southWest.lng && northEast.lat && northEast.lng) {
+                        var sw_latlng = new L.LatLng(southWest.lat, southWest.lng);
+                        var ne_latlng = new L.LatLng(northEast.lat, northEast.lng);
+                        map.fitBounds(new L.LatLngBounds(sw_latlng, ne_latlng));
+                    }
+                }
+            }
+
+            function setupBounds() {
+                if (!$scope.bounds) {
+                    return;
+                }
+                $scope.$watch('bounds', function (new_bounds) {
+                    tryFitBounds(new_bounds);
+                });
+            }
+
             function setupCenter() {
                 $scope.$watch("center", function (center) {
                     if (!center) {
@@ -145,7 +177,7 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
                 }, true);
 
                 map.on("dragend", function (/* event */) {
-                    $scope.$apply(function (scope) {
+                    $scope.safeApply(function (scope) {
                         centerModel.lat.assign(scope, map.getCenter().lat);
                         centerModel.lng.assign(scope, map.getCenter().lng);
                     });
@@ -156,7 +188,7 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
                         $log.warn("[AngularJS - Leaflet] 'center' is undefined in the current scope, did you forget to initialize it?");
                     }
                     if (angular.isUndefined($scope.center) || $scope.center.zoom !== map.getZoom()) {
-                        $scope.$apply(function (s) {
+                        $scope.safeApply(function (s) {
                             centerModel.zoom.assign(s, map.getZoom());
                             centerModel.lat.assign(s, map.getCenter().lat);
                             centerModel.lng.assign(s, map.getCenter().lng);
@@ -203,7 +235,7 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
                 }
 
                 marker.on("dragend", function () {
-                    $scope.$apply(function (scope) {
+                    $scope.safeApply(function (scope) {
                         scopeMarker.lat = marker.getLatLng().lat;
                         scopeMarker.lng = marker.getLatLng().lng;
                     });
