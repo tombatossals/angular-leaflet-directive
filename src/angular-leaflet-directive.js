@@ -212,9 +212,10 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
                     }
                 });
 
-                $scope.$watch('markers.' + name, function (data, oldData) {
+                var clearWatch = $scope.$watch('markers.'+name, function (data, oldData) {
                     if (!data) {
                         map.removeLayer(marker);
+                        clearWatch();
                         return;
                     }
 
