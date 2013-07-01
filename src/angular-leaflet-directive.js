@@ -51,18 +51,26 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
                 lng:$parse("center.lng"),
                 zoom:$parse("center.zoom")
             };
-
+            
             if (attrs.width) {
                 element.css('width', attrs.width);
             }
             if (attrs.height) {
                 element.css('height', attrs.height);
             }
+            
+            var controls = {
+                zoom: true
+            }
+
+            if (attrs.zoom == "false"){
+                controls.zoom = false;    
+            }
 
             $scope.leaflet = {};
             $scope.leaflet.maxZoom = !!(attrs.defaults && $scope.defaults && $scope.defaults.maxZoom) ?
                 parseInt($scope.defaults.maxZoom, 10) : defaults.maxZoom;
-            var map = new L.Map(element[0], { maxZoom: $scope.leaflet.maxZoom });
+            var map = new L.Map(element[0], { maxZoom: $scope.leaflet.maxZoom, zoomControl: controls.zoom});
             map.setView([0, 0], 1);
 
             $scope.leaflet.tileLayer = !!(attrs.defaults && $scope.defaults && $scope.defaults.tileLayer) ?
