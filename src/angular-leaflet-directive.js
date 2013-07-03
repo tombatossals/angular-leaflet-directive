@@ -210,19 +210,18 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
                 }
 
                 $scope.$watch("markers", function (newMarkers) {
-                    for (var new_name in newMarkers) {
-                        if (markers[new_name] === undefined) {
-                            markers[new_name] = createMarker(new_name, newMarkers[new_name], map);
-                        }
-                    }
-
                     // Delete markers from the array
                     for (var name in markers) {
                         if (newMarkers[name] === undefined) {
                             delete markers[name];
                         }
                     }
-
+                    // add new markers
+                    for (var new_name in newMarkers) {
+                        if (markers[new_name] === undefined) {
+                            markers[new_name] = createMarker(new_name, newMarkers[new_name], map);
+                        }
+                    }
                 }, true);
             }
 
@@ -244,15 +243,15 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
                     }
                 });
 
-                var clearWatch = $scope.$watch('markers.'+name, function (data, oldData) {
+                var clearWatch = $scope.$watch('markers.'+name, function (data, old_data) {
                     if (!data) {
                         map.removeLayer(marker);
                         clearWatch();
                         return;
                     }
 
-                    if (oldData) {
-                        if (data.draggable !== undefined && data.draggable !== oldData.draggable) {
+                    if (old_data) {
+                        if (data.draggable !== undefined && data.draggable !== old_data.draggable) {
                             if (data.draggable === true) {
                                 marker.dragging.enable();
                             } else {
@@ -260,7 +259,7 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
                             }
                         }
 
-                        if (data.focus !== undefined && data.focus !== oldData.focus) {
+                        if (data.focus !== undefined && data.focus !== old_data.focus) {
                             if (data.focus === true) {
                                 marker.openPopup();
                             } else {
@@ -268,12 +267,16 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
                             }
                         }
 
-                        if (data.message !== undefined && data.message !== oldData.message) {
+                        if (data.message !== undefined && data.message !== old_data.message) {
                             marker.bindPopup(data);
                         }
 
-                        if (data.lat !== oldData.lat || data.lng !== oldData.lng) {
+                        if (data.lat !== old_data.lat || data.lng !== old_data.lng) {
                             marker.setLatLng(new L.LatLng(data.lat, data.lng));
+                        }
+
+                        if (data.icon && data.icon !== old_data.icon) {
+                            marker.setIcon(data.icon);
                         }
                     }
                 }, true);
@@ -281,9 +284,15 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
             }
 
             function buildMarker(name, data) {
+                var micon = null;
+                if (data.icon) {
+                    micon = data.icon;
+                } else {
+                    micon = buildIcon();
+                }
                 var marker = new L.marker($scope.markers[name],
                     {
-                        icon: buildIcon(),
+                        icon: micon,
                         draggable: data.draggable ? true : false
                     }
                 );
