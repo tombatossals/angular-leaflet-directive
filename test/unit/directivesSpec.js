@@ -25,6 +25,16 @@ describe('Directive: leaflet', function() {
         });
     });
 
+    it('should set the min zoom if specified', function() {
+        inject(function($rootScope, $compile) {
+            angular.extend($rootScope, { defaults: { minZoom: 4 } });
+            var element = angular.element('<leaflet defaults="defaults" testing="testing"></leaflet>');
+            element = $compile(element)($rootScope);
+            var map = element.scope().leaflet.map;
+            expect(map.getMinZoom()).toEqual(4);
+        });
+    });
+
     it('should set tileLayer options if specified', function() {
         inject(function($rootScope, $compile) {
             angular.extend($rootScope, {
