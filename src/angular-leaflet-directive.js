@@ -197,6 +197,15 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
                 });
             }
 
+            function setupMainMaerker() {
+                var main_marker;
+                $scope.leaflet.marker = !!attrs.testing ? main_marker : str_inspect_hint;
+                if (!$scope.marker) {
+                    return;
+                }
+                main_marker = createMarker($scope.marker);
+            }
+
             function setupMarkers() {
                 var markers = {};
                 $scope.leaflet.markers = !!attrs.testing ? markers : str_inspect_hint;
@@ -225,20 +234,20 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
                 }, true);
             }
 
-            function createMarker(name, scopeMarker, map) {
-                var marker = buildMarker(name, scopeMarker);
+            function createMarker(name, marker_data, map) {
+                var marker = buildMarker(marker_data);
                 map.addLayer(marker);
 
-                if (scopeMarker.focus === true) {
+                if (marker_data.focus === true) {
                     marker.openPopup();
                 }
 
                 marker.on("dragend", function () {
                     $scope.safeApply(function (scope) {
-                        scopeMarker.lat = marker.getLatLng().lat;
-                        scopeMarker.lng = marker.getLatLng().lng;
+                        marker_data.lat = marker.getLatLng().lat;
+                        marker_data.lng = marker.getLatLng().lng;
                     });
-                    if (scopeMarker.message) {
+                    if (marker_data.message) {
                         marker.openPopup();
                     }
                 });
@@ -283,14 +292,14 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
                 return marker;
             }
 
-            function buildMarker(name, data) {
+            function buildMarker(data) {
                 var micon = null;
                 if (data.icon) {
                     micon = data.icon;
                 } else {
                     micon = buildIcon();
                 }
-                var marker = new L.marker($scope.markers[name],
+                var marker = new L.marker(data,
                     {
                         icon: micon,
                         draggable: data.draggable ? true : false
