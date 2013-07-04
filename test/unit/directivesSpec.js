@@ -130,6 +130,46 @@ describe('Directive: leaflet', function() {
             .toEqual('this is paris');
     });
 
+    it('should watch marker icon bindings', function() {
+        var leaf_icon = L.icon({
+            iconUrl: 'img/leaf-green.png',
+            shadowUrl: 'img/leaf-shadow.png',
+            iconSize:     [38, 95],
+            shadowSize:   [50, 64],
+            iconAnchor:   [22, 94],
+            shadowAnchor: [4, 62],
+            popupAnchor:  [-3, -76]
+        });
+        var default_icon = L.icon({
+            iconUrl: 'http://cdn.leafletjs.com/leaflet-0.5.1/images/marker-icon.png',
+            shadowUrl: 'http://cdn.leafletjs.com/leaflet-0.5.1/images/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 40],
+            popupAnchor: [0, 40],
+            shadowSize: [41, 41],
+            shadowAnchor: [12, 40]
+        });
+        var markers = {
+            m1: {
+                lat: 51.505,
+                lng: -0.09,
+                message: "I'm a static marker",
+                icon: leaf_icon,
+            },
+        };
+
+        angular.extend($rootScope, { markers: markers });
+        var element = angular.element('<leaflet markers="markers" testing="testing"></leaflet>');
+        element = $compile(element)($rootScope);
+        var leafletMarkers = element.scope().leaflet.markers;
+        $rootScope.$digest();
+        expect(leafletMarkers.m1.options.icon.iconUrl).toEqual(leaf_icon.iconUrl);
+
+        markers.m1.icon = default_icon;
+        $rootScope.$digest();
+        expect(leafletMarkers.m1.options.icon.iconUrl).toEqual(default_icon.iconUrl);
+    });
+
     // Polyline
     it('should create polyline on the map', function() {
         var latlngs1 = [
