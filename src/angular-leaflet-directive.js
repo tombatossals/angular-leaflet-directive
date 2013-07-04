@@ -203,7 +203,7 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
                 if (!$scope.marker) {
                     return;
                 }
-                main_marker = createMarker($scope.marker);
+                main_marker = createMarker('marker', $scope.marker, map);
             }
 
             function setupMarkers() {
@@ -215,7 +215,8 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
                 }
 
                 for (var name in $scope.markers) {
-                    markers[name] = createMarker(name, $scope.markers[name], map);
+                    markers[name] = createMarker(
+                            'markers.'+name, $scope.markers[name], map);
                 }
 
                 $scope.$watch("markers", function (newMarkers) {
@@ -228,13 +229,14 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
                     // add new markers
                     for (var new_name in newMarkers) {
                         if (markers[new_name] === undefined) {
-                            markers[new_name] = createMarker(new_name, newMarkers[new_name], map);
+                            markers[new_name] = createMarker(
+                                'markers.'+new_name, newMarkers[new_name], map);
                         }
                     }
                 }, true);
             }
 
-            function createMarker(name, marker_data, map) {
+            function createMarker(scope_watch_name, marker_data, map) {
                 var marker = buildMarker(marker_data);
                 map.addLayer(marker);
 
@@ -252,7 +254,7 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
                     }
                 });
 
-                var clearWatch = $scope.$watch('markers.'+name, function (data, old_data) {
+                var clearWatch = $scope.$watch(scope_watch_name, function (data, old_data) {
                     if (!data) {
                         map.removeLayer(marker);
                         clearWatch();
