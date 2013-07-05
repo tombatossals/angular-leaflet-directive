@@ -1,0 +1,70 @@
+<html ng-app="demoapp">
+  <head>
+    <script src="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+    <!--<script src="../dist/angular-leaflet-directive.min.js"></script>-->
+    <script src="../src/angular-leaflet-directive.js"></script>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.css" />
+    <!--[if lte IE 8]>
+        <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.4/leaflet.ie.css" />
+    <![endif]-->
+    <script>
+        angular.module("demoapp", ["leaflet-directive"]);
+        function DemoController($scope) {
+            var local_icons = {
+                leaf_icon: L.icon({
+                    iconUrl: 'img/leaf-green.png',
+                    shadowUrl: 'img/leaf-shadow.png',
+
+                    iconSize:     [38, 95], // size of the icon
+                    shadowSize:   [50, 64], // size of the shadow
+                    iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+                    shadowAnchor: [4, 62],  // the same for the shadow
+                    popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+                }),
+                default_icon: L.icon({
+                    iconUrl: 'http://cdn.leafletjs.com/leaflet-0.5.1/images/marker-icon.png',
+                    shadowUrl: 'http://cdn.leafletjs.com/leaflet-0.5.1/images/marker-shadow.png',
+
+                    iconSize: [25, 41],
+                    iconAnchor: [12, 40],
+                    popupAnchor: [0, 40],
+
+                    shadowSize: [41, 41],
+                    shadowAnchor: [12, 40]
+                }),
+            }
+
+            angular.extend($scope, {
+                icons: local_icons
+            });
+
+            angular.extend($scope, {
+                london: {
+                    lat: 51.505,
+                    lng: -0.09,
+                    zoom: 8
+                },
+                markers: {
+                    m1: {
+                        lat: 51.505,
+                        lng: -0.09,
+                        message: "I'm a static marker",
+                        icon: local_icons.leaf_icon,
+                    },
+                }
+            });
+
+        };
+    </script>
+  </head>
+  <body ng-controller="DemoController">
+      <leaflet center="london" markers="markers" height="480px" width="640px">
+      </leaflet>
+
+      <p>change your icon here:</p>
+      <select ng-model="markers.m1.icon" ng-options="key for (key, val) in icons">
+      </select>
+
+  </body>
+</html>

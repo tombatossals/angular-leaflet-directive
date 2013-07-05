@@ -77,6 +77,7 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
             setupCenter();
             setupMaxBounds();
             setupBounds();
+            setupMainMaerker();
             setupMarkers();
             setupPaths();
 
@@ -201,62 +202,71 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
                 });
             }
 
+            function setupMainMaerker() {
+                var main_marker;
+                if (!$scope.marker) {
+                    return;
+                }
+                main_marker = createMarker('marker', $scope.marker, map);
+                $scope.leaflet.marker = !!attrs.testing ? main_marker : str_inspect_hint;
+            }
+
             function setupMarkers() {
                 var markers = {};
                 $scope.leaflet.markers = !!attrs.testing ? markers : str_inspect_hint;
-
                 if (!$scope.markers) {
                     return;
                 }
 
                 for (var name in $scope.markers) {
-                    markers[name] = createMarker(name, $scope.markers[name], map);
+                    markers[name] = createMarker(
+                            'markers.'+name, $scope.markers[name], map);
                 }
 
-                $scope.$watch("markers", function (newMarkers) {
-                    for (var new_name in newMarkers) {
-                        if (markers[new_name] === undefined) {
-                            markers[new_name] = createMarker(new_name, newMarkers[new_name], map);
-                        }
-                    }
-
+                $scope.$watch('markers', function(newMarkers) {
                     // Delete markers from the array
                     for (var name in markers) {
                         if (newMarkers[name] === undefined) {
                             delete markers[name];
                         }
                     }
-
+                    // add new markers
+                    for (var new_name in newMarkers) {
+                        if (markers[new_name] === undefined) {
+                            markers[new_name] = createMarker(
+                                'markers.'+new_name, newMarkers[new_name], map);
+                        }
+                    }
                 }, true);
             }
 
-            function createMarker(name, scopeMarker, map) {
-                var marker = buildMarker(name, scopeMarker);
+            function createMarker(scope_watch_name, marker_data, map) {
+                var marker = buildMarker(marker_data);
                 map.addLayer(marker);
 
-                if (scopeMarker.focus === true) {
+                if (marker_data.focus === true) {
                     marker.openPopup();
                 }
 
                 marker.on("dragend", function () {
                     $scope.safeApply(function (scope) {
-                        scopeMarker.lat = marker.getLatLng().lat;
-                        scopeMarker.lng = marker.getLatLng().lng;
+                        marker_data.lat = marker.getLatLng().lat;
+                        marker_data.lng = marker.getLatLng().lng;
                     });
-                    if (scopeMarker.message) {
+                    if (marker_data.message) {
                         marker.openPopup();
                     }
                 });
 
-                var clearWatch = $scope.$watch('markers.'+name, function (data, oldData) {
+                var clearWatch = $scope.$watch(scope_watch_name, function (data, old_data) {
                     if (!data) {
                         map.removeLayer(marker);
                         clearWatch();
                         return;
                     }
 
-                    if (oldData) {
-                        if (data.draggable !== undefined && data.draggable !== oldData.draggable) {
+                    if (old_data) {
+                        if (data.draggable !== undefined && data.draggable !== old_data.draggable) {
                             if (data.draggable === true) {
                                 marker.dragging.enable();
                             } else {
@@ -264,7 +274,7 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
                             }
                         }
 
-                        if (data.focus !== undefined && data.focus !== oldData.focus) {
+                        if (data.focus !== undefined && data.focus !== old_data.focus) {
                             if (data.focus === true) {
                                 marker.openPopup();
                             } else {
@@ -272,22 +282,32 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
                             }
                         }
 
-                        if (data.message !== undefined && data.message !== oldData.message) {
+                        if (data.message !== undefined && data.message !== old_data.message) {
                             marker.bindPopup(data);
                         }
 
-                        if (data.lat !== oldData.lat || data.lng !== oldData.lng) {
+                        if (data.lat !== old_data.lat || data.lng !== old_data.lng) {
                             marker.setLatLng(new L.LatLng(data.lat, data.lng));
+                        }
+
+                        if (data.icon && data.icon !== old_data.icon) {
+                            marker.setIcon(data.icon);
                         }
                     }
                 }, true);
                 return marker;
             }
 
-            function buildMarker(name, data) {
-                var marker = new L.marker($scope.markers[name],
+            function buildMarker(data) {
+                var micon = null;
+                if (data.icon) {
+                    micon = data.icon;
+                } else {
+                    micon = buildIcon();
+                }
+                var marker = new L.marker(data,
                     {
-                        icon: buildIcon(),
+                        icon: micon,
                         draggable: data.draggable ? true : false
                     }
                 );

@@ -2,8 +2,8 @@
   <head>
     <script src="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
-    <script src="../dist/angular-leaflet-directive.min.js"></script>
-    <!--<script src="../src/angular-leaflet-directive.js"></script>-->
+    <!--<script src="../dist/angular-leaflet-directive.min.js"></script>-->
+    <script src="../src/angular-leaflet-directive.js"></script>
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.css" />
     <!--[if lte IE 8]>
         <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.4/leaflet.ie.css" />
@@ -17,26 +17,19 @@
                     lng: -0.09,
                     zoom: 8
                 },
-                markers: {
-                    m1: {
-                        lat: 51.505,
-                        lng: -0.09,
-                        message: "I'm a static marker",
-                    },
-                    m2: {
-                        lat: 51,
-                        lng: 0,
-                        focus: true,
-                        message: "Hey, drag me if you want",
-                        draggable: true
-                    }
+                main_marker: {
+                    lat: 51,
+                    lng: 0,
+                    focus: true,
+                    message: "Hey, drag me if you want",
+                    draggable: true
                 }
             });
         };
     </script>
   </head>
   <body ng-controller="DemoController">
-      <leaflet center="london" markers="markers" height="480px" width="640px">
+      <leaflet center="london" marker="main_marker" height="480px" width="640px">
       </leaflet>
   </body>
 </html>
