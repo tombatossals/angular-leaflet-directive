@@ -4,6 +4,7 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
 
     var defaults = {
         maxZoom: 14,
+        minZoom: 1,
         tileLayer: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
         tileLayerOptions: {
             attribution: 'Tiles &copy; Open Street Maps'
@@ -60,9 +61,12 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
             }
 
             $scope.leaflet = {};
+
             $scope.leaflet.maxZoom = !!(attrs.defaults && $scope.defaults && $scope.defaults.maxZoom) ?
                 parseInt($scope.defaults.maxZoom, 10) : defaults.maxZoom;
-            var map = new L.Map(element[0], { maxZoom: $scope.leaflet.maxZoom });
+            $scope.leaflet.minZoom = !!(attrs.defaults && $scope.defaults && $scope.defaults.minZoom) ?
+                parseInt($scope.defaults.minZoom, 10) : defaults.minZoom;
+            var map = new L.Map(element[0], { maxZoom: $scope.leaflet.maxZoom, minZoom: $scope.leaflet.minZoom });
             map.setView([0, 0], 1);
 
             $scope.leaflet.tileLayer = !!(attrs.defaults && $scope.defaults && $scope.defaults.tileLayer) ?
