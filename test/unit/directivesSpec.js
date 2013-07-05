@@ -98,6 +98,38 @@ describe('Directive: leaflet', function() {
         expect(map.getZoom()).toEqual(8);
     });
 
+    // Marker
+    it('should create main marker on the map', function() {
+        var main_marker = {
+            lat: 0.966,
+            lng: 2.02
+        };
+        angular.extend($rootScope, { marker: main_marker });
+        var element = angular.element('<leaflet marker="marker" testing="testing"></leaflet>');
+        element = $compile(element)($rootScope);
+        var map = element.scope().leaflet.map;
+        var leafletMainMarker = element.scope().leaflet.marker;
+        $rootScope.$digest();
+        expect(leafletMainMarker.getLatLng().lat).toBeCloseTo(0.966);
+        expect(leafletMainMarker.getLatLng().lng).toBeCloseTo(2.02);
+    });
+
+    it('should bind popup to main marker if message is given', function() {
+        var marker = {
+            lat: 0.966,
+            lng: 2.02,
+            message: 'this is paris'
+        };
+        angular.extend($rootScope, { marker: marker});
+        var element = angular.element('<leaflet marker="marker" testing="testing"></leaflet>');
+        element = $compile(element)($rootScope);
+        var map = element.scope().map;
+        var leafletMainMarker = element.scope().leaflet.marker;
+        $rootScope.$digest();
+        expect(leafletMainMarker._popup._source._latlng.message)
+            .toEqual('this is paris');
+    });
+
     // Markers
     it('should create markers on the map', function() {
         var markers = {

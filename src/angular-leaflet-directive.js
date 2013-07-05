@@ -204,11 +204,11 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
 
             function setupMainMaerker() {
                 var main_marker;
-                $scope.leaflet.marker = !!attrs.testing ? main_marker : str_inspect_hint;
                 if (!$scope.marker) {
                     return;
                 }
                 main_marker = createMarker('marker', $scope.marker, map);
+                $scope.leaflet.marker = !!attrs.testing ? main_marker : str_inspect_hint;
             }
 
             function setupMarkers() {
