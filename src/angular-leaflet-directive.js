@@ -73,6 +73,7 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
             setupCenter();
             setupMaxBounds();
             setupBounds();
+            setupMainMaerker();
             setupMarkers();
             setupPaths();
 
@@ -209,7 +210,6 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
             function setupMarkers() {
                 var markers = {};
                 $scope.leaflet.markers = !!attrs.testing ? markers : str_inspect_hint;
-
                 if (!$scope.markers) {
                     return;
                 }
@@ -219,7 +219,7 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
                             'markers.'+name, $scope.markers[name], map);
                 }
 
-                $scope.$watch("markers", function (newMarkers) {
+                $scope.$watch('markers', function(newMarkers) {
                     // Delete markers from the array
                     for (var name in markers) {
                         if (newMarkers[name] === undefined) {
