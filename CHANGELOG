@@ -1,3 +1,6 @@
+angular-leaflet-directive (0.4.3)
+* broadcast marker click event
+
 angular-leaflet-directive (0.3.3)
 * add binding for main marker
 * add minZoom option

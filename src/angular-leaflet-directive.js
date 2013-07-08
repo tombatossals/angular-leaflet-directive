@@ -1,6 +1,7 @@
 var leafletDirective = angular.module("leaflet-directive", []);
 
-leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($http, $log, $parse) {
+leafletDirective.directive('leaflet', [
+    '$http', '$log', '$parse', '$rootScope', function ($http, $log, $parse, $rootScope) {
 
     var defaults = {
         maxZoom: 14,
@@ -209,6 +210,9 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
                 }
                 main_marker = createMarker('marker', $scope.marker, map);
                 $scope.leaflet.marker = !!attrs.testing ? main_marker : str_inspect_hint;
+                main_marker.on('click', function(e) {
+                    $rootScope.$broadcast('leafletDirectiveMainMarkerClick');
+                });
             }
 
             function setupMarkers() {
@@ -218,9 +222,16 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
                     return;
                 }
 
+                function genMultiMarkersClickCallback(m_name) {
+                    return function(e) {
+                        $rootScope.$broadcast('leafletDirectiveMarkersClick', m_name);
+                    };
+                }
+
                 for (var name in $scope.markers) {
                     markers[name] = createMarker(
                             'markers.'+name, $scope.markers[name], map);
+                    markers[name].on('click', genMultiMarkersClickCallback(name));
                 }
 
                 $scope.$watch('markers', function(newMarkers) {
@@ -235,6 +246,7 @@ leafletDirective.directive("leaflet", ["$http", "$log", "$parse", function ($htt
                         if (markers[new_name] === undefined) {
                             markers[new_name] = createMarker(
                                 'markers.'+new_name, newMarkers[new_name], map);
+                            markers[new_name].on('click', genMultiMarkersClickCallback(new_name));
                         }
                     }
                 }, true);
