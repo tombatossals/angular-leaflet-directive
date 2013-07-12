@@ -53,28 +53,6 @@ leafletDirective.directive('leaflet', [
                 lng:$parse("center.lng"),
                 zoom:$parse("center.zoom")
             };
-<<<<<<< HEAD
-            
-            if (attrs.width) {
-                element.css('width', attrs.width);
-            }
-            if (attrs.height) {
-                element.css('height', attrs.height);
-            }
-            
-            var controls = {
-                zoom: true
-            }
-
-            if (attrs.zoom == "false"){
-                controls.zoom = false;    
-            }
-
-            $scope.leaflet = {};
-            $scope.leaflet.maxZoom = !!(attrs.defaults && $scope.defaults && $scope.defaults.maxZoom) ?
-                parseInt($scope.defaults.maxZoom, 10) : defaults.maxZoom;
-            var map = new L.Map(element[0], { maxZoom: $scope.leaflet.maxZoom, zoomControl: controls.zoom});
-=======
 
             if (attrs.width) {
                 element.css('width', attrs.width);
@@ -90,7 +68,6 @@ leafletDirective.directive('leaflet', [
             $scope.leaflet.minZoom = !!(attrs.defaults && $scope.defaults && $scope.defaults.minZoom) ?
                 parseInt($scope.defaults.minZoom, 10) : defaults.minZoom;
             var map = new L.Map(element[0], { maxZoom: $scope.leaflet.maxZoom, minZoom: $scope.leaflet.minZoom });
->>>>>>> d7942d56ddaecd78b5466114dc9f15c2130456f3
             map.setView([0, 0], 1);
 
             $scope.leaflet.tileLayer = !!(attrs.defaults && $scope.defaults && $scope.defaults.tileLayer) ?
@@ -101,10 +78,7 @@ leafletDirective.directive('leaflet', [
             setupCenter();
             setupMaxBounds();
             setupBounds();
-<<<<<<< HEAD
-=======
             setupMainMaerker();
->>>>>>> d7942d56ddaecd78b5466114dc9f15c2130456f3
             setupMarkers();
             setupPaths();
 
@@ -244,10 +218,6 @@ leafletDirective.directive('leaflet', [
             function setupMarkers() {
                 var markers = {};
                 $scope.leaflet.markers = !!attrs.testing ? markers : str_inspect_hint;
-<<<<<<< HEAD
-
-=======
->>>>>>> d7942d56ddaecd78b5466114dc9f15c2130456f3
                 if (!$scope.markers) {
                     return;
                 }
@@ -258,20 +228,11 @@ leafletDirective.directive('leaflet', [
                     };
                 }
 
-<<<<<<< HEAD
-                $scope.$watch("markers", function (newMarkers) {
-                    for (var new_name in newMarkers) {
-                        if (markers[new_name] === undefined) {
-                            markers[new_name] = createMarker(new_name, newMarkers[new_name], map);
-                        }
-                    }
-=======
                 for (var name in $scope.markers) {
                     markers[name] = createMarker(
                             'markers.'+name, $scope.markers[name], map);
                     markers[name].on('click', genMultiMarkersClickCallback(name));
                 }
->>>>>>> d7942d56ddaecd78b5466114dc9f15c2130456f3
 
                 $scope.$watch('markers', function(newMarkers) {
                     // Delete markers from the array
@@ -301,24 +262,15 @@ leafletDirective.directive('leaflet', [
 
                 marker.on("dragend", function () {
                     $scope.safeApply(function (scope) {
-<<<<<<< HEAD
-                        scopeMarker.lat = marker.getLatLng().lat;
-                        scopeMarker.lng = marker.getLatLng().lng;
-=======
                         marker_data.lat = marker.getLatLng().lat;
                         marker_data.lng = marker.getLatLng().lng;
->>>>>>> d7942d56ddaecd78b5466114dc9f15c2130456f3
                     });
                     if (marker_data.message) {
                         marker.openPopup();
                     }
                 });
 
-<<<<<<< HEAD
-                var clearWatch = $scope.$watch('markers.'+name, function (data, oldData) {
-=======
                 var clearWatch = $scope.$watch(scope_watch_name, function (data, old_data) {
->>>>>>> d7942d56ddaecd78b5466114dc9f15c2130456f3
                     if (!data) {
                         map.removeLayer(marker);
                         clearWatch();
