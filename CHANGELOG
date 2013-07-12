@@ -1,3 +1,5 @@
+<<<<<<< HEAD
+=======
 angular-leaflet-directive (0.4.0)
 * broadcast marker click event
 
@@ -8,6 +10,7 @@ angular-leaflet-directive (0.3.3)
 angular-leaflet-directive (0.3.2)
 * add binding for markers' icons
 
+>>>>>>> d7942d56ddaecd78b5466114dc9f15c2130456f3
 angular-leaflet-directive (0.3.1)
 * add width, height attributes
 * support for boundingbox binding

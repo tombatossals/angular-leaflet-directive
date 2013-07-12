@@ -14,9 +14,17 @@ describe('Directive: leaflet', function() {
     }));
 
     it('should have loaded leaflet library inside the directive', function() {
+<<<<<<< HEAD
+        inject(function($rootScope, $compile) {
+            var element = angular.element('<leaflet></leaflet>');
+            element = $compile(element)($rootScope);
+            expect(element.text()).toEqual('+-Powered by Leaflet — Tiles © Open Street Maps');
+        });
+=======
         var element = angular.element('<leaflet></leaflet>');
         element = $compile(element)($rootScope);
         expect(element.text()).toEqual('+-Powered by Leaflet — Tiles © Open Street Maps');
+>>>>>>> d7942d56ddaecd78b5466114dc9f15c2130456f3
     });
 
     it('should set the max zoom if specified', function() {
