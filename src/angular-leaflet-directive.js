@@ -46,6 +46,7 @@ leafletDirective.directive('leaflet', [
             defaults: '=defaults',
             paths: '=paths',
             tiles: '=tiles',
+            events: '=events'
         },
         template: '<div class="angular-leaflet-map"></div>',
         link: function ($scope, element, attrs /*, ctrl */) {
@@ -71,11 +72,6 @@ leafletDirective.directive('leaflet', [
                 parseInt($scope.defaults.minZoom, 10) : defaults.minZoom;
             $scope.leaflet.doubleClickZoom = !!(attrs.defaults && $scope.defaults && (typeof($scope.defaults.doubleClickZoom) == "boolean") ) ? $scope.defaults.doubleClickZoom  : defaults.doubleClickZoom;
             
-            console.log($scope.defaults);
-            console.log(attrs.defaults);
-            console.log($scope.defaults.doubleClickZoom);
-            console.log($scope.leaflet.doubleClickZoom);
-
             var map = new L.Map(element[0], { 
                 maxZoom: $scope.leaflet.maxZoom, 
                 minZoom: $scope.leaflet.minZoom,
@@ -95,6 +91,8 @@ leafletDirective.directive('leaflet', [
             setupMainMaerker();
             setupMarkers();
             setupPaths();
+            setupEvents();
+
 
             // use of leafletDirectiveSetMap event is not encouraged. only use
             // it when there is no easy way to bind data to the directive
@@ -112,6 +110,13 @@ leafletDirective.directive('leaflet', [
                 }
             };
 
+            function setupEvents(){
+                for (var i in Object.keys($scope.events)){
+                    var bind_to = Object.keys($scope.events)[i];
+                    map.on(bind_to,$scope.events[bind_to]);
+                }
+            }
+            
             function setupTiles(){
                  // TODO build custom object for tiles, actually only the tile string
 
