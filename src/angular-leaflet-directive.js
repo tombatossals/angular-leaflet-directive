@@ -6,6 +6,7 @@ leafletDirective.directive('leaflet', [
     var defaults = {
         maxZoom: 14,
         minZoom: 1,
+        doubleClickZoom: true,
         tileLayer: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
         tileLayerOptions: {
             attribution: 'Tiles &copy; Open Street Maps'
@@ -44,7 +45,7 @@ leafletDirective.directive('leaflet', [
             markers: '=markers',
             defaults: '=defaults',
             paths: '=paths',
-            tiles: '=tiles'
+            tiles: '=tiles',
         },
         template: '<div class="angular-leaflet-map"></div>',
         link: function ($scope, element, attrs /*, ctrl */) {
@@ -60,14 +61,27 @@ leafletDirective.directive('leaflet', [
             if (attrs.height) {
                 element.css('height', attrs.height);
             }
-
+            
+            
             $scope.leaflet = {};
 
             $scope.leaflet.maxZoom = !!(attrs.defaults && $scope.defaults && $scope.defaults.maxZoom) ?
                 parseInt($scope.defaults.maxZoom, 10) : defaults.maxZoom;
             $scope.leaflet.minZoom = !!(attrs.defaults && $scope.defaults && $scope.defaults.minZoom) ?
                 parseInt($scope.defaults.minZoom, 10) : defaults.minZoom;
-            var map = new L.Map(element[0], { maxZoom: $scope.leaflet.maxZoom, minZoom: $scope.leaflet.minZoom });
+            $scope.leaflet.doubleClickZoom = !!(attrs.defaults && $scope.defaults && (typeof($scope.defaults.doubleClickZoom) == "boolean") ) ? $scope.defaults.doubleClickZoom  : defaults.doubleClickZoom;
+            
+            console.log($scope.defaults);
+            console.log(attrs.defaults);
+            console.log($scope.defaults.doubleClickZoom);
+            console.log($scope.leaflet.doubleClickZoom);
+
+            var map = new L.Map(element[0], { 
+                maxZoom: $scope.leaflet.maxZoom, 
+                minZoom: $scope.leaflet.minZoom,
+                doubleClickZoom: $scope.leaflet.doubleClickZoom 
+            });
+
             map.setView([0, 0], 1);
 
             $scope.leaflet.tileLayer = !!(attrs.defaults && $scope.defaults && $scope.defaults.tileLayer) ?
