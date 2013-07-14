@@ -124,8 +124,7 @@ leafletDirective.directive('leaflet', [
              **/
             function setupEvents(){
                 for (var ev in $scope.events){
-                    var ev_cb = $scope.events[ev];
-                    map.on(ev, $scope.events[ev_cb]);
+                    map.on(ev, $scope.events[ev]);
                 }
             }
 
