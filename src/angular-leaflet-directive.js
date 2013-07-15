@@ -124,11 +124,10 @@ leafletDirective.directive('leaflet', [
               * */
 
              function setupEvents(){
-                 if ( typeof(e) != 'object'){
+                 if ( typeof($scope.events) != 'object'){
                      return false;
                  }else{
-                     for (var i in Object.keys($scope.events)){
-                         var bind_to = Object.keys($scope.events)[i];
+                     for (var bind_to  in $scope.events){
                          map.on(bind_to,$scope.events[bind_to]);
                      }
                  }
