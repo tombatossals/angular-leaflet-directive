@@ -124,11 +124,14 @@ leafletDirective.directive('leaflet', [
               * */
 
              function setupEvents(){
-                for (var i in Object.keys($scope.events)){
-                    var bind_to = Object.keys($scope.events)[i];
-                    map.on(bind_to,$scope.events[bind_to]);
-                }
-            }
+                 if ( typeof($scope.events) != 'object'){
+                     return false;
+                 }else{
+                     for (var bind_to  in $scope.events){
+                         map.on(bind_to,$scope.events[bind_to]);
+                     }
+                 }
+             }
 
             function setupTiles(){
                  // TODO build custom object for tiles, actually only the tile string
