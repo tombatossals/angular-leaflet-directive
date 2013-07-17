@@ -71,11 +71,11 @@ leafletDirective.directive('leaflet', [
             $scope.leaflet.minZoom = !!(attrs.defaults && $scope.defaults && $scope.defaults.minZoom) ?
                 parseInt($scope.defaults.minZoom, 10) : defaults.minZoom;
             $scope.leaflet.doubleClickZoom = !!(attrs.defaults && $scope.defaults && (typeof($scope.defaults.doubleClickZoom) == "boolean") ) ? $scope.defaults.doubleClickZoom  : defaults.doubleClickZoom;
-            
-            var map = new L.Map(element[0], { 
-                maxZoom: $scope.leaflet.maxZoom, 
+
+            var map = new L.Map(element[0], {
+                maxZoom: $scope.leaflet.maxZoom,
                 minZoom: $scope.leaflet.minZoom,
-                doubleClickZoom: $scope.leaflet.doubleClickZoom 
+                doubleClickZoom: $scope.leaflet.doubleClickZoom
             });
 
            map.setView([0, 0], 1);
@@ -92,7 +92,7 @@ leafletDirective.directive('leaflet', [
             setupMarkers();
             setupPaths();
             setupEvents();
-            
+
 
             // use of leafletDirectiveSetMap event is not encouraged. only use
             // it when there is no easy way to bind data to the directive
@@ -112,7 +112,7 @@ leafletDirective.directive('leaflet', [
 
              /*
               * Event setup watches for callbacks set in the parent scope
-              *    
+              *
               *    $scope.events = {
               *      dblclick: function(){
               *         // doThis()
@@ -246,7 +246,9 @@ leafletDirective.directive('leaflet', [
                 main_marker = createMarker('marker', $scope.marker, map);
                 $scope.leaflet.marker = !!attrs.testing ? main_marker : str_inspect_hint;
                 main_marker.on('click', function(e) {
-                    $rootScope.$broadcast('leafletDirectiveMainMarkerClick');
+                    $rootScope.$apply(function() {
+                        $rootScope.$broadcast('leafletDirectiveMainMarkerClick');
+                    });
                 });
             }
 
@@ -259,7 +261,9 @@ leafletDirective.directive('leaflet', [
 
                 function genMultiMarkersClickCallback(m_name) {
                     return function(e) {
-                        $rootScope.$broadcast('leafletDirectiveMarkersClick', m_name);
+                        $rootScope.$apply(function() {
+                            $rootScope.$broadcast('leafletDirectiveMarkersClick', m_name);
+                        });
                     };
                 }
 
