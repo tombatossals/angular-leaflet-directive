@@ -1,3 +1,7 @@
+angular-leaflet-directive (0.5.0)
+* add options for setting doubleClickZoom
+* add options for setting callbacks on map events
+
 angular-leaflet-directive (0.4.0)
 * broadcast marker click event
 
