@@ -95,7 +95,6 @@ leafletDirective.directive('leaflet', [
             setupEvents();
             setupChoroPleth();
 
-
             // use of leafletDirectiveSetMap event is not encouraged. only use
             // it when there is no easy way to bind data to the directive
             $scope.$on('leafletDirectiveSetMap', function(event, message) {
@@ -259,7 +258,9 @@ leafletDirective.directive('leaflet', [
                 main_marker = createMarker('marker', $scope.marker, map);
                 $scope.leaflet.marker = !!attrs.testing ? main_marker : str_inspect_hint;
                 main_marker.on('click', function(e) {
-                    $rootScope.$broadcast('leafletDirectiveMainMarkerClick');
+                    $rootScope.$apply(function() {
+                        $rootScope.$broadcast('leafletDirectiveMainMarkerClick');
+                    });
                 });
             }
 
@@ -272,7 +273,9 @@ leafletDirective.directive('leaflet', [
 
                 function genMultiMarkersClickCallback(m_name) {
                     return function(e) {
-                        $rootScope.$broadcast('leafletDirectiveMarkersClick', m_name);
+                        $rootScope.$apply(function() {
+                            $rootScope.$broadcast('leafletDirectiveMarkersClick', m_name);
+                        });
                     };
                 }
 
