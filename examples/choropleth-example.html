@@ -11,15 +11,32 @@
         html {
             height: 100%;
         }
+
+        div.infocenter {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px #555;
+            color: black;
+            font-weight: bold;
+            position: absolute;
+            top: 1em;
+            right: 1em;
+            z-index: 100;
+            padding: 1em;
+            width: 280px;
+            text-align: center;
+            opacity: .8;
+        }
+
     </style>
     <script>
         angular.module("demoapp", ["leaflet-directive"]);
         function DemoController($scope, $http) {
             angular.extend($scope, {
                 center: {
-                    lat: 0.1,
-                    lng: 0.1,
-                    zoom: 1
+                    lat: 40.8471,
+                    lng: 14.0625,
+                    zoom: 2
                 }
             });
 
@@ -63,6 +80,7 @@
     </style>
   </head>
   <body ng-controller="DemoController">
+    <div class="infocenter">Map center: [ lat: {{ center.lat | number:4 }}, lng: {{ center.lng | number:4 }} ]</div>
     <leaflet center="center" choropleth="choropleth"></leaflet>
   </body>
 </html>

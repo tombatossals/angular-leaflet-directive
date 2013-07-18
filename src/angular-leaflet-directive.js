@@ -212,7 +212,7 @@ leafletDirective.directive('leaflet', [
                         return;
                     }
                     if (center.lat !== undefined && center.lng !== undefined && center.zoom !== undefined) {
-                        map.setView([center.lat, center.lng], center.zoom);
+                        map.setView( [center.lat, center.lng], center.zoom, { reset: true });
                     } else if (center.autoDiscover === true) {
                         map.locate({ setView: true, maxZoom: $scope.leaflet.maxZoom });
                     }
