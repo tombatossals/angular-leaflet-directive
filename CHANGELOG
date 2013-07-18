@@ -1,3 +1,6 @@
+angular-leaflet-directive (0.5.1)
+* fix: wrap marker click event broadcast in scope apply
+
 angular-leaflet-directive (0.5.0)
 * add options for setting doubleClickZoom
 * add options for setting callbacks on map events
