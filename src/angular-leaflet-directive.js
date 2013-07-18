@@ -43,6 +43,7 @@ leafletDirective.directive('leaflet', [
             bounds: '=bounds',
             marker: '=marker',
             markers: '=markers',
+            choropleth: '=choropleth',
             defaults: '=defaults',
             paths: '=paths',
             tiles: '=tiles',
@@ -71,11 +72,11 @@ leafletDirective.directive('leaflet', [
             $scope.leaflet.minZoom = !!(attrs.defaults && $scope.defaults && $scope.defaults.minZoom) ?
                 parseInt($scope.defaults.minZoom, 10) : defaults.minZoom;
             $scope.leaflet.doubleClickZoom = !!(attrs.defaults && $scope.defaults && (typeof($scope.defaults.doubleClickZoom) == "boolean") ) ? $scope.defaults.doubleClickZoom  : defaults.doubleClickZoom;
-            
-            var map = new L.Map(element[0], { 
-                maxZoom: $scope.leaflet.maxZoom, 
+
+            var map = new L.Map(element[0], {
+                maxZoom: $scope.leaflet.maxZoom,
                 minZoom: $scope.leaflet.minZoom,
-                doubleClickZoom: $scope.leaflet.doubleClickZoom 
+                doubleClickZoom: $scope.leaflet.doubleClickZoom
             });
 
            map.setView([0, 0], 1);
@@ -88,11 +89,12 @@ leafletDirective.directive('leaflet', [
             setupCenter();
             setupMaxBounds();
             setupBounds();
-            setupMainMaerker();
+            setupMainMarker();
             setupMarkers();
             setupPaths();
             setupEvents();
-            
+            setupChoroPleth();
+
 
             // use of leafletDirectiveSetMap event is not encouraged. only use
             // it when there is no easy way to bind data to the directive
@@ -112,7 +114,7 @@ leafletDirective.directive('leaflet', [
 
              /*
               * Event setup watches for callbacks set in the parent scope
-              *    
+              *
               *    $scope.events = {
               *      dblclick: function(){
               *         // doThis()
@@ -210,7 +212,7 @@ leafletDirective.directive('leaflet', [
                         $log.warn("[AngularJS - Leaflet] 'center' is undefined in the current scope, did you forget to initialize it?");
                         return;
                     }
-                    if (center.lat && center.lng && center.zoom) {
+                    if (center.lat !== undefined && center.lng !== undefined && center.zoom !== undefined) {
                         map.setView([center.lat, center.lng], center.zoom);
                     } else if (center.autoDiscover === true) {
                         map.locate({ setView: true, maxZoom: $scope.leaflet.maxZoom });
@@ -238,7 +240,18 @@ leafletDirective.directive('leaflet', [
                 });
             }
 
-            function setupMainMaerker() {
+            function setupChoroPleth() {
+                $scope.$watch("choropleth", function (choropleth) {
+                    if (!choropleth) {
+                        return;
+                    }
+                    if (choropleth.hasOwnProperty("geoJson")) {
+                        L.geoJson($scope.choropleth.geoJson, { style: $scope.choropleth.style }).addTo(map);
+                    }
+                });
+            }
+
+            function setupMainMarker() {
                 var main_marker;
                 if (!$scope.marker) {
                     return;

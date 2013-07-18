@@ -1,0 +1,68 @@
+<html ng-app="demoapp">
+  <head>
+    <script src="http://cdn.leafletjs.com/leaflet-0.6.3/leaflet.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+    <script src="../src/angular-leaflet-directive.js"></script>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.3/leaflet.css" />
+    <!--[if lte IE 8]>
+        <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.3/leaflet.ie.css" />
+    <![endif]-->
+    <style>
+        html {
+            height: 100%;
+        }
+    </style>
+    <script>
+        angular.module("demoapp", ["leaflet-directive"]);
+        function DemoController($scope, $http) {
+            angular.extend($scope, {
+                center: {
+                    lat: 0.1,
+                    lng: 0.1,
+                    zoom: 1
+                }
+            });
+
+            function getColor(d) {
+                var d = Math.floor(Math.random() * 9);
+                return  d === 0 ? '#800026' :
+                        d === 1 ? '#BD0026' :
+                        d === 2 ? '#E31A1C' :
+                        d === 3 ? '#FC4E2A' :
+                        d === 4 ? '#FD8D3C' :
+                        d === 5 ? '#FEB24C' :
+                        d === 6 ? '#FED976' :
+                                  '#FFEDA0';
+            }
+
+            function style(feature) {
+                return {
+                    fillColor: getColor(),
+                    weight: 2,
+                    opacity: 1,
+                    color: 'white',
+                    dashArray: '3',
+                    fillOpacity: 0.7
+                };
+            }
+
+            $http.get("json/countries.geo.json").success(function(data, status) {
+                angular.extend($scope, {
+                    choropleth: {
+                        geoJson: data,
+                        style: style
+                    }
+                });
+            });
+        };
+    </script>
+    <style>
+        .angular-leaflet-map {
+            height: 100%;
+        }
+    </style>
+  </head>
+  <body ng-controller="DemoController">
+    <leaflet center="center" choropleth="choropleth"></leaflet>
+  </body>
+</html>
