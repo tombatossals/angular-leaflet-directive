@@ -245,7 +245,27 @@ leafletDirective.directive('leaflet', [
                         return;
                     }
                     if (choropleth.hasOwnProperty("geoJson")) {
-                        L.geoJson($scope.choropleth.geoJson, { style: $scope.choropleth.style }).addTo(map);
+                        var geojson = L.geoJson($scope.choropleth.geoJson, {
+                            style: $scope.choropleth.style,
+                            onEachFeature: function(feature, layer) {
+                                layer.on({
+                                    mouseover: function(e) {
+                                        choropleth.mouseover(e);
+                                        $scope.safeApply(function (scope) {
+                                            choropleth.selected = feature;
+                                        });
+
+                                        console.log(choropleth.selected.properties.name);
+                                    },
+                                    mouseout: function(e) {
+                                        geojson.resetStyle(e.target)
+                                        $scope.safeApply(function (scope) {
+                                            choropleth.selected = undefined;
+                                        });
+                                    }
+                                });
+                            }
+                        }).addTo(map);
                     }
                 });
             }
