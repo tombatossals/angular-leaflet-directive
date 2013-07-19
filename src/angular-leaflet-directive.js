@@ -254,8 +254,6 @@ leafletDirective.directive('leaflet', [
                                         $scope.safeApply(function (scope) {
                                             choropleth.selected = feature;
                                         });
-
-                                        console.log(choropleth.selected.properties.name);
                                     },
                                     mouseout: function(e) {
                                         geojson.resetStyle(e.target)

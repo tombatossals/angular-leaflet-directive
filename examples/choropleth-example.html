@@ -4,6 +4,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
     <script src="../src/angular-leaflet-directive.js"></script>
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.3/leaflet.css" />
+    <link rel="stylesheet" type="text/css" href="http://cloud.github.com/downloads/lafeber/world-flags-sprite/flags32.css" />
+
     <!--[if lte IE 8]>
         <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.3/leaflet.ie.css" />
     <![endif]-->
@@ -89,14 +91,34 @@
                 layer.bringToFront();
             }
 
-            $http.get("json/countries.geo.json").success(function(data, status) {
-                angular.extend($scope, {
-                    choropleth: {
-                        geoJson: data,
-                        style: style,
-                        mouseover: mouseover,
-                        selected: undefined
+            $scope.getCountryCodeIso3166Alpha2 = function() {
+                var iso3166codeAlpha2 = undefined;
+                if ($scope.hasOwnProperty("choropleth") && $scope.choropleth.hasOwnProperty("selected")) {
+                    if ($scope.countries && $scope.choropleth.selected && $scope.choropleth.selected.hasOwnProperty("id")) {
+                        var iso3166codeAlpha3 = $scope.choropleth.selected.id;
+                        for (var i=0; i< $scope.countries.length; i++) {
+                            var country = $scope.countries[i];
+                            if (country["alpha-3"] === iso3166codeAlpha3) {
+                                iso3166codeAlpha2 = country["alpha-2"];
+                                break;
+                            }
+                        }
                     }
+                }
+                return iso3166codeAlpha2;
+            };
+
+            $http.get("json/all.json").success(function(data, status) {
+                $scope.countries = data;
+                $http.get("json/countries.geo.json").success(function(data, status) {
+                    angular.extend($scope, {
+                        choropleth: {
+                            geoJson: data,
+                            style: style,
+                            mouseover: mouseover,
+                            selected: undefined
+                        }
+                    });
                 });
             });
         };
@@ -108,7 +130,10 @@
     </style>
   </head>
   <body ng-controller="DemoController">
-    <div class="country">{{ choropleth.selected.properties.name || 'No country'}}</div>
+    <div class="country f32">
+        <div class="flag" ng-class="getCountryCodeIso3166Alpha2()"></div>
+        {{ choropleth.selected.properties.name || 'No country'}}
+    </div>
     <div class="infocenter">Map center: [ lat: {{ center.lat | number:4 }}, lng: {{ center.lng | number:4 }} ]</div>
     <leaflet center="center" choropleth="choropleth"></leaflet>
   </body>
