@@ -43,7 +43,7 @@ leafletDirective.directive('leaflet', [
             bounds: '=bounds',
             marker: '=marker',
             markers: '=markers',
-            choropleth: '=choropleth',
+            geojson: '=geojson',
             defaults: '=defaults',
             paths: '=paths',
             tiles: '=tiles',
@@ -240,25 +240,25 @@ leafletDirective.directive('leaflet', [
             }
 
             function setupChoroPleth() {
-                $scope.$watch("choropleth", function (choropleth) {
-                    if (!choropleth) {
+                $scope.$watch("geojson", function (geojson) {
+                    if (!geojson) {
                         return;
                     }
-                    if (choropleth.hasOwnProperty("geoJson")) {
-                        var geojson = L.geoJson($scope.choropleth.geoJson, {
-                            style: $scope.choropleth.style,
+                    if (geojson.hasOwnProperty("data")) {
+                        var leafletGeojson = L.geoJson($scope.geojson.data, {
+                            style: $scope.geojson.style,
                             onEachFeature: function(feature, layer) {
                                 layer.on({
                                     mouseover: function(e) {
-                                        choropleth.mouseover(e);
+                                        geojson.mouseover(e);
                                         $scope.safeApply(function (scope) {
-                                            choropleth.selected = feature;
+                                            geojson.selected = feature;
                                         });
                                     },
                                     mouseout: function(e) {
-                                        geojson.resetStyle(e.target)
+                                        leafletGeojson.resetStyle(e.target)
                                         $scope.safeApply(function (scope) {
-                                            choropleth.selected = undefined;
+                                            geojson.selected = undefined;
                                         });
                                     }
                                 });
