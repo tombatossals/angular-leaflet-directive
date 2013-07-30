@@ -43,6 +43,7 @@ leafletDirective.directive('leaflet', [
             bounds: '=bounds',
             marker: '=marker',
             markers: '=markers',
+            legend: '=legend',
             geojson: '=geojson',
             defaults: '=defaults',
             paths: '=paths',
@@ -92,6 +93,7 @@ leafletDirective.directive('leaflet', [
             setupMainMarker();
             setupMarkers();
             setupPaths();
+            setupLegend();
             setupEvents();
             setupChoroPleth();
 
@@ -157,6 +159,28 @@ leafletDirective.directive('leaflet', [
                 tileLayerObj.addTo(map);
 
                 $scope.leaflet.tileLayerObj = !!attrs.testing ? tileLayerObj : str_inspect_hint;
+            }
+
+            function setupLegend() {
+
+                if ($scope.legend) {
+                    if (!$scope.legend.colors || !$scope.legend.labels || $scope.legend.colors.length != $scope.legend.labels.length) {
+                         $log.warn("[AngularJS - Leaflet] legend.colors and legend.labels must be set.");
+
+                    } else {
+                        var position = $scope.legend.position || 'bottomright';
+                        var legend = L.control({position: position });
+                        legend.onAdd = function (map) {
+                            var div = L.DomUtil.create('div', 'info legend');
+                            for (var i = 0; i < $scope.legend.colors.length; i++) {
+                                div.innerHTML +=
+                                    '<i style="background:' + $scope.legend.colors[i] + '"></i> ' + $scope.legend.labels[i] + '<br />';
+                            }
+                            return div;
+                        };
+                        legend.addTo(map);
+                    }
+                }
             }
 
             function setupMaxBounds() {
