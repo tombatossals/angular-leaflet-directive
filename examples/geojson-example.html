@@ -15,37 +15,52 @@
             font-family: sans-serif;
         }
 
-        div.infocenter {
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 0 10px #555;
-            color: black;
+         .info {
+             padding: 6px 8px;
+             font: 14px/16px Arial, Helvetica, sans-serif;
+             background: white;
+             background: rgba(255,255,255,0.8);
+             box-shadow: 0 0 15px rgba(0,0,0,0.2);
+             border-radius: 5px;
+         }
+         .info h4 {
+             margin: 0 0 5px;
+             color: #777;
+         }
+         .legend {
             font-weight: bold;
+            line-height: 18px;
+            color: #555;
+         }
+         .legend i {
+             width: 18px;
+             height: 18px;
+             float: left;
+             margin-right: 8px;
+             opacity: 0.7;
+         }
+
+        div.box {
             position: absolute;
             top: 1em;
             right: 1em;
             z-index: 100;
             padding: 1em;
-            width: 320px;
+            width: 380px;
             text-align: center;
-            opacity: .8;
         }
 
         div.country {
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 0 10px #555;
-            color: black;
             font-size: 2em;
             font-weight: bold;
             position: absolute;
             bottom: 1em;
             left: 1em;
             z-index: 100;
-            padding: .3em;
+            padding: .5em;
+            line-height: 1.1em;
             width: 300px;
             text-align: center;
-            opacity: .8;
         }
     </style>
     <script>
@@ -56,24 +71,49 @@
                     lat: 40.8471,
                     lng: 14.0625,
                     zoom: 2
+                },
+                legend: {
+                    colors: [ '#CC0066', '#006699', '#FF0000', '#00CC00', '#FFCC00' ],
+                    labels: [ 'Oceania', 'America', 'Europe', 'Africa', 'Asia' ]
                 }
             });
 
-            function getColor(d) {
-                var d = Math.floor(Math.random() * 9);
-                return  d === 0 ? '#800026' :
-                        d === 1 ? '#BD0026' :
-                        d === 2 ? '#E31A1C' :
-                        d === 3 ? '#FC4E2A' :
-                        d === 4 ? '#FD8D3C' :
-                        d === 5 ? '#FEB24C' :
-                        d === 6 ? '#FED976' :
-                                  '#FFEDA0';
+            var continentCodes = {
+                    "009": {
+                            name: 'Oceania',
+                            colors: [ '#CC0066', '#993366', '#990066', '#CC3399', '#CC6699' ]
+                    },
+                    "019": {
+                            name: 'America',
+                            colors: [ '#006699', '#336666', '#003366', '#3399CC', '#6699CC' ]
+                    },
+                    "150": {
+                            name: 'Europe',
+                            colors: [ '#FF0000', '#CC3333', '#990000', '#FF3333', '#FF6666' ]
+                    },
+                    "002": {
+                            name: 'Africa',
+                            colors: [ '#00CC00', '#339933', '#009900', '#33FF33', '#66FF66' ]
+                    },
+                    "142": {
+                            name: 'Asia',
+                            colors: [ '#FFCC00', '#CC9933', '#999900', '#FFCC33', '#FFCC66' ]
+                    },
+            };
+
+            function getColor(country) {
+                if (!country || !country["region-code"]) {
+                    return "#FFF";
+                }
+
+                var colors = continentCodes[country["region-code"]].colors;
+                var index = country["alpha-3"].charCodeAt(0) % colors.length ;
+                return colors[index];
             }
 
             function style(feature) {
                 return {
-                    fillColor: getColor(),
+                    fillColor: getColor($scope.countries[feature.id]),
                     weight: 2,
                     opacity: 1,
                     color: 'white',
@@ -92,31 +132,25 @@
                 layer.bringToFront();
             }
 
-            $scope.getCountryCodeIso3166Alpha2 = function() {
-                var iso3166codeAlpha2 = undefined;
-                if ($scope.hasOwnProperty("geojson") && $scope.geojson.hasOwnProperty("selected")) {
-                    if ($scope.countries && $scope.geojson.selected && $scope.geojson.selected.hasOwnProperty("id")) {
-                        var iso3166codeAlpha3 = $scope.geojson.selected.id;
-                        for (var i=0; i< $scope.countries.length; i++) {
-                            var country = $scope.countries[i];
-                            if (country["alpha-3"] === iso3166codeAlpha3) {
-                                iso3166codeAlpha2 = country["alpha-2"];
-                                break;
-                            }
-                        }
-                    }
-                }
-                return iso3166codeAlpha2;
-            };
+            function zoomToFeature(e) {
+                    map.fitBounds(e.target.getBounds());
+            }
 
             $http.get("json/all.json").success(function(data, status) {
-                $scope.countries = data;
+
+                $scope.countries = {};
+                for (var i=0; i< data.length; i++) {
+                    var country = data[i];
+                    $scope.countries[country['alpha-3']] = country;
+                }
+
                 $http.get("json/countries.geo.json").success(function(data, status) {
                     angular.extend($scope, {
                         geojson: {
                             data: data,
                             style: style,
                             mouseover: mouseover,
+                            click: zoomToFeature,
                             selected: undefined
                         }
                     });
@@ -131,11 +165,11 @@
     </style>
   </head>
   <body ng-controller="DemoController">
-    <div class="country f32">
-        <div ng-show="geojson.selected" class="flag" ng-class="getCountryCodeIso3166Alpha2()"></div>
+    <div class="info country f32">
+        <div ng-show="geojson.selected" class="flag" ng-class="countries[geojson.selected.id]['alpha-2']"></div>
         {{ geojson.selected.properties.name || 'No country'}}
     </div>
-    <div class="infocenter">Map center: [ lat: {{ center.lat | number:4 }}, lng: {{ center.lng | number:4 }} ]</div>
-    <leaflet center="center" geojson="geojson"></leaflet>
+    <div class="info box">Map center: [ lat: {{ center.lat | number:4 }}, lng: {{ center.lng | number:4 }} ]</div>
+    <leaflet center="center" legend="legend" geojson="geojson"></leaflet>
   </body>
 </html>
