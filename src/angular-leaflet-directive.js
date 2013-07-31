@@ -80,10 +80,7 @@ leafletDirective.directive('leaflet', [
                 doubleClickZoom: $scope.leaflet.doubleClickZoom
             });
 
-           map.setView([0, 0], 1);
-
-            $scope.leaflet.tileLayer = !!(attrs.defaults && $scope.defaults && $scope.defaults.tileLayer) ?
-                $scope.defaults.tileLayer : defaults.tileLayer;
+            map.setView([0, 0], 1);
             $scope.leaflet.map = !!attrs.testing ? map : str_inspect_hint;
 
             setupTiles();
@@ -137,19 +134,22 @@ leafletDirective.directive('leaflet', [
              }
 
             function setupTiles(){
-                 // TODO build custom object for tiles, actually only the tile string
+                // TODO build custom object for tiles, actually only the tile string
 
-                 if ($scope.defaults && $scope.defaults.tileLayerOptions) {
+                $scope.leaflet.tileLayer = !!(attrs.defaults && $scope.defaults && $scope.defaults.tileLayer) ?
+                                            $scope.defaults.tileLayer : defaults.tileLayer;
+
+                if ($scope.defaults && $scope.defaults.tileLayerOptions) {
                     for (var key in $scope.defaults.tileLayerOptions) {
                         defaults.tileLayerOptions[key] = $scope.defaults.tileLayerOptions[key];
                     }
                 }
 
-                if ($scope.tiles) {
-                    if ($scope.tiles.tileLayer) {
+                if (attrs.tiles) {
+                    if ($scope.tiles && $scope.tiles.tileLayer) {
                         $scope.leaflet.tileLayer = $scope.tiles.tileLayer;
                     }
-                    if ($scope.tiles.tileLayerOptions.attribution) {
+                    if ($scope.tiles && $scope.tiles.tileLayerOptions && $scope.tiles.tileLayerOptions.attribution) {
                         defaults.tileLayerOptions.attribution = $scope.tiles.tileLayerOptions.attribution;
                     }
                 }
@@ -280,7 +280,7 @@ leafletDirective.directive('leaflet', [
                                         });
                                     },
                                     mouseout: function(e) {
-                                        leafletGeojson.resetStyle(e.target)
+                                        leafletGeojson.resetStyle(e.target);
                                         $scope.safeApply(function (scope) {
                                             geojson.selected = undefined;
                                         });
