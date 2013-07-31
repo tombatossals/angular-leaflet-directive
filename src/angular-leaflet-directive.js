@@ -376,6 +376,18 @@ leafletDirective.directive('leaflet', [
                     }
                 });
 
+                // Set up marker events
+                // Pass original marker name with the event data for easier reference
+                var eventData = {
+                    name: scope_watch_name.replace('markers.', '')
+                };
+
+                if ( typeof(marker_data.events) == 'object'){
+                    for (var bind_to  in marker_data.events){
+                        marker.on(bind_to, marker_data.events[bind_to], eventData);
+                    }
+                }
+
                 var clearWatch = $scope.$watch(scope_watch_name, function (data, old_data) {
                     if (!data) {
                         map.removeLayer(marker);
