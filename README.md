@@ -10,6 +10,9 @@ See some basic examples:
 * [Custom parameters example](http://tombatossals.github.io/angular-leaflet-directive/examples/custom-parameters-example.html)
 * [Markers example](http://tombatossals.github.io/angular-leaflet-directive/examples/markers-example.html)
 * [Polyline example](http://tombatossals.github.io/angular-leaflet-directive/examples/path-example.html)
+* [Tile changer example](http://tombatossals.github.io/angular-leaflet-directive/examples/tiles-example.html)
+* [Legend example](http://tombatossals.github.io/angular-leaflet-directive/examples/legend-example.html)
+* [GeoJson example](http://tombatossals.github.io/angular-leaflet-directive/examples/geojson-example.html)
 
 
 To see it in action, go to the main page where you can find more examples and
