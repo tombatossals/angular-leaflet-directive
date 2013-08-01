@@ -135,27 +135,34 @@ leafletDirective.directive('leaflet', [
 
             function setupTiles(){
                 // TODO build custom object for tiles, actually only the tile string
+                // TODO: http://leafletjs.com/examples/layers-control.html
 
+                var tileLayerObj, key;
                 $scope.leaflet.tileLayer = !!(attrs.defaults && $scope.defaults && $scope.defaults.tileLayer) ?
                                             $scope.defaults.tileLayer : defaults.tileLayer;
 
                 if ($scope.defaults && $scope.defaults.tileLayerOptions) {
-                    for (var key in $scope.defaults.tileLayerOptions) {
+                    for (key in $scope.defaults.tileLayerOptions) {
                         defaults.tileLayerOptions[key] = $scope.defaults.tileLayerOptions[key];
                     }
                 }
 
                 if (attrs.tiles) {
-                    if ($scope.tiles && $scope.tiles.tileLayer) {
-                        $scope.leaflet.tileLayer = $scope.tiles.tileLayer;
+                    if ($scope.tiles && $scope.tiles.url) {
+                        $scope.leaflet.tileLayer = $scope.tiles.url;
                     }
-                    if ($scope.tiles && $scope.tiles.tileLayerOptions && $scope.tiles.tileLayerOptions.attribution) {
-                        defaults.tileLayerOptions.attribution = $scope.tiles.tileLayerOptions.attribution;
+                    if ($scope.tiles && $scope.tiles.options) {
+                        for (key in $scope.tiles.options) {
+                            defaults.tileLayerOptions[key] = $scope.tiles.options[key];
+                        }
                     }
-                }
 
-                var tileLayerObj = L.tileLayer(
-                    $scope.leaflet.tileLayer, defaults.tileLayerOptions);
+                    $scope.$watch("tiles.url", function (url) {
+                        if (!url) return;
+                        tileLayerObj.setUrl(url);
+                    });
+                }
+                tileLayerObj = L.tileLayer($scope.leaflet.tileLayer, defaults.tileLayerOptions);
                 tileLayerObj.addTo(map);
 
                 $scope.leaflet.tileLayerObj = !!attrs.testing ? tileLayerObj : str_inspect_hint;

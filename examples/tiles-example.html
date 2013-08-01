@@ -2,7 +2,7 @@
   <head>
     <script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
-    <script src="../src/angular-leaflet-directive.js"></script>
+    <script src="../dist/angular-leaflet-directive.min.js"></script>
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" />
     <!--[if lte IE 8]>
         <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.ie.css" />
@@ -16,9 +16,9 @@
                     lng: -0.09,
                     zoom: 8
                 },
-                defaults: {
-                    tileLayer: "http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png",
-                    tileLayerOptions: {
+                tiles: {
+                    url: "http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png",
+                    options: {
                         opacity: 0.9,
                         detectRetina: true,
                         reuseTiles: true,
@@ -26,12 +26,12 @@
                 }
             });
 
-            $scope.changeUrl = function() {
-                console.log($scope.defaults.tileLayer)
-                var url = "http://otile1.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.png";
-                console.log($scope.tiles);
-                $scope.defaults.tileLayer = url;
-                console.log($scope.defaults.tileLayer)
+            $scope.changeToOpenCycleMaps = function() {
+                $scope.tiles.url = "http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png";
+            };
+
+            $scope.changeToOpenStreetMaps = function() {
+                $scope.tiles.url = "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
             };
         };
     </script>
@@ -43,8 +43,9 @@
     </style>
   </head>
   <body ng-controller="DemoController">
-    <button ng-click="changeUrl()">change Url</button>
-    <p>TileLayer Url: {{ defaults.tileLayer }}</p>
+    <button ng-click="changeToOpenCycleMaps()">OpenCycleMaps</button>
+    <button ng-click="changeToOpenStreetMaps()">OpenStreetMaps</button>
+    <p>TileLayer Url: {{ tiles.url }}</p>
     <leaflet center="london" tiles="tiles" defaults="defaults"></leaflet>
   </body>
 </html>
