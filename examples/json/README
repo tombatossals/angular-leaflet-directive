@@ -1,0 +1,2 @@
+countries.geo.json: https://raw.github.com/johan/world.geo.json/master/countries.geo.json
+all.json: https://raw.github.com/lukes/ISO-3166-Countries-with-Regional-Codes/master/all/all.json
