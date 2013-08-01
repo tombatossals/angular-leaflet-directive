@@ -7,10 +7,10 @@
     <meta name="keywords" content="angularjs,lealfet,openstreetmap,javascript,plugin">
     <meta name="description" content="Leaflet directive for your AngularJS application">
     <title>Leaflet directive for AngularJS</title>
-    <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.css" />
+    <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" />
     <!--[if lte IE 8]>
-        <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.ie.css" />
+        <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.ie.css" />
     <![endif]-->
     <style>
         body {
@@ -50,12 +50,36 @@
             border-top: 1px #eee solid;
         }
 
-	strong.title {
+	    strong.title {
             line-height: 30px;
         }
 
         footer .pull-right {
             text-align: right;
+        }
+
+        .info {
+            padding: 6px 8px;
+            font: 14px/16px Arial, Helvetica, sans-serif;
+            background: white;
+            background: rgba(255,255,255,0.8);
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            border-radius: 5px;
+        }
+        .info h4 {
+            margin: 0 0 5px;
+            color: #777;
+        }
+        .legend {
+            line-height: 18px;
+            color: #555;
+        }
+        .legend i {
+            width: 18px;
+            height: 18px;
+            float: left;
+            margin-right: 8px;
+            opacity: 0.7;
         }
     </style>
 </head>
@@ -235,6 +259,70 @@ angular.extend($scope, {
                 </div>
             </div>
         </div>
+
+        <div class="row" ng-controller="LegendController">
+            <div class="span10 offset1">
+                <hr />
+                <h3>Legend Demo</h3>
+            </div>
+            <div class="span5 offset1">
+                <p>Maybe you're interested on a map including a legend with a list of elements identified on the map by color.
+                This is accomplished with this directive:</p>
+                <code>&lt;leaflet legend="legend" center="london"&gt;&lt;/leaflet&gt;</code>
+                <p style="margin-top: 1em;">We would need to add a property <strong>legend</strong> to the scope similar to this one:</p>
+                <pre class="prettyprint lang-javascript">$scope.legend = {
+   position: 'bottomleft',
+   colors: [ '#ff0000',
+             '#28c9ff',
+             '#0000ff',
+             '#ecf386' ],
+   labels: [ 'National Cycle Route',
+             'Regional Cycle Route',
+             'Local Cycle Network',
+             'Cycleway' ]
+};
+</pre>
+                <p style="margin-top: 1em;">And we would need to add a <strong>center</strong> attribute too:</p>
+                <pre class="prettyprint lang-javascript">$scope.london = {
+    lat: 51.505,
+    lng: -0.09,
+    zoom: 12
+};
+</pre>
+            </div>
+            <div class="span5">
+                <p>Finally, we need some styles to decorate our leaflet legend:</p>
+                <pre class="prettyprint lang-javascript">
+.info {
+    padding: 6px 8px;
+    font: 14px/16px Arial, Helvetica, sans-serif;
+    background: white;
+    background: rgba(255,255,255,0.8);
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    border-radius: 5px;
+}
+.info h4 {
+    margin: 0 0 5px;
+    color: #777;
+}
+.legend {
+    line-height: 18px;
+    color: #555;
+}
+.legend i {
+    width: 18px;
+    height: 18px;
+    float: left;
+    margin-right: 8px;
+    opacity: 0.7;
+}
+</pre>
+            <p>This example is based on this LeafletJS tutorial: <a href="http://leafletjs.com/examples/choropleth.html">http://leafletjs.com/examples/choropleth.html</a>.</p>
+            </div>
+            <div class="offset1 span10">
+                <leaflet class="simple" center="london" legend="legend"></leaflet>
+            </div>
+        </div>
         <footer>
             <div class="row">
                 <div class="span6">
@@ -254,10 +342,10 @@ angular.extend($scope, {
             src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub">
     </a>
 
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
-    <script src="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
     <script src="http://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
-    <script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
     <script src="dist/angular-leaflet-directive.min.js"></script>
     <script>
@@ -308,6 +396,25 @@ angular.extend($scope, {
                 },
             });
         }
+
+        function LegendController($scope) {
+            angular.extend($scope, {
+                london: {
+                    lat: 51.505,
+                    lng: -0.09,
+                    zoom: 12
+                },
+                legend: {
+                    position: 'bottomleft',
+                    colors: [ '#ff0000', '#28c9ff', '#0000ff', '#ecf386' ],
+                    labels: [ 'National Cycle Route', 'Regional Cycle Route', 'Local Cycle Network', 'Cycleway' ]
+                },
+                defaults: {
+                    tileLayer: "http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png"
+                }
+            });
+        };
+
     </script>
 
 </body>
