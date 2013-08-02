@@ -92,7 +92,7 @@ leafletDirective.directive('leaflet', [
             setupPaths();
             setupLegend();
             setupEvents();
-            setupChoroPleth();
+            setupGeojson();
 
             // use of leafletDirectiveSetMap event is not encouraged. only use
             // it when there is no easy way to bind data to the directive
@@ -270,7 +270,7 @@ leafletDirective.directive('leaflet', [
                 });
             }
 
-            function setupChoroPleth() {
+            function setupGeojson() {
                 $scope.$watch("geojson", function (geojson) {
                     if (!geojson) {
                         return;
@@ -281,16 +281,22 @@ leafletDirective.directive('leaflet', [
                             onEachFeature: function(feature, layer) {
                                 layer.on({
                                     mouseover: function(e) {
-                                        geojson.mouseover(e);
                                         $scope.safeApply(function (scope) {
                                             geojson.selected = feature;
                                         });
+                                        if (!geojson.mouseover) return;
+                                        geojson.mouseover(e);
                                     },
                                     mouseout: function(e) {
                                         leafletGeojson.resetStyle(e.target);
                                         $scope.safeApply(function (scope) {
                                             geojson.selected = undefined;
                                         });
+                                    },
+                                    click: function(e) {
+                                        if (geojson.click) {
+                                            geojson.click(geojson.selected);
+                                        }
                                     }
                                 });
                             }
