@@ -265,15 +265,15 @@ describe('Directive: leaflet', function() {
         expect(map.getBounds().equals(bounds)).toEqual(true);
     });
 
-    it('shold load event object from the parent scope',function(){
+    it('should load event object from the parent scope',function(){
         angular.extend($rootScope, {
             events: {
-            dblclick: function(){
-                return true;
-            },
-            click: function(){
-                return true;
-            } 
+                dblclick: function(){
+                    return true;
+                },
+                click: function(){
+                    return true;
+                } 
             }
         });
 

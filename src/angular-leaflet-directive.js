@@ -249,24 +249,12 @@ leafletDirective.directive('leaflet', [
                     }
                 }, true);
 
-                map.on("dragend", function (/* event */) {
+                map.on("moveend", function (/* event */) {
                     $scope.safeApply(function (scope) {
                         centerModel.lat.assign(scope, map.getCenter().lat);
                         centerModel.lng.assign(scope, map.getCenter().lng);
+                        centerModel.zoom.assign(scope, map.getZoom());
                     });
-                });
-
-                map.on("zoomend", function (/* event */) {
-                    if(angular.isUndefined($scope.center)){
-                        $log.warn("[AngularJS - Leaflet] 'center' is undefined in the current scope, did you forget to initialize it?");
-                    }
-                    if (angular.isUndefined($scope.center) || $scope.center.zoom !== map.getZoom()) {
-                        $scope.safeApply(function (s) {
-                            centerModel.zoom.assign(s, map.getZoom());
-                            centerModel.lat.assign(s, map.getCenter().lat);
-                            centerModel.lng.assign(s, map.getCenter().lng);
-                        });
-                    }
                 });
             }
 
@@ -381,6 +369,40 @@ leafletDirective.directive('leaflet', [
                         marker.openPopup();
                     }
                 });
+
+                // Set up marker event broadcasting
+                var markerEvents = [
+                    'click',
+                    'dblclick',
+                    'mousedown',
+                    'mouseover',
+                    'mouseout',
+                    'contextmenu',
+                    'dragstart',
+                    'drag',
+                    'dragend',
+                    'move',
+                    'remove',
+                    'popupopen',
+                    'popupclose'
+                ];
+
+                for( var i=0; i < markerEvents.length; i++) {
+                    var eventName = markerEvents[i];
+
+                    marker.on(eventName, function(e) {
+                        var broadcastName = 'leafletDirectiveMarker.' + this.eventName;
+                        $rootScope.$apply(function(){
+                            $rootScope.$broadcast(broadcastName, {
+                                markerName: scope_watch_name.replace('markers.', ''),
+                                leafletEvent: e
+                            });
+                        });
+                    }, {
+                        eventName: eventName,
+                        scope_watch_name: scope_watch_name
+                    });
+                }
 
                 var clearWatch = $scope.$watch(scope_watch_name, function (data, old_data) {
                     if (!data) {
