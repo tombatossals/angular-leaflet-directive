@@ -7,6 +7,7 @@ leafletDirective.directive('leaflet', [
         maxZoom: 14,
         minZoom: 1,
         doubleClickZoom: true,
+        scrollWheelZoom: true,
         tileLayer: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
         tileLayerOptions: {
             attribution: 'Tiles &copy; Open Street Maps'
@@ -74,11 +75,13 @@ leafletDirective.directive('leaflet', [
             $scope.leaflet.minZoom = !!(attrs.defaults && $scope.defaults && $scope.defaults.minZoom) ?
                 parseInt($scope.defaults.minZoom, 10) : defaults.minZoom;
             $scope.leaflet.doubleClickZoom = !!(attrs.defaults && $scope.defaults && (typeof($scope.defaults.doubleClickZoom) == "boolean") ) ? $scope.defaults.doubleClickZoom  : defaults.doubleClickZoom;
+            $scope.leaflet.scrollWheelZoom = !!(attrs.defaults && $scope.defaults && (typeof($scope.defaults.scrollWheelZoom) == "boolean") ) ? $scope.defaults.scrollWheelZoom  : defaults.scrollWheelZoom;
 
             var map = new L.Map(element[0], {
                 maxZoom: $scope.leaflet.maxZoom,
                 minZoom: $scope.leaflet.minZoom,
-                doubleClickZoom: $scope.leaflet.doubleClickZoom
+                doubleClickZoom: $scope.leaflet.doubleClickZoom,
+                scrollWheelZoom: $scope.leaflet.scrollWheelZoom
             });
 
             map.setView([0, 0], 1);
