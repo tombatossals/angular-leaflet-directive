@@ -285,23 +285,4 @@ describe('Directive: leaflet', function() {
         expect(events.click[0].action()).toEqual(true);
 
     });
-
-    it('should attach events to markers', function() {
-        var main_marker = {
-            lat: 0.966,
-            lng: 2.02,
-            events: {
-                click: function() {
-                    return true;
-                }
-            }
-        };
-        angular.extend($rootScope, { marker: main_marker });
-        var element = angular.element('<leaflet marker="marker" testing="testing"></leaflet>');
-        element = $compile(element)($rootScope);
-        var map = element.scope().leaflet.map;
-        var leafletMainMarkerEvents = element.scope().leaflet.marker._leaflet_events;
-
-        expect(leafletMainMarkerEvents.click[0].action()).toEqual(true);
-    });
 });
