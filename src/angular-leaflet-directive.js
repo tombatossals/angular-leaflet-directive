@@ -48,6 +48,7 @@ leafletDirective.directive('leaflet', [
             defaults: '=defaults',
             paths: '=paths',
             tiles: '=tiles',
+            leaflet: '=testing',
             events: '=events'
         },
         template: '<div class="angular-leaflet-map"></div>',
@@ -82,7 +83,6 @@ leafletDirective.directive('leaflet', [
 
             map.setView([0, 0], 1);
             $scope.leaflet.map = !!attrs.testing ? map : str_inspect_hint;
-
             setupTiles();
             setupCenter();
             setupMaxBounds();
@@ -275,8 +275,13 @@ leafletDirective.directive('leaflet', [
                     if (!geojson) {
                         return;
                     }
+
+                    if ($scope.leaflet.geojson) {
+                        map.removeLayer($scope.leaflet.geojson);
+                    }
+
                     if (geojson.hasOwnProperty("data")) {
-                        var leafletGeojson = L.geoJson($scope.geojson.data, {
+                        $scope.leaflet.geojson = L.geoJson($scope.geojson.data, {
                             style: $scope.geojson.style,
                             onEachFeature: function(feature, layer) {
                                 layer.on({
@@ -288,14 +293,15 @@ leafletDirective.directive('leaflet', [
                                         geojson.mouseover(e);
                                     },
                                     mouseout: function(e) {
-                                        leafletGeojson.resetStyle(e.target);
                                         $scope.safeApply(function (scope) {
                                             geojson.selected = undefined;
                                         });
+                                        if (!geojson.mouseout) return;
+                                        geojson.mouseout(e);
                                     },
                                     click: function(e) {
                                         if (geojson.click) {
-                                            geojson.click(geojson.selected);
+                                            geojson.click(geojson.selected, e);
                                         }
                                     }
                                 });
