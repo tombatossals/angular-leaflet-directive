@@ -322,18 +322,9 @@ leafletDirective.directive('leaflet', [
                     return;
                 }
 
-                function genMultiMarkersClickCallback(m_name) {
-                    return function(e) {
-                        $rootScope.$apply(function() {
-                            $rootScope.$broadcast('leafletDirectiveMarkersClick', m_name);
-                        });
-                    };
-                }
-
                 for (var name in $scope.markers) {
                     markers[name] = createMarker(
                             'markers.'+name, $scope.markers[name], map);
-                    markers[name].on('click', genMultiMarkersClickCallback(name));
                 }
 
                 $scope.$watch('markers', function(newMarkers) {
@@ -348,7 +339,6 @@ leafletDirective.directive('leaflet', [
                         if (markers[new_name] === undefined) {
                             markers[new_name] = createMarker(
                                 'markers.'+new_name, newMarkers[new_name], map);
-                            markers[new_name].on('click', genMultiMarkersClickCallback(new_name));
                         }
                     }
                 }, true);
@@ -394,12 +384,21 @@ leafletDirective.directive('leaflet', [
 
                     marker.on(eventName, function(e) {
                         var broadcastName = 'leafletDirectiveMarker.' + this.eventName;
-                        $rootScope.$apply(function(){
-                            $rootScope.$broadcast(broadcastName, {
-                                markerName: scope_watch_name.replace('markers.', ''),
-                                leafletEvent: e
+                        var markerName = scope_watch_name.replace('markers.', '');
+
+                        // Broadcast old marker click name for backwards compatibility
+                        if(this.eventName == "click") {
+                            $rootScope.$apply(function(){
+                                $rootScope.$broadcast('leafletDirectiveMarkersClick', markerName);
                             });
-                        });
+                        } else {
+                            $rootScope.$apply(function(){
+                                $rootScope.$broadcast(broadcastName, {
+                                    markerName: markerName,
+                                    leafletEvent: e
+                                });
+                            });
+                        }
                     }, {
                         eventName: eventName,
                         scope_watch_name: scope_watch_name
