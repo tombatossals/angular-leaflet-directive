@@ -395,12 +395,21 @@ leafletDirective.directive('leaflet', [
 
                     marker.on(eventName, function(e) {
                         var broadcastName = 'leafletDirectiveMarker.' + this.eventName;
-                        $rootScope.$apply(function(){
-                            $rootScope.$broadcast(broadcastName, {
-                                markerName: scope_watch_name.replace('markers.', ''),
-                                leafletEvent: e
+                        var markerName = scope_watch_name.replace('markers.', '');
+
+                        // Broadcast old marker click name for backwards compatibility
+                        if(this.eventName == "click") {
+                            $rootScope.$apply(function(){
+                                $rootScope.$broadcast('leafletDirectiveMarkersClick', markerName);
                             });
-                        });
+                        } else {
+                            $rootScope.$apply(function(){
+                                $rootScope.$broadcast(broadcastName, {
+                                    markerName: markerName,
+                                    leafletEvent: e
+                                });
+                            });
+                        }
                     }, {
                         eventName: eventName,
                         scope_watch_name: scope_watch_name
