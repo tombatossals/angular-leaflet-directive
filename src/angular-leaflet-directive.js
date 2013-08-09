@@ -323,18 +323,9 @@ leafletDirective.directive('leaflet', [
                     return;
                 }
 
-                function genMultiMarkersClickCallback(m_name) {
-                    return function(e) {
-                        $rootScope.$apply(function() {
-                            $rootScope.$broadcast('leafletDirectiveMarkersClick', m_name);
-                        });
-                    };
-                }
-
                 for (var name in $scope.markers) {
                     markers[name] = createMarker(
                             'markers.'+name, $scope.markers[name], map);
-                    markers[name].on('click', genMultiMarkersClickCallback(name));
                 }
 
                 $scope.$watch('markers', function(newMarkers) {
@@ -349,7 +340,6 @@ leafletDirective.directive('leaflet', [
                         if (markers[new_name] === undefined) {
                             markers[new_name] = createMarker(
                                 'markers.'+new_name, newMarkers[new_name], map);
-                            markers[new_name].on('click', genMultiMarkersClickCallback(new_name));
                         }
                     }
                 }, true);
