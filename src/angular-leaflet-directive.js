@@ -49,7 +49,6 @@ leafletDirective.directive('leaflet', [
             defaults: '=defaults',
             paths: '=paths',
             tiles: '=tiles',
-            leaflet: '=testing',
             events: '=events'
         },
         template: '<div class="angular-leaflet-map"></div>',
