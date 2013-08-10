@@ -391,14 +391,14 @@ leafletDirective.directive('leaflet', [
                             $rootScope.$apply(function(){
                                 $rootScope.$broadcast('leafletDirectiveMarkersClick', markerName);
                             });
-                        } else {
-                            $rootScope.$apply(function(){
-                                $rootScope.$broadcast(broadcastName, {
-                                    markerName: markerName,
-                                    leafletEvent: e
-                                });
-                            });
                         }
+
+                        $rootScope.$apply(function(){
+                            $rootScope.$broadcast(broadcastName, {
+                                markerName: markerName,
+                                leafletEvent: e
+                            });
+                        });
                     }, {
                         eventName: eventName,
                         scope_watch_name: scope_watch_name
