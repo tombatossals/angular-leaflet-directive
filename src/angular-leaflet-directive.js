@@ -103,9 +103,13 @@ leafletDirective.directive('leaflet', [
                 map[meth].apply(map, message);
             });
 
-            $scope.safeApply = function(fn) {
-                var phase = this.$root.$$phase;
-                if (phase == '$apply' || phase == '$digest') {
+            var _isSafeToApply = function() {
+                var phase = $scope.$root.$$phase;
+                return !(phase == '$apply' || phase == '$digest');
+            }
+
+            var safeApply = function(fn) {
+                if (!_isSafeToApply()) {
                     $scope.$eval(fn);
                 } else {
                     $scope.$apply(fn);
@@ -252,7 +256,7 @@ leafletDirective.directive('leaflet', [
                 }, true);
 
                 map.on("moveend", function (/* event */) {
-                    $scope.safeApply(function (scope) {
+                    safeApply(function (scope) {
                         centerModel.lat.assign(scope, map.getCenter().lat);
                         centerModel.lng.assign(scope, map.getCenter().lng);
                         centerModel.zoom.assign(scope, map.getZoom());
@@ -276,14 +280,14 @@ leafletDirective.directive('leaflet', [
                             onEachFeature: function(feature, layer) {
                                 layer.on({
                                     mouseover: function(e) {
-                                        $scope.safeApply(function (scope) {
+                                        safeApply(function (scope) {
                                             geojson.selected = feature;
                                         });
                                         if (!geojson.mouseover) return;
                                         geojson.mouseover(e);
                                     },
                                     mouseout: function(e) {
-                                        $scope.safeApply(function (scope) {
+                                        safeApply(function (scope) {
                                             geojson.selected = undefined;
                                         });
                                         if (!geojson.mouseout) return;
@@ -352,16 +356,6 @@ leafletDirective.directive('leaflet', [
                     marker.openPopup();
                 }
 
-                marker.on("dragend", function () {
-                    $scope.safeApply(function (scope) {
-                        marker_data.lat = marker.getLatLng().lat;
-                        marker_data.lng = marker.getLatLng().lng;
-                    });
-                    if (marker_data.message) {
-                        marker.openPopup();
-                    }
-                });
-
                 // Set up marker event broadcasting
                 var markerEvents = [
                     'click',
@@ -379,18 +373,24 @@ leafletDirective.directive('leaflet', [
                     'popupclose'
                 ];
 
-                for( var i=0; i < markerEvents.length; i++) {
-                    var eventName = markerEvents[i];
-
-                    marker.on(eventName, function(e) {
-                        var broadcastName = 'leafletDirectiveMarker.' + this.eventName;
+                function genDispatchEventCB(eventName) {
+                    return function(e) {
+                        var broadcastName = 'leafletDirectiveMarker.' + eventName;
                         var markerName = scope_watch_name.replace('markers.', '');
 
                         // Broadcast old marker click name for backwards compatibility
-                        if(this.eventName == "click") {
+                        if (eventName == "click") {
                             $rootScope.$apply(function(){
                                 $rootScope.$broadcast('leafletDirectiveMarkersClick', markerName);
                             });
+                        } else if (eventName == 'dragend') {
+                            safeApply(function () {
+                                marker_data.lat = marker.getLatLng().lat;
+                                marker_data.lng = marker.getLatLng().lng;
+                            });
+                            if (marker_data.message) {
+                                marker.openPopup();
+                            }
                         }
 
                         $rootScope.$apply(function(){
@@ -399,7 +399,12 @@ leafletDirective.directive('leaflet', [
                                 leafletEvent: e
                             });
                         });
-                    }, {
+                    };
+                }
+
+                for (var i = 0; i < markerEvents.length; i++) {
+                    var eventName = markerEvents[i];
+                    marker.on(eventName, genDispatchEventCB(eventName), {
                         eventName: eventName,
                         scope_watch_name: scope_watch_name
                     });
@@ -434,7 +439,19 @@ leafletDirective.directive('leaflet', [
                         }
 
                         if (data.lat !== old_data.lat || data.lng !== old_data.lng) {
-                            marker.setLatLng(new L.LatLng(data.lat, data.lng));
+                            var cur_latlng = marker.getLatLng();
+                            // On dragend event, scope will be updated, which
+                            // tirggers this watch expression. Then we call
+                            // setLatLng and triggers move event on marker and
+                            // causes digest already in progress error.
+                            //
+                            // This check is to make sure we don't trigger move
+                            // event manually after dragend, which is redundant
+                            // anyway. Because before dragend event fired, marker
+                            // sate is already updated by leaflet.
+                            if (cur_latlng.lat != data.lat || cur_latlng.lng != data.lng) {
+                                marker.setLatLng([data.lat, data.lng]);
+                            }
                         }
 
                         if (data.icon && data.icon !== old_data.icon) {
