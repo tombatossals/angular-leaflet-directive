@@ -83,7 +83,7 @@ leafletDirective.directive('leaflet', [
                 scrollWheelZoom: $scope.leaflet.scrollWheelZoom
             });
 
-            map.setView([0, 0], 1);
+            map.setView([0, 0], 10);
             $scope.leaflet.map = !!attrs.testing ? map : str_inspect_hint;
             setupTiles();
             setupCenter();
