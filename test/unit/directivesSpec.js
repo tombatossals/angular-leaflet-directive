@@ -212,6 +212,24 @@ describe('Directive: leaflet', function() {
         expect(leafletMarkers.m1.options.icon.iconUrl).toEqual(default_icon.iconUrl);
     });
 
+    it('should not trigger move event if marker position is not changed', function() {
+        var main_marker = {
+            lat: 0.966,
+            lng: 2.02
+        };
+        angular.extend($rootScope, { marker: main_marker });
+        var element = angular.element('<leaflet marker="marker" testing="testing"></leaflet>');
+        element = $compile(element)($rootScope);
+        var map = element.scope().leaflet.map;
+        var leafletMainMarker = element.scope().leaflet.marker;
+        $rootScope.$digest();
+        main_marker.lat = 0;
+        leafletMainMarker.on('move', function() {
+            expect('this should not happend!').toEqual('it happended');
+        });
+        leafletMainMarker.fire('dragend');
+    });
+
     // Polyline
     it('should create polyline on the map', function() {
         var latlngs1 = [
