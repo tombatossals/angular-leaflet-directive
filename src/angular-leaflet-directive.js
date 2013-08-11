@@ -245,7 +245,8 @@ leafletDirective.directive('leaflet', [
                         return;
                     }
                     if (center.lat !== undefined && center.lng !== undefined && center.zoom !== undefined) {
-                        map.setView( [center.lat, center.lng], center.zoom );
+                        map.panTo( [center.lat, center.lng]);
+                        map.setZoom( center.zoom );
                     } else if (center.autoDiscover === true) {
                         map.locate({ setView: true, maxZoom: $scope.leaflet.maxZoom });
                     }
