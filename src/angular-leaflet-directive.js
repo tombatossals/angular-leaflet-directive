@@ -356,23 +356,6 @@ leafletDirective.directive('leaflet', [
                     marker.openPopup();
                 }
 
-                // Set up marker event broadcasting
-                var markerEvents = [
-                    'click',
-                    'dblclick',
-                    'mousedown',
-                    'mouseover',
-                    'mouseout',
-                    'contextmenu',
-                    'dragstart',
-                    'drag',
-                    'dragend',
-                    'move',
-                    'remove',
-                    'popupopen',
-                    'popupclose'
-                ];
-
                 function genDispatchEventCB(eventName) {
                     return function(e) {
                         var broadcastName = 'leafletDirectiveMarker.' + eventName;
@@ -401,6 +384,23 @@ leafletDirective.directive('leaflet', [
                         });
                     };
                 }
+
+                // Set up marker event broadcasting
+                var markerEvents = [
+                    'click',
+                    'dblclick',
+                    'mousedown',
+                    'mouseover',
+                    'mouseout',
+                    'contextmenu',
+                    'dragstart',
+                    'drag',
+                    'dragend',
+                    'move',
+                    'remove',
+                    'popupopen',
+                    'popupclose'
+                ];
 
                 for (var i = 0; i < markerEvents.length; i++) {
                     var eventName = markerEvents[i];
