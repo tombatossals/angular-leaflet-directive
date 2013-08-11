@@ -439,9 +439,8 @@ leafletDirective.directive('leaflet', [
                             }
                         }
 
-                        if (data.lat !== old_data.lat || data.lng !== old_data.lng) {
+                        if ((data.lat !== undefined && data.lat != null && data.lat != NaN && data.lat !== old_data.lat) || (data.lng !== undefined && data.lng != null && data.lng != NaN && data.lng !== old_data.lng)) {
                             marker.setLatLng(new L.LatLng(data.lat, data.lng));
-                            marker.update();
                         }
 
                         if (data.icon && data.icon !== old_data.icon) {
