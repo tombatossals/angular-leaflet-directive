@@ -421,6 +421,16 @@ leafletDirective.directive('leaflet', [
                             }
                         }
 
+                        if (data.message !== undefined && data.message !== old_data.message) {
+				if (data.message == null) {
+					marker.unbindPopup();
+				} else {
+	                        	marker.setPopupContent(data.message);
+				}
+                        } else if (data.message !== undefined && old_data.message === undefined) {
+                            marker.bindPopup(data.message);
+                        }
+
                         if (data.focus !== undefined && data.focus !== old_data.focus) {
                             if (data.focus === true) {
                                 marker.openPopup();
@@ -429,12 +439,9 @@ leafletDirective.directive('leaflet', [
                             }
                         }
 
-                        if (data.message !== undefined && data.message !== old_data.message) {
-                            marker.bindPopup(data);
-                        }
-
                         if (data.lat !== old_data.lat || data.lng !== old_data.lng) {
                             marker.setLatLng(new L.LatLng(data.lat, data.lng));
+                            marker.update();
                         }
 
                         if (data.icon && data.icon !== old_data.icon) {
