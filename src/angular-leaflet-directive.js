@@ -103,18 +103,18 @@ leafletDirective.directive('leaflet', [
                 map[meth].apply(map, message);
             });
 
-            var _isSafeToApply = function() {
+            function _isSafeToApply() {
                 var phase = $scope.$root.$$phase;
                 return !(phase == '$apply' || phase == '$digest');
             }
 
-            var safeApply = function(fn) {
+            function safeApply(fn) {
                 if (!_isSafeToApply()) {
                     $scope.$eval(fn);
                 } else {
                     $scope.$apply(fn);
                 }
-            };
+            }
 
             /*
              * Event setup watches for callbacks set in the parent scope
@@ -130,10 +130,10 @@ leafletDirective.directive('leaflet', [
              */
 
             function setupEvents(){
-                if ( typeof($scope.events) != 'object'){
+                if (typeof($scope.events) != 'object') {
                     return false;
-                }else{
-                    for (var bind_to  in $scope.events){
+                } else {
+                    for (var bind_to  in $scope.events) {
                         map.on(bind_to,$scope.events[bind_to]);
                     }
                 }
@@ -313,7 +313,7 @@ leafletDirective.directive('leaflet', [
                 main_marker = createMarker('marker', $scope.marker, map);
                 $scope.leaflet.marker = !!attrs.testing ? main_marker : str_inspect_hint;
                 main_marker.on('click', function(e) {
-                    $scope.safeApply(function() {
+                    safeApply(function() {
                         $rootScope.$broadcast('leafletDirectiveMainMarkerClick');
                     });
                 });
@@ -393,7 +393,7 @@ leafletDirective.directive('leaflet', [
                             }
                         }
 
-                        $scope.safeApply(function(){
+                        safeApply(function(){
                             $rootScope.$broadcast(broadcastName, {
                                 markerName: markerName,
                                 leafletEvent: e
