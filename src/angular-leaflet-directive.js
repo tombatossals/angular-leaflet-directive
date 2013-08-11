@@ -6,6 +6,7 @@ leafletDirective.directive('leaflet', [
     var defaults = {
         maxZoom: 14,
         minZoom: 1,
+        zoomControlPosition: null,
         doubleClickZoom: true,
         scrollWheelZoom: true,
         tileLayer: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -85,6 +86,7 @@ leafletDirective.directive('leaflet', [
 
             map.setView([0, 0], 10);
             $scope.leaflet.map = !!attrs.testing ? map : str_inspect_hint;
+            map.zoomControl.setPosition('topright');
             setupTiles();
             setupCenter();
             setupMaxBounds();
@@ -128,7 +130,6 @@ leafletDirective.directive('leaflet', [
              *      }
              * }
              */
-
             function setupEvents(){
                 if (typeof($scope.events) != 'object') {
                     return false;
@@ -175,11 +176,9 @@ leafletDirective.directive('leaflet', [
             }
 
             function setupLegend() {
-
                 if ($scope.legend) {
                     if (!$scope.legend.colors || !$scope.legend.labels || $scope.legend.colors.length != $scope.legend.labels.length) {
                          $log.warn("[AngularJS - Leaflet] legend.colors and legend.labels must be set.");
-
                     } else {
                         var position = $scope.legend.position || 'bottomright';
                         var legend = L.control({position: position });
@@ -222,14 +221,16 @@ leafletDirective.directive('leaflet', [
             }
 
             function tryFitBounds(bounds) {
-                if (bounds) {
-                    var southWest = bounds.southWest;
-                    var northEast = bounds.northEast;
-                    if (southWest && northEast && southWest.lat && southWest.lng && northEast.lat && northEast.lng) {
-                        var sw_latlng = new L.LatLng(southWest.lat, southWest.lng);
-                        var ne_latlng = new L.LatLng(northEast.lat, northEast.lng);
-                        map.fitBounds(new L.LatLngBounds(sw_latlng, ne_latlng));
-                    }
+                if (!bounds) {
+                    return;
+                }
+
+                var southWest = bounds.southWest;
+                var northEast = bounds.northEast;
+                if (southWest && northEast && southWest.lat && southWest.lng && northEast.lat && northEast.lng) {
+                    var sw_latlng = new L.LatLng(southWest.lat, southWest.lng);
+                    var ne_latlng = new L.LatLng(northEast.lat, northEast.lng);
+                    map.fitBounds(new L.LatLngBounds(sw_latlng, ne_latlng));
                 }
             }
 
@@ -237,13 +238,13 @@ leafletDirective.directive('leaflet', [
                 if (!$scope.bounds) {
                     return;
                 }
-                $scope.$watch('bounds', function (new_bounds) {
+                $scope.$watch('bounds', function(new_bounds) {
                     tryFitBounds(new_bounds);
                 });
             }
 
             function setupCenter() {
-                $scope.$watch("center", function (center) {
+                $scope.$watch("center", function(center) {
                     if (!center) {
                         $log.warn("[AngularJS - Leaflet] 'center' is undefined in the current scope, did you forget to initialize it?");
                         return;
@@ -255,8 +256,8 @@ leafletDirective.directive('leaflet', [
                     }
                 }, true);
 
-                map.on("moveend", function (/* event */) {
-                    safeApply(function (scope) {
+                map.on("moveend", function(/* event */) {
+                    safeApply(function(scope) {
                         centerModel.lat.assign(scope, map.getCenter().lat);
                         centerModel.lng.assign(scope, map.getCenter().lng);
                         centerModel.zoom.assign(scope, map.getZoom());
@@ -265,7 +266,7 @@ leafletDirective.directive('leaflet', [
             }
 
             function setupGeojson() {
-                $scope.$watch("geojson", function (geojson) {
+                $scope.$watch("geojson", function(geojson) {
                     if (!geojson) {
                         return;
                     }
@@ -410,7 +411,7 @@ leafletDirective.directive('leaflet', [
                     });
                 }
 
-                var clearWatch = $scope.$watch(scope_watch_name, function (data, old_data) {
+                var clearWatch = $scope.$watch(scope_watch_name, function(data, old_data) {
                     if (!data) {
                         map.removeLayer(marker);
                         clearWatch();
@@ -551,7 +552,7 @@ leafletDirective.directive('leaflet', [
 
                 map.addLayer(polyline);
 
-                var clearWatch = $scope.$watch('paths.' + name, function (data, oldData) {
+                var clearWatch = $scope.$watch('paths.' + name, function(data, oldData) {
                     if (!data) {
                         map.removeLayer(polyline);
                         clearWatch();
@@ -581,7 +582,7 @@ leafletDirective.directive('leaflet', [
             }
 
             function convertToLeafletLatLngs(latlngs) {
-                var leafletLatLngs = latlngs.filter(function (latlng) {
+                var leafletLatLngs = latlngs.filter(function(latlng) {
                     return !!latlng.lat && !!latlng.lng;
                 }).map(function (latlng) {
                     return new L.LatLng(latlng.lat, latlng.lng);
