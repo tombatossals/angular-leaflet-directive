@@ -1,11 +1,11 @@
 <html ng-app="demoapp">
   <head>
-    <script src="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.js"></script>
+    <script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
     <script src="../dist/angular-leaflet-directive.min.js"></script>
-    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.css" />
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" />
     <!--[if lte IE 8]>
-        <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.4/leaflet.ie.css" />
+        <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.ie.css" />
     <![endif]-->
     <script>
         angular.module("demoapp", ["leaflet-directive"]);
@@ -16,31 +16,38 @@
                     lng: -0.09,
                     zoom: 8
                 },
-                markers: {
-                    m1: {
-                        lat: 51.505,
-                        lng: -0.09,
-                        message: "I'm a static marker"
-                    },
-                    m2: {
-                        lat: 51,
-                        lng: 0,
-                        focus: true,
-                        message: "Hey, drag me if you want",
-                        draggable: true
-                    }
-                }
+                markers: {}
             });
+
+            $scope.addMarkers = function() {
+                angular.extend($scope, {
+                    markers: {
+                        m1: {
+                            lat: 51.505,
+                            lng: -0.09,
+                            message: "I'm a static marker",
+                        },
+                        m2: {
+                            lat: 51,
+                            lng: 0,
+                            focus: true,
+                            message: "Hey, drag me if you want",
+                            draggable: true
+                        }
+                    }
+                });
+            };
+
+            $scope.removeMarkers = function() {
+                $scope.markers = {};
+            }
+
         };
     </script>
-    <style>
-        .angular-leaflet-map {
-            width: 640px;
-            height: 480px;
-        }
-    </style>
   </head>
   <body ng-controller="DemoController">
-    <leaflet center="london" markers="markers"></leaflet>
+      <a href="#" ng-click="removeMarkers()">Remove markers</a> #
+      <a href="#" ng-click="addMarkers()">Add markers</a>
+      <leaflet center="london" markers="markers" height="480px" width="640px"></leaflet>
   </body>
 </html>
