@@ -313,7 +313,7 @@ leafletDirective.directive('leaflet', [
                 main_marker = createMarker('marker', $scope.marker, map);
                 $scope.leaflet.marker = !!attrs.testing ? main_marker : str_inspect_hint;
                 main_marker.on('click', function(e) {
-                    $rootScope.$apply(function() {
+                    $scope.safeApply(function() {
                         $rootScope.$broadcast('leafletDirectiveMainMarkerClick');
                     });
                 });
@@ -380,11 +380,11 @@ leafletDirective.directive('leaflet', [
 
                         // Broadcast old marker click name for backwards compatibility
                         if (eventName == "click") {
-                            $rootScope.$apply(function(){
+                            safeApply(function() {
                                 $rootScope.$broadcast('leafletDirectiveMarkersClick', markerName);
                             });
                         } else if (eventName == 'dragend') {
-                            safeApply(function () {
+                            safeApply(function() {
                                 marker_data.lat = marker.getLatLng().lat;
                                 marker_data.lng = marker.getLatLng().lng;
                             });
@@ -393,7 +393,7 @@ leafletDirective.directive('leaflet', [
                             }
                         }
 
-                        $rootScope.$apply(function(){
+                        $scope.safeApply(function(){
                             $rootScope.$broadcast(broadcastName, {
                                 markerName: markerName,
                                 leafletEvent: e
