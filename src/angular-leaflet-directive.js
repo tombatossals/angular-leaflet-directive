@@ -112,28 +112,28 @@ leafletDirective.directive('leaflet', [
                 }
             };
 
-             /*
-              * Event setup watches for callbacks set in the parent scope
-              *
-              *    $scope.events = {
-              *      dblclick: function(){
-              *         // doThis()
-              *      },
-              *      click: function(){
-              *         // doThat()
-              *      }
-              * }
-              * */
+            /*
+             * Event setup watches for callbacks set in the parent scope
+             *
+             *    $scope.events = {
+             *      dblclick: function(){
+             *         // doThis()
+             *      },
+             *      click: function(){
+             *         // doThat()
+             *      }
+             * }
+             */
 
-             function setupEvents(){
-                 if ( typeof($scope.events) != 'object'){
-                     return false;
-                 }else{
-                     for (var bind_to  in $scope.events){
-                         map.on(bind_to,$scope.events[bind_to]);
-                     }
-                 }
-             }
+            function setupEvents(){
+                if ( typeof($scope.events) != 'object'){
+                    return false;
+                }else{
+                    for (var bind_to  in $scope.events){
+                        map.on(bind_to,$scope.events[bind_to]);
+                    }
+                }
+            }
 
             function setupTiles(){
                 // TODO build custom object for tiles, actually only the tile string
