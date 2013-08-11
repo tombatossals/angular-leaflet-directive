@@ -422,11 +422,11 @@ leafletDirective.directive('leaflet', [
                         }
 
                         if (data.message !== undefined && data.message !== old_data.message) {
-				if (data.message == null) {
-					marker.unbindPopup();
-				} else {
-	                        	marker.setPopupContent(data.message);
-				}
+                            if (data.message == null) {
+                                marker.unbindPopup();
+                            } else {
+                                marker.setPopupContent(data.message);
+                            }
                         } else if (data.message !== undefined && old_data.message === undefined) {
                             marker.bindPopup(data.message);
                         }
