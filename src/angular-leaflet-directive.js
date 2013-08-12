@@ -592,7 +592,7 @@ leafletDirective.directive('leaflet', [
 
             function setupControls() {
                 //@TODO add document for this option  11.08 2013 (houqp)
-                if ($scope.defaults.zoomControlPosition) {
+                if ($scope.defaults && $scope.defaults.zoomControlPosition) {
                     map.zoomControl.setPosition($scope.defaults.zoomControlPosition);
                 }
             }
