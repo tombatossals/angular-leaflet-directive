@@ -426,6 +426,16 @@ leafletDirective.directive('leaflet', [
                             }
                         }
 
+                        if (data.message !== undefined && data.message !== old_data.message) {
+                            if (data.message == null) {
+                                marker.unbindPopup();
+                            } else {
+                                marker.setPopupContent(data.message);
+                            }
+                        } else if (data.message !== undefined && old_data.message === undefined) {
+                            marker.bindPopup(data.message);
+                        }
+
                         if (data.focus !== undefined && data.focus !== old_data.focus) {
                             if (data.focus === true) {
                                 marker.openPopup();
@@ -434,11 +444,7 @@ leafletDirective.directive('leaflet', [
                             }
                         }
 
-                        if (data.message !== undefined && data.message !== old_data.message) {
-                            marker.bindPopup(data);
-                        }
-
-                        if (data.lat !== old_data.lat || data.lng !== old_data.lng) {
+                        if ((data.lat !== undefined && data.lat != null && data.lat != NaN && data.lat !== old_data.lat) || (data.lng !== undefined && data.lng != null && data.lng != NaN && data.lng !== old_data.lng)) {
                             var cur_latlng = marker.getLatLng();
                             // On dragend event, scope will be updated, which
                             // tirggers this watch expression. Then we call
