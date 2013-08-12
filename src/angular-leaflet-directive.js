@@ -6,7 +6,6 @@ leafletDirective.directive('leaflet', [
     var defaults = {
         maxZoom: 14,
         minZoom: 1,
-        zoomControlPosition: null,
         doubleClickZoom: true,
         scrollWheelZoom: true,
         tileLayer: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -67,7 +66,6 @@ leafletDirective.directive('leaflet', [
                 element.css('height', attrs.height);
             }
 
-
             $scope.leaflet = {};
 
             $scope.leaflet.maxZoom = !!(attrs.defaults && $scope.defaults && $scope.defaults.maxZoom) ?
@@ -86,7 +84,8 @@ leafletDirective.directive('leaflet', [
 
             map.setView([0, 0], 10);
             $scope.leaflet.map = !!attrs.testing ? map : str_inspect_hint;
-            map.zoomControl.setPosition('topright');
+
+            setupControls();
             setupTiles();
             setupCenter();
             setupMaxBounds();
@@ -589,6 +588,13 @@ leafletDirective.directive('leaflet', [
                 });
 
                 return leafletLatLngs;
+            }
+
+            function setupControls() {
+                //@TODO add document for this option  11.08 2013 (houqp)
+                if ($scope.defaults.zoomControlPosition) {
+                    map.zoomControl.setPosition($scope.defaults.zoomControlPosition);
+                }
             }
         }
     };
