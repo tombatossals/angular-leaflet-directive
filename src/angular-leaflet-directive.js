@@ -93,8 +93,8 @@ leafletDirective.directive('leaflet', [
             setupMarkers();
             setupPaths();
             setupLegend();
-            setupEventBroadcasting();
-            setupEventCallbacks();
+            setupMapEventBroadcasting();
+            setupMapEventCallbacks();
             setupGeojson();
 
             // use of leafletDirectiveSetMap event is not encouraged. only use
@@ -124,7 +124,7 @@ leafletDirective.directive('leaflet', [
             *
             * All events listed at http://leafletjs.com/reference.html#map-events are supported
             */
-            function setupEventBroadcasting() {
+            function setupMapEventBroadcasting() {
                 var mapEvents = [
                     'click',
                     'dblclick',
@@ -194,7 +194,7 @@ leafletDirective.directive('leaflet', [
              * }
              */
 
-            function setupEventCallbacks() {
+            function setupMapEventCallbacks() {
                 if (typeof($scope.events) != 'object') {
                     return false;
                 } else {
