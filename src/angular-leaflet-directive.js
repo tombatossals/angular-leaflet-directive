@@ -93,6 +93,7 @@ leafletDirective.directive('leaflet', [
             setupMarkers();
             setupPaths();
             setupLegend();
+            setupEventBroadcasting();
             setupEventCallbacks();
             setupGeojson();
 
@@ -117,6 +118,30 @@ leafletDirective.directive('leaflet', [
             }
 
             /*
+            * Set up broadcasting of map events to the rootScope
+            *
+            * Listeners listen at leafletDirectiveMap.<event name>
+            */
+            function setupEventBroadcasting() {
+                var mapEvents = [
+                    'click'
+                ];
+
+                for (var i = 0; i < mapEvents.length; i++) {
+                    var eventName = mapEvents[i];
+                    var broadcastName = 'leafletDirectiveMap.' + eventName;
+
+                    map.on(eventName, function(e) {
+                        safeApply(function() {
+                            $rootScope.$broadcast(broadcastName, {
+                                leafletEvent: e
+                            });
+                        });
+                    });
+                }
+            }
+
+            /*
              * Event setup watches for callbacks set in the parent scope
              *
              *    $scope.events = {
@@ -129,7 +154,7 @@ leafletDirective.directive('leaflet', [
              * }
              */
 
-            function setupEventCallbacks(){
+            function setupEventCallbacks() {
                 if (typeof($scope.events) != 'object') {
                     return false;
                 } else {
@@ -139,7 +164,7 @@ leafletDirective.directive('leaflet', [
                 }
             }
 
-            function setupTiles(){
+            function setupTiles() {
                 // TODO build custom object for tiles, actually only the tile string
                 // TODO: http://leafletjs.com/examples/layers-control.html
 
