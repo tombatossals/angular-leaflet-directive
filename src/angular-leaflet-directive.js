@@ -93,7 +93,7 @@ leafletDirective.directive('leaflet', [
             setupMarkers();
             setupPaths();
             setupLegend();
-            setupEvents();
+            setupEventCallbacks();
             setupGeojson();
 
             // use of leafletDirectiveSetMap event is not encouraged. only use
@@ -129,7 +129,7 @@ leafletDirective.directive('leaflet', [
              * }
              */
 
-            function setupEvents(){
+            function setupEventCallbacks(){
                 if (typeof($scope.events) != 'object') {
                     return false;
                 } else {
