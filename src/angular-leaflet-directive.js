@@ -121,22 +121,62 @@ leafletDirective.directive('leaflet', [
             * Set up broadcasting of map events to the rootScope
             *
             * Listeners listen at leafletDirectiveMap.<event name>
+            *
+            * All events listed at http://leafletjs.com/reference.html#map-events are supported
             */
             function setupEventBroadcasting() {
                 var mapEvents = [
-                    'click'
+                    'click',
+                    'dblclick',
+                    'mousedown',
+                    'mouseup',
+                    'mouseover',
+                    'mouseout',
+                    'mousemove',
+                    'contextmenu',
+                    'focus',
+                    'blur',
+                    'preclick',
+                    'load',
+                    'unload',
+                    'viewreset',
+                    'movestart',
+                    'move',
+                    'moveend',
+                    'dragstart',
+                    'drag',
+                    'dragend',
+                    'zoomstart',
+                    'zoomend',
+                    'zoomlevelschange',
+                    'resize',
+                    'autopanstart',
+                    'layeradd',
+                    'layerremove',
+                    'baselayerchange',
+                    'overlayadd',
+                    'overlayremove',
+                    'locationfound',
+                    'locationerror',
+                    'popupopen',
+                    'popupclose'
                 ];
 
                 for (var i = 0; i < mapEvents.length; i++) {
                     var eventName = mapEvents[i];
-                    var broadcastName = 'leafletDirectiveMap.' + eventName;
 
                     map.on(eventName, function(e) {
-                        safeApply(function() {
+                        // Put together broadcast name for use in safeApply
+                        var broadcastName = 'leafletDirectiveMap.' + this.eventName;
+
+                        // Safely broadcast the event
+                        safeApply(function(scope) {
                             $rootScope.$broadcast(broadcastName, {
                                 leafletEvent: e
                             });
                         });
+                    }, {
+                        eventName: eventName
                     });
                 }
             }
