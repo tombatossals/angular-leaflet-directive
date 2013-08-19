@@ -10,7 +10,7 @@ leafletDirective.directive('leaflet', [
         scrollWheelZoom: true,
         tileLayer: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
         tileLayerOptions: {
-            attribution: 'Tiles &copy; Open Street Maps'
+            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         },
         icon: {
             url: 'http://cdn.leafletjs.com/leaflet-0.5.1/images/marker-icon.png',
@@ -32,7 +32,8 @@ leafletDirective.directive('leaflet', [
         }
     };
 
-    var defaultIcon = L.Icon.extend({
+    // Default leaflet icon object used in all markers as a default
+    var DefaultLeafletIcon = L.Icon.extend({
     	options: {
 	        iconUrl: defaults.icon.url,
 	        iconRetinaUrl: defaults.icon.retinaUrl,
@@ -506,16 +507,16 @@ leafletDirective.directive('leaflet', [
                         	// If there is no icon property or it's not an object
                         	if (old_data.icon !== undefined && old_data.icon != null && typeof old_data.icon === 'object') {
                         		// If there was an icon before restore to the default
-                        		marker.setIcon(buildIcon());
+                        		marker.setIcon(new DefaultLeafletIcon());
                         	}
                         } else if (old_data.icon === undefined || old_data.icon == null || typeof old_data.icon !== 'object') {
                         	// The data.icon exists so we create a new icon if there wasn't an icon before
-                        	var icon = new defaultIcon(data.icon);
+                        	var icon = new DefaultLeafletIcon(data.icon);
                         	marker.setIcon(icon);
                         } else {
                         	// There is an icon and there was an icon so if they are different we create a new icon
                         	if (JSON.stringify(data.icon) !== JSON.stringify(old_data.icon)) {
-                            	var icon = new defaultIcon(data.icon);
+                            	var icon = new DefaultLeafletIcon(data.icon);
                         		marker.setIcon(icon);
                         	}
                         }
@@ -529,7 +530,7 @@ leafletDirective.directive('leaflet', [
                 if (data.icon) {
                     micon = data.icon;
                 } else {
-                    micon = buildIcon();
+                    micon = new DefaultLeafletIcon();
                 }
                 var marker = new L.marker(data,
                     {
@@ -541,10 +542,6 @@ leafletDirective.directive('leaflet', [
                     marker.bindPopup(data.message);
                 }
                 return marker;
-            }
-
-            function buildIcon() {
-                return new defaultIcon();
             }
 
             function setupPaths() {
