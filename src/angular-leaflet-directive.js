@@ -93,7 +93,8 @@ leafletDirective.directive('leaflet', [
             setupMarkers();
             setupPaths();
             setupLegend();
-            setupEvents();
+            setupMapEventBroadcasting();
+            setupMapEventCallbacks();
             setupGeojson();
 
             // use of leafletDirectiveSetMap event is not encouraged. only use
@@ -117,6 +118,75 @@ leafletDirective.directive('leaflet', [
             }
 
             /*
+            * Set up broadcasting of map events to the rootScope
+            *
+            * Listeners listen at leafletDirectiveMap.<event name>
+            *
+            * All events listed at http://leafletjs.com/reference.html#map-events are supported
+            */
+            function setupMapEventBroadcasting() {
+
+              function genDispatchMapEvent(eventName) {
+                return function(e) {
+                  // Put together broadcast name for use in safeApply
+                  var broadcastName = 'leafletDirectiveMap.' + eventName;
+
+                  // Safely broadcast the event
+                  safeApply(function(scope) {
+                    $rootScope.$broadcast(broadcastName, {
+                      leafletEvent: e
+                    });
+                  });
+                };
+              }
+
+              var mapEvents = [
+                'click',
+                'dblclick',
+                'mousedown',
+                'mouseup',
+                'mouseover',
+                'mouseout',
+                'mousemove',
+                'contextmenu',
+                'focus',
+                'blur',
+                'preclick',
+                'load',
+                'unload',
+                'viewreset',
+                'movestart',
+                'move',
+                'moveend',
+                'dragstart',
+                'drag',
+                'dragend',
+                'zoomstart',
+                'zoomend',
+                'zoomlevelschange',
+                'resize',
+                'autopanstart',
+                'layeradd',
+                'layerremove',
+                'baselayerchange',
+                'overlayadd',
+                'overlayremove',
+                'locationfound',
+                'locationerror',
+                'popupopen',
+                'popupclose'
+              ];
+
+              for (var i = 0; i < mapEvents.length; i++) {
+                var eventName = mapEvents[i];
+
+                map.on(eventName, genDispatchMapEvent(eventName), {
+                  eventName: eventName
+                });
+              }
+            }
+
+            /*
              * Event setup watches for callbacks set in the parent scope
              *
              *    $scope.events = {
@@ -129,7 +199,7 @@ leafletDirective.directive('leaflet', [
              * }
              */
 
-            function setupEvents(){
+            function setupMapEventCallbacks() {
                 if (typeof($scope.events) != 'object') {
                     return false;
                 } else {
@@ -139,7 +209,7 @@ leafletDirective.directive('leaflet', [
                 }
             }
 
-            function setupTiles(){
+            function setupTiles() {
                 // TODO build custom object for tiles, actually only the tile string
                 // TODO: http://leafletjs.com/examples/layers-control.html
 
