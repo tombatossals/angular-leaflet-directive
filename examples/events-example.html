@@ -10,18 +10,28 @@
     <script>
         var app = angular.module("demoapp", ["leaflet-directive"]);
         app.controller("DemoController", [ "$scope", function($scope) {
-            
+
+            $scope.center  = {
+                lat: 51.505,
+                lng: -0.09,
+                zoom: 8
+            };
+
+            $scope.$on('leafletDirectiveMap.click', function(e, args) {
+                console.log("Map click event caught in listener");
+            });
+
             $scope.events = {
                 'click': function(){
                     alert('Clicked');
                     console.log('You clicked on the map.');
                 }
             }
-       
+
         }]);
     </script>
   </head>
   <body ng-controller="DemoController">
-    <leaflet events="events" testing="testing" width="640px" height="480px"></leaflet>
+    <leaflet events="events" center="center" testing="testing" width="640px" height="480px"></leaflet>
   </body>
 </html>
