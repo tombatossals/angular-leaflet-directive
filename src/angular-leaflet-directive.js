@@ -34,17 +34,17 @@ leafletDirective.directive('leaflet', [
 
     // Default leaflet icon object used in all markers as a default
     var DefaultLeafletIcon = L.Icon.extend({
-    	options: {
-	        iconUrl: defaults.icon.url,
-	        iconRetinaUrl: defaults.icon.retinaUrl,
-	        iconSize: defaults.icon.size,
-	        iconAnchor: defaults.icon.anchor,
-	        popupAnchor: defaults.icon.popup,
-	        shadowUrl: defaults.icon.shadow.url,
-	        shadowRetinaUrl: defaults.icon.shadow.retinaUrl,
-	        shadowSize: defaults.icon.shadow.size,
-	        shadowAnchor: defaults.icon.shadow.anchor
-    	}
+        options: {
+            iconUrl: defaults.icon.url,
+            iconRetinaUrl: defaults.icon.retinaUrl,
+            iconSize: defaults.icon.size,
+            iconAnchor: defaults.icon.anchor,
+            popupAnchor: defaults.icon.popup,
+            shadowUrl: defaults.icon.shadow.url,
+            shadowRetinaUrl: defaults.icon.shadow.retinaUrl,
+            shadowSize: defaults.icon.shadow.size,
+            shadowAnchor: defaults.icon.shadow.anchor
+        }
     });
 
     
@@ -458,9 +458,9 @@ leafletDirective.directive('leaflet', [
                                 marker_data.lng = marker.getLatLng().lng;
                             });
                             if (marker_data.message) {
-                            	if (marker_data.focus === true) {
-                            		marker.openPopup();
-                            	}
+                                if (marker_data.focus === true) {
+                                    marker.openPopup();
+                                }
                             }
                         }
 
@@ -506,56 +506,56 @@ leafletDirective.directive('leaflet', [
                     }
 
                     if (old_data) {
-                    	
-                    	// Update the draggable property 
-                        if (data.draggable === undefined || data.draggable == null || data.draggable !== true) {
-                        	// If there isn't or wasn't the draggable property or is false and previously true update the dragging
-                        	// the !== true prevents for not boolean values in the draggable property
-                        	if (old_data.draggable !== undefined && old_data.draggable != null && old_data.draggable === true) {
-                        	    marker.dragging.disable();
-                        	}
-                        } else if (old_data.draggable === undefined || old_data.draggable == null || old_data.draggable !== true) {
-                        	// The data.draggable property must be true so we update if there wasn't a previous value or it wasn't true
+
+                        // Update the draggable property 
+                        if (data.draggable === undefined || data.draggable === null || data.draggable !== true) {
+                            // If there isn't or wasn't the draggable property or is false and previously true update the dragging
+                            // the !== true prevents for not boolean values in the draggable property
+                            if (old_data.draggable !== undefined && old_data.draggable !== null && old_data.draggable === true) {
+                                marker.dragging.disable();
+                            }
+                        } else if (old_data.draggable === undefined || old_data.draggable === null || old_data.draggable !== true) {
+                            // The data.draggable property must be true so we update if there wasn't a previous value or it wasn't true
                             marker.dragging.enable();
                         }
 
                         // Update the Popup message property 
-                        if (data.message === undefined || data.message == null || typeof data.message !== 'string' || data.message === "") {
+                        if (data.message === undefined || data.message === null || typeof data.message !== 'string' || data.message === "") {
                             // There is no popup to show, so if it has previously existed it must be unbinded
-                            if (old_data.message !== undefined && old_data.message != null && typeof old_data.message === 'string' && old_data.message !== "") {
+                            if (old_data.message !== undefined && old_data.message !== null && typeof old_data.message === 'string' && old_data.message !== "") {
                                 marker.closePopup();
                                 marker.unbindPopup();
                             }
                         } else {
                             // There is some text in the popup, so we must show the text or update existing
-                            if (old_data.message === undefined || old_data.message == null || typeof old_data.message !== 'string' || old_data.message === "") {
+                            if (old_data.message === undefined || old_data.message === null || typeof old_data.message !== 'string' || old_data.message === "") {
                                 // There was no message before so we create it
                                 marker.bindPopup(data.message);
                                 if (data.focus === true) {
-                                	// If the focus is set, we must open the popup, because we do not know if it was opened before
-                                	marker.openPopup();
+                                    // If the focus is set, we must open the popup, because we do not know if it was opened before
+                                    marker.openPopup();
                                 }
                             } else if (data.message !== old_data.message) {
                                 // There was a different previous message so we update it
                                 marker.setPopupContent(data.message);
                             }
                         }
-                        
+
                         // Update the focus property
-                        if (data.focus === undefined || data.focus == null || data.focus !== true) {
-                        	// If there is no focus property or it's false
-                        	if (old_data.focus !== undefined && old_data.focus != null && old_data.focus === true) {
-                        		// If there was a focus property and was true we turn it off
-                        		marker.closePopup();
-                        	}
-                        } else if (old_data.focus === undefined || old_data.focus == null || old_data.focus !== true) {
-                       		// The data.focus property must be true so we update if there wasn't a previous value or it wasn't true
+                        if (data.focus === undefined || data.focus === null || data.focus !== true) {
+                            // If there is no focus property or it's false
+                            if (old_data.focus !== undefined && old_data.focus !== null && old_data.focus === true) {
+                                // If there was a focus property and was true we turn it off
+                                marker.closePopup();
+                            }
+                        } else if (old_data.focus === undefined || old_data.focus === null || old_data.focus !== true) {
+                            // The data.focus property must be true so we update if there wasn't a previous value or it wasn't true
                             marker.openPopup();	
                         }
                         
                         // Update the lat-lng property (always present in marker properties)
-                        if (data.lat === undefined || data.lat == null || data.lat == NaN || typeof data.lat !== 'number' || data.lng === undefined || data.lng == null || data.lng == NaN || typeof data.lng !== 'number') {
-                        	$log.warn('There are problems with lat-lng data, please verify your marker model');
+                        if (data.lat === undefined || data.lat === null || isNaN(data.lat) || typeof data.lat !== 'number' || data.lng === undefined || data.lng === null || isNaN(data.lng) || typeof data.lng !== 'number') {
+                            $log.warn('There are problems with lat-lng data, please verify your marker model');
                         } else {
                             var cur_latlng = marker.getLatLng();
                             // On dragend event, scope will be updated, which
@@ -573,22 +573,20 @@ leafletDirective.directive('leaflet', [
                         }
 
                         // Update the icon property
-                        if (data.icon === undefined || data.icon == null || typeof data.icon !== 'object') {
-                        	// If there is no icon property or it's not an object
-                        	if (old_data.icon !== undefined && old_data.icon != null && typeof old_data.icon === 'object') {
-                        		// If there was an icon before restore to the default
-                        		marker.setIcon(new DefaultLeafletIcon());
-                        	}
-                        } else if (old_data.icon === undefined || old_data.icon == null || typeof old_data.icon !== 'object') {
-                        	// The data.icon exists so we create a new icon if there wasn't an icon before
-                        	var icon = new DefaultLeafletIcon(data.icon);
-                        	marker.setIcon(icon);
+                        if (data.icon === undefined || data.icon === null || typeof data.icon !== 'object') {
+                            // If there is no icon property or it's not an object
+                            if (old_data.icon !== undefined && old_data.icon !== null && typeof old_data.icon === 'object') {
+                                // If there was an icon before restore to the default
+                                marker.setIcon(new DefaultLeafletIcon());
+                            }
+                        } else if (old_data.icon === undefined || old_data.icon === null || typeof old_data.icon !== 'object') {
+                            // The data.icon exists so we create a new icon if there wasn't an icon before
+                            marker.setIcon(new DefaultLeafletIcon(data.icon));
                         } else {
-                        	// There is an icon and there was an icon so if they are different we create a new icon
-                        	if (JSON.stringify(data.icon) !== JSON.stringify(old_data.icon)) {
-                            	var icon = new DefaultLeafletIcon(data.icon);
-                        		marker.setIcon(icon);
-                        	}
+                            // There is an icon and there was an icon so if they are different we create a new icon
+                            if (JSON.stringify(data.icon) !== JSON.stringify(old_data.icon)) {
+                                marker.setIcon(new DefaultLeafletIcon(data.icon));
+                            }
                         }
                     }
                 }, true);
