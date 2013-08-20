@@ -27,7 +27,8 @@ module.exports = function(karma) {
         // - Safari
         // - PhantomJS
         browsers: [
-            'Firefox'
+            //'Firefox'
+            'PhantomJS',
         ],
 
         // test results reporter to use
