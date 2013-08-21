@@ -230,6 +230,14 @@ describe('Directive: leaflet', function() {
         leafletMainMarker.fire('dragend');
     });
 
+    it('should set zoom control button properly if zoomControlPosition option is set', function() {
+        angular.extend($rootScope, { defaults: { zoomControlPosition: 'topright' } });
+        var element = angular.element('<leaflet defaults="defaults" testing="testing"></leaflet>');
+        element = $compile(element)($rootScope);
+        var map = element.scope().leaflet.map;
+        expect(map.zoomControl.getPosition()).toEqual('topright');
+    });
+
     // Polyline
     it('should create polyline on the map', function() {
         var latlngs1 = [
@@ -291,7 +299,7 @@ describe('Directive: leaflet', function() {
                 },
                 click: function(){
                     return true;
-                } 
+                }
             }
         });
 
