@@ -16,7 +16,7 @@ describe('Directive: leaflet', function() {
     it('should have loaded leaflet library inside the directive', function() {
         var element = angular.element('<leaflet></leaflet>');
         element = $compile(element)($rootScope);
-        expect(element.text()).toEqual('+-Powered by Leaflet — © OpenStreetMap contributors');
+        expect(element.text()).toEqual('+-Leaflet | © OpenStreetMap contributors');
     });
 
     it('should set the max zoom if specified', function() {
@@ -126,7 +126,7 @@ describe('Directive: leaflet', function() {
         var map = element.scope().map;
         var leafletMainMarker = element.scope().leaflet.marker;
         $rootScope.$digest();
-        expect(leafletMainMarker._popup._source._latlng.message)
+        expect(leafletMainMarker._popup._content)
             .toEqual('this is paris');
     });
 
@@ -168,7 +168,7 @@ describe('Directive: leaflet', function() {
         var map = element.scope().map;
         var leafletMarkers = element.scope().leaflet.markers;
         $rootScope.$digest();
-        expect(leafletMarkers.paris._popup._source._latlng.message)
+        expect(leafletMarkers.paris._popup._content)
             .toEqual('this is paris');
     });
 

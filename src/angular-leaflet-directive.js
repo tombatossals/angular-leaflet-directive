@@ -47,7 +47,7 @@ leafletDirective.directive('leaflet', [
         }
     });
 
-    
+
     var str_inspect_hint = 'Add testing="testing" to <leaflet> tag to inspect this object';
 
     return {
@@ -221,7 +221,7 @@ leafletDirective.directive('leaflet', [
                     return false;
                 } else {
                     for (var bind_to  in $scope.events) {
-                        map.on(bind_to,$scope.events[bind_to]);
+                        map.on(bind_to, $scope.events[bind_to]);
                     }
                 }
             }
@@ -508,7 +508,7 @@ leafletDirective.directive('leaflet', [
 
                     if (old_data) {
 
-                        // Update the draggable property 
+                        // Update the draggable property
                         if (data.draggable === undefined || data.draggable === null || data.draggable !== true) {
                             // If there isn't or wasn't the draggable property or is false and previously true update the dragging
                             // the !== true prevents for not boolean values in the draggable property
@@ -520,7 +520,7 @@ leafletDirective.directive('leaflet', [
                             marker.dragging.enable();
                         }
 
-                        // Update the Popup message property 
+                        // Update the Popup message property
                         if (data.message === undefined || data.message === null || typeof data.message !== 'string' || data.message === "") {
                             // There is no popup to show, so if it has previously existed it must be unbinded
                             if (old_data.message !== undefined && old_data.message !== null && typeof old_data.message === 'string' && old_data.message !== "") {
@@ -551,9 +551,9 @@ leafletDirective.directive('leaflet', [
                             }
                         } else if (old_data.focus === undefined || old_data.focus === null || old_data.focus !== true) {
                             // The data.focus property must be true so we update if there wasn't a previous value or it wasn't true
-                            marker.openPopup();	
+                            marker.openPopup();
                         }
-                        
+
                         // Update the lat-lng property (always present in marker properties)
                         if (data.lat === undefined || data.lat === null || isNaN(data.lat) || typeof data.lat !== 'number' || data.lng === undefined || data.lng === null || isNaN(data.lng) || typeof data.lng !== 'number') {
                             $log.warn('There are problems with lat-lng data, please verify your marker model');
