@@ -88,8 +88,8 @@ leafletDirective.directive('leaflet', [
                 parseInt($scope.defaults.maxZoom, 10) : defaults.maxZoom;
             $scope.leaflet.minZoom = !!(attrs.defaults && $scope.defaults && $scope.defaults.minZoom) ?
                 parseInt($scope.defaults.minZoom, 10) : defaults.minZoom;
-            $scope.leaflet.doubleClickZoom = !!(attrs.defaults && $scope.defaults && (typeof($scope.defaults.doubleClickZoom) == "boolean") ) ? $scope.defaults.doubleClickZoom  : defaults.doubleClickZoom;
-            $scope.leaflet.scrollWheelZoom = !!(attrs.defaults && $scope.defaults && (typeof($scope.defaults.scrollWheelZoom) == "boolean") ) ? $scope.defaults.scrollWheelZoom  : defaults.scrollWheelZoom;
+            $scope.leaflet.doubleClickZoom = !!(attrs.defaults && $scope.defaults && (typeof($scope.defaults.doubleClickZoom) === "boolean") ) ? $scope.defaults.doubleClickZoom  : defaults.doubleClickZoom;
+            $scope.leaflet.scrollWheelZoom = !!(attrs.defaults && $scope.defaults && (typeof($scope.defaults.scrollWheelZoom) === "boolean") ) ? $scope.defaults.scrollWheelZoom  : defaults.scrollWheelZoom;
 
             var map = new L.Map(element[0], {
                 maxZoom: $scope.leaflet.maxZoom,
@@ -123,7 +123,7 @@ leafletDirective.directive('leaflet', [
 
             function _isSafeToApply() {
                 var phase = $scope.$root.$$phase;
-                return !(phase == '$apply' || phase == '$digest');
+                return !(phase === '$apply' || phase === '$digest');
             }
 
             function safeApply(fn) {
@@ -217,7 +217,7 @@ leafletDirective.directive('leaflet', [
              */
 
             function setupMapEventCallbacks() {
-                if (typeof($scope.events) != 'object') {
+                if (typeof($scope.events) !== 'object') {
                     return false;
                 } else {
                     for (var bind_to  in $scope.events) {
@@ -251,7 +251,9 @@ leafletDirective.directive('leaflet', [
                     }
 
                     $scope.$watch("tiles.url", function (url) {
-                        if (!url) return;
+                        if (!url) {
+                            return;
+                        }
                         tileLayerObj.setUrl(url);
                     });
                 }
@@ -263,7 +265,7 @@ leafletDirective.directive('leaflet', [
 
             function setupLegend() {
                 if ($scope.legend) {
-                    if (!$scope.legend.colors || !$scope.legend.labels || $scope.legend.colors.length != $scope.legend.labels.length) {
+                    if (!$scope.legend.colors || !$scope.legend.labels || $scope.legend.colors.length !== $scope.legend.labels.length) {
                          $log.warn("[AngularJS - Leaflet] legend.colors and legend.labels must be set.");
                     } else {
                         var position = $scope.legend.position || 'bottomright';
@@ -370,14 +372,18 @@ leafletDirective.directive('leaflet', [
                                         safeApply(function (scope) {
                                             geojson.selected = feature;
                                         });
-                                        if (!geojson.mouseover) return;
+                                        if (!geojson.mouseover) {
+                                            return;
+                                        }
                                         geojson.mouseover(e);
                                     },
                                     mouseout: function(e) {
                                         safeApply(function (scope) {
                                             geojson.selected = undefined;
                                         });
-                                        if (!geojson.mouseout) return;
+                                        if (!geojson.mouseout) {
+                                            return;
+                                        }
                                         geojson.mouseout(e);
                                     },
                                     click: function(e) {
@@ -449,11 +455,11 @@ leafletDirective.directive('leaflet', [
                         var markerName = scope_watch_name.replace('markers.', '');
 
                         // Broadcast old marker click name for backwards compatibility
-                        if (eventName == "click") {
+                        if (eventName === "click") {
                             safeApply(function() {
                                 $rootScope.$broadcast('leafletDirectiveMarkersClick', markerName);
                             });
-                        } else if (eventName == 'dragend') {
+                        } else if (eventName === 'dragend') {
                             safeApply(function() {
                                 marker_data.lat = marker.getLatLng().lat;
                                 marker_data.lng = marker.getLatLng().lng;
@@ -568,7 +574,7 @@ leafletDirective.directive('leaflet', [
                             // event manually after dragend, which is redundant
                             // anyway. Because before dragend event fired, marker
                             // sate is already updated by leaflet.
-                            if (cur_latlng.lat != data.lat || cur_latlng.lng != data.lng) {
+                            if (cur_latlng.lat !== data.lat || cur_latlng.lng !== data.lng) {
                                 marker.setLatLng([data.lat, data.lng]);
                             }
                         }
