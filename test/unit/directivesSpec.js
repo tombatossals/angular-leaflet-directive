@@ -174,8 +174,8 @@ describe('Directive: leaflet', function() {
 
     it('should watch marker icon bindings', function() {
         var leaf_icon = L.icon({
-            iconUrl: 'img/leaf-green.png',
-            shadowUrl: 'img/leaf-shadow.png',
+            iconUrl: 'http://leafletjs.com/docs/images/leaf-green.png',
+            shadowUrl: 'http://leafletjs.com/docs/images/leaf-shadow.png',
             iconSize:     [38, 95],
             shadowSize:   [50, 64],
             iconAnchor:   [22, 94],
@@ -307,7 +307,6 @@ describe('Directive: leaflet', function() {
         element = $compile(element)($rootScope);
         var events = element.scope().leaflet.map._leaflet_events;
 
-        expect(events.click[0].action()).toEqual(true);
         expect(events.click[0].action()).toEqual(true);
 
     });
