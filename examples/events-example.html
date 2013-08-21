@@ -1,32 +1,3 @@
-<<<<<<< HEAD
-<html ng-app="demoapp">
-  <head>
-    <script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
-    <script src="../src/angular-leaflet-directive.js"></script>
-    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" />
-    <!--[if lte IE 8]>
-        <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.ie.css" />
-    <![endif]-->
-    <script>
-        var app = angular.module("demoapp", ["leaflet-directive"]);
-        app.controller("DemoController", [ "$scope", function($scope) {
-            
-            $scope.events = {
-                'click': function(){
-                    alert('Clicked');
-                    console.log('You clicked on the map.');
-                }
-            }
-       
-        }]);
-    </script>
-  </head>
-  <body ng-controller="DemoController">
-    <leaflet events="events" testing="testing" width="640px" height="480px"></leaflet>
-  </body>
-</html>
-=======
 <html ng-app="demoapp">
   <head>
     <script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
@@ -49,13 +20,14 @@
             $scope.$on('leafletDirectiveMap.click', function(e, args) {
                 console.log("Map click event caught in listener");
             });
-
-            $scope.events = {
-                'click': function(){
-                    alert('Clicked');
-                    console.log('You clicked on the map.');
-                }
-            }
+            
+            $scope.$on('leafletDirectiveMap.dblclick', function(e, args) {
+                console.log("Map doubleclick event caught in listener");
+            });
+            
+            $scope.$on('leafletDirectiveMap.cl', function(e, args) {
+                console.log("Map click event caught in listener");
+            });
 
         }]);
     </script>
