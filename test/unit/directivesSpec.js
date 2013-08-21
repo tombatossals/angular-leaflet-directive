@@ -291,23 +291,21 @@ describe('Directive: leaflet', function() {
         expect(map.getBounds().equals(bounds)).toEqual(true);
     });
 
-    it('should load event object from the parent scope',function(){
-        angular.extend($rootScope, {
-            events: {
-                dblclick: function(){
-                    return true;
-                },
-                click: function(){
-                    return true;
-                }
-            }
-        });
-
+    it('should broadcast events from the rootscope when triggered leaflet events',function(){
         var element = angular.element('<leaflet events="events" testing="testing"></leaflet>');
         element = $compile(element)($rootScope);
-        var events = element.scope().leaflet.map._leaflet_events;
+        var scope = element.scope();
+        var map = scope.leaflet.map;
 
-        expect(events.click[0].action()).toEqual(true);
+        var check = {};
+        scope.$on('leafletDirectiveMap.click',
+                  function(){
+                    check.click = true;
+                  });
+        // Trigger leaflet events
+        map._leaflet_events.click[0].action();
+
+        expect(check.click).toEqual(true);
 
     });
 });

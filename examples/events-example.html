@@ -20,13 +20,14 @@
             $scope.$on('leafletDirectiveMap.click', function(e, args) {
                 console.log("Map click event caught in listener");
             });
-
-            $scope.events = {
-                'click': function(){
-                    alert('Clicked');
-                    console.log('You clicked on the map.');
-                }
-            }
+            
+            $scope.$on('leafletDirectiveMap.dblclick', function(e, args) {
+                console.log("Map doubleclick event caught in listener");
+            });
+            
+            $scope.$on('leafletDirectiveMap.cl', function(e, args) {
+                console.log("Map click event caught in listener");
+            });
 
         }]);
     </script>
