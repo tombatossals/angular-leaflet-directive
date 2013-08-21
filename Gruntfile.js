@@ -1,10 +1,5 @@
 module.exports = function(grunt) {
 
-    grunt.loadNpmTasks('grunt-contrib-copy');
-    grunt.loadNpmTasks('grunt-contrib-jshint');
-    grunt.loadNpmTasks('grunt-contrib-uglify');
-    grunt.loadNpmTasks('grunt-karma');
-
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
         uglify: {
@@ -20,12 +15,23 @@ module.exports = function(grunt) {
         jshint: {
             files: ['Gruntfile.js', 'src/*.js', 'test/unit/*.js'],
             options: {
-                // options here to override JSHint defaults
+                jquery: true,
+                smarttabs: true,
+                curly: true,
+                eqeqeq: true,
+                immed: true,
+                latedef: true,
+                newcap: true,
+                noarg: true,
+                sub: true,
+                undef: true,
+                boss: true,
+                eqnull: true,
+                unused: false,
+                browser: true,
                 globals: {
-                    jQuery: true,
-                    console: true,
-                    module: true,
-                    document: true
+                    angular: true,
+                    L: true,
                 }
             }
         },
@@ -36,6 +42,10 @@ module.exports = function(grunt) {
             }
         }
     });
+
+    grunt.loadNpmTasks('grunt-contrib-jshint');
+    grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-karma');
 
     grunt.registerTask('test', ['jshint']);
     grunt.registerTask('default', ['jshint', 'uglify']);
