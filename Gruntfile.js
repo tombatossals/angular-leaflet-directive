@@ -40,6 +40,9 @@ module.exports = function(grunt) {
             unit: {
                 configFile: 'config/karma.conf.js',
                 autoWatch: true
+            },
+            e2e: {
+                configFile: 'config/karma-e2e.conf.js'
             }
         }
     });

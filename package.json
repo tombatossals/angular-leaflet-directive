@@ -25,6 +25,7 @@
     "grunt-contrib-concat": "latest",
     "grunt-karma": "latest",
     "jasmine-node": "latest",
-    "karma": "latest"
+    "karma": "latest",
+    "karma-ng-scenario": "latest"
   }
 }
