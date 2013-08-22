@@ -298,14 +298,52 @@ describe('Directive: leaflet', function() {
         var map = scope.leaflet.map;
 
         var check = {};
-        scope.$on('leafletDirectiveMap.click',
-                  function(){
-                    check.click = true;
-                  });
-        // Trigger leaflet events
-        map.fire('click');
+        var mapEvents = [
+            'click',
+            //'dblclick',
+            'mousedown',
+            'mouseup',
+            'mouseover',
+            'mouseout',
+            'mousemove',
+            'contextmenu',
+            'focus',
+            'blur',
+            'preclick',
+            'load',
+            'unload',
+            'viewreset',
+            'movestart',
+            'move',
+            //'moveend',
+            'dragstart',
+            'drag',
+            'dragend',
+            'zoomstart',
+            'zoomend',
+            'zoomlevelschange',
+            'resize',
+            'autopanstart',
+            //'layeradd',
+            //'layerremove',
+            'baselayerchange',
+            'overlayadd',
+            'overlayremove',
+            'locationfound',
+            'locationerror',
+            'popupopen',
+            'popupclose'
+            ];
 
-        expect(check.click).toEqual(true);
-
+    for (var k in mapEvents){
+        var eventName = 'leafletDirectiveMap.' + mapEvents[k];
+        // console.log(eventName); // Inspect
+        scope.$on(eventName,
+                function(){
+                    check[mapEvents[k]] = true;
+                });
+        map.fireEvent([mapEvents[k]]);
+        expect(check[mapEvents[k]]).toEqual(true);
+    }
     });
 });
