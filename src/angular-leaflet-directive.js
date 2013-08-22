@@ -69,12 +69,6 @@ leafletDirective.directive('leaflet', [
         },
         template: '<div class="angular-leaflet-map"></div>',
         link: function ($scope, element, attrs /*, ctrl */) {
-            var centerModel = {
-                lat:$parse("center.lat"),
-                lng:$parse("center.lng"),
-                zoom:$parse("center.zoom")
-            };
-
             if (attrs.width) {
                 element.css('width', attrs.width);
             }
@@ -332,23 +326,35 @@ leafletDirective.directive('leaflet', [
             }
 
             function setupCenter() {
-                $scope.$watch("center", function(center) {
-                    if (!center) {
-                        $log.warn("[AngularJS - Leaflet] 'center' is undefined in the current scope, did you forget to initialize it?");
-                        return;
-                    }
-                    if (center.lat !== undefined && center.lng !== undefined && center.zoom !== undefined) {
-                        map.setView( [center.lat, center.lng], center.zoom );
-                    } else if (center.autoDiscover === true) {
-                        map.locate({ setView: true, maxZoom: $scope.leaflet.maxZoom });
+                if (!attrs.center) {
+                    $log.warn("[AngularJS - Leaflet] 'center' is undefined in the current scope, did you forget to initialize it?");
+                    map.setView( [ 0, 0 ], 1);
+                    return;
+                }
+
+                var centerModel = {
+                    lat:  $parse("center.lat"),
+                    lng:  $parse("center.lng"),
+                    zoom: $parse("center.zoom")
+                };
+
+                $scope.$watch("center", function(center /*, oldValue */) {
+                    if (center) {
+                        if (center.lat !== undefined && center.lng !== undefined && center.zoom !== undefined) {
+                            map.setView( [center.lat, center.lng], center.zoom );
+                        } else if (center.autoDiscover === true) {
+                            map.locate({ setView: true, maxZoom: $scope.leaflet.maxZoom });
+                        }
                     }
                 }, true);
 
                 map.on("moveend", function(/* event */) {
                     safeApply(function(scope) {
-                        centerModel.lat.assign(scope, map.getCenter().lat);
-                        centerModel.lng.assign(scope, map.getCenter().lng);
-                        centerModel.zoom.assign(scope, map.getZoom());
+                        if (centerModel) {
+                            centerModel.lat.assign(scope, map.getCenter().lat);
+                            centerModel.lng.assign(scope, map.getCenter().lng);
+                            centerModel.zoom.assign(scope, map.getZoom());
+                        }
                     });
                 });
             }
