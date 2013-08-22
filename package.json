@@ -23,6 +23,7 @@
     "grunt-contrib-copy": "latest",
     "grunt-contrib-watch": "latest",
     "grunt-contrib-concat": "latest",
+    "grunt-contrib-connect": "latest",
     "grunt-karma": "latest",
     "jasmine-node": "latest",
     "karma": "latest",

@@ -12,6 +12,7 @@ module.exports = function(grunt) {
                 }
             }
         },
+
         jshint: {
             files: ['Gruntfile.js', 'src/*.js', 'test/unit/*.js'],
             options: {
@@ -36,10 +37,23 @@ module.exports = function(grunt) {
                 }
             }
         },
+        connect: {
+            options: {
+                port: 8000,
+                base: './app'
+            },
+            server: {
+                options: {
+                    keepalive: true
+                }
+            },
+            testserver: {}
+        },
         karma: {
             unit: {
-                configFile: 'config/karma.conf.js',
-                autoWatch: true
+                configFile: 'config/karma.conf.js'
+                //autoWatch: true
+                //singleRun: false
             },
             e2e: {
                 configFile: 'config/karma-e2e.conf.js'
@@ -49,9 +63,12 @@ module.exports = function(grunt) {
 
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-karma');
 
-    grunt.registerTask('test', ['jshint']);
+    grunt.registerTask('test:e2e', ['connect:testserver', 'karma:e2e']);
+    grunt.registerTask('test', ['karma:unit', 'test:e2e']);
+    grunt.registerTask('server', ['connect:server']);
     grunt.registerTask('default', ['jshint', 'uglify']);
 
 };
