@@ -303,7 +303,7 @@ describe('Directive: leaflet', function() {
                     check.click = true;
                   });
         // Trigger leaflet events
-        map._leaflet_events.click[0].action();
+        map.fire('click');
 
         expect(check.click).toEqual(true);
 
