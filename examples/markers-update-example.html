@@ -3,7 +3,7 @@
     <script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet-src.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
     <!--<script src="../dist/angular-leaflet-directive.min.js"></script>-->
-    <script src="../src/angular-leaflet-directive.js"></script>
+    <script src="../dist/angular-leaflet-directive.min.js"></script>
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" />
     <!--[if lte IE 8]>
         <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.ie.css" />
@@ -46,7 +46,7 @@
             $scope.$on('leafletDirectiveMarker.popupclose', function(e, args) {
                 // Args will contain the marker name and other relevant information
                 console.log("Leaflet Popup Close");
-            });            
+            });
         };
     </script>
   </head>
@@ -60,22 +60,22 @@
       <input type="radio" ng-model="markers.m1.message" ng-value="null" name="mess"> null value
       <input type="radio" ng-model="markers.m1.message" ng-value="123" name="mess"> not a string
       <br/>
-      Draggable: 
+      Draggable:
           <input type="radio" ng-model="markers.m1.draggable" ng-value="true" name="drag"> Yes
           <input type="radio" ng-model="markers.m1.draggable" ng-value="false" name="drag"> No
           <input type="radio" ng-model="markers.m1.draggable" ng-value="'error'" name="drag"> Not a boolean value
           <input type="radio" ng-model="markers.m1.draggable" ng-value="null" name="drag"> null value
       <br/>
-      Focus: 
+      Focus:
           <input type="radio" ng-model="markers.m1.focus" ng-value="true" name="focus"> Yes
           <input type="radio" ng-model="markers.m1.focus" ng-value="false" name="focus"> No
           <input type="radio" ng-model="markers.m1.focus" ng-value="'error'" name="focus"> Not a boolean value
           <input type="radio" ng-model="markers.m1.focus" ng-value="null" name="focus"> null value
       <br/>
-      Icon: 
+      Icon:
           <input type="radio" ng-model="markers.m1.icon" ng-value="iconA" name="icon"> Default
           <input type="radio" ng-model="markers.m1.icon" ng-value="iconB" name="icon"> Other
           <input type="radio" ng-model="markers.m1.icon" ng-value="'error'" name="icon"> Not a icon
-          <input type="radio" ng-model="markers.m1.icon" ng-value="null" name="icon"> null value         
+          <input type="radio" ng-model="markers.m1.icon" ng-value="null" name="icon"> null value
   </body>
 </html>
