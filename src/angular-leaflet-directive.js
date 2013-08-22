@@ -296,21 +296,20 @@ leafletDirective.directive('leaflet', [
                                 }                                
                             }
                         }
-                        // We can have problems only if we delete a layer
-                        if (deleted) {
-                            if (Object.keys(layers.baselayers).length <= 0) {
-                                // No baselayers property
-                                $log.error('[AngularJS - Leaflet] At least one baselayer has to be defined');
-                            }
+                        if (Object.keys(layers.baselayers).length <= 0) {
+                            // No baselayers property
+                            $log.error('[AngularJS - Leaflet] At least one baselayer has to be defined');
                         } else {
                             //we have layers, so we need to make, at least, one active
                             var found = false;
+                            // serach for an active layer
                             for (var key in layers.baselayers) {
                                 if (map.hasLayer(layers.baselayers[key])) {
                                     found = true;
                                     break;
                                 }
                             }
+                            // If there is no active layer make one active
                             if (!found) {
                                 map.addLayer(layers.baselayers[Object.keys($scope.layers.baselayers)[0]]);
                             }
