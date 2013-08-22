@@ -183,17 +183,59 @@
                 removeCycleLayer: function() {
                     delete this.mapDynamicLayers.layers.baselayers.cycle;
                 },
+                addCycleLayer: function() {
+                    this.mapDynamicLayers.layers.baselayers.cycle = {
+                        name: 'OpenCycleMap',
+                        type: 'xyz',
+                        url: 'http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png',
+                        layerOptions: {
+                            subdomains: ['a', 'b', 'c'],
+                            attribution: '&copy; <a href="http://www.opencyclemap.org/copyright">OpenCycleMap</a> contributors - &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                            continuousWorld: true
+                        }
+                    };
+                },
                 existsCycleLayer: function() {
                     return ('cycle' in this.mapDynamicLayers.layers.baselayers);
                 },
                 removeCloud1Layer: function() {
                     delete this.mapDynamicLayers.layers.baselayers.cloudmade1;
                 },
+                addCloud1Layer: function() {
+                    this.mapDynamicLayers.layers.baselayers.cloudmade1 = {
+                        name: 'Cloudmade Night Commander',
+                        type: 'xyz',
+                        url: 'http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png',
+                        layerParams: { 
+                            key: '007b9471b4c74da4a6ec7ff43552b16f',
+                            styleId: 999
+                        },
+                        layerOptions: {
+                            subdomains: ['a', 'b', 'c'],
+                            continuousWorld: true
+                        }
+                    };
+                },
                 existsCloud1Layer: function() {
                     return ('cloudmade1' in this.mapDynamicLayers.layers.baselayers);
                 },
                 removeCloud2Layer: function() {
                     delete this.mapDynamicLayers.layers.baselayers.cloudmade2;
+                },
+                addCloud2Layer: function() {
+                    this.mapDynamicLayers.layers.baselayers.cloudmade2 = {
+                        name: 'Cloudmade Tourist',
+                        type: 'xyz',
+                        url: 'http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png',
+                        layerParams: { 
+                            key: '007b9471b4c74da4a6ec7ff43552b16f',
+                            styleId: 7
+                        },
+                        layerOptions: {
+                            subdomains: ['a', 'b', 'c'],
+                            continuousWorld: true
+                        }
+                    }; 
                 },
                 existsCloud2Layer: function() {
                     return ('cloudmade2' in this.mapDynamicLayers.layers.baselayers);
@@ -366,6 +408,9 @@ baselayers: {
         <div class="row">
             <p>
             <button type="button" class="btn btn-default" ng-click="addOsmLayer()" ng-disabled="existsOsmLayer()">Add OSM Layer</button>
+            <button type="button" class="btn btn-default" ng-click="addCycleLayer()" ng-disabled="existsCycleLayer()">Add Cycle Layer</button>
+            <button type="button" class="btn btn-default" ng-click="addCloud1Layer()" ng-disabled="existsCloud1Layer()">Add Cloudmade 1 Layer</button>
+            <button type="button" class="btn btn-default" ng-click="addCloud2Layer()" ng-disabled="existsCloud2Layer()">Add Cloudmade 2 Layer</button>
             </p>
         </div>    
     </div>
