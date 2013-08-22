@@ -65,16 +65,11 @@ leafletDirective.directive('leaflet', [
             defaults: '=defaults',
             paths: '=paths',
             tiles: '=tiles',
-            events: '=events'
+            events: '=events',
+            layers: '=layers'
         },
         template: '<div class="angular-leaflet-map"></div>',
         link: function ($scope, element, attrs /*, ctrl */) {
-            var centerModel = {
-                lat:$parse("center.lat"),
-                lng:$parse("center.lng"),
-                zoom:$parse("center.zoom")
-            };
-
             if (attrs.width) {
                 element.css('width', attrs.width);
             }
@@ -102,7 +97,7 @@ leafletDirective.directive('leaflet', [
             $scope.leaflet.map = !!attrs.testing ? map : str_inspect_hint;
 
             setupControls();
-            setupTiles();
+            setupLayers();
             setupCenter();
             setupMaxBounds();
             setupBounds();
@@ -226,6 +221,146 @@ leafletDirective.directive('leaflet', [
                 }
             }
 
+            function setupLayers() {
+                //TODO: support multiple types of layers (or plugins) WMS, Canvas, ImageOverlay, clustermarker, google, etc
+                //TODO: add support for controls
+                var layers = null;
+                if ($scope.layers === undefined || $scope.layers === null) {
+                    // There is no layers definition so we will use the old way of definig tiles for compatibility
+                    setupTiles();
+                } else {
+                    // Do we have a baselayers property?
+                    if ($scope.layers.baselayers === undefined || $scope.layers.baselayers === null || typeof $scope.layers.baselayers !== 'object') {
+                        // No baselayers property
+                        $log.error('[AngularJS - Leaflet] At least one baselayer has to be defined');
+                        $scope.leaflet.layers = !!attrs.testing ? layers : str_inspect_hint;
+                        return;
+                    } else if (Object.keys($scope.layers.baselayers).length <= 0) {
+                        // We have a baselayers property but no element on it
+                        $log.error('[AngularJS - Leaflet] At least one baselayer has to be defined');
+                        $scope.leaflet.layers = !!attrs.testing ? layers : str_inspect_hint;
+                        return;                        
+                    }
+                    // We have baselayers to add to the map
+                    layers = {};
+                    layers.baselayers = {};
+                    layers.controls = {};
+                    layers.controls.layers = new L.control.layers().addTo(map);
+                    // Setup all baselayers definitions
+                    var top = false;
+                    for (var layerName in $scope.layers.baselayers) {
+                        var newBaseLayer = createBaseLayer($scope.layers.baselayers[layerName], map);
+                        if (newBaseLayer !== null) {
+                            layers.baselayers[layerName] = newBaseLayer;
+                            // Only add the visible layer to the map, layer control manages the addition to the map
+                            // of layers in its control
+                            if ($scope.layers.baselayers[layerName].top === true) {
+                                map.addLayer(layers.baselayers[layerName]);
+                                top = true;
+                            }
+                            layers.controls.layers.addBaseLayer(layers.baselayers[layerName], $scope.layers.baselayers[layerName].name);
+                        }                        
+                    }
+                    // If there is no visible layer add first to the map
+                    if (!top && Object.keys(layers.baselayers).length > 0) {
+                        map.addLayer(layers.baselayers[Object.keys($scope.layers.baselayers)[0]]);
+                    }
+                    // Watch for the base layers
+                    $scope.$watch('layers.baselayers', function(newBaseLayers) {
+                        // Delete layers from the array
+                        var deleted = false;
+                        for (var name in layers.baselayers) {
+                            if (newBaseLayers[name] === undefined) {
+                                // Remove the layer from the control
+                                layers.controls.layers.removeLayer(layers.baselayers[name]);
+                                // Remove from the map if it's on it
+                                if (map.hasLayer(layers.baselayers[name])) {
+                                    map.removeLayer(layers.baselayers[name]);
+                                }
+                                delete layers.baselayers[name];
+                                deleted = true;
+                            }
+                        }
+                        // add new layers
+                        for (var new_name in newBaseLayers) {
+                            if (layers.baselayers[new_name] === undefined) {
+                                var testBaseLayer = createBaseLayer(newBaseLayers[new_name], map);
+                                if (testBaseLayer !== null) {
+                                    layers.baselayers[new_name] = testBaseLayer;
+                                    // Only add the visible layer to the map, layer control manages the addition to the map
+                                    // of layers in its control
+                                    if (newBaseLayers[new_name].top === true) {
+                                        map.addLayer(layers.baselayers[new_name]);
+                                    }
+                                    layers.controls.layers.addBaseLayer(layers.baselayers[new_name], newBaseLayers[new_name].name);
+                                }                                
+                            }
+                        }
+                        if (Object.keys(layers.baselayers).length <= 0) {
+                            // No baselayers property
+                            $log.error('[AngularJS - Leaflet] At least one baselayer has to be defined');
+                        } else {
+                            //we have layers, so we need to make, at least, one active
+                            var found = false;
+                            // serach for an active layer
+                            for (var key in layers.baselayers) {
+                                if (map.hasLayer(layers.baselayers[key])) {
+                                    found = true;
+                                    break;
+                                }
+                            }
+                            // If there is no active layer make one active
+                            if (!found) {
+                                map.addLayer(layers.baselayers[Object.keys($scope.layers.baselayers)[0]]);
+                            }
+                        }
+                    }, true);
+                }
+                $scope.leaflet.layers = !!attrs.testing ? layers : str_inspect_hint;
+           }
+            
+            function createBaseLayer(layerDefinition, map) {
+                // Check if the baselayer has a valid type
+                if (layerDefinition.type === undefined || layerDefinition.type === null || typeof layerDefinition.type !== 'string') {
+                    if (layerDefinition.type !== 'xyz') {
+                        $log.error('[AngularJS - Leaflet] A base layer must have a valid type: "tiles-xyz, "');
+                        return null;                              
+                    }
+                    $log.error('[AngularJS - Leaflet] A base layer must have a type');
+                    return null;
+                }
+                if (layerDefinition.url === undefined || layerDefinition.url === null || typeof layerDefinition.url !== 'string') {
+                    $log.error('[AngularJS - Leaflet] A base layer must have an url');
+                    return null;
+                }
+                if (layerDefinition.name === undefined || layerDefinition.name === null || typeof layerDefinition.name !== 'string') {
+                    $log.error('[AngularJS - Leaflet] A base layer must have a name');
+                    return null;
+                }
+                if (layerDefinition.layerParams === undefined || layerDefinition.layerParams === null || typeof layerDefinition.layerParams !== 'object') {
+                    layerDefinition.layerParams = {};
+                }
+                if (layerDefinition.layerOptions === undefined || layerDefinition.layerOptions === null || typeof layerDefinition.layerOptions !== 'object') {
+                    layerDefinition.layerOptions = {};
+                }
+                // Mix the layer specific parameters with the general Leaflet options. Although this is an overhead
+                // the definition of a base layers is more 'clean' if the two types of parameters are differentiated
+                var layer = null;
+                for (var attrname in layerDefinition.layerParams) { layerDefinition.layerOptions[attrname] = layerDefinition.layerParams[attrname]; }
+                switch (layerDefinition.type) {
+                case 'xyz':
+                    layer = L.tileLayer(layerDefinition.url, layerDefinition.layerOptions);
+                    break;
+                default:
+                    layer = null;
+                }
+                return layer;
+            }
+            
+            function createOverlayLayer() {
+                
+            }            
+            
             function setupTiles() {
                 // TODO build custom object for tiles, actually only the tile string
                 // TODO: http://leafletjs.com/examples/layers-control.html
@@ -332,23 +467,35 @@ leafletDirective.directive('leaflet', [
             }
 
             function setupCenter() {
-                $scope.$watch("center", function(center) {
-                    if (!center) {
-                        $log.warn("[AngularJS - Leaflet] 'center' is undefined in the current scope, did you forget to initialize it?");
-                        return;
-                    }
-                    if (center.lat !== undefined && center.lng !== undefined && center.zoom !== undefined) {
-                        map.setView( [center.lat, center.lng], center.zoom );
-                    } else if (center.autoDiscover === true) {
-                        map.locate({ setView: true, maxZoom: $scope.leaflet.maxZoom });
+                if (!attrs.center) {
+                    $log.warn("[AngularJS - Leaflet] 'center' is undefined in the current scope, did you forget to initialize it?");
+                    map.setView( [ 0, 0 ], 1);
+                    return;
+                }
+
+                var centerModel = {
+                    lat:  $parse("center.lat"),
+                    lng:  $parse("center.lng"),
+                    zoom: $parse("center.zoom")
+                };
+
+                $scope.$watch("center", function(center /*, oldValue */) {
+                    if (center) {
+                        if (center.lat !== undefined && center.lng !== undefined && center.zoom !== undefined) {
+                            map.setView( [center.lat, center.lng], center.zoom );
+                        } else if (center.autoDiscover === true) {
+                            map.locate({ setView: true, maxZoom: $scope.leaflet.maxZoom });
+                        }
                     }
                 }, true);
 
                 map.on("moveend", function(/* event */) {
                     safeApply(function(scope) {
-                        centerModel.lat.assign(scope, map.getCenter().lat);
-                        centerModel.lng.assign(scope, map.getCenter().lng);
-                        centerModel.zoom.assign(scope, map.getZoom());
+                        if (centerModel) {
+                            centerModel.lat.assign(scope, map.getCenter().lat);
+                            centerModel.lng.assign(scope, map.getCenter().lng);
+                            centerModel.zoom.assign(scope, map.getZoom());
+                        }
                     });
                 });
             }

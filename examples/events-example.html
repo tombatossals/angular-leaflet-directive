@@ -2,7 +2,7 @@
   <head>
     <script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
-    <script src="../src/angular-leaflet-directive.js"></script>
+    <script src="../dist/angular-leaflet-directive.min.js"></script>
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" />
     <!--[if lte IE 8]>
         <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.ie.css" />
@@ -20,11 +20,11 @@
             $scope.$on('leafletDirectiveMap.click', function(e, args) {
                 console.log("Map click event caught in listener");
             });
-            
+
             $scope.$on('leafletDirectiveMap.dblclick', function(e, args) {
                 console.log("Map doubleclick event caught in listener");
             });
-            
+
             $scope.$on('leafletDirectiveMap.cl', function(e, args) {
                 console.log("Map click event caught in listener");
             });
