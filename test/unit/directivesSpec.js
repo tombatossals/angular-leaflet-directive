@@ -195,6 +195,36 @@ describe('Directive: leaflet', function() {
         map = element.scope().leaflet.map;
         expect(map.hasLayer(layers.baselayers.cycle)).toBe(true);
         expect(map.hasLayer(layers.baselayers.osm)).toBe(false);       
+        angular.extend($rootScope, {
+            layers: {
+                baselayers: {
+                    osm: {
+                        name: 'OpenStreetMap',
+                        type: 'xyz',
+                        url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                        layerOptions: {
+                            subdomains: ['a', 'b', 'c'],
+                            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                            continuousWorld: true
+                        }
+                    },
+                    osmwms: {
+                        name: 'OpenStreetMap WMS Omniscale',
+                        type: 'wms',
+                        url: 'http://osm.omniscale.net/proxy/service',
+                        layerOptions: {
+                            layers: 'osm',
+                            format: 'image/png'
+                        }
+                    },
+                },
+                overlays: {}
+            }
+        });
+        element = angular.element('<leaflet layers="layers" testing="testing"></leaflet>');
+        element = $compile(element)($rootScope);
+        layers = element.scope().leaflet.layers;
+        expect(Object.keys(layers.baselayers).length).toEqual(2);
     });
 
     it('should add and remove layers in whatch', function() {
