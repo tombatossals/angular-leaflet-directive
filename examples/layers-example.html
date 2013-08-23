@@ -1,7 +1,6 @@
 <html ng-app="demoapp">
   <head>
-    <!-- <script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet-src.js"></script> -->
-    <script src="file:///home/jaume/tesi/soft/Leaflet/dist/leaflet.js"></script>
+    <script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet-src.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
     <!--<script src="../dist/angular-leaflet-directive.min.js"></script>-->
     <script src="../src/angular-leaflet-directive.js"></script>
@@ -32,7 +31,7 @@
         };
         angular.module("demoapp");
         function BaseLayersController($scope) {
-            angular.extend($scope, {              
+            angular.extend($scope, {
                 london: {
                     lat: 51.505,
                     lng: -0.09,
@@ -70,7 +69,7 @@
                             name: 'Cloudmade Night Commander',
                             type: 'xyz',
                             url: 'http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png',
-                            layerParams: { 
+                            layerParams: {
                                 key: '007b9471b4c74da4a6ec7ff43552b16f',
                                 styleId: 999
                             },
@@ -78,12 +77,12 @@
                                 subdomains: ['a', 'b', 'c'],
                                 continuousWorld: true
                             }
-                        },                       
+                        },
                         cloudmade2: {
                             name: 'Cloudmade Tourist',
                             type: 'xyz',
                             url: 'http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png',
-                            layerParams: { 
+                            layerParams: {
                                 key: '007b9471b4c74da4a6ec7ff43552b16f',
                                 styleId: 7
                             },
@@ -91,7 +90,7 @@
                                 subdomains: ['a', 'b', 'c'],
                                 continuousWorld: true
                             }
-                        }                            
+                        }
                     }
                 }
             });
@@ -137,7 +136,7 @@
                                 name: 'Cloudmade Night Commander',
                                 type: 'xyz',
                                 url: 'http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png',
-                                layerParams: { 
+                                layerParams: {
                                     key: '007b9471b4c74da4a6ec7ff43552b16f',
                                     styleId: 999
                                 },
@@ -145,12 +144,12 @@
                                     subdomains: ['a', 'b', 'c'],
                                     continuousWorld: true
                                 }
-                            },                       
+                            },
                             cloudmade2: {
                                 name: 'Cloudmade Tourist',
                                 type: 'xyz',
                                 url: 'http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png',
-                                layerParams: { 
+                                layerParams: {
                                     key: '007b9471b4c74da4a6ec7ff43552b16f',
                                     styleId: 7
                                 },
@@ -158,7 +157,7 @@
                                     subdomains: ['a', 'b', 'c'],
                                     continuousWorld: true
                                 }
-                            }                            
+                            }
                         }
                     }
                 },
@@ -206,7 +205,7 @@
                         name: 'Cloudmade Night Commander',
                         type: 'xyz',
                         url: 'http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png',
-                        layerParams: { 
+                        layerParams: {
                             key: '007b9471b4c74da4a6ec7ff43552b16f',
                             styleId: 999
                         },
@@ -227,7 +226,7 @@
                         name: 'Cloudmade Tourist',
                         type: 'xyz',
                         url: 'http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png',
-                        layerParams: { 
+                        layerParams: {
                             key: '007b9471b4c74da4a6ec7ff43552b16f',
                             styleId: 7
                         },
@@ -235,13 +234,13 @@
                             subdomains: ['a', 'b', 'c'],
                             continuousWorld: true
                         }
-                    }; 
+                    };
                 },
                 existsCloud2Layer: function() {
                     return ('cloudmade2' in this.mapDynamicLayers.layers.baselayers);
                 },
 
-            });           
+            });
         };
     </script>
   </head>
@@ -291,16 +290,16 @@ layers: {
             <p>
                 <ul>
                     <li><code>name</code>: The display name in the layer control</li>
-                    <li><code>type</code>: The type of layer, by the way it is only supported a classic xyz tile layer. The accepted values are: 
+                    <li><code>type</code>: The type of layer, by the way it is only supported a classic xyz tile layer. The accepted values are:
                     <code>'xyz'</code></li>
                     <li><code>url</code>: The url of the map service to use</li>
                 </ul>
                 It can also contain optional properties
                 <ul>
                     <li><code>top</code>: This map layer will be on the top, making it visible. Possible values: <code>true</code>
-                    , <code>false</code>There can only be one top baselayer on a map. If this property is not present or all are false, 
+                    , <code>false</code>There can only be one top baselayer on a map. If this property is not present or all are false,
                     the first defined baselayer map will be the top one. If more than one layer have the <code>top</code> set to <code>
-                    true</code> the last layer defined will be the visible. 
+                    true</code> the last layer defined will be the visible.
                     </li>
                     <li><code>layerParams</code>: Additional parameters used in the baselayer url</li>
                     <li><code>layerOption</code>: Options of the Leaflet layer</li>
@@ -348,7 +347,7 @@ baselayers: {
         name: 'Cloudmade Night Commander',
         type: 'xyz',
         url: 'http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png',
-        layerParams: { 
+        layerParams: {
             key: '007b9471b4c74da4a6ec7ff43552b16f',
             styleId: 999
         },
@@ -356,12 +355,12 @@ baselayers: {
             subdomains: ['a', 'b', 'c'],
             continuousWorld: true
         }
-    },                       
+    },
     cloudmade2: {
         name: 'Cloudmade Tourist',
         type: 'xyz',
         url: 'http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png',
-        layerParams: { 
+        layerParams: {
             key: '007b9471b4c74da4a6ec7ff43552b16f',
             styleId: 7
         },
@@ -369,7 +368,7 @@ baselayers: {
             subdomains: ['a', 'b', 'c'],
             continuousWorld: true
         }
-    }                            
+    }
 }
             </pre>
         </div>
@@ -378,7 +377,7 @@ baselayers: {
             <p>
                 <div class="alert alert-warning">
                 You can define the layers model or not, using the default tile layer or the defined in your layer models, but you can't switch
-                from one to another. So if you delete your layers model (after using it) you will end up with errors and warnings in your console, and probably your 
+                from one to another. So if you delete your layers model (after using it) you will end up with errors and warnings in your console, and probably your
                 map will fail to response. If you use the defaults and later create a layers model, it will be ignored.
                 </div>
                 <div class="alert alert-warning">
@@ -404,7 +403,7 @@ baselayers: {
             <button type="button" class="btn btn-default" ng-click="removeCloud1Layer()" ng-disabled="!existsCloud1Layer()">Remove Cloudmade 1 Layer</button>
             <button type="button" class="btn btn-default" ng-click="removeCloud2Layer()" ng-disabled="!existsCloud2Layer()">Remove Cloudmade 2 Layer</button>
             </p>
-        </div>    
+        </div>
         <div class="row">
             <p>
             <button type="button" class="btn btn-default" ng-click="addOsmLayer()" ng-disabled="existsOsmLayer()">Add OSM Layer</button>
@@ -412,7 +411,7 @@ baselayers: {
             <button type="button" class="btn btn-default" ng-click="addCloud1Layer()" ng-disabled="existsCloud1Layer()">Add Cloudmade 1 Layer</button>
             <button type="button" class="btn btn-default" ng-click="addCloud2Layer()" ng-disabled="existsCloud2Layer()">Add Cloudmade 2 Layer</button>
             </p>
-        </div>    
+        </div>
     </div>
 </body>
 </html>
