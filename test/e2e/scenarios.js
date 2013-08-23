@@ -4,11 +4,13 @@
 
 describe('Test the directive from the examples', function() {
 
-    beforeEach(function() {
-        browser().navigateTo('/app/index.html');
-    });
+    describe('Simple example test', function() {
+        it('should load the leaflet map', function() {
 
-    it('should load the simple example page', function() {
-        browser().navigateTo('/examples/simple-example.html');
+            browser().navigateTo('/examples/simple-example.html');
+            expect(element("div.angular-leaflet-map").text()).toEqual("+-Leaflet | © OpenStreetMap contributors");
+            expect(element("div.angular-leaflet-map").css("width")).toEqual("640px");
+            expect(element("div.angular-leaflet-map").css("height")).toEqual("480px");
+        });
     });
 });

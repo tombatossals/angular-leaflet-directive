@@ -6,6 +6,7 @@ module.exports = function(karma) {
         frameworks: ["ng-scenario"],
         autoWatch:  false,
         browsers:   ['PhantomJS'],
+        //browsers:   ['Chrome'],
         singleRun:  true,
         runnerPort: 9999,
         logLevel:   karma.LOG_INFO,

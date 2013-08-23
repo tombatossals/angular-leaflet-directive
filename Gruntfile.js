@@ -40,7 +40,7 @@ module.exports = function(grunt) {
         connect: {
             options: {
                 port: 8000,
-                base: './app'
+                base: './'
             },
             server: {
                 options: {
