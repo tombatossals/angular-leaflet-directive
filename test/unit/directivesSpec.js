@@ -98,6 +98,169 @@ describe('Directive: leaflet', function() {
         expect(map.getZoom()).toEqual(8);
     });
 
+    // Layers
+    it('should create layers as specified', function() {
+        // If we not provide layers the system will use the default
+        var element = angular.element('<leaflet testing="testing"></leaflet>');
+        element = $compile(element)($rootScope);
+        var layers = element.scope().leaflet.layers;
+        expect(layers).toBe(null);
+        angular.extend($rootScope, {
+            layers: {}
+        });
+        element = angular.element('<leaflet layers="layers" testing="testing"></leaflet>');
+        element = $compile(element)($rootScope);
+        layers = element.scope().leaflet.layers;
+        expect(layers).toBe(null);
+        angular.extend($rootScope, {
+            layers: {
+                baselayers: {},
+                overlays: {}
+            }
+        });
+        element = angular.element('<leaflet layers="layers" testing="testing"></leaflet>');
+        element = $compile(element)($rootScope);
+        layers = element.scope().leaflet.layers;
+        expect(layers).toBe(null);
+        angular.extend($rootScope, {
+            layers: {
+                baselayers: {
+                    m1: {}
+                },
+                overlays: {}
+            }
+        });
+        element = angular.element('<leaflet layers="layers" testing="testing"></leaflet>');
+        element = $compile(element)($rootScope);
+        layers = element.scope().leaflet.layers;
+        expect(layers).not.toBe(null);
+        expect(layers.baselayers).not.toBe(null);
+        expect(layers.controls).not.toBe(null);
+        angular.extend($rootScope, {
+            layers: {
+                baselayers: {
+                    osm: {
+                        name: 'OpenStreetMap',
+                        type: 'xyz',
+                        url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                        layerOptions: {
+                            subdomains: ['a', 'b', 'c'],
+                            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                            continuousWorld: true
+                        }
+                    },
+                    m1: {}
+                },
+                overlays: {}
+            }
+        });
+        element = angular.element('<leaflet layers="layers" testing="testing"></leaflet>');
+        element = $compile(element)($rootScope);
+        layers = element.scope().leaflet.layers;
+        expect(Object.keys(layers.baselayers).length).toEqual(1);
+        var map = element.scope().leaflet.map;
+        expect(map.hasLayer(layers.baselayers.osm)).toBe(true);
+        angular.extend($rootScope, {
+            layers: {
+                baselayers: {
+                    osm: {
+                        name: 'OpenStreetMap',
+                        type: 'xyz',
+                        url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                        layerOptions: {
+                            subdomains: ['a', 'b', 'c'],
+                            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                            continuousWorld: true
+                        }
+                    },
+                    cycle: {
+                        name: 'OpenCycleMap',
+                        type: 'xyz',
+                        url: 'http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png',
+                        top: true,
+                        layerOptions: {
+                            subdomains: ['a', 'b', 'c'],
+                            attribution: '&copy; <a href="http://www.opencyclemap.org/copyright">OpenCycleMap</a> contributors - &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                            continuousWorld: true
+                        }
+                    },
+                },
+                overlays: {}
+            }
+        });
+        element = angular.element('<leaflet layers="layers" testing="testing"></leaflet>');
+        element = $compile(element)($rootScope);
+        layers = element.scope().leaflet.layers;
+        expect(Object.keys(layers.baselayers).length).toEqual(2);
+        map = element.scope().leaflet.map;
+        expect(map.hasLayer(layers.baselayers.cycle)).toBe(true);
+        expect(map.hasLayer(layers.baselayers.osm)).toBe(false);       
+    });
+
+    it('should add and remove layers in whatch', function() {
+        // If we not provide layers the system will use the default
+        angular.extend($rootScope, {
+            layers: {
+                baselayers: {
+                    osm: {
+                        name: 'OpenStreetMap',
+                        type: 'xyz',
+                        url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                        layerOptions: {
+                            subdomains: ['a', 'b', 'c'],
+                            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                            continuousWorld: true
+                        }
+                    },
+                    cycle: {
+                        name: 'OpenCycleMap',
+                        type: 'xyz',
+                        url: 'http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png',
+                        top: true,
+                        layerOptions: {
+                            subdomains: ['a', 'b', 'c'],
+                            attribution: '&copy; <a href="http://www.opencyclemap.org/copyright">OpenCycleMap</a> contributors - &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                            continuousWorld: true
+                        }
+                    },
+                }
+            }
+        });
+        var element = angular.element('<leaflet layers="layers" testing="testing"></leaflet>');
+        var elementTest = $compile(element)($rootScope);
+        var layers = elementTest.scope().leaflet.layers;
+        expect(Object.keys(layers.baselayers).length).toEqual(2);
+        delete $rootScope.layers.baselayers.cycle;
+        $rootScope.$digest();
+        layers = elementTest.scope().leaflet.layers;
+        expect(Object.keys(layers.baselayers).length).toEqual(1);
+        expect(typeof layers.baselayers.osm).toBe('object');
+        expect(layers.baselayers.cycle).toBe(undefined);
+        $rootScope.layers.baselayers.cloudmade1 = {
+            name: 'Cloudmade Night Commander',
+            type: 'xyz',
+            url: 'http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png',
+            layerParams: { 
+                key: '007b9471b4c74da4a6ec7ff43552b16f',
+                styleId: 999
+            },
+            layerOptions: {
+                subdomains: ['a', 'b', 'c'],
+                continuousWorld: true
+            }
+        };
+        $rootScope.$digest();
+        layers = elementTest.scope().leaflet.layers;
+        expect(Object.keys(layers.baselayers).length).toEqual(2);
+        expect(typeof layers.baselayers.osm).toBe('object');
+        expect(typeof layers.baselayers.cloudmade1).toBe('object');
+        delete $rootScope.layers.baselayers.osm;
+        delete $rootScope.layers.baselayers.cloudmade1;
+        $rootScope.$digest();
+        layers = elementTest.scope().leaflet.layers;
+        expect(Object.keys(layers.baselayers).length).toEqual(0);
+    });
+    
     // Marker
     it('should create main marker on the map', function() {
         var main_marker = {
