@@ -239,7 +239,7 @@ leafletDirective.directive('leaflet', [
                         // We have a baselayers property but no element on it
                         $log.error('[AngularJS - Leaflet] At least one baselayer has to be defined');
                         $scope.leaflet.layers = !!attrs.testing ? layers : str_inspect_hint;
-                        return;                        
+                        return;
                     }
                     // We have baselayers to add to the map
                     layers = {};
@@ -259,7 +259,7 @@ leafletDirective.directive('leaflet', [
                                 top = true;
                             }
                             layers.controls.layers.addBaseLayer(layers.baselayers[layerName], $scope.layers.baselayers[layerName].name);
-                        }                        
+                        }
                     }
                     // If there is no visible layer add first to the map
                     if (!top && Object.keys(layers.baselayers).length > 0) {
@@ -293,7 +293,7 @@ leafletDirective.directive('leaflet', [
                                         map.addLayer(layers.baselayers[new_name]);
                                     }
                                     layers.controls.layers.addBaseLayer(layers.baselayers[new_name], newBaseLayers[new_name].name);
-                                }                                
+                                }
                             }
                         }
                         if (Object.keys(layers.baselayers).length <= 0) {
@@ -318,13 +318,13 @@ leafletDirective.directive('leaflet', [
                 }
                 $scope.leaflet.layers = !!attrs.testing ? layers : str_inspect_hint;
            }
-            
+
             function createBaseLayer(layerDefinition, map) {
                 // Check if the baselayer has a valid type
                 if (layerDefinition.type === undefined || layerDefinition.type === null || typeof layerDefinition.type !== 'string') {
                     if (layerDefinition.type !== 'xyz') {
                         $log.error('[AngularJS - Leaflet] A base layer must have a valid type: "tiles-xyz, "');
-                        return null;                              
+                        return null;
                     }
                     $log.error('[AngularJS - Leaflet] A base layer must have a type');
                     return null;
@@ -356,11 +356,11 @@ leafletDirective.directive('leaflet', [
                 }
                 return layer;
             }
-            
+
             function createOverlayLayer() {
-                
-            }            
-            
+
+            }
+
             function setupTiles() {
                 // TODO build custom object for tiles, actually only the tile string
                 // TODO: http://leafletjs.com/examples/layers-control.html
@@ -511,32 +511,31 @@ leafletDirective.directive('leaflet', [
                     }
 
                     if (geojson.hasOwnProperty("data")) {
+                        var resetStyleOnMouseout = $scope.geojson.resetStyleOnMouseout;
+
                         $scope.leaflet.geojson = L.geoJson($scope.geojson.data, {
                             style: $scope.geojson.style,
                             onEachFeature: function(feature, layer) {
                                 layer.on({
                                     mouseover: function(e) {
-                                        safeApply(function (scope) {
+                                        safeApply(function() {
                                             geojson.selected = feature;
+                                            $rootScope.$broadcast('leafletDirectiveMap.geojsonMouseover', e);
                                         });
-                                        if (!geojson.mouseover) {
-                                            return;
-                                        }
-                                        geojson.mouseover(e);
                                     },
                                     mouseout: function(e) {
-                                        safeApply(function (scope) {
-                                            geojson.selected = undefined;
-                                        });
-                                        if (!geojson.mouseout) {
-                                            return;
+                                        if (resetStyleOnMouseout) {
+                                            $scope.leaflet.geojson.resetStyle(e.target);
                                         }
-                                        geojson.mouseout(e);
+                                        safeApply(function() {
+                                            geojson.selected = undefined;
+                                            $rootScope.$broadcast('leafletDirectiveMap.geojsonMouseout', e);
+                                        });
                                     },
                                     click: function(e) {
-                                        if (geojson.click) {
-                                            geojson.click(geojson.selected, e);
-                                        }
+                                        safeApply(function() {
+                                            $rootScope.$broadcast('leafletDirectiveMap.geojsonClick', geojson.selected, e);
+                                        });
                                     }
                                 });
                             }
