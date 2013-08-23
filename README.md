@@ -13,6 +13,7 @@ See some basic examples:
 * [Tile changer example](http://tombatossals.github.io/angular-leaflet-directive/examples/tiles-example.html)
 * [Legend example](http://tombatossals.github.io/angular-leaflet-directive/examples/legend-example.html)
 * [GeoJson example](http://tombatossals.github.io/angular-leaflet-directive/examples/geojson-example.html)
+* [Layers example](http://tombatossals.github.io/angular-leaflet-directive/examples/layers-example.html)
 
 
 To see it in action, go to the main page where you can find more examples and
