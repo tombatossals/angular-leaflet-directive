@@ -92,6 +92,7 @@ leafletDirective.directive('leaflet', [
                 doubleClickZoom: $scope.leaflet.doubleClickZoom,
                 scrollWheelZoom: $scope.leaflet.scrollWheelZoom
             });
+            var layers = null;
 
             map.setView([0, 0], 10);
             $scope.leaflet.map = !!attrs.testing ? map : str_inspect_hint;
@@ -222,9 +223,8 @@ leafletDirective.directive('leaflet', [
             }
 
             function setupLayers() {
-                //TODO: support multiple types of layers (or plugins) WMS, Canvas, ImageOverlay, clustermarker, google, etc
+                //TODO: support multiple types of layers (or plugins) Canvas, ImageOverlay, clustermarker, google, etc
                 //TODO: add support for controls
-                var layers = null;
                 if ($scope.layers === undefined || $scope.layers === null) {
                     // There is no layers definition so we will use the old way of definig tiles for compatibility
                     setupTiles();
@@ -249,7 +249,7 @@ leafletDirective.directive('leaflet', [
                     // Setup all baselayers definitions
                     var top = false;
                     for (var layerName in $scope.layers.baselayers) {
-                        var newBaseLayer = createBaseLayer($scope.layers.baselayers[layerName], map);
+                        var newBaseLayer = createLayer($scope.layers.baselayers[layerName]);
                         if (newBaseLayer !== null) {
                             layers.baselayers[layerName] = newBaseLayer;
                             // Only add the visible layer to the map, layer control manages the addition to the map
@@ -265,6 +265,21 @@ leafletDirective.directive('leaflet', [
                     if (!top && Object.keys(layers.baselayers).length > 0) {
                         map.addLayer(layers.baselayers[Object.keys($scope.layers.baselayers)[0]]);
                     }
+                    // Setup the Overlays
+                    layers.overlays = {};                    
+                    for (layerName in $scope.layers.overlays) {
+                        var newOverlayLayer = createLayer($scope.layers.overlays[layerName]);
+                        if (newOverlayLayer !== null) {
+                            layers.overlays[layerName] = newOverlayLayer;
+                            // Only add the visible layer to the map, layer control manages the addition to the map
+                            // of layers in its control
+                            if ($scope.layers.overlays[layerName].visible === true) {
+                                map.addLayer(layers.overlays[layerName]);
+                            }
+                            layers.controls.layers.addOverlay(layers.overlays[layerName], $scope.layers.overlays[layerName].name);
+                        }                        
+                    }
+
                     // Watch for the base layers
                     $scope.$watch('layers.baselayers', function(newBaseLayers) {
                         // Delete layers from the array
@@ -284,7 +299,7 @@ leafletDirective.directive('leaflet', [
                         // add new layers
                         for (var new_name in newBaseLayers) {
                             if (layers.baselayers[new_name] === undefined) {
-                                var testBaseLayer = createBaseLayer(newBaseLayers[new_name], map);
+                                var testBaseLayer = createLayer(newBaseLayers[new_name]);
                                 if (testBaseLayer !== null) {
                                     layers.baselayers[new_name] = testBaseLayer;
                                     // Only add the visible layer to the map, layer control manages the addition to the map
@@ -315,11 +330,42 @@ leafletDirective.directive('leaflet', [
                             }
                         }
                     }, true);
+                
+                    // Watch for the overlay layers
+                    $scope.$watch('layers.overlays', function(newOverlayLayers) {
+                        // Delete layers from the array
+                        for (var name in layers.overlays) {
+                            if (newOverlayLayers[name] === undefined) {
+                                // Remove the layer from the control
+                                layers.controls.layers.removeLayer(layers.overlays[name]);
+                                // Remove from the map if it's on it
+                                if (map.hasLayer(layers.overlays[name])) {
+                                    map.removeLayer(layers.overlays[name]);
+                                }
+                                // TODO: Depending on the layer type we will have to delete what's included on it
+                                delete layers.overlays[name];
+                            }
+                        }
+                        // add new layers
+                        for (var new_name in newOverlayLayers) {
+                            if (layers.overlays[new_name] === undefined) {
+                                var testOverlayLayer = createLayer(newOverlayLayers[new_name]);
+                                if (testOverlayLayer !== null) {
+                                    layers.overlays[new_name] = testOverlayLayer;
+                                    layers.controls.layers.addOverlay(layers.overlays[new_name], newOverlayLayers[new_name].name);
+                                    if (newOverlayLayers[new_name].visible === true) {
+                                        map.addLayer(layers.overlays[new_name]);
+                                    }
+                                }                                
+                            }
+                        }
+                    }, true);
                 }
+                
                 $scope.leaflet.layers = !!attrs.testing ? layers : str_inspect_hint;
-           }
+            }
             
-            function createBaseLayer(layerDefinition, map) {
+            function createLayer(layerDefinition) {
                 // Check if the baselayer has a valid type
                 if (layerDefinition.type === undefined || layerDefinition.type === null || typeof layerDefinition.type !== 'string') {
                     $log.error('[AngularJS - Leaflet] A base layer must have a type');
@@ -328,9 +374,12 @@ leafletDirective.directive('leaflet', [
                     $log.error('[AngularJS - Leaflet] A base layer must have a valid type: "tiles-xyz, "');
                     return null;                              
                 }
-                if (layerDefinition.url === undefined || layerDefinition.url === null || typeof layerDefinition.url !== 'string') {
-                    $log.error('[AngularJS - Leaflet] A base layer must have an url');
-                    return null;
+                if (layerDefinition.type === 'xyz' || layerDefinition.type === 'wms') {
+                    // XYZ, WMS must have an url
+                    if (layerDefinition.url === undefined || layerDefinition.url === null || typeof layerDefinition.url !== 'string') {
+                        $log.error('[AngularJS - Leaflet] A base layer must have an url');
+                        return null;
+                    }
                 }
                 if (layerDefinition.name === undefined || layerDefinition.name === null || typeof layerDefinition.name !== 'string') {
                     $log.error('[AngularJS - Leaflet] A base layer must have a name');
@@ -353,6 +402,9 @@ leafletDirective.directive('leaflet', [
                 case 'wms':
                     layer = createWmsLayer(layerDefinition.url, layerDefinition.layerOptions);
                     break;
+                case 'group':
+                    layer = createGroupLayer();
+                    break;
                 default:
                     layer = null;
                 }
@@ -369,14 +421,16 @@ leafletDirective.directive('leaflet', [
                 return layer;
             }
 
+            function createGroupLayer(url, options) {
+                var layer = L.layerGroup();
+                return layer;
+            }
+
             function createOverlayLayer() {
                 
             }            
             
             function setupTiles() {
-                // TODO build custom object for tiles, actually only the tile string
-                // TODO: http://leafletjs.com/examples/layers-control.html
-
                 var tileLayerObj, key;
                 $scope.leaflet.tileLayer = !!(attrs.defaults && $scope.defaults && $scope.defaults.tileLayer) ?
                                             $scope.defaults.tileLayer : defaults.tileLayer;
