@@ -322,12 +322,11 @@ leafletDirective.directive('leaflet', [
             function createBaseLayer(layerDefinition, map) {
                 // Check if the baselayer has a valid type
                 if (layerDefinition.type === undefined || layerDefinition.type === null || typeof layerDefinition.type !== 'string') {
-                    if (layerDefinition.type !== 'xyz') {
-                        $log.error('[AngularJS - Leaflet] A base layer must have a valid type: "tiles-xyz, "');
-                        return null;                              
-                    }
                     $log.error('[AngularJS - Leaflet] A base layer must have a type');
                     return null;
+                } else if (layerDefinition.type !== 'xyz' && layerDefinition.type !== 'wms') {
+                    $log.error('[AngularJS - Leaflet] A base layer must have a valid type: "tiles-xyz, "');
+                    return null;                              
                 }
                 if (layerDefinition.url === undefined || layerDefinition.url === null || typeof layerDefinition.url !== 'string') {
                     $log.error('[AngularJS - Leaflet] A base layer must have an url');
@@ -349,7 +348,10 @@ leafletDirective.directive('leaflet', [
                 for (var attrname in layerDefinition.layerParams) { layerDefinition.layerOptions[attrname] = layerDefinition.layerParams[attrname]; }
                 switch (layerDefinition.type) {
                 case 'xyz':
-                    layer = L.tileLayer(layerDefinition.url, layerDefinition.layerOptions);
+                    layer = createXyzLayer(layerDefinition.url, layerDefinition.layerOptions);
+                    break;
+                case 'wms':
+                    layer = createWmsLayer(layerDefinition.url, layerDefinition.layerOptions);
                     break;
                 default:
                     layer = null;
@@ -357,6 +359,16 @@ leafletDirective.directive('leaflet', [
                 return layer;
             }
             
+            function createXyzLayer(url, options) {
+                var layer = L.tileLayer(url, options);
+                return layer;
+            }
+
+            function createWmsLayer(url, options) {
+                var layer = L.tileLayer.wms(url, options);
+                return layer;
+            }
+
             function createOverlayLayer() {
                 
             }            
