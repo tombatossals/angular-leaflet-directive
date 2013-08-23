@@ -518,7 +518,7 @@ describe('Directive: leaflet', function() {
         expect(typeof layers.overlays).toBe('object');
         expect(Object.keys(layers.overlays).length).toEqual(2);
         // As the visible is true it should be on the map
-        var map = element.scope().leaflet.map;
+        map = element.scope().leaflet.map;
         expect(map.hasLayer(layers.overlays.hillshade)).toBe(true);
         //TODO Pending tests when add layers groups
     });

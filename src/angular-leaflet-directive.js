@@ -267,7 +267,7 @@ leafletDirective.directive('leaflet', [
                     }
                     // Setup the Overlays
                     layers.overlays = {};                    
-                    for (var layerName in $scope.layers.overlays) {
+                    for (layerName in $scope.layers.overlays) {
                         var newOverlayLayer = createLayer($scope.layers.overlays[layerName]);
                         if (newOverlayLayer !== null) {
                             layers.overlays[layerName] = newOverlayLayer;
