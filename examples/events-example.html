@@ -17,22 +17,59 @@
                 zoom: 8
             };
 
-            $scope.$on('leafletDirectiveMap.click', function(e, args) {
-                console.log("Map click event caught in listener");
-            });
+            $scope.eventDetected = "No events yet...";
 
-            $scope.$on('leafletDirectiveMap.dblclick', function(e, args) {
-                console.log("Map doubleclick event caught in listener");
-            });
+            var mapEvents = [
+                                'click',
+                                'dblclick',
+                                'mousedown',
+                                'mouseup',
+                                'mouseover',
+                                'mouseout',
+                                'mousemove',
+                                'contextmenu',
+                                'focus',
+                                'blur',
+                                'preclick',
+                                'load',
+                                'unload',
+                                'viewreset',
+                                'movestart',
+                                'move',
+                                //'moveend',
+                                'dragstart',
+                                'drag',
+                                //'dragend',
+                                'zoomstart',
+                                //'zoomend',
+                                'zoomlevelschange',
+                                'resize',
+                                'autopanstart',
+                                'layeradd',
+                                'layerremove',
+                                'baselayerchange',
+                                'overlayadd',
+                                'overlayremove',
+                                'locationfound',
+                                'locationerror',
+                                'popupopen',
+                                'popupclose'
+             ];
 
-            $scope.$on('leafletDirectiveMap.cl', function(e, args) {
-                console.log("Map click event caught in listener");
-            });
-
+            for (var k in mapEvents){
+                var eventName = 'leafletDirectiveMap.' + mapEvents[k];
+                $scope.$on(eventName, function(event){
+                    $scope.eventDetected = event.name;
+                });
+            }
         }]);
     </script>
   </head>
   <body ng-controller="DemoController">
-    <leaflet events="events" center="center" testing="testing" width="640px" height="480px"></leaflet>
+    <h1>Events example</h1>
+    <ul ng-cloak>
+        <li><strong ng-bind="eventDetected"></strong> event caught in listener.</li>
+    </ul>
+    <leaflet events="events" center="center" testing="testing" width="640px" height="400px"></leaflet>
   </body>
 </html>
