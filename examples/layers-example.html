@@ -1,5 +1,5 @@
 <html ng-app="demoapp">
-  <head>
+<head>
     <script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet-src.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
     <script src="../dist/angular-leaflet-directive.min.js"></script>
@@ -28,7 +28,6 @@
                 }
             });
         };
-        angular.module("demoapp");
         function BaseLayersController($scope) {
             angular.extend($scope, {
                 london: {
@@ -94,7 +93,6 @@
                 }
             });
         };
-        angular.module("demoapp");
         function DynamicLayersController($scope) {
             angular.extend($scope, {
                 mapDynamicLayers: {
@@ -241,8 +239,59 @@
 
             });
         };
+        function CombineTypeLayersController($scope) {
+            angular.extend($scope, {
+                berlin: {
+                    lat: 52.51739,
+                    lng: 13.40209,
+                    zoom: 14
+                },
+                markers: {
+                    m1: {
+                        lat: 52.51739,
+                        lng: 13.40209
+                    }
+                },
+                layers: {
+                    baselayers: {
+                        osm: {
+                            name: 'OpenStreetMap WMS Omniscale',
+                            type: 'wms',
+                            url: 'http://osm.omniscale.net/proxy/service',
+                            layerOptions: {
+                                layers: 'osm',
+                                format: 'image/png'
+                            }
+                        },
+                        cycle: {
+                            name: 'OpenCycleMap',
+                            type: 'xyz',
+                            url: 'http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png',
+                            layerOptions: {
+                                subdomains: ['a', 'b', 'c'],
+                                attribution: '&copy; <a href="http://www.opencyclemap.org/copyright">OpenCycleMap</a> contributors - &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                                continuousWorld: true
+                            }
+                        },
+                        cloudmade: {
+                            name: 'Cloudmade Tourist',
+                            type: 'xyz',
+                            url: 'http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png',
+                            layerParams: {
+                                key: '007b9471b4c74da4a6ec7ff43552b16f',
+                                styleId: 7
+                            },
+                            layerOptions: {
+                                subdomains: ['a', 'b', 'c'],
+                                continuousWorld: true
+                            }
+                        }
+                    }
+                }
+            });
+        };
     </script>
-  </head>
+</head>
 <body>
     <div class="container">
     <div ng-controller="DefaultController">
@@ -289,8 +338,8 @@ layers: {
             <p>
                 <ul>
                     <li><code>name</code>: The display name in the layer control</li>
-                    <li><code>type</code>: The type of layer, by the way it is only supported a classic xyz tile layer. The accepted values are:
-                    <code>'xyz'</code></li>
+                    <li><code>type</code>: The type of layer. The supported values are:
+                    <code>'xyz'</code> and <code>'wms'</code></li>
                     <li><code>url</code>: The url of the map service to use</li>
                 </ul>
                 It can also contain optional properties
@@ -302,8 +351,9 @@ layers: {
                     </li>
                     <li><code>layerParams</code>: Additional parameters used in the baselayer url</li>
                     <li><code>layerOption</code>: Options of the Leaflet layer</li>
-                    <ul>You can find the possible options and default values at:
+                    <ul>You can find the possible options and default values at (not all options aply to all layers):
                     <li><code>'xyz'</code>: <a href="http://leafletjs.com/reference.html#tilelayer-options">Leaflet options for xyz tiles Layer</a>
+                    <li><code>'wms'</code>: <a href="http://leafletjs.com/reference.html#tilelayer-wms-options">Leaflet options for wms tiles Layer</a>
                     </ul>
                 </ul>
             </p>
@@ -384,7 +434,7 @@ baselayers: {
                 whole map, so if you do not define them a 0-18 zooms Leaflet defaults will be used.
                 </div>
             </p>
-    </div>
+        </div>
     </div>
     <div ng-controller="DynamicLayersController">
         <div class="row">
@@ -411,6 +461,33 @@ baselayers: {
             <button type="button" class="btn btn-default" ng-click="addCloud2Layer()" ng-disabled="existsCloud2Layer()">Add Cloudmade 2 Layer</button>
             </p>
         </div>
+    </div>
+    <div ng-controller="CombineTypeLayersController">
+        <div class="row">
+            <h2>This is a map with WMS and XYZ layers</h2>
+        </div>
+        <div class="row">
+            <p>
+            <leaflet center="berlin" layers="layers" markers="markers" height="480px" width="640px"></leaflet>
+            </p>
+        </div>
+        <div class="row">
+            <h3>Be careful with WMS layers:</h3>
+            <p>
+                <div class="alert alert-warning">
+                Most WMS layers (that are more intended for GIS applications than for slippy maps) do not use
+                the EPSG:3857 (EPSG:900913) Spherical Mercator projection. This will lead to error in the
+                map and you won't see anything. Although you set the srs option in the layer, Leaflet won't
+                reproject it (as almost do all map viewers).
+                </div>
+                <div class="alert alert-warning">
+                At this moment the EPSG:3857 projection is the only supported by the leaflet directive. If you
+                need other SRSs please consider contributing to the project including in the directive support for
+                the Proj4 Leaflet plugin
+                </div>
+            </p>
+        </div>
+    </div>
     </div>
 </body>
 </html>
