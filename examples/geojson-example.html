@@ -1,13 +1,13 @@
 <html ng-app="demoapp">
   <head>
-    <script src="http://cdn.leafletjs.com/leaflet-0.6.3/leaflet.js"></script>
+    <script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
-    <script src="../dist/angular-leaflet-directive.min.js"></script>
-    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.3/leaflet.css" />
+    <script src="../src/angular-leaflet-directive.js"></script>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" />
     <link rel="stylesheet" type="text/css" href="http://cloud.github.com/downloads/lafeber/world-flags-sprite/flags32.css" />
 
     <!--[if lte IE 8]>
-        <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.3/leaflet.ie.css" />
+        <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.ie.css" />
     <![endif]-->
     <style>
         html {
@@ -64,8 +64,16 @@
         }
     </style>
     <script>
-        angular.module("demoapp", ["leaflet-directive"]);
-        function DemoController($scope, $http) {
+        var app = angular.module("demoapp", ["leaflet-directive"]);
+        app.controller('DemoController', [ "$scope", "$http", function($scope, $http) {
+
+            $scope.$on("leafletDirectiveMap.geojsonMouseover", function(ev, leafletEvent) {
+                countryMouseover(leafletEvent);
+            });
+
+            $scope.$on("leafletDirectiveMap.geojsonClick", function(ev, featureSelected, leafletEvent) {
+                countryClick(featureSelected, leafletEvent);
+            });
 
             var continentProperties= {
                     "009": {
@@ -102,6 +110,10 @@
                 }
             });
 
+            function countryClick(country, event) {
+                console.log(country.properties.name);
+            }
+
             // Get a country paint color from the continents array of colors
             function getColor(country) {
                 if (!country || !country["region-code"]) {
@@ -125,8 +137,8 @@
             }
 
             // Mouse over function, called from the Leaflet Map Events
-            function mouseover(e) {
-                var layer = e.target;
+            function countryMouseover(leafletEvent) {
+                var layer = leafletEvent.target;
                 layer.setStyle({
                     weight: 2,
                     color: '#666',
@@ -151,12 +163,12 @@
                         geojson: {
                             data: data,
                             style: style,
-                            mouseover: mouseover
+                            resetStyleOnMouseout: true
                         }
                     });
                 });
             });
-        };
+        }]);
     </script>
     <style>
         .angular-leaflet-map {
@@ -170,6 +182,6 @@
         {{ geojson.selected.properties.name || 'No country'}}
     </div>
     <div class="info box">Map center: [ lat: {{ center.lat | number:4 }}, lng: {{ center.lng | number:4 }} ]</div>
-    <leaflet center="center" legend="legend" geojson="geojson"></leaflet>
+    <leaflet center="center" events="events" legend="legend" geojson="geojson"></leaflet>
   </body>
 </html>
