@@ -14,6 +14,8 @@ See some basic examples:
 * [Legend example](http://tombatossals.github.io/angular-leaflet-directive/examples/legend-example.html)
 * [GeoJson example](http://tombatossals.github.io/angular-leaflet-directive/examples/geojson-example.html)
 * [Layers example](http://tombatossals.github.io/angular-leaflet-directive/examples/layers-example.html)
+* [Events example](http://tombatossals.github.io/angular-leaflet-directive/examples/events-example.html)
+* [Overlays example](http://tombatossals.github.io/angular-leaflet-directive/examples/overlays-example.html)
 
 
 To see it in action, go to the main page where you can find more examples and
