@@ -66,7 +66,8 @@ leafletDirective.directive('leaflet', [
             paths: '=paths',
             tiles: '=tiles',
             events: '=events',
-            layers: '=layers'
+            layers: '=layers',
+            customControls: '=customControls'
         },
         template: '<div class="angular-leaflet-map"></div>',
         link: function ($scope, element, attrs /*, ctrl */) {
@@ -98,6 +99,7 @@ leafletDirective.directive('leaflet', [
             $scope.leaflet.map = !!attrs.testing ? map : str_inspect_hint;
 
             setupControls();
+            setupCustomControls();
             setupLayers();
             setupCenter();
             setupMaxBounds();
@@ -930,6 +932,16 @@ leafletDirective.directive('leaflet', [
                 //@TODO add document for this option  11.08 2013 (houqp)
                 if ($scope.defaults && $scope.defaults.zoomControlPosition) {
                     map.zoomControl.setPosition($scope.defaults.zoomControlPosition);
+                }
+            }
+
+            function setupCustomControls() {
+                if (!$scope.customControls) {
+                    return;
+                }
+
+                for(var i = 0, count = $scope.customControls.length; i < count; i++) {
+                    map.addControl(new $scope.customControls[i]());
                 }
             }
         }
