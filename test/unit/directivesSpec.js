@@ -520,7 +520,191 @@ describe('Directive: leaflet', function() {
         // As the visible is true it should be on the map
         map = element.scope().leaflet.map;
         expect(map.hasLayer(layers.overlays.hillshade)).toBe(true);
-        //TODO Pending tests when add layers groups
+        // Check for layer group
+        angular.extend($rootScope, {
+            layers: {
+                baselayers: {
+                    osm: {
+                        name: 'OpenStreetMap',
+                        type: 'xyz',
+                        url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                        layerOptions: {
+                            subdomains: ['a', 'b', 'c'],
+                            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                            continuousWorld: true
+                        }
+                    }                   
+                },
+                overlays: {
+                    cars: {
+                        name: 'cars',
+                        type: 'group',
+                        visible: false
+                    }
+                }
+            }
+        });
+        element = angular.element('<leaflet layers="layers" testing="testing"></leaflet>');
+        element = $compile(element)($rootScope);
+        layers = element.scope().leaflet.layers;
+        expect(layers.overlays).not.toBe(null);
+        expect(typeof layers.overlays).toBe('object');
+        expect(Object.keys(layers.overlays).length).toEqual(1);
+        expect(layers.overlays.cars instanceof L.LayerGroup).toBe(true);
+        // As the visible is false it should not be on the map
+        map = element.scope().leaflet.map;
+        expect(map.hasLayer(layers.overlays.hillshade)).toBe(false);
+        // Check for a marker in the layer group that is not visible
+        angular.extend($rootScope, {
+            layers: {
+                baselayers: {
+                    osm: {
+                        name: 'OpenStreetMap',
+                        type: 'xyz',
+                        url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                        layerOptions: {
+                            subdomains: ['a', 'b', 'c'],
+                            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                            continuousWorld: true
+                        }
+                    }                   
+                },
+                overlays: {
+                    cars: {
+                        name: 'cars',
+                        type: 'group',
+                        visible: false
+                    }
+                }
+            },
+            markers: {
+                m1: {
+                    lat: 1.2,
+                    lng: 0.3,
+                    layer: 'cars'
+                }
+            }
+        });
+        element = angular.element('<leaflet layers="layers" markers="markers" testing="testing"></leaflet>');
+        element = $compile(element)($rootScope);
+        layers = element.scope().leaflet.layers;
+        var markers = element.scope().leaflet.markers;
+        map = element.scope().leaflet.map;
+        expect(Object.keys(markers).length).toEqual(1);
+        expect(markers.m1 instanceof L.Marker).toBe(true);
+        expect(layers.overlays.cars.hasLayer(markers.m1)).toBe(true);
+        expect(map.hasLayer(markers.m1)).toBe(false);
+        // Check for a marker in the layer group that is visible
+        angular.extend($rootScope, {
+            layers: {
+                baselayers: {
+                    osm: {
+                        name: 'OpenStreetMap',
+                        type: 'xyz',
+                        url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                        layerOptions: {
+                            subdomains: ['a', 'b', 'c'],
+                            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                            continuousWorld: true
+                        }
+                    }                   
+                },
+                overlays: {
+                    cars: {
+                        name: 'cars',
+                        type: 'group',
+                        visible: true
+                    }
+                }
+            },
+            markers: {
+                m1: {
+                    lat: 1.2,
+                    lng: 0.3,
+                    layer: 'cars'
+                }
+            }
+        });
+        element = angular.element('<leaflet layers="layers" markers="markers" testing="testing"></leaflet>');
+        element = $compile(element)($rootScope);
+        layers = element.scope().leaflet.layers;
+        var markers = element.scope().leaflet.markers;
+        map = element.scope().leaflet.map;
+        expect(Object.keys(markers).length).toEqual(1);
+        expect(markers.m1 instanceof L.Marker).toBe(true);
+        expect(layers.overlays.cars.hasLayer(markers.m1)).toBe(true);
+        expect(map.hasLayer(markers.m1)).toBe(true);
+        // Check for a marker in a wrong layer group
+        angular.extend($rootScope, {
+            layers: {
+                baselayers: {
+                    osm: {
+                        name: 'OpenStreetMap',
+                        type: 'xyz',
+                        url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                        layerOptions: {
+                            subdomains: ['a', 'b', 'c'],
+                            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                            continuousWorld: true
+                        }
+                    }                   
+                },
+                overlays: {
+                    cars: {
+                        name: 'cars',
+                        type: 'group',
+                        visible: true
+                    }
+                }
+            },
+            markers: {
+                m1: {
+                    lat: 1.2,
+                    lng: 0.3,
+                    layer: 'bikes'
+                }
+            }
+        });
+        element = angular.element('<leaflet layers="layers" markers="markers" testing="testing"></leaflet>');
+        element = $compile(element)($rootScope);
+        markers = element.scope().leaflet.markers;
+        expect(Object.keys(markers).length).toEqual(0);
+        // Check for a marker the old way
+        angular.extend($rootScope, {
+            layers: {
+                baselayers: {
+                    osm: {
+                        name: 'OpenStreetMap',
+                        type: 'xyz',
+                        url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                        layerOptions: {
+                            subdomains: ['a', 'b', 'c'],
+                            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                            continuousWorld: true
+                        }
+                    }                   
+                },
+                overlays: {
+                    cars: {
+                        name: 'cars',
+                        type: 'group',
+                        visible: true
+                    }
+                }
+            },
+            markers: {
+                m1: {
+                    lat: 1.2,
+                    lng: 0.3
+                }
+            }
+        });
+        element = angular.element('<leaflet layers="layers" markers="markers" testing="testing"></leaflet>');
+        element = $compile(element)($rootScope);
+        markers = element.scope().leaflet.markers;
+        expect(Object.keys(markers).length).toEqual(1);
+        map = element.scope().leaflet.map;
+        expect(map.hasLayer(markers.m1)).toBe(true);
     });
 
     it('should add and remove overlays in whatch', function() {
@@ -606,7 +790,177 @@ describe('Directive: leaflet', function() {
         expect(typeof layers.overlays.hillshade).toBe('object');
         expect(typeof layers.overlays.fire).toBe('object');
     });
-    
+
+    it('should add and remove markers in overlays in whatch', function() {
+        // Check for a marker remove in a layer group
+        angular.extend($rootScope, {
+            layers: {
+                baselayers: {
+                    osm: {
+                        name: 'OpenStreetMap',
+                        type: 'xyz',
+                        url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                        layerOptions: {
+                            subdomains: ['a', 'b', 'c'],
+                            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                            continuousWorld: true
+                        }
+                    }                   
+                },
+                overlays: {
+                    cars: {
+                        name: 'cars',
+                        type: 'group',
+                        visible: true
+                    },
+                    trucks: {
+                        name: 'trucks',
+                        type: 'group',
+                        visible: false
+                    }
+                }
+            },
+            markers: {
+                m1: {
+                    lat: 1.2,
+                    lng: 0.3,
+                    layer: 'cars'
+                }
+            }
+        });
+        var element = angular.element('<leaflet layers="layers" markers="markers" testing="testing"></leaflet>');
+        var elementTest = $compile(element)($rootScope);
+        var layers = elementTest.scope().leaflet.layers;
+        var map = elementTest.scope().leaflet.map;
+        var markers = elementTest.scope().leaflet.markers;
+        expect(map.hasLayer(markers.m1)).toBe(true);
+        expect(layers.overlays.cars.hasLayer(markers.m1)).toBe(true);
+        // remove marker information
+        $rootScope.markers.m1 = {};
+        $rootScope.$digest();
+        layers = elementTest.scope().leaflet.layers;
+        map = elementTest.scope().leaflet.map;
+        markers = elementTest.scope().leaflet.markers;
+        expect(map.hasLayer(markers.m1)).toBe(false);
+        expect(layers.overlays.cars.hasLayer(markers.m1)).toBe(false);
+        // null the marker information
+        $rootScope.markers.m1 = {
+                lat: 1.2,
+                lng: 0.3,
+                layer: 'cars'
+        };
+        $rootScope.$digest();
+        layers = elementTest.scope().leaflet.layers;
+        map = elementTest.scope().leaflet.map;
+        markers = elementTest.scope().leaflet.markers;
+        expect(map.hasLayer(markers.m1)).toBe(true);
+        expect(layers.overlays.cars.hasLayer(markers.m1)).toBe(true);
+        $rootScope.markers.m1 = null;
+        $rootScope.$digest();
+        layers = elementTest.scope().leaflet.layers;
+        map = elementTest.scope().leaflet.map;
+        markers = elementTest.scope().leaflet.markers;
+        expect(map.hasLayer(markers.m1)).toBe(false);
+        expect(layers.overlays.cars.hasLayer(markers.m1)).toBe(false);        
+        // delete the marker 
+        delete $rootScope.markers.m1;
+        $rootScope.$digest();
+        layers = elementTest.scope().leaflet.layers;
+        map = elementTest.scope().leaflet.map;
+        markers = elementTest.scope().leaflet.markers;
+        expect(map.hasLayer(markers.m1)).toBe(false);
+        expect(layers.overlays.cars.hasLayer(markers.m1)).toBe(false);
+        // delete the marker layer
+        $rootScope.markers.m1 = {
+                lat: 1.2,
+                lng: 0.3,
+                layer: 'cars'
+        };
+        $rootScope.$digest();
+        $rootScope.markers.m1 = {
+                lat: 1.2,
+                lng: 0.3
+        };
+        $rootScope.$digest();
+        layers = elementTest.scope().leaflet.layers;
+        map = elementTest.scope().leaflet.map;
+        markers = elementTest.scope().leaflet.markers;
+        expect(map.hasLayer(markers.m1)).toBe(true);
+        expect(layers.overlays.cars.hasLayer(markers.m1)).toBe(false);
+        expect(layers.overlays.trucks.hasLayer(markers.m1)).toBe(false);
+        // Then add to a not visivle layer
+        $rootScope.markers.m1 = {
+                lat: 1.2,
+                lng: 0.3,
+                layer: 'trucks'
+        };
+        $rootScope.$digest();
+        layers = elementTest.scope().leaflet.layers;
+        map = elementTest.scope().leaflet.map;
+        markers = elementTest.scope().leaflet.markers;
+        expect(map.hasLayer(markers.m1)).toBe(false);
+        expect(layers.overlays.cars.hasLayer(markers.m1)).toBe(false);
+        expect(layers.overlays.trucks.hasLayer(markers.m1)).toBe(true);
+        // Check for a marker remove in a layer group
+        angular.extend($rootScope, {
+            layers: {
+                baselayers: {
+                    osm: {
+                        name: 'OpenStreetMap',
+                        type: 'xyz',
+                        url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                        layerOptions: {
+                            subdomains: ['a', 'b', 'c'],
+                            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                            continuousWorld: true
+                        }
+                    }                   
+                },
+                overlays: {
+                    cars: {
+                        name: 'cars',
+                        type: 'group',
+                        visible: true
+                    },
+                    trucks: {
+                        name: 'trucks',
+                        type: 'group',
+                        visible: false
+                    }
+                }
+            },
+            markers: {
+                m1: {
+                    lat: 2.2,
+                    lng: 0.3,
+                    layer: 'cars'
+                }
+            }
+        });
+        element = angular.element('<leaflet layers="layers" markers="markers" testing="testing"></leaflet>');
+        elementTest = $compile(element)($rootScope);
+        $rootScope.$digest();
+        layers = elementTest.scope().leaflet.layers;
+        map = elementTest.scope().leaflet.map;
+        markers = elementTest.scope().leaflet.markers;
+        expect(map.hasLayer(markers.m1)).toBe(true);
+        expect(layers.overlays.cars.hasLayer(markers.m1)).toBe(true);
+        expect(layers.overlays.trucks.hasLayer(markers.m1)).toBe(false);
+        // Change layer
+        $rootScope.markers.m1 = {
+            lat: 3.2,
+            lng: 0.3,
+            layer: 'trucks'
+        };
+        $rootScope.$digest();
+        layers = elementTest.scope().leaflet.layers;
+        map = elementTest.scope().leaflet.map;
+        markers = elementTest.scope().leaflet.markers;
+        expect(map.hasLayer(markers.m1)).toBe(false);
+        expect(layers.overlays.cars.hasLayer(markers.m1)).toBe(false);
+        expect(layers.overlays.trucks.hasLayer(markers.m1)).toBe(true);
+    });
+
     
     // Marker
     it('should create main marker on the map', function() {
