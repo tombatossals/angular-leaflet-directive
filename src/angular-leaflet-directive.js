@@ -372,8 +372,8 @@ leafletDirective.directive('leaflet', [
                 if (layerDefinition.type === undefined || layerDefinition.type === null || typeof layerDefinition.type !== 'string') {
                     $log.error('[AngularJS - Leaflet] A base layer must have a type');
                     return null;
-                } else if (layerDefinition.type !== 'xyz' && layerDefinition.type !== 'wms') {
-                    $log.error('[AngularJS - Leaflet] A base layer must have a valid type: "tiles-xyz, "');
+                } else if (layerDefinition.type !== 'xyz' && layerDefinition.type !== 'wms' && layerDefinition.type !== 'group') {
+                    $log.error('[AngularJS - Leaflet] A layer must have a valid type: "xyz, wms, group"');
                     return null;
                 }
                 if (layerDefinition.type === 'xyz' || layerDefinition.type === 'wms') {
@@ -410,6 +410,9 @@ leafletDirective.directive('leaflet', [
                 default:
                     layer = null;
                 }
+
+                //TODO Add $watch to the layer properties
+
                 return layer;
             }
 
@@ -426,10 +429,6 @@ leafletDirective.directive('leaflet', [
             function createGroupLayer(url, options) {
                 var layer = L.layerGroup();
                 return layer;
-            }
-
-            function createOverlayLayer() {
-
             }
 
             function setupTiles() {
@@ -628,39 +627,93 @@ leafletDirective.directive('leaflet', [
 
             function setupMarkers() {
                 var markers = {};
-                $scope.leaflet.markers = !!attrs.testing ? markers : str_inspect_hint;
+
                 if (!$scope.markers) {
                     return;
                 }
 
                 for (var name in $scope.markers) {
-                    markers[name] = createMarker(
-                            'markers.'+name, $scope.markers[name], map);
+                    var newMarker = createMarker('markers.'+name, $scope.markers[name], map);
+                    if (newMarker !== null) {
+                        markers[name] = newMarker;
+                    }
                 }
 
                 $scope.$watch('markers', function(newMarkers) {
                     // Delete markers from the array
                     for (var name in markers) {
                         if (newMarkers[name] === undefined) {
+                            // First we check if the marker is in a layer group
+                            markers[name].closePopup();
+                            // There is no easy way to know if a marker is added to a layer, so we search for it
+                            // if there are overlays
+                            if (layers !== undefined) {
+                                if (layers.overlays !== undefined) {
+                                    for (var key in layers.overlays) {
+                                        if (layers.overlays[key] instanceof L.LayerGroup) {
+                                            if (layers.overlays[key].hasLayer(markers[name])) {
+                                                layers.overlays[key].removeLayer(markers[name]);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            // Remove the marker from the map
+                            map.removeLayer(markers[name]);
+                            // TODO: If we remove the marker we don't have to clear the $watches?
+                            // Delete the marker
                             delete markers[name];
                         }
                     }
                     // add new markers
                     for (var new_name in newMarkers) {
                         if (markers[new_name] === undefined) {
-                            markers[new_name] = createMarker(
-                                'markers.'+new_name, newMarkers[new_name], map);
+                            var newMarker = createMarker('markers.'+new_name, $scope.markers[new_name], map);
+                            if (newMarker !== null) {
+                                markers[new_name] = newMarker;
+                            }
                         }
                     }
                 }, true);
+                $scope.leaflet.markers = !!attrs.testing ? markers : str_inspect_hint;
             }
 
             function createMarker(scope_watch_name, marker_data, map) {
                 var marker = buildMarker(marker_data);
-                map.addLayer(marker);
 
-                if (marker_data.focus === true) {
-                    marker.openPopup();
+                // Marker belongs to a layer group?
+                if (marker_data.layer === undefined) {
+                    // We do not have a layer attr, so the marker goes to the map layer
+                    map.addLayer(marker);
+                    if (marker_data.focus === true) {
+                        marker.openPopup();
+                    }
+                } else if (typeof marker_data.layer === 'string') {
+                    // There is a layer name so we will try to add it to the layer, first does the layer exists
+                    if (layers.overlays[marker_data.layer] !== undefined) {
+                        // Is a group layer?
+                        var layerGroup = layers.overlays[marker_data.layer];
+                        if (layerGroup instanceof L.LayerGroup) {
+                            // The marker goes to a correct layer group, so first of all we add it
+                            layerGroup.addLayer(marker);
+                            // The marker is automatically added to the map depending on the visibility
+                            // of the layer, so we only have to open the popup if the marker is in the map
+                            if (map.hasLayer(marker)) {
+                                if (marker_data.focus === true) {
+                                    marker.openPopup();
+                                }
+                            }
+                        } else {
+                            $log.error('[AngularJS - Leaflet] A marker can only be added to a layer of type "group"');
+                            return null;
+                        }
+                    } else {
+                        $log.error('[AngularJS - Leaflet] You must use a name of an existing layer');
+                        return null;
+                    }
+                } else {
+                    $log.error('[AngularJS - Leaflet] A layername must be a string');
+                    return null;
                 }
 
                 function genDispatchEventCB(eventName) {
@@ -721,12 +774,90 @@ leafletDirective.directive('leaflet', [
 
                 var clearWatch = $scope.$watch(scope_watch_name, function(data, old_data) {
                     if (!data) {
+                        marker.closePopup();
+                        // There is no easy way to know if a marker is added to a layer, so we search for it
+                        // if there are overlays
+                        if (layers !== undefined) {
+                            if (layers.overlays !== undefined) {
+                                for (var key in layers.overlays) {
+                                    if (layers.overlays[key] instanceof L.LayerGroup) {
+                                        if (layers.overlays[key].hasLayer(marker)) {
+                                            layers.overlays[key].removeLayer(marker);
+                                        }
+                                    }
+                                }
+                            }
+                        }
                         map.removeLayer(marker);
                         clearWatch();
                         return;
                     }
 
                     if (old_data) {
+
+                        // Update the layer group if present or move it to the map if not
+                        if (data.layer === undefined || data.layer === null || typeof data.layer !== 'string') {
+                            // There is no layer information, we move the marker to the map if it was in a layer group
+                            if (old_data.layer !== undefined && old_data.layer !== null && typeof old_data.layer === 'string') {
+                                // Remove from the layer group that is supposed to be
+                                if (layers.overlays[old_data.layer] !== undefined) {
+                                    if (layers.overlays[old_data.layer].hasLayer(marker)) {
+                                        layers.overlays[old_data.layer].removeLayer(marker);
+                                        // If the marker had a popup we close it because we do not know if the popup in on the map
+                                        // or on the layer group. This is ineficient, but as we can't check if the popup is opened
+                                        // in Leaflet we can't determine if it has to be open in the new layer. So removing the
+                                        // layer group of a marker always closes the popup.
+                                        // TODO: Improve popup behaviour when removing a marker from a layer group
+                                        marker.closePopup();
+                                    }
+                                }
+                                // Test if it is not on the map and add it
+                                if (!map.hasLayer(marker)) {
+                                    map.addLayer(marker);
+                                }
+                            }
+                        } else if (old_data.layer === undefined || old_data.layer === null || old_data.layer !== data.layer) {
+                            // If it was on a layer group we have to remove it
+                            if (typeof old_data.layer === 'string') {
+                                if (layers.overlays[old_data.layer] !== undefined) {
+                                    if (layers.overlays[old_data.layer].hasLayer(marker)) {
+                                        layers.overlays[old_data.layer].removeLayer(marker);
+                                    }
+                                }
+                            }
+                            // If the marker had a popup we close it because we do not know how the new layer
+                            // will be. This is ineficient, but as we can't check if the opoup is opened in Leaflet
+                            // we can't determine if it has to be open in the new layer. So changing the layer group
+                            // of a marker always closes the popup.
+                            // TODO: Improve popup behaviour when changing a marker from a layer group
+                            marker.closePopup();
+                            // Remove it from the map in case the new layer is hidden or there is an error in the new layer
+                            if (map.hasLayer(marker)) {
+                                map.removeLayer(marker);
+                            }
+                            // The data.layer is defined so we add the marker to the layer if it is different from the old data
+                            if (layers.overlays[data.layer] !== undefined) {
+                                // Is a group layer?
+                                var layerGroup = layers.overlays[data.layer];
+                                if (layerGroup instanceof L.LayerGroup) {
+                                    // The marker goes to a correct layer group, so first of all we add it
+                                    layerGroup.addLayer(marker);
+                                    // The marker is automatically added to the map depending on the visibility
+                                    // of the layer, so we only have to open the popup if the marker is in the map
+                                    if (map.hasLayer(marker)) {
+                                        if (data.focus === true) {
+                                            marker.openPopup();
+                                        }
+                                    }
+                                } else {
+                                    $log.error('[AngularJS - Leaflet] A marker can only be added to a layer of type "group"');
+                                }
+                            } else {
+                                $log.error('[AngularJS - Leaflet] You must use a name of an existing layer');
+                            }
+                        } else {
+                            // NEver has to enter here...
+                        }
 
                         // Update the draggable property
                         if (data.draggable === undefined || data.draggable === null || data.draggable !== true) {
@@ -777,6 +908,20 @@ leafletDirective.directive('leaflet', [
                         // Update the lat-lng property (always present in marker properties)
                         if (data.lat === undefined || data.lat === null || isNaN(data.lat) || typeof data.lat !== 'number' || data.lng === undefined || data.lng === null || isNaN(data.lng) || typeof data.lng !== 'number') {
                             $log.warn('There are problems with lat-lng data, please verify your marker model');
+                            // Remove the marker from the layers and map if it is not valid
+                            if (layers !== undefined) {
+                                if (layers.overlays !== undefined) {
+                                    for (var key in layers.overlays) {
+                                        if (layers.overlays[key] instanceof L.LayerGroup) {
+                                            if (layers.overlays[key].hasLayer(marker)) {
+                                                layers.overlays[key].removeLayer(marker);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            map.removeLayer(marker);
+
                         } else {
                             var cur_latlng = marker.getLatLng();
                             // On dragend event, scope will be updated, which
