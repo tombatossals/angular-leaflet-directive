@@ -952,10 +952,10 @@ leafletDirective.directive('leaflet', [
                             // Remove the marker from the layers and map if it is not valid
                             if (layers !== undefined) {
                                 if (layers.overlays !== undefined) {
-                                    for (var olkey in layers.overlays) {
-                                        if (layers.overlays[key] instanceof L.LayerGroup) {
-                                            if (layers.overlays[key].hasLayer(marker)) {
-                                                layers.overlays[key].removeLayer(marker);
+                                    for (var olname in layers.overlays) {
+                                        if (layers.overlays[olname] instanceof L.LayerGroup) {
+                                            if (layers.overlays[olname].hasLayer(marker)) {
+                                                layers.overlays[olname].removeLayer(marker);
                                             }
                                         }
                                     }
