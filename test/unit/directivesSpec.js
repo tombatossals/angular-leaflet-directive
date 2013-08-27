@@ -628,7 +628,7 @@ describe('Directive: leaflet', function() {
         element = angular.element('<leaflet layers="layers" markers="markers" testing="testing"></leaflet>');
         element = $compile(element)($rootScope);
         layers = element.scope().leaflet.layers;
-        var markers = element.scope().leaflet.markers;
+        markers = element.scope().leaflet.markers;
         map = element.scope().leaflet.map;
         expect(Object.keys(markers).length).toEqual(1);
         expect(markers.m1 instanceof L.Marker).toBe(true);
