@@ -807,7 +807,7 @@ leafletDirective.directive('leaflet', [
                                         // in Leaflet we can't determine if it has to be open in the new layer. So removing the 
                                         // layer group of a marker always closes the popup.
                                         // TODO: Improve popup behaviour when removing a marker from a layer group
-                                        marker.closePopup()
+                                        marker.closePopup();
                                     }
                                 }
                                 // Test if it is not on the map and add it
@@ -910,10 +910,10 @@ leafletDirective.directive('leaflet', [
                             // Remove the marker from the layers and map if it is not valid
                             if (layers !== undefined) {
                                 if (layers.overlays !== undefined) {
-                                    for (var key in layers.overlays) {
-                                        if (layers.overlays[key] instanceof L.LayerGroup) {
-                                            if (layers.overlays[key].hasLayer(marker)) {
-                                                layers.overlays[key].removeLayer(marker);
+                                    for (var olname in layers.overlays) {
+                                        if (layers.overlays[olname] instanceof L.LayerGroup) {
+                                            if (layers.overlays[olname].hasLayer(marker)) {
+                                                layers.overlays[olname].removeLayer(marker);
                                             }
                                         }
                                     }
