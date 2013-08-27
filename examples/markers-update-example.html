@@ -2,8 +2,10 @@
   <head>
     <script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet-src.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+    <script src="./plugins/awesome-markers/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="./plugins/awesome-markers/leaflet.awesome-markers.css">
     <!--<script src="../dist/angular-leaflet-directive.min.js"></script>-->
-    <script src="../dist/angular-leaflet-directive.min.js"></script>
+    <script src="../src/angular-leaflet-directive.js"></script>
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" />
     <!--[if lte IE 8]>
         <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.ie.css" />
@@ -33,7 +35,11 @@
                     shadowSize:   [50, 64],
                     iconAnchor:   [22, 94],
                     shadowAnchor: [4, 62]
-                }
+                },
+                iconC: new L.AwesomeMarkers.icon({
+                    icon: 'cofee',
+                    color: 'red'
+                })
             });
             $scope.$on('leafletDirectiveMarker.click', function(e, args) {
                 // Args will contain the marker name and other relevant information
@@ -47,6 +53,10 @@
                 // Args will contain the marker name and other relevant information
                 console.log("Leaflet Popup Close");
             });
+            $scope.markers.m1.icon = new L.AwesomeMarkers.icon({
+                icon: 'cofee',
+                color: 'red'
+            })
         };
     </script>
   </head>
@@ -74,7 +84,8 @@
       <br/>
       Icon:
           <input type="radio" ng-model="markers.m1.icon" ng-value="iconA" name="icon"> Default
-          <input type="radio" ng-model="markers.m1.icon" ng-value="iconB" name="icon"> Other
+          <input type="radio" ng-model="markers.m1.icon" ng-value="iconB" name="icon"> Other (Leaflet Icon)
+          <input type="radio" ng-model="markers.m1.icon" ng-value="iconC" name="icon"> Other (AwesomeMarker Icon)
           <input type="radio" ng-model="markers.m1.icon" ng-value="'error'" name="icon"> Not a icon
           <input type="radio" ng-model="markers.m1.icon" ng-value="null" name="icon"> null value
   </body>
