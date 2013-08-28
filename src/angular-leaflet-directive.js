@@ -33,7 +33,7 @@ leafletDirective.directive('leaflet', [
     };
 
     // Default leaflet icon object used in all markers as a default
-    var DefaultLeafletIcon = L.Icon.extend({
+    var LeafletIcon = L.Icon.extend({
         options: {
             iconUrl: defaults.icon.url,
             iconRetinaUrl: defaults.icon.retinaUrl,
@@ -47,6 +47,52 @@ leafletDirective.directive('leaflet', [
         }
     });
 
+    var Helpers = {
+        AwesomeMarkersPlugin: {
+            isLoaded: function() {
+                if (L.AwesomeMarkers !== undefined) {
+                    return (L.AwesomeMarkers.Icon !== undefined);
+                } else {
+                    return false;
+                }
+            },
+            is: function(icon) {
+                if (!this.isLoaded()) {
+                    return false;
+                }
+                if (icon.options !== undefined) {
+                    return icon.options.className === 'awesome-marker';                    
+                } else {
+                    return false;
+                }
+            },
+            equal: function (iconA, iconB) {
+                if (!this.isLoaded) {
+                    $log.error('[AngularJS - Leaflet] AwesomeMarkers Plugin not Loaded');
+                    return false;
+                }
+                if (this.is(iconA) && this.is(iconB)) {
+                    var a = (iconA.options.icon === iconB.options.icon && 
+                            iconA.options.iconColor === iconB.options.iconColor &&
+                            iconA.options.color === iconB.options.color &&
+                            iconA.options.iconSize[0] === iconB.options.iconSize[0] &&
+                            iconA.options.iconSize[1] === iconB.options.iconSize[1] &&
+                            iconA.options.iconAnchor[0] === iconB.options.iconAnchor[0] &&
+                            iconA.options.iconAnchor[1] === iconB.options.iconAnchor[1] &&
+                            iconA.options.popupAnchor[0] === iconB.options.popupAnchor[0] &&
+                            iconA.options.popupAnchor[1] === iconB.options.popupAnchor[1] &&
+                            iconA.options.shadowAnchor[0] === iconB.options.shadowAnchor[0] &&
+                            iconA.options.shadowAnchor[1] === iconB.options.shadowAnchor[1] &&
+                            iconA.options.shadowSize[0] === iconB.options.shadowSize[0] &&
+                            iconA.options.shadowSize[1] === iconB.options.shadowSize[1]
+                            );
+                    return a;
+                } else {
+                    return false;
+                }
+            }
+        }
+    };
 
     var str_inspect_hint = 'Add testing="testing" to <leaflet> tag to inspect this object';
 
@@ -943,15 +989,48 @@ leafletDirective.directive('leaflet', [
                             // If there is no icon property or it's not an object
                             if (old_data.icon !== undefined && old_data.icon !== null && typeof old_data.icon === 'object') {
                                 // If there was an icon before restore to the default
-                                marker.setIcon(new DefaultLeafletIcon());
+                                marker.setIcon(new LeafletIcon());
                             }
                         } else if (old_data.icon === undefined || old_data.icon === null || typeof old_data.icon !== 'object') {
                             // The data.icon exists so we create a new icon if there wasn't an icon before
-                            marker.setIcon(new DefaultLeafletIcon(data.icon));
+                            if (Helpers.AwesomeMarkersPlugin.is(data.icon)) {
+                                // This icon is a L.AwesomeMarkers.Icon so it is using the AwesomeMarker PlugIn
+                                var dragCreate = marker.dragging.enabled();
+                                marker.setIcon(data.icon);
+                                // As the new icon creates a new DOM object some elements, as drag, are reseted.
+                                if (dragCreate) {
+                                    marker.dragging.enable();
+                                }
+                            } else {
+                                // This icon is a Leaflet.Icon
+                                var dragCreateDefault = marker.dragging.enabled();
+                                marker.setIcon(new LeafletIcon(data.icon));
+                                if (dragCreateDefault) {
+                                    marker.dragging.enable();
+                                }
+                            }
                         } else {
-                            // There is an icon and there was an icon so if they are different we create a new icon
-                            if (JSON.stringify(data.icon) !== JSON.stringify(old_data.icon)) {
-                                marker.setIcon(new DefaultLeafletIcon(data.icon));
+                            if (Helpers.AwesomeMarkersPlugin.is(data.icon)) {
+                                // This icon is a L.AwesomeMarkers.Icon so it is using the AwesomeMarker PlugIn
+                                var a = Helpers.AwesomeMarkersPlugin.equal(data.icon, old_data.icon);
+                                if (!Helpers.AwesomeMarkersPlugin.equal(data.icon, old_data.icon)) {
+                                    var dragUpdate = marker.dragging.enabled();
+                                    marker.setIcon(data.icon);
+                                    // As the new icon creates a new DOM object some elements, as drag, are reseted.
+                                    if (dragUpdate) {
+                                        marker.dragging.enable();
+                                    }
+                                }
+                            } else {
+                                // This icon is a Leaflet.Icon
+                                // There is an icon and there was an icon so if they are different we create a new icon
+                                if (JSON.stringify(data.icon) !== JSON.stringify(old_data.icon)) {
+                                    var dragUpdateDefault = marker.dragging.enabled();
+                                    marker.setIcon(new LeafletIcon(data.icon));
+                                    if (dragUpdateDefault) {
+                                        marker.dragging.enable();
+                                    }
+                                }                                
                             }
                         }
                     }
@@ -964,7 +1043,7 @@ leafletDirective.directive('leaflet', [
                 if (data.icon) {
                     micon = data.icon;
                 } else {
-                    micon = new DefaultLeafletIcon();
+                    micon = new LeafletIcon();
                 }
                 var marker = new L.marker(data,
                     {
