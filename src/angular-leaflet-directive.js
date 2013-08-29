@@ -29,6 +29,11 @@ leafletDirective.directive('leaflet', [
             weight: 10,
             opacity: 1,
             color: '#0000ff'
+        },
+        center: {
+            lat: 0,
+            lng: 0,
+            zoom: 10
         }
     };
 
@@ -141,7 +146,7 @@ leafletDirective.directive('leaflet', [
             });
             var layers = null;
 
-            map.setView([0, 0], 1);
+            map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
             $scope.leaflet.map = !!attrs.testing ? map : str_inspect_hint;
 
             setupControls();
@@ -582,7 +587,7 @@ leafletDirective.directive('leaflet', [
             function setupCenter() {
                 if (!$scope.center) {
                     $log.warn("[AngularJS - Leaflet] 'center' is undefined in the current scope, did you forget to initialize it?");
-                    map.setView( [ 0, 0 ], 1);
+                    map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
                     return;
                 } else {
                     if ($scope.center.lat !== undefined && $scope.center.lat !== null && typeof $scope.center.lat === 'number' && $scope.center.lng !== undefined && $scope.center.lng !== null && typeof $scope.center.lng === 'number' && $scope.center.zoom !== undefined && $scope.center.zoom !== null && typeof $scope.center.zoom === 'number') {
@@ -591,7 +596,7 @@ leafletDirective.directive('leaflet', [
                         map.locate({ setView: true, maxZoom: $scope.leaflet.maxZoom });
                     } else {
                         $log.warn("[AngularJS - Leaflet] 'center' is incorrect");
-                        map.setView( [ 0, 0 ], 1);
+                        map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
                     }
                 }
 
@@ -604,7 +609,7 @@ leafletDirective.directive('leaflet', [
                 $scope.$watch("center", function(center, old_center) {
                     if (!center) {
                         $log.warn("[AngularJS - Leaflet] 'center' have been removed?");
-                        map.setView( [ 0, 0 ], 1);
+                        map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
                         return;
                     }
 
@@ -629,7 +634,7 @@ leafletDirective.directive('leaflet', [
                             } else if (center.autoDiscover === undefined || center.autoDiscover === null) {
                                 // Some problem with actual center? No center and no autodiscover
                                 $log.warn("[AngularJS - Leaflet] 'center' is incorrect");
-                                map.setView( [ 0, 0 ], 1);
+                                map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
                             }
                         }
                     }

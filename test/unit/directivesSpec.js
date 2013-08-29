@@ -53,12 +53,12 @@ describe('Directive: leaflet', function() {
         expect(tileLayerObj.options.opacity).toEqual(0.8);
     });
 
-    it('should have default {[0, 0], 1} parameters on the map if not specified', function() {
+    it('should have default {[0, 0], 10} parameters on the map if not specified', function() {
         angular.extend($rootScope, {});
         var element = angular.element('<leaflet center="center" testing="testing"></leaflet>');
         element = $compile(element)($rootScope);
         var map = element.scope().leaflet.map;
-        expect(map.getZoom()).toEqual(1);
+        expect(map.getZoom()).toEqual(10);
         expect(map.getCenter().lat).toEqual(0);
         expect(map.getCenter().lng).toEqual(0);
     });
