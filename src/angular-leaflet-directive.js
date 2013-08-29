@@ -580,10 +580,19 @@ leafletDirective.directive('leaflet', [
             }
 
             function setupCenter() {
-                if (!attrs.center) {
+                if (!$scope.center) {
                     $log.warn("[AngularJS - Leaflet] 'center' is undefined in the current scope, did you forget to initialize it?");
                     map.setView( [ 0, 0 ], 1);
                     return;
+                } else {
+                    if ($scope.center.lat !== undefined && $scope.center.lat !== null && typeof $scope.center.lat === 'number' && $scope.center.lng !== undefined && $scope.center.lng !== null && typeof $scope.center.lng === 'number' && $scope.center.zoom !== undefined && $scope.center.zoom !== null && typeof $scope.center.zoom === 'number') {
+                        map.setView([$scope.center.lat, $scope.center.lng], $scope.center.zoom );
+                    } else if (attrs.center.autoDiscover === true ) {
+                        map.locate({ setView: true, maxZoom: $scope.leaflet.maxZoom });
+                    } else {
+                        $log.warn("[AngularJS - Leaflet] 'center' is incorrect");
+                        map.setView( [ 0, 0 ], 1);
+                    }
                 }
 
                 var centerModel = {
@@ -592,12 +601,36 @@ leafletDirective.directive('leaflet', [
                     zoom: $parse("center.zoom")
                 };
 
-                $scope.$watch("center", function(center /*, oldValue */) {
-                    if (center) {
-                        if (center.lat !== undefined && center.lng !== undefined && center.zoom !== undefined) {
-                            map.setView( [center.lat, center.lng], center.zoom );
-                        } else if (center.autoDiscover === true) {
-                            map.locate({ setView: true, maxZoom: $scope.leaflet.maxZoom });
+                $scope.$watch("center", function(center, old_center) {
+                    if (!center) {
+                        $log.warn("[AngularJS - Leaflet] 'center' have been removed?");
+                        map.setView( [ 0, 0 ], 1);
+                        return;
+                    }
+                    
+                    if (old_center) {
+                        if (center.lat !== undefined && center.lat !== null && typeof center.lat === 'number' && center.lng !== undefined && center.lng !== null && typeof center.lng === 'number' && center.zoom !== undefined && center.zoom !== null && typeof center.zoom === 'number') {
+                            // We have a center 
+                            if (old_center.lat !== undefined && old_center.lat !== null && typeof old_center.lat === 'number' && old_center.lng !== undefined && old_center.lng !== null &&  typeof old_center.lng === 'number' && old_center.zoom !== undefined && old_center.zoom !== null &&  typeof old_center.zoom === 'number') {
+                                // We also have a correct old center
+                                if (center.lat !== old_center.lat || center.lng !== old_center.lng || center.zoom !== old_center.zoom) {
+                                    // Update if they are different
+                                    map.setView([center.lat, center.lng], center.zoom );
+                                }
+                            } else {
+                                // We didn't have a correct old center so directly update
+                                map.setView([center.lat, center.lng], center.zoom );
+                            }
+                        } else {
+                            // We don't have a correct center
+                            if (center.autoDiscover === true && old_center.autoDiscover !== true) {
+                                // We have an autodiscover and different from the old, so update the center
+                                map.locate({ setView: true, maxZoom: $scope.leaflet.maxZoom });
+                            } else if (center.autoDiscover === undefined || center.autoDiscover === null) {
+                                // Some problem with actual center? No center and no autodiscover
+                                $log.warn("[AngularJS - Leaflet] 'center' is incorrect");
+                                map.setView( [ 0, 0 ], 1);
+                            }
                         }
                     }
                 }, true);
@@ -1051,9 +1084,9 @@ leafletDirective.directive('leaflet', [
                         draggable: data.draggable ? true : false
                     }
                 );
-                if (data.title) {
+                /*if (data.title) {
                     marker.options.title(data.title);
-                }
+                }*/
                 if (data.message) {
                     marker.bindPopup(data.message);
                 }
