@@ -1052,7 +1052,7 @@ leafletDirective.directive('leaflet', [
                     }
                 );
                 if (data.title) {
-                    marker.options.title(data.title);
+                    marker.options.title = data.title;
                 }
                 if (data.message) {
                     marker.bindPopup(data.message);
