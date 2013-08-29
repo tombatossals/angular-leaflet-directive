@@ -1051,6 +1051,9 @@ leafletDirective.directive('leaflet', [
                         draggable: data.draggable ? true : false
                     }
                 );
+                if (data.title) {
+                    marker.options.title(data.title);
+                }
                 if (data.message) {
                     marker.bindPopup(data.message);
                 }
