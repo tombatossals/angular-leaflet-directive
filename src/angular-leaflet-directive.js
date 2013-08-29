@@ -141,7 +141,7 @@ leafletDirective.directive('leaflet', [
             });
             var layers = null;
 
-            map.setView([0, 0], 10);
+            map.setView([0, 0], 1);
             $scope.leaflet.map = !!attrs.testing ? map : str_inspect_hint;
 
             setupControls();
