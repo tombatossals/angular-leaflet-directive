@@ -61,7 +61,7 @@ leafletDirective.directive('leaflet', [
                     return false;
                 }
                 if (icon.options !== undefined) {
-                    return icon.options.className === 'awesome-marker';                    
+                    return icon.options.className === 'awesome-marker';
                 } else {
                     return false;
                 }
@@ -72,7 +72,7 @@ leafletDirective.directive('leaflet', [
                     return false;
                 }
                 if (this.is(iconA) && this.is(iconB)) {
-                    var a = (iconA.options.icon === iconB.options.icon && 
+                    var a = (iconA.options.icon === iconB.options.icon &&
                             iconA.options.iconColor === iconB.options.iconColor &&
                             iconA.options.color === iconB.options.color &&
                             iconA.options.iconSize[0] === iconB.options.iconSize[0] &&
@@ -607,10 +607,10 @@ leafletDirective.directive('leaflet', [
                         map.setView( [ 0, 0 ], 1);
                         return;
                     }
-                    
+
                     if (old_center) {
                         if (center.lat !== undefined && center.lat !== null && typeof center.lat === 'number' && center.lng !== undefined && center.lng !== null && typeof center.lng === 'number' && center.zoom !== undefined && center.zoom !== null && typeof center.zoom === 'number') {
-                            // We have a center 
+                            // We have a center
                             if (old_center.lat !== undefined && old_center.lat !== null && typeof old_center.lat === 'number' && old_center.lng !== undefined && old_center.lng !== null &&  typeof old_center.lng === 'number' && old_center.zoom !== undefined && old_center.zoom !== null &&  typeof old_center.zoom === 'number') {
                                 // We also have a correct old center
                                 if (center.lat !== old_center.lat || center.lng !== old_center.lng || center.zoom !== old_center.zoom) {
@@ -1063,7 +1063,7 @@ leafletDirective.directive('leaflet', [
                                     if (dragUpdateDefault) {
                                         marker.dragging.enable();
                                     }
-                                }                                
+                                }
                             }
                         }
                     }
@@ -1078,15 +1078,14 @@ leafletDirective.directive('leaflet', [
                 } else {
                     micon = new LeafletIcon();
                 }
-                var marker = new L.marker(data,
-                    {
-                        icon: micon,
-                        draggable: data.draggable ? true : false
-                    }
-                );
-                /*if (data.title) {
-                    marker.options.title(data.title);
-                }*/
+                var moptions = {
+                    icon: micon,
+                    draggable: data.draggable ? true : false
+                };
+                if (data.title) {
+                    moptions.title = data.title;
+                }
+                var marker = new L.marker(data, moptions);
                 if (data.message) {
                     marker.bindPopup(data.message);
                 }
