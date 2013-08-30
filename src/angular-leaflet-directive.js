@@ -770,7 +770,7 @@ leafletDirective.directive('leaflet', [
                             markers[name].closePopup();
                             // There is no easy way to know if a marker is added to a layer, so we search for it
                             // if there are overlays
-                            if (layers !== undefined) {
+                            if (layers !== undefined && layers !== null) {
                                 if (layers.overlays !== undefined) {
                                     for (var key in layers.overlays) {
                                         if (layers.overlays[key] instanceof L.LayerGroup) {
@@ -900,7 +900,7 @@ leafletDirective.directive('leaflet', [
                         marker.closePopup();
                         // There is no easy way to know if a marker is added to a layer, so we search for it
                         // if there are overlays
-                        if (layers !== undefined) {
+                        if (layers !== undefined && layers !== null) {
                             if (layers.overlays !== undefined) {
                                 for (var key in layers.overlays) {
                                     if (layers.overlays[key] instanceof L.LayerGroup) {
