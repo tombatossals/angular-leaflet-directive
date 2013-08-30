@@ -1,5 +1,9 @@
 'use strict';
 
+/*jshint -W117 */
+/*jshint globalstrict: true*/
+/* jasmine specs for directives go here */
+
 /* http://docs.angularjs.org/guide/dev_guide.e2e-testing */
 
 describe('Test the directive from the examples', function() {

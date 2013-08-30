@@ -199,7 +199,7 @@ describe('Directive: leaflet', function() {
         expect(Object.keys(layers.baselayers).length).toEqual(2);
         map = element.scope().leaflet.map;
         expect(map.hasLayer(layers.baselayers.cycle)).toBe(true);
-        expect(map.hasLayer(layers.baselayers.osm)).toBe(false);       
+        expect(map.hasLayer(layers.baselayers.osm)).toBe(false);
         angular.extend($rootScope, {
             layers: {
                 baselayers: {
@@ -309,7 +309,7 @@ describe('Directive: leaflet', function() {
         element = angular.element('<leaflet layers="layers" testing="testing"></leaflet>');
         element = $compile(element)($rootScope);
         layers = element.scope().leaflet.layers;
-        expect(Object.keys(layers.baselayers).length).toEqual(0);        
+        expect(Object.keys(layers.baselayers).length).toEqual(0);
     });
 
     it('should add and remove layers in whatch', function() {
@@ -355,7 +355,7 @@ describe('Directive: leaflet', function() {
             name: 'Cloudmade Night Commander',
             type: 'xyz',
             url: 'http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png',
-            layerParams: { 
+            layerParams: {
                 key: '007b9471b4c74da4a6ec7ff43552b16f',
                 styleId: 999
             },
@@ -391,7 +391,7 @@ describe('Directive: leaflet', function() {
                             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
                             continuousWorld: true
                         }
-                    }                  
+                    }
                 }
             }
         });
@@ -414,7 +414,7 @@ describe('Directive: leaflet', function() {
                             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
                             continuousWorld: true
                         }
-                    }                   
+                    }
                 },
                 overlays: {}
             }
@@ -438,7 +438,7 @@ describe('Directive: leaflet', function() {
                             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
                             continuousWorld: true
                         }
-                    }                   
+                    }
                 },
                 overlays: {
                     hillshade: {
@@ -462,7 +462,7 @@ describe('Directive: leaflet', function() {
                             attribution: '&copy; <a href="http://www.openfiremap.org">OpenFireMap</a> contributors - &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
                             continuousWorld: true
                         }
-                    }                    
+                    }
                 }
             }
         });
@@ -488,7 +488,7 @@ describe('Directive: leaflet', function() {
                             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
                             continuousWorld: true
                         }
-                    }                   
+                    }
                 },
                 overlays: {
                     hillshade: {
@@ -512,7 +512,7 @@ describe('Directive: leaflet', function() {
                             attribution: '&copy; <a href="http://www.openfiremap.org">OpenFireMap</a> contributors - &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
                             continuousWorld: true
                         }
-                    }                    
+                    }
                 }
             }
         });
@@ -538,7 +538,7 @@ describe('Directive: leaflet', function() {
                             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
                             continuousWorld: true
                         }
-                    }                   
+                    }
                 },
                 overlays: {
                     cars: {
@@ -572,7 +572,7 @@ describe('Directive: leaflet', function() {
                             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
                             continuousWorld: true
                         }
-                    }                   
+                    }
                 },
                 overlays: {
                     cars: {
@@ -612,7 +612,7 @@ describe('Directive: leaflet', function() {
                             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
                             continuousWorld: true
                         }
-                    }                   
+                    }
                 },
                 overlays: {
                     cars: {
@@ -652,7 +652,7 @@ describe('Directive: leaflet', function() {
                             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
                             continuousWorld: true
                         }
-                    }                   
+                    }
                 },
                 overlays: {
                     cars: {
@@ -687,7 +687,7 @@ describe('Directive: leaflet', function() {
                             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
                             continuousWorld: true
                         }
-                    }                   
+                    }
                 },
                 overlays: {
                     cars: {
@@ -726,7 +726,7 @@ describe('Directive: leaflet', function() {
                             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
                             continuousWorld: true
                         }
-                    }                   
+                    }
                 },
                 overlays: {
                     hillshade: {
@@ -750,7 +750,7 @@ describe('Directive: leaflet', function() {
                             attribution: '&copy; <a href="http://www.openfiremap.org">OpenFireMap</a> contributors - &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
                             continuousWorld: true
                         }
-                    }                    
+                    }
                 }
             }
         });
@@ -810,7 +810,7 @@ describe('Directive: leaflet', function() {
                             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
                             continuousWorld: true
                         }
-                    }                   
+                    }
                 },
                 overlays: {
                     cars: {
@@ -866,8 +866,8 @@ describe('Directive: leaflet', function() {
         map = elementTest.scope().leaflet.map;
         markers = elementTest.scope().leaflet.markers;
         expect(map.hasLayer(markers.m1)).toBe(false);
-        expect(layers.overlays.cars.hasLayer(markers.m1)).toBe(false);        
-        // delete the marker 
+        expect(layers.overlays.cars.hasLayer(markers.m1)).toBe(false);
+        // delete the marker
         delete $rootScope.markers.m1;
         $rootScope.$digest();
         layers = elementTest.scope().leaflet.layers;
@@ -919,7 +919,7 @@ describe('Directive: leaflet', function() {
                             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
                             continuousWorld: true
                         }
-                    }                   
+                    }
                 },
                 overlays: {
                     cars: {
@@ -1178,7 +1178,7 @@ describe('Directive: leaflet', function() {
         expect(layers.overlays.cars.hasLayer(markers.m1)).toBe(true);
         expect(layers.overlays.cars.hasLayer(markers.m2)).toBe(true);
     });
-    
+
     // Marker
     it('should create main marker on the map', function() {
         var main_marker = {
@@ -1416,13 +1416,14 @@ describe('Directive: leaflet', function() {
             'popupclose'
             ];
 
+    function setEventTrue(position) {
+        check[mapEvents[position]] = true;
+    }
+
     for (var k in mapEvents){
         var eventName = 'leafletDirectiveMap.' + mapEvents[k];
         // console.log(eventName); // Inspect
-        scope.$on(eventName,
-                function(){
-                    check[mapEvents[k]] = true;
-                });
+        scope.$on(eventName, setEventTrue(k));
         map.fireEvent([mapEvents[k]]);
         expect(check[mapEvents[k]]).toEqual(true);
     }
