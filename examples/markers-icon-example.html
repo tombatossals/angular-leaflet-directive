@@ -2,7 +2,7 @@
   <head>
     <script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
-    <script src="../dist/angular-leaflet-directive.min.js"></script>
+    <script src="../src/angular-leaflet-directive.js"></script>
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" />
     <!--[if lte IE 8]>
         <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.ie.css" />
@@ -27,11 +27,24 @@
 
                     iconSize: [25, 41],
                     iconAnchor: [12, 40],
-                    popupAnchor: [0, 40],
+                    popupAnchor: [0, -40],
 
                     shadowSize: [41, 41],
                     shadowAnchor: [12, 40]
                 }),
+                div_icon: L.divIcon({
+                	iconSize: [200, 0],
+                	html: 'Using <strong>Bold text as an icon</strong>:',
+                	popupAnchor:  [0, 0]
+                }),
+                object_icon: {
+                    iconUrl: 'http://leafletjs.com/docs/images/leaf-orange.png',
+                	shadowUrl: 'http://leafletjs.com/docs/images/leaf-shadow.png',
+                	iconSize:     [38, 95],
+                    shadowSize:   [50, 64],
+                    iconAnchor:   [22, 94],
+                    shadowAnchor: [4, 62]
+                },
             }
 
             angular.extend($scope, {
@@ -49,7 +62,7 @@
                         lat: 51.505,
                         lng: -0.09,
                         message: "I'm a static marker",
-                        icon: local_icons.leaf_icon,
+                        icon: local_icons.default_icon,
                     },
                 }
             });
