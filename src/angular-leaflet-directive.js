@@ -1092,7 +1092,7 @@ leafletDirective.directive('leaflet', [
                                 }
                             }
                         }
-                        
+
                         // Update the Popup message property
                         if (data.message === undefined || data.message === null || typeof data.message !== 'string' || data.message === "") {
                             // There is no popup to show, so if it has previously existed it must be unbinded

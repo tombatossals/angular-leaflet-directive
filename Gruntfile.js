@@ -76,7 +76,7 @@ module.exports = function(grunt) {
         },
         watch: {
             source: {
-                files: 'src/angular-leaflet-directive.js',
+                files: ['src/angular-leaflet-directive.js', 'test/unit/*.js', 'test/e2e/*.js'],
                 tasks: [ 'karma:background:run', 'jshint', 'uglify' ]
             },
             grunt: {
