@@ -966,6 +966,219 @@ describe('Directive: leaflet', function() {
         expect(layers.overlays.trucks.hasLayer(markers.m1)).toBe(true);
     });
 
+    // MarkerCluster Layer Plugin
+    it('should create a markercluster overlay as specified', function() {
+        // If we not provide layers the system will use the default
+        var element = angular.element('<leaflet testing="testing"></leaflet>');
+        element = $compile(element)($rootScope);
+        $rootScope.$digest();
+        var layers = element.scope().leaflet.layers;
+        expect(layers).toBe(null);
+        // Provide a markercluster layer
+        angular.extend($rootScope, {
+            layers: {
+                baselayers: {
+                    osm: {
+                        name: 'OpenStreetMap',
+                        type: 'xyz',
+                        url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                        layerOptions: {
+                            subdomains: ['a', 'b', 'c'],
+                            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                        }
+                    }                   
+                },
+                overlays: {
+                    cars: {
+                        name: 'Cars',
+                        type: 'markercluster'
+                    }
+                }
+            }
+        });
+        element = angular.element('<leaflet layers="layers" testing="testing"></leaflet>');
+        element = $compile(element)($rootScope);
+        $rootScope.$digest();
+        layers = element.scope().leaflet.layers;
+        var map = element.scope().leaflet.map;
+        // The layer is correctly created
+        expect(layers.overlays.cars instanceof L.MarkerClusterGroup).toBe(true);
+        // It is not on the map as it is not visible
+        expect(map.hasLayer(layers.overlays.cars)).toBe(false);
+        // Provide a visible markercluster layer
+        angular.extend($rootScope, {
+            layers: {
+                baselayers: {
+                    osm: {
+                        name: 'OpenStreetMap',
+                        type: 'xyz',
+                        url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                        layerOptions: {
+                            subdomains: ['a', 'b', 'c'],
+                            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                        }
+                    }                   
+                },
+                overlays: {
+                    cars: {
+                        name: 'Cars',
+                        type: 'markercluster',
+                        visible: true
+                    }
+                }
+            }
+        });
+        element = angular.element('<leaflet layers="layers" testing="testing"></leaflet>');
+        element = $compile(element)($rootScope);
+        $rootScope.$digest();
+        layers = element.scope().leaflet.layers;
+        map = element.scope().leaflet.map;
+        // The layer is correctly created
+        expect(layers.overlays.cars instanceof L.MarkerClusterGroup).toBe(true);
+        // It is not on the map as it is not visible
+        expect(map.hasLayer(layers.overlays.cars)).toBe(true);
+        // Provide a visible markercluster layer with options empty
+        angular.extend($rootScope, {
+            layers: {
+                baselayers: {
+                    osm: {
+                        name: 'OpenStreetMap',
+                        type: 'xyz',
+                        url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                        layerOptions: {
+                            subdomains: ['a', 'b', 'c'],
+                            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                        }
+                    }                   
+                },
+                overlays: {
+                    cars: {
+                        name: 'Cars',
+                        type: 'markercluster',
+                        visible: true,
+                        layerOptions: {
+                            
+                        }
+                    }
+                }
+            }
+        });
+        element = angular.element('<leaflet layers="layers" testing="testing"></leaflet>');
+        element = $compile(element)($rootScope);
+        $rootScope.$digest();
+        layers = element.scope().leaflet.layers;
+        map = element.scope().leaflet.map;
+        // The layer is correctly created
+        expect(layers.overlays.cars instanceof L.MarkerClusterGroup).toBe(true);
+        // It is not on the map as it is not visible
+        expect(map.hasLayer(layers.overlays.cars)).toBe(true);
+        // The layer has to have the defaults
+        expect(layers.overlays.cars.options.showCoverageOnHover).toBe(true);
+        expect(layers.overlays.cars.options.zoomToBoundsOnClick).toBe(true);
+        expect(layers.overlays.cars.options.spiderfyOnMaxZoom).toBe(true);
+        expect(layers.overlays.cars.options.removeOutsideVisibleBounds).toBe(true);
+        // Provide a visible markercluster layer with options
+        angular.extend($rootScope, {
+            layers: {
+                baselayers: {
+                    osm: {
+                        name: 'OpenStreetMap',
+                        type: 'xyz',
+                        url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                        layerOptions: {
+                            subdomains: ['a', 'b', 'c'],
+                            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                        }
+                    }                   
+                },
+                overlays: {
+                    cars: {
+                        name: 'Cars',
+                        type: 'markercluster',
+                        visible: true,
+                        layerOptions: {
+                            showCoverageOnHover: false,
+                            disableClusteringAtZoom: 18
+                        }
+                    }
+                }
+            }
+        });
+        element = angular.element('<leaflet layers="layers" testing="testing"></leaflet>');
+        element = $compile(element)($rootScope);
+        $rootScope.$digest();
+        layers = element.scope().leaflet.layers;
+        map = element.scope().leaflet.map;
+        // The layer is correctly created
+        expect(layers.overlays.cars instanceof L.MarkerClusterGroup).toBe(true);
+        // It is not on the map as it is not visible
+        expect(map.hasLayer(layers.overlays.cars)).toBe(true);
+        // The layer has to have the defaults
+        expect(layers.overlays.cars.options.showCoverageOnHover).toBe(false);
+        expect(layers.overlays.cars.options.zoomToBoundsOnClick).toBe(true);
+        expect(layers.overlays.cars.options.spiderfyOnMaxZoom).toBe(true);
+        expect(layers.overlays.cars.options.removeOutsideVisibleBounds).toBe(true);
+        expect(layers.overlays.cars.options.disableClusteringAtZoom).toEqual(18);
+        // Provide a visible markercluster layer with options and markers
+        angular.extend($rootScope, {
+            layers: {
+                baselayers: {
+                    osm: {
+                        name: 'OpenStreetMap',
+                        type: 'xyz',
+                        url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                        layerOptions: {
+                            subdomains: ['a', 'b', 'c'],
+                            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                        }
+                    }                   
+                },
+                overlays: {
+                    cars: {
+                        name: 'Cars',
+                        type: 'markercluster',
+                        visible: true,
+                        layerOptions: {
+                            showCoverageOnHover: false,
+                            disableClusteringAtZoom: 18
+                        }
+                    }
+                }
+            },
+            markers: {
+                m1: {
+                    layer: 'cars',
+                    lat: 1.0,
+                    lng: 1.0
+                },
+                m2: {
+                    layer: 'cars',
+                    lat: 1.0,
+                    lng: 1.0                    
+                }
+            }
+        });
+        element = angular.element('<leaflet layers="layers" markers="markers" testing="testing"></leaflet>');
+        element = $compile(element)($rootScope);
+        $rootScope.$digest();
+        layers = element.scope().leaflet.layers;
+        map = element.scope().leaflet.map;
+        // The layer is correctly created
+        expect(layers.overlays.cars instanceof L.MarkerClusterGroup).toBe(true);
+        // It is not on the map as it is not visible
+        expect(map.hasLayer(layers.overlays.cars)).toBe(true);
+        // The layer has to have the defaults
+        expect(layers.overlays.cars.options.showCoverageOnHover).toBe(false);
+        expect(layers.overlays.cars.options.zoomToBoundsOnClick).toBe(true);
+        expect(layers.overlays.cars.options.spiderfyOnMaxZoom).toBe(true);
+        expect(layers.overlays.cars.options.removeOutsideVisibleBounds).toBe(true);
+        expect(layers.overlays.cars.options.disableClusteringAtZoom).toEqual(18);
+        // The layer has the two markers
+        var markers = element.scope().leaflet.markers;
+        expect(layers.overlays.cars.hasLayer(markers.m1)).toBe(true);
+        expect(layers.overlays.cars.hasLayer(markers.m2)).toBe(true);
+    });
+
     // Marker
     it('should create main marker on the map', function() {
         var main_marker = {
