@@ -2,6 +2,7 @@
   <head>
     <script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+    <!--<script src="../dist/angular-leaflet-directive.min.js"></script>-->
     <script src="../dist/angular-leaflet-directive.min.js"></script>
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" />
     <!--[if lte IE 8]>
@@ -16,26 +17,19 @@
                     lng: -0.09,
                     zoom: 8
                 },
-                defaults: {
-                    tileLayer: "http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png",
-                    tileLayerOptions: {
-                        opacity: 0.9,
-                        detectRetina: true,
-                        reuseTiles: true,
-                    },
-                    scrollWheelZoom: false
+                main_marker: {
+                    lat: 51,
+                    lng: 0,
+                    focus: true,
+                    message: "Hey, drag me if you want",
+                    draggable: true
                 }
             });
         };
     </script>
-    <style>
-        .angular-leaflet-map {
-            width: 640px;
-            height: 400px;
-        }
-    </style>
   </head>
   <body ng-controller="DemoController">
-    <leaflet center="london" defaults="defaults"></leaflet>
+      <leaflet center="london" marker="main_marker" height="480px" width="640px">
+      </leaflet>
   </body>
 </html>
