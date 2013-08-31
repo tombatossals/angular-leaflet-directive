@@ -92,6 +92,18 @@ leafletDirective.directive('leaflet', [
                 }
             }
         },
+        MarkerClusterPlugin: {
+            isLoaded: function() {
+                return L.MarkerClusterGroup !== undefined;
+            },
+            is: function(layer) {
+                if (this.isLoaded()) {
+                    return layer instanceof L.MarkerClusterGroup;
+                } else {
+                    return false;
+                }
+            },
+        },
         Leaflet: {
             DivIcon: {
                 is: function(icon) {
@@ -462,7 +474,7 @@ leafletDirective.directive('leaflet', [
                 if (layerDefinition.type === undefined || layerDefinition.type === null || typeof layerDefinition.type !== 'string') {
                     $log.error('[AngularJS - Leaflet] A base layer must have a type');
                     return null;
-                } else if (layerDefinition.type !== 'xyz' && layerDefinition.type !== 'wms' && layerDefinition.type !== 'group') {
+                } else if (layerDefinition.type !== 'xyz' && layerDefinition.type !== 'wms' && layerDefinition.type !== 'group' && layerDefinition.type !== 'markercluster') {
                     $log.error('[AngularJS - Leaflet] A layer must have a valid type: "xyz, wms, group"');
                     return null;
                 }
@@ -497,6 +509,9 @@ leafletDirective.directive('leaflet', [
                 case 'group':
                     layer = createGroupLayer();
                     break;
+                case 'markercluster':
+                    layer = createMarkerClusterLayer(layerDefinition.layerOptions);
+                    break;
                 default:
                     layer = null;
                 }
@@ -516,9 +531,18 @@ leafletDirective.directive('leaflet', [
                 return layer;
             }
 
-            function createGroupLayer(url, options) {
+            function createGroupLayer() {
                 var layer = L.layerGroup();
                 return layer;
+            }
+            
+            function createMarkerClusterLayer(options) {
+                if (Helpers.MarkerClusterPlugin.isLoaded()) {
+                    var layer = new L.MarkerClusterGroup(options);
+                    return layer;
+                } else {
+                    return null;
+                }
             }
 
             function setupTiles() {
@@ -1039,6 +1063,7 @@ leafletDirective.directive('leaflet', [
                                     if (dragD) {
                                         marker.dragging.enable();
                                     }
+                                    //TODO: Improve depending on anchorPopup
                                     marker.closePopup();
                                     marker.unbindPopup();
                                     if (data.message !== undefined && data.message !== null && typeof data.message === 'string' && data.message !== "") {
@@ -1054,6 +1079,7 @@ leafletDirective.directive('leaflet', [
                                     if (dragE) {
                                         marker.dragging.enable();
                                     }
+                                    //TODO: Improve depending on anchorPopup
                                     marker.closePopup();
                                     marker.unbindPopup();
                                     if (data.message !== undefined && data.message !== null && typeof data.message === 'string' && data.message !== "") {
@@ -1069,6 +1095,7 @@ leafletDirective.directive('leaflet', [
                                     if (dragF) {
                                         marker.dragging.enable();
                                     }
+                                    //TODO: Improve depending on anchorPopup
                                     marker.closePopup();
                                     marker.unbindPopup();
                                     if (data.message !== undefined && data.message !== null && typeof data.message === 'string' && data.message !== "") {
@@ -1084,6 +1111,7 @@ leafletDirective.directive('leaflet', [
                                     if (dragG) {
                                         marker.dragging.enable();
                                     }
+                                    //TODO: Improve depending on anchorPopup
                                     marker.closePopup();
                                     marker.unbindPopup();
                                     if (data.message !== undefined && data.message !== null && typeof data.message === 'string' && data.message !== "") {
@@ -1143,7 +1171,6 @@ leafletDirective.directive('leaflet', [
                                 }
                             }
                             map.removeLayer(marker);
-
                         } else {
                             var cur_latlng = marker.getLatLng();
                             // On dragend event, scope will be updated, which
@@ -1156,7 +1183,18 @@ leafletDirective.directive('leaflet', [
                             // anyway. Because before dragend event fired, marker
                             // sate is already updated by leaflet.
                             if (cur_latlng.lat !== data.lat || cur_latlng.lng !== data.lng) {
+                                // if the marker is in a clustermarker layer it has to be removed and added again to the layer
+                                var isCluster = false;
+                                if (data.layer !== undefined && data.layer !== null && typeof data.layer === 'string') {
+                                    if (Helpers.MarkerClusterPlugin.is(layers.overlays[data.layer])) {
+                                        layers.overlays[data.layer].removeLayer(marker);
+                                        isCluster = true;
+                                    }
+                                }
                                 marker.setLatLng([data.lat, data.lng]);
+                                if (isCluster) {
+                                    layers.overlays[data.layer].addLayer(marker);
+                                }
                             }
                         }
                     }
