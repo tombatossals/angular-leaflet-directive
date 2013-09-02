@@ -104,6 +104,18 @@ leafletDirective.directive('leaflet', [
                 }
             },
         },
+        GoogleLayerPlugin: {
+            isLoaded: function() {
+                return L.Google !== undefined;
+            },
+            is: function(layer) {
+                if (this.isLoaded()) {
+                    return layer instanceof L.Google;
+                } else {
+                    return false;
+                }
+            },
+        },
         Leaflet: {
             DivIcon: {
                 is: function(icon) {
@@ -474,7 +486,8 @@ leafletDirective.directive('leaflet', [
                 if (layerDefinition.type === undefined || layerDefinition.type === null || typeof layerDefinition.type !== 'string') {
                     $log.error('[AngularJS - Leaflet] A base layer must have a type');
                     return null;
-                } else if (layerDefinition.type !== 'xyz' && layerDefinition.type !== 'wms' && layerDefinition.type !== 'group' && layerDefinition.type !== 'markercluster') {
+                } else if (layerDefinition.type !== 'xyz' && layerDefinition.type !== 'wms' && layerDefinition.type !== 'group' && layerDefinition.type !== 'markercluster'
+                			&& layerDefinition.type !== 'google') {
                     $log.error('[AngularJS - Leaflet] A layer must have a valid type: "xyz, wms, group"');
                     return null;
                 }
@@ -512,6 +525,9 @@ leafletDirective.directive('leaflet', [
                 case 'markercluster':
                     layer = createMarkerClusterLayer(layerDefinition.layerOptions);
                     break;
+                case 'google':
+                	layer = createGoogleLayer(layerDefinition.layerOptions);
+                	break;
                 default:
                     layer = null;
                 }
@@ -539,6 +555,15 @@ leafletDirective.directive('leaflet', [
             function createMarkerClusterLayer(options) {
                 if (Helpers.MarkerClusterPlugin.isLoaded()) {
                     var layer = new L.MarkerClusterGroup(options);
+                    return layer;
+                } else {
+                    return null;
+                }
+            }
+            
+            function createGoogleLayer(options) {
+            	if (Helpers.GoogleLayerPlugin.isLoaded()) {
+                    var layer = new L.Google(options);
                     return layer;
                 } else {
                     return null;
