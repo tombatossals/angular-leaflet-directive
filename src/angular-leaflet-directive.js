@@ -33,7 +33,7 @@ leafletDirective.directive('leaflet', [
         center: {
             lat: 0,
             lng: 0,
-            zoom: 10
+            zoom: 1
         }
     };
 
@@ -535,7 +535,7 @@ leafletDirective.directive('leaflet', [
                 var layer = L.layerGroup();
                 return layer;
             }
-            
+
             function createMarkerClusterLayer(options) {
                 if (Helpers.MarkerClusterPlugin.isLoaded()) {
                     var layer = new L.MarkerClusterGroup(options);
