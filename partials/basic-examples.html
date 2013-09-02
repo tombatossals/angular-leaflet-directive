@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html ng-app="mainpage" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="keywords" content="angularjs,leaflet,openstreetmap,javascript,directive,plugin">
+    <meta name="description" content="Leaflet directive for AngularJS">
+    <title>Leaflet directive for AngularJS</title>
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" />
+    <!--[if lte IE 8]>
+        <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.ie.css" />
+    <![endif]-->
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body ng-cloak>
+    <header class="navbar navbar-fixed-top navbar-inverse" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <a href="/" class="navbar-brand">
+                    <span class="glyphicon glyphicon-leaf"></span> angular-leaflet-directive
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="banner" ng-controller="BannerController">
+        <leaflet></leaflet>
+    </div>
+
+    <div class="bottom-banner">
+        <div class="container">
+            Simple to use <a href="http://angularjs.org">AngularJS</a> directive developed to ease embed and interact a map managed with <a href="http://leaflet.cloudmade.com/">leaflet map library</a>.
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 jumbotron">
+                <p>This is a very simple <a href="http://angularjs.org/">AngularJS</a> directive developed to embed and interact with a <a href="http://www.openstreetmap.org/">map</a> managed by the <a href="http://leaflet.cloudmade.com/">leaflet map library</a>. Its not intended as a complete or full-of-features library, although its a simple and easy to use directive, which has been fun to develop and is a good starting point to learn to code a directive into the great AngularJS library.</p>
+                <div class="btn-group btn-group-justified">
+                    <a class="btn btn-default btn-primary">How to use it</a>
+                    <a class="btn btn-default btn-primary">Basic examples</a>
+                    <a class="btn btn-default btn-primary">Advanced examples</a>
+                    <a class="btn btn-default btn-primary">Github repository</a>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <p>The code of the library and this page has been inspired on the <a href="http://nlaplante.github.com/angular-google-maps/">Angular Google Maps</a> directive developed by <a href="https://github.com/nlaplante">nlaplante</a>.</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <h2>How to use it</h2>
+                <p>Before using <strong>angular-leaflet-directive</strong>, you
+                must include some javascript files to your main HTML: the main AngularJS
+                library, the Leaflet library and the angular-leaflet-directive.js script. Something like this:</p>
+                <div class="span6">
+                    <pre class="prettyprint lang-html">&lt;script src="/path/to/leaflet.js"&gt;&lt;/script&gt;
+&lt;script src="/path/to/angular.min.js"&gt;&lt;/script&gt;
+&lt;script src="/path/to/angular-leaflet-directive.js"&gt;&lt;/script&gt;</pre>
+                </div>
+
+                <p style="clear: both;">Also, you must include the CSS files of <strong>leaflet</strong>:</p>
+                <div class="span6">
+                    <pre class="prettyprint lang-html">&lt;link rel="stylesheet" href="/path/to//leaflet.css" /&gt;</pre>
+                </div>
+
+                <p style="clear: both;">And that's all. Now you can use the directive with the custom tag <code>&lt;leaflet&gt;</code> and some attributes, let's see them on the examples.</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="span10 offset1">
+                <hr />
+                <h3>Basic examples</h3>
+            </div>
+            <div class="span5 offset1">
+                <p>You can see the map embeded on the right-side of this page.
+                This is accomplished with this directive:</p>
+                <code>&lt;leaflet&gt;&lt;/leaflet&gt;</code>
+                <p style="margin-top: 1em;">You can also see the code of this feature in the <a href="examples/simple-example.html">simple example demo</a>.</p>
+            </div>
+            <div class="span5">
+                <leaflet class="simple"></leaflet>
+            </div>
+        </div>
+        <div class="row">
+            <div class="span10 offset1">
+                <hr />
+                <h3>Dragging marker demo</h3>
+            </div>
+        </div>
+        <div class="row" ng-controller="DragMarkerController">
+            <div class="span5 offset1">
+                <leaflet markers="markers" center="center"></leaflet>
+                <form class="form">
+                    <div class="control-group span6">
+                        <strong class="span1 title">Center</strong>
+                        <div class="controls">
+                            <div class="input-prepend">
+                                <span class="add-on">lat</span>
+                                <input class="input-mini" type="number" step="any" ng-model="center.lat" />
+                            </div>
+                            <div class="input-prepend">
+                                <span class="add-on">lon</span>
+                                <input class="input-mini" type="number" step="any" ng-model="center.lng" />
+                            </div>
+                            <div class="input-prepend">
+                                <span class="add-on">zoom</span>
+                                <input class="input-mini"  type="number" ng-model="center.zoom" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="control-group span5">
+                        <strong class="span1 title">Marker</strong>
+                        <div class="controls">
+                            <div class="input-prepend">
+                                <span class="add-on">lat</span>
+                                <input class="input-mini" type="number" step="any" ng-model="markers.Madrid.lat" />
+                            </div>
+                            <div class="input-prepend">
+                                <span class="add-on">long</span>
+                                <input class="input-mini" type="number" step="any" ng-model="markers.Madrid.lng"/>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="span5">
+                <p>You can interact with a leaflet marker with this code on
+                your HTML:</p>
+                <pre class="prettyprint lang-javascript">&lt;leaflet markers="markers" center="center"&gt;&lt;/leaflet&gt;</pre>
+                <p>And this code on your controller:</p>
+                <pre class="prettyprint lang-javascript">
+angular.extend($scope, {
+    center: {
+        lat: 40.095,
+        lng: -3.823,
+        zoom: 4
+    },
+    markers: {
+        Madrid: {
+            lat: 40.095,
+            lng: -3.823,
+            message: "Drag me to your position",
+            focus: true,
+            draggable: true
+        }
+    }
+});</pre>
+                <p>See how the form inputs change with the map interaction and viceversa. You can also see the code demonstrating this feature in the <a href="examples/markers-example.html">markers example demo</a>.</p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="span10 offset1">
+                <hr />
+                <h3>Path demo</h3>
+            </div>
+        </div>
+        <div class="row" ng-controller="PathController">
+            <div class="span5 offset1">
+                <p>You can draw a path on the map with following code in
+                your HTML:</p>
+                <pre class="prettyprint lang-html">&lt;leaflet paths="paths" center="center"&gt;&lt;/leaflet&gt;</pre>
+                <p>And following code in your controller:</p>
+                <pre class="prettyprint lang-javascript">
+angular.extend($scope, {
+    center: {
+        lat: 53,
+        lng: -3,
+        zoom: 6
+    },
+    paths: {
+        p1: {
+            color: '#008000',
+            weight: 3,
+            latlngs: [
+                { lat: 51.50, lng: -0.082 },
+                { lat: 51.751, lng: -1.255 },
+                { lat: 53.48, lng: -2.24 },
+            ],
+        },
+    }
+});
+                </pre>
+                <p>
+                    Points that construct the path is given in an array. You might also want to checkout a
+                    <a href="examples/path-example.html">
+                        more complex demo mixes markers and path
+                    </a>.
+                </p>
+            </div>
+            <div class="span5">
+                <leaflet paths="paths" center="center"></leaflet>
+                <div class="control-group span5">
+                    <form class="form-horizontal" ng-repeat="p in paths.p1.latlngs">
+                        <label class="control-label">
+                            point {{$index + 1}}:
+                        </label>
+                        <div class="controls">
+                            <div class="input-prepend">
+                                <span class="add-on">lat</span>
+                                <input class="input-mini" type="number" ng-model="p.lat"/>
+                            </div>
+                            <div class="input-prepend">
+                                <span class="add-on">lng</span>
+                                <input class="input-mini" type="number" ng-model="p.lng"/>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" ng-controller="LegendController">
+            <div class="span10 offset1">
+                <hr />
+                <h3>Legend Demo</h3>
+            </div>
+            <div class="span5 offset1">
+                <p>Maybe you're interested on a map including a legend with a list of elements identified on the map by color.
+                This is accomplished with this directive:</p>
+                <code>&lt;leaflet legend="legend" center="london"&gt;&lt;/leaflet&gt;</code>
+                <p style="margin-top: 1em;">We would need to add a property <strong>legend</strong> to the scope similar to this one:</p>
+                <pre class="prettyprint lang-javascript">$scope.legend = {
+   position: 'bottomleft',
+   colors: [ '#ff0000',
+             '#28c9ff',
+             '#0000ff',
+             '#ecf386' ],
+   labels: [ 'National Cycle Route',
+             'Regional Cycle Route',
+             'Local Cycle Network',
+             'Cycleway' ]
+};
+</pre>
+                <p style="margin-top: 1em;">And we would need to add a <strong>center</strong> attribute too:</p>
+                <pre class="prettyprint lang-javascript">$scope.london = {
+    lat: 51.505,
+    lng: -0.09,
+    zoom: 12
+};
+</pre>
+            </div>
+            <div class="span5">
+                <p>Finally, we need some styles to decorate our leaflet legend:</p>
+                <pre class="prettyprint lang-javascript">
+.info {
+    padding: 6px 8px;
+    font: 14px/16px Arial, Helvetica, sans-serif;
+    background: white;
+    background: rgba(255,255,255,0.8);
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    border-radius: 5px;
+}
+.info h4 {
+    margin: 0 0 5px;
+    color: #777;
+}
+.legend {
+    line-height: 18px;
+    color: #555;
+}
+.legend i {
+    width: 18px;
+    height: 18px;
+    float: left;
+    margin-right: 8px;
+    opacity: 0.7;
+}
+</pre>
+            <p>This example is based on this LeafletJS tutorial: <a href="http://leafletjs.com/examples/choropleth.html">http://leafletjs.com/examples/choropleth.html</a>.</p>
+            </div>
+            <div class="offset1 span10">
+                <leaflet class="simple" center="london" legend="legend"></leaflet>
+            </div>
+        </div>
+        <footer>
+            <div class="row">
+                <div class="span6">
+                    <a rel="author external" href="https://plus.google.com/100184619238119414805/?rel=author">+David Rubert</a>, <a href="https://github.com/houqp">{Qingping,Dave} Hou</a>, and <a href="https://github.com/tombatossals/angular-leaflet-directive/graphs/contributors">others</a>.
+                </div>
+
+                <div class="span6 pull-right">
+                    Built using <a href="http://angularjs.org" rel="external">AngularJS</a>
+                    and <a href="http://twitter.github.com/bootstrap" rel="external">Twitter Bootstrap</a>.
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <a class="forkme" href="https://github.com/tombatossals/angular-leaflet-directive" rel="external">
+        <img src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub">
+    </a>
+
+    <script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+    <script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
+    <script src="http://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+    <script src="dist/angular-leaflet-directive.min.js"></script>
+    <script src="js/app.js"></script>
+
+</body>
+
+</html>
