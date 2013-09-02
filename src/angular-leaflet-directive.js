@@ -33,7 +33,7 @@ leafletDirective.directive('leaflet', [
         center: {
             lat: 0,
             lng: 0,
-            zoom: 1
+            zoom: 10
         }
     };
 
