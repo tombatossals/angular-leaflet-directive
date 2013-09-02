@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html ng-app="MainPage" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="keywords" content="angularjs,leaflet,openstreetmap,javascript,directive,plugin">
+    <meta name="description" content="Leaflet directive for AngularJS">
+    <title>Leaflet directive for AngularJS</title>
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" />
+    <!--[if lte IE 8]>
+        <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.ie.css" />
+    <![endif]-->
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body ng-cloak>
+    <header class="navbar navbar-fixed-top navbar-inverse" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <a href="/" class="navbar-brand">
+                    <span class="glyphicon glyphicon-leaf"></span> angular-leaflet-directive
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <a class="forkme" href="https://github.com/tombatossals/angular-leaflet-directive" rel="external">
+        <img src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub">
+    </a>
+
+    <div class="banner" ng-controller="BannerController">
+        <leaflet></leaflet>
+    </div>
+
+    <div class="bottom-banner">
+        <div class="container">
+            Simple to use <a href="http://angularjs.org">AngularJS</a> directive developed to ease embed and interact a map managed with <a href="http://leaflet.cloudmade.com/">leaflet map library</a>.
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 jumbotron">
+                <p>This is a very simple <a href="http://angularjs.org/">AngularJS</a> directive developed to embed and interact with a <a href="http://www.openstreetmap.org/">map</a> managed by the <a href="http://leaflet.cloudmade.com/">leaflet map library</a>. Its not intended as a complete or full-of-features library, although its a simple and easy to use directive, which has been fun to develop and is a good starting point to learn to code a directive into the great AngularJS library.</p>
+                <div class="btn-group btn-group-justified">
+                    <a class="btn btn-default btn-primary" href="#/how-to-use">How to use it</a>
+                    <a class="btn btn-default btn-primary">Basic examples</a>
+                    <a class="btn btn-default btn-primary">Advanced examples</a>
+                    <a class="btn btn-default btn-primary">Github repository</a>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <p>The code of the library and this page has been inspired on the <a href="http://nlaplante.github.com/angular-google-maps/">Angular Google Maps</a> directive developed by <a href="https://github.com/nlaplante">nlaplante</a>.</p>
+            </div>
+        </div>
+        <ng-view></ng-view>
+    </div>
+
+    <script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+    <script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
+    <script src="http://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+    <script src="dist/angular-leaflet-directive.min.js"></script>
+    <script src="js/app.js"></script>
+
+</body>
+
+</html>
