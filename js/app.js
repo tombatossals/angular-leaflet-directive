@@ -1,17 +1,28 @@
 (function (angular) {
 
-    var module = angular.module("MainPage", ['leaflet-directive']).config(['$routeProvider', function($routeProvider) {
-        $routeProvider.when('/how-to-use', {
+    var module = angular.module("MainPage", ['leaflet-directive', 'hljs']).config(['$routeProvider', function($routeProvider) {
+        $routeProvider.when('/', {
+            templateUrl: 'partials/main.html'
+        }).when('/how-to-collaborate', {
             templateUrl: 'partials/how-to-use.html'
+        }).when('/basic-examples', {
+            templateUrl: 'partials/basic-examples.html'
+        }).when('/advanced-examples', {
+            templateUrl: 'partials/advanced-examples.html'
         });
     }]);
 
-    module.controller("BannerController", [ '$scope', '$route', '$routeParams', '$location', function($scope, $route, $routeParams, $location) {
+    module.controller("HeaderController", [ '$scope', '$route', '$location', function($scope, $route, $location) {
+        $scope.$watch(function() { return $location.path(); }, function(value) {
+            $scope.activeTab = $location.path().replace(/^\//, "");
+console.log($scope.activeTab);
+        });
+
         angular.extend($scope, {
             center: {
                 lat: 40.095,
                 lng: -3.823,
-                zoom: 4
+                zoom: 3
             }
         });
     }]);
