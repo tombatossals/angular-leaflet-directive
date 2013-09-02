@@ -5,4 +5,7 @@ libpeerconnection.log
 .*.swp
 *.iml
 .idea
+.project
 
+node_modules
+node_modules
