@@ -2,22 +2,24 @@
     <div class="col-md-12">
         <h1>Basic examples</h1>
         <p>Let's see some basic examples showing how to use the library on our AngularJS code.</p>
+    </div>
+</div>
+<div class="row" ng-switch on="activeTab">
+    <div class="col-md-3">
+        <ul class="nav nav-pills nav-stacked">
+            <li class="active"><a href="">Simple map</a></li>
+            <li><a href="">Custom parameters</a></li>
+            <li><a href="">Dragging marker</a></li>
+        </ul>
+    </div>
+    <div class="col-md-9" ng-switch-default>
+        <leaflet width="400" height="300" class="pull-right"></leaflet>
+        <p>Let's see some basic examples showing how to use the library on our AngularJS code.</p>
         This is accomplished with this directive:</p>
         <code>&lt;leaflet&gt;&lt;/leaflet&gt;</code>
         <p style="margin-top: 1em;">You can also see the code of this feature in the <a href="examples/simple-example.html">simple example demo</a>.</p>
     </div>
-    <div class="span5">
-        <leaflet class="simple"></leaflet>
-    </div>
-</div>
-<div class="row">
-    <div class="span10 offset1">
-        <hr />
-        <h3>Dragging marker demo</h3>
-    </div>
-</div>
-<div class="row" ng-controller="DragMarkerController">
-    <div class="span5 offset1">
+    <div class="col-md-9" ng-controller="DragMarkerController" ng-switch-when="'dragging-marker'">
         <leaflet markers="markers" center="center"></leaflet>
         <form class="form">
             <div class="control-group span6">
@@ -50,9 +52,7 @@
                     </div>
                 </div>
             </div>
-        </form>
-    </div>
-    <div class="span5">
+        </div>
         <p>You can interact with a leaflet marker with this code on
         your HTML:</p>
         <pre class="prettyprint lang-javascript linenums">&lt;leaflet markers="markers" center="center"&gt;&lt;/leaflet&gt;</pre>

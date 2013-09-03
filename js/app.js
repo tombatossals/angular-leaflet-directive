@@ -1,6 +1,8 @@
 (function (angular) {
 
-    var module = angular.module("MainPage", ['leaflet-directive', 'hljs']).config(['$routeProvider', function($routeProvider) {
+    var app = angular.module("MainPage", ['ngRoute', 'leaflet-directive', 'hljs']);
+
+    app.config(['$routeProvider', function($routeProvider) {
         $routeProvider.when('/', {
             templateUrl: 'partials/main.html'
         }).when('/how-to-collaborate', {
@@ -12,10 +14,9 @@
         });
     }]);
 
-    module.controller("HeaderController", [ '$scope', '$route', '$location', function($scope, $route, $location) {
+    app.controller("HeaderController", [ '$scope', '$route', '$location', function($scope, $route, $location) {
         $scope.$watch(function() { return $location.path(); }, function(value) {
             $scope.activeTab = $location.path().replace(/^\//, "");
-console.log($scope.activeTab);
         });
 
         angular.extend($scope, {
