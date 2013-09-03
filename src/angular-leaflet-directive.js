@@ -8,19 +8,21 @@ leafletDirective.directive('leaflet', [
         minZoom: 1,
         doubleClickZoom: true,
         scrollWheelZoom: true,
+        zoomControl: true,
+        zoomsliderControl: false,
         tileLayer: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
         tileLayerOptions: {
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         },
         icon: {
-            url: 'http://cdn.leafletjs.com/leaflet-0.5.1/images/marker-icon.png',
-            retinaUrl: 'http://cdn.leafletjs.com/leaflet-0.5.1/images/marker-icon@2x.png',
+            url: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-icon.png',
+            retinaUrl: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-icon@2x.png',
             size: [25, 41],
             anchor: [12, 40],
             popup: [0, -40],
             shadow: {
-                url: 'http://cdn.leafletjs.com/leaflet-0.5.1/images/marker-shadow.png',
-                retinaUrl: 'http://cdn.leafletjs.com/leaflet-0.5.1/images/marker-shadow.png',
+                url: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-shadow.png',
+                retinaUrl: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-shadow.png',
                 size: [41, 41],
                 anchor: [12, 40]
             }
@@ -1370,8 +1372,16 @@ leafletDirective.directive('leaflet', [
 
             function setupControls() {
                 //@TODO add document for this option  11.08 2013 (houqp)
-                if ($scope.defaults && $scope.defaults.zoomControlPosition) {
+                if (map.zoomControl && $scope.defaults && $scope.defaults.zoomControlPosition) {
                     map.zoomControl.setPosition($scope.defaults.zoomControlPosition);
+                }
+                
+                if(map.zoomControl && $scope.defaults && !$scope.defaults.zoomControl) {
+                	map.zoomControl.removeFrom(map);
+                }
+                
+                if(map.zoomsliderControl && $scope.defaults && !$scope.defaults.zoomsliderControl) {
+                	map.zoomsliderControl.removeFrom(map);
                 }
             }
 
@@ -1379,9 +1389,8 @@ leafletDirective.directive('leaflet', [
                 if (!$scope.customControls) {
                     return;
                 }
-
                 for(var i = 0, count = $scope.customControls.length; i < count; i++) {
-                    map.addControl(new $scope.customControls[i]());
+                    map.addControl($scope.customControls[i]);
                 }
             }
         }
