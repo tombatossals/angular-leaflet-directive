@@ -526,7 +526,7 @@ leafletDirective.directive('leaflet', [
                     layer = createMarkerClusterLayer(layerDefinition.layerOptions);
                     break;
                 case 'google':
-                	layer = createGoogleLayer(layerDefinition.layerOptions);
+                	layer = createGoogleLayer(layerDefinition.layerType, layerDefinition.layerOptions);
                 	break;
                 default:
                     layer = null;
@@ -561,9 +561,10 @@ leafletDirective.directive('leaflet', [
                 }
             }
             
-            function createGoogleLayer(options) {
+            function createGoogleLayer(type, options) {
+            	type = type || 'SATELLITE';
             	if (Helpers.GoogleLayerPlugin.isLoaded()) {
-                    var layer = new L.Google(options);
+                    var layer = new L.Google(type, options);
                     return layer;
                 } else {
                     return null;
