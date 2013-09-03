@@ -116,6 +116,18 @@ leafletDirective.directive('leaflet', [
                 }
             },
         },
+        BingLayerPlugin: {
+            isLoaded: function() {
+                return L.BingLayer !== undefined;
+            },
+            is: function(layer) {
+                if (this.isLoaded()) {
+                    return layer instanceof L.BingLayer;
+                } else {
+                    return false;
+                }
+            },
+        },
         Leaflet: {
             DivIcon: {
                 is: function(icon) {
@@ -487,7 +499,7 @@ leafletDirective.directive('leaflet', [
                     $log.error('[AngularJS - Leaflet] A base layer must have a type');
                     return null;
                 } else if (layerDefinition.type !== 'xyz' && layerDefinition.type !== 'wms' && layerDefinition.type !== 'group' && layerDefinition.type !== 'markercluster'
-                			&& layerDefinition.type !== 'google') {
+                			&& layerDefinition.type !== 'google' && layerDefinition.type !== 'bing') {
                     $log.error('[AngularJS - Leaflet] A layer must have a valid type: "xyz, wms, group"');
                     return null;
                 }
@@ -528,6 +540,9 @@ leafletDirective.directive('leaflet', [
                 case 'google':
                 	layer = createGoogleLayer(layerDefinition.layerType, layerDefinition.layerOptions);
                 	break;
+                case 'bing':
+                	layer = createBingLayer(layerDefinition.bingKey, layerDefinition.layerOptions);
+                	break;
                 default:
                     layer = null;
                 }
@@ -565,6 +580,15 @@ leafletDirective.directive('leaflet', [
             	type = type || 'SATELLITE';
             	if (Helpers.GoogleLayerPlugin.isLoaded()) {
                     var layer = new L.Google(type, options);
+                    return layer;
+                } else {
+                    return null;
+                }
+            }
+            
+            function createBingLayer(key, options) {
+            	if (Helpers.BingLayerPlugin.isLoaded()) {
+                    var layer = new L.BingLayer(key, options);
                     return layer;
                 } else {
                     return null;
