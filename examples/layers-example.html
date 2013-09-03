@@ -1,28 +1,32 @@
+<!DOCTYPE html>
 <html ng-app="demoapp">
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet-src.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
-    <script src="../dist/angular-leaflet-directive.min.js"></script>
+    <script src="http://maps.google.com/maps/api/js?v=3.2&key=AIzaSyDLwcrc-i-BP9SZE9Fls8JrtiaorLTOLZg&sensor=false"></script>
+    <script src="plugins/layer/tile/Google.js"></script>
+    <script src="plugins/angular-leaflet-directive.js"></script>
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" />
     <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
     <!--[if lte IE 8]>
         <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.ie.css" />
     <![endif]-->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script>
         angular.module("demoapp", ["leaflet-directive"]);
         function DefaultController($scope) {
             angular.extend($scope, {
                 mapDefault: {
-                    london: {
-                        lat: 51.505,
-                        lng: -0.09,
-                        zoom: 8
-                    },
+                    bogota: {
+		                lat: 4.649,
+		                lng: -74.086,
+		                zoom: 6
+		            },
                     markers: {
                         m1: {
-                            lat: 51.505,
-                            lng: -0.09
+                            lat: 4.649,
+		               		lng: -74.086,
                         }
                     }
                 }
@@ -30,68 +34,69 @@
         };
         function BaseLayersController($scope) {
             angular.extend($scope, {
-                london: {
-                    lat: 51.505,
-                    lng: -0.09,
-                    zoom: 8
-                },
+                bogota: {
+	                lat: 4.649,
+	                lng: -74.086,
+	                zoom: 6
+	            },
                 markers: {
                     m1: {
-                        lat: 51.505,
-                        lng: -0.09
+                        lat: 4.649,
+	                	lng: -74.086
                     }
                 },
                 layers: {
                     baselayers: {
-                        osm: {
-                            name: 'OpenStreetMap',
-                            type: 'xyz',
-                            url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                            layerOptions: {
-                                subdomains: ['a', 'b', 'c'],
-                                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-                                continuousWorld: true
-                            }
-                        },
-                        cycle: {
-                            name: 'OpenCycleMap',
-                            type: 'xyz',
-                            url: 'http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png',
-                            layerOptions: {
-                                subdomains: ['a', 'b', 'c'],
-                                attribution: '&copy; <a href="http://www.opencyclemap.org/copyright">OpenCycleMap</a> contributors - &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-                                continuousWorld: true
-                            }
-                        },
-                        cloudmade1: {
-                            name: 'Cloudmade Night Commander',
-                            type: 'xyz',
-                            url: 'http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png',
-                            layerParams: {
-                                key: '007b9471b4c74da4a6ec7ff43552b16f',
-                                styleId: 999
-                            },
-                            layerOptions: {
-                                subdomains: ['a', 'b', 'c'],
-                                continuousWorld: true
-                            }
-                        },
-                        cloudmade2: {
-                            name: 'Cloudmade Tourist',
-                            type: 'xyz',
-                            url: 'http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png',
-                            layerParams: {
-                                key: '007b9471b4c74da4a6ec7ff43552b16f',
-                                styleId: 7
-                            },
-                            layerOptions: {
-                                subdomains: ['a', 'b', 'c'],
-                                continuousWorld: true
-                            }
-                        },
+                    	osm: {
+					        name: 'OpenStreetMap',
+					        type: 'xyz',
+					        url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+					        layerOptions: {
+					            subdomains: ['a', 'b', 'c'],
+					            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+					            continuousWorld: true
+					        }
+					    },
+					    cycle: {
+					        name: 'OpenCycleMap',
+					        type: 'xyz',
+					        url: 'http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png',
+					        layerOptions: {
+					            subdomains: ['a', 'b', 'c'],
+					            attribution: '&copy; <a href="http://www.opencyclemap.org/copyright">OpenCycleMap</a> contributors - &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+					            continuousWorld: true
+					        }
+					    },
+					    cloudmade1: {
+					        name: 'Cloudmade Night Commander',
+					        type: 'xyz',
+					        url: 'http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png',
+					        layerParams: {
+					            key: '007b9471b4c74da4a6ec7ff43552b16f',
+					            styleId: 999
+					        },
+					        layerOptions: {
+					            subdomains: ['a', 'b', 'c'],
+					            continuousWorld: true
+					        }
+					    },
+					    cloudmade2: {
+					        name: 'Cloudmade Tourist',
+					        type: 'xyz',
+					        url: 'http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png',
+					        layerParams: {
+					            key: '007b9471b4c74da4a6ec7ff43552b16f',
+					            styleId: 7
+					        },
+					        layerOptions: {
+					            subdomains: ['a', 'b', 'c'],
+					            continuousWorld: true
+					        }
+					    },
                         google: {
                             name: 'Google Streets',
-                            type: 'google',                            
+                            layerType: 'ROADMAP',
+                            type: 'google'                           
                         }
                     }
                 }
@@ -158,7 +163,12 @@
                                     subdomains: ['a', 'b', 'c'],
                                     continuousWorld: true
                                 }
-                            }
+                            },
+                            google: {
+	                            name: 'Google Hybrid',
+	                            layerType: 'HYBRID',
+	                            type: 'google'                           
+	                        }
                         }
                     }
                 },
@@ -289,6 +299,11 @@
                                 subdomains: ['a', 'b', 'c'],
                                 continuousWorld: true
                             }
+                        },
+                        google: {
+                            name: 'Google Terrain',
+                            layerType: 'TERRAIN',
+                            type: 'google'                           
                         }
                     }
                 }
@@ -303,7 +318,7 @@
             <h2>This is a default map without layers control</h2>
         </div>
         <div class="row">
-            <leaflet center="mapDefault.london" markers="mapDefault.markers" height="480px" width="640px"></leaflet>
+            <leaflet center="mapDefault.bogota" markers="mapDefault.markers" height="480px" width="640px"></leaflet>
         </div>
     </div>
     <div ng-controller="BaseLayersController">
@@ -343,7 +358,9 @@ layers: {
                 <ul>
                     <li><code>name</code>: The display name in the layer control</li>
                     <li><code>type</code>: The type of layer. The supported values are:
-                    <code>'xyz'</code> and <code>'wms'</code></li>
+                    <code>'xyz'</code>, <code>'google'</code> and <code>'wms'</code></li>
+                    <li>For google maps layer, <code>layerType</code>: The layer of google maps. The supported values are:
+                    <code>'SATELLITE'</code> default, <code>'HYBRID'</code>, <code>'ROADMAP'</code> and <code>'TERRAIN'</code></li>
                     <li><code>url</code>: The url of the map service to use</li>
                 </ul>
                 It can also contain optional properties
@@ -358,12 +375,13 @@ layers: {
                     <ul>You can find the possible options and default values at (not all options aply to all layers):
                     <li><code>'xyz'</code>: <a href="http://leafletjs.com/reference.html#tilelayer-options">Leaflet options for xyz tiles Layer</a>
                     <li><code>'wms'</code>: <a href="http://leafletjs.com/reference.html#tilelayer-wms-options">Leaflet options for wms tiles Layer</a>
+                    	<li><code>'google'</code>: <a href="https://github.com/shramov/leaflet-plugins">Google layer from Plugins by Pavel Shramov</a>
                     </ul>
                 </ul>
             </p>
         </div>
         <div class="row">
-            <leaflet center="london" markers="markers" layers="layers" height="480px" width="640px"></leaflet>
+            <leaflet center="bogota" markers="markers" layers="layers" height="480px" width="640px"></leaflet>
         </div>
         <div class="row">
             <h3>Note:</h3>
@@ -421,6 +439,11 @@ baselayers: {
             subdomains: ['a', 'b', 'c'],
             continuousWorld: true
         }
+    },
+    google: {
+        name: 'Google Streets',
+        layerType: 'ROADMAP',
+        type: 'google'                           
     }
 }
             </pre>
