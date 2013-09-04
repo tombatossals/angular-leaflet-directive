@@ -7,9 +7,9 @@
 <div class="row" ng-switch on="exampleTab">
     <div class="col-md-3">
         <ul class="nav nav-pills nav-stacked">
-            <li class="active"><a href="" ng-click="exampleTab='simple-map'" data-toggle="tab">Simple map</a></li>
-            <li><a href="" ng-click="exampleTab='custom-parameters'" data-toggle="tab">Custom parameters</a></li>
-            <li><a href="" ng-click="exampleTab='dragging-markers'" data-toggle="tab">Dragging marker</a></li>
+            <li ng-class="{ active: exampleTab == 'simple-map' }"><a href="#/basic-examples/simple-map" ng-click="exampleTab='simple-map'" data-toggle="tab">Simple map</a></li>
+            <li ng-class="{ active: exampleTab == 'custom-parameters' }"><a href="#/basic-examples/custom-parameters" ng-click="exampleTab='custom-parameters'" data-toggle="tab">Custom parameters</a></li>
+            <li ng-class="{ active: exampleTab == 'dragging-markers' }"><a href="#/basic-examples/dragging-markers" ng-click="exampleTab='dragging-markers'" data-toggle="tab">Dragging marker</a></li>
         </ul>
     </div>
 
@@ -23,7 +23,7 @@
 </div>
 
 <div class="row" ng-switch on="exampleTab">
-    <div class="col-md-12" ng-switch-default>
+    <div class="col-md-12" ng-switch-when="simple-map">
         <h2>Simple map example</h2>
         <p>Let's see some basic examples showing how to use the library on our AngularJS code.</p>
         This is accomplished with this directive:</p>
@@ -35,11 +35,11 @@
         <h2>Dragging marker example</h2>
         <form class="form-horizontal" role="form">
             <div class="form-group">
-                <label for="mapCenter" class="col-lg-2 control-label">Center</strong>
-                <div class="col-lg-10">
+                <label for="mapCenter" class="control-label">Center</strong>
+                <div class="col-md-4">
                     <div class="input-group">
                         <span class="input-group-addon">lat</span>
-                        <input class="form-control" type="number" step="any" ng-model="center.lat" />
+                        <input class="form-control input-md" type="number" step="any" ng-model="center.lat" />
                     </div>
                     <div class="input-group">
                         <span class="input-group-addon">lon</span>
@@ -52,8 +52,8 @@
                 </div>
             </div>
             <div class="form-group">
-                <label for="marker" class="col-lg-2 control-label">Marker</strong>
-                <div class="col-lg-10">
+                <label for="marker" class="col-md-2 control-label">Marker</strong>
+                <div class="col-md-10">
                     <div class="input-group">
                         <span class="input-group-addon">lat</span>
                         <input class="form-control" type="number" step="any" ng-model="markers.Madrid.lat" />

@@ -7,17 +7,21 @@
             templateUrl: 'partials/main.html'
         }).when('/how-to-collaborate', {
             templateUrl: 'partials/how-to-use.html'
-        }).when('/basic-examples', {
+        }).when('/basic-examples/:example', {
             templateUrl: 'partials/basic-examples.html'
         }).when('/advanced-examples', {
             templateUrl: 'partials/advanced-examples.html'
         });
     }]);
 
-    app.controller("HeaderController", [ '$scope', '$route', '$location', function($scope, $route, $location) {
+    app.controller("MainController", [ '$scope', '$route', '$routeParams', '$location', function($scope, $route, $routeParams, $location) {
         $scope.$watch(function() { return $location.path(); }, function(value) {
             $scope.activeTab = $location.path().replace(/^\//, "");
         });
+
+        if ($routeParams.example) {
+            $scope.exampleTab = $routeParams.example;
+        }
 
         angular.extend($scope, {
             center: {
