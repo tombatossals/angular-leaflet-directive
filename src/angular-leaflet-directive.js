@@ -33,7 +33,7 @@ leafletDirective.directive('leaflet', [
         center: {
             lat: 0,
             lng: 0,
-            zoom: 10
+            zoom: 1
         }
     };
 
@@ -485,8 +485,7 @@ leafletDirective.directive('leaflet', [
                 if (layerDefinition.type === undefined || layerDefinition.type === null || typeof layerDefinition.type !== 'string') {
                     $log.error('[AngularJS - Leaflet] A base layer must have a type');
                     return null;
-                } else if (layerDefinition.type !== 'xyz' && layerDefinition.type !== 'wms' && layerDefinition.type !== 'group' && layerDefinition.type !== 'markercluster'
-                			&& layerDefinition.type !== 'google') {
+                } else if (layerDefinition.type !== 'xyz' && layerDefinition.type !== 'wms' && layerDefinition.type !== 'group' && layerDefinition.type !== 'markercluster' && layerDefinition.type !== 'google') {
                     $log.error('[AngularJS - Leaflet] A layer must have a valid type: "xyz, wms, group"');
                     return null;
                 }
@@ -525,8 +524,8 @@ leafletDirective.directive('leaflet', [
                     layer = createMarkerClusterLayer(layerDefinition.layerOptions);
                     break;
                 case 'google':
-                	layer = createGoogleLayer(layerDefinition.layerOptions);
-                	break;
+                    layer = createGoogleLayer(layerDefinition.layerOptions);
+                    break;
                 default:
                     layer = null;
                 }
@@ -559,9 +558,9 @@ leafletDirective.directive('leaflet', [
                     return null;
                 }
             }
-            
+
             function createGoogleLayer(options) {
-            	if (Helpers.GoogleLayerPlugin.isLoaded()) {
+                if (Helpers.GoogleLayerPlugin.isLoaded()) {
                     var layer = new L.Google(options);
                     return layer;
                 } else {
