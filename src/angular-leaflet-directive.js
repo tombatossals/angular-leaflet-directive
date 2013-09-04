@@ -209,9 +209,10 @@ leafletDirective.directive('leaflet', [
             });
             var layers = null;
 
-            map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
             $scope.leaflet.map = !!attrs.testing ? map : str_inspect_hint;
 
+            setupMapEventCallbacks();
+            setupMapEventBroadcasting();
             setupControls();
             setupCustomControls();
             setupLayers();
@@ -222,8 +223,6 @@ leafletDirective.directive('leaflet', [
             setupMarkers();
             setupPaths();
             setupLegend();
-            setupMapEventBroadcasting();
-            setupMapEventCallbacks();
             setupGeojson();
 
             // use of leafletDirectiveSetMap event is not encouraged. only use
