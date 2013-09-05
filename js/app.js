@@ -1,7 +1,7 @@
 (function (angular) {
 
     var app = angular.module("MainPage", ['ngRoute', 'leaflet-directive', 'hljs']);
-
+    app.value('$anchorScroll', angular.noop);
     app.config(['$routeProvider', function($routeProvider) {
         $routeProvider.when('/', {
             templateUrl: 'partials/main.html'
@@ -26,6 +26,11 @@
         $scope.$watch(function() { return $routeParams.example ; }, function(value) {
             $scope.exampleTab = $routeParams.example;
         });
+
+        $scope.go = function(path) {
+            $location.path(path);
+        };
+
     }]);
 
     app.controller("HeaderController", [ '$scope', function($scope) {

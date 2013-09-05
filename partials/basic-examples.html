@@ -8,10 +8,10 @@
 <div class="row" ng-switch on="exampleTab">
     <div class="col-md-3">
         <ul class="nav nav-pills nav-stacked">
-            <li ng-class="{ active: exampleTab == 'simple-map' }"><a href="#/basic-examples/simple-map" ng-click="exampleTab='simple-map'" data-toggle="tab">Simple map</a></li>
-            <li ng-class="{ active: exampleTab == 'center' }"><a href="#/basic-examples/center" ng-click="exampleTab='center'" data-toggle="tab">Center</a></li>
-            <li ng-class="{ active: exampleTab == 'custom-parameters' }"><a href="#/basic-examples/custom-parameters" ng-click="exampleTab='custom-parameters'" data-toggle="tab">Custom parameters</a></li>
-            <li ng-class="{ active: exampleTab == 'dragging-markers' }"><a href="#/basic-examples/dragging-markers" ng-click="exampleTab='dragging-markers'" data-toggle="tab">Dragging marker</a></li>
+            <li ng-class="{ active: exampleTab == 'simple-map' }"><a ng-href="#/basic-examples/simple-map" ng-click="exampleTab='simple-map'" data-toggle="tab">Simple map</a></li>
+            <li ng-class="{ active: exampleTab == 'center' }"><a ng-href="#/basic-examples/center" ng-click="exampleTab='center'" data-toggle="tab">Center</a></li>
+            <li ng-class="{ active: exampleTab == 'custom-parameters' }"><a ng-href="#/basic-examples/custom-parameters" ng-click="exampleTab='custom-parameters'" data-toggle="tab">Custom parameters</a></li>
+            <li ng-class="{ active: exampleTab == 'dragging-markers' }"><a ng-href="#/basic-examples/dragging-markers" ng-click="exampleTab='dragging-markers'" data-toggle="tab">Dragging marker</a></li>
         </ul>
     </div>
 
@@ -95,7 +95,7 @@ app.controller("BasicMapController", [ "$scope", function($scope) {
     <div class="col-md-9" ng-switch-when="custom-parameters" ng-controller="CustomParametersController">
         <leaflet center="london" defaults="defaults"></leaflet>
         <h2>Custom parameters example</h2>
-        <p>Now that we know how to center the map to a selected position, we would like to change some default features or visualizations of the default map. We can use the <strong>defaults</strong> property to change the default behaviour of the map. We can change these properties via the <strong>defaults</strong> attribute. The options are pretty self-explanatory:</p>
+        <p>Now that we know how to center the map to a selected position, we would like to change some default features or visualizations of the default map. We can use the <strong>defaults</strong> property to change the default behaviour of the map. We can override these properties via the <strong>defaults</strong> attribute. The options are pretty self-explanatory:</p>
         <ul class="nav nav-tabs">
             <li class="active"><a href="" data-toggle="tab">Default options</a></li>
         </ul>

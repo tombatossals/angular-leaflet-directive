@@ -1,28 +1,44 @@
 <div class="row">
     <div class="col-md-12">
-        <h1>Basic examples</h1>
-        <p>Let's see some basic examples showing how to use the library on our AngularJS code.</p>
+        <h1>Advanced examples</h1>
+        <p>Let's see some more advanced examples.</p>
+        <hr />
     </div>
 </div>
 <div class="row" ng-switch on="exampleTab">
     <div class="col-md-3">
         <ul class="nav nav-pills nav-stacked">
-            <li ng-class="{ active: exampleTab == 'simple-map' }"><a href="#/basic-examples/simple-map" ng-click="exampleTab='simple-map'" data-toggle="tab">Simple map</a></li>
-            <li ng-class="{ active: exampleTab == 'center' }"><a href="#/basic-examples/center" ng-click="exampleTab='center'" data-toggle="tab">Center</a></li>
-            <li ng-class="{ active: exampleTab == 'custom-parameters' }"><a href="#/basic-examples/custom-parameters" ng-click="exampleTab='custom-parameters'" data-toggle="tab">Custom parameters</a></li>
-            <li ng-class="{ active: exampleTab == 'dragging-markers' }"><a href="#/basic-examples/dragging-markers" ng-click="exampleTab='dragging-markers'" data-toggle="tab">Dragging marker</a></li>
+            <li ng-class="{ active: exampleTab == 'geojson' }"><a ng-href="#/advanced-examples/geojson" ng-click="exampleTab='geojson'" data-toggle="tab">GeoJSON</a></li>
+            <li ng-class="{ active: exampleTab == 'legend' }"><a ng-href="#/basic-examples/legend" ng-click="exampleTab='legend'" data-toggle="tab">Legend</a></li>
+            <li ng-class="{ active: exampleTab == 'path' }"><a ng-href="#/basic-examples/path" ng-click="exampleTab='path'" data-toggle="tab">Paths</a></li>
         </ul>
     </div>
 
-    <div class="col-md-9" ng-switch-when="simple-map">
+    <div class="col-md-9" ng-switch-when="geojson">
         <leaflet></leaflet>
+        <h2>Simple map example</h2>
+        <p>This is the simpliest way to embed a Leaflet map on our application. We only have to add <strong>angular-leaflet-map</strong> to our AngularJS application dependencies, and use our custom tag <strong>&lt;leaflet&gt;</strong> on the HTML code. As easy as pie.</p>
+
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="" ng-click="activeTab='html'" data-toggle="tab">HTML code</a></li>
+            <li><a href="" ng-click="activeTab='javascript'" data-toggle="tab">Javascript</a></li>
+        </ul>
+        <div class="tab-container" ng-switch on="activeTab">
+            <div hljs ng-switch-default>
+<div ng-controller="BasicMapController">
+    <leaflet></leaflet>
+</div></div>
+            <div hljs ng-switch-when="javascript">
+var app = angular.module("basicMapApp", ["leaflet-directive"]);
+app.controller("BasicMapController", [ "$scope", function($scope) {
+        // Nothing here!
+}]);</div>
+        <p style="margin-top: 1em;">You can see a standalone example of this code <a href="examples/simple-example.html">here</a>.</p>
     </div>
 
-    <div class="col-md-9" ng-switch-when="custom-parameters" ng-controller="CustomParametersController">
-        <leaflet center="london" defaults="defaults"></leaflet>
     </div>
 
-    <div class="col-md-9" ng-controller="CenterController" ng-switch-when="center">
+    <div class="col-md-9" ng-controller="CenterController" ng-switch-when="legend">
         <leaflet center="center"></leaflet>
         <form class="form-inline" role="form">
             <div class="form-group">
@@ -49,6 +65,107 @@
                 </div>
             </div>
         </form>
+        <h2>Center example</h2>
+        <p>Let's position our map. We can center and zoom an specific position of the map via a bi-directional property called <strong>center</strong>, which has 3 properties too: <strong>lat</strong>, <strong>lng</strong> and <strong>zoom</strong>. This properties could be changed on the fly, updating our map position, and viceversa.</p>
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="" ng-click="activeTab='html'" data-toggle="tab">HTML code</a></li>
+            <li><a href="" ng-click="activeTab='javascript'" data-toggle="tab">Javascript</a></li>
+        </ul>
+        <div class="tab-container" ng-switch on="activeTab">
+            <div hljs ng-switch-default>
+<div ng-controller="CenterController">
+     <leaflet center="center"></leaflet>
+</div></div>
+            <div hljs ng-switch-when="javascript">
+ app.controller("CenterController", [ '$scope', function($scope) {
+     angular.extend($scope, {
+         center: {
+             lat: 40.095,
+             lng: -3.823,
+             zoom: 4
+         }
+     });
+}]);</div>
+        </div>
+        <p style="margin-top: 1em;">You can see a standalone example of this code <a href="examples/center-example.html">here</a>.</p>
+
+    </div>
+
+    <div class="col-md-9" ng-switch-when="path" ng-controller="CustomParametersController">
+        <leaflet center="london" defaults="defaults"></leaflet>
+        <h2>Custom parameters example</h2>
+        <p>Now that we know how to center the map to a selected position, we would like to change some default features or visualizations of the default map. We can use the <strong>defaults</strong> property to change the default behaviour of the map. We can override these properties via the <strong>defaults</strong> attribute. The options are pretty self-explanatory:</p>
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="" data-toggle="tab">Default options</a></li>
+        </ul>
+        <div class="tab-container" ng-switch on="activeTab">
+            <div hljs>
+{
+    maxZoom: 14,
+    minZoom: 1,
+    doubleClickZoom: true,
+    scrollWheelZoom: true,
+    tileLayer: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    tileLayerOptions: {
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    },
+    icon: {
+        url: 'http://cdn.leafletjs.com/leaflet-0.5.1/images/marker-icon.png',
+        retinaUrl: 'http://cdn.leafletjs.com/leaflet-0.5.1/images/marker-icon@2x.png',
+        size: [25, 41],
+        anchor: [12, 40],
+        popup: [0, -40],
+        shadow: {
+            url: 'http://cdn.leafletjs.com/leaflet-0.5.1/images/marker-shadow.png',
+            retinaUrl: 'http://cdn.leafletjs.com/leaflet-0.5.1/images/marker-shadow.png',
+            size: [41, 41],
+            anchor: [12, 40]
+        }
+    },
+    path: {
+        weight: 10,
+        opacity: 1,
+        color: '#0000ff'
+    },
+    center: {
+        lat: 0,
+        lng: 0,
+        zoom: 10
+    }
+}</div>
+        </div>
+        <p>We can override some default options to obtain a map like the upper one you see on this example. Let's see the necessary code:</p>
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="" ng-click="activeTab='html'" data-toggle="tab">HTML code</a></li>
+            <li><a href="" ng-click="activeTab='javascript'" data-toggle="tab">Javascript</a></li>
+        </ul>
+        <div class="tab-container" ng-switch on="activeTab">
+            <div hljs ng-switch-default>
+<div ng-controller="CustomParametersController">
+    <leaflet center="london" defaults="defaults"></leaflet>
+</div></div>
+            <div hljs ng-switch-when="javascript">
+app.controller("CustomParametersController", [ '$scope', function($scope) {
+    angular.extend($scope, {
+        london: {
+            lat: 51.505,
+            lng: -0.09,
+            zoom: 8
+        },
+        defaults: {
+            tileLayer: "http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png",
+            tileLayerOptions: {
+                opacity: 0.9,
+                detectRetina: true,
+                reuseTiles: true,
+            },
+            scrollWheelZoom: false
+        }
+    });
+}]);</div>
+        </div>
+        <p style="margin-top: 1em;">You can see a standalone example of this code <a href="examples/custom-parameters-example.html">here</a>.</p>
+
     </div>
 
     <div class="col-md-9" ng-controller="DraggingMarkerController" ng-switch-when="dragging-markers">
@@ -96,105 +213,38 @@
                 </div>
             </div>
         </form>
-    </div>
-</div>
-
-<div class="row" ng-switch on="exampleTab">
-    <div class="col-md-12" ng-switch-when="simple-map">
-        <h2>Simple map example</h2>
-        <p>Let's see some basic examples showing how to use the library on our AngularJS code.</p>
-        This is accomplished with this directive:</p>
-        <code>&lt;leaflet&gt;&lt;/leaflet&gt;</code>
-        <p style="margin-top: 1em;">You can also see the code of this feature in the <a href="examples/simple-example.html">simple example demo</a>.</p>
-    </div>
-
-    <div class="col-md-9" ng-controller="DragMarkerController" ng-switch-when="dragging-markers">
         <h2>Dragging marker example</h2>
-        <p>You can interact with a leaflet marker with this code on
-        your HTML:</p>
-        <pre class="prettyprint lang-javascript linenums">&lt;leaflet markers="markers" center="center"&gt;&lt;/leaflet&gt;</pre>
-        <p>And this code on your controller:</p>
-        <pre class="prettyprint lang-javascript">
-angular.extend($scope, {
-    center: {
-        lat: 40.095,
-        lng: -3.823,
-        zoom: 4
-    },
-    markers: {
-        Madrid: {
+        <p>You can interact with a leaflet marker with this code on your HTML:</p>
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="" ng-click="activeTab='html'" data-toggle="tab">HTML code</a></li>
+            <li><a href="" ng-click="activeTab='javascript'" data-toggle="tab">Javascript Angular controller</a></li>
+        </ul>
+        <div class="tab-container" ng-switch on="activeTab">
+            <div hljs ng-switch-default>
+<div ng-controller="DraggingMarkerController">
+    <leaflet markers="markers" center="center"></leaflet>
+</div></div>
+            <div hljs ng-switch-when="javascript">
+var app = angular.module("mainPage", ['leaflet-directive']);
+app.controller("DraggingMarkerController", [ '$scope', function($scope) {
+    angular.extend($scope, {
+        center: {
             lat: 40.095,
             lng: -3.823,
-            message: "Drag me to another position",
-            focus: true,
-            draggable: true
+            zoom: 4
+        },
+        markers: {
+            Madrid: {
+                lat: 40.095,
+                lng: -3.823,
+                message: "Drag me to another position",
+                focus: true,
+                draggable: true
+            }
         }
-    }
-});</pre>
+    });
+}]);</div>
         <p>See how the form inputs change with the map interaction and viceversa. You can also see the code demonstrating this feature in the <a href="examples/markers-example.html">markers example demo</a>.</p>
     </div>
 </div>
 
-        <div class="row" ng-controller="LegendController">
-            <div class="span10 offset1">
-                <hr />
-                <h3>Legend Demo</h3>
-            </div>
-            <div class="span5 offset1">
-                <p>Maybe you're interested on a map including a legend with a list of elements identified on the map by color.
-                This is accomplished with this directive:</p>
-                <code>&lt;leaflet legend="legend" center="london"&gt;&lt;/leaflet&gt;</code>
-                <p style="margin-top: 1em;">We would need to add a property <strong>legend</strong> to the scope similar to this one:</p>
-                <pre class="prettyprint lang-javascript">$scope.legend = {
-   position: 'bottomleft',
-   colors: [ '#ff0000',
-             '#28c9ff',
-             '#0000ff',
-             '#ecf386' ],
-   labels: [ 'National Cycle Route',
-             'Regional Cycle Route',
-             'Local Cycle Network',
-             'Cycleway' ]
-};
-</pre>
-                <p style="margin-top: 1em;">And we would need to add a <strong>center</strong> attribute too:</p>
-                <pre class="prettyprint lang-javascript">$scope.london = {
-    lat: 51.505,
-    lng: -0.09,
-    zoom: 12
-};
-</pre>
-            </div>
-            <div class="span5">
-                <p>Finally, we need some styles to decorate our leaflet legend:</p>
-                <pre class="prettyprint lang-javascript">
-.info {
-    padding: 6px 8px;
-    font: 14px/16px Arial, Helvetica, sans-serif;
-    background: white;
-    background: rgba(255,255,255,0.8);
-    box-shadow: 0 0 15px rgba(0,0,0,0.2);
-    border-radius: 5px;
-}
-.info h4 {
-    margin: 0 0 5px;
-    color: #777;
-}
-.legend {
-    line-height: 18px;
-    color: #555;
-}
-.legend i {
-    width: 18px;
-    height: 18px;
-    float: left;
-    margin-right: 8px;
-    opacity: 0.7;
-}
-</pre>
-            <p>This example is based on this LeafletJS tutorial: <a href="http://leafletjs.com/examples/choropleth.html">http://leafletjs.com/examples/choropleth.html</a>.</p>
-            </div>
-            <div class="offset1 span10">
-                <leaflet class="simple" center="london" legend="legend"></leaflet>
-            </div>
-        </div>
