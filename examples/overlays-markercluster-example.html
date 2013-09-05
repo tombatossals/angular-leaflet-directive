@@ -3,8 +3,7 @@
     <script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet-src.js"></script>
     <script src="./plugins/markercluster/leaflet.markercluster.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
-    <!--<script src="../dist/angular-leaflet-directive.min.js"></script>-->
-    <script src="../src/angular-leaflet-directive.js"></script>
+    <script src="../dist/angular-leaflet-directive.min.js"></script>
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" />
     <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
     <!--[if lte IE 8]>
@@ -102,7 +101,7 @@
                         lat: 42.15,
                         lng: 2.17110,
                         layer: 'cars'
-                    }                    
+                    }
                 }
             });
             $scope.move = function() {
@@ -142,8 +141,8 @@ cars: {
         <div class="row">
             <p>
                 <div class="alert alert-warning">
-                    The MarkerCluster, at this moment, does not support the location change of the markers and they have to be 
-                    removed and added again to the cluster. So, as we remove & add markers when the model is changed, you can 
+                    The MarkerCluster, at this moment, does not support the location change of the markers and they have to be
+                    removed and added again to the cluster. So, as we remove & add markers when the model is changed, you can
                     experience a slight glitch during this operation. You can test it clicking the button below.
                 </div>
             </p>
