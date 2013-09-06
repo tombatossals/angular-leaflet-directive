@@ -15,7 +15,6 @@
             <li ng-class="{ active: exampleTab == 'events' }"><a ng-href="#/basic-examples/events" ng-click="exampleTab='events'" data-toggle="tab">Events</a></li>
             <li ng-class="{ active: exampleTab == 'main-marker' }"><a ng-href="#/basic-examples/main-marker" ng-click="exampleTab='main-marker'" data-toggle="tab">Main Marker</a></li>
             <li ng-class="{ active: exampleTab == 'dragging-markers' }"><a ng-href="#/basic-examples/dragging-markers" ng-click="exampleTab='dragging-markers'" data-toggle="tab">Dragging markers</a></li>
-            <li ng-class="{ active: exampleTab == 'customize-markers' }"><a ng-href="#/basic-examples/customize-markers" ng-click="exampleTab='customize-markers'" data-toggle="tab">Customize markers</a></li>
         </ul>
     </div>
 
@@ -306,61 +305,6 @@ app.controller("MainMarkerController", ['$scope', function($scope) {
         </form>
         <h2>Dragging markers example</h2>
         <p>You can interact with a leaflet marker with this code on your HTML:</p>
-        <ul class="nav nav-tabs">
-            <li class="active"><a href="" ng-click="activeTab='html'" data-toggle="tab">HTML code</a></li>
-            <li><a href="" ng-click="activeTab='javascript'" data-toggle="tab">Javascript Angular controller</a></li>
-        </ul>
-        <div class="tab-container" ng-switch on="activeTab">
-            <div hljs ng-switch-default>
-<div ng-controller="DraggingMarkersController">
-    <leaflet markers="markers" center="center"></leaflet>
-</div></div>
-            <div hljs ng-switch-when="javascript">
-var app = angular.module("mainPage", ['leaflet-directive']);
-app.controller("DraggingMarkersController", [ '$scope', function($scope) {
-    angular.extend($scope, {
-        center: {
-            lat: 40.095,
-            lng: -3.823,
-            zoom: 6
-        },
-        markers: {
-            Madrid: {
-                lat: 40.095,
-                lng: -3.823,
-                message: "This is Madrid. Drag me to another position",
-                focus: true,
-                draggable: true
-            },
-            Barcelona: {
-                lat: 41.38,
-                lng: 2.18,
-                message: "This is Barcelona. You can't drag me",
-                focus: false,
-                draggable: false
-            }
-        }
-    });
-}]);</div>
-            <p>See how the form inputs change with the map interaction and viceversa. You can also see the code demonstrating this feature in the <a href="examples/markers-example.html">markers example demo</a>.</p>
-        </div>
-    </div>
-
-    <div class="col-md-9" ng-controller="CustomizeMarkersController" ng-switch-when="customize-markers">
-        <div class="btn-group" data-toggle="buttons">
-            <label class="btn btn-primary">
-                <input type="checkbox"> Marker 1
-            </label>
-            <label class="btn btn-primary">
-                <input type="checkbox"> Option 2
-            </label>
-            <label class="btn btn-primary">
-                <input type="checkbox"> Option 3
-            </label>
-        </div>
-        <leaflet markers="markers" center="lisboa"></leaflet>
-        <h2>Customize markers example</h2>
-        <p>You can interact with a leaflet marker with changed parameters on this code.</p>
         <ul class="nav nav-tabs">
             <li class="active"><a href="" ng-click="activeTab='html'" data-toggle="tab">HTML code</a></li>
             <li><a href="" ng-click="activeTab='javascript'" data-toggle="tab">Javascript Angular controller</a></li>

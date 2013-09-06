@@ -5,11 +5,13 @@
     app.config(['$routeProvider', function($routeProvider) {
         $routeProvider.when('/', {
             templateUrl: 'partials/main.html'
+        }).when('/getting-started', {
+            templateUrl: 'partials/main.html'
         }).when('/how-to-collaborate', {
             templateUrl: 'partials/how-to-collaborate.html'
         }).when('/basic-examples/:example', {
             templateUrl: 'partials/basic-examples.html'
-        }).when('/advanced-examples', {
+        }).when('/advanced-examples/:example', {
             templateUrl: 'partials/advanced-examples.html'
         });
     }]);

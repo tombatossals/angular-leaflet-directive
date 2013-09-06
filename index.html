@@ -25,9 +25,9 @@
                 </a>
             </div>
             <ul class="nav navbar-nav navbar-right">
-                <li ng-class="{ active: activeTab == '' }"><a href="#/">Introduction</a></li>
+                <li ng-class="{ active: activeTab == 'getting-started' || activeTab == '' }"><a href="#/getting-started">Getting started</a></li>
                 <li ng-class="{ active: activeTab == 'basic-examples' }"><a ng-href="#/basic-examples/simple-map">Basic examples</a></li>
-                <li ng-class="{ active: activeTab == 'advanced-examples' }"><a ng-href="#/advanced-examples">Advanced examples</a></li>
+                <li ng-class="{ active: activeTab == 'advanced-examples' }"><a ng-href="#/advanced-examples/customize-markers">Advanced examples</a></li>
                 <li ng-class="{ active: activeTab == 'how-to-collaborate' }"><a ng-href="#/how-to-collaborate">How to collaborate</a></li>
                 <li><a href="http://github.com/tombatossals/angular-leaflet-directive">Github repository</a></li>
             </ul>
