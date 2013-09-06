@@ -6,7 +6,7 @@
         $routeProvider.when('/', {
             templateUrl: 'partials/main.html'
         }).when('/how-to-collaborate', {
-            templateUrl: 'partials/how-to-use.html'
+            templateUrl: 'partials/how-to-collaborate.html'
         }).when('/basic-examples/:example', {
             templateUrl: 'partials/basic-examples.html'
         }).when('/advanced-examples', {
