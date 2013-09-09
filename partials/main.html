@@ -1,21 +1,28 @@
 <div class="row">
     <div class="col-md-12">
-        <h1>Getting started</h1>
-        <p>This is a very simple <a href="http://angularjs.org/">AngularJS</a> directive developed to embed and interact with a <a href="http://www.openstreetmap.org/">map</a> managed by the <a href="http://leaflet.cloudmade.com/">leaflet map library</a>. Its not intended as a complete or full-of-features library, although its a simple and easy to use directive, which has been fun to develop and is a good starting point to learn to code a directive into the great AngularJS library.</p>
+        <p>This directive allows you to embed a map on your <strong>AngularJS</strong> application and interact bi-directionally with it via the <a href="http://docs.angularjs.org/api/ng.$rootScope.Scope">AngularJS scope</a> and the <a href="http://leafletjs.com/reference.html">leaflet map library API</a>. In its current state, it's not a full-featured library, although it's easy to use and extend, and a good starting point to learn to code a directive into the great AngularJS library.</p>
     </div>
 </div>
 <div class="row">
     <div class="col-md-12">
-        <p>The code of the library and this page has been inspired on the <a href="http://nlaplante.github.com/angular-google-maps/">Angular Google Maps</a> directive developed by <a href="https://github.com/nlaplante">nlaplante</a>.</p>
+        <p>The code of the directive and this page has been inspired by the <a href="http://nlaplante.github.com/angular-google-maps/">Angular Google Maps</a> directive developed by <a href="https://github.com/nlaplante">nlaplante</a>. The initial code has been (and is being) evolved and improved by <a href="https://github.com/tombatossals/angular-leaflet-directive/graphs/contributors">these contributors</a>.</p>
     </div>
 </div>
 
 <div class="row">
     <div class="col-md-12">
-        <h2>How to use it</h2>
+        <div class="page-header">
+            <h1>Getting started</h1>
+        </div>
         <p>Before using <strong>angular-leaflet-directive</strong>, you
-        must include some javascript files to your main HTML: the main AngularJS
-        library, the Leaflet library and the angular-leaflet-directive.js script. Something like this:</p>
+        must include some javascript files to your main HTML:</p>
+        <ul>
+            <li>the AngularJS library,</li>
+            <li>the Leaflet library (javascript & CSS),</li>
+            <li>and the angular-leaflet-directive.js script.</li>
+        </ul>
+        <br />
+        <p>Something like this:</p>
         <ul class="nav nav-tabs">
             <li class="active"><a href="" ng-click="activeTab='javascript'" data-toggle="tab">Javascript includes</a></li>
             <li><a href="" ng-click="activeTab='css'" data-toggle="tab">CSS includes</a></li>
@@ -27,11 +34,17 @@
 <script src="/js/angular-leaflet-directive.min.js"></script></div>
             <div hljs ng-switch-when="css"><link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" /></div>
         </div>
+        <br />
+        <p>And that's all. Now you can start embedding maps to your application adding the custom tag <code>&lt;leaflet&gt;</code> with some attributes on your HTML code, and interacting with the <span class="label label-danger">scope</span> of your controller. Let's see how it works and how you can use it on the <a href="#/basic-examples/simple-map">basic examples page</a> and the <a href="#/advanced-examples">advanced examples page</a>, or take a look of what can be accomplished with it on the demo below.</p>
+        <br />
 
-        <p style="clear: both;">And that's all. Now you can use the directive with the custom tag <code>&lt;leaflet&gt;</code> and some attributes, let's see them on the examples.</p>
-        <div class="btn-group">
-            <a href="#/basic-examples/simple-map" class="btn btn-primary">Basic examples</a>
-            <a href="#/advanced-examples" class="btn btn-primary">Advanced examples</a>
+        <div ng-controller="WorldMapController" class="mainPageDemo">
+            <div class="info country f32" ng-show="geojson.selected">
+                <div class="flag" ng-class="countries[geojson.selected.id]['alpha-2']"></div>
+                {{ geojson.selected.properties.name }}
+            </div>
+            <leaflet center="center" events="events" legend="legend" defaults="defaults" geojson="geojson" height="600"></leaflet>
         </div>
+        <p>You can see a standalone example of this code <a href="examples/geojson-example.html">here</a>.</p>
     </div>
 </div>

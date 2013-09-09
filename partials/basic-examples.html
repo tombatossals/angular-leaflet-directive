@@ -1,11 +1,13 @@
 <div class="row">
     <div class="col-md-12">
-        <h1>Basic examples</h1>
-        <p>Let's see some basic examples showing how to use the library on our AngularJS code. Before continue, we must have some notions of how to initialize an angularJS app. You can find more information about a basic setup of an AngularJS application on the <a href="http://angularjs.org/">official AngularJS page</a>.</p>
-        <hr />
+        <div class="page-header">
+            <h1>Basic examples</h1>
+        </div>
+        <p>Let's see some progressive examples showing how to use the library on your AngularJS code. Before continue, we must have some notions of how to initialize an AngularJS app. You can find more information about a basic setup of an AngularJS application on the <a href="http://angularjs.org/">official AngularJS page</a>.</p>
     </div>
 </div>
 
+<br />
 <div class="row" ng-switch on="exampleTab">
     <div class="col-md-3">
         <ul class="nav nav-pills nav-stacked">
@@ -21,7 +23,7 @@
     <div class="col-md-9" ng-switch-when="simple-map">
         <leaflet></leaflet>
         <h2>Simple map example</h2>
-        <p>This is the simpliest way to embed a Leaflet map on our application. We only have to add <strong>angular-leaflet-map</strong> to our AngularJS application dependencies, and use our custom tag <strong>&lt;leaflet&gt;</strong> on the HTML code. As easy as pie.</p>
+        <p>This is the simpliest way to embed a Leaflet map on our application. We only have to add <strong>angular-leaflet-map</strong> to our AngularJS application dependencies, and use our custom tag <span class="label label-primary">&lt;leaflet&gt;</span> on the HTML code. Easy as pie.</p>
 
         <ul class="nav nav-tabs">
             <li class="active"><a href="" ng-click="activeTab='html'" data-toggle="tab">HTML code</a></li>
@@ -33,7 +35,7 @@
             <div hljs ng-switch-when="javascript">
 var app = angular.module("basicMapApp", ["leaflet-directive"]);
 </div>
-            <p style="margin-top: 1em;">You can see a standalone example of this code <a href="examples/simple-example.html">here</a>.</p>
+            <p>You can see a standalone example of this code <a href="examples/simple-example.html">here</a>.</p>
         </div>
     </div>
 
@@ -65,7 +67,7 @@ var app = angular.module("basicMapApp", ["leaflet-directive"]);
             </div>
         </form>
         <h2>Center example</h2>
-        <p>Let's position our map. We can center and zoom an specific position of the map via a bi-directional property called <strong>center</strong>, which has 3 properties too: <strong>lat</strong>, <strong>lng</strong> and <strong>zoom</strong>. This properties could be changed on the fly, updating our map position, and viceversa.</p>
+        <p>Let's position our map. We can center and zoom an specific position of the map via a bi-directional property called <strong>center</strong>, which 3 properties inside: <span class="label label-warning">lat</span>, <span class="label label-warning">lng</span> and <span class="label label-warning">zoom</span>. This properties could be changed on the fly, updating our map position, and viceversa.</p>
         <ul class="nav nav-tabs">
             <li class="active"><a href="" ng-click="activeTab='html'" data-toggle="tab">HTML code</a></li>
             <li><a href="" ng-click="activeTab='javascript'" data-toggle="tab">Javascript</a></li>
@@ -73,7 +75,12 @@ var app = angular.module("basicMapApp", ["leaflet-directive"]);
         <div class="tab-container" ng-switch on="activeTab">
             <div hljs ng-switch-default>
 <div ng-controller="CenterController">
-     <leaflet center="center"></leaflet>
+    <form>
+        Latitude : <input type="number" step="any" ng-model="center.lat" />
+        Longitude : <input type="number" step="any" ng-model="center.lng" />
+        Zoom : <input type="number" step="any" ng-model="center.zoom" />
+    </form>
+    <leaflet center="center"></leaflet>
 </div></div>
             <div hljs ng-switch-when="javascript">
  app.controller("CenterController", [ '$scope', function($scope) {
@@ -86,13 +93,13 @@ var app = angular.module("basicMapApp", ["leaflet-directive"]);
      });
 }]);</div>
         </div>
-        <p style="margin-top: 1em;">You can see a standalone example of this code <a href="examples/center-example.html">here</a>.</p>
+        <p>You can see a standalone example of this code <a href="examples/center-example.html">here</a>.</p>
     </div>
 
     <div class="col-md-9" ng-switch-when="custom-parameters" ng-controller="CustomParametersController">
         <leaflet center="london" defaults="defaults"></leaflet>
         <h2>Custom parameters example</h2>
-        <p>Now that we know how to center the map to a selected position, we would like to change some default features or visualizations of the default map. We can use the <strong>defaults</strong> property to change the default behaviour of the map. We can override these properties via the <strong>defaults</strong> attribute. The options are pretty self-explanatory:</p>
+        <p>Now that we know how to center the map to a selected position, we would like to change some default features or visualizations of the map. We can override the default behaviour of the map properties via the <strong>defaults</strong> attribute. The options are pretty self-explanatory:</p>
         <ul class="nav nav-tabs">
             <li class="active"><a href="" data-toggle="tab">Default options</a></li>
         </ul>
@@ -132,7 +139,7 @@ var app = angular.module("basicMapApp", ["leaflet-directive"]);
     }
 }</div>
         </div>
-        <p>We can override some default options to obtain a map like the upper one you see on this example. Let's see the necessary code:</p>
+        <p>We can override the properties we would like to change, for example, to obtain a map like the upper one you see on this page. Let's see the necessary code:</p>
         <ul class="nav nav-tabs">
             <li class="active"><a href="" ng-click="activeTab='html'" data-toggle="tab">HTML code</a></li>
             <li><a href="" ng-click="activeTab='javascript'" data-toggle="tab">Javascript</a></li>
@@ -162,7 +169,7 @@ app.controller("CustomParametersController", [ '$scope', function($scope) {
     });
 }]);</div>
         </div>
-        <p style="margin-top: 1em;">You can see a standalone example of this code <a href="examples/custom-parameters-example.html">here</a>.</p>
+        <p>You can see a standalone example of this code <a href="examples/custom-parameters-example.html">here</a>.</p>
     </div>
 
     <div class="col-md-9" ng-switch-when="events" ng-controller="EventsController">
@@ -170,8 +177,8 @@ app.controller("CustomParametersController", [ '$scope', function($scope) {
             <li><strong ng-bind="eventDetected"></strong> caught in listener.</li>
         </ul>
         <leaflet center="center" events="events"></leaflet>
-        <h2>Events manage example</h2>
-        <p>If our application needs to be notified when some event gets fired on the Leaflet map, we can listen for broadcast messages of specific events, so we can react after the event notification. These are the events we can get notified to:</p>
+        <h2>Events management example</h2>
+        <p>If our application needs to be notified when some event gets fired on the Leaflet map, we can listen for broadcast messages of specific events, so we can react after the event notification. These are the events we can get notified on our application:</p>
 
         <ul class="nav nav-tabs">
             <li class="active"><a href="" ng-click="activeTab='html'" data-toggle="tab">Leaflet events</a></li>
@@ -219,12 +226,12 @@ app.controller("EventsController", [ "$scope", function($scope) {
         $scope.eventDetected = "MouseMove";
     });
 }]);</div>
-            <p style="margin-top: 1em;">You can see a standalone example of this code <a href="examples/events-example.html">here</a>.</p>
+            <p>You can see a standalone example of this code <a href="examples/events-example.html">here</a>.</p>
         </div>
     </div>
 
     <div class="col-md-9" ng-controller="MainMarkerController" ng-switch-when="main-marker">
-        <leaflet marker="marker" center="oslo"></leaflet>
+        <leaflet marker="osloMarker" center="osloCenter"></leaflet>
         <h2>Main marker example</h2>
         <p>You can add a marker to your map easy using the <strong>marker</strong> property on the leaflet tag:</p>
         <ul class="nav nav-tabs">
@@ -234,18 +241,18 @@ app.controller("EventsController", [ "$scope", function($scope) {
         <div class="tab-container" ng-switch on="activeTab">
             <div hljs ng-switch-default>
 <div ng-controller="MainMarkerController">
-    <leaflet marker="marker" center="oslo"></leaflet>
+    <leaflet marker="osloMarker" center="osloCenter"></leaflet>
 </div></div>
             <div hljs ng-switch-when="javascript">
 var app = angular.module("mainPage", ['leaflet-directive']);
 app.controller("MainMarkerController", ['$scope', function($scope) {
     angular.extend($scope, {
-        oslo: {
+        osloCenter: {
             lat: 59.91,
             lng: 10.75,
             zoom: 12
         },
-        marker: {
+        osloMarker: {
             lat: 59.91,
             lng: 10.75,
             message: "I want to travel here!",
@@ -267,6 +274,12 @@ app.controller("MainMarkerController", ['$scope', function($scope) {
                 </div>
                 <div class="control-group col col-lg-3">
                     <div class="input-group">
+                        <span class="input-group-addon">zoom</span>
+                        <input class="form-control"  type="number" ng-model="center.zoom" />
+                    </div>
+                </div>
+                <div class="control-group col col-lg-3">
+                    <div class="input-group">
                         <span class="input-group-addon">lat</span>
                         <input class="form-control" type="number" step="any" ng-model="center.lat" />
                     </div>
@@ -277,16 +290,10 @@ app.controller("MainMarkerController", ['$scope', function($scope) {
                         <input class="form-control" type="number" step="any" ng-model="center.lng" />
                     </div>
                 </div>
-                <div class="control-group col col-lg-3">
-                    <div class="input-group">
-                        <span class="input-group-addon">zoom</span>
-                        <input class="form-control"  type="number" ng-model="center.zoom" />
-                    </div>
-                </div>
             </div>
             <hr />
             <div class="form-group">
-                <div class="control-group col col-lg-3">
+                <div class="control-group col col-lg-6">
                     <label for="marker" class="control-label">Madrid marker position</strong>
                 </div>
                 <div class="control-group col col-lg-3">
@@ -297,14 +304,14 @@ app.controller("MainMarkerController", ['$scope', function($scope) {
                 </div>
                 <div class="control-group col col-lg-3">
                     <div class="input-group">
-                        <span class="input-group-addon">long</span>
+                        <span class="input-group-addon">lon</span>
                         <input class="form-control" type="number" step="any" ng-model="markers.Madrid.lng"/>
                     </div>
                 </div>
             </div>
         </form>
         <h2>Dragging markers example</h2>
-        <p>You can interact with a leaflet marker with this code on your HTML:</p>
+        <p>You can interact with a leaflet marker updating its position on the scope:</p>
         <ul class="nav nav-tabs">
             <li class="active"><a href="" ng-click="activeTab='html'" data-toggle="tab">HTML code</a></li>
             <li><a href="" ng-click="activeTab='javascript'" data-toggle="tab">Javascript Angular controller</a></li>
@@ -327,7 +334,7 @@ app.controller("DraggingMarkersController", [ '$scope', function($scope) {
             Madrid: {
                 lat: 40.095,
                 lng: -3.823,
-                message: "This is Madrid. Drag me to another position",
+                message: "This is Madrid. But you can drag me to another position",
                 focus: true,
                 draggable: true
             },
