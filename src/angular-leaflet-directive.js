@@ -35,7 +35,7 @@ leafletDirective.directive('leaflet', [
         center: {
             lat: 0,
             lng: 0,
-            zoom: 10
+            zoom: 1
         }
     };
 
@@ -226,6 +226,8 @@ leafletDirective.directive('leaflet', [
             map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
             $scope.leaflet.map = !!attrs.testing ? map : str_inspect_hint;
 
+            setupMapEventCallbacks();
+            setupMapEventBroadcasting();
             setupControls();
             setupCustomControls();
             setupLayers();
@@ -236,8 +238,6 @@ leafletDirective.directive('leaflet', [
             setupMarkers();
             setupPaths();
             setupLegend();
-            setupMapEventBroadcasting();
-            setupMapEventCallbacks();
             setupGeojson();
 
             // use of leafletDirectiveSetMap event is not encouraged. only use
@@ -500,8 +500,7 @@ leafletDirective.directive('leaflet', [
                 if (layerDefinition.type === undefined || layerDefinition.type === null || typeof layerDefinition.type !== 'string') {
                     $log.error('[AngularJS - Leaflet] A base layer must have a type');
                     return null;
-                } else if (layerDefinition.type !== 'xyz' && layerDefinition.type !== 'wms' && layerDefinition.type !== 'group' && layerDefinition.type !== 'markercluster'
-                			&& layerDefinition.type !== 'google' && layerDefinition.type !== 'bing') {
+                } else if (layerDefinition.type !== 'xyz' && layerDefinition.type !== 'wms' && layerDefinition.type !== 'group' && layerDefinition.type !== 'markercluster' && layerDefinition.type !== 'google'' && layerDefinition.type !== 'bing') {
                     $log.error('[AngularJS - Leaflet] A layer must have a valid type: "xyz, wms, group"');
                     return null;
                 }
@@ -1389,6 +1388,7 @@ leafletDirective.directive('leaflet', [
                 if (!$scope.customControls) {
                     return;
                 }
+
                 for(var i = 0, count = $scope.customControls.length; i < count; i++) {
                     map.addControl($scope.customControls[i]);
                 }

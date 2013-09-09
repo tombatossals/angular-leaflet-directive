@@ -53,12 +53,12 @@ describe('Directive: leaflet', function() {
         expect(tileLayerObj.options.opacity).toEqual(0.8);
     });
 
-    it('should have default {[0, 0], 10} parameters on the map if not specified', function() {
+    it('should have default {[0, 0], 1} parameters on the map if not specified', function() {
         angular.extend($rootScope, {});
         var element = angular.element('<leaflet center="center" testing="testing"></leaflet>');
         element = $compile(element)($rootScope);
         var map = element.scope().leaflet.map;
-        expect(map.getZoom()).toEqual(10);
+        expect(map.getZoom()).toEqual(1);
         expect(map.getCenter().lat).toEqual(0);
         expect(map.getCenter().lng).toEqual(0);
     });
@@ -986,7 +986,7 @@ describe('Directive: leaflet', function() {
                             subdomains: ['a', 'b', 'c'],
                             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                         }
-                    }                   
+                    }
                 },
                 overlays: {
                     cars: {
@@ -1017,7 +1017,7 @@ describe('Directive: leaflet', function() {
                             subdomains: ['a', 'b', 'c'],
                             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                         }
-                    }                   
+                    }
                 },
                 overlays: {
                     cars: {
@@ -1049,7 +1049,7 @@ describe('Directive: leaflet', function() {
                             subdomains: ['a', 'b', 'c'],
                             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                         }
-                    }                   
+                    }
                 },
                 overlays: {
                     cars: {
@@ -1057,7 +1057,7 @@ describe('Directive: leaflet', function() {
                         type: 'markercluster',
                         visible: true,
                         layerOptions: {
-                            
+
                         }
                     }
                 }
@@ -1089,7 +1089,7 @@ describe('Directive: leaflet', function() {
                             subdomains: ['a', 'b', 'c'],
                             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                         }
-                    }                   
+                    }
                 },
                 overlays: {
                     cars: {
@@ -1131,7 +1131,7 @@ describe('Directive: leaflet', function() {
                             subdomains: ['a', 'b', 'c'],
                             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                         }
-                    }                   
+                    }
                 },
                 overlays: {
                     cars: {
@@ -1154,7 +1154,7 @@ describe('Directive: leaflet', function() {
                 m2: {
                     layer: 'cars',
                     lat: 1.0,
-                    lng: 1.0                    
+                    lng: 1.0
                 }
             }
         });
