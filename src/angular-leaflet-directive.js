@@ -10,6 +10,7 @@ leafletDirective.directive('leaflet', [
         scrollWheelZoom: true,
         zoomControl: true,
         zoomsliderControl: false,
+        controlLayersPosition: 'topright',
         tileLayer: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
         tileLayerOptions: {
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -229,6 +230,7 @@ leafletDirective.directive('leaflet', [
             setupMapEventCallbacks();
             setupMapEventBroadcasting();
             setupControls();
+            setupLegend();
             setupCustomControls();
             setupLayers();
             setupCenter();
@@ -237,7 +239,6 @@ leafletDirective.directive('leaflet', [
             setupMainMarker();
             setupMarkers();
             setupPaths();
-            setupLegend();
             setupGeojson();
 
             // use of leafletDirectiveSetMap event is not encouraged. only use
@@ -375,7 +376,10 @@ leafletDirective.directive('leaflet', [
                     layers = {};
                     layers.baselayers = {};
                     layers.controls = {};
-                    layers.controls.layers = new L.control.layers().addTo(map);
+                    layers.controls.layers = new L.control.layers();
+                    if($scope.defaults && $scope.defaults.controlLayersPosition)
+                    	layers.controls.layers.setPosition($scope.defaults.controlLayersPosition);
+                    layers.controls.layers.addTo(map);
                     // Setup all baselayers definitions
                     var top = false;
                     for (var layerName in $scope.layers.baselayers) {
@@ -641,7 +645,7 @@ leafletDirective.directive('leaflet', [
                             var div = L.DomUtil.create('div', 'info legend');
                             for (var i = 0; i < $scope.legend.colors.length; i++) {
                                 div.innerHTML +=
-                                    '<i style="background:' + $scope.legend.colors[i] + '"></i> ' + $scope.legend.labels[i] + '<br />';
+                                    '<div class="outline"><i style="background:' + $scope.legend.colors[i] + '"></i></div> ' + $scope.legend.labels[i] + '<br />';
                             }
                             return div;
                         };
