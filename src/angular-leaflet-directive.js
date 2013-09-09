@@ -500,8 +500,8 @@ leafletDirective.directive('leaflet', [
                 if (layerDefinition.type === undefined || layerDefinition.type === null || typeof layerDefinition.type !== 'string') {
                     $log.error('[AngularJS - Leaflet] A base layer must have a type');
                     return null;
-                } else if (layerDefinition.type !== 'xyz' && layerDefinition.type !== 'wms' && layerDefinition.type !== 'group' && layerDefinition.type !== 'markercluster' && layerDefinition.type !== 'google'' && layerDefinition.type !== 'bing') {
-                    $log.error('[AngularJS - Leaflet] A layer must have a valid type: "xyz, wms, group"');
+                } else if (layerDefinition.type !== 'xyz' && layerDefinition.type !== 'wms' && layerDefinition.type !== 'group' && layerDefinition.type !== 'markercluster' && layerDefinition.type !== 'google' && layerDefinition.type !== 'bing') {
+                    $log.error('[AngularJS - Leaflet] A layer must have a valid type: "xyz, wms, group, google"');
                     return null;
                 }
                 if (layerDefinition.type === 'xyz' || layerDefinition.type === 'wms') {
@@ -539,11 +539,11 @@ leafletDirective.directive('leaflet', [
                     layer = createMarkerClusterLayer(layerDefinition.layerOptions);
                     break;
                 case 'google':
-                	layer = createGoogleLayer(layerDefinition.layerType, layerDefinition.layerOptions);
-                	break;
+					layer = createGoogleLayer(layerDefinition.layerType, layerDefinition.layerOptions);
+					break;
                 case 'bing':
-                	layer = createBingLayer(layerDefinition.bingKey, layerDefinition.layerOptions);
-                	break;
+					layer = createBingLayer(layerDefinition.bingKey, layerDefinition.layerOptions);
+					break;
                 default:
                     layer = null;
                 }
@@ -578,8 +578,8 @@ leafletDirective.directive('leaflet', [
             }
             
             function createGoogleLayer(type, options) {
-            	type = type || 'SATELLITE';
-            	if (Helpers.GoogleLayerPlugin.isLoaded()) {
+				type = type || 'SATELLITE';
+				if (Helpers.GoogleLayerPlugin.isLoaded()) {
                     var layer = new L.Google(type, options);
                     return layer;
                 } else {
@@ -588,7 +588,7 @@ leafletDirective.directive('leaflet', [
             }
             
             function createBingLayer(key, options) {
-            	if (Helpers.BingLayerPlugin.isLoaded()) {
+				if (Helpers.BingLayerPlugin.isLoaded()) {
                     var layer = new L.BingLayer(key, options);
                     return layer;
                 } else {
@@ -1376,11 +1376,11 @@ leafletDirective.directive('leaflet', [
                 }
                 
                 if(map.zoomControl && $scope.defaults && !$scope.defaults.zoomControl) {
-                	map.zoomControl.removeFrom(map);
+					map.zoomControl.removeFrom(map);
                 }
                 
                 if(map.zoomsliderControl && $scope.defaults && !$scope.defaults.zoomsliderControl) {
-                	map.zoomsliderControl.removeFrom(map);
+					map.zoomsliderControl.removeFrom(map);
                 }
             }
 
