@@ -233,18 +233,17 @@
     app.controller("PathController", [ '$scope', function($scope) {
         angular.extend($scope, {
             center: {
-                lat: 53,
-                lng: -3,
+                lat: 50,
+                lng: -0.04,
                 zoom: 6
             },
             paths: {
                 p1: {
                     color: '#008000',
-                    weight: 3,
+                    weight: 8,
                     latlngs: [
                         { lat: 51.50, lng: -0.082 },
-                        { lat: 51.751, lng: -1.255 },
-                        { lat: 53.48, lng: -2.24 },
+                        { lat: 48.83, lng: 2.37 },
                     ],
                 }
             },

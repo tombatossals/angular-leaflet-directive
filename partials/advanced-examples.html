@@ -146,7 +146,7 @@ app.controller("LegendController", [ '$scope', function($scope) {
     </div>
 
     <div class="col-md-9" ng-controller="PathController" ng-switch-when="path">
-        <leaflet center="amsterdam" legend="legend" defaults="defaults"></leaflet>
+        <leaflet center="center" paths="paths" defaults="defaults"></leaflet>
         <h2>Path example</h2>
         <p>We can embed easily a static legend information panel on our map. Let's see how:</p>
         <ul class="nav nav-tabs">
