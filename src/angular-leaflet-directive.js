@@ -859,26 +859,37 @@ leafletDirective.directive('leaflet', [
                         marker.openPopup();
                     }
                 } else if (typeof marker_data.layer === 'string') {
-                    // There is a layer name so we will try to add it to the layer, first does the layer exists
-                    if (layers.overlays[marker_data.layer] !== undefined) {
-                        // Is a group layer?
-                        var layerGroup = layers.overlays[marker_data.layer];
-                        if (layerGroup instanceof L.LayerGroup) {
-                            // The marker goes to a correct layer group, so first of all we add it
-                            layerGroup.addLayer(marker);
-                            // The marker is automatically added to the map depending on the visibility
-                            // of the layer, so we only have to open the popup if the marker is in the map
-                            if (map.hasLayer(marker)) {
-                                if (marker_data.focus === true) {
-                                    marker.openPopup();
+                    if (layers !== null) {
+                        // We have layers so continue testing
+                        if (layers.overlays !== null && layers.overlays !== undefined) {
+                            // There is a layer name so we will try to add it to the layer, first does the layer exists
+                            if (layers.overlays[marker_data.layer] !== undefined || layers.overlays[marker_data.layer] !== null) {
+                                // Is a group layer?
+                                var layerGroup = layers.overlays[marker_data.layer];
+                                if (layerGroup instanceof L.LayerGroup) {
+                                    // The marker goes to a correct layer group, so first of all we add it
+                                    layerGroup.addLayer(marker);
+                                    // The marker is automatically added to the map depending on the visibility
+                                    // of the layer, so we only have to open the popup if the marker is in the map
+                                    if (map.hasLayer(marker)) {
+                                        if (marker_data.focus === true) {
+                                            marker.openPopup();
+                                        }
+                                    }
+                                } else {
+                                    $log.error('[AngularJS - Leaflet] A marker can only be added to a layer of type "group"');
+                                    return null;
                                 }
+                            } else {
+                                $log.error('[AngularJS - Leaflet] You must use a name of an existing layer');
+                                return null;
                             }
                         } else {
-                            $log.error('[AngularJS - Leaflet] A marker can only be added to a layer of type "group"');
+                            $log.error('[AngularJS - Leaflet] You must add layers overlays to the directive if used in a marker');
                             return null;
                         }
                     } else {
-                        $log.error('[AngularJS - Leaflet] You must use a name of an existing layer');
+                        $log.error('[AngularJS - Leaflet] You must add layers to the directive if used in a marker');
                         return null;
                     }
                 } else {
@@ -965,6 +976,10 @@ leafletDirective.directive('leaflet', [
 
                     if (old_data) {
 
+                        //TODO Check for layers !== null
+                        //TODO Check for layers.overlays !== null !== undefined
+                        // It is possible the the layer has been removed or the layer marker does not exist
+                        
                         // Update the layer group if present or move it to the map if not
                         if (data.layer === undefined || data.layer === null || typeof data.layer !== 'string') {
                             // There is no layer information, we move the marker to the map if it was in a layer group
@@ -1182,14 +1197,14 @@ leafletDirective.directive('leaflet', [
                         if (data.lat === undefined || data.lat === null || isNaN(data.lat) || typeof data.lat !== 'number' || data.lng === undefined || data.lng === null || isNaN(data.lng) || typeof data.lng !== 'number') {
                             $log.warn('There are problems with lat-lng data, please verify your marker model');
                             // Remove the marker from the layers and map if it is not valid
-                            if (layers !== undefined) {
-                                if (layers.overlays !== undefined) {
+                            if (layers !== null) {
+                                if (layers.overlays !== undefined && layers.overlays !== null) {
                                     for (var olname in layers.overlays) {
-                                        if (layers.overlays[olname] instanceof L.LayerGroup) {
+                                        if (layers.overlays[olname] instanceof L.LayerGroup || Helpers.MarkerClusterPlugin.is(layers.overlays[olname])) {
                                             if (layers.overlays[olname].hasLayer(marker)) {
                                                 layers.overlays[olname].removeLayer(marker);
                                             }
-                                        }
+                                        } 
                                     }
                                 }
                             }
