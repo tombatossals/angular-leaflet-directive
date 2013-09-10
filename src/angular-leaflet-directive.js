@@ -1182,8 +1182,8 @@ leafletDirective.directive('leaflet', [
                         if (data.lat === undefined || data.lat === null || isNaN(data.lat) || typeof data.lat !== 'number' || data.lng === undefined || data.lng === null || isNaN(data.lng) || typeof data.lng !== 'number') {
                             $log.warn('There are problems with lat-lng data, please verify your marker model');
                             // Remove the marker from the layers and map if it is not valid
-                            if (layers !== undefined) {
-                                if (layers.overlays !== undefined) {
+                            if (layers !== null) {
+                                if (layers.overlays !== undefined && layers.overlays !== null) {
                                     for (var olname in layers.overlays) {
                                         if (layers.overlays[olname] instanceof L.LayerGroup) {
                                             if (layers.overlays[olname].hasLayer(marker)) {
