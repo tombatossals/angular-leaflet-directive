@@ -3,7 +3,7 @@
         <div class="page-header">
             <h1>Advanced examples</h1>
         </div>
-        <p>Let's see some more advanced examples. This code will be more difficult to understand that the previous versions, but you will see</p>
+        <p>Let's see some more advanced examples. Maybe this code will be a little more difficult to understand that the previous examples, but you will see that a small piece of code can result in a complex interaction between the browser and the map.</p>
     </div>
 </div>
 
@@ -20,6 +20,7 @@
     </div>
 
     <div class="col-md-9" ng-controller="CustomizeMarkersController" ng-switch-when="customize-markers">
+        <p>Click on the buttons to change the marker object default properties:</p>
         <button type="button" class="btn btn-primary padright" ng-click="markers.m1.icon=icon" ng-repeat="(key, icon) in icons">{{ key }}</button>
         <leaflet markers="markers" center="lisbon" defaults="defaults"></leaflet>
         <h2>Customize markers example</h2>
@@ -31,8 +32,8 @@
         <div class="tab-container" ng-switch on="activeTab">
             <div hljs ng-switch-default>
 <div ng-controller="CustomizeMarkersController">
-     <button type="button" class="btn btn-primary padright" ng-click="markers.m1.icon=icon" ng-repeat="(key, icon) in icons">{{ key }}</button>
-     <leaflet markers="markers" center="lisbon"></leaflet>
+    <button type="button" class="btn btn-primary padright" ng-click="markers.m1.icon=icon" ng-repeat="(key, icon) in icons">{{ key }}</button>
+    <leaflet markers="markers" center="lisbon"></leaflet>
 </div></div>
             <div hljs ng-switch-when="javascript">
 var app = angular.module("mainPage", ['leaflet-directive']);
@@ -141,6 +142,55 @@ app.controller("LegendController", [ '$scope', function($scope) {
     opacity: 0.7;
 }</div>
             <p>You can see the code demonstrating this feature in the <a href="examples/legend-example.html">legend example</a>.</p>
+        </div>
+    </div>
+
+    <div class="col-md-9" ng-controller="PathController" ng-switch-when="path">
+        <leaflet center="amsterdam" legend="legend" defaults="defaults"></leaflet>
+        <h2>Path example</h2>
+        <p>We can embed easily a static legend information panel on our map. Let's see how:</p>
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="" ng-click="activeTab='html'" data-toggle="tab">HTML code</a></li>
+            <li><a href="" ng-click="activeTab='javascript'" data-toggle="tab">Javascript Angular controller</a></li>
+            <li><a href="" ng-click="activeTab='css'" data-toggle="tab">CSS code</a></li>
+        </ul>
+        <div class="tab-container" ng-switch on="activeTab">
+            <div hljs ng-switch-default>
+<div ng-controller="LegendController">
+     <leaflet center="amsterdam" legend="legend"></leaflet>
+</div></div>
+            <div hljs ng-switch-when="javascript">
+var app = angular.module("mainPage", ['leaflet-directive']);
+app.controller("LegendController", [ '$scope', function($scope) {
+    angular.extend($scope, {
+        amsterdam: {
+            lat: 52.35,
+            lng: 4.91,
+            zoom: 12
+        },
+        legend: {
+            position: 'bottomleft',
+            colors: [ '#ff0000', '#28c9ff', '#0000ff', '#ecf386' ],
+            labels: [ 'National Cycle Route', 'Regional Cycle Route', 'Local Cycle Network', 'Cycleway' ]
+        },
+        defaults: {
+            tileLayer: "http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png"
+        }
+    });
+}]);</div>
+        <div hljs ng-switch-when="css">
+.legend {
+    line-height: 18px;
+    color: #555;
+}
+.legend i {
+    width: 18px;
+    height: 18px;
+    float: left;
+    margin-right: 8px;
+    opacity: 0.7;
+}</div>
+            <p>You can see the code demonstrating this feature in the <a href="examples/path-example.html">path example</a>.</p>
         </div>
     </div>
 </div>

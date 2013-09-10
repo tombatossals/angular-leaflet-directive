@@ -65,6 +65,9 @@
                 lat: 40.095,
                 lng: -3.823,
                 zoom: 4
+            },
+            defaults: {
+                scrollWheelZoom: false
             }
         });
     }]);
@@ -94,6 +97,9 @@
                 lat: 40.095,
                 lng: -3.823,
                 zoom: 6
+            },
+            defaults: {
+                scrollWheelZoom: false
             },
             markers: {
                 Madrid: {
@@ -127,6 +133,9 @@
                 message: "I want to travel here!",
                 focus: true,
                 draggable: false
+            },
+            defaults: {
+                scrollWheelZoom: false
             }
         });
     }]);
@@ -137,6 +146,9 @@
                 lat: 52.374004,
                 lng: 4.890359,
                 zoom: 7
+            },
+            defaults: {
+                scrollWheelZoom: false
             }
         });
 

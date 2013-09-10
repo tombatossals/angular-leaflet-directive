@@ -40,7 +40,7 @@ var app = angular.module("basicMapApp", ["leaflet-directive"]);
     </div>
 
     <div class="col-md-9" ng-controller="CenterController" ng-switch-when="center">
-        <leaflet center="center"></leaflet>
+        <leaflet center="center" defaults="defaults"></leaflet>
         <form class="form-inline" role="form">
             <div class="form-group">
                 <div class="control-group col col-lg-3">
@@ -176,7 +176,7 @@ app.controller("CustomParametersController", [ '$scope', function($scope) {
         <ul>
             <li><strong ng-bind="eventDetected"></strong> caught in listener.</li>
         </ul>
-        <leaflet center="center" events="events"></leaflet>
+        <leaflet center="center" events="events" defaults="defaults"></leaflet>
         <h2>Events management example</h2>
         <p>If our application needs to be notified when some event gets fired on the Leaflet map, we can listen for broadcast messages of specific events, so we can react after the event notification. These are the events we can get notified on our application:</p>
 
@@ -231,7 +231,7 @@ app.controller("EventsController", [ "$scope", function($scope) {
     </div>
 
     <div class="col-md-9" ng-controller="MainMarkerController" ng-switch-when="main-marker">
-        <leaflet marker="osloMarker" center="osloCenter"></leaflet>
+        <leaflet marker="osloMarker" center="osloCenter" defaults="defaults"></leaflet>
         <h2>Main marker example</h2>
         <p>You can add a marker to your map easy using the <strong>marker</strong> property on the leaflet tag:</p>
         <ul class="nav nav-tabs">
@@ -266,7 +266,7 @@ app.controller("MainMarkerController", ['$scope', function($scope) {
     </div>
 
     <div class="col-md-9" ng-controller="DraggingMarkersController" ng-switch-when="dragging-markers">
-        <leaflet markers="markers" center="center"></leaflet>
+        <leaflet markers="markers" center="center" defaults="defaults"></leaflet>
         <form class="form-inline" role="form">
             <div class="form-group">
                 <div class="control-group col col-lg-3">
