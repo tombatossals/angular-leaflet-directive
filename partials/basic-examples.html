@@ -9,7 +9,7 @@
 
 <br />
 <div class="row" ng-switch on="exampleTab">
-    <div class="col-md-3">
+    <div class="col-md-2">
         <ul class="nav nav-pills nav-stacked">
             <li ng-class="{ active: exampleTab == 'simple-map' }"><a ng-href="#/basic-examples/simple-map" ng-click="exampleTab='simple-map'" data-toggle="tab">Simple map</a></li>
             <li ng-class="{ active: exampleTab == 'center' }"><a ng-href="#/basic-examples/center" ng-click="exampleTab='center'" data-toggle="tab">Center</a></li>
@@ -20,7 +20,7 @@
         </ul>
     </div>
 
-    <div class="col-md-9" ng-switch-when="simple-map">
+    <div class="col-md-10" ng-switch-when="simple-map">
         <leaflet></leaflet>
         <h2>Simple map example</h2>
         <p>This is the simpliest way to embed a Leaflet map on our application. We only have to add <strong>angular-leaflet-map</strong> to our AngularJS application dependencies, and use our custom tag <span class="label label-primary">&lt;leaflet&gt;</span> on the HTML code. Easy as pie.</p>
@@ -39,7 +39,7 @@ var app = angular.module("basicMapApp", ["leaflet-directive"]);
         </div>
     </div>
 
-    <div class="col-md-9" ng-controller="CenterController" ng-switch-when="center">
+    <div class="col-md-10" ng-controller="CenterController" ng-switch-when="center">
         <leaflet center="center" defaults="defaults"></leaflet>
         <form class="form-inline" role="form">
             <div class="form-group">
@@ -96,7 +96,7 @@ var app = angular.module("basicMapApp", ["leaflet-directive"]);
         <p>You can see a standalone example of this code <a href="examples/center-example.html">here</a>.</p>
     </div>
 
-    <div class="col-md-9" ng-switch-when="custom-parameters" ng-controller="CustomParametersController">
+    <div class="col-md-10" ng-switch-when="custom-parameters" ng-controller="CustomParametersController">
         <leaflet center="london" defaults="defaults"></leaflet>
         <h2>Custom parameters example</h2>
         <p>Now that we know how to center the map to a selected position, we would like to change some default features or visualizations of the map. We can override the default behaviour of the map properties via the <strong>defaults</strong> attribute. The options are pretty self-explanatory:</p>
@@ -172,7 +172,7 @@ app.controller("CustomParametersController", [ '$scope', function($scope) {
         <p>You can see a standalone example of this code <a href="examples/custom-parameters-example.html">here</a>.</p>
     </div>
 
-    <div class="col-md-9" ng-switch-when="events" ng-controller="EventsController">
+    <div class="col-md-10" ng-switch-when="events" ng-controller="EventsController">
         <ul>
             <li><strong ng-bind="eventDetected"></strong> caught in listener.</li>
         </ul>
@@ -230,7 +230,7 @@ app.controller("EventsController", [ "$scope", function($scope) {
         </div>
     </div>
 
-    <div class="col-md-9" ng-controller="MainMarkerController" ng-switch-when="main-marker">
+    <div class="col-md-10" ng-controller="MainMarkerController" ng-switch-when="main-marker">
         <leaflet marker="osloMarker" center="osloCenter" defaults="defaults"></leaflet>
         <h2>Main marker example</h2>
         <p>You can add a marker to your map easy using the <strong>marker</strong> property on the leaflet tag:</p>
@@ -265,7 +265,7 @@ app.controller("MainMarkerController", ['$scope', function($scope) {
         </div>
     </div>
 
-    <div class="col-md-9" ng-controller="DraggingMarkersController" ng-switch-when="dragging-markers">
+    <div class="col-md-10" ng-controller="DraggingMarkersController" ng-switch-when="dragging-markers">
         <leaflet markers="markers" center="center" defaults="defaults"></leaflet>
         <form class="form-inline" role="form">
             <div class="form-group">

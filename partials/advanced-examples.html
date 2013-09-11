@@ -10,20 +10,20 @@
 <br />
 
 <div class="row" ng-switch on="exampleTab">
-    <div class="col-md-3">
+    <div class="col-md-2">
         <ul class="nav nav-pills nav-stacked">
-            <li ng-class="{ active: exampleTab == 'customize-markers' }"><a ng-href="#/advanced-examples/customize-markers" ng-click="exampleTab='customize-markers'" data-toggle="tab">Customize markers</a></li>
+            <li ng-class="{ active: exampleTab == 'path' }"><a ng-href="#/advanced-examples/path" ng-click="exampleTab='path'" data-toggle="tab">Paths</a></li>
             <li ng-class="{ active: exampleTab == 'geojson' }"><a ng-href="#/advanced-examples/geojson" ng-click="exampleTab='geojson'" data-toggle="tab">GeoJSON</a></li>
             <li ng-class="{ active: exampleTab == 'legend' }"><a ng-href="#/advanced-examples/legend" ng-click="exampleTab='legend'" data-toggle="tab">Legend</a></li>
-            <li ng-class="{ active: exampleTab == 'path' }"><a ng-href="#/advanced-examples/path" ng-click="exampleTab='path'" data-toggle="tab">Paths</a></li>
+            <li ng-class="{ active: exampleTab == 'customize-markers' }"><a ng-href="#/advanced-examples/customize-markers" ng-click="exampleTab='customize-markers'" data-toggle="tab">Customized markers</a></li>
         </ul>
     </div>
 
-    <div class="col-md-9" ng-controller="CustomizeMarkersController" ng-switch-when="customize-markers">
+    <div class="col-md-10" ng-controller="CustomizedMarkersController" ng-switch-when="customize-markers">
         <p>Click on the buttons to change the marker object default properties:</p>
         <button type="button" class="btn btn-primary padright" ng-click="markers.m1.icon=icon" ng-repeat="(key, icon) in icons">{{ key }}</button>
         <leaflet markers="markers" center="lisbon" defaults="defaults"></leaflet>
-        <h2>Customize markers example</h2>
+        <h2>Customized markers example</h2>
         <p>You can change the marker default options to customize it like we see on this example.</p>
         <ul class="nav nav-tabs">
             <li class="active"><a href="" ng-click="activeTab='html'" data-toggle="tab">HTML code</a></li>
@@ -31,13 +31,13 @@
         </ul>
         <div class="tab-container" ng-switch on="activeTab">
             <div hljs ng-switch-default>
-<div ng-controller="CustomizeMarkersController">
+<div ng-controller="CustomizedMarkersController">
     <button type="button" class="btn btn-primary padright" ng-click="markers.m1.icon=icon" ng-repeat="(key, icon) in icons">{{ key }}</button>
     <leaflet markers="markers" center="lisbon"></leaflet>
 </div></div>
             <div hljs ng-switch-when="javascript">
 var app = angular.module("mainPage", ['leaflet-directive']);
-app.controller("CustomizeMarkersController", [ '$scope', function($scope) {
+app.controller("CustomizedMarkersController", [ '$scope', function($scope) {
     var local_icons = {
         leaf_icon: L.icon({
             iconUrl: 'examples/img/leaf-green.png',
@@ -96,7 +96,7 @@ app.controller("CustomizeMarkersController", [ '$scope', function($scope) {
         </div>
     </div>
 
-    <div class="col-md-9" ng-controller="LegendController" ng-switch-when="legend">
+    <div class="col-md-10" ng-controller="LegendController" ng-switch-when="legend">
         <leaflet center="amsterdam" legend="legend" defaults="defaults"></leaflet>
         <h2>Legend example</h2>
         <p>We can embed easily a static legend information panel on our map. Let's see how:</p>
@@ -145,52 +145,83 @@ app.controller("LegendController", [ '$scope', function($scope) {
         </div>
     </div>
 
-    <div class="col-md-9" ng-controller="PathController" ng-switch-when="path">
-        <leaflet center="center" paths="paths" markers="markers" defaults="defaults"></leaflet>
+    <div class="col-md-10" ng-controller="PathController" ng-switch-when="path">
+        <leaflet center="center" paths="paths" markers="markers" defaults="defaults" height="500"></leaflet>
         <p class="small">City icons obtained from <a href="http://iconka.com/tourism/">Iconka</a>.</p>
         <h2>Path example</h2>
-        <p>We can embed easily a static legend information panel on our map. Let's see how:</p>
+        <p>We can trace a path on our map with two-way binding. On the example you can see a path of tree points with a line colored green and a determined weight. We also paint 3 custom icons on every point of the path. This can be accomplished with this code:</p>
         <ul class="nav nav-tabs">
             <li class="active"><a href="" ng-click="activeTab='html'" data-toggle="tab">HTML code</a></li>
             <li><a href="" ng-click="activeTab='javascript'" data-toggle="tab">Javascript Angular controller</a></li>
-            <li><a href="" ng-click="activeTab='css'" data-toggle="tab">CSS code</a></li>
         </ul>
         <div class="tab-container" ng-switch on="activeTab">
             <div hljs ng-switch-default>
-<div ng-controller="LegendController">
-     <leaflet center="amsterdam" legend="legend"></leaflet>
+<div ng-controller="PathController">
+    <leaflet center="center" paths="paths" markers="markers" defaults="defaults" height="500"></leaflet>
 </div></div>
             <div hljs ng-switch-when="javascript">
 var app = angular.module("mainPage", ['leaflet-directive']);
-app.controller("LegendController", [ '$scope', function($scope) {
+    app.controller("PathController", [ '$scope', function($scope) {
     angular.extend($scope, {
-        amsterdam: {
-            lat: 52.35,
-            lng: 4.91,
-            zoom: 12
+        center: {
+            lat: 48,
+            lng: 4,
+            zoom: 5
         },
-        legend: {
-            position: 'bottomleft',
-            colors: [ '#ff0000', '#28c9ff', '#0000ff', '#ecf386' ],
-            labels: [ 'National Cycle Route', 'Regional Cycle Route', 'Local Cycle Network', 'Cycleway' ]
+        paths: {
+            p1: {
+                color: '#008000',
+                weight: 8,
+                latlngs: [
+                    { lat: 51.50, lng: -0.082 },
+                    { lat: 48.83, lng: 2.37 },
+                    { lat: 41.91, lng: 12.48 }
+                ],
+            }
+        },
+        markers: {
+            london: {
+                lat: 51.50,
+                lng: -0.082,
+                icon: L.icon({
+                    iconUrl: 'examples/img/100x100_PNG/bigben100.png',
+                    iconSize: [80, 80],
+                    iconAnchor: [40, 80],
+                    popupAnchor: [0, 0],
+                    shadowSize: [0, 0],
+                    shadowAnchor: [0, 0]
+                })
+            },
+            paris: {
+                lat: 48.83,
+                lng: 2.37,
+                icon: L.icon({
+                    iconUrl: 'examples/img/100x100_PNG/eiffel100.png',
+                    iconSize: [80, 80],
+                    iconAnchor: [40, 60],
+                    popupAnchor: [0, 0],
+                    shadowSize: [0, 0],
+                    shadowAnchor: [0, 0]
+                })
+            },
+            roma: {
+                lat: 41.91,
+                lng: 12.48,
+                icon: L.icon({
+                    iconUrl: 'examples/img/100x100_PNG/colosseum100.png',
+                    iconSize: [60, 60],
+                    iconAnchor: [30, 40],
+                    popupAnchor: [0, 0],
+                    shadowSize: [0, 0],
+                    shadowAnchor: [0, 0]
+                })
+            }
         },
         defaults: {
-            tileLayer: "http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png"
+            scrollWheelZoom: false
         }
     });
 }]);</div>
-        <div hljs ng-switch-when="css">
-.legend {
-    line-height: 18px;
-    color: #555;
-}
-.legend i {
-    width: 18px;
-    height: 18px;
-    float: left;
-    margin-right: 8px;
-    opacity: 0.7;
-}</div>
             <p>You can see the code demonstrating this feature in the <a href="examples/path-example.html">path example</a>.</p>
         </div>
     </div>

@@ -171,7 +171,7 @@
         });
     }]);
 
-    app.controller("CustomizeMarkersController", [ '$scope', function($scope) {
+    app.controller("CustomizedMarkersController", [ '$scope', function($scope) {
         var local_icons = {
             leaf_icon: L.icon({
                 iconUrl: 'examples/img/leaf-green.png',
@@ -233,9 +233,9 @@
     app.controller("PathController", [ '$scope', function($scope) {
         angular.extend($scope, {
             center: {
-                lat: 50,
-                lng: -0.04,
-                zoom: 6
+                lat: 48,
+                lng: 4,
+                zoom: 5
             },
             paths: {
                 p1: {
@@ -244,6 +244,7 @@
                     latlngs: [
                         { lat: 51.50, lng: -0.082 },
                         { lat: 48.83, lng: 2.37 },
+                        { lat: 41.91, lng: 12.48 }
                     ],
                 }
             },
@@ -253,8 +254,8 @@
                     lng: -0.082,
                     icon: L.icon({
                         iconUrl: 'examples/img/100x100_PNG/bigben100.png',
-                        iconSize: [100, 100],
-                        iconAnchor: [50, 100],
+                        iconSize: [80, 80],
+                        iconAnchor: [40, 80],
                         popupAnchor: [0, 0],
                         shadowSize: [0, 0],
                         shadowAnchor: [0, 0]
@@ -265,8 +266,20 @@
                     lng: 2.37,
                     icon: L.icon({
                         iconUrl: 'examples/img/100x100_PNG/eiffel100.png',
-                        iconSize: [100, 100],
-                        iconAnchor: [50, 80],
+                        iconSize: [80, 80],
+                        iconAnchor: [40, 60],
+                        popupAnchor: [0, 0],
+                        shadowSize: [0, 0],
+                        shadowAnchor: [0, 0]
+                    })
+                },
+                roma: {
+                    lat: 41.91,
+                    lng: 12.48,
+                    icon: L.icon({
+                        iconUrl: 'examples/img/100x100_PNG/colosseum100.png',
+                        iconSize: [60, 60],
+                        iconAnchor: [30, 40],
                         popupAnchor: [0, 0],
                         shadowSize: [0, 0],
                         shadowAnchor: [0, 0]
