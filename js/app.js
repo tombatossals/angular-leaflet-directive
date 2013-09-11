@@ -247,6 +247,35 @@
                     ],
                 }
             },
+            markers: {
+                london: {
+                    lat: 51.50,
+                    lng: -0.082,
+                    icon: L.icon({
+                        iconUrl: 'examples/img/100x100_PNG/bigben100.png',
+                        iconSize: [100, 100],
+                        iconAnchor: [50, 100],
+                        popupAnchor: [0, 0],
+                        shadowSize: [0, 0],
+                        shadowAnchor: [0, 0]
+                    })
+                },
+                paris: {
+                    lat: 48.83,
+                    lng: 2.37,
+                    icon: L.icon({
+                        iconUrl: 'examples/img/100x100_PNG/eiffel100.png',
+                        iconSize: [100, 100],
+                        iconAnchor: [50, 80],
+                        popupAnchor: [0, 0],
+                        shadowSize: [0, 0],
+                        shadowAnchor: [0, 0]
+                    })
+                }
+            },
+            defaults: {
+                scrollWheelZoom: false
+            }
         });
     }]);
 

@@ -146,7 +146,8 @@ app.controller("LegendController", [ '$scope', function($scope) {
     </div>
 
     <div class="col-md-9" ng-controller="PathController" ng-switch-when="path">
-        <leaflet center="center" paths="paths" defaults="defaults"></leaflet>
+        <leaflet center="center" paths="paths" markers="markers" defaults="defaults"></leaflet>
+        <p class="small">City icons obtained from <a href="http://iconka.com/tourism/">Iconka</a>.</p>
         <h2>Path example</h2>
         <p>We can embed easily a static legend information panel on our map. Let's see how:</p>
         <ul class="nav nav-tabs">
