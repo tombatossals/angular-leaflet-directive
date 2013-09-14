@@ -3,4 +3,6 @@ node_modules
 libpeerconnection.log
 *.swp
 .*.swp
+*.iml
+.idea
 

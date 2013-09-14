@@ -1,0 +1,51 @@
+<div class="row">
+    <div class="col-md-12">
+        <p>This directive allows you to embed a map on your <strong>AngularJS</strong> application and interact bi-directionally with it via the <a href="http://docs.angularjs.org/api/ng.$rootScope.Scope">AngularJS scope</a> and the <a href="http://leafletjs.com/reference.html">leaflet map library API</a>. In its current state, it's not a full-featured library, although it's easy to use and extend, and a good starting point to learn to code a directive into the great AngularJS library.</p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <p>The code of the directive and this page has been inspired by the <a href="http://nlaplante.github.com/angular-google-maps/">Angular Google Maps</a> directive developed by <a href="https://github.com/nlaplante">nlaplante</a>. The initial code has been (and is being) evolved and improved by <a href="https://github.com/tombatossals/angular-leaflet-directive/graphs/contributors">these contributors</a>.</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="page-header">
+            <h1>Getting started</h1>
+        </div>
+        <p>Before using <strong>angular-leaflet-directive</strong>, you
+        must include some javascript files to your main HTML:</p>
+        <ul>
+            <li>the AngularJS library,</li>
+            <li>the Leaflet library (javascript & CSS),</li>
+            <li>and the angular-leaflet-directive.js script.</li>
+        </ul>
+        <br />
+        <p>Something like this:</p>
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="" ng-click="activeTab='javascript'" data-toggle="tab">Javascript includes</a></li>
+            <li><a href="" ng-click="activeTab='css'" data-toggle="tab">CSS includes</a></li>
+        </ul>
+        <div class="tab-container" ng-switch on="activeTab">
+            <div hljs ng-switch-default>
+<script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+<script src="/js/angular-leaflet-directive.min.js"></script></div>
+            <div hljs ng-switch-when="css"><link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" /></div>
+        </div>
+        <br />
+        <p>And that's all. Now you can start embedding maps to your application adding the custom tag <code>&lt;leaflet&gt;</code> with some attributes on your HTML code, and interacting with the <span class="label label-danger">scope</span> of your controller. Let's see how it works and how you can use it in the <a href="#/examples/simple-map">examples page</a>, or take a look of what can be accomplished with it on the demo below.</p>
+        <br />
+
+        <div ng-controller="WorldMapController" class="mainPageDemo">
+            <div class="info country f32" ng-show="geojson.selected">
+                <div class="flag" ng-class="countries[geojson.selected.id]['alpha-2']|lowercase"></div>
+                {{ geojson.selected.properties.name }}
+            </div>
+            <leaflet center="center" events="events" legend="legend" defaults="defaults" geojson="geojson" height="600"></leaflet>
+        </div>
+        <p>Example partially based on <a href="http://leafletjs.com/examples/choropleth.html">this Leaflet demo</a>. CSS + Images of flags obtained from the <a href="https://github.com/lafeber/world-flags-sprite">World Flags Sprite</a> project.</p>
+        <p>You can see a standalone example of this code <a href="examples/geojson-example.html">here</a>.</p>
+    </div>
+</div>

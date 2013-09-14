@@ -1,0 +1,48 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="page-header">
+            <h1>How to collaborate</h1>
+        </div>
+        <p>You can extend the functionality of this library easily with a basic knowledge of the <a href="http://docs.angularjs.org/guide/directive">AngularJS directives development</a> and the <a href="http://leafletjs.com/reference.html">Leaflet library API</a>. The code is modular and easy to read so feel free to add code or modify it to fit the library to your own needs. Futhermore, if you would like to merge your changes to the main development branch send a pull request via github.</p>
+
+        <h3>Building, testing and developing</h3>
+        <p><strong>Coding style:</strong> We use <a href="https://raw.github.com/tombatossals/angular-leaflet-directive/master/.editorconfig">this .editorconfig file</a> to define our coding style between IDE's. You can find more info about this on <a href="http://editorconfig.org/">http://editorconfig.org/</a>.</p>
+        <p><strong>Grunt:</strong> We also use <a href="http://gruntjs.com/">Grunt</a> as a tool to automate building, linting, testing and minifying the code. You can see the development utilities used on the <a href="https://github.com/tombatossals/angular-leaflet-directive/blob/master/package.json">package.json</a> file, and the grunt tasks on the <a href="https://raw.github.com/tombatossals/angular-leaflet-directive/master/Gruntfile.js">Gruntfile.js file</a>. Before we can use Grunt, we must install the required packages via npm, let's see an example of how to install the project dependencies:</p>
+         <ul class="nav nav-tabs">
+             <li class="active"><a href="">Command line example of how to install project dependencies and runt grunt</a></li>
+         </ul>
+         <div class="tab-container" ng-switch on="activeTab">
+             <div hljs>
+$ git clone https://github.com/tombatossals/angular-leaflet-directive
+Cloning into 'angular-leaflet-directive'...
+remote: Counting objects: 1939, done.
+remote: Compressing objects: 100% (1107/1107), done.
+remote: Total 1939 (delta 884), reused 1795 (delta 748)
+Receiving objects: 100% (1939/1939), 1014.10 KiB | 470.00 KiB/s, done.
+Resolving deltas: 100% (884/884), done.
+Checking connectivity... done
+$ cd angular-leaflet-directive/
+$ npm install
+npm http GET https://registry.npmjs.org/grunt
+npm http GET https://registry.npmjs.org/grunt-contrib-jshint
+...
+├── http-proxy@0.10.3 (pkginfo@0.2.3, utile@0.1.7)
+├── log4js@0.6.8 (semver@1.1.4, dequeue@1.0.3, async@0.1.15, readable-stream@1.0.17)
+└── socket.io@0.9.16 (base64id@0.1.0, policyfile@0.0.4, redis@0.7.3, socket.io-client@0.9.16)
+$ export PATH=$PATH:node_modules/.bin
+$ grunt
+Running "karma:background" (karma) task
+
+Running "watch" task
+Waiting...
+</div>
+    </div>
+    <br />
+    <h4>Defined Grunt tasks</h4>
+    <ul>
+        <li><strong>grunt test.</strong> Executes the unitary tests and the e2e tests of the <a href="http://karma-runner.github.io/0.10/index.html">karma framework</a>.</li>
+        <li><strong>grunt jshint.</strong> Lints the main JS files of the project (directive and tests) with the <a href="http://www.jshint.com/">jshint</a> utility.</li>
+        <li><strong>grunt uglify.</strong> Minifies the library with <a href="https://github.com/mishoo/UglifyJS2">UglifyJS</a>.</li>
+        <li><strong>grunt default.</strong> The default <strong>grunt</strong> task will start listening for project changes on our library file <strong>src/angular-leaflet-directive.js</strong>. Whenever it detects that the file has changed, it will execute the <span class="label label-warning">jshint task</span>, the <span class="label label-warning">karma tests task</span>, and the <span class="label label-warning">uglify task</span> (if every previous task went ok) so the <strong>dist/angular-leaflet-directive.min.js</strong> file will be ready for production.</li>
+    </ul>
+</div>
