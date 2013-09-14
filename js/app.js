@@ -2,7 +2,7 @@
 
     var app = angular.module("MainPage", ['ngRoute', 'leaflet-directive', 'hljs']);
     app.value('$anchorScroll', angular.noop);
-    app.config(['$routeProvider', function($routeProvider) {
+    app.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
         $routeProvider.when('/', {
             templateUrl: 'partials/main.html'
         }).when('/getting-started', {
@@ -12,6 +12,7 @@
         }).when('/examples/:example', {
             templateUrl: 'partials/examples.html'
         });
+        $locationProvider.hashPrefix('!');
     }]);
 
     app.controller("MainController", [ '$scope', '$route', '$routeParams', '$location', function($scope, $route, $routeParams, $location) {

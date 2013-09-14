@@ -3,13 +3,12 @@ body {
     overflow-y: scroll;
 }
 
-.navbar {
-    margin-bottom: 0px;
+body {
+    padding: 30px;
 }
 
-body {
-    padding-top: 50px;
-    padding: 0;
+.navbar {
+    margin-bottom: 0px;
 }
 
 .forkme > img {
@@ -117,4 +116,18 @@ div.mainPageDemo {
 .padright {
     margin-right: .5em;
     margin-bottom: 1em;
+}
+
+.navbar-inverse {
+    border-left: 1px solid #fdfdfd;
+    border-right: 1px solid #fdfdfd;
+}
+
+.navbar .navbar-nav > .active > a {
+    background-color: #e7e7e7;
+    color: #555;
+}
+
+.navbar {
+    border-radius: 4px 4px 0 0;
 }

@@ -2,6 +2,7 @@
 <html ng-app="MainPage" lang="en">
 <head>
     <meta charset="UTF-8">
+    <!--<meta name="fragment" content="!">-->
     <meta name="keywords" content="angularjs,leaflet,openstreetmap,javascript,directive,plugin">
     <meta name="description" content="Leaflet directive for AngularJS">
     <title>Leaflet directive for AngularJS</title>
@@ -18,17 +19,17 @@
 </head>
 
 <body ng-cloak ng-controller="MainController">
-    <div class="header container" ng-controller="HeaderController">
-        <header class="navbar navbar-static-top navbar-inverse" role="navigation">
+    <div class="container" ng-controller="HeaderController">
+        <header class="navbar navbar-default" role="navigation">
             <div class="navbar-header">
-                <a href="#/" class="navbar-brand">
-                    <span class="glyphicon glyphicon-leaf"></span> angular-leaflet-directive
+                <a href="#!/" class="navbar-brand">
+                    <span class="glyphicon glyphicon-leaf" style="height: 16px;"></span> angular-leaflet-directive
                 </a>
             </div>
             <ul class="nav navbar-nav navbar-right">
-                <li ng-class="{ active: activeTab == 'getting-started' || activeTab == '' }"><a href="#/getting-started">Getting started</a></li>
-                <li ng-class="{ active: activeTab == 'examples' }"><a ng-href="#/examples/simple-map">Examples</a></li>
-                <li ng-class="{ active: activeTab == 'how-to-collaborate' }"><a ng-href="#/how-to-collaborate">How to collaborate</a></li>
+                <li ng-class="{ active: activeTab == 'getting-started' || activeTab == '' }"><a href="#!/getting-started">Getting started</a></li>
+                <li ng-class="{ active: activeTab == 'examples' }"><a ng-href="#!/examples/simple-map">Examples</a></li>
+                <li ng-class="{ active: activeTab == 'how-to-collaborate' }"><a ng-href="#!/how-to-collaborate">How to collaborate</a></li>
                 <li><a href="http://github.com/tombatossals/angular-leaflet-directive">Github repository</a></li>
             </ul>
         </header>
