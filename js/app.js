@@ -7,8 +7,8 @@
             templateUrl: 'partials/main.html'
         }).when('/getting-started', {
             templateUrl: 'partials/main.html'
-        }).when('/how-to-collaborate', {
-            templateUrl: 'partials/how-to-collaborate.html'
+        }).when('/howto-extend', {
+            templateUrl: 'partials/howto-extend.html'
         }).when('/examples/:example', {
             templateUrl: 'partials/examples.html'
         });
