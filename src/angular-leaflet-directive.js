@@ -10,7 +10,11 @@ leafletDirective.directive('leaflet', [
         scrollWheelZoom: true,
         zoomControl: true,
         zoomsliderControl: false,
-        controlLayersPosition: 'topright',
+        layercontrol: {
+			position: 'topright',
+			control: L.control.layers, 
+			collapsed: true
+        },
         tileLayer: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
         tileLayerOptions: {
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -376,9 +380,21 @@ leafletDirective.directive('leaflet', [
                     layers = {};
                     layers.baselayers = {};
                     layers.controls = {};
-                    layers.controls.layers = new L.control.layers();
-                    if($scope.defaults && $scope.defaults.controlLayersPosition)
-                    	layers.controls.layers.setPosition($scope.defaults.controlLayersPosition);
+                    if($scope.defaults) {
+						var controlOptions = {
+							collapsed: $scope.defaults.layercontrol && $scope.defaults.layercontrol.collapsed
+						};
+						if($scope.defaults.layercontrol && $scope.defaults.layercontrol.control) {
+							layers.controls.layers =
+								$scope.defaults.layercontrol.control.apply(this, [[], [], controlOptions]);
+						} else {
+							layers.controls.layers = new L.control.layers([[], [], controlOptions]);
+						}
+						
+						if($scope.defaults.layercontrol && $scope.defaults.layercontrol.position) {
+							layers.controls.layers.setPosition($scope.defaults.layercontrol.position);
+						}
+                    } 
                     layers.controls.layers.addTo(map);
                     // Setup all baselayers definitions
                     var top = false;
@@ -563,6 +579,10 @@ leafletDirective.directive('leaflet', [
             }
 
             function createWmsLayer(url, options) {
+				if(options.crs && 'string' === typeof options.crs) {
+					/*jshint -W061 */
+					options.crs = eval(options.crs);
+				}
                 var layer = L.tileLayer.wms(url, options);
                 return layer;
             }
