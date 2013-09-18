@@ -46,6 +46,8 @@ body {
     border-left: 1px solid #e5e5e5;
     border-right: 1px solid #e5e5e5;
     margin-bottom: 20px;
+    border-radius: 0 0 4px 4px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.15),0 1px 5px rgba(0,0,0,0.075)
 }
 
 .bottom-banner strong {
@@ -70,7 +72,6 @@ pre {
     background: #FFF;
 }
 
-
 .info {
     padding: 6px 8px;
     font: 14px/16px Arial, Helvetica, sans-serif;
@@ -79,15 +80,18 @@ pre {
     box-shadow: 0 0 15px rgba(0,0,0,0.2);
     border-radius: 5px;
 }
+
 .info h4 {
     margin: 0 0 5px;
     color: #777;
 }
+
 .legend {
    font-weight: bold;
    line-height: 18px;
    color: #555;
 }
+
 .legend i {
     width: 18px;
     height: 18px;

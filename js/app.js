@@ -28,10 +28,6 @@
             $scope.exampleTab = $routeParams.example;
         });
 
-        $scope.go = function(path) {
-            $location.path(path);
-        };
-
     }]);
 
     app.controller("HeaderController", [ '$scope', '$location', function($scope, $location) {
@@ -55,6 +51,14 @@
 
         $scope.$on('leafletDirectiveMap.click', function(event){
             $location.path("/");
+        });
+    }]);
+
+    app.controller("SimpleMapController", [ '$scope', function($scope) {
+        angular.extend($scope, {
+            defaults: {
+                scrollWheelZoom: false
+            }
         });
     }]);
 
