@@ -181,7 +181,8 @@ leafletDirective.directive('leaflet', [
             tiles: '=tiles',
             events: '=events',
             layers: '=layers',
-            customControls: '=customControls'
+            customControls: '=customControls',
+            leafletMap: '=leafletmap'
         },
         template: '<div class="angular-leaflet-map"></div>',
         link: function ($scope, element, attrs /*, ctrl */) {
@@ -210,6 +211,10 @@ leafletDirective.directive('leaflet', [
             var layers = null;
 
             $scope.leaflet.map = !!attrs.testing ? map : str_inspect_hint;
+
+            if (!!attrs.leafletmap) {
+                $scope.leafletMap = !!attrs.leafletmap ? map : str_inspect_hint;
+            }
 
             setupMapEventCallbacks();
             setupMapEventBroadcasting();
@@ -244,6 +249,7 @@ leafletDirective.directive('leaflet', [
                     $scope.$apply(fn);
                 }
             }
+
 
             /*
             * Set up broadcasting of map events to the rootScope
@@ -979,7 +985,7 @@ leafletDirective.directive('leaflet', [
                         //TODO Check for layers !== null
                         //TODO Check for layers.overlays !== null !== undefined
                         // It is possible the the layer has been removed or the layer marker does not exist
-                        
+
                         // Update the layer group if present or move it to the map if not
                         if (data.layer === undefined || data.layer === null || typeof data.layer !== 'string') {
                             // There is no layer information, we move the marker to the map if it was in a layer group
@@ -1204,7 +1210,7 @@ leafletDirective.directive('leaflet', [
                                             if (layers.overlays[olname].hasLayer(marker)) {
                                                 layers.overlays[olname].removeLayer(marker);
                                             }
-                                        } 
+                                        }
                                     }
                                 }
                             }
