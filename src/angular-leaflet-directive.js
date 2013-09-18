@@ -8,19 +8,22 @@ leafletDirective.directive('leaflet', [
         minZoom: 1,
         doubleClickZoom: true,
         scrollWheelZoom: true,
+        zoomControl: true,
+        zoomsliderControl: false,
+        controlLayersPosition: 'topright',
         tileLayer: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
         tileLayerOptions: {
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         },
         icon: {
-            url: 'http://cdn.leafletjs.com/leaflet-0.5.1/images/marker-icon.png',
-            retinaUrl: 'http://cdn.leafletjs.com/leaflet-0.5.1/images/marker-icon@2x.png',
+            url: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-icon.png',
+            retinaUrl: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-icon@2x.png',
             size: [25, 41],
             anchor: [12, 40],
             popup: [0, -40],
             shadow: {
-                url: 'http://cdn.leafletjs.com/leaflet-0.5.1/images/marker-shadow.png',
-                retinaUrl: 'http://cdn.leafletjs.com/leaflet-0.5.1/images/marker-shadow.png',
+                url: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-shadow.png',
+                retinaUrl: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-shadow.png',
                 size: [41, 41],
                 anchor: [12, 40]
             }
@@ -111,6 +114,18 @@ leafletDirective.directive('leaflet', [
             is: function(layer) {
                 if (this.isLoaded()) {
                     return layer instanceof L.Google;
+                } else {
+                    return false;
+                }
+            },
+        },
+        BingLayerPlugin: {
+            isLoaded: function() {
+                return L.BingLayer !== undefined;
+            },
+            is: function(layer) {
+                if (this.isLoaded()) {
+                    return layer instanceof L.BingLayer;
                 } else {
                     return false;
                 }
@@ -209,11 +224,13 @@ leafletDirective.directive('leaflet', [
             });
             var layers = null;
 
+            map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
             $scope.leaflet.map = !!attrs.testing ? map : str_inspect_hint;
 
             setupMapEventCallbacks();
             setupMapEventBroadcasting();
             setupControls();
+            setupLegend();
             setupCustomControls();
             setupLayers();
             setupCenter();
@@ -222,7 +239,6 @@ leafletDirective.directive('leaflet', [
             setupMainMarker();
             setupMarkers();
             setupPaths();
-            setupLegend();
             setupGeojson();
 
             // use of leafletDirectiveSetMap event is not encouraged. only use
@@ -360,7 +376,10 @@ leafletDirective.directive('leaflet', [
                     layers = {};
                     layers.baselayers = {};
                     layers.controls = {};
-                    layers.controls.layers = new L.control.layers().addTo(map);
+                    layers.controls.layers = new L.control.layers();
+                    if($scope.defaults && $scope.defaults.controlLayersPosition)
+                    	layers.controls.layers.setPosition($scope.defaults.controlLayersPosition);
+                    layers.controls.layers.addTo(map);
                     // Setup all baselayers definitions
                     var top = false;
                     for (var layerName in $scope.layers.baselayers) {
@@ -485,8 +504,8 @@ leafletDirective.directive('leaflet', [
                 if (layerDefinition.type === undefined || layerDefinition.type === null || typeof layerDefinition.type !== 'string') {
                     $log.error('[AngularJS - Leaflet] A base layer must have a type');
                     return null;
-                } else if (layerDefinition.type !== 'xyz' && layerDefinition.type !== 'wms' && layerDefinition.type !== 'group' && layerDefinition.type !== 'markercluster' && layerDefinition.type !== 'google') {
-                    $log.error('[AngularJS - Leaflet] A layer must have a valid type: "xyz, wms, group"');
+                } else if (layerDefinition.type !== 'xyz' && layerDefinition.type !== 'wms' && layerDefinition.type !== 'group' && layerDefinition.type !== 'markercluster' && layerDefinition.type !== 'google' && layerDefinition.type !== 'bing') {
+                    $log.error('[AngularJS - Leaflet] A layer must have a valid type: "xyz, wms, group, google"');
                     return null;
                 }
                 if (layerDefinition.type === 'xyz' || layerDefinition.type === 'wms') {
@@ -524,8 +543,11 @@ leafletDirective.directive('leaflet', [
                     layer = createMarkerClusterLayer(layerDefinition.layerOptions);
                     break;
                 case 'google':
-                    layer = createGoogleLayer(layerDefinition.layerOptions);
-                    break;
+					layer = createGoogleLayer(layerDefinition.layerType, layerDefinition.layerOptions);
+					break;
+                case 'bing':
+					layer = createBingLayer(layerDefinition.bingKey, layerDefinition.layerOptions);
+					break;
                 default:
                     layer = null;
                 }
@@ -558,10 +580,20 @@ leafletDirective.directive('leaflet', [
                     return null;
                 }
             }
-
-            function createGoogleLayer(options) {
-                if (Helpers.GoogleLayerPlugin.isLoaded()) {
-                    var layer = new L.Google(options);
+            
+            function createGoogleLayer(type, options) {
+				type = type || 'SATELLITE';
+				if (Helpers.GoogleLayerPlugin.isLoaded()) {
+                    var layer = new L.Google(type, options);
+                    return layer;
+                } else {
+                    return null;
+                }
+            }
+            
+            function createBingLayer(key, options) {
+				if (Helpers.BingLayerPlugin.isLoaded()) {
+                    var layer = new L.BingLayer(key, options);
                     return layer;
                 } else {
                     return null;
@@ -613,7 +645,7 @@ leafletDirective.directive('leaflet', [
                             var div = L.DomUtil.create('div', 'info legend');
                             for (var i = 0; i < $scope.legend.colors.length; i++) {
                                 div.innerHTML +=
-                                    '<i style="background:' + $scope.legend.colors[i] + '"></i> ' + $scope.legend.labels[i] + '<br />';
+                                    '<div class="outline"><i style="background:' + $scope.legend.colors[i] + '"></i></div> ' + $scope.legend.labels[i] + '<br />';
                             }
                             return div;
                         };
@@ -1358,8 +1390,16 @@ leafletDirective.directive('leaflet', [
 
             function setupControls() {
                 //@TODO add document for this option  11.08 2013 (houqp)
-                if ($scope.defaults && $scope.defaults.zoomControlPosition) {
+                if (map.zoomControl && $scope.defaults && $scope.defaults.zoomControlPosition) {
                     map.zoomControl.setPosition($scope.defaults.zoomControlPosition);
+                }
+                
+                if(map.zoomControl && $scope.defaults && !$scope.defaults.zoomControl) {
+					map.zoomControl.removeFrom(map);
+                }
+                
+                if(map.zoomsliderControl && $scope.defaults && !$scope.defaults.zoomsliderControl) {
+					map.zoomsliderControl.removeFrom(map);
                 }
             }
 
@@ -1369,7 +1409,7 @@ leafletDirective.directive('leaflet', [
                 }
 
                 for(var i = 0, count = $scope.customControls.length; i < count; i++) {
-                    map.addControl(new $scope.customControls[i]());
+                    map.addControl($scope.customControls[i]);
                 }
             }
         }
