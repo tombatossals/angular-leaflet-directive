@@ -16,6 +16,7 @@ See some basic examples:
 * [Layers example](http://tombatossals.github.io/angular-leaflet-directive/examples/layers-example.html)
 * [Events example](http://tombatossals.github.io/angular-leaflet-directive/examples/events-example.html)
 * [Overlays example](http://tombatossals.github.io/angular-leaflet-directive/examples/overlays-example.html)
+* [Google Maps example](http://tombatossals.github.io/angular-leaflet-directive/examples/googlemaps-example.html)
 
 
 To see it in action, go to the main page where you can find more examples and
