@@ -87,9 +87,10 @@ pre {
 }
 
 .legend {
-   font-weight: bold;
-   line-height: 18px;
-   color: #555;
+    width: 120px;
+    font-weight: bold;
+    line-height: 18px;
+    color: #555;
 }
 
 .legend i {
