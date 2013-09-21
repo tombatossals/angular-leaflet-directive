@@ -184,7 +184,6 @@ app.controller("CustomParametersController", [ '$scope', function($scope) {
         </ul>
         <leaflet center="center" events="events" defaults="defaults"></leaflet>
         <h2>Events management example</h2>
-         <p>Support for Leaflet events was added on <a href="https://github.com/tombatossals/angular-leaflet-directive/pull/102">this pull request</a> by <a href="https://github.com/grantlucas">@grantlucas</a>.</p>
 
         <p>If our application needs to be notified when some event gets fired on the Leaflet map, we can listen for broadcast messages of specific events, so we can react after the event notification. These are the events we can get notified on our application:</p>
 
@@ -535,7 +534,6 @@ app.controller("LegendController", [ '$scope', function($scope) {
         <leaflet center="center" paths="paths" markers="markers" defaults="defaults" height="500"></leaflet>
         <p class="small">City icons obtained from <a href="http://iconka.com/tourism/">Iconka</a>.</p>
         <h2>Path example</h2>
-         <p>Support for paths was added on <a href="https://github.com/tombatossals/angular-leaflet-directive/pull/6">this pull request</a> by <a href="https://github.com/houqp">@houqp</a>.</p>
         <p>We can trace a path on our map with two-way binding. On the example you can see a path of tree points with a line colored green and a determined weight. We also paint 3 custom icons on every point of the path. This can be accomplished with this code:</p>
         <ul class="nav nav-tabs">
             <li class="active"><a href="" ng-click="activeTab='html'" data-toggle="tab">HTML code</a></li>
@@ -616,7 +614,6 @@ app.controller("PathController", [ '$scope', function($scope) {
     <div class="col-md-10" ng-controller="GoogleMapsController" ng-switch-when="google-maps">
         <leaflet center="berlin" layers="layers"></leaflet>
         <h2>Google Maps integration example</h2>
-        <p>Support for the Google layers via the <a href="https://github.com/shramov/leaflet-plugins">Pavel Shramov Leaflet Plugins</a> was added on <a href="https://github.com/tombatossals/angular-leaflet-directive/pull/127">this pull request</a> by <a href="https://github.com/elesdoar">@elesdoar</a>.</p>
         <p>We must include the <a href="https://developers.google.com/maps/documentation/javascript/libraries">Google Maps Library</a> and the <a href="https://github.com/shramov/leaflet-plugins">Google Maps Leaflet Plugin</a> on our page first, and will include any of the available Google maps layers via the <strong>layers</strong> functionality like you can see on the example.</p>
         <ul class="nav nav-tabs">
             <li class="active"><a href="" ng-click="activeTab='html'" data-toggle="tab">HTML code</a></li>
