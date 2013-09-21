@@ -648,13 +648,14 @@ leafletDirective.directive('leaflet', [
                     if (!$scope.legend.colors || !$scope.legend.labels || $scope.legend.colors.length !== $scope.legend.labels.length) {
                          $log.warn("[AngularJS - Leaflet] legend.colors and legend.labels must be set.");
                     } else {
+                        var legendClass=$scope.legendClass ? $scope.legendClass : "legend";
                         var position = $scope.legend.position || 'bottomright';
                         var legend = L.control({position: position });
                         legend.onAdd = function (map) {
-                            var div = L.DomUtil.create('div', 'info legend');
+                            var div = L.DomUtil.create('div', legendClass);
                             for (var i = 0; i < $scope.legend.colors.length; i++) {
                                 div.innerHTML +=
-                                    '<div class="outline"><i style="background:' + $scope.legend.colors[i] + '"></i></div> ' + $scope.legend.labels[i] + '<br />';
+                                    '<i style="background:' + $scope.legend.colors[i] + '"></i>' + $scope.legend.labels[i] + '<br />';
                             }
                             return div;
                         };
