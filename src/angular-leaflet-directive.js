@@ -655,7 +655,7 @@ leafletDirective.directive('leaflet', [
                             var div = L.DomUtil.create('div', legendClass);
                             for (var i = 0; i < $scope.legend.colors.length; i++) {
                                 div.innerHTML +=
-                                    '<i style="background:' + $scope.legend.colors[i] + '"></i>' + $scope.legend.labels[i] + '<br />';
+                                    '<div><i style="background:' + $scope.legend.colors[i] + '"></i>' + $scope.legend.labels[i] + '</div>';
                             }
                             return div;
                         };
