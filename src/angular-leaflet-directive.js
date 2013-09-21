@@ -1404,7 +1404,7 @@ leafletDirective.directive('leaflet', [
                     map.zoomControl.setPosition($scope.defaults.zoomControlPosition);
                 }
 
-                if(map.zoomControl && $scope.defaults && !$scope.defaults.zoomControl) {
+                if(map.zoomControl && $scope.defaults && $scope.defaults.zoomControl===false) {
 					map.zoomControl.removeFrom(map);
                 }
 
