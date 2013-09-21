@@ -39,6 +39,7 @@
             },
             defaults: {
                 scrollWheelZoom: false,
+                attributionControl: false,
                 tileLayer: "http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png",
                 tileLayerOptions: {
                     opacity: 0.9,
