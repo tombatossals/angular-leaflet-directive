@@ -235,7 +235,7 @@ leafletDirective.directive('leaflet', [
                 $scope.leafletMap = !!attrs.leafletmap ? map : str_inspect_hint;
             }
 
-            //setupMapEventCallbacks();
+            setupMapEventCallbacks();
             setupMapEventBroadcasting();
             setupControls();
             setupLegend();
