@@ -293,7 +293,7 @@ leafletDirective.directive('leaflet', [
                             } else if (logic === "broadcast") {
                                 $rootScope.$broadcast(broadcastName, {
                                     leafletEvent : e
-                                });                                
+                                });
                             }
                         });
                     };
@@ -335,12 +335,12 @@ leafletDirective.directive('leaflet', [
                 'popupopen',
                 'popupclose'
               ];
-              
+
               var mapEvents = [];
               var i;
               var eventName;
               var logic = "broadcast";
-              
+
               if ($scope.eventBroadcast === undefined || $scope.eventBroadcast === null) {
                   // Backward compatibility, if no event-broadcast attribute, all events are broadcasted
                   mapEvents = availableMapEvents;
@@ -354,7 +354,7 @@ leafletDirective.directive('leaflet', [
                       mapEvents = availableMapEvents;
                   } else if (typeof $scope.eventBroadcast.map !== 'object') {
                       // Not a valid object
-                      $log.warn("[AngularJS - Leaflet] event-broadcast.map must be an object check your model.");                      
+                      $log.warn("[AngularJS - Leaflet] event-broadcast.map must be an object check your model.");
                   } else {
                       // We have a possible valid map object
                       // Event propadation logic
@@ -367,7 +367,7 @@ leafletDirective.directive('leaflet', [
                               logic = "emit";
                           }
                       }
-                      // Enable / Disable 
+                      // Enable / Disable
                       var mapEventsEnable = false, mapEventsDisable = false;
                       if ($scope.eventBroadcast.map.enable !== undefined && $scope.eventBroadcast.map.enable !== null) {
                           if (typeof $scope.eventBroadcast.map.enable === 'object') {
@@ -411,7 +411,7 @@ leafletDirective.directive('leaflet', [
                               mapEvents = availableMapEvents;
                               for (i = 0; i < $scope.eventBroadcast.map.disable.length; i++) {
                                   eventName = $scope.eventBroadcast.map.disable[i];
-                                  var index = mapEvents.indexOf(eventName); 
+                                  var index = mapEvents.indexOf(eventName);
                                   if (index === -1) {
                                       // The event does not exist
                                       $log.warn("[AngularJS - Leaflet] This event " + eventName + " does not exist or has been already disabled");
@@ -423,7 +423,7 @@ leafletDirective.directive('leaflet', [
                       }
                   }
               }
-              
+
               for (i = 0; i < mapEvents.length; i++) {
                 eventName = mapEvents[i];
 
@@ -1064,7 +1064,7 @@ leafletDirective.directive('leaflet', [
                                 $rootScope.$broadcast(broadcastName, {
                                     markerName: markerName,
                                     leafletEvent: e
-                                });                                
+                                });
                             }
                         });
                     };
@@ -1091,7 +1091,7 @@ leafletDirective.directive('leaflet', [
                 var i;
                 var eventName;
                 var logic = "broadcast";
-                
+
                 if ($scope.eventBroadcast === undefined || $scope.eventBroadcast === null) {
                     // Backward compatibility, if no event-broadcast attribute, all events are broadcasted
                     markerEvents = availableMarkerEvents;
@@ -1118,7 +1118,7 @@ leafletDirective.directive('leaflet', [
                                 logic = "emit";
                             }
                         }
-                        // Enable / Disable 
+                        // Enable / Disable
                         var markerEventsEnable = false, markerEventsDisable = false;
                         if ($scope.eventBroadcast.marker.enable !== undefined && $scope.eventBroadcast.marker.enable !== null) {
                             if (typeof $scope.eventBroadcast.marker.enable === 'object') {
@@ -1162,7 +1162,7 @@ leafletDirective.directive('leaflet', [
                                 markerEvents = availableMarkerEvents;
                                 for (i = 0; i < $scope.eventBroadcast.marker.disable.length; i++) {
                                     eventName = $scope.eventBroadcast.marker.disable[i];
-                                    var index = markerEvents.indexOf(eventName); 
+                                    var index = markerEvents.indexOf(eventName);
                                     if (index === -1) {
                                         // The event does not exist
                                         $log.warn("[AngularJS - Leaflet] This event " + eventName + " does not exist or has been already disabled");
@@ -1175,7 +1175,7 @@ leafletDirective.directive('leaflet', [
                     }
                 }
 
-                
+
                 for (i = 0; i < markerEvents.length; i++) {
                     eventName = markerEvents[i];
                     marker.on(eventName, genDispatchEventCB(eventName, logic), {

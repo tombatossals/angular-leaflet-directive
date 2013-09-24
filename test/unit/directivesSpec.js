@@ -1837,7 +1837,7 @@ describe('Directive: leaflet', function() {
         expect(check[mapEvents[k]]).toEqual(true);
     }
     });
-    
+
     it('should NOT broadcast map events from the rootscope if the event-broadcast option is not an object',function() {
         //TODO: pending until problems resolved, see issue #137 in
         // https://github.com/tombatossals/angular-leaflet-directive
