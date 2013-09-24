@@ -5,7 +5,7 @@
 /* jasmine specs for directives go here */
 
 describe('Directive: leaflet', function() {
-    var $compile, $rootScope;
+    var $compile = null, $rootScope = null;
 
     beforeEach(module('leaflet-directive'));
     beforeEach(inject(function(_$compile_, _$rootScope_){
@@ -1837,4 +1837,20 @@ describe('Directive: leaflet', function() {
         expect(check[mapEvents[k]]).toEqual(true);
     }
     });
+    
+    it('should NOT broadcast events from the rootscope if the event-broadcast option is not an object',function() {
+        var $scope = $rootScope.$new();
+        $scope.events = 3;
+        $scope.fired = false;
+        $scope.$on("leafletDirectiveMap.click", function(event, args){
+            $scope.fired = true;
+        });
+        var element = angular.element('<leaflet event-broadcast="events" testing="testing"></leaflet>');
+        element = $compile(element)($scope);
+        var map = element.scope().leaflet.map;
+        map.fire("click");
+        $scope.$digest();
+        expect($scope.fired).toBe(false);
+    });
+
 });

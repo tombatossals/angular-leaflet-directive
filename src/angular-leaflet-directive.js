@@ -198,7 +198,8 @@ leafletDirective.directive('leaflet', [
             events: '=events',
             layers: '=layers',
             customControls: '=customControls',
-            leafletMap: '=leafletmap'
+            leafletMap: '=leafletmap',
+            eventBroadcast: '=eventBroadcast'
         },
         template: '<div class="angular-leaflet-map"></div>',
         link: function ($scope, element, attrs /*, ctrl */) {
@@ -234,7 +235,7 @@ leafletDirective.directive('leaflet', [
                 $scope.leafletMap = !!attrs.leafletmap ? map : str_inspect_hint;
             }
 
-            setupMapEventCallbacks();
+            //setupMapEventCallbacks();
             setupMapEventBroadcasting();
             setupControls();
             setupLegend();
@@ -292,7 +293,7 @@ leafletDirective.directive('leaflet', [
                 };
               }
 
-              var mapEvents = [
+              var availableMapEvents = [
                 'click',
                 'dblclick',
                 'mousedown',
@@ -328,7 +329,19 @@ leafletDirective.directive('leaflet', [
                 'popupopen',
                 'popupclose'
               ];
-
+              
+              var mapEvents = [];
+              
+              if ($scope.eventBroadcast === undefined || $scope.eventBroadcast === null) {
+                  // Backward compatibility, if no event-broadcast attribute, all events are broadcasted
+                  mapEvents = availableMapEvents;
+              } else if (typeof $scope.eventBroadcast !== 'object') {
+                  // Not a valid object
+                  $log.warn("[AngularJS - Leaflet] event-broadcast must be an object check your model.");
+              } else {
+                  // We have a possible valid object
+              }
+              mapEvents = availableMapEvents;
               for (var i = 0; i < mapEvents.length; i++) {
                 var eventName = mapEvents[i];
 
@@ -426,7 +439,6 @@ leafletDirective.directive('leaflet', [
                     // Watch for the base layers
                     $scope.$watch('layers.baselayers', function(newBaseLayers) {
                         // Delete layers from the array
-                        var deleted = false;
                         for (var name in layers.baselayers) {
                             if (newBaseLayers[name] === undefined) {
                                 // Remove the layer from the control
@@ -436,7 +448,6 @@ leafletDirective.directive('leaflet', [
                                     map.removeLayer(layers.baselayers[name]);
                                 }
                                 delete layers.baselayers[name];
-                                deleted = true;
                             }
                         }
                         // add new layers
