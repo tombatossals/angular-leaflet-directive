@@ -106,7 +106,7 @@ leafletDirective.directive('leaflet', [
                 } else {
                     return false;
                 }
-            },
+            }
         },
         GoogleLayerPlugin: {
             isLoaded: function() {
@@ -118,7 +118,7 @@ leafletDirective.directive('leaflet', [
                 } else {
                     return false;
                 }
-            },
+            }
         },
         BingLayerPlugin: {
             isLoaded: function() {
@@ -130,7 +130,7 @@ leafletDirective.directive('leaflet', [
                 } else {
                     return false;
                 }
-            },
+            }
         },
         Leaflet: {
             DivIcon: {
@@ -1521,71 +1521,133 @@ leafletDirective.directive('leaflet', [
 
                 }, true);
             }
-
-            function createPath(name, scopePath, map) {
-                var polyline = new L.Polyline([], {
+			
+			function createPath(name, scopePath, map) {
+				var path;
+				
+				var options = {
                     weight: defaults.path.weight,
                     color: defaults.path.color,
                     opacity: defaults.path.opacity
-                });
-
-                if (scopePath.latlngs !== undefined) {
-                    var latlngs = convertToLeafletLatLngs(scopePath.latlngs);
-                    polyline.setLatLngs(latlngs);
-                }
-
-                if (scopePath.weight !== undefined) {
-                    polyline.setStyle({ weight: scopePath.weight });
-                }
-
-                if (scopePath.color !== undefined) {
-                    polyline.setStyle({ color: scopePath.color });
-                }
-
-                if (scopePath.opacity !== undefined) {
-                    polyline.setStyle({ opacity: scopePath.opacity });
-                }
-
-                map.addLayer(polyline);
+				};
+				if(scopePath.stroke !== undefined) {
+					options.stroke = scopePath.stroke;
+				}
+				if(scopePath.fill !== undefined) {
+					options.fill = scopePath.fill;
+				}
+				if(scopePath.fillColor !== undefined) {
+					options.fillColor = scopePath.fillColor;
+				}
+				if(scopePath.fillOpacity !== undefined) {
+					options.fillOpacity = scopePath.fillOpacity;
+				}
+				if(scopePath.smoothFactor !== undefined) {
+					options.smoothFactor = scopePath.smoothFactor;
+				}
+				if(scopePath.noClip !== undefined) {
+					options.noClip = scopePath.noClip;
+				}
+				
+				if(scopePath.type == undefined) {
+					scopePath.type = "polyline";
+				}
+				
+				function setPathOptions(data, oldData) {
+					if (data.latlngs !== undefined && (oldData === undefined || data.latlngs !== oldData.latlngs)) {
+						switch(data.type) {
+							case "polyline":
+							case "polygon":
+							default:
+								path.setLatLngs(convertToLeafletLatLngs(data.latlngs));
+								break;
+							case "multiPolyline":
+							case "multiPolygon":
+								path.setLatLngs(convertToLeafletMultiLatLngs(data.latlngs));
+								break;
+							case "rectangle":
+								path.setBounds(new L.LatLngBounds(convertToLeafletLatLngs(data.latlngs)));
+								break;
+							case "circle":
+							case "circleMarker":
+								path.setLatLng(convertToLeafletLatLng(data.latlngs));
+								if(data.radius !== undefined && (oldData === undefined || data.radius !== oldData.radius)) {
+									path.setRadius(data.radius);
+								}
+								break;
+						}
+					}
+	
+					if (data.weight !== undefined && (oldData === undefined || data.weight !== oldData.weight)) {
+						path.setStyle({ weight: data.weight });
+					}
+	
+					if (data.color !== undefined && (oldData === undefined || data.color !== oldData.color)) {
+						path.setStyle({ color: data.color });
+					}
+	
+					if (data.opacity !== undefined && (oldData === undefined || data.opacity !== oldData.opacity)) {
+						path.setStyle({ opacity: data.opacity });
+					}
+				}
+				
+				switch(scopePath.type) {
+					case "polyline":
+					default:
+						path = new L.Polyline([], options); 
+						break;
+					case "multiPolyline":
+						path = new L.multiPolyline([[[0,0],[1,1]]], options); 
+						break;
+					case "polygon":
+						path = new L.Polygon([], options); 
+						break;
+					case "multiPolygon":
+						path = new L.MultiPolygon([[[0,0],[1,1],[0,1]]], options); 
+						break;
+					case "rectangle":
+						path = new L.Rectangle([[0,0],[1,1]], options); 
+						break;
+					case "circle":
+						path = new L.Circle([0,0], 1, options); 
+						break;
+					case "circleMarker":
+						path = new L.CircleMarker([0,0], options); 
+						break;
+				}
+				
+				setPathOptions(scopePath);
+                map.addLayer(path);
 
                 var clearWatch = $scope.$watch('paths.' + name, function(data, oldData) {
                     if (!data) {
-                        map.removeLayer(polyline);
+                        map.removeLayer(path);
                         clearWatch();
                         return;
                     }
-
-                    if (oldData) {
-                        if (data.latlngs !== undefined && data.latlngs !== oldData.latlngs) {
-                            var latlngs = convertToLeafletLatLngs(data.latlngs);
-                            polyline.setLatLngs(latlngs);
-                        }
-
-                        if (data.weight !== undefined && data.weight !== oldData.weight) {
-                            polyline.setStyle({ weight: data.weight });
-                        }
-
-                        if (data.color !== undefined && data.color !== oldData.color) {
-                            polyline.setStyle({ color: data.color });
-                        }
-
-                        if (data.opacity !== undefined && data.opacity !== oldData.opacity) {
-                            polyline.setStyle({ opacity: data.opacity });
-                        }
-                    }
+					setPathOptions(data,oldData);
                 }, true);
-                return polyline;
-            }
+				
+                return path;
+			}
+			
+			function convertToLeafletLatLng(latlng) {
+				return new L.LatLng(latlng.lat, latlng.lng);
+			}
 
             function convertToLeafletLatLngs(latlngs) {
-                var leafletLatLngs = latlngs.filter(function(latlng) {
+                return latlngs.filter(function(latlng) {
                     return !!latlng.lat && !!latlng.lng;
                 }).map(function (latlng) {
                     return new L.LatLng(latlng.lat, latlng.lng);
                 });
-
-                return leafletLatLngs;
             }
+			
+			function convertToLeafletMultiLatLngs(paths) {
+				return paths.map(function(latlngs) {
+					return convertToLeafletLatLngs(latlngs);
+				});
+			}
 
             function setupControls() {
                 //@TODO add document for this option  11.08 2013 (houqp)
