@@ -106,7 +106,7 @@ leafletDirective.directive('leaflet', [
                 } else {
                     return false;
                 }
-            }
+            },
         },
         GoogleLayerPlugin: {
             isLoaded: function() {
@@ -118,7 +118,7 @@ leafletDirective.directive('leaflet', [
                 } else {
                     return false;
                 }
-            }
+            },
         },
         BingLayerPlugin: {
             isLoaded: function() {
@@ -130,7 +130,7 @@ leafletDirective.directive('leaflet', [
                 } else {
                     return false;
                 }
-            }
+            },
         },
         Leaflet: {
             DivIcon: {

@@ -1940,7 +1940,6 @@ describe('Directive: leaflet', function() {
         expect(latlngs1.lat).toBeCloseTo(0.966);
         expect(latlngs1.lng).toBeCloseTo(2.02);
 		var radius1 = circle1.getRadius();
-		console.log(radius1);
 		expect(radius1).toBe(10);
 
         var latlngs2 = circle2.getLatLng();
