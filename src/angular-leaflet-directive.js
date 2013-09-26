@@ -1549,16 +1549,16 @@ leafletDirective.directive('leaflet', [
 					options.noClip = scopePath.noClip;
 				}
 				
-				if(scopePath.type == undefined) {
+				if(scopePath.type === undefined) {
 					scopePath.type = "polyline";
 				}
 				
 				function setPathOptions(data, oldData) {
 					if (data.latlngs !== undefined && (oldData === undefined || data.latlngs !== oldData.latlngs)) {
 						switch(data.type) {
+							default:
 							case "polyline":
 							case "polygon":
-							default:
 								path.setLatLngs(convertToLeafletLatLngs(data.latlngs));
 								break;
 							case "multiPolyline":
@@ -1592,8 +1592,8 @@ leafletDirective.directive('leaflet', [
 				}
 				
 				switch(scopePath.type) {
-					case "polyline":
 					default:
+					case "polyline":
 						path = new L.Polyline([], options); 
 						break;
 					case "multiPolyline":
