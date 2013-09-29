@@ -645,11 +645,11 @@ leafletDirective.directive('leaflet', [
                     layer = createMarkerClusterLayer(layerDefinition.layerOptions);
                     break;
                 case 'google':
-					layer = createGoogleLayer(layerDefinition.layerType, layerDefinition.layerOptions);
-					break;
+                    layer = createGoogleLayer(layerDefinition.layerType, layerDefinition.layerOptions);
+                    break;
                 case 'bing':
-					layer = createBingLayer(layerDefinition.bingKey, layerDefinition.layerOptions);
-					break;
+                    layer = createBingLayer(layerDefinition.bingKey, layerDefinition.layerOptions);
+                    break;
                 default:
                     layer = null;
                 }
@@ -782,17 +782,27 @@ leafletDirective.directive('leaflet', [
                 }
             }
 
+            function isBoundsValid(bounds) {
+                var southWest = bounds.southWest;
+                var northEast = bounds.northEast;
+
+                return (bounds && southWest && northEast && southWest.lat &&
+                        southWest.lng && northEast.lat && northEast.lng);
+            }
+
             function tryFitBounds(bounds) {
-                if (!bounds) {
+                if (!isBoundsValid(bounds)) {
                     return;
                 }
 
                 var southWest = bounds.southWest;
                 var northEast = bounds.northEast;
-                if (southWest && northEast && southWest.lat && southWest.lng && northEast.lat && northEast.lng) {
-                    var sw_latlng = new L.LatLng(southWest.lat, southWest.lng);
-                    var ne_latlng = new L.LatLng(northEast.lat, northEast.lng);
-                    map.fitBounds(new L.LatLngBounds(sw_latlng, ne_latlng));
+                var new_latlng_bounds = new L.LatLngBounds(
+                        new L.LatLng(southWest.lat, southWest.lng),
+                        new L.LatLng(northEast.lat, northEast.lng));
+
+                if (!map.getBounds().equals(new_latlng_bounds)) {
+                    map.fitBounds(new_latlng_bounds);
                 }
             }
 
@@ -802,22 +812,45 @@ leafletDirective.directive('leaflet', [
                 }
                 $scope.$watch('bounds', function(new_bounds) {
                     tryFitBounds(new_bounds);
-                });
+                }, true);
+            }
+
+            function updateBoundsInScope() {
+                if (!$scope.bounds) {
+                    return;
+                }
+
+                var bounds = map.getBounds();
+                var sw_latlng = bounds.getSouthWest();
+                var ne_latlng = bounds.getNorthEast();
+                $scope.bounds = {
+                    southWest: {
+                        lat: sw_latlng.lat,
+                        lng: sw_latlng.lng
+                    },
+                    northEast: {
+                        lat: ne_latlng.lat,
+                        lng: ne_latlng.lng
+                    }
+                };
             }
 
             function setupCenter() {
                 if (!$scope.center) {
                     $log.warn("[AngularJS - Leaflet] 'center' is undefined in the current scope, did you forget to initialize it?");
                     map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
+                    updateBoundsInScope();
                     return;
                 } else {
                     if ($scope.center.lat !== undefined && $scope.center.lat !== null && typeof $scope.center.lat === 'number' && $scope.center.lng !== undefined && $scope.center.lng !== null && typeof $scope.center.lng === 'number' && $scope.center.zoom !== undefined && $scope.center.zoom !== null && typeof $scope.center.zoom === 'number') {
                         map.setView([$scope.center.lat, $scope.center.lng], $scope.center.zoom );
+                        updateBoundsInScope();
                     } else if (attrs.center.autoDiscover === true ) {
                         map.locate({ setView: true, maxZoom: $scope.leaflet.maxZoom });
                     } else {
                         $log.warn("[AngularJS - Leaflet] 'center' is incorrect");
                         map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
+                        updateBoundsInScope();
                     }
                 }
 
@@ -842,10 +875,12 @@ leafletDirective.directive('leaflet', [
                                 if (center.lat !== old_center.lat || center.lng !== old_center.lng || center.zoom !== old_center.zoom) {
                                     // Update if they are different
                                     map.setView([center.lat, center.lng], center.zoom );
+                                    updateBoundsInScope();
                                 }
                             } else {
                                 // We didn't have a correct old center so directly update
                                 map.setView([center.lat, center.lng], center.zoom );
+                                updateBoundsInScope();
                             }
                         } else {
                             // We don't have a correct center
@@ -868,6 +903,7 @@ leafletDirective.directive('leaflet', [
                             centerModel.lng.assign(scope, map.getCenter().lng);
                             centerModel.zoom.assign(scope, map.getZoom());
                         }
+                        updateBoundsInScope();
                     });
                 });
             }
@@ -1521,102 +1557,102 @@ leafletDirective.directive('leaflet', [
 
                 }, true);
             }
-			
-			function createPath(name, scopePath, map) {
-				var path;
-				
-				var options = {
+
+            function createPath(name, scopePath, map) {
+                var path;
+
+                var options = {
                     weight: defaults.path.weight,
                     color: defaults.path.color,
                     opacity: defaults.path.opacity
-				};
-				if(scopePath.stroke !== undefined) {
-					options.stroke = scopePath.stroke;
-				}
-				if(scopePath.fill !== undefined) {
-					options.fill = scopePath.fill;
-				}
-				if(scopePath.fillColor !== undefined) {
-					options.fillColor = scopePath.fillColor;
-				}
-				if(scopePath.fillOpacity !== undefined) {
-					options.fillOpacity = scopePath.fillOpacity;
-				}
-				if(scopePath.smoothFactor !== undefined) {
-					options.smoothFactor = scopePath.smoothFactor;
-				}
-				if(scopePath.noClip !== undefined) {
-					options.noClip = scopePath.noClip;
-				}
-				
-				if(scopePath.type === undefined) {
-					scopePath.type = "polyline";
-				}
-				
-				function setPathOptions(data, oldData) {
-					if (data.latlngs !== undefined && (oldData === undefined || data.latlngs !== oldData.latlngs)) {
-						switch(data.type) {
-							default:
-							case "polyline":
-							case "polygon":
-								path.setLatLngs(convertToLeafletLatLngs(data.latlngs));
-								break;
-							case "multiPolyline":
-							case "multiPolygon":
-								path.setLatLngs(convertToLeafletMultiLatLngs(data.latlngs));
-								break;
-							case "rectangle":
-								path.setBounds(new L.LatLngBounds(convertToLeafletLatLngs(data.latlngs)));
-								break;
-							case "circle":
-							case "circleMarker":
-								path.setLatLng(convertToLeafletLatLng(data.latlngs));
-								if(data.radius !== undefined && (oldData === undefined || data.radius !== oldData.radius)) {
-									path.setRadius(data.radius);
-								}
-								break;
-						}
-					}
-	
-					if (data.weight !== undefined && (oldData === undefined || data.weight !== oldData.weight)) {
-						path.setStyle({ weight: data.weight });
-					}
-	
-					if (data.color !== undefined && (oldData === undefined || data.color !== oldData.color)) {
-						path.setStyle({ color: data.color });
-					}
-	
-					if (data.opacity !== undefined && (oldData === undefined || data.opacity !== oldData.opacity)) {
-						path.setStyle({ opacity: data.opacity });
-					}
-				}
-				
-				switch(scopePath.type) {
-					default:
-					case "polyline":
-						path = new L.Polyline([], options); 
-						break;
-					case "multiPolyline":
-						path = new L.multiPolyline([[[0,0],[1,1]]], options); 
-						break;
-					case "polygon":
-						path = new L.Polygon([], options); 
-						break;
-					case "multiPolygon":
-						path = new L.MultiPolygon([[[0,0],[1,1],[0,1]]], options); 
-						break;
-					case "rectangle":
-						path = new L.Rectangle([[0,0],[1,1]], options); 
-						break;
-					case "circle":
-						path = new L.Circle([0,0], 1, options); 
-						break;
-					case "circleMarker":
-						path = new L.CircleMarker([0,0], options); 
-						break;
-				}
-				
-				setPathOptions(scopePath);
+                };
+                if(scopePath.stroke !== undefined) {
+                    options.stroke = scopePath.stroke;
+                }
+                if(scopePath.fill !== undefined) {
+                    options.fill = scopePath.fill;
+                }
+                if(scopePath.fillColor !== undefined) {
+                    options.fillColor = scopePath.fillColor;
+                }
+                if(scopePath.fillOpacity !== undefined) {
+                    options.fillOpacity = scopePath.fillOpacity;
+                }
+                if(scopePath.smoothFactor !== undefined) {
+                    options.smoothFactor = scopePath.smoothFactor;
+                }
+                if(scopePath.noClip !== undefined) {
+                    options.noClip = scopePath.noClip;
+                }
+
+                if(scopePath.type === undefined) {
+                    scopePath.type = "polyline";
+                }
+
+                function setPathOptions(data, oldData) {
+                    if (data.latlngs !== undefined && (oldData === undefined || data.latlngs !== oldData.latlngs)) {
+                        switch(data.type) {
+                            default:
+                            case "polyline":
+                            case "polygon":
+                                path.setLatLngs(convertToLeafletLatLngs(data.latlngs));
+                                break;
+                            case "multiPolyline":
+                            case "multiPolygon":
+                                path.setLatLngs(convertToLeafletMultiLatLngs(data.latlngs));
+                                break;
+                            case "rectangle":
+                                path.setBounds(new L.LatLngBounds(convertToLeafletLatLngs(data.latlngs)));
+                                break;
+                            case "circle":
+                            case "circleMarker":
+                                path.setLatLng(convertToLeafletLatLng(data.latlngs));
+                                if(data.radius !== undefined && (oldData === undefined || data.radius !== oldData.radius)) {
+                                    path.setRadius(data.radius);
+                                }
+                                break;
+                        }
+                    }
+
+                    if (data.weight !== undefined && (oldData === undefined || data.weight !== oldData.weight)) {
+                        path.setStyle({ weight: data.weight });
+                    }
+
+                    if (data.color !== undefined && (oldData === undefined || data.color !== oldData.color)) {
+                        path.setStyle({ color: data.color });
+                    }
+
+                    if (data.opacity !== undefined && (oldData === undefined || data.opacity !== oldData.opacity)) {
+                        path.setStyle({ opacity: data.opacity });
+                    }
+                }
+
+                switch(scopePath.type) {
+                    default:
+                    case "polyline":
+                        path = new L.Polyline([], options);
+                        break;
+                    case "multiPolyline":
+                        path = new L.multiPolyline([[[0,0],[1,1]]], options);
+                        break;
+                    case "polygon":
+                        path = new L.Polygon([], options);
+                        break;
+                    case "multiPolygon":
+                        path = new L.MultiPolygon([[[0,0],[1,1],[0,1]]], options);
+                        break;
+                    case "rectangle":
+                        path = new L.Rectangle([[0,0],[1,1]], options);
+                        break;
+                    case "circle":
+                        path = new L.Circle([0,0], 1, options);
+                        break;
+                    case "circleMarker":
+                        path = new L.CircleMarker([0,0], options);
+                        break;
+                }
+
+                setPathOptions(scopePath);
                 map.addLayer(path);
 
                 var clearWatch = $scope.$watch('paths.' + name, function(data, oldData) {
@@ -1625,15 +1661,15 @@ leafletDirective.directive('leaflet', [
                         clearWatch();
                         return;
                     }
-					setPathOptions(data,oldData);
+                    setPathOptions(data,oldData);
                 }, true);
-				
+
                 return path;
-			}
-			
-			function convertToLeafletLatLng(latlng) {
-				return new L.LatLng(latlng.lat, latlng.lng);
-			}
+            }
+
+            function convertToLeafletLatLng(latlng) {
+                return new L.LatLng(latlng.lat, latlng.lng);
+            }
 
             function convertToLeafletLatLngs(latlngs) {
                 return latlngs.filter(function(latlng) {
@@ -1642,12 +1678,12 @@ leafletDirective.directive('leaflet', [
                     return new L.LatLng(latlng.lat, latlng.lng);
                 });
             }
-			
-			function convertToLeafletMultiLatLngs(paths) {
-				return paths.map(function(latlngs) {
-					return convertToLeafletLatLngs(latlngs);
-				});
-			}
+
+            function convertToLeafletMultiLatLngs(paths) {
+                return paths.map(function(latlngs) {
+                    return convertToLeafletLatLngs(latlngs);
+                });
+            }
 
             function setupControls() {
                 //@TODO add document for this option  11.08 2013 (houqp)
@@ -1656,11 +1692,11 @@ leafletDirective.directive('leaflet', [
                 }
 
                 if(map.zoomControl && $scope.defaults && $scope.defaults.zoomControl===false) {
-					map.zoomControl.removeFrom(map);
+                    map.zoomControl.removeFrom(map);
                 }
 
                 if(map.zoomsliderControl && $scope.defaults && !$scope.defaults.zoomsliderControl) {
-					map.zoomsliderControl.removeFrom(map);
+                    map.zoomsliderControl.removeFrom(map);
                 }
             }
 
