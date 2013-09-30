@@ -135,6 +135,18 @@ leafletDirective.directive('leaflet', [
                 }
             },
         },
+        WFSLayerPlugin: {
+            isLoaded: function() {
+                return L.GeoJSON.WFS !== undefined;
+            },
+            is: function(layer) {
+                if (this.isLoaded()) {
+                    return layer instanceof L.GeoJSON.WFS;
+                } else {
+                    return false;
+                }
+            },
+        },
         Leaflet: {
             DivIcon: {
                 is: function(icon) {
@@ -525,16 +537,20 @@ leafletDirective.directive('leaflet', [
                 if (layerDefinition.type === undefined || layerDefinition.type === null || typeof layerDefinition.type !== 'string') {
                     $log.error('[AngularJS - Leaflet] A base layer must have a type');
                     return null;
-                } else if (layerDefinition.type !== 'xyz' && layerDefinition.type !== 'wms' && layerDefinition.type !== 'group' && layerDefinition.type !== 'markercluster' && layerDefinition.type !== 'google' && layerDefinition.type !== 'bing') {
-                    $log.error('[AngularJS - Leaflet] A layer must have a valid type: "xyz, wms, group, google"');
+                } else if (layerDefinition.type !== 'xyz' && layerDefinition.type !== 'wms' && layerDefinition.type !== 'wfs' && layerDefinition.type !== 'group' && layerDefinition.type !== 'markercluster' && layerDefinition.type !== 'google' && layerDefinition.type !== 'bing') {
+                    $log.error('[AngularJS - Leaflet] A layer must have a valid type: "xyz, wms, wfs, group, google"');
                     return null;
                 }
-                if (layerDefinition.type === 'xyz' || layerDefinition.type === 'wms') {
+                if (layerDefinition.type === 'xyz' || layerDefinition.type === 'wms' || layerDefinition.type === 'wfs') {
                     // XYZ, WMS must have an url
                     if (layerDefinition.url === undefined || layerDefinition.url === null || typeof layerDefinition.url !== 'string') {
                         $log.error('[AngularJS - Leaflet] A base layer must have an url');
                         return null;
                     }
+                }
+                if(layerDefinition.type === 'wfs' && layerDefinition.layer === undefined) {
+					$log.error('[AngularJS - Leaflet] A WFS layer must have an layer');
+                    return null;
                 }
                 if (layerDefinition.name === undefined || layerDefinition.name === null || typeof layerDefinition.name !== 'string') {
                     $log.error('[AngularJS - Leaflet] A base layer must have a name');
@@ -557,6 +573,9 @@ leafletDirective.directive('leaflet', [
                 case 'wms':
                     layer = createWmsLayer(layerDefinition.url, layerDefinition.layerOptions);
                     break;
+                case 'wfs':
+					layer = createWfsLayer(layerDefinition.url, layerDefinition.layer, layerDefinition.layerOptions);
+					break;
                 case 'group':
                     layer = createGroupLayer();
                     break;
@@ -590,6 +609,19 @@ leafletDirective.directive('leaflet', [
 				}
                 var layer = L.tileLayer.wms(url, options);
                 return layer;
+            }
+            
+            function createWfsLayer(url, layerName, options) {
+				if (Helpers.WFSLayerPlugin.isLoaded()) {
+					if(options.crs && 'string' === typeof options.crs) {
+						/*jshint -W061 */
+						options.crs = eval(options.crs);
+					}
+					var layer = new L.GeoJSON.WFS(url, layerName, options);
+					return layer;
+				} else {
+					return null;
+				}
             }
 
             function createGroupLayer() {
