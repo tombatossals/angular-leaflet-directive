@@ -79,7 +79,22 @@
                             lat: 53.230495,
                             lng: -0.53936,
                             draggable: true
-                        }
+                        },
+	                    Northhampton: {
+                            lat: 52.237892,
+                            lng: -0.90087,
+                            draggable: true
+	                    },
+	                    Worcester: {
+                            lat: 52.187404,
+                            lng: -2.20275,
+                            draggable: true
+	                    },
+	                    York: {
+		                    lat: 53.959317,
+		                    lng: -1.08215,
+		                    draggable: true
+	                    }
                     }
                 });
 
@@ -93,12 +108,49 @@
                         p2: {
                             weight: 3,
                             opacity: 0.5,
-                            latlngs: [ $scope.markers.London, $scope.markers.Lincoln ]
-                        }
+                            latlngs: [ 
+	                            [ $scope.markers.London, $scope.markers.Lincoln ],
+                                [ $scope.markers.Manchester, $scope.markers.Worcester]
+                            ],
+	                        type: 'multiPolyline'
+                        },
+	                    c1: {
+		                    weight: 2,
+		                    color: '#ff612f',
+		                    latlngs: $scope.markers.Northhampton,
+		                    radius: 10000,
+		                    type: 'circle'
+	                    },
+	                    c2: {
+		                    weight: 2,
+		                    color: '#ff612f',
+		                    latlngs: $scope.markers.Lincoln,
+		                    radius: 50,
+		                    type: 'circleMarker'
+	                    },
+	                    pg1: {
+		                    latlngs: [ $scope.markers.London, $scope.markers.Worcester, $scope.markers.Lincoln ],
+		                    stroke: false,
+		                    fillColor: '#ff69b4',
+		                    type: 'polygon'
+	                    },
+	                    pg2: {
+                            weight: 1,
+                            color: '#2e3974',
+                            latlngs: [ 
+	                            [ $scope.markers.London, $scope.markers.Worcester, $scope.markers.Northhampton ],
+                                [ $scope.markers.Manchester, $scope.markers.Lincoln, $scope.markers.York ]
+                            ],
+		                    type: 'multiPolygon'
+	                    },
+	                    r1: {
+		                    latlngs: [ $scope.markers.Lincoln, $scope.markers.York ],
+		                    type: 'rectangle'
+	                    }
                     }
                 });
 
-            };
+            }
         </script>
     </head>
     <body ng-controller="DemoController">
