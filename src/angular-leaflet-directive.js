@@ -1280,11 +1280,21 @@ leafletDirective.directive('leaflet', [
                             // If there isn't or wasn't the draggable property or is false and previously true update the dragging
                             // the !== true prevents for not boolean values in the draggable property
                             if (old_data.draggable !== undefined && old_data.draggable !== null && old_data.draggable === true) {
-                                marker.dragging.disable();
+                                if (marker.dragging) {
+                                    marker.dragging.disable();
+                                }
                             }
                         } else if (old_data.draggable === undefined || old_data.draggable === null || old_data.draggable !== true) {
                             // The data.draggable property must be true so we update if there wasn't a previous value or it wasn't true
-                            marker.dragging.enable();
+                            if (marker.dragging) {
+                                marker.dragging.enable();
+                            } else {
+                                if (L.Handler.MarkerDrag) {
+                                    marker.dragging = new L.Handler.MarkerDrag(marker);
+                                    marker.options.draggable = true;
+                                    marker.dragging.enable();
+                                }
+                            }
                         }
 
                         // Update the icon property
@@ -1301,7 +1311,10 @@ leafletDirective.directive('leaflet', [
                             }
                         } else if (old_data.icon === undefined || old_data.icon === null || typeof old_data.icon !== 'object') {
                             // The data.icon exists so we create a new icon if there wasn't an icon before
-                            var dragA = marker.dragging.enabled();
+                            var dragA = false;
+                            if (marker.dragging) {
+                                dragA = marker.dragging.enabled();
+                            }
                             if (Helpers.AwesomeMarkersPlugin.is(data.icon)) {
                                 // This icon is a L.AwesomeMarkers.Icon so it is using the AwesomeMarker PlugIn
                                 marker.setIcon(data.icon);
@@ -1326,7 +1339,10 @@ leafletDirective.directive('leaflet', [
                             if (Helpers.AwesomeMarkersPlugin.is(data.icon)) {
                                 // This icon is a L.AwesomeMarkers.Icon so it is using the AwesomeMarker PlugIn
                                 if (!Helpers.AwesomeMarkersPlugin.equal(data.icon, old_data.icon)) {
-                                    var dragD = marker.dragging.enabled();
+                                    var dragD = false;
+                                    if (marker.dragging) {
+                                        dragD = marker.dragging.enabled();
+                                    }
                                     marker.setIcon(data.icon);
                                     // As the new icon creates a new DOM object some elements, as drag, are reseted.
                                     if (dragD) {
@@ -1342,7 +1358,10 @@ leafletDirective.directive('leaflet', [
                             } else if (Helpers.Leaflet.DivIcon.is(data.icon)) {
                                 // This is a Leaflet.DivIcon
                                 if (!Helpers.Leaflet.DivIcon.equal(data.icon, old_data.icon)) {
-                                    var dragE = marker.dragging.enabled();
+                                    var dragE = false;
+                                    if (marker.dragging) {
+                                        dragE = marker.dragging.enabled();
+                                    }
                                     marker.setIcon(data.icon);
                                     // As the new icon creates a new DOM object some elements, as drag, are reseted.
                                     if (dragE) {
@@ -1358,7 +1377,10 @@ leafletDirective.directive('leaflet', [
                             } else if (Helpers.Leaflet.Icon.is(data.icon)) {
                                 // This is a Leaflet.DivIcon
                                 if (!Helpers.Leaflet.Icon.equal(data.icon, old_data.icon)) {
-                                    var dragF = marker.dragging.enabled();
+                                    var dragF = false;
+                                    if (marker.dragging) {
+                                        dragF = marker.dragging.enabled();
+                                    }
                                     marker.setIcon(data.icon);
                                     // As the new icon creates a new DOM object some elements, as drag, are reseted.
                                     if (dragF) {
@@ -1375,7 +1397,10 @@ leafletDirective.directive('leaflet', [
                                 // This icon is an icon defined in the marker model through options
                                 // There is an icon and there was an icon so if they are different we create a new icon
                                 if (JSON.stringify(data.icon) !== JSON.stringify(old_data.icon)) {
-                                    var dragG = marker.dragging.enabled();
+                                    var dragG = false;
+                                    if (marker.dragging) {
+                                        dragG = marker.dragging.enabled();
+                                    }
                                     marker.setIcon(new LeafletIcon(data.icon));
                                     if (dragG) {
                                         marker.dragging.enable();
