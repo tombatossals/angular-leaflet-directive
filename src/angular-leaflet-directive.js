@@ -1,7 +1,6 @@
 var leafletDirective = angular.module("leaflet-directive", []);
 
-leafletDirective.directive('leaflet', [
-    '$http', '$log', '$parse', '$rootScope', function ($http, $log, $parse, $rootScope) {
+leafletDirective.directive('leaflet', function ($http, $log, $parse, $rootScope) {
 
     var defaults = {
         maxZoom: 14,
@@ -1736,4 +1735,4 @@ leafletDirective.directive('leaflet', [
             }
         }
     };
-}]);
+});
