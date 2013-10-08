@@ -17,7 +17,7 @@ leafletDirective.directive('leaflet', function ($http, $log, $parse, $rootScope)
         },
         icon: {
             url: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-icon.png',
-            retinaUrl: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-icon@2x.png',
+            retinaUrl: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-icon.png',
             size: [25, 41],
             anchor: [12, 40],
             popup: [0, -40],
