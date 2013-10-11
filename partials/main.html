@@ -35,17 +35,38 @@
             <div hljs ng-switch-when="css"><link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" /></div>
         </div>
         <br />
-        <p>And that's all. Now you can start embedding maps to your application adding the custom tag <code>&lt;leaflet&gt;</code> with some attributes on your HTML code, and interacting with the <span class="label label-danger">scope</span> of your controller. Let's see how it works and how you can use it in the <a href="#!/examples/simple-map">examples page</a>, or take a look of what can be accomplished with it on the demo below.</p>
+        <p>And that's all. Now you can start embedding maps to your application adding the custom tag <code>&lt;leaflet&gt;</code> with some attributes on your HTML code, and interacting with the <span class="label label-danger">scope</span> of your controller. Let's see how it works and how you can use it in the <a href="#!/examples/simple-map">examples page</a>, or take a look of what can be accomplished with it on the demos below.</p>
         <br />
 
-        <div ng-controller="WorldMapController" class="mainPageDemo">
+        <div ng-controller="MultiLayerMapController" class="mainPageDemo col-md-6">
+            <leaflet center="center" layers="layers" defaults="defaults" height="400"></leaflet>
+            <div class="multilayer">
+                <div class="btn-group btn-group-justified" data-toggle="buttons">
+                    <label class="btn btn-primary active" ng-click="setBaseLayer('osm')">
+                        <input type="radio" name="options"> OpenStreetMap
+                    </label>
+                    <label class="btn btn-primary" ng-click="setBaseLayer('cycle')">
+                        <input type="radio" name="options"> OpenCycleMap
+                    </label>
+                    <label class="btn btn-primary" ng-click="setBaseLayer('night')">
+                        <input type="radio" name="options"> Night Commander
+                    </label>
+                    <label class="btn btn-primary" ng-click="setBaseLayer('tourist')">
+                        <input type="radio" name="options"> Tourist
+                    </label>
+                </div>
+            </div>
+            <p>Click on the buttons to change the active map layer.</p>
+        </div>
+
+        <div ng-controller="WorldMapController" class="mainPageDemo col-md-6">
             <div class="info country f32" ng-show="geojson.selected">
                 <div class="flag" ng-class="countries[geojson.selected.id]['alpha-2']|lowercase"></div>
                 {{ geojson.selected.properties.name }}
             </div>
-            <leaflet center="center" events="events" legend="legend" defaults="defaults" geojson="geojson" height="600"></leaflet>
+            <leaflet center="center" events="events" legend="legend" defaults="defaults" geojson="geojson" height="400"></leaflet>
+            <p>This example is partially based on <a href="http://leafletjs.com/examples/choropleth.html">this Leaflet demo</a>. CSS + Images of flags obtained from the <a href="https://github.com/lafeber/world-flags-sprite">World Flags Sprite</a> project.</p>
+            <p>You can see a standalone example of this code <a href="examples/geojson-example.html">here</a>.</p>
         </div>
-        <p>Example partially based on <a href="http://leafletjs.com/examples/choropleth.html">this Leaflet demo</a>. CSS + Images of flags obtained from the <a href="https://github.com/lafeber/world-flags-sprite">World Flags Sprite</a> project.</p>
-        <p>You can see a standalone example of this code <a href="examples/geojson-example.html">here</a>.</p>
     </div>
 </div>

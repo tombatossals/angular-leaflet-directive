@@ -97,11 +97,12 @@ pre {
 }
 
 div.country {
+    font: 14px/16px Arial, Helvetica, sans-serif;
     font-size: 2em;
     font-weight: bold;
     position: absolute;
-    bottom: 1em;
-    left: 1em;
+    top: .5em;
+    right: 1em;
     z-index: 100;
     padding: .5em;
     line-height: 1.1em;
@@ -130,4 +131,9 @@ div.mainPageDemo {
 
 .navbar {
     border-radius: 4px 4px 0 0;
+}
+
+.multilayer > .btn, .multilayer > .btn-group {
+    margin-top: 5px;
+    margin-bottom: 5px;
 }

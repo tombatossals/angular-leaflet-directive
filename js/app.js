@@ -374,7 +374,81 @@
         });
     }]);
 
-    app.controller("WorldMapController", [ '$scope', '$http', function($scope, $http) {
+    app.controller("MultiLayerMapController", [ '$scope', '$http', function($scope, $http) {
+        var baselayers = {
+            osm: {
+                name: 'OpenStreetMap',
+                type: 'xyz',
+                url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                layerOptions: {
+                    subdomains: ['a', 'b', 'c'],
+                    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                    continuousWorld: true
+                }
+            },
+            cycle: {
+                name: 'OpenCycleMap',
+                type: 'xyz',
+                url: 'http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png',
+                layerOptions: {
+                    subdomains: ['a', 'b', 'c'],
+                    attribution: '&copy; <a href="http://www.opencyclemap.org/copyright">OpenCycleMap</a> contributors - &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                    continuousWorld: true
+                }
+            },
+            night: {
+                name: 'Cloudmade Night Commander',
+                type: 'xyz',
+                url: 'http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png',
+                layerParams: {
+                    key: '007b9471b4c74da4a6ec7ff43552b16f',
+                    styleId: 999
+                },
+                layerOptions: {
+                    subdomains: ['a', 'b', 'c'],
+                    continuousWorld: true
+                }
+            },
+            tourist: {
+                name: 'Cloudmade Tourist',
+                type: 'xyz',
+                url: 'http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png',
+                layerParams: {
+                    key: '007b9471b4c74da4a6ec7ff43552b16f',
+                    styleId: 7
+                },
+                layerOptions: {
+                    subdomains: ['a', 'b', 'c'],
+                    continuousWorld: true
+                }
+            }
+        };
+
+        $scope.setBaseLayer = function(key) {
+            for (var l in $scope.layers.baselayers) {
+                if ($scope.layers.baselayers.hasOwnProperty(l) && key !== l) {
+                    delete $scope.layers.baselayers[l];
+                    $scope.layers.baselayers[key] = baselayers[key];
+                }
+            }
+        };
+
+        angular.extend($scope, {
+            center: {
+                lat: 40.8471,
+                lng: 14.0625,
+                zoom: 3
+            },
+            defaults: {
+                scrollWheelZoom: false
+            },
+            layers: {
+                baselayers: { osm: baselayers.osm }
+            }
+        });
+    } ]);
+
+    app.controller("WorldMapController", [ '$scope', '$http', '$log', function($scope, $http, $log) {
 
         $scope.$on("leafletDirectiveMap.geojsonMouseover", function(ev, leafletEvent) {
             countryMouseover(leafletEvent);
@@ -423,7 +497,7 @@
         });
 
         function countryClick(country, event) {
-            console.log(country.properties.name);
+            $log.debug(country.properties.name);
         }
 
         // Get a country paint color from the continents array of colors
