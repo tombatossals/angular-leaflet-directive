@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html ng-app="demoapp">
     <head>
         <script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
@@ -10,6 +11,7 @@
         <style type="text/css">
             p, h4 { margin: 10px 0; padding: 0; }
             body { margin: 5px; }
+            body, html { height: 100%; }
             div#control {
                 z-index: 100;
                 position: absolute;
@@ -108,7 +110,7 @@
                         p2: {
                             weight: 3,
                             opacity: 0.5,
-                            latlngs: [ 
+                            latlngs: [
 	                            [ $scope.markers.London, $scope.markers.Lincoln ],
                                 [ $scope.markers.Manchester, $scope.markers.Worcester]
                             ],
@@ -137,7 +139,7 @@
 	                    pg2: {
                             weight: 1,
                             color: '#2e3974',
-                            latlngs: [ 
+                            latlngs: [
 	                            [ $scope.markers.London, $scope.markers.Worcester, $scope.markers.Northhampton ],
                                 [ $scope.markers.Manchester, $scope.markers.Lincoln, $scope.markers.York ]
                             ],

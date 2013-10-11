@@ -203,10 +203,10 @@ leafletDirective.directive('leaflet', function ($http, $log, $parse, $rootScope)
         template: '<div class="angular-leaflet-map"></div>',
         link: function ($scope, element, attrs /*, ctrl */) {
             if (attrs.width) {
-                element.css('width', attrs.width);
+                element.css('width', attrs.width.replace('px', '') + 'px');
             }
             if (attrs.height) {
-                element.css('height', attrs.height);
+                element.css('height', attrs.height.replace('px', '') + 'px');
             }
 
             $scope.leaflet = {};
