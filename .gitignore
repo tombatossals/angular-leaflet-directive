@@ -1,6 +1,7 @@
 temp
 node_modules
 libpeerconnection.log
+dist/angular-leaflet-directive.ngmin.js
 *.swp
 .*.swp
 *.iml
