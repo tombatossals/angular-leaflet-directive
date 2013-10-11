@@ -497,7 +497,7 @@
         });
 
         function countryClick(country, event) {
-            $log.debug(country.properties.name);
+            $log.info(country.properties.name);
         }
 
         // Get a country paint color from the continents array of colors
