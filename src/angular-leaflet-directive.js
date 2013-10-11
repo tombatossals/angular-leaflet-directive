@@ -859,10 +859,17 @@ leafletDirective.directive('leaflet', function ($http, $log, $parse, $rootScope)
                     zoom: $parse("center.zoom")
                 };
 
+                var movingMap = false;
+
                 $scope.$watch("center", function(center, old_center) {
                     if (!center) {
                         $log.warn("[AngularJS - Leaflet] 'center' have been removed?");
                         map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
+                        return;
+                    }
+
+                    if (movingMap) {
+                        // Can't update. The map is moving.
                         return;
                     }
 
@@ -895,7 +902,12 @@ leafletDirective.directive('leaflet', function ($http, $log, $parse, $rootScope)
                     }
                 }, true);
 
+                map.on("movestart", function(/* event */) {
+                    movingMap = true;
+                });
+
                 map.on("moveend", function(/* event */) {
+                    movingMap = false;
                     safeApply(function(scope) {
                         if (centerModel) {
                             centerModel.lat.assign(scope, map.getCenter().lat);
