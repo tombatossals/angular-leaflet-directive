@@ -104,9 +104,8 @@ div.country {
     top: .5em;
     right: 1em;
     z-index: 100;
-    padding: .5em;
+    padding: .2em .5em;
     line-height: 1.1em;
-    width: 300px;
     text-align: center;
 }
 
