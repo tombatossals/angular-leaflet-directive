@@ -1,0 +1,25 @@
+{
+  "author": "David Rubert <david.rubert@gmail.com>",
+  "name": "angular-leaflet-directive-webpage",
+  "description": "angular-leaflet-directive-webpage - An AngularJS webpage which shows how to use angular-leaflet-directive",
+  "version": "0.0.1",
+  "homepage": "http://tombatossals.github.io/angular-leaflet-directive/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tombatossals/angular-leaflet-directive/tree/gh-pages"
+  },
+  "keywords": [
+    "angularjs",
+    "leaflet"
+  ],
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "grunt-cli": "latest",
+    "grunt-contrib-uglify": "latest",
+    "grunt-contrib-jshint": "latest",
+    "grunt-contrib-watch": "latest",
+    "grunt-contrib-concat": "latest",
+    "grunt-ngmin": "latest"
+  }
+}
