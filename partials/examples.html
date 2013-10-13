@@ -376,63 +376,7 @@ app.controller("DraggingMarkersController", [ '$scope', function($scope) {
     <button type="button" class="btn btn-primary padright" ng-click="markers.m1.icon=icon" ng-repeat="(key, icon) in icons">{{ key }}</button>
     <leaflet markers="markers" center="lisbon"></leaflet>
 </div></div>
-            <div hljs ng-switch-when="javascript">
-var app = angular.module("mainPage", ['leaflet-directive']);
-app.controller("CustomizedMarkersController", [ '$scope', function($scope) {
-    var local_icons = {
-        leaf_icon: L.icon({
-            iconUrl: 'examples/img/leaf-green.png',
-            shadowUrl: 'examples/img/leaf-shadow.png',
-             iconSize:     [38, 95], // size of the icon
-            shadowSize:   [50, 64], // size of the shadow
-            iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
-            shadowAnchor: [4, 62],  // the same for the shadow
-            popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
-        }),
-        default_icon: L.icon({
-            iconUrl: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-icon.png',
-            shadowUrl: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-shadow.png',
-            iconSize: [25, 41],
-            iconAnchor: [12, 40],
-            popupAnchor: [0, -40],
-            shadowSize: [41, 41],
-            shadowAnchor: [12, 40]
-        }),
-        div_icon: L.divIcon({
-            iconSize: [230, 0],
-            html: 'Using <strong>Bold text as an icon</strong>: Lisbon',
-            popupAnchor:  [0, 0]
-        }),
-        object_icon: {
-            iconUrl: 'http://leafletjs.com/docs/images/leaf-orange.png',
-            shadowUrl: 'http://leafletjs.com/docs/images/leaf-shadow.png',
-            iconSize:     [38, 95],
-            shadowSize:   [50, 64],
-            iconAnchor:   [22, 94],
-            shadowAnchor: [4, 62]
-        },
-    }
-
-    angular.extend($scope, {
-        icons: local_icons
-    });
-
-    angular.extend($scope, {
-        lisbon: {
-            lat: 38.716,
-            lng: -9.13,
-            zoom: 8
-        },
-        markers: {
-            m1: {
-                lat: 38.716,
-                lng: -9.13,
-                message: "I'm a static marker",
-                icon: local_icons.default_icon,
-            }
-        }
-    });
-}]);</div>
+            <div hljs ng-switch-when="javascript" include="'src/controllers/CustomizedMarkersController.js'"></div>
             <p>You can see the code demonstrating this feature in the <a href="examples/markers-icon-example.html">customized markers icons example</a>.</p>
         </div>
     </div>
@@ -450,34 +394,7 @@ app.controller("CustomizedMarkersController", [ '$scope', function($scope) {
 <div ng-controller="LegendController">
      <leaflet center="japan" geojson="geojson"></leaflet>
 </div></div>
-            <div hljs ng-switch-when="javascript">
-var app = angular.module("mainPage", ['leaflet-directive']);
-app.controller("GeoJSONController", [ '$scope', '$http', function($scope, $http) {
-    angular.extend($scope, {
-        japan: {
-            lat: 37.26,
-            lng: 138.86,
-            zoom: 4
-        }
-    });
-
-    // Get the countries geojson data from a JSON
-    $http.get("examples/json/JPN.geo.json").success(function(data, status) {
-        angular.extend($scope, {
-            geojson: {
-                data: data,
-                style: {
-                    fillColor: "green",
-                    weight: 2,
-                    opacity: 1,
-                    color: 'white',
-                    dashArray: '3',
-                    fillOpacity: 0.7
-                }
-            }
-        });
-    });
-});</div>
+            <div hljs ng-switch-when="javascript" include="'src/controllers/GeoJSONController.js'"></div>
             <p>You can see the code demonstrating this feature in the <a href="examples/geojson-example.html">GeoJSON example</a>.</p>
         </div>
     </div>
@@ -496,26 +413,8 @@ app.controller("GeoJSONController", [ '$scope', '$http', function($scope, $http)
 <div ng-controller="LegendController">
      <leaflet center="amsterdam" legend="legend"></leaflet>
 </div></div>
-            <div hljs ng-switch-when="javascript">
-var app = angular.module("mainPage", ['leaflet-directive']);
-app.controller("LegendController", [ '$scope', function($scope) {
-    angular.extend($scope, {
-        amsterdam: {
-            lat: 52.35,
-            lng: 4.91,
-            zoom: 12
-        },
-        legend: {
-            position: 'bottomleft',
-            colors: [ '#ff0000', '#28c9ff', '#0000ff', '#ecf386' ],
-            labels: [ 'National Cycle Route', 'Regional Cycle Route', 'Local Cycle Network', 'Cycleway' ]
-        },
-        defaults: {
-            tileLayer: "http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png"
-        }
-    });
-}]);</div>
-        <div hljs ng-switch-when="css">
+            <div hljs ng-switch-when="javascript" include="'src/controllers/LegendController.js'"></div>
+            <div hljs ng-switch-when="css">
 .legend {
     padding: 6px 8px;
     font: 14px/16px Arial, Helvetica, sans-serif;
@@ -552,69 +451,7 @@ app.controller("LegendController", [ '$scope', function($scope) {
 <div ng-controller="PathController">
     <leaflet center="center" paths="paths" markers="markers" defaults="defaults" height="500"></leaflet>
 </div></div>
-            <div hljs ng-switch-when="javascript">
-var app = angular.module("mainPage", ['leaflet-directive']);
-app.controller("PathController", [ '$scope', function($scope) {
-    angular.extend($scope, {
-        center: {
-            lat: 48,
-            lng: 4,
-            zoom: 5
-        },
-        paths: {
-            p1: {
-                color: '#008000',
-                weight: 8,
-                latlngs: [
-                    { lat: 51.50, lng: -0.082 },
-                    { lat: 48.83, lng: 2.37 },
-                    { lat: 41.91, lng: 12.48 }
-                ],
-            }
-        },
-        markers: {
-            london: {
-                lat: 51.50,
-                lng: -0.082,
-                icon: L.icon({
-                    iconUrl: 'examples/img/100x100_PNG/bigben100.png',
-                    iconSize: [80, 80],
-                    iconAnchor: [40, 80],
-                    popupAnchor: [0, 0],
-                    shadowSize: [0, 0],
-                    shadowAnchor: [0, 0]
-                })
-            },
-            paris: {
-                lat: 48.83,
-                lng: 2.37,
-                icon: L.icon({
-                    iconUrl: 'examples/img/100x100_PNG/eiffel100.png',
-                    iconSize: [80, 80],
-                    iconAnchor: [40, 60],
-                    popupAnchor: [0, 0],
-                    shadowSize: [0, 0],
-                    shadowAnchor: [0, 0]
-                })
-            },
-            roma: {
-                lat: 41.91,
-                lng: 12.48,
-                icon: L.icon({
-                    iconUrl: 'examples/img/100x100_PNG/colosseum100.png',
-                    iconSize: [60, 60],
-                    iconAnchor: [30, 40],
-                    popupAnchor: [0, 0],
-                    shadowSize: [0, 0],
-                    shadowAnchor: [0, 0]
-                })
-            }
-        },
-        defaults: {
-            scrollWheelZoom: false
-        }
-    });
-}]);</div>
+            <div hljs ng-switch-when="javascript" include="'src/controllers/PathController.js'"></div>
             <p>You can see the code demonstrating this feature in the <a href="examples/path-example.html">path example</a>.</p>
         </div>
     </div>
@@ -632,39 +469,10 @@ app.controller("PathController", [ '$scope', function($scope) {
 <script src="https://maps.googleapis.com/maps/api/js?libraries=geometry&sensor=false"></script>
 <script src="plugins/layer/tile/Google.js"></script>
 ...
-<div ng-controller="PathController">
+<div ng-controller="GoogleMapsController">
     <leaflet center="berlin" layers="layers"></leaflet>
 </div></div>
-            <div hljs ng-switch-when="javascript">
-var app = angular.module("mainPage", ['leaflet-directive']);
-app.controller("GoogleMapsController", [ '$scope', function($scope) {
-   angular.extend($scope, {
-       berlin: {
-            lat: 52.52,
-            lng: 13.40,
-            zoom: 14
-        },
-        layers: {
-            baselayers: {
-                googleTerrain: {
-                    name: 'Google Terrain',
-                    layerType: 'TERRAIN',
-                    type: 'google'
-                },
-                googleHybrid: {
-                    name: 'Google Hybrid',
-                    layerType: 'HYBRID',
-                    type: 'google'
-                },
-                googleRoadmap: {
-                    name: 'Google Streets',
-                    layerType: 'ROADMAP',
-                    type: 'google'
-                }
-            }
-        }
-    });
-}]);</div>
+            <div hljs ng-switch-when="javascript" include="'src/controllers/GoogleMapsController.js'"></div>
             <p>You can see the code demonstrating this feature in the <a href="examples/googlemaps-example.html">Google Maps example</a>.</p>
         </div>
     </div>
