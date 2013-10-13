@@ -33,14 +33,12 @@
 
         <ul class="nav nav-tabs">
             <li class="active"><a href="" ng-click="activeTab='html'" data-toggle="tab">HTML code</a></li>
-            <li><a href="" ng-click="activeTab='javascript'" data-toggle="tab">Javascript</a></li>
+            <li><a href="" ng-click="activeTab='javascript'" data-toggle="tab">Javascript Angular controller</a></li>
         </ul>
         <div class="tab-container" ng-switch on="activeTab">
             <div hljs ng-switch-default>
 <leaflet></leaflet></div>
-            <div hljs ng-switch-when="javascript">
-var app = angular.module("basicMapApp", ["leaflet-directive"]);
-</div>
+            <div hljs ng-switch-when="javascript" include="'src/controllers/SimpleMapController.js'"></div>
             <p>You can see a standalone example of this code <a href="examples/simple-example.html">here</a>.</p>
         </div>
     </div>
@@ -76,7 +74,7 @@ var app = angular.module("basicMapApp", ["leaflet-directive"]);
         <p>Let's position our map. We can center and zoom an specific position of the map via a bi-directional property called <strong>center</strong>, which 3 properties inside: <span class="label label-warning">lat</span>, <span class="label label-warning">lng</span> and <span class="label label-warning">zoom</span>. This properties could be changed on the fly, updating our map position, and viceversa.</p>
         <ul class="nav nav-tabs">
             <li class="active"><a href="" ng-click="activeTab='html'" data-toggle="tab">HTML code</a></li>
-            <li><a href="" ng-click="activeTab='javascript'" data-toggle="tab">Javascript</a></li>
+            <li><a href="" ng-click="activeTab='javascript'" data-toggle="tab">Javascript Angular controller</a></li>
         </ul>
         <div class="tab-container" ng-switch on="activeTab">
             <div hljs ng-switch-default>
@@ -88,16 +86,7 @@ var app = angular.module("basicMapApp", ["leaflet-directive"]);
     </form>
     <leaflet center="center"></leaflet>
 </div></div>
-            <div hljs ng-switch-when="javascript">
- app.controller("CenterController", [ '$scope', function($scope) {
-     angular.extend($scope, {
-         center: {
-             lat: 40.095,
-             lng: -3.823,
-             zoom: 4
-         }
-     });
-}]);</div>
+            <div hljs ng-switch-when="javascript" include="'src/controllers/CenterController.js'"></div>
         </div>
         <p>You can see a standalone example of this code <a href="examples/center-example.html">here</a>.</p>
     </div>
@@ -122,14 +111,14 @@ var app = angular.module("basicMapApp", ["leaflet-directive"]);
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     },
     icon: {
-        url: 'http://cdn.leafletjs.com/leaflet-0.5.1/images/marker-icon.png',
-        retinaUrl: 'http://cdn.leafletjs.com/leaflet-0.5.1/images/marker-icon@2x.png',
+        url: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-icon.png',
+        retinaUrl: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-icon@2x.png',
         size: [25, 41],
         anchor: [12, 40],
         popup: [0, -40],
         shadow: {
-            url: 'http://cdn.leafletjs.com/leaflet-0.5.1/images/marker-shadow.png',
-            retinaUrl: 'http://cdn.leafletjs.com/leaflet-0.5.1/images/marker-shadow.png',
+            url: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-shadow.png',
+            retinaUrl: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-shadow.png',
             size: [41, 41],
             anchor: [12, 40]
         }
@@ -149,32 +138,14 @@ var app = angular.module("basicMapApp", ["leaflet-directive"]);
         <p>We can override the properties we would like to change, for example, to obtain a map like the upper one you see on this page. Let's see the necessary code:</p>
         <ul class="nav nav-tabs">
             <li class="active"><a href="" ng-click="activeTab='html'" data-toggle="tab">HTML code</a></li>
-            <li><a href="" ng-click="activeTab='javascript'" data-toggle="tab">Javascript</a></li>
+            <li><a href="" ng-click="activeTab='javascript'" data-toggle="tab">Javascript Angular controller</a></li>
         </ul>
         <div class="tab-container" ng-switch on="activeTab">
             <div hljs ng-switch-default>
 <div ng-controller="CustomParametersController">
     <leaflet center="london" defaults="defaults"></leaflet>
 </div></div>
-            <div hljs ng-switch-when="javascript">
-app.controller("CustomParametersController", [ '$scope', function($scope) {
-    angular.extend($scope, {
-        london: {
-            lat: 51.505,
-            lng: -0.09,
-            zoom: 8
-        },
-        defaults: {
-            tileLayer: "http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png",
-            tileLayerOptions: {
-                opacity: 0.9,
-                detectRetina: true,
-                reuseTiles: true,
-            },
-            scrollWheelZoom: false
-        }
-    });
-}]);</div>
+            <div hljs ng-switch-when="javascript" include="'src/controllers/CustomParametersController.js'"></div>
         </div>
         <p>You can see a standalone example of this code <a href="examples/custom-parameters-example.html">here</a>.</p>
     </div>
@@ -198,7 +169,7 @@ click, dblclick, mousedown, mouseup, mouseover, mouseout, mousemove, contextmenu
 
         <ul class="nav nav-tabs">
             <li class="active"><a href="" ng-click="activeTab='html'" data-toggle="tab">HTML code</a></li>
-            <li><a href="" ng-click="activeTab='javascript'" data-toggle="tab">Javascript</a></li>
+            <li><a href="" ng-click="activeTab='javascript'" data-toggle="tab">Javascript Angular controller</a></li>
         </ul>
         <div class="tab-container" ng-switch on="activeTab">
             <div hljs ng-switch-default>
@@ -208,34 +179,9 @@ click, dblclick, mousedown, mouseup, mouseover, mouseout, mousemove, contextmenu
     </ul>
     <leaflet center="center" events="events"></leaflet>
 </div></div>
-            <div hljs ng-switch-when="javascript">
-var app = angular.module("eventsApp", ["leaflet-directive"]);
-app.controller("EventsController", [ "$scope", function($scope) {
-    $scope.center  = {
-        lat: 52.374004,
-        lng: 4.890359,
-        zoom: 7
-    };
-    $scope.eventDetected = "No events yet...";
-
-    $scope.$on('leafletDirectiveMap.zoomstart', function(event){
-        $scope.eventDetected = "ZoomStart";
-    });
-
-    $scope.$on('leafletDirectiveMap.drag', function(event){
-        $scope.eventDetected = "Drag";
-    });
-
-    $scope.$on('leafletDirectiveMap.click', function(event){
-        $scope.eventDetected = "Click";
-    });
-
-    $scope.$on('leafletDirectiveMap.mousemove', function(event){
-        $scope.eventDetected = "MouseMove";
-    });
-}]);</div>
-            <p>You can see a standalone example of this code <a href="examples/events-example.html">here</a>.</p>
+            <div hljs ng-switch-when="javascript" include="'src/controllers/EventsController.js'"></div>
         </div>
+        <p>You can see a standalone example of this code <a href="examples/events-example.html">here</a>.</p>
     </div>
 
     <div class="col-md-10" ng-controller="MainMarkerController" ng-switch-when="main-marker">
@@ -251,26 +197,9 @@ app.controller("EventsController", [ "$scope", function($scope) {
 <div ng-controller="MainMarkerController">
     <leaflet marker="osloMarker" center="osloCenter"></leaflet>
 </div></div>
-            <div hljs ng-switch-when="javascript">
-var app = angular.module("mainPage", ['leaflet-directive']);
-app.controller("MainMarkerController", ['$scope', function($scope) {
-    angular.extend($scope, {
-        osloCenter: {
-            lat: 59.91,
-            lng: 10.75,
-            zoom: 12
-        },
-        osloMarker: {
-            lat: 59.91,
-            lng: 10.75,
-            message: "I want to travel here!",
-            focus: true,
-            draggable: false
-        }
-    });
-}]);</div>
-            <p>You can also see the code demonstrating this feature in the <a href="examples/main-marker-example.html">main marker example demo</a>.</p>
+            <div hljs ng-switch-when="javascript" include="'src/controllers/MainMarkerController.js'"></div>
         </div>
+        <p>You can also see the code demonstrating this feature in the <a href="examples/main-marker-example.html">main marker example demo</a>.</p>
     </div>
 
     <div class="col-md-10" ng-controller="DraggingMarkersController" ng-switch-when="dragging-markers">
@@ -329,35 +258,9 @@ app.controller("MainMarkerController", ['$scope', function($scope) {
 <div ng-controller="DraggingMarkersController">
     <leaflet markers="markers" center="center"></leaflet>
 </div></div>
-            <div hljs ng-switch-when="javascript">
-var app = angular.module("mainPage", ['leaflet-directive']);
-app.controller("DraggingMarkersController", [ '$scope', function($scope) {
-    angular.extend($scope, {
-        center: {
-            lat: 40.095,
-            lng: -3.823,
-            zoom: 6
-        },
-        markers: {
-            Madrid: {
-                lat: 40.095,
-                lng: -3.823,
-                message: "This is Madrid. But you can drag me to another position",
-                focus: true,
-                draggable: true
-            },
-            Barcelona: {
-                lat: 41.38,
-                lng: 2.18,
-                message: "This is Barcelona. You can't drag me",
-                focus: false,
-                draggable: false
-            }
-        }
-    });
-}]);</div>
-            <p>See how the form inputs change with the map interaction and viceversa. You can also see the code demonstrating this feature in the <a href="examples/markers-example.html">markers example demo</a>.</p>
+            <div hljs ng-switch-when="javascript" include="'src/controllers/DraggingMarkersController.js'"></div>
         </div>
+        <p>See how the form inputs change with the map interaction and viceversa. You can also see the code demonstrating this feature in the <a href="examples/markers-example.html">markers example demo</a>.</p>
     </div>
 
     <div class="col-md-10" ng-controller="CustomizedMarkersController" ng-switch-when="customize-markers">
@@ -377,8 +280,8 @@ app.controller("DraggingMarkersController", [ '$scope', function($scope) {
     <leaflet markers="markers" center="lisbon"></leaflet>
 </div></div>
             <div hljs ng-switch-when="javascript" include="'src/controllers/CustomizedMarkersController.js'"></div>
-            <p>You can see the code demonstrating this feature in the <a href="examples/markers-icon-example.html">customized markers icons example</a>.</p>
         </div>
+        <p>You can see the code demonstrating this feature in the <a href="examples/markers-icon-example.html">customized markers icons example</a>.</p>
     </div>
 
     <div class="col-md-10" ng-controller="GeoJSONController" ng-switch-when="geojson">
@@ -395,8 +298,8 @@ app.controller("DraggingMarkersController", [ '$scope', function($scope) {
      <leaflet center="japan" geojson="geojson"></leaflet>
 </div></div>
             <div hljs ng-switch-when="javascript" include="'src/controllers/GeoJSONController.js'"></div>
-            <p>You can see the code demonstrating this feature in the <a href="examples/geojson-example.html">GeoJSON example</a>.</p>
         </div>
+        <p>You can see the code demonstrating this feature in the <a href="examples/geojson-example.html">GeoJSON example</a>.</p>
     </div>
 
     <div class="col-md-10" ng-controller="LegendController" ng-switch-when="legend">
@@ -433,8 +336,8 @@ app.controller("DraggingMarkersController", [ '$scope', function($scope) {
     margin-right: 8px;
     opacity: 0.7;
 }</div>
-            <p>You can see the code demonstrating this feature in the <a href="examples/legend-example.html">legend example</a>.</p>
         </div>
+        <p>You can see the code demonstrating this feature in the <a href="examples/legend-example.html">legend example</a>.</p>
     </div>
 
     <div class="col-md-10" ng-controller="PathController" ng-switch-when="path">
@@ -452,8 +355,8 @@ app.controller("DraggingMarkersController", [ '$scope', function($scope) {
     <leaflet center="center" paths="paths" markers="markers" defaults="defaults" height="500"></leaflet>
 </div></div>
             <div hljs ng-switch-when="javascript" include="'src/controllers/PathController.js'"></div>
-            <p>You can see the code demonstrating this feature in the <a href="examples/path-example.html">path example</a>.</p>
         </div>
+        <p>You can see the code demonstrating this feature in the <a href="examples/path-example.html">path example</a>.</p>
     </div>
 
     <div class="col-md-10" ng-controller="GoogleMapsController" ng-switch-when="google-maps">
@@ -473,7 +376,7 @@ app.controller("DraggingMarkersController", [ '$scope', function($scope) {
     <leaflet center="berlin" layers="layers"></leaflet>
 </div></div>
             <div hljs ng-switch-when="javascript" include="'src/controllers/GoogleMapsController.js'"></div>
-            <p>You can see the code demonstrating this feature in the <a href="examples/googlemaps-example.html">Google Maps example</a>.</p>
         </div>
+        <p>You can see the code demonstrating this feature in the <a href="examples/googlemaps-example.html">Google Maps example</a>.</p>
     </div>
 </div>
