@@ -1,0 +1,51 @@
+<ng-include src="'partials/examples/header.html'"></ng-include>
+<div class="row">
+    <ng-include src="'partials/examples/menu.html'" onload="exampleTab='center'"></ng-include>
+    <div class="col-md-10" ng-controller="CenterController">
+        <leaflet center="center" defaults="defaults"></leaflet>
+        <form class="form-inline" role="form">
+            <div class="form-group">
+                <div class="control-group col col-lg-3">
+                    <label for="mapCenter" class="control-label">Center</strong>
+                </div>
+                <div class="control-group col col-lg-3">
+                    <div class="input-group">
+                        <span class="input-group-addon">lat</span>
+                        <input class="form-control" type="number" step="any" ng-model="center.lat" />
+                    </div>
+                </div>
+                <div class="control-group col col-lg-3">
+                    <div class="input-group">
+                        <span class="input-group-addon">lon</span>
+                        <input class="form-control" type="number" step="any" ng-model="center.lng" />
+                    </div>
+                </div>
+                <div class="control-group col col-lg-3">
+                    <div class="input-group">
+                        <span class="input-group-addon">zoom</span>
+                        <input class="form-control"  type="number" ng-model="center.zoom" />
+                    </div>
+                </div>
+            </div>
+        </form>
+        <h2>Center example</h2>
+        <p>Let's position our map. We can center and zoom an specific position of the map via a bi-directional property called <strong>center</strong>, which 3 properties inside: <span class="label label-warning">lat</span>, <span class="label label-warning">lng</span> and <span class="label label-warning">zoom</span>. This properties could be changed on the fly, updating our map position, and viceversa.</p>
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="" ng-click="activeTab='html'" data-toggle="tab">HTML code</a></li>
+            <li><a href="" ng-click="activeTab='javascript'" data-toggle="tab">Javascript Angular controller</a></li>
+        </ul>
+        <div class="tab-container" ng-switch on="activeTab">
+            <div hljs ng-switch-default>
+<div ng-controller="CenterController">
+    <form>
+        Latitude : <input type="number" step="any" ng-model="center.lat" />
+        Longitude : <input type="number" step="any" ng-model="center.lng" />
+        Zoom : <input type="number" step="any" ng-model="center.zoom" />
+    </form>
+    <leaflet center="center"></leaflet>
+</div></div>
+            <div hljs ng-switch-when="javascript" include="'src/controllers/CenterController.js'"></div>
+        </div>
+        <p>You can see a standalone example of this code <a href="examples/center-example.html">here</a>.</p>
+    </div>
+</div>

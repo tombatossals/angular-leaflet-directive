@@ -1,0 +1,24 @@
+<ng-include src="'partials/examples/header.html'"></ng-include>
+<div class="row">
+    <ng-include src="'partials/examples/menu.html'" onload="exampleTab='customized-markers'"></ng-include>
+    <div class="col-md-10" ng-controller="CustomizedMarkersController">
+        <p>Click on the buttons to change the marker object default properties:</p>
+        <button type="button" class="btn btn-primary padright" ng-click="markers.m1.icon=icon" ng-repeat="(key, icon) in icons">{{ key }}</button>
+        <leaflet markers="markers" center="lisbon" defaults="defaults"></leaflet>
+        <h2>Customized markers example</h2>
+        <p>You can change the marker default options to customize it like we see on this example.</p>
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="" ng-click="activeTab='html'" data-toggle="tab">HTML code</a></li>
+            <li><a href="" ng-click="activeTab='javascript'" data-toggle="tab">Javascript Angular controller</a></li>
+        </ul>
+        <div class="tab-container" ng-switch on="activeTab">
+            <div hljs ng-switch-default>
+<div ng-controller="CustomizedMarkersController">
+    <button type="button" class="btn btn-primary padright" ng-click="markers.m1.icon=icon" ng-repeat="(key, icon) in icons">{{ key }}</button>
+    <leaflet markers="markers" center="lisbon"></leaflet>
+</div></div>
+            <div hljs ng-switch-when="javascript" include="'src/controllers/CustomizedMarkersController.js'"></div>
+        </div>
+        <p>You can see the code demonstrating this feature in the <a href="examples/markers-icon-example.html">customized markers icons example</a>.</p>
+    </div>
+</div>

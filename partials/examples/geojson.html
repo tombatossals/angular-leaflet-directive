@@ -1,0 +1,21 @@
+<ng-include src="'partials/examples/header.html'"></ng-include>
+<div class="row">
+    <ng-include src="'partials/examples/menu.html'" onload="exampleTab='geojson'"></ng-include>
+    <div class="col-md-10" ng-controller="GeoJSONController">
+        <leaflet center="japan" defaults="defaults" geojson="geojson"></leaflet>
+        <h2>GeoJSON example</h2>
+        <p>Let's see how to render and interact with a geoJSON file layered into our map.</p>
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="" ng-click="activeTab='html'" data-toggle="tab">HTML code</a></li>
+            <li><a href="" ng-click="activeTab='javascript'" data-toggle="tab">Javascript Angular controller</a></li>
+        </ul>
+        <div class="tab-container" ng-switch on="activeTab">
+            <div hljs ng-switch-default>
+<div ng-controller="LegendController">
+     <leaflet center="japan" geojson="geojson"></leaflet>
+</div></div>
+            <div hljs ng-switch-when="javascript" include="'src/controllers/GeoJSONController.js'"></div>
+        </div>
+        <p>You can see the code demonstrating this feature in the <a href="examples/geojson-example.html">GeoJSON example</a>.</p>
+    </div>
+</div>
