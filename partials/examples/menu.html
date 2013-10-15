@@ -1,5 +1,5 @@
-<div class="col-md-2" ng-controller="MenuController">
+<div class="col-md-2" ng-controller="MenuController" id="examples-menu">
     <ul class="nav nav-pills nav-stacked">
-        <li ng-repeat="item in menuItems" ng-class="{ active: exampleTab == item.key }"><a ng-href="{{ item.url }}" data-toggle="tab">{{ item.description }}</a></li>
+        <li ng-repeat="item in menuItems" ng-class="{ active: exampleTab == item.key }"><a ng-href="{{ item.url }}" data-target="#examples-menu" data-toggle="tab">{{ item.description }}</a></li>
     </ul>
 </div>

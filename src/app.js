@@ -1,4 +1,4 @@
-var app = angular.module("MainPage", ['ngRoute', 'leaflet-directive', 'hljs']);
+var app = angular.module("mainPage", ['ngRoute', 'leaflet-directive', 'hljs']);
 app.value('$anchorScroll', angular.noop);
 app.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
     $routeProvider.when('/', {
