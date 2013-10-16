@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html ng-app="demoapp">
+  <head>
+    <script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+    <script src="../src/angular-leaflet-directive.js"></script>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" />
+    <!--[if lte IE 8]>
+        <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.ie.css" />
+    <![endif]-->
+    <script>
+        var app = angular.module("demoapp", ["leaflet-directive"]);
+        app.controller("DemoController", ["$scope", "$log", function($scope, $log) {
+            $scope.$on("leafletDirectiveMap.click", function(event, args) {
+                $log.log("Leaflet Event Example #1: click event captured")
+            });
+            $scope.$on("leafletDirectiveMap.zoomstart", function(event, args) {
+                $log.log("Leaflet Event Example #1: zoomstart event captured")
+            });
+            $scope.$on("leafletDirectiveMap.zoomend", function(event, args) {
+                $log.log("Leaflet Event Example #1: zoomend event captured")
+            });
+        }]);
+        app.controller("EnableMapController", ["$scope", "$log", function($scope, $log){
+            $scope.events = {
+                map: {
+                    enable: ['click'],
+                    logic: "emit"
+                }
+            };
+            $scope.$on("leafletDirectiveMap.click", function(event, args) {
+                $log.log("Leaflet Event Example #2: click event captured")
+            });
+            $scope.$on("leafletDirectiveMap.zoomstart", function(event, args) {
+                $log.log("Leaflet Event Example #2: zoomstart event captured")
+            });
+            $scope.$on("leafletDirectiveMap.zoomend", function(event, args) {
+                $log.log("Leaflet Event Example #2: zoomend event captured")
+            });
+        }]);
+        app.controller("EnableMapControllerBroadcast", ["$scope", "$log", function($scope, $log){
+            $scope.events = {
+                map: {
+                    enable: ['click'],
+                    logic: "broadcast"
+                }
+            };
+            $scope.$on("leafletDirectiveMap.click", function(event, args) {
+                $log.log("Leaflet Event Example #3: click event captured")
+            });
+            $scope.$on("leafletDirectiveMap.zoomstart", function(event, args) {
+                $log.log("Leaflet Event Example #3: zoomstart event captured")
+            });
+            $scope.$on("leafletDirectiveMap.zoomend", function(event, args) {
+                $log.log("Leaflet Event Example #3: zoomend event captured")
+            });
+        }]);
+        app.controller("DisableMapController", ["$scope", "$log", function($scope, $log){
+            $scope.events = {
+                map: {
+                    disable: ['click'],
+                    logic: "emit"
+                }
+            };
+            $scope.$on("leafletDirectiveMap.click", function(event, args) {
+                $log.log("Leaflet Event Example #4: click event captured")
+            });
+            $scope.$on("leafletDirectiveMap.zoomstart", function(event, args) {
+                $log.log("Leaflet Event Example #4: zoomstart event captured")
+            });
+            $scope.$on("leafletDirectiveMap.zoomend", function(event, args) {
+                $log.log("Leaflet Event Example #4: zoomend event captured")
+            });
+        }]);
+        app.controller("DisableMapControllerBroadcast", ["$scope", "$log", function($scope, $log){
+            $scope.events = {
+                map: {
+                    disable: ['click'],
+                    logic: "broadcast"
+                }
+            };
+            $scope.$on("leafletDirectiveMap.click", function(event, args) {
+                $log.log("Leaflet Event Example #5: click event captured")
+            });
+            $scope.$on("leafletDirectiveMap.zoomstart", function(event, args) {
+                $log.log("Leaflet Event Example #5: zoomstart event captured")
+            });
+            $scope.$on("leafletDirectiveMap.zoomend", function(event, args) {
+                $log.log("Leaflet Event Example #5: zoomend event captured")
+            });
+        }]);
+    </script>
+  </head>
+  <body>
+    <div ng-controller="DemoController">
+	    <p>
+	      Example #1: Regular Map Example with events. Click and zoom the map to log in the console the events that are broadcasted, so the events are propagated from the rootScope to ALL child scopes until a listener captures it
+	    </p>
+	    <p>
+	      <leaflet width="640" height="480"></leaflet>
+	    </p>
+	</div>
+    <div ng-controller="EnableMapController">
+        <p>
+          Example #2: Regular Map Example with events Enabled and Emited. Click and zoom the map to log in the console the events. As only click is enable there won't be any other events. The events are emited so the leaflet event is propagated from child scopes to rootScope until a listener captures the event
+        </p>
+        <p>
+          <leaflet event-broadcast="events" width="640" height="480"></leaflet>
+        </p>
+    </div>
+    <div ng-controller="EnableMapControllerBroadcast">
+        <p>
+          Example #3: Regular Map Example with events Enabled and Broadcasted.
+          Click and zoom the map to log in the console the events.
+          As only click is enabled there won't be zoom events generated from this map (but it is possible from other maps!!).
+          The events are broadcasted so the leaflet event is propagated from rootScope to ALL childs until a
+          listener captures the event, so in this case all controllers will log to the console the event, althought they
+          don't generate it.
+        </p>
+        <p>
+          <leaflet event-broadcast="events" width="640" height="480"></leaflet>
+        </p>
+    </div>
+    <div ng-controller="DisableMapController">
+        <p>
+          Example #4: Regular Map Example with events Disabled and Emited.
+          Click and zoom the map to log in the console the events.
+          As only click is disabled there will be zoom events. The events are emited so the leaflet event
+          is propagated from child scopes to rootScope until a listener captures the event.
+        </p>
+        <p>
+          <leaflet event-broadcast="events" width="640" height="480"></leaflet>
+        </p>
+    </div>
+    <div ng-controller="DisableMapControllerBroadcast">
+        <p>
+          Example #5: Regular Map Example with events Disabled and Broadcasted.
+          Click and zoom the map to log in the console the events.
+          As only click is disabled there will be zoom events. The events are broadcasted so the leaflet
+          event is propagated from rootScope to ALL childs until a listener captures the event,
+          so in this case all controllers will log to the console the event. This map won't generate a click event
+          but as the events are broadcasted will respond to other map click events
+        </p>
+        <p>
+          <leaflet event-broadcast="events" width="640" height="480"></leaflet>
+        </p>
+    </div>
+  </body>
+</html>

@@ -6,6 +6,5 @@ libpeerconnection.log
 *.iml
 .idea
 .project
-
 node_modules
-node_modules
+dist/angular-leaflet-directive.ngmin.js

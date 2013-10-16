@@ -26,6 +26,7 @@
     "grunt-contrib-connect": "latest",
     "grunt-karma": "latest",
     "jasmine-node": "latest",
+    "grunt-ngmin": "latest",
     "karma": "latest",
     "karma-ng-scenario": "latest"
   }

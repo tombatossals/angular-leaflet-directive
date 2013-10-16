@@ -3,7 +3,7 @@
   <head>
     <script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
-    <script src="../dist/angular-leaflet-directive.min.js"></script>
+    <script src="../src/angular-leaflet-directive.js"></script>
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" />
     <!--[if lte IE 8]>
         <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.ie.css" />
@@ -16,6 +16,16 @@
                    lat: 51.505,
                    lng: -0.09,
                    zoom: 4
+               },
+               bounds: {
+                   southWest: {
+                       lat:51.508742458803326,
+                       lng: -0.087890625,
+                   },
+                   northEast: {
+                       lat:51.508742458803326,
+                        lng:-0.087890625,
+                   }
                }
            });
        }]);
@@ -28,12 +38,18 @@
     </style>
   </head>
   <body ng-controller="DemoController">
-    <h1>Center map example</h1>
+    <h1>Map bounds example</h1>
+    <h2>South west</h2>
     <form>
-        Latitude : <input type="number" step="any" ng-model="london.lat" />
-        Longitude : <input type="number" step="any" ng-model="london.lng" />
-        Zoom : <input type="number" step="any" ng-model="london.zoom" />
+        Lat : <input type="number" step="any" ng-model="bounds.southWest.lat" />
+        Lng : <input type="number" step="any" ng-model="bounds.southWest.lng" />
     </form>
-    <leaflet center="london" width="640" height="400"></leaflet>
+
+    <h2>North east</h2>
+    <form>
+        Lat : <input type="number" step="any" ng-model="bounds.northEast.lat" />
+        Lng : <input type="number" step="any" ng-model="bounds.northEast.lng" />
+    </form>
+    <leaflet center="london" bounds="bounds" width="640" height="400"></leaflet>
   </body>
 </html>
