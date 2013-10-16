@@ -1,20 +1,16 @@
-<ng-include src="'partials/examples/header.html'"></ng-include>
-<div class="row">
-    <ng-include src="'partials/examples/menu.html'" onload="exampleTab='simple-map'"></ng-include>
-    <div class="col-md-10" ng-controller="SimpleMapController">
-        <leaflet defaults="defaults"></leaflet>
-        <h2>Simple map example</h2>
-        <p>This is the simpliest way to embed a Leaflet map on our application. We only have to add <strong>angular-leaflet-map</strong> to our AngularJS application dependencies, and use our custom tag <span class="label label-primary">&lt;leaflet&gt;</span> on the HTML code. Easy as pie.</p>
+<div class="col-md-10" ng-controller="SimpleMapController">
+    <leaflet defaults="defaults"></leaflet>
+    <h2>Simple map example</h2>
+    <p>This is the simpliest way to embed a Leaflet map on our application. We only have to add <strong>angular-leaflet-map</strong> to our AngularJS application dependencies, and use our custom tag <span class="label label-primary">&lt;leaflet&gt;</span> on the HTML code. Easy as pie.</p>
 
-        <ul class="nav nav-tabs">
-            <li class="active"><a href="" ng-click="activeTab='html'" data-toggle="tab">HTML code</a></li>
-            <li><a href="" ng-click="activeTab='javascript'" data-toggle="tab">Javascript Angular controller</a></li>
-        </ul>
-        <div class="tab-container" ng-switch on="activeTab">
-            <div hljs ng-switch-default>
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="" ng-click="activeTab='html'" data-toggle="tab">HTML code</a></li>
+        <li><a href="" ng-click="activeTab='javascript'" data-toggle="tab">Javascript Angular controller</a></li>
+    </ul>
+    <div class="tab-container" ng-switch on="activeTab">
+        <div hljs ng-switch-default>
 <leaflet></leaflet></div>
-            <div hljs ng-switch-when="javascript" include="'src/controllers/SimpleMapController.js'"></div>
-            <p>You can see a standalone example of this code <a href="examples/simple-example.html">here</a>.</p>
-        </div>
+        <div hljs ng-switch-when="javascript" include="'src/controllers/SimpleMapController.js'"></div>
+        <p>You can see a standalone example of this code <a href="examples/simple-example.html">here</a>.</p>
     </div>
 </div>

@@ -1,17 +1,14 @@
-<ng-include src="'partials/examples/header.html'"></ng-include>
-<div class="row">
-    <ng-include src="'partials/examples/menu.html'" onload="exampleTab='legend'"></ng-include>
-    <div class="col-md-10" ng-controller="LegendController">
-        <leaflet center="amsterdam" legend="legend" defaults="defaults"></leaflet>
-        <h2>Legend example</h2>
-        <p>We can embed easily a static legend information panel on our map. Let's see how:</p>
-        <ul class="nav nav-tabs">
-            <li class="active"><a href="" ng-click="activeTab='html'" data-toggle="tab">HTML code</a></li>
-            <li><a href="" ng-click="activeTab='javascript'" data-toggle="tab">Javascript Angular controller</a></li>
-            <li><a href="" ng-click="activeTab='css'" data-toggle="tab">CSS code</a></li>
-        </ul>
-        <div class="tab-container" ng-switch on="activeTab">
-            <div hljs ng-switch-default>
+<div class="col-md-10" ng-controller="LegendController">
+    <leaflet center="amsterdam" legend="legend" defaults="defaults"></leaflet>
+    <h2>Legend example</h2>
+    <p>We can embed easily a static legend information panel on our map. Let's see how:</p>
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="" ng-click="activeTab='html'" data-toggle="tab">HTML code</a></li>
+        <li><a href="" ng-click="activeTab='javascript'" data-toggle="tab">Javascript Angular controller</a></li>
+        <li><a href="" ng-click="activeTab='css'" data-toggle="tab">CSS code</a></li>
+    </ul>
+    <div class="tab-container" ng-switch on="activeTab">
+        <div hljs ng-switch-default>
 <div ng-controller="LegendController">
      <leaflet center="amsterdam" legend="legend"></leaflet>
 </div></div>
@@ -35,7 +32,6 @@
     margin-right: 8px;
     opacity: 0.7;
 }</div>
-        </div>
-        <p>You can see the code demonstrating this feature in the <a href="examples/legend-example.html">legend example</a>.</p>
     </div>
+    <p>You can see the code demonstrating this feature in the <a href="examples/legend-example.html">legend example</a>.</p>
 </div>

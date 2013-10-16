@@ -1,37 +1,33 @@
-<ng-include src="'partials/examples/header.html'"></ng-include>
-<div class="row">
-    <ng-include src="'partials/examples/menu.html'" onload="exampleTab='events'"></ng-include>
-    <div class="col-md-10" ng-controller="EventsController">
-        <ul>
-            <li><strong ng-bind="eventDetected"></strong> caught in listener.</li>
-        </ul>
-        <leaflet center="center" events="events" defaults="defaults"></leaflet>
-        <h2>Events management example</h2>
+<div class="col-md-10" ng-controller="EventsController">
+    <ul>
+        <li><strong ng-bind="eventDetected"></strong> caught in listener.</li>
+    </ul>
+    <leaflet center="center" events="events" defaults="defaults"></leaflet>
+    <h2>Events management example</h2>
 
-        <p>If our application needs to be notified when some event gets fired on the Leaflet map, we can listen for broadcast messages of specific events, so we can react after the event notification. These are the events we can get notified on our application:</p>
+    <p>If our application needs to be notified when some event gets fired on the Leaflet map, we can listen for broadcast messages of specific events, so we can react after the event notification. These are the events we can get notified on our application:</p>
 
-        <ul class="nav nav-tabs">
-            <li class="active"><a href="" ng-click="activeTab='html'" data-toggle="tab">Leaflet events</a></li>
-        </ul>
-        <div class="tab-container" ng-switch on="activeTab">
-            <div hljs ng-switch-default language="javascript">
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="" ng-click="activeTab='html'" data-toggle="tab">Leaflet events</a></li>
+    </ul>
+    <div class="tab-container" ng-switch on="activeTab">
+        <div hljs ng-switch-default language="javascript">
 click, dblclick, mousedown, mouseup, mouseover, mouseout, mousemove, contextmenu, focus, blur, preclick, load, unload, viewreset, movestart, move, moveend, dragstart, drag, dragend, zoomstart, zoomend, zoomlevelschange, resize, autopanstart, layeradd, layerremove, baselayerchange, overlayadd, overlayremove, locationfound, locationerror, popupopen, popupclose</div>
-        </div>
+    </div>
 
-        <ul class="nav nav-tabs">
-            <li class="active"><a href="" ng-click="activeTab='html'" data-toggle="tab">HTML code</a></li>
-            <li><a href="" ng-click="activeTab='javascript'" data-toggle="tab">Javascript Angular controller</a></li>
-        </ul>
-        <div class="tab-container" ng-switch on="activeTab">
-            <div hljs ng-switch-default>
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="" ng-click="activeTab='html'" data-toggle="tab">HTML code</a></li>
+        <li><a href="" ng-click="activeTab='javascript'" data-toggle="tab">Javascript Angular controller</a></li>
+    </ul>
+    <div class="tab-container" ng-switch on="activeTab">
+        <div hljs ng-switch-default>
 <div ng-controller="EventsController">
     <ul>
         <li><strong ng-bind="eventDetected"></strong> caught in listener.</li>
     </ul>
     <leaflet center="center" events="events"></leaflet>
 </div></div>
-            <div hljs ng-switch-when="javascript" include="'src/controllers/EventsController.js'"></div>
-        </div>
-        <p>You can see a standalone example of this code <a href="examples/events-example.html">here</a>.</p>
+        <div hljs ng-switch-when="javascript" include="'src/controllers/EventsController.js'"></div>
     </div>
+    <p>You can see a standalone example of this code <a href="examples/events-example.html">here</a>.</p>
 </div>

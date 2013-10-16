@@ -1,0 +1,18 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="page-header">
+            <h1>Examples</h1>
+        </div>
+        <p>Let's see some progressive examples showing how to use the library on your AngularJS code. Before continue, we must have some    notions of how to initialize an AngularJS app. You can find more information about a basic setup of an AngularJS application on the <a href="http://angularjs.org/">official AngularJS page</a>.</p>
+    </div>
+</div>
+
+<br />
+<div class="row">
+    <div class="col-md-2" ng-controller="MenuController" id="examples-menu">
+        <ul class="nav nav-pills nav-stacked">
+            <li ng-repeat="item in menuItems" ng-class="{ active: exampleTab == item.key }"><a ng-href="{{ item.url }}" data-target="#examples- menu" data-toggle="tab">{{ item.description }}</a></li>
+        </ul>
+    </div>
+    <ng-include src="'partials/examples/' + exampleTab + '.html'"></ng-include>
+</div>

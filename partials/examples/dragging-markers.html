@@ -1,64 +1,60 @@
-<ng-include src="'partials/examples/header.html'"></ng-include>
-<div class="row">
-    <ng-include src="'partials/examples/menu.html'" onload="exampleTab='dragging-markers'"></ng-include>
-    <div class="col-md-10" ng-controller="DraggingMarkersController">
-        <leaflet markers="markers" center="center" defaults="defaults"></leaflet>
-        <form class="form-inline" role="form">
-            <div class="form-group">
-                <div class="control-group col col-lg-3">
-                    <label for="mapCenter" class="control-label">Center</strong>
-                </div>
-                <div class="control-group col col-lg-3">
-                    <div class="input-group">
-                        <span class="input-group-addon">zoom</span>
-                        <input class="form-control"  type="number" ng-model="center.zoom" />
-                    </div>
-                </div>
-                <div class="control-group col col-lg-3">
-                    <div class="input-group">
-                        <span class="input-group-addon">lat</span>
-                        <input class="form-control" type="number" step="any" ng-model="center.lat" />
-                    </div>
-                </div>
-                <div class="control-group col col-lg-3">
-                    <div class="input-group">
-                        <span class="input-group-addon">lon</span>
-                        <input class="form-control" type="number" step="any" ng-model="center.lng" />
-                    </div>
+<div class="col-md-10" ng-controller="DraggingMarkersController">
+    <leaflet markers="markers" center="center" defaults="defaults"></leaflet>
+    <form class="form-inline" role="form">
+        <div class="form-group">
+            <div class="control-group col col-lg-3">
+                <label for="mapCenter" class="control-label">Center</strong>
+            </div>
+            <div class="control-group col col-lg-3">
+                <div class="input-group">
+                    <span class="input-group-addon">zoom</span>
+                    <input class="form-control"  type="number" ng-model="center.zoom" />
                 </div>
             </div>
-            <hr />
-            <div class="form-group">
-                <div class="control-group col col-lg-6">
-                    <label for="marker" class="control-label">Madrid marker position</strong>
-                </div>
-                <div class="control-group col col-lg-3">
-                    <div class="input-group">
-                        <span class="input-group-addon">lat</span>
-                        <input class="form-control" type="number" step="any" ng-model="markers.Madrid.lat" />
-                    </div>
-                </div>
-                <div class="control-group col col-lg-3">
-                    <div class="input-group">
-                        <span class="input-group-addon">lon</span>
-                        <input class="form-control" type="number" step="any" ng-model="markers.Madrid.lng"/>
-                    </div>
+            <div class="control-group col col-lg-3">
+                <div class="input-group">
+                    <span class="input-group-addon">lat</span>
+                    <input class="form-control" type="number" step="any" ng-model="center.lat" />
                 </div>
             </div>
-        </form>
-        <h2>Dragging markers example</h2>
-        <p>You can interact with a leaflet marker updating its position on the scope:</p>
-        <ul class="nav nav-tabs">
-            <li class="active"><a href="" ng-click="activeTab='html'" data-toggle="tab">HTML code</a></li>
-            <li><a href="" ng-click="activeTab='javascript'" data-toggle="tab">Javascript Angular controller</a></li>
-        </ul>
-        <div class="tab-container" ng-switch on="activeTab">
-            <div hljs ng-switch-default>
+            <div class="control-group col col-lg-3">
+                <div class="input-group">
+                    <span class="input-group-addon">lon</span>
+                    <input class="form-control" type="number" step="any" ng-model="center.lng" />
+                </div>
+            </div>
+        </div>
+        <hr />
+        <div class="form-group">
+            <div class="control-group col col-lg-6">
+                <label for="marker" class="control-label">Madrid marker position</strong>
+            </div>
+            <div class="control-group col col-lg-3">
+                <div class="input-group">
+                    <span class="input-group-addon">lat</span>
+                    <input class="form-control" type="number" step="any" ng-model="markers.Madrid.lat" />
+                </div>
+            </div>
+            <div class="control-group col col-lg-3">
+                <div class="input-group">
+                    <span class="input-group-addon">lon</span>
+                    <input class="form-control" type="number" step="any" ng-model="markers.Madrid.lng"/>
+                </div>
+            </div>
+        </div>
+    </form>
+    <h2>Dragging markers example</h2>
+    <p>You can interact with a leaflet marker updating its position on the scope:</p>
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="" ng-click="activeTab='html'" data-toggle="tab">HTML code</a></li>
+        <li><a href="" ng-click="activeTab='javascript'" data-toggle="tab">Javascript Angular controller</a></li>
+    </ul>
+    <div class="tab-container" ng-switch on="activeTab">
+        <div hljs ng-switch-default>
 <div ng-controller="DraggingMarkersController">
     <leaflet markers="markers" center="center"></leaflet>
 </div></div>
-            <div hljs ng-switch-when="javascript" include="'src/controllers/DraggingMarkersController.js'"></div>
-        </div>
-        <p>See how the form inputs change with the map interaction and viceversa. You can also see the code demonstrating this feature in the <a href="examples/markers-example.html">markers example demo</a>.</p>
+        <div hljs ng-switch-when="javascript" include="'src/controllers/DraggingMarkersController.js'"></div>
     </div>
+    <p>See how the form inputs change with the map interaction and viceversa. You can also see the code demonstrating this feature in the <a href="examples/markers-example.html">markers example demo</a>.</p>
 </div>

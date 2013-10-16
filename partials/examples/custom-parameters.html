@@ -1,15 +1,12 @@
-<ng-include src="'partials/examples/header.html'"></ng-include>
-<div class="row">
-    <ng-include src="'partials/examples/menu.html'" onload="exampleTab='custom-parameters'"></ng-include>
-    <div class="col-md-10" ng-controller="CustomParametersController">
-        <leaflet center="london" defaults="defaults"></leaflet>
-        <h2>Custom parameters example</h2>
-        <p>Now that we know how to center the map to a selected position, we would like to change some default features or visualizations of the map. We can override the default behaviour of the map properties via the <strong>defaults</strong> attribute. The options are pretty self-explanatory:</p>
-        <ul class="nav nav-tabs">
-            <li class="active"><a href="" data-toggle="tab">Default options</a></li>
-        </ul>
-        <div class="tab-container" ng-switch on="activeTab">
-            <div hljs>
+<div class="col-md-10" ng-controller="CustomParametersController">
+    <leaflet center="london" defaults="defaults"></leaflet>
+    <h2>Custom parameters example</h2>
+    <p>Now that we know how to center the map to a selected position, we would like to change some default features or visualizations of the map. We can override the default behaviour of the map properties via the <strong>defaults</strong> attribute. The options are pretty self-explanatory:</p>
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="" data-toggle="tab">Default options</a></li>
+    </ul>
+    <div class="tab-container" ng-switch on="activeTab">
+        <div hljs>
 {
     maxZoom: 14,
     minZoom: 1,
@@ -44,19 +41,18 @@
         zoom: 10
     }
 }</div>
-        </div>
-        <p>We can override the properties we would like to change, for example, to obtain a map like the upper one you see on this page. Let's see the necessary code:</p>
-        <ul class="nav nav-tabs">
-            <li class="active"><a href="" ng-click="activeTab='html'" data-toggle="tab">HTML code</a></li>
-            <li><a href="" ng-click="activeTab='javascript'" data-toggle="tab">Javascript Angular controller</a></li>
-        </ul>
-        <div class="tab-container" ng-switch on="activeTab">
-            <div hljs ng-switch-default>
+    </div>
+    <p>We can override the properties we would like to change, for example, to obtain a map like the upper one you see on this page. Let's see the necessary code:</p>
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="" ng-click="activeTab='html'" data-toggle="tab">HTML code</a></li>
+        <li><a href="" ng-click="activeTab='javascript'" data-toggle="tab">Javascript Angular controller</a></li>
+    </ul>
+    <div class="tab-container" ng-switch on="activeTab">
+        <div hljs ng-switch-default>
 <div ng-controller="CustomParametersController">
     <leaflet center="london" defaults="defaults"></leaflet>
 </div></div>
-            <div hljs ng-switch-when="javascript" include="'src/controllers/CustomParametersController.js'"></div>
-        </div>
-        <p>You can see a standalone example of this code <a href="examples/custom-parameters-example.html">here</a>.</p>
+        <div hljs ng-switch-when="javascript" include="'src/controllers/CustomParametersController.js'"></div>
     </div>
+    <p>You can see a standalone example of this code <a href="examples/custom-parameters-example.html">here</a>.</p>
 </div>

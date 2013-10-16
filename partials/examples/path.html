@@ -1,22 +1,18 @@
-<ng-include src="'partials/examples/header.html'"></ng-include>
-<div class="row">
-    <ng-include src="'partials/examples/menu.html'" onload="exampleTab='path'"></ng-include>
-    <div class="col-md-10" ng-controller="PathController">
-        <leaflet center="center" paths="paths" markers="markers" defaults="defaults" height="500"></leaflet>
-        <p class="small">City icons obtained from <a href="http://iconka.com/tourism/">Iconka</a>.</p>
-        <h2>Path example</h2>
-        <p>We can trace a path on our map with two-way binding. On the example you can see a path of tree points with a line colored green and a determined weight. We also paint 3 custom icons on every point of the path. This can be accomplished with this code:</p>
-        <ul class="nav nav-tabs">
-            <li class="active"><a href="" ng-click="activeTab='html'" data-toggle="tab">HTML code</a></li>
-            <li><a href="" ng-click="activeTab='javascript'" data-toggle="tab">Javascript Angular controller</a></li>
-        </ul>
-        <div class="tab-container" ng-switch on="activeTab">
-            <div hljs ng-switch-default>
+<div class="col-md-10" ng-controller="PathController">
+    <leaflet center="center" paths="paths" markers="markers" defaults="defaults" height="500"></leaflet>
+    <p class="small">City icons obtained from <a href="http://iconka.com/tourism/">Iconka</a>.</p>
+    <h2>Path example</h2>
+    <p>We can trace a path on our map with two-way binding. On the example you can see a path of tree points with a line colored green and a determined weight. We also paint 3 custom icons on every point of the path. This can be accomplished with this code:</p>
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="" ng-click="activeTab='html'" data-toggle="tab">HTML code</a></li>
+        <li><a href="" ng-click="activeTab='javascript'" data-toggle="tab">Javascript Angular controller</a></li>
+    </ul>
+    <div class="tab-container" ng-switch on="activeTab">
+        <div hljs ng-switch-default>
 <div ng-controller="PathController">
     <leaflet center="center" paths="paths" markers="markers" defaults="defaults" height="500"></leaflet>
 </div></div>
-            <div hljs ng-switch-when="javascript" include="'src/controllers/PathController.js'"></div>
-        </div>
-        <p>You can see the code demonstrating this feature in the <a href="examples/path-example.html">path example</a>.</p>
+        <div hljs ng-switch-when="javascript" include="'src/controllers/PathController.js'"></div>
     </div>
+    <p>You can see the code demonstrating this feature in the <a href="examples/path-example.html">path example</a>.</p>
 </div>
