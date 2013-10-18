@@ -3,7 +3,7 @@ app.controller("PathController", [ '$scope', function($scope) {
         center: {
             lat: 48,
             lng: 4,
-            zoom: 5
+            zoom: 4
         },
         paths: {
             p1: {

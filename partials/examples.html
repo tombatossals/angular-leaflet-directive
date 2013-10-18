@@ -14,5 +14,5 @@
             <li ng-repeat="item in menuItems" ng-class="{ active: exampleTab == item.key }"><a href="" ng-click="goExample(item.key)" data-target="#examples- menu" data-toggle="tab">{{ item.description }}</a></li>
         </ul>
     </div>
-    <ng-include src="'partials/examples/' + exampleTab + '.html'"></ng-include>
+    <ng-include src="'partials/examples/' + exampleTab + '.html'" class="slide-top"></ng-include>
 </div>

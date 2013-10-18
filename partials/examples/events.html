@@ -1,8 +1,8 @@
 <div class="col-md-10" ng-controller="EventsController">
+    <leaflet center="center" events="events" defaults="defaults"></leaflet>
     <ul>
         <li><strong ng-bind="eventDetected"></strong> caught in listener.</li>
     </ul>
-    <leaflet center="center" events="events" defaults="defaults"></leaflet>
     <h2>Events management example</h2>
 
     <p>If our application needs to be notified when some event gets fired on the Leaflet map, we can listen for broadcast messages of specific events, so we can react after the event notification. These are the events we can get notified on our application:</p>

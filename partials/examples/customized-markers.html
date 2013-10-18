@@ -1,7 +1,7 @@
 <div class="col-md-10" ng-controller="CustomizedMarkersController">
+    <leaflet markers="markers" center="lisbon" defaults="defaults"></leaflet>
     <p>Click on the buttons to change the marker object default properties:</p>
     <button type="button" class="btn btn-primary padright" ng-click="markers.m1.icon=icon" ng-repeat="(key, icon) in icons">{{ key }}</button>
-    <leaflet markers="markers" center="lisbon" defaults="defaults"></leaflet>
     <h2>Customized markers example</h2>
     <p>You can change the marker default options to customize it like we see on this example.</p>
     <ul class="nav nav-tabs">
