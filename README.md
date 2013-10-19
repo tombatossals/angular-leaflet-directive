@@ -67,31 +67,3 @@ Finally, you must include the markup directive on your HTML page, like this:
 ```html
 <leaflet defaults="defaults" center="center" height="480px" width="640px"></leaflet>
 ```
-
-
-## How to contribute
-
-You can use grunt/karma to test your code, and grunt/jshint to lint your code.
-First, make sure you have npm and grunt-cli installed globally.
-
-```
-# Inside the project dir, install the dependencies
-$ npm install
-
-# Set the PATH for the binaries of grunt
-$ export PATH=$PATH:node_modules/.bin
-
-# JSHINT
-$ grunt jshint
-Running "jshint:files" (jshint) task
->> 2 files lint free.
-
-Done, without errors.
-
-# KARMA
-$ grunt karma
-Running "karma:unit" (karma) task
-INFO [karma]: Karma server started at http://localhost:9018/
-INFO [launcher]: Starting browser PhantomJS
-INFO [PhantomJS 1.9 (Linux)]: Connected on socket id y6MlOmYdWFtvS-F83ZHu
-PhantomJS 1.9 (Linux): Executed 8 of 8 SUCCESS (0.438 secs / 0.137 secs)
