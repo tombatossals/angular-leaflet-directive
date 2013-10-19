@@ -1,0 +1,20 @@
+<div ng-controller="MultiLayerMapController" class="mainPageDemo col-md-6">
+    <leaflet center="center" tiles="tiles" defaults="defaults" height="400"></leaflet>
+    <div class="multilayer">
+        <div class="btn-group btn-group-justified" data-toggle="buttons">
+            <label class="btn btn-primary active" ng-click="setBaseLayer('osm')">
+                <input type="radio" name="options"> OpenStreetMap
+            </label>
+            <label class="btn btn-primary" ng-click="setBaseLayer('cycle')">
+                <input type="radio" name="options"> OpenCycleMap
+            </label>
+            <label class="btn btn-primary" ng-click="setBaseLayer('night')">
+                <input type="radio" name="options"> Night Commander
+            </label>
+            <label class="btn btn-primary" ng-click="setBaseLayer('tourist')">
+                <input type="radio" name="options"> Tourist
+            </label>
+        </div>
+    </div>
+    <p>Click on the buttons to change the active map layer. You can see a standalone example of this code <a href="examples/layers- example.html">here</a>.</p>
+</div>
