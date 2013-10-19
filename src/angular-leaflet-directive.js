@@ -227,6 +227,7 @@ leafletDirective.directive('leaflet', function ($http, $log, $parse, $rootScope)
             $scope.leaflet.scrollWheelZoom = !!(attrs.defaults && $scope.defaults && (typeof($scope.defaults.scrollWheelZoom) === "boolean") ) ? $scope.defaults.scrollWheelZoom  : defaults.scrollWheelZoom;
             $scope.leaflet.attributionControl = !!(attrs.defaults && $scope.defaults && (typeof($scope.defaults.attributionControl) === "boolean") ) ? $scope.defaults.attributionControl : defaults.attributionControl;
 
+            overrideMinZoomIfMaxBoundsSet();
             var map = new L.Map(element[0], {
                 maxZoom: $scope.leaflet.maxZoom,
                 minZoom: $scope.leaflet.minZoom,
@@ -262,6 +263,12 @@ leafletDirective.directive('leaflet', function ($http, $log, $parse, $rootScope)
                 var meth = message.shift();
                 map[meth].apply(map, message);
             });
+
+            function overrideMinZoomIfMaxBoundsSet() {
+                if ($scope.maxBounds) {
+                    $scope.leaflet.minZoom = undefined;
+                }
+            }
 
             function _isSafeToApply() {
                 var phase = $scope.$root.$$phase;
@@ -769,13 +776,6 @@ leafletDirective.directive('leaflet', function ($http, $log, $parse, $rootScope)
                     return;
                 }
                 if ($scope.maxBounds.southWest && $scope.maxBounds.southWest.lat && $scope.maxBounds.southWest.lng && $scope.maxBounds.northEast && $scope.maxBounds.northEast.lat && $scope.maxBounds.northEast.lng) {
-                    map.setMaxBounds(
-                        new L.LatLngBounds(
-                            new L.LatLng($scope.maxBounds.southWest.lat, $scope.maxBounds.southWest.lng),
-                            new L.LatLng($scope.maxBounds.northEast.lat, $scope.maxBounds.northEast.lng)
-                        )
-                    );
-
                     $scope.$watch("maxBounds", function (maxBounds) {
                         if (maxBounds.southWest && maxBounds.northEast && maxBounds.southWest.lat && maxBounds.southWest.lng && maxBounds.northEast.lat && maxBounds.northEast.lng) {
                             map.setMaxBounds(
