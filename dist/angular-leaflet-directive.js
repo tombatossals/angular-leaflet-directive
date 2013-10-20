@@ -12,6 +12,11 @@ function isNumber(value) {
   return angular.isNumber(value);
 }
 
+// Determine if a reference is an array
+function isArray(value) {
+  return angular.isArray(value);
+}
+
 // Determine if two objects have the same properties
 function equals(o1, o2) {
   return angular.equals(o1, o2);
@@ -432,7 +437,7 @@ angular.module("leaflet-directive").directive('tiles', function ($http, $log, $p
     };
 });
 
-angular.module("leaflet-directive").directive('maxbounds', function ($http, $log, $parse, $rootScope) {
+angular.module("leaflet-directive").directive('legend', function ($http, $log, $parse, $rootScope) {
     return {
         restrict: "A",
         scope: false,
@@ -443,22 +448,26 @@ angular.module("leaflet-directive").directive('maxbounds', function ($http, $log
         link: function($scope, element, attrs, controller) {
             var defaults = parseMapDefaults($scope.defaults);
             var map = controller.getMap();
-            var maxBounds = $scope.maxBounds;
+            var legend = $scope.legend;
 
-            setupMaxBounds(map, maxBounds);
+            setupLegend(map, legend, defaults);
 
-            function setupMaxBounds(map, maxBounds) {
-                if (isDefined(maxBounds.southWest) && isDefined(maxBounds.northEast)) {
-                    $scope.$watch("maxBounds", function (maxBounds) {
-                        if (isDefined(maxBounds.southWest) && isDefined(maxBounds.northEast) && isNumber(maxBounds.southWest.lat) && isNumber(maxBounds.southWest.lng) && isNumber(maxBounds.northEast.lat) && isNumber(maxBounds.northEast.lng)) {
-                            map.setMaxBounds(
-                                new L.LatLngBounds(
-                                    new L.LatLng(maxBounds.southWest.lat, maxBounds.southWest.lng),
-                                    new L.LatLng(maxBounds.northEast.lat, maxBounds.northEast.lng)
-                                )
-                            );
+            function setupLegend(map, legend, defaults) {
+                if (!isArray(legend.colors) || !isArray(legend.labels) || legend.colors.length !== legend.labels.length) {
+                     $log.warn("[AngularJS - Leaflet] legend.colors and legend.labels must be set.");
+                } else {
+                    var legendClass = legend.legendClass ? legend.legendClass : "legend";
+                    var position = legend.position || 'bottomright';
+                    var leafletLegend = L.control({ position: position });
+                    leafletLegend.onAdd = function (map) {
+                        var div = L.DomUtil.create('div', legendClass);
+                        for (var i = 0; i < legend.colors.length; i++) {
+                            div.innerHTML +=
+                                '<div><i style="background:' + legend.colors[i] + '"></i>' + legend.labels[i] + '</div>';
                         }
-                    });
+                        return div;
+                    };
+                    leafletLegend.addTo(map);
                 }
             }
         }

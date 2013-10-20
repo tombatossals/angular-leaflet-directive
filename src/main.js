@@ -8,6 +8,11 @@ function isNumber(value) {
   return angular.isNumber(value);
 }
 
+// Determine if a reference is an array
+function isArray(value) {
+  return angular.isArray(value);
+}
+
 // Determine if two objects have the same properties
 function equals(o1, o2) {
   return angular.equals(o1, o2);

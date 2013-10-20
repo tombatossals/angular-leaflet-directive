@@ -114,6 +114,7 @@ module.exports = function(grunt) {
                       'src/directives/map.js',
                       'src/directives/center.js',
                       'src/directives/tiles.js',
+                      'src/directives/legend.js',
                       'src/directives/maxbounds.js'
                      ],
                 dest: 'dist/angular-leaflet-directive.js',
