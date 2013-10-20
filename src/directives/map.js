@@ -20,7 +20,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($http, $l
             leafletMap: '=leafletmap',
             eventBroadcast: '=eventBroadcast'
         },
-        template: '<div class="angular-leaflet-map"></div>',
+        template: '<div class="angular-leaflet-map" ng-transclude></div>',
         controller: function ($scope) {
             this.getMap = function () {
                 return $scope.map;

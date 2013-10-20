@@ -29,7 +29,7 @@ function _isSafeToApply($scope) {
 }
 
 function safeApply($scope, fn) {
-    if (!_isSafeToApply()) {
+    if (!_isSafeToApply($scope)) {
         $scope.$eval(fn);
     } else {
         $scope.$apply(fn);

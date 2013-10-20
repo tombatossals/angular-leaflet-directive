@@ -13,13 +13,29 @@ angular.module("leaflet-directive").directive('center', function ($http, $log, $
 
             setupCenter(map, center, defaults);
 
-            function updateBoundsInScope() {
-                return;
+            function updateBoundsInScope(map) {
+                if (!$scope.bounds) {
+                    return;
+                }
+
+                var bounds = map.getBounds();
+                var sw_latlng = bounds.getSouthWest();
+                var ne_latlng = bounds.getNorthEast();
+                $scope.bounds = {
+                    southWest: {
+                        lat: sw_latlng.lat,
+                        lng: sw_latlng.lng
+                    },
+                    northEast: {
+                        lat: ne_latlng.lat,
+                        lng: ne_latlng.lng
+                    }
+                };
             }
 
             function updateCenter(map, center) {
                 map.setView([center.lat, center.lng], center.zoom);
-                updateBoundsInScope();
+                updateBoundsInScope(map);
             }
 
             function isValidCenter(center) {
@@ -73,7 +89,7 @@ angular.module("leaflet-directive").directive('center', function ($http, $log, $
                             centerModel.lng.assign(scope, map.getCenter().lng);
                             centerModel.zoom.assign(scope, map.getZoom());
                         }
-                        updateBoundsInScope();
+                        scope.$emit("centerUpdated");
                     });
                 });
             }
