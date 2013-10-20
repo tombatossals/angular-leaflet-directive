@@ -68,19 +68,6 @@ function _getMapDefaults() {
         tileLayerOptions: {
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         },
-        icon: {
-            url: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-icon.png',
-            retinaUrl: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-icon-2x.png',
-            size: [25, 41],
-            anchor: [12, 40],
-            popup: [0, -40],
-            shadow: {
-                url: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-shadow.png',
-                retinaUrl: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-shadow.png',
-                size: [41, 41],
-                anchor: [12, 40]
-            }
-        },
         path: {
             weight: 10,
             opacity: 1,
@@ -96,18 +83,31 @@ function _getMapDefaults() {
 
 // Default leaflet icon object used in all markers as a default
 function getMarkerIconDefault() {
-    var defaults = _getMapDefaults();
+    var icon = {
+        url: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-icon.png',
+        retinaUrl: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-icon-2x.png',
+        size: [25, 41],
+        anchor: [12, 40],
+        popup: [0, -40],
+        shadow: {
+            url: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-shadow.png',
+            retinaUrl: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-shadow.png',
+            size: [41, 41],
+            anchor: [12, 40]
+        }
+    };
+
     return L.Icon.extend({
         options: {
-            iconUrl: defaults.icon.url,
-            iconRetinaUrl: defaults.icon.retinaUrl,
-            iconSize: defaults.icon.size,
-            iconAnchor: defaults.icon.anchor,
-            popupAnchor: defaults.icon.popup,
-            shadowUrl: defaults.icon.shadow.url,
-            shadowRetinaUrl: defaults.icon.shadow.retinaUrl,
-            shadowSize: defaults.icon.shadow.size,
-            shadowAnchor: defaults.icon.shadow.anchor
+            iconUrl: icon.url,
+            iconRetinaUrl: icon.retinaUrl,
+            iconSize: icon.size,
+            iconAnchor: icon.anchor,
+            popupAnchor: icon.popup,
+            shadowUrl: icon.shadow.url,
+            shadowRetinaUrl: icon.shadow.retinaUrl,
+            shadowSize: icon.shadow.size,
+            shadowAnchor: icon.shadow.anchor
         }
     });
 }

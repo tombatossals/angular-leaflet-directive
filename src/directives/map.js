@@ -51,6 +51,14 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($http, $l
                 }
             }
 
+            // REVIEW
+            // use of leafletDirectiveSetMap event is not encouraged. only use
+            // it when there is no easy way to bind data to the directive
+            $scope.$on('leafletDirectiveSetMap', function(event, message) {
+                var meth = message.shift();
+                map[meth].apply(map, message);
+            });
+
             // Create the Leaflet Map Object with the options
             var map = new L.Map(element[0], {
                 maxZoom: defaults.maxZoom,

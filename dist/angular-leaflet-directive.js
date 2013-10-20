@@ -72,19 +72,6 @@ function _getMapDefaults() {
         tileLayerOptions: {
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         },
-        icon: {
-            url: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-icon.png',
-            retinaUrl: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-icon-2x.png',
-            size: [25, 41],
-            anchor: [12, 40],
-            popup: [0, -40],
-            shadow: {
-                url: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-shadow.png',
-                retinaUrl: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-shadow.png',
-                size: [41, 41],
-                anchor: [12, 40]
-            }
-        },
         path: {
             weight: 10,
             opacity: 1,
@@ -100,18 +87,31 @@ function _getMapDefaults() {
 
 // Default leaflet icon object used in all markers as a default
 function getMarkerIconDefault() {
-    var defaults = _getMapDefaults();
+    var icon = {
+        url: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-icon.png',
+        retinaUrl: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-icon-2x.png',
+        size: [25, 41],
+        anchor: [12, 40],
+        popup: [0, -40],
+        shadow: {
+            url: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-shadow.png',
+            retinaUrl: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-shadow.png',
+            size: [41, 41],
+            anchor: [12, 40]
+        }
+    };
+
     return L.Icon.extend({
         options: {
-            iconUrl: defaults.icon.url,
-            iconRetinaUrl: defaults.icon.retinaUrl,
-            iconSize: defaults.icon.size,
-            iconAnchor: defaults.icon.anchor,
-            popupAnchor: defaults.icon.popup,
-            shadowUrl: defaults.icon.shadow.url,
-            shadowRetinaUrl: defaults.icon.shadow.retinaUrl,
-            shadowSize: defaults.icon.shadow.size,
-            shadowAnchor: defaults.icon.shadow.anchor
+            iconUrl: icon.url,
+            iconRetinaUrl: icon.retinaUrl,
+            iconSize: icon.size,
+            iconAnchor: icon.anchor,
+            popupAnchor: icon.popup,
+            shadowUrl: icon.shadow.url,
+            shadowRetinaUrl: icon.shadow.retinaUrl,
+            shadowSize: icon.shadow.size,
+            shadowAnchor: icon.shadow.anchor
         }
     });
 }
@@ -290,6 +290,14 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($http, $l
                     element.css('height', attrs.height + 'px');
                 }
             }
+
+            // REVIEW
+            // use of leafletDirectiveSetMap event is not encouraged. only use
+            // it when there is no easy way to bind data to the directive
+            $scope.$on('leafletDirectiveSetMap', function(event, message) {
+                var meth = message.shift();
+                map[meth].apply(map, message);
+            });
 
             // Create the Leaflet Map Object with the options
             var map = new L.Map(element[0], {
@@ -859,6 +867,210 @@ angular.module("leaflet-directive").directive('bounds', function ($http, $log, $
                         lng: ne_latlng.lng
                     }
                 };
+            }
+        }
+    };
+});
+
+angular.module("leaflet-directive").directive('events', function ($http, $log, $parse, $rootScope) {
+    return {
+        restrict: "A",
+        scope: false,
+        replace: false,
+        transclude: false,
+        require: 'leaflet',
+
+        link: function($scope, element, attrs, controller) {
+            var map = controller.getMap();
+            var legend = $scope.legend;
+
+            setupMapEventCallbacks();
+            setupMapEventBroadcasting();
+
+            /*
+            * Set up broadcasting of map events to the rootScope
+            *
+            * Listeners listen at leafletDirectiveMap.<event name>
+            *
+            * All events listed at http://leafletjs.com/reference.html#map-events are supported
+            */
+            function setupMapEventBroadcasting() {
+
+                function genDispatchMapEvent(eventName, logic) {
+                    return function(e) {
+                        // Put together broadcast name
+                        // for use in safeApply
+                        var broadcastName = 'leafletDirectiveMap.' + eventName;
+                        // Safely broadcast the event
+                        safeApply($scope, function(scope) {
+                            if (logic === "emit") {
+                                scope.$emit(broadcastName, {
+                                    leafletEvent : e
+                                });
+                            } else if (logic === "broadcast") {
+                                $rootScope.$broadcast(broadcastName, {
+                                    leafletEvent : e
+                                });
+                            }
+                        });
+                    };
+                }
+
+              var availableMapEvents = [
+                'click',
+                'dblclick',
+                'mousedown',
+                'mouseup',
+                'mouseover',
+                'mouseout',
+                'mousemove',
+                'contextmenu',
+                'focus',
+                'blur',
+                'preclick',
+                'load',
+                'unload',
+                'viewreset',
+                'movestart',
+                'move',
+                'moveend',
+                'dragstart',
+                'drag',
+                'dragend',
+                'zoomstart',
+                'zoomend',
+                'zoomlevelschange',
+                'resize',
+                'autopanstart',
+                'layeradd',
+                'layerremove',
+                'baselayerchange',
+                'overlayadd',
+                'overlayremove',
+                'locationfound',
+                'locationerror',
+                'popupopen',
+                'popupclose'
+              ];
+
+              var mapEvents = [];
+              var i;
+              var eventName;
+              var logic = "broadcast";
+
+              if ($scope.eventBroadcast === undefined || $scope.eventBroadcast === null) {
+                  // Backward compatibility, if no event-broadcast attribute, all events are broadcasted
+                  mapEvents = availableMapEvents;
+              } else if (typeof $scope.eventBroadcast !== 'object') {
+                  // Not a valid object
+                  $log.warn("[AngularJS - Leaflet] event-broadcast must be an object check your model.");
+              } else {
+                  // We have a possible valid object
+                  if ($scope.eventBroadcast.map === undefined || $scope.eventBroadcast.map === null) {
+                      // We do not have events enable/disable do we do nothing (all enabled by default)
+                      mapEvents = availableMapEvents;
+                  } else if (typeof $scope.eventBroadcast.map !== 'object') {
+                      // Not a valid object
+                      $log.warn("[AngularJS - Leaflet] event-broadcast.map must be an object check your model.");
+                  } else {
+                      // We have a possible valid map object
+                      // Event propadation logic
+                      if ($scope.eventBroadcast.map.logic !== undefined && $scope.eventBroadcast.map.logic !== null) {
+                          // We take care of possible propagation logic
+                          if ($scope.eventBroadcast.map.logic !== "emit" && $scope.eventBroadcast.map.logic !== "broadcast") {
+                              // This is an error
+                              $log.warn("[AngularJS - Leaflet] Available event propagation logic are: 'emit' or 'broadcast'.");
+                          } else if ($scope.eventBroadcast.map.logic === "emit") {
+                              logic = "emit";
+                          }
+                      }
+                      // Enable / Disable
+                      var mapEventsEnable = false, mapEventsDisable = false;
+                      if ($scope.eventBroadcast.map.enable !== undefined && $scope.eventBroadcast.map.enable !== null) {
+                          if (typeof $scope.eventBroadcast.map.enable === 'object') {
+                              mapEventsEnable = true;
+                          }
+                      }
+                      if ($scope.eventBroadcast.map.disable !== undefined && $scope.eventBroadcast.map.disable !== null) {
+                          if (typeof $scope.eventBroadcast.map.disable === 'object') {
+                              mapEventsDisable = true;
+                          }
+                      }
+                      if (mapEventsEnable && mapEventsDisable) {
+                          // Both are active, this is an error
+                          $log.warn("[AngularJS - Leaflet] can not enable and disable events at the time");
+                      } else if (!mapEventsEnable && !mapEventsDisable) {
+                          // Both are inactive, this is an error
+                          $log.warn("[AngularJS - Leaflet] must enable or disable events");
+                      } else {
+                          // At this point the map object is OK, lets enable or disable events
+                          if (mapEventsEnable) {
+                              // Enable events
+                              for (i = 0; i < $scope.eventBroadcast.map.enable.length; i++) {
+                                  eventName = $scope.eventBroadcast.map.enable[i];
+                                  // Do we have already the event enabled?
+                                  if (mapEvents.indexOf(eventName) !== -1) {
+                                      // Repeated event, this is an error
+                                      $log.warn("[AngularJS - Leaflet] This event " + eventName + " is already enabled");
+                                  } else {
+                                      // Does the event exists?
+                                      if (availableMapEvents.indexOf(eventName) === -1) {
+                                          // The event does not exists, this is an error
+                                          $log.warn("[AngularJS - Leaflet] This event " + eventName + " does not exist");
+                                      } else {
+                                          // All ok enable the event
+                                          mapEvents.push(eventName);
+                                      }
+                                  }
+                              }
+                          } else {
+                              // Disable events
+                              mapEvents = availableMapEvents;
+                              for (i = 0; i < $scope.eventBroadcast.map.disable.length; i++) {
+                                  eventName = $scope.eventBroadcast.map.disable[i];
+                                  var index = mapEvents.indexOf(eventName);
+                                  if (index === -1) {
+                                      // The event does not exist
+                                      $log.warn("[AngularJS - Leaflet] This event " + eventName + " does not exist or has been already disabled");
+                                  } else {
+                                      mapEvents.splice(index, 1);
+                                  }
+                              }
+                          }
+                      }
+                  }
+              }
+
+              for (i = 0; i < mapEvents.length; i++) {
+                eventName = mapEvents[i];
+
+                map.on(eventName, genDispatchMapEvent(eventName, logic), {
+                  eventName: eventName
+                });
+              }
+            }
+
+            /*
+             * Event setup watches for callbacks set in the parent scope
+             *
+             *    $scope.events = {
+             *      dblclick: function(){
+             *         // doThis()
+             *      },
+             *      click: function(){
+             *         // doThat()
+             *      }
+             * }
+             */
+
+            function setupMapEventCallbacks() {
+                if (typeof($scope.events) !== 'object') {
+                    return false;
+                } else {
+                    for (var bind_to  in $scope.events) {
+                        map.on(bind_to, $scope.events[bind_to]);
+                    }
+                }
             }
         }
     };
