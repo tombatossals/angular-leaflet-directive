@@ -43,24 +43,21 @@ angular.module("leaflet-directive").directive('center', function ($http, $log, $
             }
 
             function setupCenter(map, center, defaults) {
-                if (isNumber(center.lat) && isNumber(center.lng) && isNumber(center.zoom)) {
-                    updateCenter(map, center);
-                } else if (center.autoDiscover === true) {
-                    map.locate({ setView: true, maxZoom: defaults.maxZoom });
-                } else {
-                    $log.warn("[AngularJS - Leaflet] 'center' is incorrect");
-                    updateCenter(map, defaults.center);
-                }
+                if (isDefined(center)) {
+                    if (center.autoDiscover === true) {
+                        map.locate({ setView: true, maxZoom: defaults.maxZoom });
+                    }
 
-                var centerModel = {
-                    lat:  $parse("center.lat"),
-                    lng:  $parse("center.lng"),
-                    zoom: $parse("center.zoom")
-                };
+                    var centerModel = {
+                        lat:  $parse("center.lat"),
+                        lng:  $parse("center.lng"),
+                        zoom: $parse("center.zoom")
+                    };
+                }
 
                 var movingMap = false;
 
-                $scope.$watch("center", function(center, oldCenter) {
+                $scope.$watch("center", function(center) {
                     if (!isValidCenter(center)) {
                         $log.warn("[AngularJS - Leaflet] invalid 'center'");
                         updateCenter(map, defaults.center);
@@ -72,9 +69,7 @@ angular.module("leaflet-directive").directive('center', function ($http, $log, $
                         return;
                     }
 
-                    if (!equals(center, oldCenter)) {
-                        updateCenter(map, center);
-                    }
+                    updateCenter(map, center);
                 }, true);
 
                 map.on("movestart", function(/* event */) {

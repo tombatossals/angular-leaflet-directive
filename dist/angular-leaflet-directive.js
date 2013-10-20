@@ -386,24 +386,21 @@ angular.module("leaflet-directive").directive('center', function ($http, $log, $
             }
 
             function setupCenter(map, center, defaults) {
-                if (isNumber(center.lat) && isNumber(center.lng) && isNumber(center.zoom)) {
-                    updateCenter(map, center);
-                } else if (center.autoDiscover === true) {
-                    map.locate({ setView: true, maxZoom: defaults.maxZoom });
-                } else {
-                    $log.warn("[AngularJS - Leaflet] 'center' is incorrect");
-                    updateCenter(map, defaults.center);
-                }
+                if (isDefined(center)) {
+                    if (center.autoDiscover === true) {
+                        map.locate({ setView: true, maxZoom: defaults.maxZoom });
+                    }
 
-                var centerModel = {
-                    lat:  $parse("center.lat"),
-                    lng:  $parse("center.lng"),
-                    zoom: $parse("center.zoom")
-                };
+                    var centerModel = {
+                        lat:  $parse("center.lat"),
+                        lng:  $parse("center.lng"),
+                        zoom: $parse("center.zoom")
+                    };
+                }
 
                 var movingMap = false;
 
-                $scope.$watch("center", function(center, oldCenter) {
+                $scope.$watch("center", function(center) {
                     if (!isValidCenter(center)) {
                         $log.warn("[AngularJS - Leaflet] invalid 'center'");
                         updateCenter(map, defaults.center);
@@ -415,9 +412,7 @@ angular.module("leaflet-directive").directive('center', function ($http, $log, $
                         return;
                     }
 
-                    if (!equals(center, oldCenter)) {
-                        updateCenter(map, center);
-                    }
+                    updateCenter(map, center);
                 }, true);
 
                 map.on("movestart", function(/* event */) {
@@ -1086,6 +1081,40 @@ angular.module("leaflet-directive").directive('events', function ($http, $log, $
                     for (var bind_to  in $scope.events) {
                         map.on(bind_to, $scope.events[bind_to]);
                     }
+                }
+            }
+        }
+    };
+});
+
+angular.module("leaflet-directive").directive('maxbounds', function ($http, $log, $parse, $rootScope) {
+    return {
+        restrict: "A",
+        scope: false,
+        replace: false,
+        transclude: false,
+        require: 'leaflet',
+
+        link: function($scope, element, attrs, controller) {
+            var defaults = parseMapDefaults($scope.defaults);
+            var map = controller.getMap();
+            var maxBounds = $scope.maxBounds;
+                            $log.warn("hola", maxBounds);
+
+            setupMaxBounds(map, maxBounds);
+
+            function setupMaxBounds(map, maxBounds) {
+                if (isDefined(maxBounds.southWest) && isDefined(maxBounds.northEast)) {
+                    $scope.$watch("maxBounds", function (maxBounds) {
+                        if (isDefined(maxBounds.southWest) && isDefined(maxBounds.northEast) && isNumber(maxBounds.southWest.lat) && isNumber(maxBounds.southWest.lng) && isNumber(maxBounds.northEast.lat) && isNumber(maxBounds.northEast.lng)) {
+                            map.setMaxBounds(
+                                new L.LatLngBounds(
+                                    new L.LatLng(maxBounds.southWest.lat, maxBounds.southWest.lng),
+                                    new L.LatLng(maxBounds.northEast.lat, maxBounds.northEast.lng)
+                                )
+                            );
+                        }
+                    });
                 }
             }
         }
