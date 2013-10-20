@@ -98,7 +98,7 @@ module.exports = function(grunt) {
                     banner: '(function() {\n\n"use strict";\n\n',
                     footer: '\n}());'
                 },
-                src: ['src/defaults.js', 'src/directives/map.js'],
+                src: ['src/main.js', 'src/directives/map.js', 'src/directives/center.js'],
                 dest: 'dist/angular-leaflet-directive.js',
             },
             license: {

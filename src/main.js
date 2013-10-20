@@ -1,26 +1,32 @@
-function parseMapDefaults(defaults) {
-    var mapDefaults = getMapDefaults();
+// Determine if a reference is defined
+function isDefined(value) {
+    return angular.isDefined(value);
+}
 
-    if (angular.isDefined(defaults)) {
-        mapDefaults.maxZoom = angular.isDefined(defaults.maxZoom) ?  parseInt(defaults.maxZoom, 10) : mapDefaults.maxZoom;
-        mapDefaults.minZoom = angular.isDefined(defaults.minZoom) ?  parseInt(defaults.minZoom, 10) : mapDefaults.minZoom;
-        mapDefaults.doubleClickZoom = angular.isDefined(defaults.doubleClickZoom) && defaults.doubleClickZoom ?  true: false;
-        mapDefaults.scrollWheelZoom = angular.isDefined(defaults.scrollWheelZoom) && defaults.scrollWheelZoom ?  true: false;
-        mapDefaults.attributionControl = angular.isDefined(defaults.attributionControl) && defaults.attributionControl ?  true: false;
-        mapDefaults.tileLayer = angular.isDefined(defaults.tileLayer) ? defaults.tileLayer : mapDefaults.tileLayer;
+// Determine if a reference is a number
+function isNumber(value) {
+  return angular.isNumber(value);
+}
+
+// Get the mapDefaults dictionary, and override the properties defined by the user
+function parseMapDefaults(defaults) {
+    var mapDefaults = _getMapDefaults();
+
+    if (isDefined(defaults)) {
+        mapDefaults.maxZoom = isDefined(defaults.maxZoom) ?  parseInt(defaults.maxZoom, 10) : mapDefaults.maxZoom;
+        mapDefaults.minZoom = isDefined(defaults.minZoom) ?  parseInt(defaults.minZoom, 10) : mapDefaults.minZoom;
+        mapDefaults.doubleClickZoom = isDefined(defaults.doubleClickZoom) && defaults.doubleClickZoom ?  true: false;
+        mapDefaults.scrollWheelZoom = isDefined(defaults.scrollWheelZoom) && defaults.scrollWheelZoom ?  true: false;
+        mapDefaults.attributionControl = isDefined(defaults.attributionControl) && defaults.attributionControl ?  true: false;
+        mapDefaults.tileLayer = isDefined(defaults.tileLayer) ? defaults.tileLayer : mapDefaults.tileLayer;
         if (defaults.tileLayerOptions) {
             angular.copy(defaults.tileLayerOptions, mapDefaults.tileLayerOptions);
         }
     }
-
     return mapDefaults;
 }
 
-function isNumber(n) {
-  return !isNaN(parseFloat(n)) && isFinite(n);
-}
-
-function getMapDefaults() {
+function _getMapDefaults() {
     return {
         maxZoom: 14,
         minZoom: 1,
@@ -62,7 +68,7 @@ function getMapDefaults() {
 
 // Default leaflet icon object used in all markers as a default
 function getMarkerIconDefault() {
-    var defaults = getMapDefaults();
+    var defaults = _getMapDefaults();
     return L.Icon.extend({
         options: {
             iconUrl: defaults.icon.url,
@@ -199,15 +205,3 @@ var Helpers = {
 };
 
 var str_inspect_hint = 'Add testing="testing" to <leaflet> tag to inspect this object';
-
-/**
- * Check if a value is true
- */
-function isTrue(val) {
-    return angular.isDefined(val) &&
-        val !== null &&
-        val === true ||
-        val === '1' ||
-        val === 'y' ||
-        val === 'true';
-}
