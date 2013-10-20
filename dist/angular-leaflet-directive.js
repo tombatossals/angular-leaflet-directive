@@ -254,10 +254,8 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($http, $l
             geojson: '=geojson',
             paths: '=paths',
             tiles: '=tiles',
-            events: '=events',
             layers: '=layers',
             customControls: '=customControls',
-            leafletMap: '=leafletmap',
             eventBroadcast: '=eventBroadcast'
         },
         template: '<div class="angular-leaflet-map" ng-transclude></div>',
@@ -863,7 +861,7 @@ angular.module("leaflet-directive").directive('bounds', function ($http, $log, $
     };
 });
 
-angular.module("leaflet-directive").directive('events', function ($http, $log, $parse, $rootScope) {
+angular.module("leaflet-directive").directive('eventBroadcast', function ($http, $log, $parse, $rootScope) {
     return {
         restrict: "A",
         scope: false,

@@ -1,4 +1,4 @@
-angular.module("leaflet-directive").directive('events', function ($http, $log, $parse, $rootScope) {
+angular.module("leaflet-directive").directive('eventBroadcast', function ($http, $log, $parse, $rootScope) {
     return {
         restrict: "A",
         scope: false,
