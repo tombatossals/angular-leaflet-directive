@@ -321,6 +321,22 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($http, $l
                  var tileLayerObj = L.tileLayer(tileLayerUrl, tileLayerOptions);
                  tileLayerObj.addTo(map);
             }
+
+            setupControls(map, defaults);
+            function setupControls(map, defaults) {
+                //@TODO add document for this option  11.08 2013 (houqp)
+                if (map.zoomControl && isDefined(defaults.zoomControlPosition)) {
+                    map.zoomControl.setPosition(defaults.zoomControlPosition);
+                }
+
+                if(map.zoomControl && isDefined(defaults.zoomControl) && defaults.zoomControl === false) {
+                    map.zoomControl.removeFrom(map);
+                }
+
+                if(map.zoomsliderControl && isDefined(defaults.zoomsliderControl) && defaults.zoomsliderControl === false) {
+                    map.zoomsliderControl.removeFrom(map);
+                }
+            }
         }
     };
 });
