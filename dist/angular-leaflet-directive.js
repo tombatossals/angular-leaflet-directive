@@ -315,7 +315,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($http, $l
                  map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
             }
 
-            if (!isDefined(attrs.tiles)) {
+            if (!isDefined(attrs.tiles) && !isDefined(attrs.layers)) {
                  var tileLayerUrl = defaults.tileLayer;
                  var tileLayerOptions = defaults.tileLayerOptions;
                  var tileLayerObj = L.tileLayer(tileLayerUrl, tileLayerOptions);
