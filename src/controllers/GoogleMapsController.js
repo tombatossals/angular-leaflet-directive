@@ -23,6 +23,9 @@ app.controller("GoogleMapsController", [ "$scope", function($scope) {
                     type: 'google'
                 }
             }
+        },
+        defaults: {
+            scrollWheelZoom: false
         }
     });
 }]);
