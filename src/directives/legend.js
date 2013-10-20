@@ -7,13 +7,12 @@ angular.module("leaflet-directive").directive('legend', function ($http, $log, $
         require: 'leaflet',
 
         link: function($scope, element, attrs, controller) {
-            var defaults = parseMapDefaults($scope.defaults);
             var map = controller.getMap();
             var legend = $scope.legend;
 
-            setupLegend(map, legend, defaults);
+            setupLegend(map, legend);
 
-            function setupLegend(map, legend, defaults) {
+            function setupLegend(map, legend) {
                 if (!isArray(legend.colors) || !isArray(legend.labels) || legend.colors.length !== legend.labels.length) {
                      $log.warn("[AngularJS - Leaflet] legend.colors and legend.labels must be set.");
                 } else {

@@ -26,19 +26,6 @@ angular.module("leaflet-directive").directive('center', function ($http, $log, $
                 return isDefined(center) && isNumber(center.lat) && isNumber(center.lng) && isNumber(center.zoom);
             }
 
-            function _isSafeToApply() {
-                var phase = $scope.$root.$$phase;
-                return !(phase === '$apply' || phase === '$digest');
-            }
-
-            function safeApply(fn) {
-                if (!_isSafeToApply()) {
-                    $scope.$eval(fn);
-                } else {
-                    $scope.$apply(fn);
-                }
-            }
-
             function setupCenter(map, center, defaults) {
                 if (isNumber(center.lat) && isNumber(center.lng) && isNumber(center.zoom)) {
                     updateCenter(map, center);
@@ -80,7 +67,7 @@ angular.module("leaflet-directive").directive('center', function ($http, $log, $
 
                 map.on("moveend", function(/* event */) {
                     movingMap = false;
-                    safeApply(function(scope) {
+                    safeApply($scope, function(scope) {
                         if (centerModel) {
                             centerModel.lat.assign(scope, map.getCenter().lat);
                             centerModel.lng.assign(scope, map.getCenter().lng);
