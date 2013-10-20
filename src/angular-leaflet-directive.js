@@ -200,7 +200,7 @@ leafletDirective.directive('leaflet', function ($http, $log, $parse, $rootScope)
             leafletMap: '=leafletmap',
             eventBroadcast: '=eventBroadcast'
         },
-        template: '<div class="angular-leaflet-map"></div>',
+        template: '<div class="angular-leaflet-map" ng-transclude></div>',
         link: function ($scope, element, attrs /*, ctrl */) {
             if (attrs.width) {
                 if (isNaN(attrs.width)) {
