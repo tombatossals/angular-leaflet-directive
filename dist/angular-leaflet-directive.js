@@ -859,26 +859,6 @@ angular.module("leaflet-directive").directive('bounds', function ($http, $log, $
                     }
                 }, true);
             }
-
-            function updateBoundsInScope() {
-                if (!$scope.bounds) {
-                    return;
-                }
-
-                var bounds = map.getBounds();
-                var sw_latlng = bounds.getSouthWest();
-                var ne_latlng = bounds.getNorthEast();
-                $scope.bounds = {
-                    southWest: {
-                        lat: sw_latlng.lat,
-                        lng: sw_latlng.lng
-                    },
-                    northEast: {
-                        lat: ne_latlng.lat,
-                        lng: ne_latlng.lng
-                    }
-                };
-            }
         }
     };
 });
@@ -1099,7 +1079,6 @@ angular.module("leaflet-directive").directive('maxbounds', function ($http, $log
             var defaults = parseMapDefaults($scope.defaults);
             var map = controller.getMap();
             var maxBounds = $scope.maxBounds;
-                            $log.warn("hola", maxBounds);
 
             setupMaxBounds(map, maxBounds);
 
