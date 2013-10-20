@@ -1,13 +1,17 @@
-var module = angular.module("leaflet-directive", []);
-module.directive('center', function ($http, $log, $parse, $rootScope) {
+angular.module("leaflet-directive").directive('center', function ($http, $log, $parse, $rootScope) {
     return {
         restrict: "A",
+        scope: false,
         replace: false,
         transclude: false,
         require: 'leaflet',
 
-        link: function($scope, element, attrs/*, ctrl */) {
+        link: function($scope, element, attrs, controller) {
             var defaults = parseMapDefaults($scope.defaults);
+            var map = controller.getMap();
+            var center = $scope.center;
+
+            setupCenter(map, center, defaults);
 
             function updateBoundsInScope() {
                 return;
@@ -18,12 +22,8 @@ module.directive('center', function ($http, $log, $parse, $rootScope) {
                 updateBoundsInScope();
             }
 
-            function isSameCenter(center, oldCenter) {
-                return JSON.stringify(center) === JSON.stringify(oldCenter);
-            }
-
             function isValidCenter(center) {
-                return angular.isDefined(center) && angular.isDefined(center.lat) && angular.isDefined(center.lng) && angular.isDefined(center.zoom) && isNumber(center.lat) && isNumber(center.lng) && isNumber(center.zoom);
+                return isDefined(center) && isNumber(center.lat) && isNumber(center.lng) && isNumber(center.zoom);
             }
 
             function _isSafeToApply() {
@@ -40,19 +40,13 @@ module.directive('center', function ($http, $log, $parse, $rootScope) {
             }
 
             function setupCenter(map, center, defaults) {
-                if (!angular.isDefined(center)) {
-                    $log.warn("[AngularJS - Leaflet] 'center' is undefined in the current scope, did you forget to initialize it?");
-                    updateCenter(map, defaults.center);
-                    return;
+                if (isNumber(center.lat) && isNumber(center.lng) && isNumber(center.zoom)) {
+                    updateCenter(map, center);
+                } else if (center.autoDiscover === true) {
+                    map.locate({ setView: true, maxZoom: defaults.maxZoom });
                 } else {
-                    if (isNumber(center.lat) && isNumber(center.lng) && isNumber(center.zoom)) {
-                        updateCenter(map, center);
-                    } else if (center.autoDiscover === true) {
-                        map.locate({ setView: true, maxZoom: defaults.maxZoom });
-                    } else {
-                        $log.warn("[AngularJS - Leaflet] 'center' is incorrect");
-                        updateCenter(map, defaults.center);
-                    }
+                    $log.warn("[AngularJS - Leaflet] 'center' is incorrect");
+                    updateCenter(map, defaults.center);
                 }
 
                 var centerModel = {
@@ -75,7 +69,7 @@ module.directive('center', function ($http, $log, $parse, $rootScope) {
                         return;
                     }
 
-                    if (!isSameCenter(center, oldCenter)) {
+                    if (!equals(center, oldCenter)) {
                         updateCenter(map, center);
                     }
                 }, true);

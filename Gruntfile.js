@@ -84,8 +84,19 @@ module.exports = function(grunt) {
         },
         watch: {
             source: {
-                files: ['src/**/*.js', 'test/unit/*.js', 'test/e2e/*.js'],
-                tasks: [ 'karma:background:run', 'concat:dist', 'jshint', 'ngmin', 'uglify', 'concat:license' ]
+                files: [
+                        'src/**/*.js',
+                        'test/unit/*.js',
+                        'test/e2e/*.js'
+                       ],
+                tasks: [
+                        'karma:background:run',
+                        'concat:dist',
+                        'jshint',
+                        'ngmin',
+                        'uglify',
+                        'concat:license'
+                       ]
             },
             grunt: {
                 files: ['Gruntfile.js'],
@@ -98,11 +109,20 @@ module.exports = function(grunt) {
                     banner: '(function() {\n\n"use strict";\n\n',
                     footer: '\n}());'
                 },
-                src: ['src/main.js', 'src/directives/map.js', 'src/directives/center.js'],
+                src: [
+                      'src/main.js',
+                      'src/directives/map.js',
+                      'src/directives/center.js',
+                      'src/directives/tiles.js',
+                      'src/directives/maxbounds.js'
+                     ],
                 dest: 'dist/angular-leaflet-directive.js',
             },
             license: {
-                src: ['src/header-MIT-license.txt', 'dist/angular-leaflet-directive.min.no-header.js'],
+                src: [
+                      'src/header-MIT-license.txt',
+                      'dist/angular-leaflet-directive.min.no-header.js'
+                     ],
                 dest: 'dist/angular-leaflet-directive.min.js',
             }
         },

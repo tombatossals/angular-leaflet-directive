@@ -12,6 +12,11 @@ function isNumber(value) {
   return angular.isNumber(value);
 }
 
+// Determine if two objects have the same properties
+function equals(o1, o2) {
+  return angular.equals(o1, o2);
+}
+
 // Get the mapDefaults dictionary, and override the properties defined by the user
 function parseMapDefaults(defaults) {
     var mapDefaults = _getMapDefaults();
@@ -210,21 +215,20 @@ var Helpers = {
 
 var str_inspect_hint = 'Add testing="testing" to <leaflet> tag to inspect this object';
 
-var module = angular.module("leaflet-directive", []);
-module.directive('leaflet', function ($http, $log, $parse, $rootScope) {
+angular.module("leaflet-directive", []).directive('leaflet', function ($http, $log, $parse, $rootScope) {
     return {
         restrict: "E",
         replace: true,
         transclude: true,
         scope: {
             center: '=center',
+            defaults: '=defaults',
             maxBounds: '=maxbounds',
             bounds: '=bounds',
             marker: '=marker',
             markers: '=markers',
             legend: '=legend',
             geojson: '=geojson',
-            defaults: '=defaults',
             paths: '=paths',
             tiles: '=tiles',
             events: '=events',
@@ -273,34 +277,37 @@ module.directive('leaflet', function ($http, $log, $parse, $rootScope) {
                 attributionControl: defaults.attributionControl
             });
 
-            setupTiles(map, $scope.tiles, defaults);
-            setupCenter(map, $scope.center, defaults);
+            $scope.map = map;
 
-            function setupTiles(map, tiles, defaults) {
-                var tileLayerObj;
-                var tileLayerUrl = defaults.tileLayer;
-                var tileLayerOptions = defaults.tileLayerOptions;
-
-                if (angular.isDefined(tiles)) {
-                    if (angular.isDefined(tiles.url)) {
-                        tileLayerUrl = tiles.url;
-                    }
-
-                    if (angular.isDefined(tiles.options)) {
-                        angular.copy(tiles.options, tileLayerOptions);
-                    }
-
-                    $scope.watch("tiles.url", function(url) {
-                        if (!angular.isDefined(url)) {
-                            return;
-                        }
-                        tileLayerObj.setUrl(url);
-                    });
-                }
-
-                tileLayerObj = L.tileLayer(tileLayerUrl, tileLayerOptions);
-                tileLayerObj.addTo(map);
+            if (!isDefined(attrs.center)) {
+                 $log.warn("[AngularJS - Leaflet] 'center' is undefined in the current scope, did you forget to initialize it?");
+                 map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
             }
+
+            if (!isDefined(attrs.tiles)) {
+                 var tileLayerUrl = defaults.tileLayer;
+                 var tileLayerOptions = defaults.tileLayerOptions;
+                 var tileLayerObj = L.tileLayer(tileLayerUrl, tileLayerOptions);
+                 tileLayerObj.addTo(map);
+            }
+        }
+    };
+});
+
+angular.module("leaflet-directive").directive('center', function ($http, $log, $parse, $rootScope) {
+    return {
+        restrict: "A",
+        scope: false,
+        replace: false,
+        transclude: false,
+        require: 'leaflet',
+
+        link: function($scope, element, attrs, controller) {
+            var defaults = parseMapDefaults($scope.defaults);
+            var map = controller.getMap();
+            var center = $scope.center;
+
+            setupCenter(map, center, defaults);
 
             function updateBoundsInScope() {
                 return;
@@ -311,12 +318,8 @@ module.directive('leaflet', function ($http, $log, $parse, $rootScope) {
                 updateBoundsInScope();
             }
 
-            function isSameCenter(center, oldCenter) {
-                return JSON.stringify(center) === JSON.stringify(oldCenter);
-            }
-
             function isValidCenter(center) {
-                return angular.isDefined(center) && angular.isDefined(center.lat) && angular.isDefined(center.lng) && angular.isDefined(center.zoom) && isNumber(center.lat) && isNumber(center.lng) && isNumber(center.zoom);
+                return isDefined(center) && isNumber(center.lat) && isNumber(center.lng) && isNumber(center.zoom);
             }
 
             function _isSafeToApply() {
@@ -333,19 +336,13 @@ module.directive('leaflet', function ($http, $log, $parse, $rootScope) {
             }
 
             function setupCenter(map, center, defaults) {
-                if (!angular.isDefined(center)) {
-                    $log.warn("[AngularJS - Leaflet] 'center' is undefined in the current scope, did you forget to initialize it?");
-                    updateCenter(map, defaults.center);
-                    return;
+                if (isNumber(center.lat) && isNumber(center.lng) && isNumber(center.zoom)) {
+                    updateCenter(map, center);
+                } else if (center.autoDiscover === true) {
+                    map.locate({ setView: true, maxZoom: defaults.maxZoom });
                 } else {
-                    if (isNumber(center.lat) && isNumber(center.lng) && isNumber(center.zoom)) {
-                        updateCenter(map, center);
-                    } else if (center.autoDiscover === true) {
-                        map.locate({ setView: true, maxZoom: defaults.maxZoom });
-                    } else {
-                        $log.warn("[AngularJS - Leaflet] 'center' is incorrect");
-                        updateCenter(map, defaults.center);
-                    }
+                    $log.warn("[AngularJS - Leaflet] 'center' is incorrect");
+                    updateCenter(map, defaults.center);
                 }
 
                 var centerModel = {
@@ -368,7 +365,7 @@ module.directive('leaflet', function ($http, $log, $parse, $rootScope) {
                         return;
                     }
 
-                    if (!isSameCenter(center, oldCenter)) {
+                    if (!equals(center, oldCenter)) {
                         updateCenter(map, center);
                     }
                 }, true);
@@ -393,103 +390,76 @@ module.directive('leaflet', function ($http, $log, $parse, $rootScope) {
     };
 });
 
-var module = angular.module("leaflet-directive", []);
-module.directive('center', function ($http, $log, $parse, $rootScope) {
+angular.module("leaflet-directive").directive('tiles', function ($http, $log, $parse, $rootScope) {
     return {
         restrict: "A",
+        scope: false,
         replace: false,
         transclude: false,
         require: 'leaflet',
 
-        link: function($scope, element, attrs/*, ctrl */) {
+        link: function($scope, element, attrs, controller) {
             var defaults = parseMapDefaults($scope.defaults);
+            var map = controller.getMap();
+            var tiles = $scope.tiles;
 
-            function updateBoundsInScope() {
-                return;
-            }
+            setupTiles(map, tiles, defaults);
 
-            function updateCenter(map, center) {
-                map.setView([center.lat, center.lng], center.zoom);
-                updateBoundsInScope();
-            }
+            function setupTiles(map, tiles, defaults) {
+                var tileLayerObj;
+                var tileLayerUrl = defaults.tileLayer;
+                var tileLayerOptions = defaults.tileLayerOptions;
 
-            function isSameCenter(center, oldCenter) {
-                return JSON.stringify(center) === JSON.stringify(oldCenter);
-            }
-
-            function isValidCenter(center) {
-                return angular.isDefined(center) && angular.isDefined(center.lat) && angular.isDefined(center.lng) && angular.isDefined(center.zoom) && isNumber(center.lat) && isNumber(center.lng) && isNumber(center.zoom);
-            }
-
-            function _isSafeToApply() {
-                var phase = $scope.$root.$$phase;
-                return !(phase === '$apply' || phase === '$digest');
-            }
-
-            function safeApply(fn) {
-                if (!_isSafeToApply()) {
-                    $scope.$eval(fn);
-                } else {
-                    $scope.$apply(fn);
-                }
-            }
-
-            function setupCenter(map, center, defaults) {
-                if (!angular.isDefined(center)) {
-                    $log.warn("[AngularJS - Leaflet] 'center' is undefined in the current scope, did you forget to initialize it?");
-                    updateCenter(map, defaults.center);
-                    return;
-                } else {
-                    if (isNumber(center.lat) && isNumber(center.lng) && isNumber(center.zoom)) {
-                        updateCenter(map, center);
-                    } else if (center.autoDiscover === true) {
-                        map.locate({ setView: true, maxZoom: defaults.maxZoom });
-                    } else {
-                        $log.warn("[AngularJS - Leaflet] 'center' is incorrect");
-                        updateCenter(map, defaults.center);
-                    }
+                if (angular.isDefined(tiles.url)) {
+                    tileLayerUrl = tiles.url;
                 }
 
-                var centerModel = {
-                    lat:  $parse("center.lat"),
-                    lng:  $parse("center.lng"),
-                    zoom: $parse("center.zoom")
-                };
+                if (angular.isDefined(tiles.options)) {
+                    angular.copy(tiles.options, tileLayerOptions);
+                }
 
-                var movingMap = false;
-
-                $scope.$watch("center", function(center, oldCenter) {
-                    if (!isValidCenter(center)) {
-                        $log.warn("[AngularJS - Leaflet] invalid 'center'");
-                        updateCenter(map, defaults.center);
+                $scope.$watch("tiles.url", function(url) {
+                    if (!angular.isDefined(url)) {
                         return;
                     }
-
-                    if (movingMap) {
-                        // Can't update. The map is moving.
-                        return;
-                    }
-
-                    if (!isSameCenter(center, oldCenter)) {
-                        updateCenter(map, center);
-                    }
-                }, true);
-
-                map.on("movestart", function(/* event */) {
-                    movingMap = true;
+                    tileLayerObj.setUrl(url);
                 });
 
-                map.on("moveend", function(/* event */) {
-                    movingMap = false;
-                    safeApply(function(scope) {
-                        if (centerModel) {
-                            centerModel.lat.assign(scope, map.getCenter().lat);
-                            centerModel.lng.assign(scope, map.getCenter().lng);
-                            centerModel.zoom.assign(scope, map.getZoom());
+                tileLayerObj = L.tileLayer(tileLayerUrl, tileLayerOptions);
+                tileLayerObj.addTo(map);
+            }
+        }
+    };
+});
+
+angular.module("leaflet-directive").directive('maxbounds', function ($http, $log, $parse, $rootScope) {
+    return {
+        restrict: "A",
+        scope: false,
+        replace: false,
+        transclude: false,
+        require: 'leaflet',
+
+        link: function($scope, element, attrs, controller) {
+            var defaults = parseMapDefaults($scope.defaults);
+            var map = controller.getMap();
+            var maxBounds = $scope.maxBounds;
+
+            setupMaxBounds(map, maxBounds);
+
+            function setupMaxBounds(map, maxBounds) {
+                if (isDefined(maxBounds.southWest) && isDefined(maxBounds.northEast)) {
+                    $scope.$watch("maxBounds", function (maxBounds) {
+                        if (isDefined(maxBounds.southWest) && isDefined(maxBounds.northEast) && isNumber(maxBounds.southWest.lat) && isNumber(maxBounds.southWest.lng) && isNumber(maxBounds.northEast.lat) && isNumber(maxBounds.northEast.lng)) {
+                            map.setMaxBounds(
+                                new L.LatLngBounds(
+                                    new L.LatLng(maxBounds.southWest.lat, maxBounds.southWest.lng),
+                                    new L.LatLng(maxBounds.northEast.lat, maxBounds.northEast.lng)
+                                )
+                            );
                         }
-                        updateBoundsInScope();
                     });
-                });
+                }
             }
         }
     };

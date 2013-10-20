@@ -8,6 +8,11 @@ function isNumber(value) {
   return angular.isNumber(value);
 }
 
+// Determine if two objects have the same properties
+function equals(o1, o2) {
+  return angular.equals(o1, o2);
+}
+
 // Get the mapDefaults dictionary, and override the properties defined by the user
 function parseMapDefaults(defaults) {
     var mapDefaults = _getMapDefaults();
