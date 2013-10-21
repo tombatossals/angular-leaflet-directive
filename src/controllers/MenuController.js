@@ -1,9 +1,5 @@
 app.controller("MenuController", [ '$scope', '$location', function($scope, $location) {
 
-    $scope.goExample = function (example) {
-        $location.path('/examples/' + example);
-    };
-
     $scope.menuItems = [
         {
             key: 'simple-map',

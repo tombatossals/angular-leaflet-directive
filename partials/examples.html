@@ -11,7 +11,7 @@
 <div class="row">
     <div class="col-md-2" ng-controller="MenuController" id="examples-menu">
         <ul class="nav nav-pills nav-stacked">
-            <li ng-repeat="item in menuItems" ng-class="{ active: exampleTab == item.key }"><a href="" ng-click="goExample(item.key)" data-target="#examples- menu" data-toggle="tab">{{ item.description }}</a></li>
+            <li ng-repeat="item in menuItems" ng-class="{ active: exampleTab == item.key }"><a ng-href="#!/examples/{{ item.key }}" data-target="#examples- menu" data-toggle="tab">{{ item.description }}</a></li>
         </ul>
     </div>
     <ng-include src="'partials/examples/' + exampleTab + '.html'"></ng-include>
