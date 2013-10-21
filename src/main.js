@@ -68,6 +68,19 @@ function _getMapDefaults() {
         tileLayerOptions: {
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         },
+        icon: {
+            url: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-icon.png',
+            retinaUrl: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-icon-2x.png',
+            size: [25, 41],
+            anchor: [12, 40],
+            popup: [0, -40],
+            shadow: {
+                url: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-shadow.png',
+                retinaUrl: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-shadow.png',
+                size: [41, 41],
+                anchor: [12, 40]
+            }
+        },
         path: {
             weight: 10,
             opacity: 1,
@@ -79,37 +92,6 @@ function _getMapDefaults() {
             zoom: 1
         }
     };
-}
-
-// Default leaflet icon object used in all markers as a default
-function getMarkerIconDefault() {
-    var icon = {
-        url: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-icon.png',
-        retinaUrl: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-icon-2x.png',
-        size: [25, 41],
-        anchor: [12, 40],
-        popup: [0, -40],
-        shadow: {
-            url: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-shadow.png',
-            retinaUrl: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-shadow.png',
-            size: [41, 41],
-            anchor: [12, 40]
-        }
-    };
-
-    return L.Icon.extend({
-        options: {
-            iconUrl: icon.url,
-            iconRetinaUrl: icon.retinaUrl,
-            iconSize: icon.size,
-            iconAnchor: icon.anchor,
-            popupAnchor: icon.popup,
-            shadowUrl: icon.shadow.url,
-            shadowRetinaUrl: icon.shadow.retinaUrl,
-            shadowSize: icon.shadow.size,
-            shadowAnchor: icon.shadow.anchor
-        }
-    });
 }
 
 var Helpers = {

@@ -1,4 +1,4 @@
-angular.module("leaflet-directive").directive('tiles', function ($http, $log, $parse, $rootScope) {
+angular.module("leaflet-directive").directive('tiles', function ($log) {
     return {
         restrict: "A",
         scope: false,

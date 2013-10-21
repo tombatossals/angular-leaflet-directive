@@ -1,4 +1,4 @@
-angular.module("leaflet-directive", []).directive('leaflet', function ($http, $log, $parse, $rootScope) {
+angular.module("leaflet-directive", []).directive('leaflet', function ($log) {
     return {
         restrict: "E",
         replace: true,

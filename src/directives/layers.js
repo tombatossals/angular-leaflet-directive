@@ -1,4 +1,4 @@
-angular.module("leaflet-directive").directive('layers', function ($http, $log, $parse, $rootScope) {
+angular.module("leaflet-directive").directive('layers', function ($log) {
     return {
         restrict: "A",
         scope: false,

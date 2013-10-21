@@ -1,4 +1,4 @@
-angular.module("leaflet-directive").directive('legend', function ($http, $log, $parse, $rootScope) {
+angular.module("leaflet-directive").directive('legend', function ($log) {
     return {
         restrict: "A",
         scope: false,

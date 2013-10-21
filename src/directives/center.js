@@ -1,4 +1,4 @@
-angular.module("leaflet-directive").directive('center', function ($http, $log, $parse, $rootScope) {
+angular.module("leaflet-directive").directive('center', function ($log, $parse) {
     return {
         restrict: "A",
         scope: false,

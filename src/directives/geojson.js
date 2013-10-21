@@ -1,4 +1,4 @@
-angular.module("leaflet-directive").directive('geojson', function ($http, $log, $parse, $rootScope) {
+angular.module("leaflet-directive").directive('geojson', function ($log, $rootScope) {
     return {
         restrict: "A",
         scope: false,

@@ -1,4 +1,4 @@
-angular.module("leaflet-directive").directive('maxbounds', function ($http, $log, $parse, $rootScope) {
+angular.module("leaflet-directive").directive('maxbounds', function ($log) {
     return {
         restrict: "A",
         scope: false,
