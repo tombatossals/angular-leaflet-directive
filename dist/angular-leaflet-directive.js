@@ -220,7 +220,7 @@ var Helpers = {
 
 var str_inspect_hint = 'Add testing="testing" to <leaflet> tag to inspect this object';
 
-angular.module("leaflet-directive", []).directive('leaflet', function ($log) {
+angular.module("leaflet-directive", []).directive('leaflet', function ($log, leafletData) {
     return {
         restrict: "E",
         replace: true,
@@ -289,7 +289,8 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log) {
             });
 
             $scope.map = map;
-
+            leafletData.setMap(map);
+$log.warn(leafletData);
             if (!isDefined(attrs.center)) {
                  $log.warn("[AngularJS - Leaflet] 'center' is undefined in the current scope, did you forget to initialize it?");
                  map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
@@ -1708,7 +1709,7 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                 }
 
                 var clearWatch = $scope.$watch(scope_watch_name, function(data, old_data) {
-                    if (!data) {
+                    if (!isDefined(data)) {
                         marker.closePopup();
                         // There is no easy way to know if a marker is added to a layer, so we search for it
                         // if there are overlays
@@ -2631,6 +2632,19 @@ angular.module("leaflet-directive").directive('maxbounds', function ($log) {
                 }
             }
         }
+    };
+});
+
+angular.module("leaflet-directive", []).service('leafletData', function ($log) {
+    var map;
+
+    this.setMap = function(leafletMap) {
+        $log.warn("map set");
+        map = leafletMap;
+    };
+
+    this.getMap = function() {
+        return map;
     };
 });
 
