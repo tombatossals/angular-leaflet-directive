@@ -18,6 +18,11 @@ function isArray(value) {
   return angular.isArray(value);
 }
 
+// Determine if a reference is an object
+function isObject(value) {
+  return angular.isObject(value);
+}
+
 // Determine if two objects have the same properties
 function equals(o1, o2) {
   return angular.equals(o1, o2);
@@ -47,7 +52,7 @@ function parseMapDefaults(defaults) {
         mapDefaults.scrollWheelZoom = isDefined(defaults.scrollWheelZoom) && defaults.scrollWheelZoom ?  true: false;
         mapDefaults.attributionControl = isDefined(defaults.attributionControl) && defaults.attributionControl ?  true: false;
         mapDefaults.tileLayer = isDefined(defaults.tileLayer) ? defaults.tileLayer : mapDefaults.tileLayer;
-        if (defaults.tileLayerOptions) {
+        if (isDefined(defaults.tileLayerOptions)) {
             angular.copy(defaults.tileLayerOptions, mapDefaults.tileLayerOptions);
         }
     }

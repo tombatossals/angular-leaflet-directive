@@ -68,7 +68,6 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, lea
 
             $scope.map = map;
             leafletData.setMap(map);
-$log.warn(leafletData);
             if (!isDefined(attrs.center)) {
                  $log.warn("[AngularJS - Leaflet] 'center' is undefined in the current scope, did you forget to initialize it?");
                  map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);

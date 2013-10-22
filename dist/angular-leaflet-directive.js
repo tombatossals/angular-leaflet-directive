@@ -22,6 +22,11 @@ function isArray(value) {
   return angular.isArray(value);
 }
 
+// Determine if a reference is an object
+function isObject(value) {
+  return angular.isObject(value);
+}
+
 // Determine if two objects have the same properties
 function equals(o1, o2) {
   return angular.equals(o1, o2);
@@ -51,7 +56,7 @@ function parseMapDefaults(defaults) {
         mapDefaults.scrollWheelZoom = isDefined(defaults.scrollWheelZoom) && defaults.scrollWheelZoom ?  true: false;
         mapDefaults.attributionControl = isDefined(defaults.attributionControl) && defaults.attributionControl ?  true: false;
         mapDefaults.tileLayer = isDefined(defaults.tileLayer) ? defaults.tileLayer : mapDefaults.tileLayer;
-        if (defaults.tileLayerOptions) {
+        if (isDefined(defaults.tileLayerOptions)) {
             angular.copy(defaults.tileLayerOptions, mapDefaults.tileLayerOptions);
         }
     }
@@ -290,7 +295,6 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, lea
 
             $scope.map = map;
             leafletData.setMap(map);
-$log.warn(leafletData);
             if (!isDefined(attrs.center)) {
                  $log.warn("[AngularJS - Leaflet] 'center' is undefined in the current scope, did you forget to initialize it?");
                  map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
@@ -416,7 +420,7 @@ angular.module("leaflet-directive").directive('center', function ($log, $parse) 
     };
 });
 
-angular.module("leaflet-directive").directive('tiles', function ($log) {
+angular.module("leaflet-directive").directive('tiles', function ($log, leafletData) {
     return {
         restrict: "A",
         scope: false,
@@ -452,6 +456,7 @@ angular.module("leaflet-directive").directive('tiles', function ($log) {
                 });
 
                 tileLayerObj = L.tileLayer(tileLayerUrl, tileLayerOptions);
+                leafletData.setTile(tileLayerObj);
                 tileLayerObj.addTo(map);
             }
         }
@@ -554,7 +559,7 @@ angular.module("leaflet-directive").directive('geojson', function ($log, $rootSc
     };
 });
 
-angular.module("leaflet-directive").directive('layers', function ($log) {
+angular.module("leaflet-directive").directive('layers', function ($log, leafletData) {
     return {
         restrict: "A",
         scope: false,
@@ -844,7 +849,7 @@ angular.module("leaflet-directive").directive('bounds', function ($log) {
     };
 });
 
-angular.module("leaflet-directive").directive('marker', function ($log, $rootScope) {
+angular.module("leaflet-directive").directive('marker', function ($log, $rootScope, leafletData) {
     return {
         restrict: "A",
         scope: false,
@@ -880,6 +885,7 @@ angular.module("leaflet-directive").directive('marker', function ($log, $rootSco
                     return;
                 }
                 var main_marker = createMarker('marker', marker, layers, map);
+                leafletData.setMarker(main_marker);
                 main_marker.on('click', function(e) {
                     safeApply($scope, function() {
                         $rootScope.$broadcast('leafletDirectiveMainMarkerClick');
@@ -1474,7 +1480,7 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                     for (var name in leafletMarkers) {
                         if (newMarkers[name] === undefined) {
                             // First we check if the marker is in a layer group
-                            markers[name].closePopup();
+                            leafletMarkers[name].closePopup();
                             // There is no easy way to know if a marker is added to a layer, so we search for it
                             // if there are overlays
                             if (layers !== undefined && layers !== null) {
@@ -2635,16 +2641,37 @@ angular.module("leaflet-directive").directive('maxbounds', function ($log) {
     };
 });
 
-angular.module("leaflet-directive", []).service('leafletData', function ($log) {
+angular.module("leaflet-directive").service('leafletData', function ($log) {
     var map;
+    var baselayers;
+    var controls;
+    var tile;
+    var overlays;
+    var mainMarker;
+    var markers;
 
     this.setMap = function(leafletMap) {
-        $log.warn("map set");
         map = leafletMap;
     };
 
     this.getMap = function() {
         return map;
+    };
+
+    this.setTile = function(leafletTile) {
+        tile = leafletTile;
+    };
+
+    this.getTile = function() {
+        return tile;
+    };
+
+    this.setMainMarker = function(leafletMarker) {
+        mainMarker = leafletMarker;
+    };
+
+    this.getMainMarker = function() {
+        return mainMarker;
     };
 });
 

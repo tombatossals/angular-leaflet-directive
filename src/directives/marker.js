@@ -1,4 +1,4 @@
-angular.module("leaflet-directive").directive('marker', function ($log, $rootScope) {
+angular.module("leaflet-directive").directive('marker', function ($log, $rootScope, leafletData) {
     return {
         restrict: "A",
         scope: false,
@@ -34,6 +34,7 @@ angular.module("leaflet-directive").directive('marker', function ($log, $rootSco
                     return;
                 }
                 var main_marker = createMarker('marker', marker, layers, map);
+                leafletData.setMarker(main_marker);
                 main_marker.on('click', function(e) {
                     safeApply($scope, function() {
                         $rootScope.$broadcast('leafletDirectiveMainMarkerClick');

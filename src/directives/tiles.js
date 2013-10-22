@@ -1,4 +1,4 @@
-angular.module("leaflet-directive").directive('tiles', function ($log) {
+angular.module("leaflet-directive").directive('tiles', function ($log, leafletData) {
     return {
         restrict: "A",
         scope: false,
@@ -34,6 +34,7 @@ angular.module("leaflet-directive").directive('tiles', function ($log) {
                 });
 
                 tileLayerObj = L.tileLayer(tileLayerUrl, tileLayerOptions);
+                leafletData.setTile(tileLayerObj);
                 tileLayerObj.addTo(map);
             }
         }
