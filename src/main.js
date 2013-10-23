@@ -3,6 +3,11 @@ function isDefined(value) {
     return angular.isDefined(value);
 }
 
+// Determine if a reference is defined
+function isDefinedAndNotNull(value) {
+    return angular.isDefined(value) && value != null;
+}
+
 // Determine if a reference is a number
 function isNumber(value) {
   return angular.isNumber(value);
