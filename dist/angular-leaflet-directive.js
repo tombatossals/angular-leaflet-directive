@@ -8,7 +8,7 @@ function isDefined(value) {
 }
 
 // Determine if a reference is defined
-function isNotNull(value) {
+function isDefinedAndNotNull(value) {
     return angular.isDefined(value) && value != null;
 }
 
@@ -253,7 +253,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, lea
         template: '<div class="angular-leaflet-map" ng-transclude></div>',
         controller: function ($scope) {
             this.getMap = function () {
-                return $scope.map;
+                return $scope.leafletMap;
             };
         },
 
@@ -298,7 +298,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, lea
                 attributionControl: defaults.attributionControl
             });
 
-            $scope.map = map;
+            $scope.leafletMap = map;
             leafletData.setMap(map);
             if (!isDefined(attrs.center)) {
                  $log.warn("[AngularJS - Leaflet] 'center' is undefined in the current scope, did you forget to initialize it?");
@@ -564,14 +564,18 @@ angular.module("leaflet-directive").directive('geojson', function ($log, $rootSc
     };
 });
 
-angular.module("leaflet-directive").directive('layers', function ($log, leafletData) {
+angular.module("leaflet-directive").directive('layers', function ($log) {
     return {
         restrict: "A",
         scope: false,
         replace: false,
         transclude: false,
         require: 'leaflet',
-
+        controller: function ($scope) {
+            this.getLayers = function() {
+                return $scope.leafletLayers;
+            };
+        },
         link: function($scope, element, attrs, controller) {
             var defaults = parseMapDefaults($scope.defaults);
             var map = controller.getMap();
@@ -587,92 +591,92 @@ angular.module("leaflet-directive").directive('layers', function ($log, leafletD
                         return;
                     }
                     // We have baselayers to add to the map
-                    var leafletLayers = {};
-                    leafletLayers.baselayers = {};
-                    leafletLayers.controls = {};
-                    leafletLayers.controls.layers = new L.control.layers();
-                    leafletLayers.controls.layers.setPosition(defaults.controlLayersPosition);
-                    leafletLayers.controls.layers.addTo(map);
+                    $scope.leafletLayers = {};
+                    $scope.leafletLayers.baselayers = {};
+                    $scope.leafletLayers.controls = {};
+                    $scope.leafletLayers.controls.layers = new L.control.layers();
+                    $scope.leafletLayers.controls.layers.setPosition(defaults.controlLayersPosition);
+                    $scope.leafletLayers.controls.layers.addTo(map);
 
                     // Setup all baselayers definitions
                     var top = false;
                     for (var layerName in layers.baselayers) {
                         var newBaseLayer = createLayer(layers.baselayers[layerName]);
                         if (newBaseLayer !== null) {
-                            leafletLayers.baselayers[layerName] = newBaseLayer;
+                            $scope.leafletLayers.baselayers[layerName] = newBaseLayer;
                             // Only add the visible layer to the map, layer control manages the addition to the map
                             // of layers in its control
                             if (layers.baselayers[layerName].top === true) {
-                                map.addLayer(leafletLayers.baselayers[layerName]);
+                                map.addLayer($scope.leafletLayers.baselayers[layerName]);
                                 top = true;
                             }
-                            leafletLayers.controls.layers.addBaseLayer(leafletLayers.baselayers[layerName], layers.baselayers[layerName].name);
+                            $scope.leafletLayers.controls.layers.addBaseLayer($scope.leafletLayers.baselayers[layerName], layers.baselayers[layerName].name);
                         }
                     }
                     // If there is no visible layer add first to the map
-                    if (!top && Object.keys(leafletLayers.baselayers).length > 0) {
-                        map.addLayer(leafletLayers.baselayers[Object.keys(layers.baselayers)[0]]);
+                    if (!top && Object.keys($scope.leafletLayers.baselayers).length > 0) {
+                        map.addLayer($scope.leafletLayers.baselayers[Object.keys(layers.baselayers)[0]]);
                     }
                     // Setup the Overlays
-                    leafletLayers.overlays = {};
+                    $scope.leafletLayers.overlays = {};
                     for (layerName in layers.overlays) {
                         var newOverlayLayer = createLayer(layers.overlays[layerName]);
                         if (newOverlayLayer !== null) {
-                            leafletLayers.overlays[layerName] = newOverlayLayer;
+                            $scope.leafletLayers.overlays[layerName] = newOverlayLayer;
                             // Only add the visible layer to the map, layer control manages the addition to the map
                             // of layers in its control
                             if (layers.overlays[layerName].visible === true) {
-                                map.addLayer(leafletLayers.overlays[layerName]);
+                                map.addLayer($scope.leafletLayers.overlays[layerName]);
                             }
-                            leafletLayers.controls.layers.addOverlay(leafletLayers.overlays[layerName], layers.overlays[layerName].name);
+                            $scope.leafletLayers.controls.layers.addOverlay($scope.leafletLayers.overlays[layerName], layers.overlays[layerName].name);
                         }
                     }
 
                     // Watch for the base layers
                     $scope.$watch('layers.baselayers', function(newBaseLayers) {
                         // Delete layers from the array
-                        for (var name in leafletLayers.baselayers) {
+                        for (var name in $scope.leafletLayers.baselayers) {
                             if (newBaseLayers[name] === undefined) {
                                 // Remove the layer from the control
-                                leafletLayers.controls.layers.removeLayer(leafletLayers.baselayers[name]);
+                                $scope.leafletLayers.controls.layers.removeLayer($scope.leafletLayers.baselayers[name]);
                                 // Remove from the map if it's on it
-                                if (map.hasLayer(leafletLayers.baselayers[name])) {
-                                    map.removeLayer(leafletLayers.baselayers[name]);
+                                if (map.hasLayer($scope.leafletLayers.baselayers[name])) {
+                                    map.removeLayer($scope.leafletLayers.baselayers[name]);
                                 }
-                                delete leafletLayers.baselayers[name];
+                                delete $scope.leafletLayers.baselayers[name];
                             }
                         }
                         // add new layers
                         for (var new_name in newBaseLayers) {
-                            if (leafletLayers.baselayers[new_name] === undefined) {
+                            if ($scope.leafletLayers.baselayers[new_name] === undefined) {
                                 var testBaseLayer = createLayer(newBaseLayers[new_name]);
                                 if (testBaseLayer !== null) {
-                                    leafletLayers.baselayers[new_name] = testBaseLayer;
+                                    $scope.leafletLayers.baselayers[new_name] = testBaseLayer;
                                     // Only add the visible layer to the map, layer control manages the addition to the map
                                     // of layers in its control
                                     if (newBaseLayers[new_name].top === true) {
-                                        map.addLayer(leafletLayers.baselayers[new_name]);
+                                        map.addLayer($scope.leafletLayers.baselayers[new_name]);
                                     }
-                                    leafletLayers.controls.layers.addBaseLayer(leafletLayers.baselayers[new_name], newBaseLayers[new_name].name);
+                                    $scope.leafletLayers.controls.layers.addBaseLayer($scope.leafletLayers.baselayers[new_name], newBaseLayers[new_name].name);
                                 }
                             }
                         }
-                        if (Object.keys(leafletLayers.baselayers).length <= 0) {
+                        if (Object.keys($scope.leafletLayers.baselayers).length <= 0) {
                             // No baselayers property
                             $log.error('[AngularJS - Leaflet] At least one baselayer has to be defined');
                         } else {
                             //we have layers, so we need to make, at least, one active
                             var found = false;
                             // serach for an active layer
-                            for (var key in leafletLayers.baselayers) {
-                                if (map.hasLayer(leafletLayers.baselayers[key])) {
+                            for (var key in $scope.leafletLayers.baselayers) {
+                                if (map.hasLayer($scope.leafletLayers.baselayers[key])) {
                                     found = true;
                                     break;
                                 }
                             }
                             // If there is no active layer make one active
                             if (!found) {
-                                map.addLayer(leafletLayers.baselayers[Object.keys(layers.baselayers)[0]]);
+                                map.addLayer($scope.leafletLayers.baselayers[Object.keys(layers.baselayers)[0]]);
                             }
                         }
                     }, true);
@@ -680,27 +684,27 @@ angular.module("leaflet-directive").directive('layers', function ($log, leafletD
                     // Watch for the overlay layers
                     $scope.$watch('layers.overlays', function(newOverlayLayers) {
                         // Delete layers from the array
-                        for (var name in leafletLayers.overlays) {
+                        for (var name in $scope.leafletLayers.overlays) {
                             if (newOverlayLayers[name] === undefined) {
                                 // Remove the layer from the control
-                                leafletLayers.controls.layers.removeLayer(leafletLayers.overlays[name]);
+                                $scope.leafletLayers.controls.layers.removeLayer($scope.leafletLayers.overlays[name]);
                                 // Remove from the map if it's on it
-                                if (map.hasLayer(leafletLayers.overlays[name])) {
-                                    map.removeLayer(leafletLayers.overlays[name]);
+                                if (map.hasLayer($scope.leafletLayers.overlays[name])) {
+                                    map.removeLayer($scope.leafletLayers.overlays[name]);
                                 }
                                 // TODO: Depending on the layer type we will have to delete what's included on it
-                                delete leafletLayers.overlays[name];
+                                delete $scope.leafletLayers.overlays[name];
                             }
                         }
                         // add new layers
                         for (var new_name in newOverlayLayers) {
-                            if (leafletLayers.overlays[new_name] === undefined) {
+                            if ($scope.leafletLayers.overlays[new_name] === undefined) {
                                 var testOverlayLayer = createLayer(newOverlayLayers[new_name]);
                                 if (testOverlayLayer !== null) {
-                                    leafletLayers.overlays[new_name] = testOverlayLayer;
-                                    leafletLayers.controls.layers.addOverlay(leafletLayers.overlays[new_name], newOverlayLayers[new_name].name);
+                                    $scope.leafletLayers.overlays[new_name] = testOverlayLayer;
+                                    $scope.leafletLayers.controls.layers.addOverlay($scope.leafletLayers.overlays[new_name], newOverlayLayers[new_name].name);
                                     if (newOverlayLayers[new_name].visible === true) {
-                                        map.addLayer(leafletLayers.overlays[new_name]);
+                                        map.addLayer($scope.leafletLayers.overlays[new_name]);
                                     }
                                 }
                             }
@@ -1441,13 +1445,18 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
         scope: false,
         replace: false,
         transclude: false,
-        require: 'leaflet',
+        require: ['leaflet', '?layers'],
 
         link: function($scope, element, attrs, controller) {
             var defaults = parseMapDefaults($scope.defaults);
-            var map = controller.getMap();
+            var map = controller[0].getMap();
             var markers = $scope.markers;
-            var layers = $scope.layers;
+            var getLayers = function() {
+                return [];
+            };
+            if (isDefined(controller[1])) {
+                getLayers = controller[1].getLayers;
+            }
 
             // Default leaflet icon object used in all markers as a default
             var LeafletIcon = L.Icon.extend({
@@ -1464,20 +1473,13 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                 }
             });
 
-            setupMarkers(markers, layers, map);
+            setupMarkers(markers, map);
 
-            function setupMarkers(markers, layers, map) {
+            function setupMarkers(markers, map) {
                 var leafletMarkers = {};
 
                 if (!isDefined(markers)) {
                     return;
-                }
-
-                for (var name in markers) {
-                    var newMarker = createMarker('markers.'+name, markers[name], map);
-                    if (newMarker !== null) {
-                        leafletMarkers[name] = newMarker;
-                    }
                 }
 
                 $scope.$watch('markers', function(newMarkers) {
@@ -1488,8 +1490,9 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                             leafletMarkers[name].closePopup();
                             // There is no easy way to know if a marker is added to a layer, so we search for it
                             // if there are overlays
-                            if (layers !== undefined && layers !== null) {
-                                if (layers.overlays !== undefined) {
+                            var layers = getLayers();
+                            if (isDefinedAndNotNull(layers)) {
+                                if (isDefined(layers.overlays)) {
                                     for (var key in layers.overlays) {
                                         if (layers.overlays[key] instanceof L.LayerGroup) {
                                             if (layers.overlays[key].hasLayer(leafletMarkers[name])) {
@@ -1522,18 +1525,19 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                 var marker = buildMarker(marker_data);
 
                 // Marker belongs to a layer group?
-                if (marker_data.layer === undefined) {
+                if (!isDefined(marker_data.layer)) {
                     // We do not have a layer attr, so the marker goes to the map layer
                     map.addLayer(marker);
                     if (marker_data.focus === true) {
                         marker.openPopup();
                     }
-                } else if (typeof marker_data.layer === 'string') {
-                    if (layers !== null) {
+                } else if (isString(marker_data.layer)) {
+                    var layers = getLayers();
+                    if (isDefinedAndNotNull(layers)) {
                         // We have layers so continue testing
-                        if (layers.overlays !== null && layers.overlays !== undefined) {
+                        if (isDefinedAndNotNull(layers.overlays)) {
                             // There is a layer name so we will try to add it to the layer, first does the layer exists
-                            if (layers.overlays[marker_data.layer] !== undefined || layers.overlays[marker_data.layer] !== null) {
+                            if (isDefinedAndNotNull(layers.overlays[marker_data.layer])) {
                                 // Is a group layer?
                                 var layerGroup = layers.overlays[marker_data.layer];
                                 if (layerGroup instanceof L.LayerGroup) {
@@ -1724,8 +1728,8 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                         marker.closePopup();
                         // There is no easy way to know if a marker is added to a layer, so we search for it
                         // if there are overlays
-                        if (layers !== undefined && layers !== null) {
-                            if (layers.overlays !== undefined) {
+                        if (isDefinedAndNotNull(layers)) {
+                            if (isDefined(layers.overlays)) {
                                 for (var key in layers.overlays) {
                                     if (layers.overlays[key] instanceof L.LayerGroup) {
                                         if (layers.overlays[key].hasLayer(marker)) {

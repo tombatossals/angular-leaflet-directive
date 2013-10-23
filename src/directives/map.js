@@ -21,7 +21,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, lea
         template: '<div class="angular-leaflet-map" ng-transclude></div>',
         controller: function ($scope) {
             this.getMap = function () {
-                return $scope.map;
+                return $scope.leafletMap;
             };
         },
 
@@ -66,7 +66,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, lea
                 attributionControl: defaults.attributionControl
             });
 
-            $scope.map = map;
+            $scope.leafletMap = map;
             leafletData.setMap(map);
             if (!isDefined(attrs.center)) {
                  $log.warn("[AngularJS - Leaflet] 'center' is undefined in the current scope, did you forget to initialize it?");

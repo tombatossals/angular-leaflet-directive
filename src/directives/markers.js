@@ -4,13 +4,18 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
         scope: false,
         replace: false,
         transclude: false,
-        require: 'leaflet',
+        require: ['leaflet', '?layers'],
 
         link: function($scope, element, attrs, controller) {
             var defaults = parseMapDefaults($scope.defaults);
-            var map = controller.getMap();
+            var map = controller[0].getMap();
             var markers = $scope.markers;
-            var layers = $scope.layers;
+            var getLayers = function() {
+                return [];
+            };
+            if (isDefined(controller[1])) {
+                getLayers = controller[1].getLayers;
+            }
 
             // Default leaflet icon object used in all markers as a default
             var LeafletIcon = L.Icon.extend({
@@ -27,20 +32,13 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                 }
             });
 
-            setupMarkers(markers, layers, map);
+            setupMarkers(markers, map);
 
-            function setupMarkers(markers, layers, map) {
+            function setupMarkers(markers, map) {
                 var leafletMarkers = {};
 
                 if (!isDefined(markers)) {
                     return;
-                }
-
-                for (var name in markers) {
-                    var newMarker = createMarker('markers.'+name, markers[name], map);
-                    if (newMarker !== null) {
-                        leafletMarkers[name] = newMarker;
-                    }
                 }
 
                 $scope.$watch('markers', function(newMarkers) {
@@ -51,8 +49,9 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                             leafletMarkers[name].closePopup();
                             // There is no easy way to know if a marker is added to a layer, so we search for it
                             // if there are overlays
-                            if (layers !== undefined && layers !== null) {
-                                if (layers.overlays !== undefined) {
+                            var layers = getLayers();
+                            if (isDefinedAndNotNull(layers)) {
+                                if (isDefined(layers.overlays)) {
                                     for (var key in layers.overlays) {
                                         if (layers.overlays[key] instanceof L.LayerGroup) {
                                             if (layers.overlays[key].hasLayer(leafletMarkers[name])) {
@@ -85,18 +84,19 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                 var marker = buildMarker(marker_data);
 
                 // Marker belongs to a layer group?
-                if (marker_data.layer === undefined) {
+                if (!isDefined(marker_data.layer)) {
                     // We do not have a layer attr, so the marker goes to the map layer
                     map.addLayer(marker);
                     if (marker_data.focus === true) {
                         marker.openPopup();
                     }
-                } else if (typeof marker_data.layer === 'string') {
-                    if (layers !== null) {
+                } else if (isString(marker_data.layer)) {
+                    var layers = getLayers();
+                    if (isDefinedAndNotNull(layers)) {
                         // We have layers so continue testing
-                        if (layers.overlays !== null && layers.overlays !== undefined) {
+                        if (isDefinedAndNotNull(layers.overlays)) {
                             // There is a layer name so we will try to add it to the layer, first does the layer exists
-                            if (layers.overlays[marker_data.layer] !== undefined || layers.overlays[marker_data.layer] !== null) {
+                            if (isDefinedAndNotNull(layers.overlays[marker_data.layer])) {
                                 // Is a group layer?
                                 var layerGroup = layers.overlays[marker_data.layer];
                                 if (layerGroup instanceof L.LayerGroup) {
@@ -287,8 +287,8 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                         marker.closePopup();
                         // There is no easy way to know if a marker is added to a layer, so we search for it
                         // if there are overlays
-                        if (layers !== undefined && layers !== null) {
-                            if (layers.overlays !== undefined) {
+                        if (isDefinedAndNotNull(layers)) {
+                            if (isDefined(layers.overlays)) {
                                 for (var key in layers.overlays) {
                                     if (layers.overlays[key] instanceof L.LayerGroup) {
                                         if (layers.overlays[key].hasLayer(marker)) {
