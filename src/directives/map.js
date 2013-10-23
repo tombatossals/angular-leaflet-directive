@@ -78,6 +78,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, lea
                  var tileLayerOptions = defaults.tileLayerOptions;
                  var tileLayerObj = L.tileLayer(tileLayerUrl, tileLayerOptions);
                  tileLayerObj.addTo(map);
+                 leafletData.setTile(tileLayerObj);
             }
 
             setupControls(map, defaults);

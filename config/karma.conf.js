@@ -9,8 +9,9 @@ module.exports = function(karma) {
             'test/lib/angular/angular.js',
             'test/lib/angular/angular-mocks.js',
             'test/lib/markercluster/leaflet.markercluster.js',
-            'src/angular-leaflet-directive.old.js',
-            'test/unit/**/*.js'
+            'dist/angular-leaflet-directive.min.js',
+            'test/unit/mapDirectiveSpec.js',
+            'test/unit/defaultsDirectiveSpec.js'
         ],
 
         // Frameworks

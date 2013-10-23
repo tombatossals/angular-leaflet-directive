@@ -310,6 +310,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, lea
                  var tileLayerOptions = defaults.tileLayerOptions;
                  var tileLayerObj = L.tileLayer(tileLayerUrl, tileLayerOptions);
                  tileLayerObj.addTo(map);
+                 leafletData.setTile(tileLayerObj);
             }
 
             setupControls(map, defaults);
@@ -2263,12 +2264,6 @@ angular.module("leaflet-directive").directive('paths', function ($log) {
                     return;
                 }
 
-                $log.warn("[AngularJS - Leaflet] Creating polylines and adding them to the map will break the directive's scope's inspection in AngularJS Batarang");
-
-                for (var name in paths) {
-                    leafletPaths[name] = createPath(name, paths[name], map, defaults);
-                }
-
                 $scope.$watch("paths", function (newPaths) {
                     for (var new_name in newPaths) {
                         if (!isDefined(leafletPaths[new_name])) {
@@ -2286,7 +2281,6 @@ angular.module("leaflet-directive").directive('paths', function ($log) {
 
             function createPath(name, scopePath, map, defaults) {
                 var path;
-
                 var options = {
                     weight: defaults.path.weight,
                     color: defaults.path.color,
@@ -2310,12 +2304,12 @@ angular.module("leaflet-directive").directive('paths', function ($log) {
                 if(isDefined(scopePath.noClip)) {
                     options.noClip = scopePath.noClip;
                 }
-                if(isDefined(scopePath.type)) {
+                if(!isDefined(scopePath.type)) {
                     scopePath.type = "polyline";
                 }
 
-                function setPathOptions(data, oldData) {
-                    if (data.latlngs !== undefined && (oldData === undefined || data.latlngs !== oldData.latlngs)) {
+                function setPathOptions(data) {
+                    if (isDefined(data.latlngs)) {
                         switch(data.type) {
                             default:
                             case "polyline":
@@ -2332,22 +2326,22 @@ angular.module("leaflet-directive").directive('paths', function ($log) {
                             case "circle":
                             case "circleMarker":
                                 path.setLatLng(convertToLeafletLatLng(data.latlngs));
-                                if(data.radius !== undefined && (oldData === undefined || data.radius !== oldData.radius)) {
+                                if (isDefined(data.radius)) {
                                     path.setRadius(data.radius);
                                 }
                                 break;
                         }
                     }
 
-                    if (data.weight !== undefined && (oldData === undefined || data.weight !== oldData.weight)) {
+                    if (isDefined(data.weight)) {
                         path.setStyle({ weight: data.weight });
                     }
 
-                    if (data.color !== undefined && (oldData === undefined || data.color !== oldData.color)) {
+                    if (isDefined(data.color)) {
                         path.setStyle({ color: data.color });
                     }
 
-                    if (data.opacity !== undefined && (oldData === undefined || data.opacity !== oldData.opacity)) {
+                    if (isDefined(data.opacity)) {
                         path.setStyle({ opacity: data.opacity });
                     }
                 }
@@ -2376,17 +2370,15 @@ angular.module("leaflet-directive").directive('paths', function ($log) {
                         path = new L.CircleMarker([0,0], options);
                         break;
                 }
-
-                setPathOptions(scopePath);
                 map.addLayer(path);
 
                 var clearWatch = $scope.$watch('paths.' + name, function(data, oldData) {
-                    if (!data) {
+                    if (!isDefined(data)) {
                         map.removeLayer(path);
                         clearWatch();
                         return;
                     }
-                    setPathOptions(data,oldData);
+                    setPathOptions(data);
                 }, true);
 
                 return path;
