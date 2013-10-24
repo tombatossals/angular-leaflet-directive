@@ -1,4 +1,4 @@
-angular.module("leaflet-directive").directive('paths', function ($log) {
+angular.module("leaflet-directive").directive('paths', function ($log, leafletData) {
     return {
         restrict: "A",
         scope: false,
@@ -15,6 +15,7 @@ angular.module("leaflet-directive").directive('paths', function ($log) {
 
             function setupPaths(paths, map, defaults) {
                 var leafletPaths = {};
+                leafletData.setPaths(leafletPaths);
 
                 if (!isDefined(paths)) {
                     return;

@@ -2,6 +2,7 @@ angular.module("leaflet-directive").service('leafletData', function ($log) {
     var map;
     var tile;
     var layers;
+    var paths;
     var mainMarker;
     var markers;
 
@@ -13,12 +14,28 @@ angular.module("leaflet-directive").service('leafletData', function ($log) {
         return map;
     };
 
+    this.getPaths = function() {
+        return paths;
+    };
+
+    this.setPaths = function(leafletPaths) {
+        paths = leafletPaths;
+    };
+
+    this.getMarkers = function() {
+        return markers;
+    };
+
+    this.setMarkers = function(leafletMarkers) {
+        markers = leafletMarkers;
+    };
+
     this.getLayers = function() {
         return layers;
     };
 
     this.setLayers = function(leafletLayers) {
-        layers = layers;
+        layers = leafletLayers;
     };
 
     this.setTile = function(leafletTile) {

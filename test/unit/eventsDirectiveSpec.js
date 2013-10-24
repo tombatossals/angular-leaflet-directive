@@ -18,7 +18,7 @@ describe('Directive: leaflet', function() {
         var element = angular.element('<leaflet events="events"></leaflet>');
         element = $compile(element)($rootScope);
         var scope = element.scope();
-        var map = scope.leaflet.map;
+        var map = leafletData.getMap();
 
         var check = {};
         var mapEvents = [

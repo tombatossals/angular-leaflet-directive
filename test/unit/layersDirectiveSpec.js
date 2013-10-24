@@ -41,7 +41,7 @@ describe('Directive: leaflet', function() {
         expect(layers).toBe(undefined);
     });
 
-    it('should not create layers nor baselayers if they are miss-configured', function() {
+    it('should create layers if baselayers is defined with data', function() {
         angular.extend($rootScope, {
             layers: {
                 baselayers: {
@@ -52,13 +52,13 @@ describe('Directive: leaflet', function() {
         });
         var element = angular.element('<leaflet layers="layers"></leaflet>');
         element = $compile(element)($rootScope);
+        $rootScope.$digest();
         var layers = leafletData.getLayers();
-        expect(layers).toBe(undefined);
+        expect(layers).not.toBe(undefined);
+        expect(layers.baselayers).toEqual({});
     });
 
     it('should create one layer if correctly configured', function() {
-        var element = angular.element('<leaflet layers="layers"></leaflet>');
-        element = $compile(element)($rootScope);
         angular.extend($rootScope, {
             layers: {
                 baselayers: {
@@ -77,15 +77,15 @@ describe('Directive: leaflet', function() {
                 overlays: {}
             }
         });
+        var element = angular.element('<leaflet layers="layers"></leaflet>');
+        element = $compile(element)($rootScope);
         $rootScope.$digest();
         var layers = leafletData.getLayers();
-        console.log(layers);
-        expect(Object.keys(layers.baselayers).length).toEqual(1);
+        var map = leafletData.getMap();
+        expect(map.hasLayer(layers.baselayers.osm)).toBe(true);
     });
 
-    it('should create one layer if correctly configured', function() {
-        var map = element.scope().leaflet.map;
-        expect(map.hasLayer(layers.baselayers.osm)).toBe(true);
+    it('should create two layers if correctly configured', function() {
         angular.extend($rootScope, {
             layers: {
                 baselayers: {
@@ -114,13 +114,16 @@ describe('Directive: leaflet', function() {
                 overlays: {}
             }
         });
-        element = angular.element('<leaflet layers="layers"></leaflet>');
+        var element = angular.element('<leaflet layers="layers"></leaflet>');
         element = $compile(element)($rootScope);
-        layers = element.scope().leaflet.layers;
+        var layers = leafletData.getLayers();
         expect(Object.keys(layers.baselayers).length).toEqual(2);
-        map = element.scope().leaflet.map;
+        var map = leafletData.getMap();
         expect(map.hasLayer(layers.baselayers.cycle)).toBe(true);
         expect(map.hasLayer(layers.baselayers.osm)).toBe(false);
+    });
+
+    it('should create two different type layers if correctly configured', function() {
         angular.extend($rootScope, {
             layers: {
                 baselayers: {
@@ -147,11 +150,13 @@ describe('Directive: leaflet', function() {
                 overlays: {}
             }
         });
-        element = angular.element('<leaflet layers="layers"></leaflet>');
+        var element = angular.element('<leaflet layers="layers"></leaflet>');
         element = $compile(element)($rootScope);
-        layers = element.scope().leaflet.layers;
+        var layers = leafletData.getLayers();
         expect(Object.keys(layers.baselayers).length).toEqual(2);
-        // create malformed layers
+    });
+
+    it('should refuse to create malformed layers', function() {
         angular.extend($rootScope, {
             layers: {
                 baselayers: {
@@ -227,9 +232,9 @@ describe('Directive: leaflet', function() {
                 overlays: {}
             }
         });
-        element = angular.element('<leaflet layers="layers"></leaflet>');
+        var element = angular.element('<leaflet layers="layers"></leaflet>');
         element = $compile(element)($rootScope);
-        layers = element.scope().leaflet.layers;
+        var layers = leafletData.getLayers();
         expect(Object.keys(layers.baselayers).length).toEqual(0);
     });
 
@@ -263,12 +268,12 @@ describe('Directive: leaflet', function() {
             }
         });
         var element = angular.element('<leaflet layers="layers"></leaflet>');
-        var elementTest = $compile(element)($rootScope);
-        var layers = elementTest.scope().leaflet.layers;
+        element = $compile(element)($rootScope);
+        var layers = leafletData.getLayers();
         expect(Object.keys(layers.baselayers).length).toEqual(2);
         delete $rootScope.layers.baselayers.cycle;
         $rootScope.$digest();
-        layers = elementTest.scope().leaflet.layers;
+        layers = leafletData.getLayers();
         expect(Object.keys(layers.baselayers).length).toEqual(1);
         expect(typeof layers.baselayers.osm).toBe('object');
         expect(layers.baselayers.cycle).toBe(undefined);
@@ -286,14 +291,14 @@ describe('Directive: leaflet', function() {
             }
         };
         $rootScope.$digest();
-        layers = elementTest.scope().leaflet.layers;
+        layers = leafletData.getLayers();
         expect(Object.keys(layers.baselayers).length).toEqual(2);
         expect(typeof layers.baselayers.osm).toBe('object');
         expect(typeof layers.baselayers.cloudmade1).toBe('object');
         delete $rootScope.layers.baselayers.osm;
         delete $rootScope.layers.baselayers.cloudmade1;
         $rootScope.$digest();
-        layers = elementTest.scope().leaflet.layers;
+        layers = leafletData.getLayers();
         expect(Object.keys(layers.baselayers).length).toEqual(0);
     });
 
@@ -318,11 +323,14 @@ describe('Directive: leaflet', function() {
         });
         var element = angular.element('<leaflet layers="layers"></leaflet>');
         element = $compile(element)($rootScope);
-        var layers = element.scope().leaflet.layers;
+        var layers = leafletData.getLayers();
         expect(layers.overlays).not.toBe(null);
         expect(typeof layers.overlays).toBe('object');
         expect(Object.keys(layers.overlays).length).toEqual(0);
-        // Also when creating an empty overlay
+    });
+
+    // Also when creating an empty overlay
+    it('should create and empty overlay', function() {
         angular.extend($rootScope, {
             layers: {
                 baselayers: {
@@ -340,13 +348,15 @@ describe('Directive: leaflet', function() {
                 overlays: {}
             }
         });
-        element = angular.element('<leaflet layers="layers"></leaflet>');
+        var element = angular.element('<leaflet layers="layers"></leaflet>');
         element = $compile(element)($rootScope);
-        layers = element.scope().leaflet.layers;
+        var layers = leafletData.getLayers();
         expect(layers.overlays).not.toBe(null);
         expect(typeof layers.overlays).toBe('object');
         expect(Object.keys(layers.overlays).length).toEqual(0);
-        // Create one correct overlay and one incorrect
+    });
+
+    it('should create one correct and one incorrect overlay', function() {
         angular.extend($rootScope, {
             layers: {
                 baselayers: {
@@ -387,16 +397,19 @@ describe('Directive: leaflet', function() {
                 }
             }
         });
-        element = angular.element('<leaflet layers="layers"></leaflet>');
+        var element = angular.element('<leaflet layers="layers"></leaflet>');
         element = $compile(element)($rootScope);
-        layers = element.scope().leaflet.layers;
+        var layers = leafletData.getLayers();
+
         expect(layers.overlays).not.toBe(null);
         expect(typeof layers.overlays).toBe('object');
         expect(Object.keys(layers.overlays).length).toEqual(1);
         // As the visible is true it should be on the map
-        var map = element.scope().leaflet.map;
+        var map = leafletData.getMap();
         expect(map.hasLayer(layers.overlays.hillshade)).toBe(true);
-        // Create correct overlays
+    });
+
+    it('should create correct overlays', function() {
         angular.extend($rootScope, {
             layers: {
                 baselayers: {
@@ -437,15 +450,18 @@ describe('Directive: leaflet', function() {
                 }
             }
         });
-        element = angular.element('<leaflet layers="layers"></leaflet>');
+        var element = angular.element('<leaflet layers="layers"></leaflet>');
         element = $compile(element)($rootScope);
-        layers = element.scope().leaflet.layers;
+        var layers = leafletData.getLayers();
         expect(layers.overlays).not.toBe(null);
         expect(typeof layers.overlays).toBe('object');
         expect(Object.keys(layers.overlays).length).toEqual(2);
         // As the visible is true it should be on the map
-        map = element.scope().leaflet.map;
+        var map = leafletData.getMap();
         expect(map.hasLayer(layers.overlays.hillshade)).toBe(true);
+    });
+
+    it('should check for layer group', function() {
         // Check for layer group
         angular.extend($rootScope, {
             layers: {
@@ -470,17 +486,19 @@ describe('Directive: leaflet', function() {
                 }
             }
         });
-        element = angular.element('<leaflet layers="layers"></leaflet>');
+        var element = angular.element('<leaflet layers="layers"></leaflet>');
         element = $compile(element)($rootScope);
-        layers = element.scope().leaflet.layers;
+        var layers = leafletData.getLayers();
         expect(layers.overlays).not.toBe(null);
         expect(typeof layers.overlays).toBe('object');
         expect(Object.keys(layers.overlays).length).toEqual(1);
         expect(layers.overlays.cars instanceof L.LayerGroup).toBe(true);
         // As the visible is false it should not be on the map
-        map = element.scope().leaflet.map;
+        var map = leafletData.getMap();
         expect(map.hasLayer(layers.overlays.hillshade)).toBe(false);
-        // Check for a marker in the layer group that is not visible
+    });
+
+    it('should check for a marker in the layer group that is not visible', function() {
         angular.extend($rootScope, {
             layers: {
                 baselayers: {
@@ -511,16 +529,20 @@ describe('Directive: leaflet', function() {
                 }
             }
         });
-        element = angular.element('<leaflet layers="layers" markers="markers"></leaflet>');
+        var element = angular.element('<leaflet layers="layers" markers="markers"></leaflet>');
         element = $compile(element)($rootScope);
-        layers = element.scope().leaflet.layers;
-        var markers = element.scope().leaflet.markers;
-        map = element.scope().leaflet.map;
+        var layers = leafletData.getLayers();
+        var markers = leafletData.getMarkers();
+        var map = leafletData.getMap();
+        $rootScope.$digest();
+
         expect(Object.keys(markers).length).toEqual(1);
         expect(markers.m1 instanceof L.Marker).toBe(true);
         expect(layers.overlays.cars.hasLayer(markers.m1)).toBe(true);
         expect(map.hasLayer(markers.m1)).toBe(false);
-        // Check for a marker in the layer group that is visible
+    });
+
+    it('should check for a marker in the layer group that is visible', function() {
         angular.extend($rootScope, {
             layers: {
                 baselayers: {
@@ -551,16 +573,20 @@ describe('Directive: leaflet', function() {
                 }
             }
         });
-        element = angular.element('<leaflet layers="layers" markers="markers"></leaflet>');
+        var element = angular.element('<leaflet layers="layers" markers="markers"></leaflet>');
         element = $compile(element)($rootScope);
-        layers = element.scope().leaflet.layers;
-        markers = element.scope().leaflet.markers;
-        map = element.scope().leaflet.map;
+        var layers = leafletData.getLayers();
+        var markers = leafletData.getMarkers();
+        var map = leafletData.getMap();
+
+        $rootScope.$digest();
         expect(Object.keys(markers).length).toEqual(1);
         expect(markers.m1 instanceof L.Marker).toBe(true);
         expect(layers.overlays.cars.hasLayer(markers.m1)).toBe(true);
         expect(map.hasLayer(markers.m1)).toBe(true);
-        // Check for a marker in a wrong layer group
+    });
+
+    it('should check for a marker in a wrong layer group', function() {
         angular.extend($rootScope, {
             layers: {
                 baselayers: {
@@ -591,11 +617,14 @@ describe('Directive: leaflet', function() {
                 }
             }
         });
-        element = angular.element('<leaflet layers="layers" markers="markers"></leaflet>');
+        var element = angular.element('<leaflet layers="layers" markers="markers"></leaflet>');
         element = $compile(element)($rootScope);
-        markers = element.scope().leaflet.markers;
+        var markers = leafletData.getMarkers();
+
         expect(Object.keys(markers).length).toEqual(0);
-        // Check for a marker the old way
+    });
+
+    it('should check for a marker the old way', function() {
         angular.extend($rootScope, {
             layers: {
                 baselayers: {
@@ -625,11 +654,12 @@ describe('Directive: leaflet', function() {
                 }
             }
         });
-        element = angular.element('<leaflet layers="layers" markers="markers"></leaflet>');
+        var element = angular.element('<leaflet layers="layers" markers="markers"></leaflet>');
         element = $compile(element)($rootScope);
-        markers = element.scope().leaflet.markers;
+        var markers = leafletData.getMarkers();
+        $rootScope.$digest();
         expect(Object.keys(markers).length).toEqual(1);
-        map = element.scope().leaflet.map;
+        var map = leafletData.getMap();
         expect(map.hasLayer(markers.m1)).toBe(true);
     });
 
@@ -676,15 +706,16 @@ describe('Directive: leaflet', function() {
             }
         });
         var element = angular.element('<leaflet layers="layers"></leaflet>');
-        var elementTest = $compile(element)($rootScope);
-        var layers = elementTest.scope().leaflet.layers;
+        element = $compile(element)($rootScope);
+        var layers = leafletData.getLayers();
         expect(Object.keys(layers.overlays).length).toEqual(2);
         delete $rootScope.layers.overlays.fire;
         $rootScope.$digest();
-        layers = elementTest.scope().leaflet.layers;
+        layers = leafletData.getLayers();
         expect(Object.keys(layers.overlays).length).toEqual(1);
         expect(typeof layers.overlays.hillshade).toBe('object');
         expect(layers.overlays.fire).toBe(undefined);
+
         // Added a bad layer
         $rootScope.layers.overlays.fire = {
             name: 'OpenFireMap',
@@ -696,10 +727,11 @@ describe('Directive: leaflet', function() {
             }
         };
         $rootScope.$digest();
-        layers = elementTest.scope().leaflet.layers;
+        layers = leafletData.getLayers();
         expect(Object.keys(layers.overlays).length).toEqual(1);
         expect(typeof layers.overlays.hillshade).toBe('object');
         expect(layers.overlays.fire).toBe(undefined);
+
         // Added a good layer
         $rootScope.layers.overlays.fire = {
             name: 'OpenFireMap',
@@ -711,7 +743,7 @@ describe('Directive: leaflet', function() {
             }
         };
         $rootScope.$digest();
-        layers = elementTest.scope().leaflet.layers;
+        layers = leafletData.getLayers();
         expect(Object.keys(layers.overlays).length).toEqual(2);
         expect(typeof layers.overlays.hillshade).toBe('object');
         expect(typeof layers.overlays.fire).toBe('object');
@@ -755,20 +787,23 @@ describe('Directive: leaflet', function() {
             }
         });
         var element = angular.element('<leaflet layers="layers" markers="markers"></leaflet>');
-        var elementTest = $compile(element)($rootScope);
-        var layers = elementTest.scope().leaflet.layers;
-        var map = elementTest.scope().leaflet.map;
-        var markers = elementTest.scope().leaflet.markers;
+        element = $compile(element)($rootScope);
+        var layers = leafletData.getLayers();
+        var map = leafletData.getMap();
+        var markers = leafletData.getMarkers();
+        $rootScope.$digest();
         expect(map.hasLayer(markers.m1)).toBe(true);
         expect(layers.overlays.cars.hasLayer(markers.m1)).toBe(true);
+
         // remove marker information
         $rootScope.markers.m1 = {};
         $rootScope.$digest();
-        layers = elementTest.scope().leaflet.layers;
-        map = elementTest.scope().leaflet.map;
-        markers = elementTest.scope().leaflet.markers;
+        layers = leafletData.getLayers();
+        map = leafletData.getMap();
+        markers = leafletData.getMarkers();
         expect(map.hasLayer(markers.m1)).toBe(false);
         expect(layers.overlays.cars.hasLayer(markers.m1)).toBe(false);
+
         // null the marker information
         $rootScope.markers.m1 = {
                 lat: 1.2,
@@ -776,24 +811,24 @@ describe('Directive: leaflet', function() {
                 layer: 'cars'
         };
         $rootScope.$digest();
-        layers = elementTest.scope().leaflet.layers;
-        map = elementTest.scope().leaflet.map;
-        markers = elementTest.scope().leaflet.markers;
+        layers = leafletData.getLayers();
+        map = leafletData.getMap();
+        markers = leafletData.getMarkers();
         expect(map.hasLayer(markers.m1)).toBe(true);
         expect(layers.overlays.cars.hasLayer(markers.m1)).toBe(true);
         $rootScope.markers.m1 = null;
         $rootScope.$digest();
-        layers = elementTest.scope().leaflet.layers;
-        map = elementTest.scope().leaflet.map;
-        markers = elementTest.scope().leaflet.markers;
+        layers = leafletData.getLayers();
+        map = leafletData.getMap();
+        markers = leafletData.getMarkers();
         expect(map.hasLayer(markers.m1)).toBe(false);
         expect(layers.overlays.cars.hasLayer(markers.m1)).toBe(false);
         // delete the marker
         delete $rootScope.markers.m1;
         $rootScope.$digest();
-        layers = elementTest.scope().leaflet.layers;
-        map = elementTest.scope().leaflet.map;
-        markers = elementTest.scope().leaflet.markers;
+        layers = leafletData.getLayers();
+        map = leafletData.getMap();
+        markers = leafletData.getMarkers();
         expect(map.hasLayer(markers.m1)).toBe(false);
         expect(layers.overlays.cars.hasLayer(markers.m1)).toBe(false);
         // delete the marker layer
@@ -808,9 +843,9 @@ describe('Directive: leaflet', function() {
                 lng: 0.3
         };
         $rootScope.$digest();
-        layers = elementTest.scope().leaflet.layers;
-        map = elementTest.scope().leaflet.map;
-        markers = elementTest.scope().leaflet.markers;
+        layers = leafletData.getLayers();
+        map = leafletData.getMap();
+        markers = leafletData.getMarkers();
         expect(map.hasLayer(markers.m1)).toBe(true);
         expect(layers.overlays.cars.hasLayer(markers.m1)).toBe(false);
         expect(layers.overlays.trucks.hasLayer(markers.m1)).toBe(false);
@@ -821,9 +856,9 @@ describe('Directive: leaflet', function() {
                 layer: 'trucks'
         };
         $rootScope.$digest();
-        layers = elementTest.scope().leaflet.layers;
-        map = elementTest.scope().leaflet.map;
-        markers = elementTest.scope().leaflet.markers;
+        layers = leafletData.getLayers();
+        map = leafletData.getMap();
+        markers = leafletData.getMarkers();
         expect(map.hasLayer(markers.m1)).toBe(false);
         expect(layers.overlays.cars.hasLayer(markers.m1)).toBe(false);
         expect(layers.overlays.trucks.hasLayer(markers.m1)).toBe(true);
@@ -864,11 +899,11 @@ describe('Directive: leaflet', function() {
             }
         });
         element = angular.element('<leaflet layers="layers" markers="markers"></leaflet>');
-        elementTest = $compile(element)($rootScope);
+        element = $compile(element)($rootScope);
         $rootScope.$digest();
-        layers = elementTest.scope().leaflet.layers;
-        map = elementTest.scope().leaflet.map;
-        markers = elementTest.scope().leaflet.markers;
+        layers = leafletData.getLayers();
+        map = leafletData.getMap();
+        markers = leafletData.getMarkers();
         expect(map.hasLayer(markers.m1)).toBe(true);
         expect(layers.overlays.cars.hasLayer(markers.m1)).toBe(true);
         expect(layers.overlays.trucks.hasLayer(markers.m1)).toBe(false);
@@ -879,9 +914,9 @@ describe('Directive: leaflet', function() {
             layer: 'trucks'
         };
         $rootScope.$digest();
-        layers = elementTest.scope().leaflet.layers;
-        map = elementTest.scope().leaflet.map;
-        markers = elementTest.scope().leaflet.markers;
+        layers = leafletData.getLayers();
+        map = leafletData.getMap();
+        markers = leafletData.getMarkers();
         expect(map.hasLayer(markers.m1)).toBe(false);
         expect(layers.overlays.cars.hasLayer(markers.m1)).toBe(false);
         expect(layers.overlays.trucks.hasLayer(markers.m1)).toBe(true);
@@ -893,8 +928,8 @@ describe('Directive: leaflet', function() {
         var element = angular.element('<leaflet></leaflet>');
         element = $compile(element)($rootScope);
         $rootScope.$digest();
-        var layers = element.scope().leaflet.layers;
-        expect(layers).toBe(null);
+        var layers = leafletData.getLayers();
+        expect(layers).toBe(undefined);
         // Provide a markercluster layer
         angular.extend($rootScope, {
             layers: {
@@ -920,8 +955,8 @@ describe('Directive: leaflet', function() {
         element = angular.element('<leaflet layers="layers"></leaflet>');
         element = $compile(element)($rootScope);
         $rootScope.$digest();
-        layers = element.scope().leaflet.layers;
-        var map = element.scope().leaflet.map;
+        layers = leafletData.getLayers();
+        var map = leafletData.getMap();
         // The layer is correctly created
         expect(layers.overlays.cars instanceof L.MarkerClusterGroup).toBe(true);
         // It is not on the map as it is not visible
@@ -952,8 +987,8 @@ describe('Directive: leaflet', function() {
         element = angular.element('<leaflet layers="layers"></leaflet>');
         element = $compile(element)($rootScope);
         $rootScope.$digest();
-        layers = element.scope().leaflet.layers;
-        map = element.scope().leaflet.map;
+        layers = leafletData.getLayers();
+        map = leafletData.getMap();
         // The layer is correctly created
         expect(layers.overlays.cars instanceof L.MarkerClusterGroup).toBe(true);
         // It is not on the map as it is not visible
@@ -987,8 +1022,8 @@ describe('Directive: leaflet', function() {
         element = angular.element('<leaflet layers="layers"></leaflet>');
         element = $compile(element)($rootScope);
         $rootScope.$digest();
-        layers = element.scope().leaflet.layers;
-        map = element.scope().leaflet.map;
+        layers = leafletData.getLayers();
+        map = leafletData.getMap();
         // The layer is correctly created
         expect(layers.overlays.cars instanceof L.MarkerClusterGroup).toBe(true);
         // It is not on the map as it is not visible
@@ -1028,8 +1063,9 @@ describe('Directive: leaflet', function() {
         element = angular.element('<leaflet layers="layers"></leaflet>');
         element = $compile(element)($rootScope);
         $rootScope.$digest();
-        layers = element.scope().leaflet.layers;
-        map = element.scope().leaflet.map;
+        layers = leafletData.getLayers();
+        map = leafletData.getMap();
+
         // The layer is correctly created
         expect(layers.overlays.cars instanceof L.MarkerClusterGroup).toBe(true);
         // It is not on the map as it is not visible
@@ -1082,8 +1118,8 @@ describe('Directive: leaflet', function() {
         element = angular.element('<leaflet layers="layers" markers="markers"></leaflet>');
         element = $compile(element)($rootScope);
         $rootScope.$digest();
-        layers = element.scope().leaflet.layers;
-        map = element.scope().leaflet.map;
+        layers = leafletData.getLayers();
+        map = leafletData.getMap();
         // The layer is correctly created
         expect(layers.overlays.cars instanceof L.MarkerClusterGroup).toBe(true);
         // It is not on the map as it is not visible
@@ -1095,7 +1131,7 @@ describe('Directive: leaflet', function() {
         expect(layers.overlays.cars.options.removeOutsideVisibleBounds).toBe(true);
         expect(layers.overlays.cars.options.disableClusteringAtZoom).toEqual(18);
         // The layer has the two markers
-        var markers = element.scope().leaflet.markers;
+        var markers = leafletData.getMarkers();
         expect(layers.overlays.cars.hasLayer(markers.m1)).toBe(true);
         expect(layers.overlays.cars.hasLayer(markers.m2)).toBe(true);
     });

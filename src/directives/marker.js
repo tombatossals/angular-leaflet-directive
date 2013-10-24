@@ -4,13 +4,18 @@ angular.module("leaflet-directive").directive('marker', function ($log, $rootSco
         scope: false,
         replace: false,
         transclude: false,
-        require: 'leaflet',
+        require: ['leaflet', '?layers'],
 
         link: function($scope, element, attrs, controller) {
             var defaults = parseMapDefaults($scope.defaults);
-            var map = controller.getMap();
+            var map = controller[0].getMap();
             var marker = $scope.marker;
-            var layers = $scope.layers;
+            var getLayers = function() {
+                return [];
+            };
+            if (isDefined(controller[1])) {
+                getLayers = controller[1].getLayers;
+            }
 
             // Default leaflet icon object used in all markers as a default
             var LeafletIcon = L.Icon.extend({
@@ -27,13 +32,13 @@ angular.module("leaflet-directive").directive('marker', function ($log, $rootSco
                 }
             });
 
-            setupMainMarker(map, marker, layers);
+            setupMainMarker(map, marker);
 
-            function setupMainMarker(map, marker, layers) {
+            function setupMainMarker(map, marker) {
                 if (!isDefined(marker)) {
                     return;
                 }
-                var main_marker = createMarker('marker', marker, layers, map);
+                var main_marker = createMarker('marker', marker, map);
                 leafletData.setMainMarker(main_marker);
                 main_marker.on('click', function(e) {
                     safeApply($scope, function() {
@@ -42,22 +47,23 @@ angular.module("leaflet-directive").directive('marker', function ($log, $rootSco
                 });
             }
 
-            function createMarker(scope_watch_name, marker_data, layers, map) {
+            function createMarker(scope_watch_name, marker_data, map) {
                 var marker = buildMarker(marker_data);
 
                 // Marker belongs to a layer group?
-                if (marker_data.layer === undefined) {
+                if (!isDefined(marker_data.layer)) {
                     // We do not have a layer attr, so the marker goes to the map layer
                     map.addLayer(marker);
                     if (marker_data.focus === true) {
                         marker.openPopup();
                     }
                 } else if (isString(marker_data.layer)) {
-                    if (layers !== null) {
+                    var layers = getLayers();
+                    if (isDefinedAndNotNull(layers)) {
                         // We have layers so continue testing
-                        if (layers.overlays !== null && layers.overlays !== undefined) {
+                        if (isDefinedAndNotNull(layers.overlays)) {
                             // There is a layer name so we will try to add it to the layer, first does the layer exists
-                            if (layers.overlays[marker_data.layer] !== undefined || layers.overlays[marker_data.layer] !== null) {
+                            if (isDefinedAndNotNull(layers.overlays[marker_data.layer])) {
                                 // Is a group layer?
                                 var layerGroup = layers.overlays[marker_data.layer];
                                 if (layerGroup instanceof L.LayerGroup) {
@@ -244,12 +250,12 @@ angular.module("leaflet-directive").directive('marker', function ($log, $rootSco
                 }
 
                 var clearWatch = $scope.$watch(scope_watch_name, function(data, old_data) {
-                    if (!data) {
+                    if (!isDefined(data)) {
                         marker.closePopup();
                         // There is no easy way to know if a marker is added to a layer, so we search for it
                         // if there are overlays
-                        if (layers !== undefined && layers !== null) {
-                            if (layers.overlays !== undefined) {
+                        if (isDefinedAndNotNull(layers)) {
+                            if (isDefined(layers.overlays)) {
                                 for (var key in layers.overlays) {
                                     if (layers.overlays[key] instanceof L.LayerGroup) {
                                         if (layers.overlays[key].hasLayer(marker)) {
@@ -574,6 +580,188 @@ angular.module("leaflet-directive").directive('marker', function ($log, $rootSco
                     marker.bindPopup(data.message);
                 }
                 return marker;
+            }
+
+            function setupPaths() {
+                var paths = {};
+                $scope.leaflet.paths = !!attrs.testing ? paths : str_inspect_hint;
+
+                if (!$scope.paths) {
+                    return;
+                }
+
+                $log.warn("[AngularJS - Leaflet] Creating polylines and adding them to the map will break the directive's scope's inspection in AngularJS Batarang");
+
+                for (var name in $scope.paths) {
+                    paths[name] = createPath(name, $scope.paths[name], map);
+                }
+
+                $scope.$watch("paths", function (newPaths) {
+                    for (var new_name in newPaths) {
+                        if (paths[new_name] === undefined) {
+                            paths[new_name] = createPath(new_name, newPaths[new_name], map);
+                        }
+                    }
+                    // Delete paths from the array
+                    for (var name in paths) {
+                        if (newPaths[name] === undefined) {
+                            delete paths[name];
+                        }
+                    }
+
+                }, true);
+            }
+
+            function createPath(name, scopePath, map) {
+                var path;
+
+                var options = {
+                    weight: defaults.path.weight,
+                    color: defaults.path.color,
+                    opacity: defaults.path.opacity
+                };
+                if(scopePath.stroke !== undefined) {
+                    options.stroke = scopePath.stroke;
+                }
+                if(scopePath.fill !== undefined) {
+                    options.fill = scopePath.fill;
+                }
+                if(scopePath.fillColor !== undefined) {
+                    options.fillColor = scopePath.fillColor;
+                }
+                if(scopePath.fillOpacity !== undefined) {
+                    options.fillOpacity = scopePath.fillOpacity;
+                }
+                if(scopePath.smoothFactor !== undefined) {
+                    options.smoothFactor = scopePath.smoothFactor;
+                }
+                if(scopePath.noClip !== undefined) {
+                    options.noClip = scopePath.noClip;
+                }
+
+                if(scopePath.type === undefined) {
+                    scopePath.type = "polyline";
+                }
+
+                function setPathOptions(data, oldData) {
+                    if (data.latlngs !== undefined && (oldData === undefined || data.latlngs !== oldData.latlngs)) {
+                        switch(data.type) {
+                            default:
+                            case "polyline":
+                            case "polygon":
+                                path.setLatLngs(convertToLeafletLatLngs(data.latlngs));
+                                break;
+                            case "multiPolyline":
+                            case "multiPolygon":
+                                path.setLatLngs(convertToLeafletMultiLatLngs(data.latlngs));
+                                break;
+                            case "rectangle":
+                                path.setBounds(new L.LatLngBounds(convertToLeafletLatLngs(data.latlngs)));
+                                break;
+                            case "circle":
+                            case "circleMarker":
+                                path.setLatLng(convertToLeafletLatLng(data.latlngs));
+                                if(data.radius !== undefined && (oldData === undefined || data.radius !== oldData.radius)) {
+                                    path.setRadius(data.radius);
+                                }
+                                break;
+                        }
+                    }
+
+                    if (data.weight !== undefined && (oldData === undefined || data.weight !== oldData.weight)) {
+                        path.setStyle({ weight: data.weight });
+                    }
+
+                    if (data.color !== undefined && (oldData === undefined || data.color !== oldData.color)) {
+                        path.setStyle({ color: data.color });
+                    }
+
+                    if (data.opacity !== undefined && (oldData === undefined || data.opacity !== oldData.opacity)) {
+                        path.setStyle({ opacity: data.opacity });
+                    }
+                }
+
+                switch(scopePath.type) {
+                    default:
+                    case "polyline":
+                        path = new L.Polyline([], options);
+                        break;
+                    case "multiPolyline":
+                        path = new L.multiPolyline([[[0,0],[1,1]]], options);
+                        break;
+                    case "polygon":
+                        path = new L.Polygon([], options);
+                        break;
+                    case "multiPolygon":
+                        path = new L.MultiPolygon([[[0,0],[1,1],[0,1]]], options);
+                        break;
+                    case "rectangle":
+                        path = new L.Rectangle([[0,0],[1,1]], options);
+                        break;
+                    case "circle":
+                        path = new L.Circle([0,0], 1, options);
+                        break;
+                    case "circleMarker":
+                        path = new L.CircleMarker([0,0], options);
+                        break;
+                }
+
+                setPathOptions(scopePath);
+                map.addLayer(path);
+
+                var clearWatch = $scope.$watch('paths.' + name, function(data, oldData) {
+                    if (!data) {
+                        map.removeLayer(path);
+                        clearWatch();
+                        return;
+                    }
+                    setPathOptions(data,oldData);
+                }, true);
+
+                return path;
+            }
+
+            function convertToLeafletLatLng(latlng) {
+                return new L.LatLng(latlng.lat, latlng.lng);
+            }
+
+            function convertToLeafletLatLngs(latlngs) {
+                return latlngs.filter(function(latlng) {
+                    return !!latlng.lat && !!latlng.lng;
+                }).map(function (latlng) {
+                    return new L.LatLng(latlng.lat, latlng.lng);
+                });
+            }
+
+            function convertToLeafletMultiLatLngs(paths) {
+                return paths.map(function(latlngs) {
+                    return convertToLeafletLatLngs(latlngs);
+                });
+            }
+
+            function setupControls() {
+                //@TODO add document for this option  11.08 2013 (houqp)
+                if (map.zoomControl && $scope.defaults && $scope.defaults.zoomControlPosition) {
+                    map.zoomControl.setPosition($scope.defaults.zoomControlPosition);
+                }
+
+                if(map.zoomControl && $scope.defaults && $scope.defaults.zoomControl===false) {
+                    map.zoomControl.removeFrom(map);
+                }
+
+                if(map.zoomsliderControl && $scope.defaults && !$scope.defaults.zoomsliderControl) {
+                    map.zoomsliderControl.removeFrom(map);
+                }
+            }
+
+            function setupCustomControls() {
+                if (!$scope.customControls) {
+                    return;
+                }
+
+                for(var i = 0, count = $scope.customControls.length; i < count; i++) {
+                    map.addControl($scope.customControls[i]);
+                }
             }
         }
     };

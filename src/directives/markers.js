@@ -1,4 +1,4 @@
-angular.module("leaflet-directive").directive('markers', function ($log, $rootScope) {
+angular.module("leaflet-directive").directive('markers', function ($log, $rootScope, leafletData) {
     return {
         restrict: "A",
         scope: false,
@@ -16,7 +16,7 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
             if (isDefined(controller[1])) {
                 getLayers = controller[1].getLayers;
             }
-
+$log.warn("ye", NaN, isNumber(NaN));
             // Default leaflet icon object used in all markers as a default
             var LeafletIcon = L.Icon.extend({
                 options: {
@@ -36,6 +36,7 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
 
             function setupMarkers(markers, map) {
                 var leafletMarkers = {};
+                leafletData.setMarkers(leafletMarkers);
 
                 if (!isDefined(markers)) {
                     return;
@@ -44,7 +45,7 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                 $scope.$watch('markers', function(newMarkers) {
                     // Delete markers from the array
                     for (var name in leafletMarkers) {
-                        if (newMarkers[name] === undefined) {
+                        if (!isDefined(newMarkers[name])) {
                             // First we check if the marker is in a layer group
                             leafletMarkers[name].closePopup();
                             // There is no easy way to know if a marker is added to a layer, so we search for it
@@ -70,7 +71,7 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                     }
                     // add new markers
                     for (var new_name in newMarkers) {
-                        if (leafletMarkers[new_name] === undefined) {
+                        if (!isDefined(leafletMarkers[new_name])) {
                             var newMarker = createMarker('markers.'+new_name, markers[new_name], map);
                             if (newMarker !== null) {
                                 leafletMarkers[new_name] = newMarker;
@@ -283,7 +284,7 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                 }
 
                 var clearWatch = $scope.$watch(scope_watch_name, function(data, old_data) {
-                    if (!isDefined(data)) {
+                    if (!isDefinedAndNotNull(data)) {
                         marker.closePopup();
                         // There is no easy way to know if a marker is added to a layer, so we search for it
                         // if there are overlays
@@ -303,18 +304,18 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                         return;
                     }
 
-                    if (old_data) {
+                    if (isDefined(old_data)) {
 
                         //TODO Check for layers !== null
                         //TODO Check for layers.overlays !== null !== undefined
                         // It is possible the the layer has been removed or the layer marker does not exist
 
                         // Update the layer group if present or move it to the map if not
-                        if (data.layer === undefined || data.layer === null || typeof data.layer !== 'string') {
+                        if (!isString(data.layer)) {
                             // There is no layer information, we move the marker to the map if it was in a layer group
-                            if (old_data.layer !== undefined && old_data.layer !== null && typeof old_data.layer === 'string') {
+                            if (isString(old_data.layer)) {
                                 // Remove from the layer group that is supposed to be
-                                if (layers.overlays[old_data.layer] !== undefined) {
+                                if (isDefined(layers.overlays[old_data.layer])) {
                                     if (layers.overlays[old_data.layer].hasLayer(marker)) {
                                         layers.overlays[old_data.layer].removeLayer(marker);
                                         // If the marker had a popup we close it because we do not know if the popup in on the map
@@ -330,7 +331,7 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                                     map.addLayer(marker);
                                 }
                             }
-                        } else if (old_data.layer === undefined || old_data.layer === null || old_data.layer !== data.layer) {
+                        } else if (isDefinedAndNotNull(old_data.layer) || old_data.layer !== data.layer) {
                             // If it was on a layer group we have to remove it
                             if (typeof old_data.layer === 'string') {
                                 if (layers.overlays[old_data.layer] !== undefined) {
@@ -548,11 +549,11 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                         }
 
                         // Update the lat-lng property (always present in marker properties)
-                        if (data.lat === undefined || data.lat === null || isNaN(data.lat) || typeof data.lat !== 'number' || data.lng === undefined || data.lng === null || isNaN(data.lng) || typeof data.lng !== 'number') {
+                        if (!(isNumber(data.lat) && isNumber(data.lng))) {
                             $log.warn('There are problems with lat-lng data, please verify your marker model');
                             // Remove the marker from the layers and map if it is not valid
-                            if (layers !== null) {
-                                if (layers.overlays !== undefined && layers.overlays !== null) {
+                            if (isDefinedAndNotNull(layers)) {
+                                if (isDefinedAndNotNull(layers.overlays)) {
                                     for (var olname in layers.overlays) {
                                         if (layers.overlays[olname] instanceof L.LayerGroup || Helpers.MarkerClusterPlugin.is(layers.overlays[olname])) {
                                             if (layers.overlays[olname].hasLayer(marker)) {
@@ -566,7 +567,7 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                         } else {
                             var cur_latlng = marker.getLatLng();
                             // On dragend event, scope will be updated, which
-                            // tirggers this watch expression. Then we call
+                            // triggers this watch expression. Then we call
                             // setLatLng and triggers move event on marker and
                             // causes digest already in progress error.
                             //
@@ -577,7 +578,7 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                             if (cur_latlng.lat !== data.lat || cur_latlng.lng !== data.lng) {
                                 // if the marker is in a clustermarker layer it has to be removed and added again to the layer
                                 var isCluster = false;
-                                if (data.layer !== undefined && data.layer !== null && typeof data.layer === 'string') {
+                                if (isString(data.layer)) {
                                     if (Helpers.MarkerClusterPlugin.is(layers.overlays[data.layer])) {
                                         layers.overlays[data.layer].removeLayer(marker);
                                         isCluster = true;

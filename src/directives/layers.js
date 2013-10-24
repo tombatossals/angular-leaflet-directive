@@ -26,13 +26,14 @@ angular.module("leaflet-directive").directive('layers', function ($log, leafletD
                     }
                     // We have baselayers to add to the map
                     $scope.leafletLayers = {};
+                    leafletData.setLayers($scope.leafletLayers);
+
                     $scope.leafletLayers.baselayers = {};
                     $scope.leafletLayers.controls = {};
                     $scope.leafletLayers.controls.layers = new L.control.layers();
                     $scope.leafletLayers.controls.layers.setPosition(defaults.controlLayersPosition);
                     $scope.leafletLayers.controls.layers.addTo(map);
 
-                    leafletData.setLayers($scope.leafletLayers);
 
                     // Setup all baselayers definitions
                     var top = false;
