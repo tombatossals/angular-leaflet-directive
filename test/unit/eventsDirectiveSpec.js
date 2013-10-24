@@ -15,7 +15,7 @@ describe('Directive: leaflet', function() {
     }));
 
     it('should broadcast events from the rootscope when triggered leaflet events',function(){
-        var element = angular.element('<leaflet events="events" testing="testing"></leaflet>');
+        var element = angular.element('<leaflet events="events"></leaflet>');
         element = $compile(element)($rootScope);
         var scope = element.scope();
         var map = scope.leaflet.map;
@@ -80,7 +80,7 @@ describe('Directive: leaflet', function() {
         $scope.$on("leafletDirectiveMap.click", function(event, args){
             $scope.fired = true;
         });
-        var element = angular.element('<leaflet event-broadcast="events" testing="testing"></leaflet>');
+        var element = angular.element('<leaflet event-broadcast="events"></leaflet>');
         element = $compile(element)($scope);
         var map = element.scope().leaflet.map;
         map.fire("click");

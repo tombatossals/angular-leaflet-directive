@@ -27,7 +27,7 @@ describe('Directive: leaflet', function() {
             }
         };
         angular.extend($rootScope, { markers: markers });
-        var element = angular.element('<leaflet markers="markers" testing="testing"></leaflet>');
+        var element = angular.element('<leaflet markers="markers"></leaflet>');
         element = $compile(element)($rootScope);
         var map = element.scope().leaflet.map;
         var leafletMarkers = element.scope().leaflet.markers;
@@ -50,7 +50,7 @@ describe('Directive: leaflet', function() {
             }
         };
         angular.extend($rootScope, { markers: markers });
-        var element = angular.element('<leaflet markers="markers" testing="testing"></leaflet>');
+        var element = angular.element('<leaflet markers="markers"></leaflet>');
         element = $compile(element)($rootScope);
         var map = element.scope().leaflet.map;
         var leafletMarkers = element.scope().leaflet.markers;
@@ -73,7 +73,7 @@ describe('Directive: leaflet', function() {
             }
         };
         angular.extend($rootScope, { markers: markers });
-        var element = angular.element('<leaflet markers="markers" testing="testing"></leaflet>');
+        var element = angular.element('<leaflet markers="markers"></leaflet>');
         element = $compile(element)($rootScope);
         var map = element.scope().leaflet.map;
         var leafletMarkers = element.scope().leaflet.markers;
@@ -96,7 +96,7 @@ describe('Directive: leaflet', function() {
             }
         };
         angular.extend($rootScope, { markers: markers });
-        var element = angular.element('<leaflet markers="markers" testing="testing"></leaflet>');
+        var element = angular.element('<leaflet markers="markers"></leaflet>');
         element = $compile(element)($rootScope);
         var map = element.scope().leaflet.map;
         var leafletMarkers = element.scope().leaflet.markers;
@@ -119,7 +119,7 @@ describe('Directive: leaflet', function() {
             }
         };
         angular.extend($rootScope, { markers: markers });
-        var element = angular.element('<leaflet markers="markers" testing="testing"></leaflet>');
+        var element = angular.element('<leaflet markers="markers"></leaflet>');
         element = $compile(element)($rootScope);
         var map = element.scope().leaflet.map;
         var leafletMarkers = element.scope().leaflet.markers;
@@ -142,7 +142,7 @@ describe('Directive: leaflet', function() {
             }
         };
         angular.extend($rootScope, { markers: markers });
-        var element = angular.element('<leaflet markers="markers" testing="testing"></leaflet>');
+        var element = angular.element('<leaflet markers="markers"></leaflet>');
         element = $compile(element)($rootScope);
         var map = element.scope().leaflet.map;
         var leafletMarkers = element.scope().leaflet.markers;
@@ -165,7 +165,7 @@ describe('Directive: leaflet', function() {
             }
         };
         angular.extend($rootScope, { markers: markers });
-        var element = angular.element('<leaflet markers="markers" testing="testing"></leaflet>');
+        var element = angular.element('<leaflet markers="markers"></leaflet>');
         element = $compile(element)($rootScope);
         var map = element.scope().leaflet.map;
         var leafletMarkers = element.scope().leaflet.markers;
@@ -188,7 +188,7 @@ describe('Directive: leaflet', function() {
             }
         };
         angular.extend($rootScope, { markers: markers });
-        var element = angular.element('<leaflet markers="markers" testing="testing"></leaflet>');
+        var element = angular.element('<leaflet markers="markers"></leaflet>');
         element = $compile(element)($rootScope);
         var map = element.scope().leaflet.map;
         var leafletMarkers = element.scope().leaflet.markers;
@@ -211,7 +211,7 @@ describe('Directive: leaflet', function() {
             }
         };
         angular.extend($rootScope, { markers: markers });
-        var element = angular.element('<leaflet markers="markers" testing="testing"></leaflet>');
+        var element = angular.element('<leaflet markers="markers"></leaflet>');
         element = $compile(element)($rootScope);
         var map = element.scope().leaflet.map;
         var leafletMarkers = element.scope().leaflet.markers;
@@ -262,7 +262,7 @@ describe('Directive: leaflet', function() {
             }
         };
         angular.extend($rootScope, { markers: markers, layers: layers });
-        var element = angular.element('<leaflet markers="markers" layers="layers" testing="testing"></leaflet>');
+        var element = angular.element('<leaflet markers="markers" layers="layers"></leaflet>');
         element = $compile(element)($rootScope);
         var map = element.scope().leaflet.map;
         var leafletMarkers = element.scope().leaflet.markers;
@@ -323,7 +323,7 @@ describe('Directive: leaflet', function() {
             }
         };
         angular.extend($rootScope, { markers: markers, layers: layers });
-        var element = angular.element('<leaflet markers="markers" layers="layers" testing="testing"></leaflet>');
+        var element = angular.element('<leaflet markers="markers" layers="layers"></leaflet>');
         element = $compile(element)($rootScope);
         var map = element.scope().leaflet.map;
         var leafletMarkers = element.scope().leaflet.markers;
@@ -356,7 +356,7 @@ describe('Directive: leaflet', function() {
             }
         };
         angular.extend($rootScope, { markers: markers });
-        var element = angular.element('<leaflet markers="markers" testing="testing"></leaflet>');
+        var element = angular.element('<leaflet markers="markers"></leaflet>');
         element = $compile(element)($rootScope);
         var map = element.scope().leaflet.map;
         var leafletMarkers = element.scope().leaflet.markers;
@@ -417,7 +417,7 @@ describe('Directive: leaflet', function() {
             }
         };
         angular.extend($rootScope, { markers: markers, layers: layers });
-        var element = angular.element('<leaflet markers="markers" layers="layers" testing="testing"></leaflet>');
+        var element = angular.element('<leaflet markers="markers" layers="layers"></leaflet>');
         element = $compile(element)($rootScope);
         var map = element.scope().leaflet.map;
         var leafletMarkers = element.scope().leaflet.markers;
@@ -456,7 +456,7 @@ describe('Directive: leaflet', function() {
             }
         };
         angular.extend($rootScope, { markers: markers});
-        var element = angular.element('<leaflet markers="markers" testing="testing"></leaflet>');
+        var element = angular.element('<leaflet markers="markers"></leaflet>');
         element = $compile(element)($rootScope);
         var map = element.scope().map;
         var leafletMarkers = element.scope().leaflet.markers;
@@ -494,7 +494,7 @@ describe('Directive: leaflet', function() {
         };
 
         angular.extend($rootScope, { markers: markers });
-        var element = angular.element('<leaflet markers="markers" testing="testing"></leaflet>');
+        var element = angular.element('<leaflet markers="markers"></leaflet>');
         element = $compile(element)($rootScope);
         var leafletMarkers = element.scope().leaflet.markers;
         $rootScope.$digest();

@@ -25,7 +25,7 @@ describe('Directive: leaflet', function() {
             { lat: 1.02, lng: 3.04 }
         ];
         angular.extend($rootScope, { paths : { p1: { latlngs : latlngs1 }, p2: { latlngs : latlngs2 }}});
-        var element = angular.element('<leaflet paths="paths" testing="testing"></leaflet>');
+        var element = angular.element('<leaflet paths="paths"></leaflet>');
         element = $compile(element)($rootScope);
         var map = element.scope().leaflet.map;
         var polyline1 = element.scope().leaflet.paths.p1;
@@ -57,7 +57,7 @@ describe('Directive: leaflet', function() {
 			]
 		];
         angular.extend($rootScope, { paths : { p1: { latlngs : latlngs, type: 'multiPolyline' }}});
-        var element = angular.element('<leaflet paths="paths" testing="testing"></leaflet>');
+        var element = angular.element('<leaflet paths="paths"></leaflet>');
         element = $compile(element)($rootScope);
         var map = element.scope().leaflet.map;
         var polylines = element.scope().leaflet.paths.p1;
@@ -82,7 +82,7 @@ describe('Directive: leaflet', function() {
             { lat: 1.02, lng: 3.04 }
         ];
         angular.extend($rootScope, { paths : { p1: { latlngs : latlngs, type: 'polygon' }}});
-        var element = angular.element('<leaflet paths="paths" testing="testing"></leaflet>');
+        var element = angular.element('<leaflet paths="paths"></leaflet>');
         element = $compile(element)($rootScope);
         var map = element.scope().leaflet.map;
         var polygon = element.scope().leaflet.paths.p1;
@@ -113,7 +113,7 @@ describe('Directive: leaflet', function() {
             { lat: 2.02, lng: 4.04 }
         ];
         angular.extend($rootScope, { paths : { p1: { latlngs : [ latlngs1, latlngs2 ], type: 'multiPolygon' }}});
-        var element = angular.element('<leaflet paths="paths" testing="testing"></leaflet>');
+        var element = angular.element('<leaflet paths="paths"></leaflet>');
         element = $compile(element)($rootScope);
         var map = element.scope().leaflet.map;
         var multiPolygon = element.scope().leaflet.paths.p1;
@@ -148,7 +148,7 @@ describe('Directive: leaflet', function() {
             { lat: 1.02, lng: 3.04 }
         ];
         angular.extend($rootScope, { paths : { p1: { latlngs : latlngs1, type: 'rectangle' }, p2: { latlngs : latlngs2, type: 'rectangle' }}});
-        var element = angular.element('<leaflet paths="paths" testing="testing"></leaflet>');
+        var element = angular.element('<leaflet paths="paths"></leaflet>');
         element = $compile(element)($rootScope);
         var map = element.scope().leaflet.map;
         var rectangle1 = element.scope().leaflet.paths.p1;
@@ -184,7 +184,7 @@ describe('Directive: leaflet', function() {
 			type: 'circle'
 		};
         angular.extend($rootScope, { paths : { p1: c1, p2: c2 }});
-        var element = angular.element('<leaflet paths="paths" testing="testing"></leaflet>');
+        var element = angular.element('<leaflet paths="paths"></leaflet>');
         element = $compile(element)($rootScope);
         var map = element.scope().leaflet.map;
         var circle1 = element.scope().leaflet.paths.p1;
@@ -216,7 +216,7 @@ describe('Directive: leaflet', function() {
 			type: 'circleMarker'
 		};
         angular.extend($rootScope, { paths : { p1: c1, p2: c2 }});
-        var element = angular.element('<leaflet paths="paths" testing="testing"></leaflet>');
+        var element = angular.element('<leaflet paths="paths"></leaflet>');
         element = $compile(element)($rootScope);
         var map = element.scope().leaflet.map;
         var circle1 = element.scope().leaflet.paths.p1;

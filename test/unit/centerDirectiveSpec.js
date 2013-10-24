@@ -32,7 +32,7 @@ describe('Directive: leaflet center', function() {
             zoom: 4
         };
         angular.extend($rootScope, { center: center });
-        var element = angular.element('<leaflet center="center" testing="testing"></leaflet>');
+        var element = angular.element('<leaflet center="center"></leaflet>');
         element = $compile(element)($rootScope);
         $rootScope.$digest();
         var map = leafletData.getMap();
@@ -48,7 +48,7 @@ describe('Directive: leaflet center', function() {
             zoom: 4
         };
         angular.extend($rootScope, { center: center });
-        var element = angular.element('<leaflet center="center" testing="testing"></leaflet>');
+        var element = angular.element('<leaflet center="center"></leaflet>');
         element = $compile(element)($rootScope);
         $rootScope.$digest();
         var map = leafletData.getMap();
