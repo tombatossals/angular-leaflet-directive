@@ -15,29 +15,33 @@ describe('Directive: leaflet', function() {
     }));
 
     // Layers
-    it('should create layers as specified', function() {
-        // If we not provide layers the system will use the default
-        var element = angular.element('<leaflet></leaflet>');
-        element = $compile(element)($rootScope);
-        var layers = element.scope().leaflet.layers;
-        expect(layers).toBe(null);
+    it('should not create layers if not specified', function() {
         angular.extend($rootScope, {
             layers: {}
         });
-        element = angular.element('<leaflet layers="layers"></leaflet>');
+        // If we not provide layers the system will use the default
+        var element = angular.element('<leaflet></leaflet>');
         element = $compile(element)($rootScope);
-        layers = element.scope().leaflet.layers;
-        expect(layers).toBe(null);
+        var layers = leafletData.getLayers();
+        expect(layers).toBe(undefined);
+    });
+
+    it('should not create layers if they are miss-configured', function() {
         angular.extend($rootScope, {
             layers: {
                 baselayers: {},
                 overlays: {}
             }
         });
-        element = angular.element('<leaflet layers="layers"></leaflet>');
+
+        // If we not provide layers the system will use the default
+        var element = angular.element('<leaflet layers="layers"></leaflet>');
         element = $compile(element)($rootScope);
-        layers = element.scope().leaflet.layers;
-        expect(layers).toBe(null);
+        var layers = leafletData.getLayers();
+        expect(layers).toBe(undefined);
+    });
+
+    it('should not create layers nor baselayers if they are miss-configured', function() {
         angular.extend($rootScope, {
             layers: {
                 baselayers: {
@@ -46,12 +50,15 @@ describe('Directive: leaflet', function() {
                 overlays: {}
             }
         });
-        element = angular.element('<leaflet layers="layers"></leaflet>');
+        var element = angular.element('<leaflet layers="layers"></leaflet>');
         element = $compile(element)($rootScope);
-        layers = element.scope().leaflet.layers;
-        expect(layers).not.toBe(null);
-        expect(layers.baselayers).not.toBe(null);
-        expect(layers.controls).not.toBe(null);
+        var layers = leafletData.getLayers();
+        expect(layers).toBe(undefined);
+    });
+
+    it('should create one layer if correctly configured', function() {
+        var element = angular.element('<leaflet layers="layers"></leaflet>');
+        element = $compile(element)($rootScope);
         angular.extend($rootScope, {
             layers: {
                 baselayers: {
@@ -70,10 +77,13 @@ describe('Directive: leaflet', function() {
                 overlays: {}
             }
         });
-        element = angular.element('<leaflet layers="layers"></leaflet>');
-        element = $compile(element)($rootScope);
-        layers = element.scope().leaflet.layers;
+        $rootScope.$digest();
+        var layers = leafletData.getLayers();
+        console.log(layers);
         expect(Object.keys(layers.baselayers).length).toEqual(1);
+    });
+
+    it('should create one layer if correctly configured', function() {
         var map = element.scope().leaflet.map;
         expect(map.hasLayer(layers.baselayers.osm)).toBe(true);
         angular.extend($rootScope, {

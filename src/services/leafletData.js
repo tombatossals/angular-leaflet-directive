@@ -1,9 +1,7 @@
 angular.module("leaflet-directive").service('leafletData', function ($log) {
     var map;
-    var baselayers;
-    var controls;
     var tile;
-    var overlays;
+    var layers;
     var mainMarker;
     var markers;
 
@@ -13,6 +11,14 @@ angular.module("leaflet-directive").service('leafletData', function ($log) {
 
     this.getMap = function() {
         return map;
+    };
+
+    this.getLayers = function() {
+        return layers;
+    };
+
+    this.setLayers = function(leafletLayers) {
+        layers = layers;
     };
 
     this.setTile = function(leafletTile) {
