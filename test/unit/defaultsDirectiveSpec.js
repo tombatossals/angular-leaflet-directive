@@ -4,7 +4,7 @@
 /*jshint globalstrict: true*/
 /* jasmine specs for directives go here */
 
-describe('Directive: leaflet', function() {
+describe('Directive: leaflet defaults', function() {
     var $compile = null, $rootScope = null, leafletData = null;
 
     beforeEach(module('leaflet-directive'));
@@ -29,4 +29,13 @@ describe('Directive: leaflet', function() {
         expect(tileLayerObj.options.detectRetina).toEqual(true);
         expect(tileLayerObj.options.opacity).toEqual(0.8);
     });
+
+    it('should set zoom control button properly if zoomControlPosition option is set', function() {
+        angular.extend($rootScope, { defaults: { zoomControlPosition: 'topright' } });
+        var element = angular.element('<leaflet defaults="defaults"></leaflet>');
+        element = $compile(element)($rootScope);
+        var map = leafletData.getMap();
+        expect(map.zoomControl.getPosition()).toEqual('topright');
+    });
+
 });

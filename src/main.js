@@ -57,6 +57,7 @@ function parseMapDefaults(defaults) {
         mapDefaults.scrollWheelZoom = isDefined(defaults.scrollWheelZoom) && defaults.scrollWheelZoom ?  true: false;
         mapDefaults.attributionControl = isDefined(defaults.attributionControl) && defaults.attributionControl ?  true: false;
         mapDefaults.tileLayer = isDefined(defaults.tileLayer) ? defaults.tileLayer : mapDefaults.tileLayer;
+        mapDefaults.zoomControlPosition = isDefined(defaults.zoomControlPosition) ? defaults.zoomControlPosition : mapDefaults.zoomControlPosition;
         if (isDefined(defaults.tileLayerOptions)) {
             angular.copy(defaults.tileLayerOptions, mapDefaults.tileLayerOptions);
         }
@@ -73,6 +74,7 @@ function _getMapDefaults() {
         zoomControl: true,
         attributionControl: true,
         zoomsliderControl: false,
+        zoomControlPosition: 'topleft',
         controlLayersPosition: 'topright',
         tileLayer: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
         tileLayerOptions: {

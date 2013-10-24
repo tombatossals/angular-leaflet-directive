@@ -11,7 +11,13 @@ module.exports = function(karma) {
             'test/lib/markercluster/leaflet.markercluster.js',
             'dist/angular-leaflet-directive.min.js',
             'test/unit/mapDirectiveSpec.js',
-            'test/unit/defaultsDirectiveSpec.js'
+            'test/unit/defaultsDirectiveSpec.js',
+            'test/unit/centerDirectiveSpec.js',
+            'test/unit/layersDirectiveSpec.js',
+            'test/unit/markerDirectiveSpec.js',
+//            'test/unit/markersDirectiveSpec.js',
+//            'test/unit/pathsDirectiveSpec.js',
+            'test/unit/eventsDirectiveSpec.js'
         ],
 
         // Frameworks
@@ -29,9 +35,9 @@ module.exports = function(karma) {
         // - Safari
         // - PhantomJS
         browsers: [
-            'Firefox'
+            //'Firefox'
             //'Chrome'
-            //'PhantomJS'
+            'PhantomJS'
         ],
 
         // test results reporter to use

@@ -84,15 +84,15 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, lea
             setupControls(map, defaults);
             function setupControls(map, defaults) {
                 //@TODO add document for this option  11.08 2013 (houqp)
-                if (map.zoomControl && isDefined(defaults.zoomControlPosition)) {
+                if (isDefined(map.zoomControl) && isDefined(defaults.zoomControlPosition)) {
                     map.zoomControl.setPosition(defaults.zoomControlPosition);
                 }
 
-                if(map.zoomControl && isDefined(defaults.zoomControl) && defaults.zoomControl === false) {
+                if(isDefined(map.zoomControl) && isDefined(defaults.zoomControl) && defaults.zoomControl === false) {
                     map.zoomControl.removeFrom(map);
                 }
 
-                if(map.zoomsliderControl && isDefined(defaults.zoomsliderControl) && defaults.zoomsliderControl === false) {
+                if(isDefined(map.zoomsliderControl) && isDefined(defaults.zoomsliderControl) && defaults.zoomsliderControl === false) {
                     map.zoomsliderControl.removeFrom(map);
                 }
             }

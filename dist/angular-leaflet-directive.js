@@ -61,6 +61,7 @@ function parseMapDefaults(defaults) {
         mapDefaults.scrollWheelZoom = isDefined(defaults.scrollWheelZoom) && defaults.scrollWheelZoom ?  true: false;
         mapDefaults.attributionControl = isDefined(defaults.attributionControl) && defaults.attributionControl ?  true: false;
         mapDefaults.tileLayer = isDefined(defaults.tileLayer) ? defaults.tileLayer : mapDefaults.tileLayer;
+        mapDefaults.zoomControlPosition = isDefined(defaults.zoomControlPosition) ? defaults.zoomControlPosition : mapDefaults.zoomControlPosition;
         if (isDefined(defaults.tileLayerOptions)) {
             angular.copy(defaults.tileLayerOptions, mapDefaults.tileLayerOptions);
         }
@@ -77,6 +78,7 @@ function _getMapDefaults() {
         zoomControl: true,
         attributionControl: true,
         zoomsliderControl: false,
+        zoomControlPosition: 'topleft',
         controlLayersPosition: 'topright',
         tileLayer: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
         tileLayerOptions: {
@@ -316,15 +318,15 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, lea
             setupControls(map, defaults);
             function setupControls(map, defaults) {
                 //@TODO add document for this option  11.08 2013 (houqp)
-                if (map.zoomControl && isDefined(defaults.zoomControlPosition)) {
+                if (isDefined(map.zoomControl) && isDefined(defaults.zoomControlPosition)) {
                     map.zoomControl.setPosition(defaults.zoomControlPosition);
                 }
 
-                if(map.zoomControl && isDefined(defaults.zoomControl) && defaults.zoomControl === false) {
+                if(isDefined(map.zoomControl) && isDefined(defaults.zoomControl) && defaults.zoomControl === false) {
                     map.zoomControl.removeFrom(map);
                 }
 
-                if(map.zoomsliderControl && isDefined(defaults.zoomsliderControl) && defaults.zoomsliderControl === false) {
+                if(isDefined(map.zoomsliderControl) && isDefined(defaults.zoomsliderControl) && defaults.zoomsliderControl === false) {
                     map.zoomsliderControl.removeFrom(map);
                 }
             }
@@ -565,7 +567,7 @@ angular.module("leaflet-directive").directive('geojson', function ($log, $rootSc
     };
 });
 
-angular.module("leaflet-directive").directive('layers', function ($log) {
+angular.module("leaflet-directive").directive('layers', function ($log, leafletData) {
     return {
         restrict: "A",
         scope: false,
@@ -598,6 +600,8 @@ angular.module("leaflet-directive").directive('layers', function ($log) {
                     $scope.leafletLayers.controls.layers = new L.control.layers();
                     $scope.leafletLayers.controls.layers.setPosition(defaults.controlLayersPosition);
                     $scope.leafletLayers.controls.layers.addTo(map);
+
+                    leafletData.setLayers($scope.leafletLayers);
 
                     // Setup all baselayers definitions
                     var top = false;

@@ -29,12 +29,10 @@ describe('Directive: leaflet', function() {
     });
 
     it('should set the min zoom if specified', function() {
-        inject(function($rootScope, $compile) {
-            angular.extend($rootScope, { defaults: { minZoom: 4 } });
-            var element = angular.element('<leaflet defaults="defaults"></leaflet>');
-            element = $compile(element)($rootScope);
-            var map = leafletData.getMap();
-            expect(map.getMinZoom()).toEqual(4);
-        });
+        angular.extend($rootScope, { defaults: { minZoom: 4 } });
+        var element = angular.element('<leaflet defaults="defaults"></leaflet>');
+        element = $compile(element)($rootScope);
+        var map = leafletData.getMap();
+        expect(map.getMinZoom()).toEqual(4);
     });
 });
