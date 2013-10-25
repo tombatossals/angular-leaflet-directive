@@ -7,14 +7,11 @@ angular.module("leaflet-directive").directive('legend', function ($log) {
         require: 'leaflet',
 
         link: function($scope, element, attrs, controller) {
-            var map = controller.getMap();
-            var legend = $scope.legend;
+            controller.getMap().then(function(map) {
+                var legend = $scope.legend;
 
-            setupLegend(map, legend);
-
-            function setupLegend(map, legend) {
                 if (!isArray(legend.colors) || !isArray(legend.labels) || legend.colors.length !== legend.labels.length) {
-                     $log.warn("[AngularJS - Leaflet] legend.colors and legend.labels must be set.");
+                    $log.warn("[AngularJS - Leaflet] legend.colors and legend.labels must be set.");
                 } else {
                     var legendClass = legend.legendClass ? legend.legendClass : "legend";
                     var position = legend.position || 'bottomright';
@@ -29,7 +26,7 @@ angular.module("leaflet-directive").directive('legend', function ($log) {
                     };
                     leafletLegend.addTo(map);
                 }
-            }
+            });
         }
     };
 });

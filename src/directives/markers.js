@@ -8,7 +8,10 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
 
         link: function($scope, element, attrs, controller) {
             var defaults = parseMapDefaults($scope.defaults);
-            var map = controller[0].getMap();
+            var mapController = controller[0];
+
+            mapController.getMap().then(function(map) {
+
             var markers = $scope.markers;
             var getLayers = function() {
                 return [];
@@ -16,7 +19,6 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
             if (isDefined(controller[1])) {
                 getLayers = controller[1].getLayers;
             }
-$log.warn("ye", NaN, isNumber(NaN));
             // Default leaflet icon object used in all markers as a default
             var LeafletIcon = L.Icon.extend({
                 options: {
@@ -797,6 +799,7 @@ $log.warn("ye", NaN, isNumber(NaN));
                     map.addControl($scope.customControls[i]);
                 }
             }
+        });
         }
     };
 });

@@ -1,10 +1,10 @@
-angular.module("leaflet-directive").service('leafletData', function ($log) {
+angular.module("leaflet-directive").service('leafletData', function ($log, $q) {
     var map;
     var tile;
-    var layers;
-    var paths;
-    var mainMarker;
-    var markers;
+    var layers = $q.defer();
+    var paths = $q.defer();
+    var mainMarker = $q.defer();
+    var markers = $q.defer();
 
     this.setMap = function(leafletMap) {
         map = leafletMap;
@@ -15,27 +15,27 @@ angular.module("leaflet-directive").service('leafletData', function ($log) {
     };
 
     this.getPaths = function() {
-        return paths;
+        return paths.promise;
     };
 
     this.setPaths = function(leafletPaths) {
-        paths = leafletPaths;
+        paths.resolve(leafletPaths);
     };
 
     this.getMarkers = function() {
-        return markers;
+        return markers.promise;
     };
 
     this.setMarkers = function(leafletMarkers) {
-        markers = leafletMarkers;
+        markers.resolve(leafletMarkers);
     };
 
     this.getLayers = function() {
-        return layers;
+        return layers.promise;
     };
 
     this.setLayers = function(leafletLayers) {
-        layers = leafletLayers;
+        layers.resolve(leafletLayers);
     };
 
     this.setTile = function(leafletTile) {
@@ -47,10 +47,10 @@ angular.module("leaflet-directive").service('leafletData', function ($log) {
     };
 
     this.setMainMarker = function(leafletMarker) {
-        mainMarker = leafletMarker;
+        mainMarker.resolve(leafletMarker);
     };
 
     this.getMainMarker = function() {
-        return mainMarker;
+        return mainMarker.promise;
     };
 });

@@ -8,7 +8,10 @@ angular.module("leaflet-directive").directive('marker', function ($log, $rootSco
 
         link: function($scope, element, attrs, controller) {
             var defaults = parseMapDefaults($scope.defaults);
-            var map = controller[0].getMap();
+            var mapController = controller[0];
+
+            mapController.getMap().then(function(map) {
+
             var marker = $scope.marker;
             var getLayers = function() {
                 return [];
@@ -763,6 +766,7 @@ angular.module("leaflet-directive").directive('marker', function ($log, $rootSco
                     map.addControl($scope.customControls[i]);
                 }
             }
+        });
         }
     };
 });

@@ -24,10 +24,11 @@ describe('Directive: leaflet', function() {
         var element = angular.element('<leaflet marker="marker"></leaflet>');
         element = $compile(element)($rootScope);
         var map = leafletData.getMap();
-        var leafletMainMarker = leafletData.getMainMarker();
-        $rootScope.$digest();
-        expect(leafletMainMarker.getLatLng().lat).toBeCloseTo(0.966);
-        expect(leafletMainMarker.getLatLng().lng).toBeCloseTo(2.02);
+        leafletData.getMainMarker().then(function(leafletMainMarker) {
+            $rootScope.$digest();
+            expect(leafletMainMarker.getLatLng().lat).toBeCloseTo(0.966);
+            expect(leafletMainMarker.getLatLng().lng).toBeCloseTo(2.02);
+        });
     });
 
     it('should bind popup to main marker if message is given', function() {
@@ -40,10 +41,11 @@ describe('Directive: leaflet', function() {
         var element = angular.element('<leaflet marker="marker"></leaflet>');
         element = $compile(element)($rootScope);
         var map = leafletData.getMap();
-        var leafletMainMarker = leafletData.getMainMarker();
-        $rootScope.$digest();
-        expect(leafletMainMarker._popup._content)
-            .toEqual('this is paris');
+        leafletData.getMainMarker().then(function(leafletMainMarker) {
+            $rootScope.$digest();
+            expect(leafletMainMarker._popup._content)
+                .toEqual('this is paris');
+        });
     });
 
     it('should not trigger move event if marker position is not changed', function() {
@@ -55,12 +57,13 @@ describe('Directive: leaflet', function() {
         var element = angular.element('<leaflet marker="marker"></leaflet>');
         element = $compile(element)($rootScope);
         var map = leafletData.getMap();
-        var leafletMainMarker = leafletData.getMainMarker();
-        $rootScope.$digest();
-        main_marker.lat = 0;
-        leafletMainMarker.on('move', function() {
-            expect('this should not happend!').toEqual('it happended');
+        leafletData.getMainMarker().then(function(leafletMainMarker) {
+            $rootScope.$digest();
+            main_marker.lat = 0;
+            leafletMainMarker.on('move', function() {
+                expect('this should not happend!').toEqual('it happended');
+            });
+            leafletMainMarker.fire('dragend');
         });
-        leafletMainMarker.fire('dragend');
     });
 });

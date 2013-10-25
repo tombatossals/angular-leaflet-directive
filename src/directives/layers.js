@@ -12,8 +12,10 @@ angular.module("leaflet-directive").directive('layers', function ($log, leafletD
         },
         link: function($scope, element, attrs, controller) {
             var defaults = parseMapDefaults($scope.defaults);
-            var map = controller.getMap();
             var layers = $scope.layers;
+
+            controller.getMap().then(function(map) {
+
             setupLayers(map, layers, defaults);
 
             function setupLayers(map, layers, defaults) {
@@ -250,6 +252,7 @@ angular.module("leaflet-directive").directive('layers', function ($log, leafletD
                     return null;
                 }
             }
+            });
         }
     };
 });

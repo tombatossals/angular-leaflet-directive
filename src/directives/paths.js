@@ -8,8 +8,9 @@ angular.module("leaflet-directive").directive('paths', function ($log, leafletDa
 
         link: function($scope, element, attrs, controller) {
             var defaults = parseMapDefaults($scope.defaults);
-            var map = controller.getMap();
             var paths = $scope.paths;
+
+            controller.getMap().then(function(map) {
 
             setupPaths(paths, map, defaults);
 
@@ -158,6 +159,7 @@ angular.module("leaflet-directive").directive('paths', function ($log, leafletDa
                     return convertToLeafletLatLngs(latlngs);
                 });
             }
+        });
         }
     };
 });

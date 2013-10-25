@@ -8,15 +8,14 @@ angular.module("leaflet-directive").directive('tiles', function ($log, leafletDa
 
         link: function($scope, element, attrs, controller) {
             var defaults = parseMapDefaults($scope.defaults);
-            var map = controller.getMap();
             var tiles = $scope.tiles;
 
-            setupTiles(map, tiles, defaults);
+            controller.getMap().then(function(map) {
 
-            function setupTiles(map, tiles, defaults) {
                 var tileLayerObj;
                 var tileLayerUrl = defaults.tileLayer;
                 var tileLayerOptions = defaults.tileLayerOptions;
+                leafletData.setTile(tileLayerObj);
 
                 if (angular.isDefined(tiles.url)) {
                     tileLayerUrl = tiles.url;
@@ -36,7 +35,7 @@ angular.module("leaflet-directive").directive('tiles', function ($log, leafletDa
                 tileLayerObj = L.tileLayer(tileLayerUrl, tileLayerOptions);
                 leafletData.setTile(tileLayerObj);
                 tileLayerObj.addTo(map);
-            }
+            });
         }
     };
 });

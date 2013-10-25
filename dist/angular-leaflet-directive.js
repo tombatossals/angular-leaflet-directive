@@ -232,7 +232,7 @@ var Helpers = {
 
 var str_inspect_hint = 'Add testing="testing" to <leaflet> tag to inspect this object';
 
-angular.module("leaflet-directive", []).directive('leaflet', function ($log, leafletData) {
+angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q, leafletData) {
     return {
         restrict: "E",
         replace: true,
@@ -254,8 +254,9 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, lea
         },
         template: '<div class="angular-leaflet-map" ng-transclude></div>',
         controller: function ($scope) {
+            $scope.leafletMapDeferred = $q.defer();
             this.getMap = function () {
-                return $scope.leafletMap;
+                return $scope.leafletMapDeferred.promise;
             };
         },
 
@@ -268,28 +269,20 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, lea
             }
 
             // Set width and height if they are defined
-            if (attrs.width) {
-                if (isNaN(attrs.width)) {
+            if (isDefined(attrs.width)) {
+                if (!isNumber(attrs.width)) {
                     element.css('width', attrs.width);
                 } else {
                     element.css('width', attrs.width + 'px');
                 }
             }
-            if (attrs.height) {
-                if (isNaN(attrs.height)) {
+            if (isDefined(attrs.height)) {
+                if (isNumber(attrs.height)) {
                     element.css('height', attrs.height);
                 } else {
                     element.css('height', attrs.height + 'px');
                 }
             }
-
-            // REVIEW
-            // use of leafletDirectiveSetMap event is not encouraged. only use
-            // it when there is no easy way to bind data to the directive
-            $scope.$on('leafletDirectiveSetMap', function(event, message) {
-                var meth = message.shift();
-                map[meth].apply(map, message);
-            });
 
             // Create the Leaflet Map Object with the options
             var map = new L.Map(element[0], {
@@ -300,7 +293,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, lea
                 attributionControl: defaults.attributionControl
             });
 
-            $scope.leafletMap = map;
+            $scope.leafletMapDeferred.resolve(map);
             leafletData.setMap(map);
             if (!isDefined(attrs.center)) {
                  $log.warn("[AngularJS - Leaflet] 'center' is undefined in the current scope, did you forget to initialize it?");
@@ -344,86 +337,87 @@ angular.module("leaflet-directive").directive('center', function ($log, $parse) 
 
         link: function($scope, element, attrs, controller) {
             var defaults = parseMapDefaults($scope.defaults);
-            var map = controller.getMap();
             var center = $scope.center;
 
-            setupCenter(map, center, defaults);
+            controller.getMap().then(function(map) {
+                setupCenter(map, center, defaults);
 
-            function updateBoundsInScope(map) {
-                if (!$scope.bounds) {
-                    return;
-                }
-
-                var bounds = map.getBounds();
-                var sw_latlng = bounds.getSouthWest();
-                var ne_latlng = bounds.getNorthEast();
-                $scope.bounds = {
-                    southWest: {
-                        lat: sw_latlng.lat,
-                        lng: sw_latlng.lng
-                    },
-                    northEast: {
-                        lat: ne_latlng.lat,
-                        lng: ne_latlng.lng
-                    }
-                };
-            }
-
-            function updateCenter(map, center) {
-                map.setView([center.lat, center.lng], center.zoom);
-                updateBoundsInScope(map);
-            }
-
-            function isValidCenter(center) {
-                return isDefined(center) && isNumber(center.lat) && isNumber(center.lng) && isNumber(center.zoom);
-            }
-
-            function setupCenter(map, center, defaults) {
-                if (isDefined(center)) {
-                    if (center.autoDiscover === true) {
-                        map.locate({ setView: true, maxZoom: defaults.maxZoom });
+                function updateBoundsInScope(map) {
+                    if (!$scope.bounds) {
+                        return;
                     }
 
-                    var centerModel = {
-                        lat:  $parse("center.lat"),
-                        lng:  $parse("center.lng"),
-                        zoom: $parse("center.zoom")
+                    var bounds = map.getBounds();
+                    var sw_latlng = bounds.getSouthWest();
+                    var ne_latlng = bounds.getNorthEast();
+                    $scope.bounds = {
+                        southWest: {
+                            lat: sw_latlng.lat,
+                            lng: sw_latlng.lng
+                        },
+                        northEast: {
+                            lat: ne_latlng.lat,
+                            lng: ne_latlng.lng
+                        }
                     };
                 }
 
-                var movingMap = false;
+                function updateCenter(map, center) {
+                    map.setView([center.lat, center.lng], center.zoom);
+                    updateBoundsInScope(map);
+                }
 
-                $scope.$watch("center", function(center) {
-                    if (!isValidCenter(center)) {
-                        $log.warn("[AngularJS - Leaflet] invalid 'center'");
-                        updateCenter(map, defaults.center);
-                        return;
-                    }
+                function isValidCenter(center) {
+                    return isDefined(center) && isNumber(center.lat) && isNumber(center.lng) && isNumber(center.zoom);
+                }
 
-                    if (movingMap) {
-                        // Can't update. The map is moving.
-                        return;
-                    }
-
-                    updateCenter(map, center);
-                }, true);
-
-                map.on("movestart", function(/* event */) {
-                    movingMap = true;
-                });
-
-                map.on("moveend", function(/* event */) {
-                    movingMap = false;
-                    safeApply($scope, function(scope) {
-                        if (centerModel) {
-                            centerModel.lat.assign(scope, map.getCenter().lat);
-                            centerModel.lng.assign(scope, map.getCenter().lng);
-                            centerModel.zoom.assign(scope, map.getZoom());
+                function setupCenter(map, center, defaults) {
+                    if (isDefined(center)) {
+                        if (center.autoDiscover === true) {
+                            map.locate({ setView: true, maxZoom: defaults.maxZoom });
                         }
-                        scope.$emit("centerUpdated");
+
+                        var centerModel = {
+                            lat:  $parse("center.lat"),
+                            lng:  $parse("center.lng"),
+                            zoom: $parse("center.zoom")
+                        };
+                    }
+
+                    var movingMap = false;
+
+                    $scope.$watch("center", function(center) {
+                        if (!isValidCenter(center)) {
+                            $log.warn("[AngularJS - Leaflet] invalid 'center'");
+                            updateCenter(map, defaults.center);
+                            return;
+                        }
+
+                        if (movingMap) {
+                            // Can't update. The map is moving.
+                            return;
+                        }
+
+                        updateCenter(map, center);
+                    }, true);
+
+                    map.on("movestart", function(/* event */) {
+                        movingMap = true;
                     });
-                });
-            }
+
+                    map.on("moveend", function(/* event */) {
+                        movingMap = false;
+                        safeApply($scope, function(scope) {
+                            if (centerModel) {
+                                centerModel.lat.assign(scope, map.getCenter().lat);
+                                centerModel.lng.assign(scope, map.getCenter().lng);
+                                centerModel.zoom.assign(scope, map.getZoom());
+                            }
+                            scope.$emit("centerUpdated");
+                        });
+                    });
+                }
+            });
         }
     };
 });
@@ -438,15 +432,14 @@ angular.module("leaflet-directive").directive('tiles', function ($log, leafletDa
 
         link: function($scope, element, attrs, controller) {
             var defaults = parseMapDefaults($scope.defaults);
-            var map = controller.getMap();
             var tiles = $scope.tiles;
 
-            setupTiles(map, tiles, defaults);
+            controller.getMap().then(function(map) {
 
-            function setupTiles(map, tiles, defaults) {
                 var tileLayerObj;
                 var tileLayerUrl = defaults.tileLayer;
                 var tileLayerOptions = defaults.tileLayerOptions;
+                leafletData.setTile(tileLayerObj);
 
                 if (angular.isDefined(tiles.url)) {
                     tileLayerUrl = tiles.url;
@@ -466,7 +459,7 @@ angular.module("leaflet-directive").directive('tiles', function ($log, leafletDa
                 tileLayerObj = L.tileLayer(tileLayerUrl, tileLayerOptions);
                 leafletData.setTile(tileLayerObj);
                 tileLayerObj.addTo(map);
-            }
+            });
         }
     };
 });
@@ -480,14 +473,11 @@ angular.module("leaflet-directive").directive('legend', function ($log) {
         require: 'leaflet',
 
         link: function($scope, element, attrs, controller) {
-            var map = controller.getMap();
-            var legend = $scope.legend;
+            controller.getMap().then(function(map) {
+                var legend = $scope.legend;
 
-            setupLegend(map, legend);
-
-            function setupLegend(map, legend) {
                 if (!isArray(legend.colors) || !isArray(legend.labels) || legend.colors.length !== legend.labels.length) {
-                     $log.warn("[AngularJS - Leaflet] legend.colors and legend.labels must be set.");
+                    $log.warn("[AngularJS - Leaflet] legend.colors and legend.labels must be set.");
                 } else {
                     var legendClass = legend.legendClass ? legend.legendClass : "legend";
                     var position = legend.position || 'bottomright';
@@ -502,7 +492,7 @@ angular.module("leaflet-directive").directive('legend', function ($log) {
                     };
                     leafletLegend.addTo(map);
                 }
-            }
+            });
         }
     };
 });
@@ -518,9 +508,8 @@ angular.module("leaflet-directive").directive('geojson', function ($log, $rootSc
         link: function($scope, element, attrs, controller) {
             var map = controller.getMap();
             var leafletGeoJSON;
-            setupGeoJSON(map);
 
-            function setupGeoJSON(map, geojson, defaults) {
+            controller.getMap().then(function(map) {
                 $scope.$watch("geojson", function(geojson) {
                     if (!isDefined(geojson)) {
                         return;
@@ -562,7 +551,7 @@ angular.module("leaflet-directive").directive('geojson', function ($log, $rootSc
                         }).addTo(map);
                     }
                 });
-            }
+            });
         }
     };
 });
@@ -581,8 +570,10 @@ angular.module("leaflet-directive").directive('layers', function ($log, leafletD
         },
         link: function($scope, element, attrs, controller) {
             var defaults = parseMapDefaults($scope.defaults);
-            var map = controller.getMap();
             var layers = $scope.layers;
+
+            controller.getMap().then(function(map) {
+
             setupLayers(map, layers, defaults);
 
             function setupLayers(map, layers, defaults) {
@@ -819,6 +810,7 @@ angular.module("leaflet-directive").directive('layers', function ($log, leafletD
                     return null;
                 }
             }
+            });
         }
     };
 });
@@ -832,34 +824,35 @@ angular.module("leaflet-directive").directive('bounds', function ($log) {
         require: 'leaflet',
 
         link: function($scope, element, attrs, controller) {
-            var map = controller.getMap();
-            setupBounds(map);
+            controller.getMap().then(function(map) {
+                setupBounds(map);
 
-            function isBoundsValid(bounds) {
-                return isDefined(bounds) && isDefined(bounds.southWest) &&
-                       isDefined(bounds.northEast) && isNumber(bounds.southWest.lat) &&
-                       isNumber(bounds.southWest.lng) && isNumber(bounds.northEast.lat) &&
-                       isNumber(bounds.northEast.lng);
-            }
+                function isBoundsValid(bounds) {
+                    return isDefined(bounds) && isDefined(bounds.southWest) &&
+                        isDefined(bounds.northEast) && isNumber(bounds.southWest.lat) &&
+                        isNumber(bounds.southWest.lng) && isNumber(bounds.northEast.lat) &&
+                        isNumber(bounds.northEast.lng);
+                }
 
-            function setupBounds(map) {
-                $scope.$watch('bounds', function(bounds) {
-                    if (!isDefined(bounds) || !isBoundsValid(bounds)) {
-                        $log.error('[AngularJS - Leaflet] Invalid bounds');
-                        return;
-                    }
+                function setupBounds(map) {
+                    $scope.$watch('bounds', function(bounds) {
+                        if (!isDefined(bounds) || !isBoundsValid(bounds)) {
+                            $log.error('[AngularJS - Leaflet] Invalid bounds');
+                            return;
+                        }
 
-                    var southWest = bounds.southWest;
-                    var northEast = bounds.northEast;
-                    var new_latlng_bounds = new L.LatLngBounds(
-                            new L.LatLng(southWest.lat, southWest.lng),
-                            new L.LatLng(northEast.lat, northEast.lng));
+                        var southWest = bounds.southWest;
+                        var northEast = bounds.northEast;
+                        var new_latlng_bounds = new L.LatLngBounds(
+                                new L.LatLng(southWest.lat, southWest.lng),
+                                new L.LatLng(northEast.lat, northEast.lng));
 
-                    if (!map.getBounds().equals(new_latlng_bounds)) {
-                        map.fitBounds(new_latlng_bounds);
-                    }
-                }, true);
-            }
+                        if (!map.getBounds().equals(new_latlng_bounds)) {
+                            map.fitBounds(new_latlng_bounds);
+                        }
+                    }, true);
+                }
+            });
         }
     };
 });
@@ -874,7 +867,10 @@ angular.module("leaflet-directive").directive('marker', function ($log, $rootSco
 
         link: function($scope, element, attrs, controller) {
             var defaults = parseMapDefaults($scope.defaults);
-            var map = controller[0].getMap();
+            var mapController = controller[0];
+
+            mapController.getMap().then(function(map) {
+
             var marker = $scope.marker;
             var getLayers = function() {
                 return [];
@@ -1629,6 +1625,7 @@ angular.module("leaflet-directive").directive('marker', function ($log, $rootSco
                     map.addControl($scope.customControls[i]);
                 }
             }
+        });
         }
     };
 });
@@ -1643,7 +1640,10 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
 
         link: function($scope, element, attrs, controller) {
             var defaults = parseMapDefaults($scope.defaults);
-            var map = controller[0].getMap();
+            var mapController = controller[0];
+
+            mapController.getMap().then(function(map) {
+
             var markers = $scope.markers;
             var getLayers = function() {
                 return [];
@@ -1651,7 +1651,6 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
             if (isDefined(controller[1])) {
                 getLayers = controller[1].getLayers;
             }
-$log.warn("ye", NaN, isNumber(NaN));
             // Default leaflet icon object used in all markers as a default
             var LeafletIcon = L.Icon.extend({
                 options: {
@@ -2432,6 +2431,7 @@ $log.warn("ye", NaN, isNumber(NaN));
                     map.addControl($scope.customControls[i]);
                 }
             }
+        });
         }
     };
 });
@@ -2446,8 +2446,9 @@ angular.module("leaflet-directive").directive('paths', function ($log, leafletDa
 
         link: function($scope, element, attrs, controller) {
             var defaults = parseMapDefaults($scope.defaults);
-            var map = controller.getMap();
             var paths = $scope.paths;
+
+            controller.getMap().then(function(map) {
 
             setupPaths(paths, map, defaults);
 
@@ -2596,6 +2597,7 @@ angular.module("leaflet-directive").directive('paths', function ($log, leafletDa
                     return convertToLeafletLatLngs(latlngs);
                 });
             }
+        });
         }
     };
 });
@@ -2837,13 +2839,13 @@ angular.module("leaflet-directive").directive('maxbounds', function ($log) {
     };
 });
 
-angular.module("leaflet-directive").service('leafletData', function ($log) {
+angular.module("leaflet-directive").service('leafletData', function ($log, $q) {
     var map;
     var tile;
-    var layers;
-    var paths;
-    var mainMarker;
-    var markers;
+    var layers = $q.defer();
+    var paths = $q.defer();
+    var mainMarker = $q.defer();
+    var markers = $q.defer();
 
     this.setMap = function(leafletMap) {
         map = leafletMap;
@@ -2854,27 +2856,27 @@ angular.module("leaflet-directive").service('leafletData', function ($log) {
     };
 
     this.getPaths = function() {
-        return paths;
+        return paths.promise;
     };
 
     this.setPaths = function(leafletPaths) {
-        paths = leafletPaths;
+        paths.resolve(leafletPaths);
     };
 
     this.getMarkers = function() {
-        return markers;
+        return markers.promise;
     };
 
     this.setMarkers = function(leafletMarkers) {
-        markers = leafletMarkers;
+        markers.resolve(leafletMarkers);
     };
 
     this.getLayers = function() {
-        return layers;
+        return layers.promise;
     };
 
     this.setLayers = function(leafletLayers) {
-        layers = leafletLayers;
+        layers.resolve(leafletLayers);
     };
 
     this.setTile = function(leafletTile) {
@@ -2886,11 +2888,11 @@ angular.module("leaflet-directive").service('leafletData', function ($log) {
     };
 
     this.setMainMarker = function(leafletMarker) {
-        mainMarker = leafletMarker;
+        mainMarker.resolve(leafletMarker);
     };
 
     this.getMainMarker = function() {
-        return mainMarker;
+        return mainMarker.promise;
     };
 });
 

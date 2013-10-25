@@ -1,4 +1,4 @@
-angular.module("leaflet-directive", []).directive('leaflet', function ($log, leafletData) {
+angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q, leafletData) {
     return {
         restrict: "E",
         replace: true,
@@ -20,8 +20,9 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, lea
         },
         template: '<div class="angular-leaflet-map" ng-transclude></div>',
         controller: function ($scope) {
+            $scope.leafletMapDeferred = $q.defer();
             this.getMap = function () {
-                return $scope.leafletMap;
+                return $scope.leafletMapDeferred.promise;
             };
         },
 
@@ -34,28 +35,20 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, lea
             }
 
             // Set width and height if they are defined
-            if (attrs.width) {
-                if (isNaN(attrs.width)) {
+            if (isDefined(attrs.width)) {
+                if (!isNumber(attrs.width)) {
                     element.css('width', attrs.width);
                 } else {
                     element.css('width', attrs.width + 'px');
                 }
             }
-            if (attrs.height) {
-                if (isNaN(attrs.height)) {
+            if (isDefined(attrs.height)) {
+                if (isNumber(attrs.height)) {
                     element.css('height', attrs.height);
                 } else {
                     element.css('height', attrs.height + 'px');
                 }
             }
-
-            // REVIEW
-            // use of leafletDirectiveSetMap event is not encouraged. only use
-            // it when there is no easy way to bind data to the directive
-            $scope.$on('leafletDirectiveSetMap', function(event, message) {
-                var meth = message.shift();
-                map[meth].apply(map, message);
-            });
 
             // Create the Leaflet Map Object with the options
             var map = new L.Map(element[0], {
@@ -66,7 +59,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, lea
                 attributionControl: defaults.attributionControl
             });
 
-            $scope.leafletMap = map;
+            $scope.leafletMapDeferred.resolve(map);
             leafletData.setMap(map);
             if (!isDefined(attrs.center)) {
                  $log.warn("[AngularJS - Leaflet] 'center' is undefined in the current scope, did you forget to initialize it?");
