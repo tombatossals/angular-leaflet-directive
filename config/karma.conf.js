@@ -10,14 +10,14 @@ module.exports = function(karma) {
             'test/lib/angular/angular-mocks.js',
             'test/lib/markercluster/leaflet.markercluster.js',
             'dist/angular-leaflet-directive.js',
-            'test/unit/mapDirectiveSpec.js',
-            'test/unit/defaultsDirectiveSpec.js',
-            'test/unit/centerDirectiveSpec.js',
-            'test/unit/layersDirectiveSpec.js',
-            'test/unit/markerDirectiveSpec.js',
-            'test/unit/markersDirectiveSpec.js',
-            'test/unit/pathsDirectiveSpec.js',
-            'test/unit/eventsDirectiveSpec.js'
+            'test/unit/leafletDirectiveSpec.js',
+            'test/unit/tilesDirectiveSpec.js',
+            //'test/unit/centerDirectiveSpec.js',
+            //'test/unit/layersDirectiveSpec.js',
+            //'test/unit/markerDirectiveSpec.js',
+            //'test/unit/markersDirectiveSpec.js',
+            //'test/unit/pathsDirectiveSpec.js',
+            //'test/unit/eventsDirectiveSpec.js'
         ],
 
         // Frameworks

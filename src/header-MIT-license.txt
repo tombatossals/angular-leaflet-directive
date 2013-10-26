@@ -1,7 +1,7 @@
 /**!
  * The MIT License
  *
- * Copyright (c) 2013 the angular-leaflet-directive team, http://tombatossals.github.io/angular-leaflet-directive
+ * Copyright (c) 2013 the angular-leaflet-directive Team, http://tombatossals.github.io/angular-leaflet-directive
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal

@@ -7,9 +7,9 @@ function isDefined(value) {
     return angular.isDefined(value);
 }
 
-// Determine if a reference is defined
+// Determine if a reference is defined and not null
 function isDefinedAndNotNull(value) {
-    return angular.isDefined(value) && value != null;
+    return angular.isDefined(value) && value !== null;
 }
 
 // Determine if a reference is a number
@@ -37,13 +37,9 @@ function equals(o1, o2) {
   return angular.equals(o1, o2);
 }
 
-function _isSafeToApply($scope) {
-    var phase = $scope.$root.$$phase;
-    return !(phase === '$apply' || phase === '$digest');
-}
-
 function safeApply($scope, fn) {
-    if (!_isSafeToApply($scope)) {
+    var phase = $scope.$root.$$phase;
+    if (phase === '$apply' || phase === '$digest') {
         $scope.$eval(fn);
     } else {
         $scope.$apply(fn);
@@ -230,8 +226,6 @@ var Helpers = {
     }
 };
 
-var str_inspect_hint = 'Add testing="testing" to <leaflet> tag to inspect this object';
-
 angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q, leafletData) {
     return {
         restrict: "E",
@@ -254,33 +248,34 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
         },
         template: '<div class="angular-leaflet-map" ng-transclude></div>',
         controller: function ($scope) {
-            $scope.leafletMapDeferred = $q.defer();
+            $scope.leafletMap = $q.defer();
             this.getMap = function () {
-                return $scope.leafletMapDeferred.promise;
+                return $scope.leafletMap.promise;
             };
         },
 
-        link: function($scope, element, attrs/*, ctrl */) {
+        link: function($scope, element, attrs, controller) {
             var defaults = parseMapDefaults($scope.defaults);
+            leafletData.setDefaults(defaults);
 
             // If we are going to set maxBounds, undefine the minZoom property
-            if ($scope.maxBounds) {
+            if (isDefined($scope.maxBounds)) {
                 defaults.minZoom = undefined;
             }
 
             // Set width and height if they are defined
             if (isDefined(attrs.width)) {
-                if (!isNumber(attrs.width)) {
-                    element.css('width', attrs.width);
-                } else {
+                if (isNumber(attrs.width)) {
                     element.css('width', attrs.width + 'px');
+                } else {
+                    element.css('width', attrs.width);
                 }
             }
             if (isDefined(attrs.height)) {
                 if (isNumber(attrs.height)) {
-                    element.css('height', attrs.height);
-                } else {
                     element.css('height', attrs.height + 'px');
+                } else {
+                    element.css('height', attrs.height);
                 }
             }
 
@@ -293,35 +288,27 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
                 attributionControl: defaults.attributionControl
             });
 
-            $scope.leafletMapDeferred.resolve(map);
+            $scope.leafletMap.resolve(map);
             leafletData.setMap(map);
+
             if (!isDefined(attrs.center)) {
                  $log.warn("[AngularJS - Leaflet] 'center' is undefined in the current scope, did you forget to initialize it?");
                  map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
             }
 
             if (!isDefined(attrs.tiles) && !isDefined(attrs.layers)) {
-                 var tileLayerUrl = defaults.tileLayer;
-                 var tileLayerOptions = defaults.tileLayerOptions;
-                 var tileLayerObj = L.tileLayer(tileLayerUrl, tileLayerOptions);
-                 tileLayerObj.addTo(map);
-                 leafletData.setTile(tileLayerObj);
+                var tileLayerObj = L.tileLayer(defaults.tileLayer, defaults.tileLayerOptions);
+                tileLayerObj.addTo(map);
+                leafletData.setTiles(tileLayerObj);
             }
 
-            setupControls(map, defaults);
-            function setupControls(map, defaults) {
-                //@TODO add document for this option  11.08 2013 (houqp)
-                if (isDefined(map.zoomControl) && isDefined(defaults.zoomControlPosition)) {
-                    map.zoomControl.setPosition(defaults.zoomControlPosition);
-                }
+            // Set basic controls configuration
+            if (isDefined(map.zoomControl) && isDefined(defaults.zoomControlPosition)) {
+                map.zoomControl.setPosition(defaults.zoomControlPosition);
+            }
 
-                if(isDefined(map.zoomControl) && isDefined(defaults.zoomControl) && defaults.zoomControl === false) {
-                    map.zoomControl.removeFrom(map);
-                }
-
-                if(isDefined(map.zoomsliderControl) && isDefined(defaults.zoomsliderControl) && defaults.zoomsliderControl === false) {
-                    map.zoomsliderControl.removeFrom(map);
-                }
+            if (isDefined(map.zoomControl) && isDefined(defaults.zoomControl) && defaults.zoomControl === false) {
+                map.zoomControl.removeFrom(map);
             }
         }
     };
@@ -338,19 +325,20 @@ angular.module("leaflet-directive").directive('center', function ($log, $parse) 
         link: function($scope, element, attrs, controller) {
             var defaults = parseMapDefaults($scope.defaults);
             var center = $scope.center;
+            var bounds = $scope.bounds;
 
             controller.getMap().then(function(map) {
                 setupCenter(map, center, defaults);
 
                 function updateBoundsInScope(map) {
-                    if (!$scope.bounds) {
+                    if (!bounds) {
                         return;
                     }
 
-                    var bounds = map.getBounds();
-                    var sw_latlng = bounds.getSouthWest();
-                    var ne_latlng = bounds.getNorthEast();
-                    $scope.bounds = {
+                    var leafletBounds = map.getBounds();
+                    var sw_latlng = leafletBounds.getSouthWest();
+                    var ne_latlng = leafletBounds.getNorthEast();
+                    bounds = {
                         southWest: {
                             lat: sw_latlng.lat,
                             lng: sw_latlng.lng
@@ -439,26 +427,25 @@ angular.module("leaflet-directive").directive('tiles', function ($log, leafletDa
                 var tileLayerObj;
                 var tileLayerUrl = defaults.tileLayer;
                 var tileLayerOptions = defaults.tileLayerOptions;
-                leafletData.setTile(tileLayerObj);
 
-                if (angular.isDefined(tiles.url)) {
+                if (angular.isDefined(tiles) && angular.isDefined(tiles.url)) {
                     tileLayerUrl = tiles.url;
+                    $scope.$watch("tiles.url", function(url) {
+                        if (angular.isDefined(url)) {
+                            tileLayerObj.setUrl(url);
+                        }
+                    });
+                } else {
+                    $log.warn("[AngularJS - Leaflet] The 'tiles' definition doesn't have the 'url' property.");
                 }
 
-                if (angular.isDefined(tiles.options)) {
+                if (angular.isDefined(tiles) && angular.isDefined(tiles.options)) {
                     angular.copy(tiles.options, tileLayerOptions);
                 }
 
-                $scope.$watch("tiles.url", function(url) {
-                    if (!angular.isDefined(url)) {
-                        return;
-                    }
-                    tileLayerObj.setUrl(url);
-                });
-
                 tileLayerObj = L.tileLayer(tileLayerUrl, tileLayerOptions);
-                leafletData.setTile(tileLayerObj);
                 tileLayerObj.addTo(map);
+                leafletData.setTiles(tileLayerObj);
             });
         }
     };
@@ -1446,7 +1433,6 @@ angular.module("leaflet-directive").directive('marker', function ($log, $rootSco
 
             function setupPaths() {
                 var paths = {};
-                $scope.leaflet.paths = !!attrs.testing ? paths : str_inspect_hint;
 
                 if (!$scope.paths) {
                     return;
@@ -2252,7 +2238,6 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
 
             function setupPaths() {
                 var paths = {};
-                $scope.leaflet.paths = !!attrs.testing ? paths : str_inspect_hint;
 
                 if (!$scope.paths) {
                     return;
@@ -2816,13 +2801,9 @@ angular.module("leaflet-directive").directive('maxbounds', function ($log) {
 
         link: function($scope, element, attrs, controller) {
             var defaults = parseMapDefaults($scope.defaults);
-            var map = controller.getMap();
+            controller.getMap().then(function(map) {
             var maxBounds = $scope.maxBounds;
-
-            setupMaxBounds(map, maxBounds);
-
-            function setupMaxBounds(map, maxBounds) {
-                if (isDefined(maxBounds.southWest) && isDefined(maxBounds.northEast)) {
+                if (isDefined(maxBounds) && isDefined(maxBounds.southWest) && isDefined(maxBounds.northEast)) {
                     $scope.$watch("maxBounds", function (maxBounds) {
                         if (isDefined(maxBounds.southWest) && isDefined(maxBounds.northEast) && isNumber(maxBounds.southWest.lat) && isNumber(maxBounds.southWest.lng) && isNumber(maxBounds.northEast.lat) && isNumber(maxBounds.northEast.lng)) {
                             map.setMaxBounds(
@@ -2833,26 +2814,37 @@ angular.module("leaflet-directive").directive('maxbounds', function ($log) {
                             );
                         }
                     });
+                } else {
+                    $log.warn("[AngularJS - Leaflet] 'maxBounds' is defined in the current scope, but not correctly initialized.");
                 }
-            }
+            });
         }
     };
 });
 
 angular.module("leaflet-directive").service('leafletData', function ($log, $q) {
-    var map;
-    var tile;
+    var map = $q.defer();
+    var tiles = $q.defer();
     var layers = $q.defer();
     var paths = $q.defer();
     var mainMarker = $q.defer();
     var markers = $q.defer();
+    var defaults = {};
 
     this.setMap = function(leafletMap) {
-        map = leafletMap;
+        map.resolve(leafletMap);
     };
 
     this.getMap = function() {
-        return map;
+        return map.promise;
+    };
+
+    this.getDefaults = function() {
+        return defaults;
+    };
+
+    this.setDefaults = function(leafletDefaults) {
+        defaults = leafletDefaults;
     };
 
     this.getPaths = function() {
@@ -2879,12 +2871,12 @@ angular.module("leaflet-directive").service('leafletData', function ($log, $q) {
         layers.resolve(leafletLayers);
     };
 
-    this.setTile = function(leafletTile) {
-        tile = leafletTile;
+    this.setTiles = function(leafletTiles) {
+        tiles.resolve(leafletTiles);
     };
 
-    this.getTile = function() {
-        return tile;
+    this.getTiles = function() {
+        return tiles.promise;
     };
 
     this.setMainMarker = function(leafletMarker) {

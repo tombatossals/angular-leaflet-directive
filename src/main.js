@@ -3,9 +3,9 @@ function isDefined(value) {
     return angular.isDefined(value);
 }
 
-// Determine if a reference is defined
+// Determine if a reference is defined and not null
 function isDefinedAndNotNull(value) {
-    return angular.isDefined(value) && value != null;
+    return angular.isDefined(value) && value !== null;
 }
 
 // Determine if a reference is a number
@@ -33,13 +33,9 @@ function equals(o1, o2) {
   return angular.equals(o1, o2);
 }
 
-function _isSafeToApply($scope) {
-    var phase = $scope.$root.$$phase;
-    return !(phase === '$apply' || phase === '$digest');
-}
-
 function safeApply($scope, fn) {
-    if (!_isSafeToApply($scope)) {
+    var phase = $scope.$root.$$phase;
+    if (phase === '$apply' || phase === '$digest') {
         $scope.$eval(fn);
     } else {
         $scope.$apply(fn);
@@ -225,5 +221,3 @@ var Helpers = {
         }
     }
 };
-
-var str_inspect_hint = 'Add testing="testing" to <leaflet> tag to inspect this object';

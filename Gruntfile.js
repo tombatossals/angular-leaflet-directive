@@ -31,6 +31,7 @@ module.exports = function(grunt) {
                 browser: true,
                 globals: {
                     angular: true,
+                    console: true,
                     module: true,
                     L: true,
                 }
@@ -111,7 +112,7 @@ module.exports = function(grunt) {
                 },
                 src: [
                       'src/main.js',
-                      'src/directives/map.js',
+                      'src/directives/leaflet.js',
                       'src/directives/center.js',
                       'src/directives/tiles.js',
                       'src/directives/legend.js',

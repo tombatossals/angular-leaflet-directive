@@ -20,33 +20,34 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
         },
         template: '<div class="angular-leaflet-map" ng-transclude></div>',
         controller: function ($scope) {
-            $scope.leafletMapDeferred = $q.defer();
+            $scope.leafletMap = $q.defer();
             this.getMap = function () {
-                return $scope.leafletMapDeferred.promise;
+                return $scope.leafletMap.promise;
             };
         },
 
-        link: function($scope, element, attrs/*, ctrl */) {
+        link: function($scope, element, attrs, controller) {
             var defaults = parseMapDefaults($scope.defaults);
+            leafletData.setDefaults(defaults);
 
             // If we are going to set maxBounds, undefine the minZoom property
-            if ($scope.maxBounds) {
+            if (isDefined($scope.maxBounds)) {
                 defaults.minZoom = undefined;
             }
 
             // Set width and height if they are defined
             if (isDefined(attrs.width)) {
-                if (!isNumber(attrs.width)) {
-                    element.css('width', attrs.width);
-                } else {
+                if (isNumber(attrs.width)) {
                     element.css('width', attrs.width + 'px');
+                } else {
+                    element.css('width', attrs.width);
                 }
             }
             if (isDefined(attrs.height)) {
                 if (isNumber(attrs.height)) {
-                    element.css('height', attrs.height);
-                } else {
                     element.css('height', attrs.height + 'px');
+                } else {
+                    element.css('height', attrs.height);
                 }
             }
 
@@ -59,35 +60,27 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
                 attributionControl: defaults.attributionControl
             });
 
-            $scope.leafletMapDeferred.resolve(map);
+            $scope.leafletMap.resolve(map);
             leafletData.setMap(map);
+
             if (!isDefined(attrs.center)) {
                  $log.warn("[AngularJS - Leaflet] 'center' is undefined in the current scope, did you forget to initialize it?");
                  map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
             }
 
             if (!isDefined(attrs.tiles) && !isDefined(attrs.layers)) {
-                 var tileLayerUrl = defaults.tileLayer;
-                 var tileLayerOptions = defaults.tileLayerOptions;
-                 var tileLayerObj = L.tileLayer(tileLayerUrl, tileLayerOptions);
-                 tileLayerObj.addTo(map);
-                 leafletData.setTile(tileLayerObj);
+                var tileLayerObj = L.tileLayer(defaults.tileLayer, defaults.tileLayerOptions);
+                tileLayerObj.addTo(map);
+                leafletData.setTiles(tileLayerObj);
             }
 
-            setupControls(map, defaults);
-            function setupControls(map, defaults) {
-                //@TODO add document for this option  11.08 2013 (houqp)
-                if (isDefined(map.zoomControl) && isDefined(defaults.zoomControlPosition)) {
-                    map.zoomControl.setPosition(defaults.zoomControlPosition);
-                }
+            // Set basic controls configuration
+            if (isDefined(map.zoomControl) && isDefined(defaults.zoomControlPosition)) {
+                map.zoomControl.setPosition(defaults.zoomControlPosition);
+            }
 
-                if(isDefined(map.zoomControl) && isDefined(defaults.zoomControl) && defaults.zoomControl === false) {
-                    map.zoomControl.removeFrom(map);
-                }
-
-                if(isDefined(map.zoomsliderControl) && isDefined(defaults.zoomsliderControl) && defaults.zoomsliderControl === false) {
-                    map.zoomsliderControl.removeFrom(map);
-                }
+            if (isDefined(map.zoomControl) && isDefined(defaults.zoomControl) && defaults.zoomControl === false) {
+                map.zoomControl.removeFrom(map);
             }
         }
     };

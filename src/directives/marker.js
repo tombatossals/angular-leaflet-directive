@@ -587,7 +587,6 @@ angular.module("leaflet-directive").directive('marker', function ($log, $rootSco
 
             function setupPaths() {
                 var paths = {};
-                $scope.leaflet.paths = !!attrs.testing ? paths : str_inspect_hint;
 
                 if (!$scope.paths) {
                     return;

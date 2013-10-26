@@ -9,19 +9,20 @@ angular.module("leaflet-directive").directive('center', function ($log, $parse) 
         link: function($scope, element, attrs, controller) {
             var defaults = parseMapDefaults($scope.defaults);
             var center = $scope.center;
+            var bounds = $scope.bounds;
 
             controller.getMap().then(function(map) {
                 setupCenter(map, center, defaults);
 
                 function updateBoundsInScope(map) {
-                    if (!$scope.bounds) {
+                    if (!bounds) {
                         return;
                     }
 
-                    var bounds = map.getBounds();
-                    var sw_latlng = bounds.getSouthWest();
-                    var ne_latlng = bounds.getNorthEast();
-                    $scope.bounds = {
+                    var leafletBounds = map.getBounds();
+                    var sw_latlng = leafletBounds.getSouthWest();
+                    var ne_latlng = leafletBounds.getNorthEast();
+                    bounds = {
                         southWest: {
                             lat: sw_latlng.lat,
                             lng: sw_latlng.lng

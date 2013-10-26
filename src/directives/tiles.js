@@ -15,26 +15,25 @@ angular.module("leaflet-directive").directive('tiles', function ($log, leafletDa
                 var tileLayerObj;
                 var tileLayerUrl = defaults.tileLayer;
                 var tileLayerOptions = defaults.tileLayerOptions;
-                leafletData.setTile(tileLayerObj);
 
-                if (angular.isDefined(tiles.url)) {
+                if (angular.isDefined(tiles) && angular.isDefined(tiles.url)) {
                     tileLayerUrl = tiles.url;
+                    $scope.$watch("tiles.url", function(url) {
+                        if (angular.isDefined(url)) {
+                            tileLayerObj.setUrl(url);
+                        }
+                    });
+                } else {
+                    $log.warn("[AngularJS - Leaflet] The 'tiles' definition doesn't have the 'url' property.");
                 }
 
-                if (angular.isDefined(tiles.options)) {
+                if (angular.isDefined(tiles) && angular.isDefined(tiles.options)) {
                     angular.copy(tiles.options, tileLayerOptions);
                 }
 
-                $scope.$watch("tiles.url", function(url) {
-                    if (!angular.isDefined(url)) {
-                        return;
-                    }
-                    tileLayerObj.setUrl(url);
-                });
-
                 tileLayerObj = L.tileLayer(tileLayerUrl, tileLayerOptions);
-                leafletData.setTile(tileLayerObj);
                 tileLayerObj.addTo(map);
+                leafletData.setTiles(tileLayerObj);
             });
         }
     };

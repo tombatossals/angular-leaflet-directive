@@ -8,13 +8,9 @@ angular.module("leaflet-directive").directive('maxbounds', function ($log) {
 
         link: function($scope, element, attrs, controller) {
             var defaults = parseMapDefaults($scope.defaults);
-            var map = controller.getMap();
+            controller.getMap().then(function(map) {
             var maxBounds = $scope.maxBounds;
-
-            setupMaxBounds(map, maxBounds);
-
-            function setupMaxBounds(map, maxBounds) {
-                if (isDefined(maxBounds.southWest) && isDefined(maxBounds.northEast)) {
+                if (isDefined(maxBounds) && isDefined(maxBounds.southWest) && isDefined(maxBounds.northEast)) {
                     $scope.$watch("maxBounds", function (maxBounds) {
                         if (isDefined(maxBounds.southWest) && isDefined(maxBounds.northEast) && isNumber(maxBounds.southWest.lat) && isNumber(maxBounds.southWest.lng) && isNumber(maxBounds.northEast.lat) && isNumber(maxBounds.northEast.lng)) {
                             map.setMaxBounds(
@@ -25,8 +21,10 @@ angular.module("leaflet-directive").directive('maxbounds', function ($log) {
                             );
                         }
                     });
+                } else {
+                    $log.warn("[AngularJS - Leaflet] 'maxBounds' is defined in the current scope, but not correctly initialized.");
                 }
-            }
+            });
         }
     };
 });

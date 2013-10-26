@@ -18,8 +18,6 @@ describe('Directive: leaflet', function() {
         var element = angular.element('<leaflet events="events"></leaflet>');
         element = $compile(element)($rootScope);
         var scope = element.scope();
-        var map = leafletData.getMap();
-
         var check = {};
         var mapEvents = [
             'click',
@@ -62,13 +60,15 @@ describe('Directive: leaflet', function() {
             check[mapEvents[position]] = true;
         }
 
-        for (var k in mapEvents){
-            var eventName = 'leafletDirectiveMap.' + mapEvents[k];
-            // console.log(eventName); // Inspect
-            scope.$on(eventName, setEventTrue(k));
-            map.fireEvent([mapEvents[k]]);
-            expect(check[mapEvents[k]]).toEqual(true);
-        }
+        leafletData.getMap().then(function(map) {
+            for (var k in mapEvents){
+                var eventName = 'leafletDirectiveMap.' + mapEvents[k];
+                // console.log(eventName); // Inspect
+                scope.$on(eventName, setEventTrue(k));
+                map.fireEvent([mapEvents[k]]);
+                expect(check[mapEvents[k]]).toEqual(true);
+            }
+        });
     });
 
     it('should NOT broadcast map events from the rootscope if the event-broadcast option is not an object',function() {
