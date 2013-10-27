@@ -73,7 +73,7 @@ describe('Directive: leaflet', function() {
         $rootScope.$digest();
         leafletData.getPaths().then(function(paths) {
             var polylines = paths.p1;
-            latlngs = polylines.getLatLngs();
+            var latlngs = polylines.getLatLngs();
             expect(latlngs[0][0].lat).toBeCloseTo(0.966);
             expect(latlngs[0][0].lng).toBeCloseTo(2.02);
             expect(latlngs[0][1].lat).toBeCloseTo(2.02);
