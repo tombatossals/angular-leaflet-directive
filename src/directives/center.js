@@ -31,20 +31,16 @@ angular.module("leaflet-directive").directive('center', function ($log, $parse) 
                 var movingMap = false;
 
                 $scope.$watch("center", function(center) {
-
                     if (!isValidCenter(center)) {
                         $log.warn("[AngularJS - Leaflet] invalid 'center'");
                         updateCenter(map, defaults.center);
                         return;
                     }
-
                     if (movingMap) {
                         // Can't update. The map is moving.
                         return;
                     }
-
                     updateCenter(map, center);
-
                 }, true);
 
                 map.on("movestart", function(/* event */) {

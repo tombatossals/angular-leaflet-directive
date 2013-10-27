@@ -13,10 +13,10 @@ module.exports = function(karma) {
             'test/unit/leafletDirectiveSpec.js',
             'test/unit/tilesDirectiveSpec.js',
             'test/unit/centerDirectiveSpec.js',
+            'test/unit/pathsDirectiveSpec.js',
             //'test/unit/layersDirectiveSpec.js',
             //'test/unit/markerDirectiveSpec.js',
             //'test/unit/markersDirectiveSpec.js',
-            //'test/unit/pathsDirectiveSpec.js',
             //'test/unit/eventsDirectiveSpec.js'
         ],
 

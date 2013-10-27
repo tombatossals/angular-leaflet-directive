@@ -2,63 +2,6 @@
 
 "use strict";
 
-/**
- * Copyright (C) 2012 by Matias Niemela
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
-angular.module('Scope.safeApply', []).run(function($rootScope) {
-
-  $rootScope.$safeApply = function() {
-    var $scope, fn, force = false;
-    if(arguments.length === 1) {
-      var arg = arguments[0];
-      if(typeof arg === 'function') {
-        fn = arg;
-      }
-      else {
-        $scope = arg;
-      }
-    }
-    else {
-      $scope = arguments[0];
-      fn = arguments[1];
-      if(arguments.length === 3) {
-        force = !!arguments[2];
-      }
-    }
-    $scope = $scope || this;
-    fn = fn || function() { };
-    if (force || !$scope.$$phase) {
-      if ($scope.$apply) {
-          $scope.$apply(fn);
-      } else {
-          $scope.apply(fn);
-      }
-    }
-    else {
-      fn();
-    }
-  };
-
-});
-
 // Determine if a reference is defined
 function isDefined(value) {
     return angular.isDefined(value);
@@ -402,20 +345,16 @@ angular.module("leaflet-directive").directive('center', function ($log, $parse) 
                 var movingMap = false;
 
                 $scope.$watch("center", function(center) {
-
                     if (!isValidCenter(center)) {
                         $log.warn("[AngularJS - Leaflet] invalid 'center'");
                         updateCenter(map, defaults.center);
                         return;
                     }
-
                     if (movingMap) {
                         // Can't update. The map is moving.
                         return;
                     }
-
                     updateCenter(map, center);
-
                 }, true);
 
                 map.on("movestart", function(/* event */) {
