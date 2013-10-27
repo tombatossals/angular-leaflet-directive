@@ -19,7 +19,7 @@ describe('Directive: leaflet', function() {
     }));
 
     it('should set default tiles if bad tiles structure is provided', function() {
-        angular.extend($rootScope, { tiles: {} });
+        angular.extend($rootScope, {});
         var element = angular.element('<leaflet tiles="tiles"></leaflet>');
         element = $compile(element)($rootScope);
         leafletData.getTiles().then(function(leafletTiles) {
@@ -37,7 +37,7 @@ describe('Directive: leaflet', function() {
         leafletData.getTiles().then(function(leafletTiles) {
             expect(leafletTiles._url).toEqual("http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png");
             $rootScope.tiles.url = "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
-            expect($rootScope.$eval('tiles.url')).toEqual("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png");
+            expect($rootScope.tiles.url).toEqual("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png");
         });
     });
 });

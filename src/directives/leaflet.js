@@ -37,17 +37,17 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
 
             // Set width and height if they are defined
             if (isDefined(attrs.width)) {
-                if (isNumber(attrs.width)) {
-                    element.css('width', attrs.width + 'px');
-                } else {
+                if (isNaN(attrs.width)) {
                     element.css('width', attrs.width);
+                } else {
+                    element.css('width', attrs.width + 'px');
                 }
             }
             if (isDefined(attrs.height)) {
-                if (isNumber(attrs.height)) {
-                    element.css('height', attrs.height + 'px');
-                } else {
+                if (isNaN(attrs.height)) {
                     element.css('height', attrs.height);
+                } else {
+                    element.css('height', attrs.height + 'px');
                 }
             }
 
@@ -55,6 +55,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
             var map = new L.Map(element[0], {
                 maxZoom: defaults.maxZoom,
                 minZoom: defaults.minZoom,
+                zoomControl: defaults.zoomControl,
                 doubleClickZoom: defaults.doubleClickZoom,
                 scrollWheelZoom: defaults.scrollWheelZoom,
                 attributionControl: defaults.attributionControl
@@ -74,13 +75,9 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
                 leafletData.setTiles(tileLayerObj);
             }
 
-            // Set basic controls configuration
+            // Set zoom control configuration
             if (isDefined(map.zoomControl) && isDefined(defaults.zoomControlPosition)) {
                 map.zoomControl.setPosition(defaults.zoomControlPosition);
-            }
-
-            if (isDefined(map.zoomControl) && isDefined(defaults.zoomControl) && defaults.zoomControl === false) {
-                map.zoomControl.removeFrom(map);
             }
         }
     };

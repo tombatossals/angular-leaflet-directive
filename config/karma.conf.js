@@ -12,7 +12,7 @@ module.exports = function(karma) {
             'dist/angular-leaflet-directive.js',
             'test/unit/leafletDirectiveSpec.js',
             'test/unit/tilesDirectiveSpec.js',
-            //'test/unit/centerDirectiveSpec.js',
+            'test/unit/centerDirectiveSpec.js',
             //'test/unit/layersDirectiveSpec.js',
             //'test/unit/markerDirectiveSpec.js',
             //'test/unit/markersDirectiveSpec.js',

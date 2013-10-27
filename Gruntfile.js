@@ -111,6 +111,7 @@ module.exports = function(grunt) {
                     footer: '\n}());'
                 },
                 src: [
+                      'src/modules/Scope.SafeApply.js',
                       'src/main.js',
                       'src/directives/leaflet.js',
                       'src/directives/center.js',

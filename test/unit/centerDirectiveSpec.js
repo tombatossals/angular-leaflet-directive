@@ -5,12 +5,13 @@
 /* jasmine specs for directives go here */
 
 describe('Directive: leaflet center', function() {
-    var $compile = null, $rootScope = null, leafletData = null;
+    var $compile = null, $rootScope = null, $timeout, leafletData = null;
 
     beforeEach(module('leaflet-directive'));
-    beforeEach(inject(function(_$compile_, _$rootScope_, _leafletData_){
+    beforeEach(inject(function(_$compile_, _$rootScope_, _$timeout_, _leafletData_){
         $compile = _$compile_;
         $rootScope = _$rootScope_;
+        $timeout = _$timeout_;
         leafletData = _leafletData_;
     }));
 
@@ -23,7 +24,6 @@ describe('Directive: leaflet center', function() {
         var element = angular.element('<leaflet center="center"></leaflet>');
         element = $compile(element)($rootScope);
         leafletData.getMap().then(function(map) {
-            $rootScope.$digest();
             expect(map.getZoom()).toEqual(1);
             expect(map.getCenter().lat).toEqual(0);
             expect(map.getCenter().lng).toEqual(0);
@@ -56,18 +56,21 @@ describe('Directive: leaflet center', function() {
         angular.extend($rootScope, { center: center });
         var element = angular.element('<leaflet center="center"></leaflet>');
         element = $compile(element)($rootScope);
-        $rootScope.$digest();
-        leafletData.getMap().then(function(map) {
-            expect(map.getCenter().lat).toBeCloseTo(0.966);
-            expect(map.getCenter().lng).toBeCloseTo(2.02);
-            expect(map.getZoom()).toEqual(4);
-            center.lat = 2.02;
-            center.lng = 4.04;
-            center.zoom = 8;
-            $rootScope.$digest();
-            expect(map.getCenter().lat).toBeCloseTo(2.02);
-            expect(map.getCenter().lng).toBeCloseTo(4.04);
-            expect(map.getZoom()).toEqual(8);
+        var map;
+        leafletData.getMap().then(function(leafletMap) {
+            map = leafletMap;
         });
+
+        $rootScope.$apply();
+        expect(map.getCenter().lat).toBeCloseTo(0.966);
+        expect(map.getCenter().lng).toBeCloseTo(2.02);
+        expect(map.getZoom()).toEqual(4);
+        center.lat = 2.02;
+        center.lng = 4.04;
+        center.zoom = 8;
+        $rootScope.$digest();
+        expect(map.getCenter().lat).toBeCloseTo(2.02);
+        expect(map.getCenter().lng).toBeCloseTo(4.04);
+        expect(map.getZoom()).toEqual(8);
     });
 });

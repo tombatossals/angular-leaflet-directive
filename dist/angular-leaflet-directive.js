@@ -2,6 +2,63 @@
 
 "use strict";
 
+/**
+ * Copyright (C) 2012 by Matias Niemela
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+angular.module('Scope.safeApply', []).run(function($rootScope) {
+
+  $rootScope.$safeApply = function() {
+    var $scope, fn, force = false;
+    if(arguments.length === 1) {
+      var arg = arguments[0];
+      if(typeof arg === 'function') {
+        fn = arg;
+      }
+      else {
+        $scope = arg;
+      }
+    }
+    else {
+      $scope = arguments[0];
+      fn = arguments[1];
+      if(arguments.length === 3) {
+        force = !!arguments[2];
+      }
+    }
+    $scope = $scope || this;
+    fn = fn || function() { };
+    if (force || !$scope.$$phase) {
+      if ($scope.$apply) {
+          $scope.$apply(fn);
+      } else {
+          $scope.apply(fn);
+      }
+    }
+    else {
+      fn();
+    }
+  };
+
+});
+
 // Determine if a reference is defined
 function isDefined(value) {
     return angular.isDefined(value);
@@ -53,9 +110,10 @@ function parseMapDefaults(defaults) {
     if (isDefined(defaults)) {
         mapDefaults.maxZoom = isDefined(defaults.maxZoom) ?  parseInt(defaults.maxZoom, 10) : mapDefaults.maxZoom;
         mapDefaults.minZoom = isDefined(defaults.minZoom) ?  parseInt(defaults.minZoom, 10) : mapDefaults.minZoom;
-        mapDefaults.doubleClickZoom = isDefined(defaults.doubleClickZoom) && defaults.doubleClickZoom ?  true: false;
-        mapDefaults.scrollWheelZoom = isDefined(defaults.scrollWheelZoom) && defaults.scrollWheelZoom ?  true: false;
-        mapDefaults.attributionControl = isDefined(defaults.attributionControl) && defaults.attributionControl ?  true: false;
+        mapDefaults.doubleClickZoom = isDefined(defaults.doubleClickZoom) ?  defaults.doubleClickZoom : mapDefaults.doubleClickZoom;
+        mapDefaults.scrollWheelZoom = isDefined(defaults.scrollWheelZoom) ?  defaults.scrollWheelZoom : mapDefaults.doubleClickZoom;
+        mapDefaults.zoomControl = isDefined(defaults.zoomControl) ?  defaults.zoomControl : mapDefaults.zoomControl;
+        mapDefaults.attributionControl = isDefined(defaults.attributionControl) ?  defaults.attributionControl : mapDefaults.attributionControl;
         mapDefaults.tileLayer = isDefined(defaults.tileLayer) ? defaults.tileLayer : mapDefaults.tileLayer;
         mapDefaults.zoomControlPosition = isDefined(defaults.zoomControlPosition) ? defaults.zoomControlPosition : mapDefaults.zoomControlPosition;
         if (isDefined(defaults.tileLayerOptions)) {
@@ -265,17 +323,17 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
 
             // Set width and height if they are defined
             if (isDefined(attrs.width)) {
-                if (isNumber(attrs.width)) {
-                    element.css('width', attrs.width + 'px');
-                } else {
+                if (isNaN(attrs.width)) {
                     element.css('width', attrs.width);
+                } else {
+                    element.css('width', attrs.width + 'px');
                 }
             }
             if (isDefined(attrs.height)) {
-                if (isNumber(attrs.height)) {
-                    element.css('height', attrs.height + 'px');
-                } else {
+                if (isNaN(attrs.height)) {
                     element.css('height', attrs.height);
+                } else {
+                    element.css('height', attrs.height + 'px');
                 }
             }
 
@@ -283,6 +341,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
             var map = new L.Map(element[0], {
                 maxZoom: defaults.maxZoom,
                 minZoom: defaults.minZoom,
+                zoomControl: defaults.zoomControl,
                 doubleClickZoom: defaults.doubleClickZoom,
                 scrollWheelZoom: defaults.scrollWheelZoom,
                 attributionControl: defaults.attributionControl
@@ -302,13 +361,9 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
                 leafletData.setTiles(tileLayerObj);
             }
 
-            // Set basic controls configuration
+            // Set zoom control configuration
             if (isDefined(map.zoomControl) && isDefined(defaults.zoomControlPosition)) {
                 map.zoomControl.setPosition(defaults.zoomControlPosition);
-            }
-
-            if (isDefined(map.zoomControl) && isDefined(defaults.zoomControl) && defaults.zoomControl === false) {
-                map.zoomControl.removeFrom(map);
             }
         }
     };
@@ -328,7 +383,56 @@ angular.module("leaflet-directive").directive('center', function ($log, $parse) 
             var bounds = $scope.bounds;
 
             controller.getMap().then(function(map) {
-                setupCenter(map, center, defaults);
+
+                if (isDefined(center)) {
+                    if (center.autoDiscover === true) {
+                        map.locate({ setView: true, maxZoom: defaults.maxZoom });
+                    }
+
+                    var centerModel = {
+                        lat:  $parse("center.lat"),
+                        lng:  $parse("center.lng"),
+                        zoom: $parse("center.zoom")
+                    };
+                } else {
+                    map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
+                    $log.warn("[AngularJS - Leaflet] 'center' is undefined in the current scope, did you forget to initialize it?");
+                }
+
+                var movingMap = false;
+
+                $scope.$watch("center", function(center) {
+
+                    if (!isValidCenter(center)) {
+                        $log.warn("[AngularJS - Leaflet] invalid 'center'");
+                        updateCenter(map, defaults.center);
+                        return;
+                    }
+
+                    if (movingMap) {
+                        // Can't update. The map is moving.
+                        return;
+                    }
+
+                    updateCenter(map, center);
+
+                }, true);
+
+                map.on("movestart", function(/* event */) {
+                    movingMap = true;
+                });
+
+                map.on("moveend", function(/* event */) {
+                    movingMap = false;
+                    safeApply($scope, function(scope) {
+                        if (centerModel) {
+                            centerModel.lat.assign(scope, map.getCenter().lat);
+                            centerModel.lng.assign(scope, map.getCenter().lng);
+                            centerModel.zoom.assign(scope, map.getZoom());
+                        }
+                        scope.$emit("centerUpdated");
+                    });
+                });
 
                 function updateBoundsInScope(map) {
                     if (!bounds) {
@@ -359,52 +463,6 @@ angular.module("leaflet-directive").directive('center', function ($log, $parse) 
                     return isDefined(center) && isNumber(center.lat) && isNumber(center.lng) && isNumber(center.zoom);
                 }
 
-                function setupCenter(map, center, defaults) {
-                    if (isDefined(center)) {
-                        if (center.autoDiscover === true) {
-                            map.locate({ setView: true, maxZoom: defaults.maxZoom });
-                        }
-
-                        var centerModel = {
-                            lat:  $parse("center.lat"),
-                            lng:  $parse("center.lng"),
-                            zoom: $parse("center.zoom")
-                        };
-                    }
-
-                    var movingMap = false;
-
-                    $scope.$watch("center", function(center) {
-                        if (!isValidCenter(center)) {
-                            $log.warn("[AngularJS - Leaflet] invalid 'center'");
-                            updateCenter(map, defaults.center);
-                            return;
-                        }
-
-                        if (movingMap) {
-                            // Can't update. The map is moving.
-                            return;
-                        }
-
-                        updateCenter(map, center);
-                    }, true);
-
-                    map.on("movestart", function(/* event */) {
-                        movingMap = true;
-                    });
-
-                    map.on("moveend", function(/* event */) {
-                        movingMap = false;
-                        safeApply($scope, function(scope) {
-                            if (centerModel) {
-                                centerModel.lat.assign(scope, map.getCenter().lat);
-                                centerModel.lng.assign(scope, map.getCenter().lng);
-                                centerModel.zoom.assign(scope, map.getZoom());
-                            }
-                            scope.$emit("centerUpdated");
-                        });
-                    });
-                }
             });
         }
     };
@@ -2614,7 +2672,6 @@ angular.module("leaflet-directive").directive('eventBroadcast', function ($log, 
                 function genDispatchMapEvent(eventName, logic) {
                     return function(e) {
                         // Put together broadcast name
-                        // for use in safeApply
                         var broadcastName = 'leafletDirectiveMap.' + eventName;
                         // Safely broadcast the event
                         safeApply($scope, function(scope) {

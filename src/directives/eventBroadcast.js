@@ -25,7 +25,6 @@ angular.module("leaflet-directive").directive('eventBroadcast', function ($log, 
                 function genDispatchMapEvent(eventName, logic) {
                     return function(e) {
                         // Put together broadcast name
-                        // for use in safeApply
                         var broadcastName = 'leafletDirectiveMap.' + eventName;
                         // Safely broadcast the event
                         safeApply($scope, function(scope) {

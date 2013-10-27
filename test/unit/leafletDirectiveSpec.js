@@ -5,12 +5,13 @@
 /* jasmine specs for directives go here */
 
 describe('Directive: leaflet', function() {
-    var $compile = null, $rootScope = null, leafletData = null;
+    var $compile = null, $rootScope = null, $timeout, leafletData = null;
 
     beforeEach(module('leaflet-directive'));
-    beforeEach(inject(function(_$compile_, _$rootScope_, _leafletData_){
+    beforeEach(inject(function(_$compile_, _$rootScope_, _$timeout_, _leafletData_){
         $compile = _$compile_;
         $rootScope = _$rootScope_;
+        $timeout = _$timeout_;
         leafletData = _leafletData_;
     }));
 
@@ -25,10 +26,9 @@ describe('Directive: leaflet', function() {
     });
 
     it('should set default center if not center is provided', function() {
-        var map;
         var element = angular.element('<leaflet></leaflet>');
         element = $compile(element)($rootScope);
-        leafletData.getMap().then(function(map) {
+        leafletData.getMap($rootScope).then(function(map) {
             expect(map.getZoom()).toEqual(1);
             expect(map.getCenter().lat).toEqual(0);
             expect(map.getCenter().lng).toEqual(0);
@@ -126,8 +126,7 @@ describe('Directive: leaflet', function() {
         var element = angular.element('<leaflet defaults="defaults"></leaflet>');
         element = $compile(element)($rootScope);
         leafletData.getMap().then(function(map) {
-            expect($rootScope.$eval(map.zoomControl)).toBe(undefined);
+            expect(map.zoomControl).toBe(undefined);
         });
     });
-
 });
