@@ -14,6 +14,11 @@ describe('Directive: leaflet', function() {
         leafletData = _leafletData_;
     }));
 
+
+    afterEach(inject(function($rootScope) {
+        $rootScope.$apply();
+    }));
+
     it('should broadcast events from the rootscope when triggered leaflet events',function(){
         var element = angular.element('<leaflet events="events"></leaflet>');
         element = $compile(element)($rootScope);

@@ -14,6 +14,11 @@ describe('Directive: leaflet', function() {
         leafletData = _leafletData_;
     }));
 
+
+    afterEach(inject(function($rootScope) {
+        $rootScope.$apply();
+    }));
+
     // Markers
     it('should create markers on the map', function() {
         var markers = {
@@ -29,9 +34,8 @@ describe('Directive: leaflet', function() {
         angular.extend($rootScope, { markers: markers });
         var element = angular.element('<leaflet markers="markers"></leaflet>');
         element = $compile(element)($rootScope);
-        var map = leafletData.getMap();
+        $rootScope.$digest();
         leafletData.getMarkers().then(function(leafletMarkers) {
-            $rootScope.$digest();
             expect(leafletMarkers.paris.getLatLng().lat).toBeCloseTo(0.966);
             expect(leafletMarkers.paris.getLatLng().lng).toBeCloseTo(2.02);
             expect(leafletMarkers.madrid.getLatLng().lat).toBeCloseTo(2.02);
@@ -40,7 +44,7 @@ describe('Directive: leaflet', function() {
     });
 
     it('should detect errors in lat-lng (undefined lat) when marker is updated', function() {
-        var markers = {
+        var mainMarkers = {
             paris: {
                 lat: 0.966,
                 lng: 2.02
@@ -50,21 +54,26 @@ describe('Directive: leaflet', function() {
                 lng: 4.04
             }
         };
-        angular.extend($rootScope, { markers: markers });
+        angular.extend($rootScope, { markers: mainMarkers });
         var element = angular.element('<leaflet markers="markers"></leaflet>');
         element = $compile(element)($rootScope);
-        var map = leafletData.getMap();
-        leafletData.getMarkers().then(function(leafletMarkers) {
-            $rootScope.$digest();
-            expect(map.hasLayer(leafletMarkers.madrid)).toBe(true);
-            delete markers.madrid.lat;
-            $rootScope.$digest();
-            expect(map.hasLayer(leafletMarkers.madrid)).toBe(false);
+        var map;
+        map = leafletData.getMap().then(function(leafletMap) {
+            map = leafletMap;
         });
+        var markers;
+        leafletData.getMarkers().then(function(leafletMarkers) {
+            markers = leafletMarkers;
+        });
+        $rootScope.$digest();
+        expect(map.hasLayer(markers.madrid)).toBe(true);
+        delete markers.madrid.lat;
+        $rootScope.$digest();
+        expect(map.hasLayer(markers.madrid)).toBe(false);
     });
 
     it('should detect errors in lat-lng (null lat) when marker is updated', function() {
-        var markers = {
+        var mainMarkers = {
             paris: {
                 lat: 0.966,
                 lng: 2.02
@@ -74,17 +83,23 @@ describe('Directive: leaflet', function() {
                 lng: 4.04
             }
         };
-        angular.extend($rootScope, { markers: markers });
+        angular.extend($rootScope, { markers: mainMarkers });
         var element = angular.element('<leaflet markers="markers"></leaflet>');
         element = $compile(element)($rootScope);
-        var map = leafletData.getMap();
-        leafletData.getMarkers().then(function(leafletMarkers) {
-            $rootScope.$digest();
-            expect(map.hasLayer(leafletMarkers.madrid)).toBe(true);
-            markers.madrid.lat = null;
-            $rootScope.$digest();
-            expect(map.hasLayer(leafletMarkers.madrid)).toBe(false);
+        var map;
+        map = leafletData.getMap().then(function(leafletMap) {
+            map = leafletMap;
         });
+        var markers;
+        leafletData.getMarkers().then(function(leafletMarkers) {
+            markers = leafletMarkers;
+        });
+
+        $rootScope.$digest();
+        expect(map.hasLayer(markers.madrid)).toBe(true);
+        markers.madrid.lat = null;
+        $rootScope.$digest();
+        expect(map.hasLayer(markers.madrid)).toBe(false);
     });
 
     it('should detect errors in lat-lng (lat is NaN) when marker is updated', function() {
