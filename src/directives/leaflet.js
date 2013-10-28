@@ -51,6 +51,10 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
                 }
             }
 
+            if (isDefined(attrs.marker)) {
+                 $log.warn("[AngularJS - Leaflet] The 'marker' property is currently deprecated, please use the 'markers' property instead.");
+            }
+
             // Create the Leaflet Map Object with the options
             var map = new L.Map(element[0], {
                 maxZoom: defaults.maxZoom,
