@@ -326,7 +326,7 @@ describe('Directive: leaflet', function() {
                 layer: 'trucks'
             }
         };
-        var layers = {
+        var mainLayers = {
             baselayers: {
                 osm: {
                     name: 'OpenStreetMap',
@@ -352,7 +352,7 @@ describe('Directive: leaflet', function() {
                 }
             }
         };
-        angular.extend($rootScope, { markers: mainMarkers, layers: layers });
+        angular.extend($rootScope, { markers: mainMarkers, layers: mainLayers });
         var element = angular.element('<leaflet markers="markers" layers="layers"></leaflet>');
         element = $compile(element)($rootScope);
         var map;
@@ -374,23 +374,21 @@ describe('Directive: leaflet', function() {
         expect(map.hasLayer(markers.madrid)).toBe(false); // Layer is hidden
         $rootScope.$digest();
         expect(overlays.trucks.hasLayer(markers.madrid)).toBe(true);
-        markers.madrid.lng = "not a number :P";
+        mainMarkers.madrid.lng = "not a number :P";
         $rootScope.$digest();
         expect(map.hasLayer(markers.madrid)).toBe(false);
-        console.log(overlays.trucks.hasLayer(markers.madrid));
         expect(overlays.trucks.hasLayer(markers.madrid)).toBe(false);
         $rootScope.$digest();
         expect(map.hasLayer(markers.paris)).toBe(true); // Layer is shown
         expect(overlays.cars.hasLayer(markers.paris)).toBe(true);
-        markers.paris.lat = "not a number :P";
+        mainMarkers.paris.lat = "not a number :P";
         $rootScope.$digest();
         expect(map.hasLayer(markers.paris)).toBe(false);
         expect(overlays.cars.hasLayer(markers.paris)).toBe(false);
     });
 
-    /*
     it('should detect errors in lat-lng (lng not a number) when marker is updated in a layer markercluster', function() {
-        var markers = {
+        var mainMarkers = {
             paris: {
                 lat: 0.966,
                 lng: 2.02,
@@ -402,7 +400,7 @@ describe('Directive: leaflet', function() {
                 layer: 'trucks'
             }
         };
-        var layers = {
+        var mainLayers = {
             baselayers: {
                 osm: {
                     name: 'OpenStreetMap',
@@ -428,31 +426,42 @@ describe('Directive: leaflet', function() {
                 }
             }
         };
-        angular.extend($rootScope, { markers: markers, layers: layers });
+        angular.extend($rootScope, { markers: mainMarkers, layers: mainLayers });
         var element = angular.element('<leaflet markers="markers" layers="layers"></leaflet>');
         element = $compile(element)($rootScope);
-        var map = leafletData.getMap();
-        leafletData.getMarkers().then(function(leafletMarkers) {
-            var overlays = leafletData.getLayers().overlays;
-            $rootScope.$digest();
-            expect(map.hasLayer(leafletMarkers.madrid)).toBe(false); // Layer is markercluster
-            expect(overlays.trucks.hasLayer(leafletMarkers.madrid)).toBe(true);
-            markers.madrid.lng = "not a number :P";
-            $rootScope.$digest();
-            expect(map.hasLayer(leafletMarkers.madrid)).toBe(false);
-            expect(overlays.trucks.hasLayer(leafletMarkers.madrid)).toBe(false);
-            $rootScope.$digest();
-            expect(map.hasLayer(leafletMarkers.paris)).toBe(false); // Layer is markercluster
-            expect(overlays.cars.hasLayer(leafletMarkers.paris)).toBe(true);
-            markers.paris.lat = "not a number :P";
-            $rootScope.$digest();
-            expect(map.hasLayer(leafletMarkers.paris)).toBe(false);
-            expect(overlays.cars.hasLayer(leafletMarkers.paris)).toBe(false);
+        var map;
+        leafletData.getMap().then(function(leafletMap) {
+            map = leafletMap;
         });
+
+        var markers;
+        leafletData.getMarkers().then(function(leafletMarkers) {
+            markers = leafletMarkers;
+        });
+        $rootScope.$digest();
+        var layers;
+        leafletData.getLayers().then(function(leafletLayers) {
+            layers = leafletLayers;
+        });
+        $rootScope.$digest();
+        var overlays = layers.overlays;
+        expect(map.hasLayer(markers.madrid)).toBe(false); // Layer is markercluster
+        expect(overlays.trucks.hasLayer(markers.madrid)).toBe(true);
+        mainMarkers.madrid.lng = "not a number :P";
+        $rootScope.$digest();
+        expect(map.hasLayer(markers.madrid)).toBe(false);
+        expect(overlays.trucks.hasLayer(markers.madrid)).toBe(false);
+        $rootScope.$digest();
+        expect(map.hasLayer(markers.paris)).toBe(false); // Layer is markercluster
+        expect(overlays.cars.hasLayer(markers.paris)).toBe(true);
+        mainMarkers.paris.lat = "not a number :P";
+        $rootScope.$digest();
+        expect(map.hasLayer(markers.paris)).toBe(false);
+        expect(overlays.cars.hasLayer(markers.paris)).toBe(false);
     });
 
     it('should update lat-lng when marker is updated', function() {
-        var markers = {
+        var mainMarkers = {
             paris: {
                 lat: 0.966,
                 lng: 2.02
@@ -462,31 +471,42 @@ describe('Directive: leaflet', function() {
                 lng: 4.04
             }
         };
-        angular.extend($rootScope, { markers: markers });
+        angular.extend($rootScope, { markers: mainMarkers });
         var element = angular.element('<leaflet markers="markers"></leaflet>');
         element = $compile(element)($rootScope);
-        var map = leafletData.getMap();
-        leafletData.getMarkers().then(function(leafletMarkers) {
-            $rootScope.$digest();
-            expect(leafletMarkers.paris.getLatLng().lat).toBeCloseTo(0.966);
-            expect(leafletMarkers.paris.getLatLng().lng).toBeCloseTo(2.02);
-            expect(leafletMarkers.madrid.getLatLng().lat).toBeCloseTo(2.02);
-            expect(leafletMarkers.madrid.getLatLng().lng).toBeCloseTo(4.04);
-            markers.madrid.lng = 1.23;
-            markers.madrid.lat = 4.56;
-            markers.paris.lng = 7.89;
-            markers.paris.lat = 0.98;
-            $rootScope.$digest();
-            expect(leafletMarkers.paris.getLatLng().lat).toBeCloseTo(0.98);
-            expect(leafletMarkers.paris.getLatLng().lng).toBeCloseTo(7.89);
-            expect(leafletMarkers.madrid.getLatLng().lat).toBeCloseTo(4.56);
-            expect(leafletMarkers.madrid.getLatLng().lng).toBeCloseTo(1.23);
+        var map;
+        leafletData.getMap().then(function(leafletMap) {
+            map = leafletMap;
         });
+
+        var markers;
+        leafletData.getMarkers().then(function(leafletMarkers) {
+            markers = leafletMarkers;
+        });
+        $rootScope.$digest();
+        var layers;
+        leafletData.getLayers().then(function(leafletLayers) {
+            layers = leafletLayers;
+        });
+        $rootScope.$digest();
+        expect(markers.paris.getLatLng().lat).toBeCloseTo(0.966);
+        expect(markers.paris.getLatLng().lng).toBeCloseTo(2.02);
+        expect(markers.madrid.getLatLng().lat).toBeCloseTo(2.02);
+        expect(markers.madrid.getLatLng().lng).toBeCloseTo(4.04);
+        mainMarkers.madrid.lng = 1.23;
+        mainMarkers.madrid.lat = 4.56;
+        mainMarkers.paris.lng = 7.89;
+        mainMarkers.paris.lat = 0.98;
+        $rootScope.$digest();
+        expect(markers.paris.getLatLng().lat).toBeCloseTo(0.98);
+        expect(markers.paris.getLatLng().lng).toBeCloseTo(7.89);
+        expect(markers.madrid.getLatLng().lat).toBeCloseTo(4.56);
+        expect(markers.madrid.getLatLng().lng).toBeCloseTo(1.23);
     });
 
     it('should update lat-lng when marker is updated in a layer markercluster', function() {
         // This case is tested because in a marker cluster the marker has to be removed from the layer
-        var markers = {
+        var mainMarkers = {
             paris: {
                 lat: 0.966,
                 lng: 2.02,
@@ -498,7 +518,7 @@ describe('Directive: leaflet', function() {
                 layer: 'trucks'
             }
         };
-        var layers = {
+        var mainLayers = {
             baselayers: {
                 osm: {
                     name: 'OpenStreetMap',
@@ -524,55 +544,70 @@ describe('Directive: leaflet', function() {
                 }
             }
         };
-        angular.extend($rootScope, { markers: markers, layers: layers });
+        angular.extend($rootScope, { markers: mainMarkers, layers: mainLayers });
         var element = angular.element('<leaflet markers="markers" layers="layers"></leaflet>');
         element = $compile(element)($rootScope);
-        var map = leafletData.getMap();
-        leafletData.getMarkers().then(function(leafletMarkers) {
-            var overlays = leafletData.getLayers().overlays;
-            $rootScope.$digest();
-            expect(map.hasLayer(leafletMarkers.madrid)).toBe(false); // Layer is markercluster
-            expect(overlays.trucks.hasLayer(leafletMarkers.madrid)).toBe(true);
-            expect(map.hasLayer(leafletMarkers.paris)).toBe(false); // Layer is markercluster
-            expect(overlays.cars.hasLayer(leafletMarkers.paris)).toBe(true);
-            expect(leafletMarkers.paris.getLatLng().lat).toBeCloseTo(0.966);
-            expect(leafletMarkers.paris.getLatLng().lng).toBeCloseTo(2.02);
-            expect(leafletMarkers.madrid.getLatLng().lat).toBeCloseTo(2.02);
-            expect(leafletMarkers.madrid.getLatLng().lng).toBeCloseTo(4.04);
-            markers.madrid.lng = 1.23;
-            markers.madrid.lat = 4.56;
-            markers.paris.lng = 7.89;
-            markers.paris.lat = 0.98;
-            $rootScope.$digest();
-            expect(map.hasLayer(leafletMarkers.madrid)).toBe(false);
-            expect(overlays.trucks.hasLayer(leafletMarkers.madrid)).toBe(true);
-            expect(map.hasLayer(leafletMarkers.paris)).toBe(false);
-            expect(overlays.cars.hasLayer(leafletMarkers.paris)).toBe(true);
-            expect(leafletMarkers.paris.getLatLng().lat).toBeCloseTo(0.98);
-            expect(leafletMarkers.paris.getLatLng().lng).toBeCloseTo(7.89);
-            expect(leafletMarkers.madrid.getLatLng().lat).toBeCloseTo(4.56);
-            expect(leafletMarkers.madrid.getLatLng().lng).toBeCloseTo(1.23);
+        var map;
+        leafletData.getMap().then(function(leafletMap) {
+            map = leafletMap;
         });
+
+        var markers;
+        leafletData.getMarkers().then(function(leafletMarkers) {
+            markers = leafletMarkers;
+        });
+        $rootScope.$digest();
+        var layers;
+        leafletData.getLayers().then(function(leafletLayers) {
+            layers = leafletLayers;
+        });
+        $rootScope.$digest();
+        var overlays = layers.overlays;
+        expect(map.hasLayer(markers.madrid)).toBe(false); // Layer is markercluster
+        expect(overlays.trucks.hasLayer(markers.madrid)).toBe(true);
+        expect(map.hasLayer(markers.paris)).toBe(false); // Layer is markercluster
+        expect(overlays.cars.hasLayer(markers.paris)).toBe(true);
+        expect(markers.paris.getLatLng().lat).toBeCloseTo(0.966);
+        expect(markers.paris.getLatLng().lng).toBeCloseTo(2.02);
+        expect(markers.madrid.getLatLng().lat).toBeCloseTo(2.02);
+        expect(markers.madrid.getLatLng().lng).toBeCloseTo(4.04);
+        mainMarkers.madrid.lng = 1.23;
+        mainMarkers.madrid.lat = 4.56;
+        mainMarkers.paris.lng = 7.89;
+        mainMarkers.paris.lat = 0.98;
+        $rootScope.$digest();
+        expect(map.hasLayer(markers.madrid)).toBe(false);
+        expect(overlays.trucks.hasLayer(markers.madrid)).toBe(true);
+        expect(map.hasLayer(markers.paris)).toBe(false);
+        expect(overlays.cars.hasLayer(markers.paris)).toBe(true);
+        expect(markers.paris.getLatLng().lat).toBeCloseTo(0.98);
+        expect(markers.paris.getLatLng().lng).toBeCloseTo(7.89);
+        expect(markers.madrid.getLatLng().lat).toBeCloseTo(4.56);
+        expect(markers.madrid.getLatLng().lng).toBeCloseTo(1.23);
     });
 
-
     it('should bind popup to marker if message is given', function() {
-        var markers = {
+        var mainMarkers = {
             paris: {
                 lat: 0.966,
                 lng: 2.02,
                 message: 'this is paris'
             }
         };
-        angular.extend($rootScope, { markers: markers});
+        angular.extend($rootScope, { markers: mainMarkers});
         var element = angular.element('<leaflet markers="markers"></leaflet>');
         element = $compile(element)($rootScope);
-        var map = leafletData.getMap();
-        leafletData.getMarkers().then(function(leafletMarkers) {
-            $rootScope.$digest();
-            expect(leafletMarkers.paris._popup._content)
-                .toEqual('this is paris');
+        var map;
+        leafletData.getMap().then(function(leafletMap) {
+            map = leafletMap;
         });
+
+        var markers;
+        leafletData.getMarkers().then(function(leafletMarkers) {
+            markers = leafletMarkers;
+        });
+        $rootScope.$digest();
+        expect(markers.paris._popup._content).toEqual('this is paris');
     });
 
     it('should watch marker icon bindings', function() {
@@ -594,7 +629,7 @@ describe('Directive: leaflet', function() {
             shadowSize: [41, 41],
             shadowAnchor: [12, 40]
         });
-        var markers = {
+        var mainMarkers = {
             m1: {
                 lat: 51.505,
                 lng: -0.09,
@@ -603,17 +638,17 @@ describe('Directive: leaflet', function() {
             },
         };
 
-        angular.extend($rootScope, { markers: markers });
+        angular.extend($rootScope, { markers: mainMarkers });
         var element = angular.element('<leaflet markers="markers"></leaflet>');
         element = $compile(element)($rootScope);
+        var markers;
         leafletData.getMarkers().then(function(leafletMarkers) {
-            $rootScope.$digest();
-            expect(leafletMarkers.m1.options.icon.iconUrl).toEqual(leaf_icon.iconUrl);
-
-            markers.m1.icon = default_icon;
-            $rootScope.$digest();
-            expect(leafletMarkers.m1.options.icon.iconUrl).toEqual(default_icon.iconUrl);
+            markers = leafletMarkers;
         });
+        $rootScope.$digest();
+        expect(markers.m1.options.icon.iconUrl).toEqual(leaf_icon.iconUrl);
+        markers.m1.icon = default_icon;
+        $rootScope.$digest();
+        expect(markers.m1.options.icon.iconUrl).toEqual(default_icon.iconUrl);
     });
-    */
 });
