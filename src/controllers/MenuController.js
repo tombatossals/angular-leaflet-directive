@@ -18,8 +18,8 @@ app.controller("MenuController", [ '$scope', '$location', function($scope, $loca
             description: 'Events'
         },
         {
-            key: 'main-marker',
-            description: 'Main Marker'
+            key: 'marker',
+            description: 'Marker'
         },
         {
             key: 'dragging-markers',

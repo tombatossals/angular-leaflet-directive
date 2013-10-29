@@ -286,19 +286,21 @@ app.controller("MainController", [ '$scope', '$route', '$routeParams', '$locatio
     });
 }]);
 
-app.controller("MainMarkerController", [ '$scope', function($scope) {
+app.controller("MarkerController", [ '$scope', function($scope) {
     angular.extend($scope, {
         osloCenter: {
             lat: 59.91,
             lng: 10.75,
             zoom: 12
         },
-        osloMarker: {
-            lat: 59.91,
-            lng: 10.75,
-            message: "I want to travel here!",
-            focus: true,
-            draggable: false
+        markers: {
+            osloMarker: {
+                lat: 59.91,
+                lng: 10.75,
+                message: "I want to travel here!",
+                focus: true,
+                draggable: false
+            }
         },
         defaults: {
             scrollWheelZoom: false
@@ -326,8 +328,8 @@ app.controller("MenuController", [ '$scope', '$location', function($scope, $loca
             description: 'Events'
         },
         {
-            key: 'main-marker',
-            description: 'Main Marker'
+            key: 'marker',
+            description: 'Marker'
         },
         {
             key: 'dragging-markers',

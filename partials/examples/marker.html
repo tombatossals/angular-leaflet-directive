@@ -1,5 +1,5 @@
-<div class="col-md-10" ng-controller="MainMarkerController">
-    <leaflet marker="osloMarker" center="osloCenter" defaults="defaults"></leaflet>
+<div class="col-md-10" ng-controller="MarkerController">
+    <leaflet markers="markers" center="osloCenter" defaults="defaults"></leaflet>
     <h2>Main marker example</h2>
     <p>You can add a marker to your map easy using the <strong>marker</strong> property on the leaflet tag:</p>
     <ul class="nav nav-tabs">
@@ -8,10 +8,10 @@
     </ul>
     <div class="tab-container" ng-switch on="activeTab">
         <div hljs ng-switch-default>
-<div ng-controller="MainMarkerController">
-    <leaflet marker="osloMarker" center="osloCenter"></leaflet>
+<div ng-controller="MarkerController">
+    <leaflet markers="markers" center="osloCenter"></leaflet>
 </div></div>
-        <div hljs ng-switch-when="javascript" include="'src/controllers/MainMarkerController.js'"></div>
+        <div hljs ng-switch-when="javascript" include="'src/controllers/MarkerController.js'"></div>
     </div>
-    <p>You can also see the code demonstrating this feature in the <a href="examples/main-marker-example.html">main marker example demo</a>.</p>
+    <p>You can also see the code demonstrating this feature in the <a href="examples/marker-example.html">main marker example demo</a>.</p>
 </div>

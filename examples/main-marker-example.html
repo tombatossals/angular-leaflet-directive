@@ -17,20 +17,22 @@
                     lng: -0.09,
                     zoom: 8
                 },
-                main_marker: {
-                    lat: 51,
-                    lng: 0,
-                    focus: true,
-                    message: "Hey, drag me if you want",
-                    title: "Marker",
-                    draggable: true
+                markers: {
+                    main_marker: {
+                        lat: 51,
+                        lng: 0,
+                        focus: true,
+                        message: "Hey, drag me if you want",
+                        title: "Marker",
+                        draggable: true
+                    }
                 }
             });
         };
     </script>
   </head>
   <body ng-controller="DemoController">
-      <leaflet center="london" marker="main_marker" height="480px" width="640px">
+      <leaflet center="london" markers="markers" height="480px" width="640px">
       </leaflet>
   </body>
 </html>
