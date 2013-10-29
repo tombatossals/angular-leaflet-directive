@@ -369,15 +369,15 @@ describe('Directive: leaflet', function() {
         leafletData.getLayers().then(function(leafletLayers) {
             layers = leafletLayers;
         });
-        var overlays = layers.overlays;
         $rootScope.$digest();
+        var overlays = layers.overlays;
         expect(map.hasLayer(markers.madrid)).toBe(false); // Layer is hidden
         $rootScope.$digest();
-        console.log(overlays.trucks);
         expect(overlays.trucks.hasLayer(markers.madrid)).toBe(true);
         markers.madrid.lng = "not a number :P";
         $rootScope.$digest();
         expect(map.hasLayer(markers.madrid)).toBe(false);
+        console.log(overlays.trucks.hasLayer(markers.madrid));
         expect(overlays.trucks.hasLayer(markers.madrid)).toBe(false);
         $rootScope.$digest();
         expect(map.hasLayer(markers.paris)).toBe(true); // Layer is shown
