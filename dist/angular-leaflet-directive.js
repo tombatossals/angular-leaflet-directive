@@ -244,7 +244,6 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
             paths: '=paths',
             tiles: '=tiles',
             layers: '=layers',
-            events: '=events',
             customControls: '=customControls',
             eventBroadcast: '=eventBroadcast'
         },
