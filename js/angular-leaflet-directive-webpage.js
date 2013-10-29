@@ -143,6 +143,12 @@ app.controller("EventsController", [ '$scope', function($scope) {
         },
         defaults: {
             scrollWheelZoom: false
+        },
+        events: {
+            map: {
+                enable: ['zoomstart', 'drag', 'click', 'mousemove'],
+                logic: 'emit'
+            }
         }
     });
 
