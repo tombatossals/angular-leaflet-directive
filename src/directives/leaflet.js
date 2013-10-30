@@ -59,6 +59,8 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
             var map = new L.Map(element[0], {
                 maxZoom: defaults.maxZoom,
                 minZoom: defaults.minZoom,
+                keyboard: defaults.keyboard,
+                dragging: defaults.dragging,
                 zoomControl: defaults.zoomControl,
                 doubleClickZoom: defaults.doubleClickZoom,
                 scrollWheelZoom: defaults.scrollWheelZoom,

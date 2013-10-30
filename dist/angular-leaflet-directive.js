@@ -59,6 +59,9 @@ function parseMapDefaults(defaults) {
         mapDefaults.attributionControl = isDefined(defaults.attributionControl) ?  defaults.attributionControl : mapDefaults.attributionControl;
         mapDefaults.tileLayer = isDefined(defaults.tileLayer) ? defaults.tileLayer : mapDefaults.tileLayer;
         mapDefaults.zoomControlPosition = isDefined(defaults.zoomControlPosition) ? defaults.zoomControlPosition : mapDefaults.zoomControlPosition;
+        mapDefaults.keyboard = isDefined(defaults.keyboard) ? defaults.keyboard : mapDefaults.keyboard;
+        mapDefaults.dragging = isDefined(defaults.dragging) ? defaults.dragging : mapDefaults.dragging;
+
         if (isDefined(defaults.tileLayerOptions)) {
             angular.copy(defaults.tileLayerOptions, mapDefaults.tileLayerOptions);
         }
@@ -70,6 +73,8 @@ function _getMapDefaults() {
     return {
         maxZoom: 14,
         minZoom: 1,
+        keyboard: true,
+        dragging: true,
         doubleClickZoom: true,
         scrollWheelZoom: true,
         zoomControl: true,
@@ -288,6 +293,8 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
             var map = new L.Map(element[0], {
                 maxZoom: defaults.maxZoom,
                 minZoom: defaults.minZoom,
+                keyboard: defaults.keyboard,
+                dragging: defaults.dragging,
                 zoomControl: defaults.zoomControl,
                 doubleClickZoom: defaults.doubleClickZoom,
                 scrollWheelZoom: defaults.scrollWheelZoom,
