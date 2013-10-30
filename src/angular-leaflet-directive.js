@@ -7,6 +7,8 @@ leafletDirective.directive('leaflet', function ($http, $log, $parse, $rootScope)
         minZoom: 1,
         doubleClickZoom: true,
         scrollWheelZoom: true,
+        keyboard: true,
+        dragging: true,
         zoomControl: true,
         attributionControl: true,
         zoomsliderControl: false,
@@ -225,6 +227,8 @@ leafletDirective.directive('leaflet', function ($http, $log, $parse, $rootScope)
                 parseInt($scope.defaults.minZoom, 10) : defaults.minZoom;
             $scope.leaflet.doubleClickZoom = !!(attrs.defaults && $scope.defaults && (typeof($scope.defaults.doubleClickZoom) === "boolean") ) ? $scope.defaults.doubleClickZoom  : defaults.doubleClickZoom;
             $scope.leaflet.scrollWheelZoom = !!(attrs.defaults && $scope.defaults && (typeof($scope.defaults.scrollWheelZoom) === "boolean") ) ? $scope.defaults.scrollWheelZoom  : defaults.scrollWheelZoom;
+            $scope.leaflet.keyboard = !!(attrs.defaults && $scope.defaults && (typeof($scope.defaults.keyboard) === "boolean") ) ? $scope.defaults.keyboard  : defaults.keyboard;
+            $scope.leaflet.dragging = !!(attrs.defaults && $scope.defaults && (typeof($scope.defaults.dragging) === "boolean") ) ? $scope.defaults.dragging  : defaults.dragging;
             $scope.leaflet.attributionControl = !!(attrs.defaults && $scope.defaults && (typeof($scope.defaults.attributionControl) === "boolean") ) ? $scope.defaults.attributionControl : defaults.attributionControl;
 
             overrideMinZoomIfMaxBoundsSet();
@@ -233,6 +237,8 @@ leafletDirective.directive('leaflet', function ($http, $log, $parse, $rootScope)
                 minZoom: $scope.leaflet.minZoom,
                 doubleClickZoom: $scope.leaflet.doubleClickZoom,
                 scrollWheelZoom: $scope.leaflet.scrollWheelZoom,
+                keyboard: $scope.leaflet.keyboard,
+                dragging: $scope.leaflet.dragging,
                 attributionControl: $scope.leaflet.attributionControl
             });
             var layers = null;
