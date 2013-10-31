@@ -302,7 +302,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
             });
 
             $scope.leafletMap.resolve(map);
-            leafletData.setMap(map);
+            leafletData.setMap(map, attrs.id);
 
             if (!isDefined(attrs.center)) {
                  $log.warn("[AngularJS - Leaflet] 'center' is undefined in the current scope, did you forget to initialize it?");
@@ -1834,7 +1834,9 @@ angular.module("leaflet-directive").directive('maxbounds', function ($log) {
 });
 
 angular.module("leaflet-directive").service('leafletData', function ($log, $q) {
-    var map = $q.defer();
+    var maps = {
+        main: $q.defer()
+    };
     var tiles = $q.defer();
     var layers = $q.defer();
     var paths = $q.defer();
@@ -1842,11 +1844,32 @@ angular.module("leaflet-directive").service('leafletData', function ($log, $q) {
     var markers = $q.defer();
     var defaults = {};
 
-    this.setMap = function(leafletMap) {
+    this.setMap = function(leafletMap, scopeId) {
+        if (!isDefined(scopeId)) {
+            scopeId = "main";
+        }
+
+        var map;
+        if (!isDefined(maps[scopeId])) {
+            map = $q.defer();
+            maps[scopeId] = map;
+        } else {
+            map = maps[scopeId];
+        }
         map.resolve(leafletMap);
     };
 
-    this.getMap = function() {
+    this.getMap = function(scopeId) {
+        if (!isDefined(scopeId)) {
+            scopeId = "main";
+        }
+        var map;
+        if (!isDefined(maps[scopeId])) {
+            map = $q.defer();
+            maps[scopeId] = map;
+        } else {
+            map = maps[scopeId];
+        }
         return map.promise;
     };
 
