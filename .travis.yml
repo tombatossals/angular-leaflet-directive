@@ -1,5 +1,3 @@
-branches:
-  only:
-    - master
-    - gh-pages
-language: javascript
+language: node_js
+node_js:
+  - "0.10"

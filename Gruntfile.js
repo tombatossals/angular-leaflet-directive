@@ -150,5 +150,5 @@ module.exports = function(grunt) {
     grunt.registerTask('test', ['karma:unit', 'test:e2e']);
     grunt.registerTask('server', ['connect:server']);
     grunt.registerTask('default', ['karma:background', 'watch']);
-
+    grunt.registerTask('travis', 'test');
 };

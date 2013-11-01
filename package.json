@@ -29,5 +29,8 @@
     "grunt-ngmin": "latest",
     "karma": "latest",
     "karma-ng-scenario": "latest"
+  },
+  "scripts": {
+    "test": "grunt travis --verbose"
   }
 }
