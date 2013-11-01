@@ -8,3 +8,4 @@ libpeerconnection.log
 .project
 node_modules
 dist/angular-leaflet-directive.ngmin.js
+dist/angular-leaflet-directive.min.no-header.js
