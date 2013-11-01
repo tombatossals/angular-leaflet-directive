@@ -8,7 +8,7 @@ module.exports = function(grunt) {
             },
             dist: {
                 files: {
-                    'dist/<%= pkg.name %>.min.js': ['dist/angular-leaflet-directive.ngmin.js']
+                    'dist/<%= pkg.name %>.min.no-header.js': ['dist/angular-leaflet-directive.ngmin.js']
                 }
             }
         },
@@ -31,12 +31,13 @@ module.exports = function(grunt) {
                 browser: true,
                 globals: {
                     angular: true,
+                    console: true,
                     module: true,
                     L: true,
                 }
             },
             source: {
-                src: ['src/angular-leaflet-directive.js']
+                src: ['dist/angular-leaflet-directive.js']
             },
             tests: {
                 src: ['test/unit/*.js', 'test/e2e/*.js'],
@@ -75,7 +76,7 @@ module.exports = function(grunt) {
         ngmin: {
             directives: {
                 expand: true,
-                cwd: 'src',
+                cwd: 'dist',
                 src: ['angular-leaflet-directive.js'],
                 dest: 'dist',
                 ext: '.ngmin.js',
@@ -84,20 +85,64 @@ module.exports = function(grunt) {
         },
         watch: {
             source: {
-                files: ['src/angular-leaflet-directive.js', 'test/unit/*.js', 'test/e2e/*.js'],
-                tasks: [ 'karma:background:run', 'jshint', 'ngmin', 'uglify' ]
+                files: [
+                        'src/**/*.js',
+                        'test/unit/*.js',
+                        'test/e2e/*.js'
+                       ],
+                tasks: [
+                        'karma:background:run',
+                        'concat:dist',
+                        'jshint',
+                        'ngmin',
+                        'uglify',
+                        'concat:license'
+                       ]
             },
             grunt: {
                 files: ['Gruntfile.js'],
                 tasks: ['jshint:grunt']
             }
-        }
+        },
+        concat: {
+            dist: {
+                options: {
+                    banner: '(function() {\n\n"use strict";\n\n',
+                    footer: '\n}());'
+                },
+                src: [
+                      'src/modules/Scope.SafeApply.js',
+                      'src/main.js',
+                      'src/directives/leaflet.js',
+                      'src/directives/center.js',
+                      'src/directives/tiles.js',
+                      'src/directives/legend.js',
+                      'src/directives/geojson.js',
+                      'src/directives/layers.js',
+                      'src/directives/bounds.js',
+                      'src/directives/markers.js',
+                      'src/directives/paths.js',
+                      'src/directives/eventBroadcast.js',
+                      'src/directives/maxBounds.js',
+                      'src/services/leafletData.js'
+                     ],
+                dest: 'dist/angular-leaflet-directive.js',
+            },
+            license: {
+                src: [
+                      'src/header-MIT-license.txt',
+                      'dist/angular-leaflet-directive.min.no-header.js'
+                     ],
+                dest: 'dist/angular-leaflet-directive.min.js',
+            }
+        },
     });
 
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-karma');
     grunt.loadNpmTasks('grunt-ngmin');
 
