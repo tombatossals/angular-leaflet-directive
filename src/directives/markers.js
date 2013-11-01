@@ -35,7 +35,7 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                 });
 
                 var leafletMarkers = {};
-                leafletData.setMarkers(leafletMarkers);
+                leafletData.setMarkers(leafletMarkers, attrs.id);
 
                 if (!isDefined(markers)) {
                     return;

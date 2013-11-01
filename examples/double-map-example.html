@@ -16,14 +16,7 @@
     </style>
     <script>
         var app = angular.module("demoapp", ["leaflet-directive"]);
-        app.controller("MoveMarkerController", [ "$scope", "leafletData", function($scope, leafletData) {
-            $scope.getLeafletMapObject = function(name) {
-                leafletData.getMap(name).then(function(map) {
-                    console.log(map);
-                });
-            };
-        }]);
-        app.controller("FirstMapController", [ "$scope", "leafletData", function($scope, leafletData) {
+        app.controller("FirstMapController", [ "$scope", "$log", "leafletData", function($scope, $log, leafletData) {
             angular.extend($scope, {
                 london: {
                     lat: 51.505,
@@ -40,38 +33,39 @@
             });
             $scope.logLeafletData = function(name) {
                 leafletData.getMap(name).then(function(map) {
-                    console.log(map);
+                    $log.info(map);
                 });
             };
         }]);
-        app.controller("SecondMapController", [ "$scope", "leafletData", function($scope, leafletData) {
+
+        app.controller("SecondMapController", [ "$scope", "$log", "leafletData", function($scope, $log, leafletData) {
             angular.extend($scope, {
                 london: {
                     lat: 51.505,
                     lng: -0.09,
                     zoom: 4
-                }
+                },
+                markers: {}
             });
             $scope.logLeafletData = function(name) {
                 leafletData.getMap(name).then(function(map) {
-                    console.log(map);
+                    $log.info(map);
                 });
             };
         }]);
+
     </script>
   </head>
   <body>
-    <h1>Communicating maps</h1>
-    <div ng-controller="MoveMarkerController">
-        <input type="button" value="Move marker to the other map" ng-click="moveMarker()" />
-    </div>
+    <h1>Accesing the map object with two (or more) maps on screen</h1>
+    <p>The <strong>leafletData service</strong> allows us to access the internals of the leaflet library (map object, markers, layers, etc.). If two or more maps are on screen we need to pass an <strong>id</strong> to the map, so we can retrieve the leaflet object of the map specified by that id.</p>
     <div class="map" ng-controller="FirstMapController">
         <leaflet center="london" markers="markers" width="480" height="300" id="map1"></leaflet>
-        <input type="button" value="Console.log leafletData info" ng-click="logLeafletData('map1')" />
+        <input type="button" value="$log.info leafletData object" ng-click="logLeafletData('map1')" />
     </div>
     <div class="map" ng-controller="SecondMapController">
-        <leaflet center="london" width="480" height="300" id="map2"></leaflet>
-        <input type="button" value="Console.log leafletData info" ng-click="logLeafletData('map2')" />
+        <leaflet center="london" markers="markers" width="480" height="300" id="map2"></leaflet>
+        <input type="button" value="$log.info leafletData object" ng-click="logLeafletData('map2')" />
     </div>
     <br style="clear: both;" />
   </body>

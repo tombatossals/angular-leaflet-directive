@@ -33,7 +33,7 @@ angular.module("leaflet-directive").directive('tiles', function ($log, leafletDa
 
                 tileLayerObj = L.tileLayer(tileLayerUrl, tileLayerOptions);
                 tileLayerObj.addTo(map);
-                leafletData.setTiles(tileLayerObj);
+                leafletData.setTiles(tileLayerObj, attrs.id);
             });
         }
     };

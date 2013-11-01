@@ -29,7 +29,8 @@ describe('Directive: leaflet', function() {
         var element = angular.element('<leaflet marker="marker"></leaflet>');
         element = $compile(element)($rootScope);
         $rootScope.$digest();
-        leafletData.getMainMarker().then(function(leafletMainMarker) {
+        leafletData.getMarkers().then(function(leafletMarkers) {
+            var leafletMainMarker = leafletMarkers.main_marker;
             expect(leafletMainMarker.getLatLng().lat).toBeCloseTo(0.966);
             expect(leafletMainMarker.getLatLng().lng).toBeCloseTo(2.02);
         });
@@ -45,7 +46,8 @@ describe('Directive: leaflet', function() {
         var element = angular.element('<leaflet marker="marker"></leaflet>');
         element = $compile(element)($rootScope);
         $rootScope.$digest();
-        leafletData.getMainMarker().then(function(leafletMainMarker) {
+        leafletData.getMarkers().then(function(leafletMarkers) {
+            var leafletMainMarker = leafletMarkers.main_marker;
             expect(leafletMainMarker._popup._content).toEqual('this is paris');
         });
     });
