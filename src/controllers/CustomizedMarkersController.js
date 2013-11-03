@@ -1,4 +1,5 @@
 app.controller("CustomizedMarkersController", [ '$scope', function($scope) {
+
     var local_icons = {
         leaf_icon: L.icon({
             iconUrl: 'examples/img/leaf-green.png',

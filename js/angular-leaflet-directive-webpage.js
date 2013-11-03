@@ -15,6 +15,7 @@ app.config(['$routeProvider', '$locationProvider', function($routeProvider, $loc
 }]);
 
 app.controller("CenterController", [ '$scope', function($scope) {
+
     angular.extend($scope, {
         center: {
             lat: 40.095,
@@ -28,6 +29,7 @@ app.controller("CenterController", [ '$scope', function($scope) {
 }]);
 
 app.controller("CustomParametersController", [ '$scope', function($scope) {
+
     angular.extend($scope, {
         london: {
             lat: 51.505,
@@ -47,6 +49,7 @@ app.controller("CustomParametersController", [ '$scope', function($scope) {
 }]);
 
 app.controller("CustomizedMarkersController", [ '$scope', function($scope) {
+
     var local_icons = {
         leaf_icon: L.icon({
             iconUrl: 'examples/img/leaf-green.png',
@@ -106,6 +109,7 @@ app.controller("CustomizedMarkersController", [ '$scope', function($scope) {
 }]);
 
 app.controller("DraggingMarkersController", [ '$scope', function($scope) {
+
     angular.extend($scope, {
         center: {
             lat: 40.095,
@@ -135,6 +139,7 @@ app.controller("DraggingMarkersController", [ '$scope', function($scope) {
 }]);
 
 app.controller("EventsController", [ '$scope', function($scope) {
+
     angular.extend($scope, {
         center: {
             lat: 52.374004,
@@ -172,6 +177,7 @@ app.controller("EventsController", [ '$scope', function($scope) {
 }]);
 
 app.controller("GeoJSONController", [ '$scope', '$http', function($scope, $http) {
+
     angular.extend($scope, {
         japan: {
             lat: 37.26,
@@ -202,6 +208,7 @@ app.controller("GeoJSONController", [ '$scope', '$http', function($scope, $http)
 }]);
 
 app.controller("GoogleMapsController", [ "$scope", function($scope) {
+
     angular.extend($scope, {
         berlin: {
             lat: 52.52,
@@ -234,6 +241,7 @@ app.controller("GoogleMapsController", [ "$scope", function($scope) {
 }]);
 
 app.controller("HeaderController", [ '$scope', '$location', function($scope, $location) {
+
     angular.extend($scope, {
         center: {
             lat: 40.095,
@@ -258,6 +266,7 @@ app.controller("HeaderController", [ '$scope', '$location', function($scope, $lo
 }]);
 
 app.controller("LegendController", [ '$scope', function($scope) {
+
     angular.extend($scope, {
         amsterdam: {
             lat: 52.35,
@@ -277,6 +286,7 @@ app.controller("LegendController", [ '$scope', function($scope) {
 }]);
 
 app.controller("MainController", [ '$scope', '$route', '$routeParams', '$location', function($scope, $route, $routeParams, $location) {
+
     $scope.$watch(function() { return $location.path(); }, function(value) {
         if (!value) {
             return;
@@ -293,6 +303,7 @@ app.controller("MainController", [ '$scope', '$route', '$routeParams', '$locatio
 }]);
 
 app.controller("MarkerController", [ '$scope', function($scope) {
+
     angular.extend($scope, {
         osloCenter: {
             lat: 59.91,
@@ -365,6 +376,7 @@ app.controller("MenuController", [ '$scope', '$location', function($scope, $loca
 }]);
 
 app.controller("MultiLayerMapController", [ '$scope', '$http', function($scope, $http) {
+
     var tiles = {
         osm: {
             url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
@@ -418,6 +430,7 @@ app.controller("MultiLayerMapController", [ '$scope', '$http', function($scope, 
 } ]);
 
 app.controller("PathController", [ '$scope', function($scope) {
+
     angular.extend($scope, {
         center: {
             lat: 48,
@@ -480,6 +493,7 @@ app.controller("PathController", [ '$scope', function($scope) {
 }]);
 
 app.controller("SimpleMapController", [ '$scope', function($scope) {
+
     angular.extend($scope, {
         defaults: {
             scrollWheelZoom: false

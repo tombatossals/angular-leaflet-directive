@@ -1,4 +1,5 @@
 app.controller("GoogleMapsController", [ "$scope", function($scope) {
+
     angular.extend($scope, {
         berlin: {
             lat: 52.52,

@@ -1,4 +1,5 @@
 app.controller("PathController", [ '$scope', function($scope) {
+
     angular.extend($scope, {
         center: {
             lat: 48,

@@ -1,4 +1,5 @@
 app.controller("MainController", [ '$scope', '$route', '$routeParams', '$location', function($scope, $route, $routeParams, $location) {
+
     $scope.$watch(function() { return $location.path(); }, function(value) {
         if (!value) {
             return;

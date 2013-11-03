@@ -1,4 +1,5 @@
 app.controller("EventsController", [ '$scope', function($scope) {
+
     angular.extend($scope, {
         center: {
             lat: 52.374004,

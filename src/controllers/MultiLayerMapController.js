@@ -1,4 +1,5 @@
 app.controller("MultiLayerMapController", [ '$scope', '$http', function($scope, $http) {
+
     var tiles = {
         osm: {
             url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'

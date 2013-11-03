@@ -1,4 +1,5 @@
 app.controller("CustomParametersController", [ '$scope', function($scope) {
+
     angular.extend($scope, {
         london: {
             lat: 51.505,

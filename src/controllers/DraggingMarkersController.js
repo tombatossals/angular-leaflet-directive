@@ -1,4 +1,5 @@
 app.controller("DraggingMarkersController", [ '$scope', function($scope) {
+
     angular.extend($scope, {
         center: {
             lat: 40.095,

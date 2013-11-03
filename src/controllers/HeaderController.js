@@ -1,4 +1,5 @@
 app.controller("HeaderController", [ '$scope', '$location', function($scope, $location) {
+
     angular.extend($scope, {
         center: {
             lat: 40.095,

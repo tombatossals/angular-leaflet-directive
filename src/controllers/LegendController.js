@@ -1,4 +1,5 @@
 app.controller("LegendController", [ '$scope', function($scope) {
+
     angular.extend($scope, {
         amsterdam: {
             lat: 52.35,

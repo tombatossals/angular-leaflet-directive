@@ -1,4 +1,5 @@
 app.controller("GeoJSONController", [ '$scope', '$http', function($scope, $http) {
+
     angular.extend($scope, {
         japan: {
             lat: 37.26,
