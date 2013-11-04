@@ -511,7 +511,7 @@ angular.module("leaflet-directive").directive('geojson', function ($log, $rootSc
                     }
 
                     if (isDefined(leafletGeoJSON)) {
-                        map.removeLayer($scope.leaflet.geojson);
+                        map.removeLayer(leafletGeoJSON);
                     }
 
                     if (isDefined(geojson.data)) {
