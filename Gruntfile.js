@@ -122,6 +122,7 @@ module.exports = function(grunt) {
                       'src/directives/bounds.js',
                       'src/directives/markers.js',
                       'src/directives/paths.js',
+                      'src/directives/controls.js',
                       'src/directives/eventBroadcast.js',
                       'src/directives/maxBounds.js',
                       'src/services/leafletData.js'
