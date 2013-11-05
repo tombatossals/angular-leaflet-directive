@@ -1508,6 +1508,9 @@ leafletDirective.directive('leaflet', function ($http, $log, $parse, $rootScope)
                         } else if (old_data.focus === undefined || old_data.focus === null || old_data.focus !== true) {
                             // The data.focus property must be true so we update if there wasn't a previous value or it wasn't true
                             marker.openPopup();
+                        } else if(old_data.focus === true && data.focus === true){
+                            // When data.focus == old_data.focus === true is, keep the popup open
+                            marker.openPopup();
                         }
 
                         // Update the lat-lng property (always present in marker properties)
