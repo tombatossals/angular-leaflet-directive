@@ -26,6 +26,7 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                         iconRetinaUrl: defaults.icon.retinaUrl,
                         iconSize: defaults.icon.size,
                         iconAnchor: defaults.icon.anchor,
+                        labelAnchor: defaults.icon.labelAnchor,
                         popupAnchor: defaults.icon.popup,
                         shadowUrl: defaults.icon.shadow.url,
                         shadowRetinaUrl: defaults.icon.shadow.retinaUrl,
@@ -71,7 +72,7 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                     // add new markers
                     for (var new_name in newMarkers) {
                         if (!isDefined(leafletMarkers[new_name])) {
-                            var newMarker = createMarker('markers.'+new_name, markers[new_name], map);
+                            var newMarker = createMarker('markers.'+new_name, newMarkers[new_name], map);
                             if (newMarker !== null) {
                                 leafletMarkers[new_name] = newMarker;
                             }

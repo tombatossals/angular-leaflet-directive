@@ -91,6 +91,7 @@ function _getMapDefaults() {
             retinaUrl: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-icon-2x.png',
             size: [25, 41],
             anchor: [12, 40],
+            labelAnchor: [10, -20],
             popup: [0, -40],
             shadow: {
                 url: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-shadow.png',
@@ -880,6 +881,7 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                         iconRetinaUrl: defaults.icon.retinaUrl,
                         iconSize: defaults.icon.size,
                         iconAnchor: defaults.icon.anchor,
+                        labelAnchor: defaults.icon.labelAnchor,
                         popupAnchor: defaults.icon.popup,
                         shadowUrl: defaults.icon.shadow.url,
                         shadowRetinaUrl: defaults.icon.shadow.retinaUrl,
@@ -925,7 +927,7 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                     // add new markers
                     for (var new_name in newMarkers) {
                         if (!isDefined(leafletMarkers[new_name])) {
-                            var newMarker = createMarker('markers.'+new_name, markers[new_name], map);
+                            var newMarker = createMarker('markers.'+new_name, newMarkers[new_name], map);
                             if (newMarker !== null) {
                                 leafletMarkers[new_name] = newMarker;
                             }

@@ -87,6 +87,7 @@ function _getMapDefaults() {
             retinaUrl: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-icon-2x.png',
             size: [25, 41],
             anchor: [12, 40],
+            labelAnchor: [10, -20],
             popup: [0, -40],
             shadow: {
                 url: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-shadow.png',
