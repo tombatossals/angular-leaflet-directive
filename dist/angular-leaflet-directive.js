@@ -71,7 +71,7 @@ function parseMapDefaults(defaults) {
 
 function _getMapDefaults() {
     return {
-        maxZoom: 14,
+        maxZoom: 18,
         minZoom: 1,
         keyboard: true,
         dragging: true,
@@ -310,7 +310,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
                  map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
             }
 
-            if (!isDefined(attrs.tiles) && !isDefined(attrs.layers)) {
+            if (!isDefined(attrs.tiles) && (!isDefined(attrs.layers) || !isDefined(attrs.layers.baselayers))) {
                 var tileLayerObj = L.tileLayer(defaults.tileLayer, defaults.tileLayerOptions);
                 tileLayerObj.addTo(map);
                 leafletData.setTiles(tileLayerObj);
@@ -1658,8 +1658,8 @@ angular.module("leaflet-directive").directive('controls', function ($log) {
         link: function($scope, element, attrs, controller) {
             var controls = $scope.controls;
             controller.getMap().then(function(map) {
-                if (isDefined(controls.draw)) {
-                    var drawControl = new L.Control.Draw();
+                if (isDefined(L.Control.Draw) && isDefined(controls.draw)) {
+                    var drawControl = new L.Control.Draw(controls.draw.options);
                     map.addControl(drawControl);
                 }
             });
