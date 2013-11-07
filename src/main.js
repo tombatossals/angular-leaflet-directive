@@ -67,7 +67,7 @@ function parseMapDefaults(defaults) {
 
 function _getMapDefaults() {
     return {
-        maxZoom: 14,
+        maxZoom: 18,
         minZoom: 1,
         keyboard: true,
         dragging: true,
