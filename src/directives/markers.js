@@ -548,6 +548,9 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                             } else if (old_data.focus === undefined || old_data.focus === null || old_data.focus !== true) {
                                 // The data.focus property must be true so we update if there wasn't a previous value or it wasn't true
                                 marker.openPopup();
+                            } else if(old_data.focus === true && data.focus === true){
+                                // Reopen the popup when focus is still true
+                                marker.openPopup();
                             }
 
                             // Update the lat-lng property (always present in marker properties)
