@@ -36,6 +36,8 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                 });
 
                 var leafletMarkers = {};
+                var groups = {};
+
                 leafletData.setMarkers(leafletMarkers, attrs.id);
 
                 if (!isDefined(markers)) {
@@ -62,6 +64,14 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                                     }
                                 }
                             }
+                            if (isDefinedAndNotNull(groups)) {
+                                for (var groupKey in groups) {
+                                    if (groups[groupKey].hasLayer(leafletMarkers[name])) {
+                                        groups[groupKey].removeLayer(leafletMarkers[name]);
+                                    }
+                                }
+                            }
+
                             // Remove the marker from the map
                             map.removeLayer(leafletMarkers[name]);
                             // TODO: If we remove the marker we don't have to clear the $watches?
@@ -85,8 +95,16 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
 
                     // Marker belongs to a layer group?
                     if (!isDefined(marker_data.layer)) {
-                        // We do not have a layer attr, so the marker goes to the map layer
-                        map.addLayer(marker);
+                        if (isDefined(marker_data.group)) {
+                            if (!isDefined(groups[marker_data.group])) {
+                                groups[marker_data.group] = L.markerClusterGroup();
+                                map.addLayer(groups[marker_data.group]);
+                            }
+                            groups[marker_data.group].addLayer(marker);
+                        } else {
+                            // We do not have a layer attr, so the marker goes to the map layer
+                            map.addLayer(marker);
+                        }
                         if (isDefined(L.Label) && isDefined(marker_data.label) && isDefined(marker_data.label.options)) {
                             if (marker_data.label.options.noHide === true) {
                                 marker.showLabel();

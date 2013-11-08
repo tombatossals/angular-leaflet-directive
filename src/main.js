@@ -57,6 +57,7 @@ function parseMapDefaults(defaults) {
         mapDefaults.zoomControlPosition = isDefined(defaults.zoomControlPosition) ? defaults.zoomControlPosition : mapDefaults.zoomControlPosition;
         mapDefaults.keyboard = isDefined(defaults.keyboard) ? defaults.keyboard : mapDefaults.keyboard;
         mapDefaults.dragging = isDefined(defaults.dragging) ? defaults.dragging : mapDefaults.dragging;
+        mapDefaults.controlLayersPosition = isDefined(defaults.controlLayersPosition) ? defaults.controlLayersPosition : mapDefaults.controlLayersPosition;
 
         if (isDefined(defaults.tileLayerOptions)) {
             angular.copy(defaults.tileLayerOptions, mapDefaults.tileLayerOptions);
