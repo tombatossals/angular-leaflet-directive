@@ -97,7 +97,7 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                     if (!isDefined(marker_data.layer)) {
                         if (isDefined(marker_data.group)) {
                             if (!isDefined(groups[marker_data.group])) {
-                                groups[marker_data.group] = L.markerClusterGroup();
+                                groups[marker_data.group] = L.markerClusterGroup({ spiderfyOnMaxZoom: false, showCoverageOnHover: false, zoomToBoundsOnClick: false });
                                 map.addLayer(groups[marker_data.group]);
                             }
                             groups[marker_data.group].addLayer(marker);
@@ -633,7 +633,12 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                         moptions.title = data.title;
                     }
                     var marker = new L.marker(data, moptions);
-                    if (data.message) {
+
+                    if (data.url) {
+                        marker.on('click', function(e) {
+                            window.location = data.url;
+                        });
+                    } else if (data.message) {
                         marker.bindPopup(data.message);
                     }
                     if (isDefined(L.Label) && isDefined(data.label) && isDefined(data.label.message)) {
