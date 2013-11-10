@@ -15,8 +15,8 @@ module.exports = function(karma) {
             'test/unit/centerDirectiveSpec.js',
             'test/unit/pathsDirectiveSpec.js',
             'test/unit/layersDirectiveSpec.js',
-            'test/unit/markersDirectiveSpec.js',
-            'test/unit/eventsDirectiveSpec.js'
+            'test/unit/eventsDirectiveSpec.js',
+            'test/unit/markersDirectiveSpec.js'
         ],
 
         // Frameworks

@@ -25,8 +25,13 @@ describe('Directive: leaflet', function() {
             lat: 0.966,
             lng: 2.02
         };
-        angular.extend($rootScope, { marker: main_marker });
-        var element = angular.element('<leaflet marker="marker"></leaflet>');
+        angular.extend($rootScope, {
+            markers: {
+                main_marker: main_marker
+            }
+        });
+
+        var element = angular.element('<leaflet markers="markers"></leaflet>');
         element = $compile(element)($rootScope);
         $rootScope.$digest();
         leafletData.getMarkers().then(function(leafletMarkers) {
@@ -42,12 +47,16 @@ describe('Directive: leaflet', function() {
             lng: 2.02,
             message: 'this is paris'
         };
-        angular.extend($rootScope, { marker: marker});
-        var element = angular.element('<leaflet marker="marker"></leaflet>');
+        angular.extend($rootScope, {
+            markers: {
+                marker: marker
+            }
+        });
+        var element = angular.element('<leaflet markers="markers"></leaflet>');
         element = $compile(element)($rootScope);
         $rootScope.$digest();
         leafletData.getMarkers().then(function(leafletMarkers) {
-            var leafletMainMarker = leafletMarkers.main_marker;
+            var leafletMainMarker = leafletMarkers.marker;
             expect(leafletMainMarker._popup._content).toEqual('this is paris');
         });
     });
