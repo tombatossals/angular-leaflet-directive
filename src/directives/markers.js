@@ -637,11 +637,7 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                         }
                         var marker = new L.marker(data, moptions);
 
-                        if (data.url) {
-                            marker.on('click', function(e) {
-                                window.location = data.url;
-                            });
-                        } else if (data.message) {
+                        if (data.message) {
                             marker.bindPopup(data.message);
                         }
                         if (isDefined(L.Label) && isDefined(data.label) && isDefined(data.label.message)) {

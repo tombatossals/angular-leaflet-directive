@@ -303,6 +303,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
                 attributionControl: defaults.attributionControl
             });
 
+            // Resolve the map object to the promises
             $scope.leafletMap.resolve(map);
             leafletData.setMap(map, attrs.id);
 
@@ -311,6 +312,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
                  map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
             }
 
+            // If no layers nor tiles defined, set the default tileLayer
             if (!isDefined(attrs.tiles) && (!isDefined(attrs.layers) || !isDefined(attrs.layers.baselayers))) {
                 var tileLayerObj = L.tileLayer(defaults.tileLayer, defaults.tileLayerOptions);
                 tileLayerObj.addTo(map);
@@ -351,8 +353,8 @@ angular.module("leaflet-directive").directive('center', function ($log, $parse) 
                         zoom: $parse("center.zoom")
                     };
                 } else {
-                    map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
                     $log.warn("[AngularJS - Leaflet] 'center' is undefined in the current scope, did you forget to initialize it?");
+                    map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
                 }
 
                 var movingMap = false;
@@ -1493,11 +1495,7 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                         }
                         var marker = new L.marker(data, moptions);
 
-                        if (data.url) {
-                            marker.on('click', function(e) {
-                                window.location = data.url;
-                            });
-                        } else if (data.message) {
+                        if (data.message) {
                             marker.bindPopup(data.message);
                         }
                         if (isDefined(L.Label) && isDefined(data.label) && isDefined(data.label.message)) {

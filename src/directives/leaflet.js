@@ -67,6 +67,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
                 attributionControl: defaults.attributionControl
             });
 
+            // Resolve the map object to the promises
             $scope.leafletMap.resolve(map);
             leafletData.setMap(map, attrs.id);
 
@@ -75,6 +76,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
                  map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
             }
 
+            // If no layers nor tiles defined, set the default tileLayer
             if (!isDefined(attrs.tiles) && (!isDefined(attrs.layers) || !isDefined(attrs.layers.baselayers))) {
                 var tileLayerObj = L.tileLayer(defaults.tileLayer, defaults.tileLayerOptions);
                 tileLayerObj.addTo(map);

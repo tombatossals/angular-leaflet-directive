@@ -24,8 +24,8 @@ angular.module("leaflet-directive").directive('center', function ($log, $parse) 
                         zoom: $parse("center.zoom")
                     };
                 } else {
-                    map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
                     $log.warn("[AngularJS - Leaflet] 'center' is undefined in the current scope, did you forget to initialize it?");
+                    map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
                 }
 
                 var movingMap = false;
