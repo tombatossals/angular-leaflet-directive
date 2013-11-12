@@ -1,4 +1,4 @@
-angular.module("leaflet-directive").directive('geojson', function ($log, $rootScope) {
+angular.module("leaflet-directive").directive('geojson', function ($log, $rootScope, leafletData) {
     return {
         restrict: "A",
         scope: false,
@@ -8,7 +8,7 @@ angular.module("leaflet-directive").directive('geojson', function ($log, $rootSc
 
         link: function($scope, element, attrs, controller) {
             var map = controller.getMap();
-            var leafletGeoJSON;
+            var leafletGeoJSON = {};
 
             controller.getMap().then(function(map) {
                 $scope.$watch("geojson", function(geojson) {
@@ -49,7 +49,9 @@ angular.module("leaflet-directive").directive('geojson', function ($log, $rootSc
                                     }
                                 });
                             }
-                        }).addTo(map);
+                        });
+                        leafletData.setGeoJSON(leafletGeoJSON);
+                        leafletGeoJSON.addTo(map);
                     }
                 });
             });

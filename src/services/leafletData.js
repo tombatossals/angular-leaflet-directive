@@ -14,6 +14,9 @@ angular.module("leaflet-directive").service('leafletData', function ($log, $q) {
     var markers = {
         main: $q.defer()
     };
+    var geoJSON = {
+        main: $q.defer()
+    };
     var defaults = {};
 
     function getDefer(d, scopeId) {
@@ -86,5 +89,15 @@ angular.module("leaflet-directive").service('leafletData', function ($log, $q) {
     this.getTiles = function(scopeId) {
         var tile = getDefer(tiles, scopeId);
         return tile.promise;
+    };
+
+    this.setGeoJSON = function(leafletGeoJSON, scopeId) {
+        var geoJSONLayer = getDefer(geoJSON, scopeId);
+        geoJSONLayer.resolve(leafletGeoJSON);
+    };
+
+    this.getGeoJSON = function(scopeId) {
+        var geoJSONLayer = getDefer(geoJSON, scopeId);
+        return geoJSONLayer.promise;
     };
 });

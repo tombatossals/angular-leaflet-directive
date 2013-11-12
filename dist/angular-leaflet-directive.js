@@ -496,7 +496,7 @@ angular.module("leaflet-directive").directive('legend', function ($log) {
     };
 });
 
-angular.module("leaflet-directive").directive('geojson', function ($log, $rootScope) {
+angular.module("leaflet-directive").directive('geojson', function ($log, $rootScope, leafletData) {
     return {
         restrict: "A",
         scope: false,
@@ -506,7 +506,7 @@ angular.module("leaflet-directive").directive('geojson', function ($log, $rootSc
 
         link: function($scope, element, attrs, controller) {
             var map = controller.getMap();
-            var leafletGeoJSON;
+            var leafletGeoJSON = {};
 
             controller.getMap().then(function(map) {
                 $scope.$watch("geojson", function(geojson) {
@@ -547,7 +547,9 @@ angular.module("leaflet-directive").directive('geojson', function ($log, $rootSc
                                     }
                                 });
                             }
-                        }).addTo(map);
+                        });
+                        leafletData.setGeoJSON(leafletGeoJSON);
+                        leafletGeoJSON.addTo(map);
                     }
                 });
             });
@@ -1873,7 +1875,7 @@ angular.module("leaflet-directive").directive('maxbounds', function ($log) {
         link: function($scope, element, attrs, controller) {
             var defaults = parseMapDefaults($scope.defaults);
             controller.getMap().then(function(map) {
-            var maxBounds = $scope.maxBounds;
+                var maxBounds = $scope.maxBounds;
                 if (isDefined(maxBounds) && isDefined(maxBounds.southWest) && isDefined(maxBounds.northEast)) {
                     $scope.$watch("maxBounds", function (maxBounds) {
                         if (isDefined(maxBounds.southWest) && isDefined(maxBounds.northEast) && isNumber(maxBounds.southWest.lat) && isNumber(maxBounds.southWest.lng) && isNumber(maxBounds.northEast.lat) && isNumber(maxBounds.northEast.lng)) {
@@ -1907,6 +1909,9 @@ angular.module("leaflet-directive").service('leafletData', function ($log, $q) {
         main: $q.defer()
     };
     var markers = {
+        main: $q.defer()
+    };
+    var geoJSON = {
         main: $q.defer()
     };
     var defaults = {};
@@ -1981,6 +1986,16 @@ angular.module("leaflet-directive").service('leafletData', function ($log, $q) {
     this.getTiles = function(scopeId) {
         var tile = getDefer(tiles, scopeId);
         return tile.promise;
+    };
+
+    this.setGeoJSON = function(leafletGeoJSON, scopeId) {
+        var geoJSONLayer = getDefer(geoJSON, scopeId);
+        geoJSONLayer.resolve(leafletGeoJSON);
+    };
+
+    this.getGeoJSON = function(scopeId) {
+        var geoJSONLayer = getDefer(geoJSON, scopeId);
+        return geoJSONLayer.promise;
     };
 });
 
