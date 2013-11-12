@@ -523,7 +523,7 @@ angular.module("leaflet-directive").directive('geojson', function($log, $rootSco
                             onEachFeatureDefault = function(feature, layer) {
                                 layer.on({
                                     mouseover: function(e) {
-                                        safeApply($scope, function () {
+                                        safeApply($scope, function() {
                                             geojson.selected = feature;
                                             $rootScope.$broadcast('leafletDirectiveMap.geojsonMouseover', e);
                                         });
@@ -532,13 +532,13 @@ angular.module("leaflet-directive").directive('geojson', function($log, $rootSco
                                         if (resetStyleOnMouseout) {
                                             leafletGeoJSON.resetStyle(e.target);
                                         }
-                                        safeApply($scope, function () {
+                                        safeApply($scope, function() {
                                             geojson.selected = undefined;
                                             $rootScope.$broadcast('leafletDirectiveMap.geojsonMouseout', e);
                                         });
                                     },
                                     click: function(e) {
-                                        safeApply($scope, function () {
+                                        safeApply($scope, function() {
                                             $rootScope.$broadcast('leafletDirectiveMap.geojsonClick', geojson.selected, e);
                                         });
                                     }
