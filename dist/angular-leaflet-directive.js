@@ -313,7 +313,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
             }
 
             // If no layers nor tiles defined, set the default tileLayer
-            if (!isDefined(attrs.tiles) && (!isDefined(attrs.layers) || !isDefined(attrs.layers.baselayers))) {
+            if (!isDefined(attrs.tiles) && (!isDefined(attrs.layers) || !isDefined($scope.layers.baselayers))) {
                 var tileLayerObj = L.tileLayer(defaults.tileLayer, defaults.tileLayerOptions);
                 tileLayerObj.addTo(map);
                 leafletData.setTiles(tileLayerObj);
