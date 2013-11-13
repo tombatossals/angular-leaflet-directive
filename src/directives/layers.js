@@ -1,4 +1,4 @@
-angular.module("leaflet-directive").directive('layers', function ($log, $q, leafletData) {
+angular.module("leaflet-directive").directive('layers', function ($log, $q, leafletData, leafletHelpers) {
     return {
         restrict: "A",
         scope: false,
@@ -15,6 +15,7 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
             var defaults = parseMapDefaults($scope.defaults);
             var layers = $scope.layers;
             var leafletLayers;
+            var Helpers = leafletHelpers;
 
             controller.getMap().then(function(map) {
 
