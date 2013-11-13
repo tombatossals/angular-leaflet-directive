@@ -1,4 +1,4 @@
-angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q, leafletData) {
+angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q, leafletData, leafletMapDefaults) {
     return {
         restrict: "E",
         replace: true,
@@ -27,7 +27,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
         },
 
         link: function($scope, element, attrs, controller) {
-            var defaults = parseMapDefaults($scope.defaults);
+            var defaults = leafletMapDefaults($scope.defaults);
             leafletData.setDefaults(defaults);
 
             // If we are going to set maxBounds, undefine the minZoom property

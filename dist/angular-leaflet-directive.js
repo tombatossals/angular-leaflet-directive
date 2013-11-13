@@ -46,75 +46,7 @@ function safeApply($scope, fn) {
     }
 }
 
-// Get the mapDefaults dictionary, and override the properties defined by the user
-function parseMapDefaults(defaults) {
-    var mapDefaults = _getMapDefaults();
-
-    if (isDefined(defaults)) {
-        mapDefaults.maxZoom = isDefined(defaults.maxZoom) ?  parseInt(defaults.maxZoom, 10) : mapDefaults.maxZoom;
-        mapDefaults.minZoom = isDefined(defaults.minZoom) ?  parseInt(defaults.minZoom, 10) : mapDefaults.minZoom;
-        mapDefaults.doubleClickZoom = isDefined(defaults.doubleClickZoom) ?  defaults.doubleClickZoom : mapDefaults.doubleClickZoom;
-        mapDefaults.scrollWheelZoom = isDefined(defaults.scrollWheelZoom) ?  defaults.scrollWheelZoom : mapDefaults.doubleClickZoom;
-        mapDefaults.zoomControl = isDefined(defaults.zoomControl) ?  defaults.zoomControl : mapDefaults.zoomControl;
-        mapDefaults.attributionControl = isDefined(defaults.attributionControl) ?  defaults.attributionControl : mapDefaults.attributionControl;
-        mapDefaults.tileLayer = isDefined(defaults.tileLayer) ? defaults.tileLayer : mapDefaults.tileLayer;
-        mapDefaults.zoomControlPosition = isDefined(defaults.zoomControlPosition) ? defaults.zoomControlPosition : mapDefaults.zoomControlPosition;
-        mapDefaults.keyboard = isDefined(defaults.keyboard) ? defaults.keyboard : mapDefaults.keyboard;
-        mapDefaults.dragging = isDefined(defaults.dragging) ? defaults.dragging : mapDefaults.dragging;
-        mapDefaults.controlLayersPosition = isDefined(defaults.controlLayersPosition) ? defaults.controlLayersPosition : mapDefaults.controlLayersPosition;
-
-        if (isDefined(defaults.tileLayerOptions)) {
-            angular.copy(defaults.tileLayerOptions, mapDefaults.tileLayerOptions);
-        }
-    }
-    return mapDefaults;
-}
-
-function _getMapDefaults() {
-    return {
-        maxZoom: 18,
-        minZoom: 1,
-        keyboard: true,
-        dragging: true,
-        doubleClickZoom: true,
-        scrollWheelZoom: true,
-        zoomControl: true,
-        attributionControl: true,
-        zoomsliderControl: false,
-        zoomControlPosition: 'topleft',
-        controlLayersPosition: 'topright',
-        tileLayer: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-        tileLayerOptions: {
-            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        },
-        icon: {
-            url: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-icon.png',
-            retinaUrl: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-icon-2x.png',
-            size: [25, 41],
-            anchor: [12, 40],
-            labelAnchor: [10, -20],
-            popup: [0, -40],
-            shadow: {
-                url: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-shadow.png',
-                retinaUrl: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-shadow.png',
-                size: [41, 41],
-                anchor: [12, 40]
-            }
-        },
-        path: {
-            weight: 10,
-            opacity: 1,
-            color: '#0000ff'
-        },
-        center: {
-            lat: 0,
-            lng: 0,
-            zoom: 1
-        }
-    };
-}
-
-angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q, leafletData) {
+angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q, leafletData, leafletMapDefaults) {
     return {
         restrict: "E",
         replace: true,
@@ -143,7 +75,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
         },
 
         link: function($scope, element, attrs, controller) {
-            var defaults = parseMapDefaults($scope.defaults);
+            var defaults = leafletMapDefaults($scope.defaults);
             leafletData.setDefaults(defaults);
 
             // If we are going to set maxBounds, undefine the minZoom property
@@ -207,7 +139,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
     };
 });
 
-angular.module("leaflet-directive").directive('center', function ($log, $parse) {
+angular.module("leaflet-directive").directive('center', function ($log, $parse, leafletMapDefaults) {
     return {
         restrict: "A",
         scope: false,
@@ -216,7 +148,7 @@ angular.module("leaflet-directive").directive('center', function ($log, $parse) 
         require: 'leaflet',
 
         link: function($scope, element, attrs, controller) {
-            var defaults = parseMapDefaults($scope.defaults);
+            var defaults = leafletMapDefaults($scope.defaults);
             var center = $scope.center;
             var bounds = $scope.bounds;
 
@@ -302,7 +234,7 @@ angular.module("leaflet-directive").directive('center', function ($log, $parse) 
     };
 });
 
-angular.module("leaflet-directive").directive('tiles', function ($log, leafletData) {
+angular.module("leaflet-directive").directive('tiles', function ($log, leafletData, leafletMapDefaults) {
     return {
         restrict: "A",
         scope: false,
@@ -311,7 +243,7 @@ angular.module("leaflet-directive").directive('tiles', function ($log, leafletDa
         require: 'leaflet',
 
         link: function($scope, element, attrs, controller) {
-            var defaults = parseMapDefaults($scope.defaults);
+            var defaults = leafletMapDefaults($scope.defaults);
             var tiles = $scope.tiles;
 
             controller.getMap().then(function(map) {
@@ -445,7 +377,7 @@ angular.module("leaflet-directive").directive('geojson', function ($log, $rootSc
     };
 });
 
-angular.module("leaflet-directive").directive('layers', function ($log, $q, leafletData, leafletHelpers) {
+angular.module("leaflet-directive").directive('layers', function ($log, $q, leafletData, leafletHelpers, leafletMapDefaults) {
     return {
         restrict: "A",
         scope: false,
@@ -459,7 +391,7 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
             };
         },
         link: function($scope, element, attrs, controller) {
-            var defaults = parseMapDefaults($scope.defaults);
+            var defaults = leafletMapDefaults($scope.defaults);
             var layers = $scope.layers;
             var leafletLayers;
             var Helpers = leafletHelpers;
@@ -747,7 +679,7 @@ angular.module("leaflet-directive").directive('bounds', function ($log) {
     };
 });
 
-angular.module("leaflet-directive").directive('markers', function ($log, $rootScope, $q, leafletData, leafletHelpers) {
+angular.module("leaflet-directive").directive('markers', function ($log, $rootScope, $q, leafletData, leafletHelpers, leafletMapDefaults) {
     return {
         restrict: "A",
         scope: false,
@@ -756,7 +688,7 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
         require: ['leaflet', '?layers'],
 
         link: function($scope, element, attrs, controller) {
-            var defaults = parseMapDefaults($scope.defaults);
+            var defaults = leafletMapDefaults($scope.defaults);
             var mapController = controller[0];
             var Helpers = leafletHelpers;
 
@@ -1402,7 +1334,7 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
     };
 });
 
-angular.module("leaflet-directive").directive('paths', function ($log, leafletData) {
+angular.module("leaflet-directive").directive('paths', function ($log, leafletData, leafletMapDefaults) {
     return {
         restrict: "A",
         scope: false,
@@ -1411,7 +1343,7 @@ angular.module("leaflet-directive").directive('paths', function ($log, leafletDa
         require: 'leaflet',
 
         link: function($scope, element, attrs, controller) {
-            var defaults = parseMapDefaults($scope.defaults);
+            var defaults = leafletMapDefaults($scope.defaults);
             var paths = $scope.paths;
 
             controller.getMap().then(function(map) {
@@ -1754,7 +1686,7 @@ angular.module("leaflet-directive").directive('eventBroadcast', function ($log, 
     };
 });
 
-angular.module("leaflet-directive").directive('maxbounds', function ($log) {
+angular.module("leaflet-directive").directive('maxbounds', function ($log, leafletMapDefaults) {
     return {
         restrict: "A",
         scope: false,
@@ -1763,7 +1695,7 @@ angular.module("leaflet-directive").directive('maxbounds', function ($log) {
         require: 'leaflet',
 
         link: function($scope, element, attrs, controller) {
-            var defaults = parseMapDefaults($scope.defaults);
+            var defaults = leafletMapDefaults($scope.defaults);
             controller.getMap().then(function(map) {
                 var maxBounds = $scope.maxBounds;
                 if (isDefined(maxBounds) && isDefined(maxBounds.southWest) && isDefined(maxBounds.northEast)) {
@@ -1889,7 +1821,79 @@ angular.module("leaflet-directive").service('leafletData', function ($log, $q) {
     };
 });
 
-angular.module("leaflet-directive").factory('leafletHelpers', function ($log, $q) {
+angular.module("leaflet-directive").factory('leafletMapDefaults', function () {
+
+    function _getMapDefaults() {
+        return {
+            maxZoom: 18,
+            minZoom: 1,
+            keyboard: true,
+            dragging: true,
+            doubleClickZoom: true,
+            scrollWheelZoom: true,
+            zoomControl: true,
+            attributionControl: true,
+            zoomsliderControl: false,
+            zoomControlPosition: 'topleft',
+            controlLayersPosition: 'topright',
+            tileLayer: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+            tileLayerOptions: {
+                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            },
+            icon: {
+                url: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-icon.png',
+                retinaUrl: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-icon-2x.png',
+                size: [25, 41],
+                anchor: [12, 40],
+                labelAnchor: [10, -20],
+                popup: [0, -40],
+                shadow: {
+                    url: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-shadow.png',
+                    retinaUrl: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-shadow.png',
+                    size: [41, 41],
+                    anchor: [12, 40]
+                }
+            },
+            path: {
+                weight: 10,
+                opacity: 1,
+                color: '#0000ff'
+            },
+            center: {
+                lat: 0,
+                lng: 0,
+                zoom: 1
+            }
+        };
+    }
+
+    // Get the mapDefaults dictionary, and override the properties defined by the user
+    return function (defaults) {
+        var mapDefaults = _getMapDefaults();
+
+        if (isDefined(defaults)) {
+            mapDefaults.maxZoom = isDefined(defaults.maxZoom) ?  parseInt(defaults.maxZoom, 10) : mapDefaults.maxZoom;
+            mapDefaults.minZoom = isDefined(defaults.minZoom) ?  parseInt(defaults.minZoom, 10) : mapDefaults.minZoom;
+            mapDefaults.doubleClickZoom = isDefined(defaults.doubleClickZoom) ?  defaults.doubleClickZoom : mapDefaults.doubleClickZoom;
+            mapDefaults.scrollWheelZoom = isDefined(defaults.scrollWheelZoom) ?  defaults.scrollWheelZoom : mapDefaults.doubleClickZoom;
+            mapDefaults.zoomControl = isDefined(defaults.zoomControl) ?  defaults.zoomControl : mapDefaults.zoomControl;
+            mapDefaults.attributionControl = isDefined(defaults.attributionControl) ?  defaults.attributionControl : mapDefaults.attributionControl;
+            mapDefaults.tileLayer = isDefined(defaults.tileLayer) ? defaults.tileLayer : mapDefaults.tileLayer;
+            mapDefaults.zoomControlPosition = isDefined(defaults.zoomControlPosition) ? defaults.zoomControlPosition : mapDefaults.zoomControlPosition;
+            mapDefaults.keyboard = isDefined(defaults.keyboard) ? defaults.keyboard : mapDefaults.keyboard;
+            mapDefaults.dragging = isDefined(defaults.dragging) ? defaults.dragging : mapDefaults.dragging;
+            mapDefaults.controlLayersPosition = isDefined(defaults.controlLayersPosition) ? defaults.controlLayersPosition : mapDefaults.controlLayersPosition;
+
+            if (isDefined(defaults.tileLayerOptions)) {
+                angular.copy(defaults.tileLayerOptions, mapDefaults.tileLayerOptions);
+            }
+        }
+        return mapDefaults;
+    };
+});
+
+
+angular.module("leaflet-directive").factory('leafletHelpers', function () {
     return {
         AwesomeMarkersPlugin: {
             isLoaded: function() {

@@ -1,4 +1,4 @@
-angular.module("leaflet-directive").factory('leafletHelpers', function ($log, $q) {
+angular.module("leaflet-directive").factory('leafletHelpers', function () {
     return {
         AwesomeMarkersPlugin: {
             isLoaded: function() {

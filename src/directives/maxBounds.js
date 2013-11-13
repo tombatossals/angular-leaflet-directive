@@ -1,4 +1,4 @@
-angular.module("leaflet-directive").directive('maxbounds', function ($log) {
+angular.module("leaflet-directive").directive('maxbounds', function ($log, leafletMapDefaults) {
     return {
         restrict: "A",
         scope: false,
@@ -7,7 +7,7 @@ angular.module("leaflet-directive").directive('maxbounds', function ($log) {
         require: 'leaflet',
 
         link: function($scope, element, attrs, controller) {
-            var defaults = parseMapDefaults($scope.defaults);
+            var defaults = leafletMapDefaults($scope.defaults);
             controller.getMap().then(function(map) {
                 var maxBounds = $scope.maxBounds;
                 if (isDefined(maxBounds) && isDefined(maxBounds.southWest) && isDefined(maxBounds.northEast)) {

@@ -1,4 +1,4 @@
-angular.module("leaflet-directive").directive('paths', function ($log, leafletData) {
+angular.module("leaflet-directive").directive('paths', function ($log, leafletData, leafletMapDefaults) {
     return {
         restrict: "A",
         scope: false,
@@ -7,7 +7,7 @@ angular.module("leaflet-directive").directive('paths', function ($log, leafletDa
         require: 'leaflet',
 
         link: function($scope, element, attrs, controller) {
-            var defaults = parseMapDefaults($scope.defaults);
+            var defaults = leafletMapDefaults($scope.defaults);
             var paths = $scope.paths;
 
             controller.getMap().then(function(map) {

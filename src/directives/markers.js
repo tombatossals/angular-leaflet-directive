@@ -1,4 +1,4 @@
-angular.module("leaflet-directive").directive('markers', function ($log, $rootScope, $q, leafletData, leafletHelpers) {
+angular.module("leaflet-directive").directive('markers', function ($log, $rootScope, $q, leafletData, leafletHelpers, leafletMapDefaults) {
     return {
         restrict: "A",
         scope: false,
@@ -7,7 +7,7 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
         require: ['leaflet', '?layers'],
 
         link: function($scope, element, attrs, controller) {
-            var defaults = parseMapDefaults($scope.defaults);
+            var defaults = leafletMapDefaults($scope.defaults);
             var mapController = controller[0];
             var Helpers = leafletHelpers;
 

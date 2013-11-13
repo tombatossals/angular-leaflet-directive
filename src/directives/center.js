@@ -1,4 +1,4 @@
-angular.module("leaflet-directive").directive('center', function ($log, $parse) {
+angular.module("leaflet-directive").directive('center', function ($log, $parse, leafletMapDefaults) {
     return {
         restrict: "A",
         scope: false,
@@ -7,7 +7,7 @@ angular.module("leaflet-directive").directive('center', function ($log, $parse) 
         require: 'leaflet',
 
         link: function($scope, element, attrs, controller) {
-            var defaults = parseMapDefaults($scope.defaults);
+            var defaults = leafletMapDefaults($scope.defaults);
             var center = $scope.center;
             var bounds = $scope.bounds;
 
