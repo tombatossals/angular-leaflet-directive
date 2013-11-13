@@ -1,4 +1,5 @@
-angular.module("leaflet-directive").factory('leafletMapDefaults', function () {
+angular.module("leaflet-directive").factory('leafletMapDefaults', function (leafletHelpers) {
+    var isDefined = leafletHelpers.isDefined;
 
     function _getMapDefaults() {
         return {

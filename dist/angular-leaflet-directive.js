@@ -2,51 +2,7 @@
 
 "use strict";
 
-// Determine if a reference is defined
-function isDefined(value) {
-    return angular.isDefined(value);
-}
-
-// Determine if a reference is defined and not null
-function isDefinedAndNotNull(value) {
-    return angular.isDefined(value) && value !== null;
-}
-
-// Determine if a reference is a number
-function isNumber(value) {
-  return angular.isNumber(value);
-}
-
-// Determine if a reference is a string
-function isString(value) {
-  return angular.isString(value);
-}
-
-// Determine if a reference is an array
-function isArray(value) {
-  return angular.isArray(value);
-}
-
-// Determine if a reference is an object
-function isObject(value) {
-  return angular.isObject(value);
-}
-
-// Determine if two objects have the same properties
-function equals(o1, o2) {
-  return angular.equals(o1, o2);
-}
-
-function safeApply($scope, fn) {
-    var phase = $scope.$root.$$phase;
-    if (phase === '$apply' || phase === '$digest') {
-        $scope.$eval(fn);
-    } else {
-        $scope.$apply(fn);
-    }
-}
-
-angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q, leafletData, leafletMapDefaults) {
+angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q, leafletData, leafletMapDefaults, leafletHelpers) {
     return {
         restrict: "E",
         replace: true,
@@ -75,7 +31,9 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
         },
 
         link: function($scope, element, attrs, controller) {
-            var defaults = leafletMapDefaults($scope.defaults);
+            var isDefined = leafletHelpers.isDefined,
+                defaults = leafletMapDefaults($scope.defaults);
+
             leafletData.setDefaults(defaults);
 
             // If we are going to set maxBounds, undefine the minZoom property
@@ -139,7 +97,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
     };
 });
 
-angular.module("leaflet-directive").directive('center', function ($log, $parse, leafletMapDefaults) {
+angular.module("leaflet-directive").directive('center', function ($log, $parse, leafletMapDefaults, leafletHelpers) {
     return {
         restrict: "A",
         scope: false,
@@ -148,9 +106,12 @@ angular.module("leaflet-directive").directive('center', function ($log, $parse, 
         require: 'leaflet',
 
         link: function($scope, element, attrs, controller) {
-            var defaults = leafletMapDefaults($scope.defaults);
-            var center = $scope.center;
-            var bounds = $scope.bounds;
+            var isDefined = leafletHelpers.isDefined,
+                isNumber  = leafletHelpers.isNumber,
+                safeApply = leafletHelpers.safeApply,
+                defaults  = leafletMapDefaults($scope.defaults),
+                center    = $scope.center,
+                bounds    = $scope.bounds;
 
             controller.getMap().then(function(map) {
 
@@ -234,7 +195,7 @@ angular.module("leaflet-directive").directive('center', function ($log, $parse, 
     };
 });
 
-angular.module("leaflet-directive").directive('tiles', function ($log, leafletData, leafletMapDefaults) {
+angular.module("leaflet-directive").directive('tiles', function ($log, leafletData, leafletMapDefaults, leafletHelpers) {
     return {
         restrict: "A",
         scope: false,
@@ -243,8 +204,9 @@ angular.module("leaflet-directive").directive('tiles', function ($log, leafletDa
         require: 'leaflet',
 
         link: function($scope, element, attrs, controller) {
-            var defaults = leafletMapDefaults($scope.defaults);
-            var tiles = $scope.tiles;
+            var isDefined = leafletHelpers.isDefined,
+                defaults = leafletMapDefaults($scope.defaults),
+                tiles = $scope.tiles;
 
             controller.getMap().then(function(map) {
 
@@ -275,7 +237,7 @@ angular.module("leaflet-directive").directive('tiles', function ($log, leafletDa
     };
 });
 
-angular.module("leaflet-directive").directive('legend', function ($log) {
+angular.module("leaflet-directive").directive('legend', function ($log, leafletHelpers) {
     return {
         restrict: "A",
         scope: false,
@@ -284,6 +246,8 @@ angular.module("leaflet-directive").directive('legend', function ($log) {
         require: 'leaflet',
 
         link: function($scope, element, attrs, controller) {
+            var isArray = leafletHelpers.isArray;
+
             controller.getMap().then(function(map) {
                 var legend = $scope.legend;
 
@@ -308,7 +272,7 @@ angular.module("leaflet-directive").directive('legend', function ($log) {
     };
 });
 
-angular.module("leaflet-directive").directive('geojson', function ($log, $rootScope, leafletData) {
+angular.module("leaflet-directive").directive('geojson', function ($log, $rootScope, leafletData, leafletHelpers) {
     return {
         restrict: "A",
         scope: false,
@@ -317,8 +281,10 @@ angular.module("leaflet-directive").directive('geojson', function ($log, $rootSc
         require: 'leaflet',
 
         link: function($scope, element, attrs, controller) {
-            var map = controller.getMap();
-            var leafletGeoJSON = {};
+            var safeApply = leafletHelpers.safeApply,
+                isDefined = leafletHelpers.isDefined,
+                map = controller.getMap(),
+                leafletGeoJSON = {};
 
             controller.getMap().then(function(map) {
                 $scope.$watch("geojson", function(geojson) {
@@ -391,10 +357,13 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
             };
         },
         link: function($scope, element, attrs, controller) {
-            var defaults = leafletMapDefaults($scope.defaults);
-            var layers = $scope.layers;
-            var leafletLayers;
-            var Helpers = leafletHelpers;
+            var defaults = leafletMapDefaults($scope.defaults),
+                layers = $scope.layers,
+                Helpers = leafletHelpers,
+                isDefined = leafletHelpers.isDefined,
+                isString = leafletHelpers.isString,
+                leafletLayers = {};
+
 
             controller.getMap().then(function(map) {
 
@@ -406,7 +375,6 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                         return;
                     }
                     // We have baselayers to add to the map
-                    leafletLayers = {};
                     $scope.leafletLayers.resolve(leafletLayers);
                     leafletData.setLayers(leafletLayers, attrs.id);
 
@@ -637,7 +605,7 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
     };
 });
 
-angular.module("leaflet-directive").directive('bounds', function ($log) {
+angular.module("leaflet-directive").directive('bounds', function ($log, leafletHelpers) {
     return {
         restrict: "A",
         scope: false,
@@ -646,6 +614,9 @@ angular.module("leaflet-directive").directive('bounds', function ($log) {
         require: 'leaflet',
 
         link: function($scope, element, attrs, controller) {
+            var isDefined = leafletHelpers.isDefined,
+                isNumber  = leafletHelpers.isNumber;
+
             controller.getMap().then(function(map) {
                 setupBounds(map);
 
@@ -690,7 +661,13 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
         link: function($scope, element, attrs, controller) {
             var defaults = leafletMapDefaults($scope.defaults);
             var mapController = controller[0];
-            var Helpers = leafletHelpers;
+            var Helpers = leafletHelpers,
+                isDefined = leafletHelpers.isDefined,
+                isDefinedAndNotNull = leafletHelpers.isDefinedAndNotNull,
+                isString = leafletHelpers.isString,
+                isNumber  = leafletHelpers.isNumber,
+                safeApply = leafletHelpers.safeApply;
+
 
             mapController.getMap().then(function(map) {
                 var markers = $scope.markers;
@@ -1334,7 +1311,7 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
     };
 });
 
-angular.module("leaflet-directive").directive('paths', function ($log, leafletData, leafletMapDefaults) {
+angular.module("leaflet-directive").directive('paths', function ($log, leafletData, leafletMapDefaults, leafletHelpers) {
     return {
         restrict: "A",
         scope: false,
@@ -1343,8 +1320,9 @@ angular.module("leaflet-directive").directive('paths', function ($log, leafletDa
         require: 'leaflet',
 
         link: function($scope, element, attrs, controller) {
-            var defaults = leafletMapDefaults($scope.defaults);
-            var paths = $scope.paths;
+            var isDefined = leafletHelpers.isDefined,
+                defaults  = leafletMapDefaults($scope.defaults),
+                paths     = $scope.paths;
 
             controller.getMap().then(function(map) {
 
@@ -1500,7 +1478,7 @@ angular.module("leaflet-directive").directive('paths', function ($log, leafletDa
     };
 });
 
-angular.module("leaflet-directive").directive('controls', function ($log) {
+angular.module("leaflet-directive").directive('controls', function ($log, leafletHelpers) {
     return {
         restrict: "A",
         scope: false,
@@ -1509,7 +1487,8 @@ angular.module("leaflet-directive").directive('controls', function ($log) {
         require: 'leaflet',
 
         link: function($scope, element, attrs, controller) {
-            var controls = $scope.controls;
+            var isDefined = leafletHelpers.isDefined,
+                controls = $scope.controls;
             controller.getMap().then(function(map) {
                 if (isDefined(L.Control.Draw) && isDefined(controls.draw)) {
                     var drawControl = new L.Control.Draw(controls.draw.options);
@@ -1520,7 +1499,7 @@ angular.module("leaflet-directive").directive('controls', function ($log) {
     };
 });
 
-angular.module("leaflet-directive").directive('eventBroadcast', function ($log, $rootScope) {
+angular.module("leaflet-directive").directive('eventBroadcast', function ($log, $rootScope, leafletHelpers) {
     return {
         restrict: "A",
         scope: false,
@@ -1529,6 +1508,11 @@ angular.module("leaflet-directive").directive('eventBroadcast', function ($log, 
         require: 'leaflet',
 
         link: function($scope, element, attrs, controller) {
+            var safeApply = leafletHelpers.safeApply,
+                isDefinedAndNotNull = leafletHelpers.isDefinedAndNotNull,
+                isDefined = leafletHelpers.isDefined;
+
+
             controller.getMap().then(function(map) {
 
                 function genDispatchMapEvent(eventName, logic) {
@@ -1686,7 +1670,7 @@ angular.module("leaflet-directive").directive('eventBroadcast', function ($log, 
     };
 });
 
-angular.module("leaflet-directive").directive('maxbounds', function ($log, leafletMapDefaults) {
+angular.module("leaflet-directive").directive('maxbounds', function ($log, leafletMapDefaults, leafletHelpers) {
     return {
         restrict: "A",
         scope: false,
@@ -1695,7 +1679,10 @@ angular.module("leaflet-directive").directive('maxbounds', function ($log, leafl
         require: 'leaflet',
 
         link: function($scope, element, attrs, controller) {
-            var defaults = leafletMapDefaults($scope.defaults);
+            var isDefined = leafletHelpers.isDefined,
+                isNumber  = leafletHelpers.isNumber,
+                defaults = leafletMapDefaults($scope.defaults);
+
             controller.getMap().then(function(map) {
                 var maxBounds = $scope.maxBounds;
                 if (isDefined(maxBounds) && isDefined(maxBounds.southWest) && isDefined(maxBounds.northEast)) {
@@ -1717,7 +1704,9 @@ angular.module("leaflet-directive").directive('maxbounds', function ($log, leafl
     };
 });
 
-angular.module("leaflet-directive").service('leafletData', function ($log, $q) {
+angular.module("leaflet-directive").service('leafletData', function ($log, $q, leafletHelpers) {
+    var isDefined = leafletHelpers.isDefined;
+
     var maps = {
         main: $q.defer()
     };
@@ -1821,7 +1810,8 @@ angular.module("leaflet-directive").service('leafletData', function ($log, $q) {
     };
 });
 
-angular.module("leaflet-directive").factory('leafletMapDefaults', function () {
+angular.module("leaflet-directive").factory('leafletMapDefaults', function (leafletHelpers) {
+    var isDefined = leafletHelpers.isDefined;
 
     function _getMapDefaults() {
         return {
@@ -1895,6 +1885,50 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function () {
 
 angular.module("leaflet-directive").factory('leafletHelpers', function () {
     return {
+        // Determine if a reference is defined
+        isDefined: function(value) {
+            return angular.isDefined(value);
+        },
+
+        // Determine if a reference is defined and not null
+        isDefinedAndNotNull: function(value) {
+            return angular.isDefined(value) && value !== null;
+        },
+
+        // Determine if a reference is a number
+        isNumber: function(value) {
+          return angular.isNumber(value);
+        },
+
+        // Determine if a reference is a string
+        isString: function(value) {
+          return angular.isString(value);
+        },
+
+        // Determine if a reference is an array
+        isArray: function(value) {
+          return angular.isArray(value);
+        },
+
+        // Determine if a reference is an object
+        isObject: function(value) {
+          return angular.isObject(value);
+        },
+
+        // Determine if two objects have the same properties
+        equals: function(o1, o2) {
+          return angular.equals(o1, o2);
+        },
+
+        safeApply: function($scope, fn) {
+            var phase = $scope.$root.$$phase;
+            if (phase === '$apply' || phase === '$digest') {
+                $scope.$eval(fn);
+            } else {
+                $scope.$apply(fn);
+            }
+        },
+
         AwesomeMarkersPlugin: {
             isLoaded: function() {
                 if (L.AwesomeMarkers !== undefined) {

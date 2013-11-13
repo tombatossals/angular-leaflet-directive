@@ -112,7 +112,6 @@ module.exports = function(grunt) {
                 },
                 src: [
                       'src/modules/Scope.SafeApply.js',
-                      'src/main.js',
                       'src/directives/leaflet.js',
                       'src/directives/center.js',
                       'src/directives/tiles.js',

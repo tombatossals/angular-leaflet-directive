@@ -1,5 +1,49 @@
 angular.module("leaflet-directive").factory('leafletHelpers', function () {
     return {
+        // Determine if a reference is defined
+        isDefined: function(value) {
+            return angular.isDefined(value);
+        },
+
+        // Determine if a reference is defined and not null
+        isDefinedAndNotNull: function(value) {
+            return angular.isDefined(value) && value !== null;
+        },
+
+        // Determine if a reference is a number
+        isNumber: function(value) {
+          return angular.isNumber(value);
+        },
+
+        // Determine if a reference is a string
+        isString: function(value) {
+          return angular.isString(value);
+        },
+
+        // Determine if a reference is an array
+        isArray: function(value) {
+          return angular.isArray(value);
+        },
+
+        // Determine if a reference is an object
+        isObject: function(value) {
+          return angular.isObject(value);
+        },
+
+        // Determine if two objects have the same properties
+        equals: function(o1, o2) {
+          return angular.equals(o1, o2);
+        },
+
+        safeApply: function($scope, fn) {
+            var phase = $scope.$root.$$phase;
+            if (phase === '$apply' || phase === '$digest') {
+                $scope.$eval(fn);
+            } else {
+                $scope.$apply(fn);
+            }
+        },
+
         AwesomeMarkersPlugin: {
             isLoaded: function() {
                 if (L.AwesomeMarkers !== undefined) {

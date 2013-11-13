@@ -1,4 +1,4 @@
-angular.module("leaflet-directive").directive('legend', function ($log) {
+angular.module("leaflet-directive").directive('legend', function ($log, leafletHelpers) {
     return {
         restrict: "A",
         scope: false,
@@ -7,6 +7,8 @@ angular.module("leaflet-directive").directive('legend', function ($log) {
         require: 'leaflet',
 
         link: function($scope, element, attrs, controller) {
+            var isArray = leafletHelpers.isArray;
+
             controller.getMap().then(function(map) {
                 var legend = $scope.legend;
 

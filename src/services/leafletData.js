@@ -1,4 +1,6 @@
-angular.module("leaflet-directive").service('leafletData', function ($log, $q) {
+angular.module("leaflet-directive").service('leafletData', function ($log, $q, leafletHelpers) {
+    var isDefined = leafletHelpers.isDefined;
+
     var maps = {
         main: $q.defer()
     };

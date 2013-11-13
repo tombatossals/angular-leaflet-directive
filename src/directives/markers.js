@@ -9,7 +9,13 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
         link: function($scope, element, attrs, controller) {
             var defaults = leafletMapDefaults($scope.defaults);
             var mapController = controller[0];
-            var Helpers = leafletHelpers;
+            var Helpers = leafletHelpers,
+                isDefined = leafletHelpers.isDefined,
+                isDefinedAndNotNull = leafletHelpers.isDefinedAndNotNull,
+                isString = leafletHelpers.isString,
+                isNumber  = leafletHelpers.isNumber,
+                safeApply = leafletHelpers.safeApply;
+
 
             mapController.getMap().then(function(map) {
                 var markers = $scope.markers;

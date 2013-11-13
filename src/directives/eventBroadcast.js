@@ -1,4 +1,4 @@
-angular.module("leaflet-directive").directive('eventBroadcast', function ($log, $rootScope) {
+angular.module("leaflet-directive").directive('eventBroadcast', function ($log, $rootScope, leafletHelpers) {
     return {
         restrict: "A",
         scope: false,
@@ -7,6 +7,11 @@ angular.module("leaflet-directive").directive('eventBroadcast', function ($log, 
         require: 'leaflet',
 
         link: function($scope, element, attrs, controller) {
+            var safeApply = leafletHelpers.safeApply,
+                isDefinedAndNotNull = leafletHelpers.isDefinedAndNotNull,
+                isDefined = leafletHelpers.isDefined;
+
+
             controller.getMap().then(function(map) {
 
                 function genDispatchMapEvent(eventName, logic) {

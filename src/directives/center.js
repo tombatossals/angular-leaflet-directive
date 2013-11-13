@@ -1,4 +1,4 @@
-angular.module("leaflet-directive").directive('center', function ($log, $parse, leafletMapDefaults) {
+angular.module("leaflet-directive").directive('center', function ($log, $parse, leafletMapDefaults, leafletHelpers) {
     return {
         restrict: "A",
         scope: false,
@@ -7,9 +7,12 @@ angular.module("leaflet-directive").directive('center', function ($log, $parse, 
         require: 'leaflet',
 
         link: function($scope, element, attrs, controller) {
-            var defaults = leafletMapDefaults($scope.defaults);
-            var center = $scope.center;
-            var bounds = $scope.bounds;
+            var isDefined = leafletHelpers.isDefined,
+                isNumber  = leafletHelpers.isNumber,
+                safeApply = leafletHelpers.safeApply,
+                defaults  = leafletMapDefaults($scope.defaults),
+                center    = $scope.center,
+                bounds    = $scope.bounds;
 
             controller.getMap().then(function(map) {
 

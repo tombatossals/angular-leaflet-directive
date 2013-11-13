@@ -1,4 +1,4 @@
-angular.module("leaflet-directive").directive('bounds', function ($log) {
+angular.module("leaflet-directive").directive('bounds', function ($log, leafletHelpers) {
     return {
         restrict: "A",
         scope: false,
@@ -7,6 +7,9 @@ angular.module("leaflet-directive").directive('bounds', function ($log) {
         require: 'leaflet',
 
         link: function($scope, element, attrs, controller) {
+            var isDefined = leafletHelpers.isDefined,
+                isNumber  = leafletHelpers.isNumber;
+
             controller.getMap().then(function(map) {
                 setupBounds(map);
 

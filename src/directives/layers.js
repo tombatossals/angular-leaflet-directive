@@ -12,10 +12,13 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
             };
         },
         link: function($scope, element, attrs, controller) {
-            var defaults = leafletMapDefaults($scope.defaults);
-            var layers = $scope.layers;
-            var leafletLayers;
-            var Helpers = leafletHelpers;
+            var defaults = leafletMapDefaults($scope.defaults),
+                layers = $scope.layers,
+                Helpers = leafletHelpers,
+                isDefined = leafletHelpers.isDefined,
+                isString = leafletHelpers.isString,
+                leafletLayers = {};
+
 
             controller.getMap().then(function(map) {
 
@@ -27,7 +30,6 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                         return;
                     }
                     // We have baselayers to add to the map
-                    leafletLayers = {};
                     $scope.leafletLayers.resolve(leafletLayers);
                     leafletData.setLayers(leafletLayers, attrs.id);
 

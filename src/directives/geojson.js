@@ -1,4 +1,4 @@
-angular.module("leaflet-directive").directive('geojson', function ($log, $rootScope, leafletData) {
+angular.module("leaflet-directive").directive('geojson', function ($log, $rootScope, leafletData, leafletHelpers) {
     return {
         restrict: "A",
         scope: false,
@@ -7,8 +7,10 @@ angular.module("leaflet-directive").directive('geojson', function ($log, $rootSc
         require: 'leaflet',
 
         link: function($scope, element, attrs, controller) {
-            var map = controller.getMap();
-            var leafletGeoJSON = {};
+            var safeApply = leafletHelpers.safeApply,
+                isDefined = leafletHelpers.isDefined,
+                map = controller.getMap(),
+                leafletGeoJSON = {};
 
             controller.getMap().then(function(map) {
                 $scope.$watch("geojson", function(geojson) {
