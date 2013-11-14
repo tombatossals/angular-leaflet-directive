@@ -6,10 +6,10 @@ angular.module("leaflet-directive").directive('paths', function ($log, leafletDa
         transclude: false,
         require: 'leaflet',
 
-        link: function($scope, element, attrs, controller) {
+        link: function(scope, element, attrs, controller) {
             var isDefined = leafletHelpers.isDefined,
-                defaults  = leafletMapDefaults($scope.defaults),
-                paths     = $scope.paths;
+                defaults  = leafletMapDefaults(scope.defaults),
+                paths     = scope.paths;
 
             controller.getMap().then(function(map) {
 
@@ -23,7 +23,7 @@ angular.module("leaflet-directive").directive('paths', function ($log, leafletDa
                     return;
                 }
 
-                $scope.$watch("paths", function (newPaths) {
+                scope.$watch("paths", function (newPaths) {
                     for (var new_name in newPaths) {
                         if (!isDefined(leafletPaths[new_name])) {
                             leafletPaths[new_name] = createPath(new_name, newPaths[new_name], map, defaults);
@@ -131,7 +131,7 @@ angular.module("leaflet-directive").directive('paths', function ($log, leafletDa
                 }
                 map.addLayer(path);
 
-                var clearWatch = $scope.$watch('paths.' + name, function(data, oldData) {
+                var clearWatch = scope.$watch('paths.' + name, function(data, oldData) {
                     if (!isDefined(data)) {
                         map.removeLayer(path);
                         clearWatch();

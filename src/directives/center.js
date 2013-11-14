@@ -6,13 +6,13 @@ angular.module("leaflet-directive").directive('center', function ($log, $parse, 
         transclude: false,
         require: 'leaflet',
 
-        link: function($scope, element, attrs, controller) {
+        link: function(scope, element, attrs, controller) {
             var isDefined = leafletHelpers.isDefined,
                 isNumber  = leafletHelpers.isNumber,
                 safeApply = leafletHelpers.safeApply,
-                defaults  = leafletMapDefaults($scope.defaults),
-                center    = $scope.center,
-                bounds    = $scope.bounds;
+                defaults  = leafletMapDefaults(scope.defaults),
+                center    = scope.center,
+                bounds    = scope.bounds;
 
             controller.getMap().then(function(map) {
 
@@ -33,7 +33,7 @@ angular.module("leaflet-directive").directive('center', function ($log, $parse, 
 
                 var movingMap = false;
 
-                $scope.$watch("center", function(center) {
+                scope.$watch("center", function(center) {
                     if (!isValidCenter(center)) {
                         $log.warn("[AngularJS - Leaflet] invalid 'center'");
                         updateCenter(map, defaults.center);
@@ -52,7 +52,7 @@ angular.module("leaflet-directive").directive('center', function ($log, $parse, 
 
                 map.on("moveend", function(/* event */) {
                     movingMap = false;
-                    safeApply($scope, function(scope) {
+                    safeApply(scope, function(scope) {
                         if (centerModel) {
                             centerModel.lat.assign(scope, map.getCenter().lat);
                             centerModel.lng.assign(scope, map.getCenter().lng);

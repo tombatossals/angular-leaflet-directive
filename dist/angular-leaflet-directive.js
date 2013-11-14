@@ -30,14 +30,14 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
             };
         },
 
-        link: function($scope, element, attrs, controller) {
+        link: function(scope, element, attrs, controller) {
             var isDefined = leafletHelpers.isDefined,
-                defaults = leafletMapDefaults($scope.defaults);
+                defaults = leafletMapDefaults(scope.defaults);
 
             leafletData.setDefaults(defaults);
 
             // If we are going to set maxBounds, undefine the minZoom property
-            if (isDefined($scope.maxBounds)) {
+            if (isDefined(scope.maxBounds)) {
                 defaults.minZoom = undefined;
             }
 
@@ -74,7 +74,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
             });
 
             // Resolve the map object to the promises
-            $scope.leafletMap.resolve(map);
+            scope.leafletMap.resolve(map);
             leafletData.setMap(map, attrs.id);
 
             if (!isDefined(attrs.center)) {
@@ -83,7 +83,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
             }
 
             // If no layers nor tiles defined, set the default tileLayer
-            if (!isDefined(attrs.tiles) && (!isDefined(attrs.layers) || !isDefined($scope.layers.baselayers))) {
+            if (!isDefined(attrs.tiles) && (!isDefined(attrs.layers) || !isDefined(scope.layers.baselayers))) {
                 var tileLayerObj = L.tileLayer(defaults.tileLayer, defaults.tileLayerOptions);
                 tileLayerObj.addTo(map);
                 leafletData.setTiles(tileLayerObj);
@@ -105,13 +105,13 @@ angular.module("leaflet-directive").directive('center', function ($log, $parse, 
         transclude: false,
         require: 'leaflet',
 
-        link: function($scope, element, attrs, controller) {
+        link: function(scope, element, attrs, controller) {
             var isDefined = leafletHelpers.isDefined,
                 isNumber  = leafletHelpers.isNumber,
                 safeApply = leafletHelpers.safeApply,
-                defaults  = leafletMapDefaults($scope.defaults),
-                center    = $scope.center,
-                bounds    = $scope.bounds;
+                defaults  = leafletMapDefaults(scope.defaults),
+                center    = scope.center,
+                bounds    = scope.bounds;
 
             controller.getMap().then(function(map) {
 
@@ -132,7 +132,7 @@ angular.module("leaflet-directive").directive('center', function ($log, $parse, 
 
                 var movingMap = false;
 
-                $scope.$watch("center", function(center) {
+                scope.$watch("center", function(center) {
                     if (!isValidCenter(center)) {
                         $log.warn("[AngularJS - Leaflet] invalid 'center'");
                         updateCenter(map, defaults.center);
@@ -151,7 +151,7 @@ angular.module("leaflet-directive").directive('center', function ($log, $parse, 
 
                 map.on("moveend", function(/* event */) {
                     movingMap = false;
-                    safeApply($scope, function(scope) {
+                    safeApply(scope, function(scope) {
                         if (centerModel) {
                             centerModel.lat.assign(scope, map.getCenter().lat);
                             centerModel.lng.assign(scope, map.getCenter().lng);
@@ -203,10 +203,10 @@ angular.module("leaflet-directive").directive('tiles', function ($log, leafletDa
         transclude: false,
         require: 'leaflet',
 
-        link: function($scope, element, attrs, controller) {
+        link: function(scope, element, attrs, controller) {
             var isDefined = leafletHelpers.isDefined,
-                defaults = leafletMapDefaults($scope.defaults),
-                tiles = $scope.tiles;
+                defaults = leafletMapDefaults(scope.defaults),
+                tiles = scope.tiles;
 
             controller.getMap().then(function(map) {
 
@@ -216,7 +216,7 @@ angular.module("leaflet-directive").directive('tiles', function ($log, leafletDa
 
                 if (angular.isDefined(tiles) && angular.isDefined(tiles.url)) {
                     tileLayerUrl = tiles.url;
-                    $scope.$watch("tiles.url", function(url) {
+                    scope.$watch("tiles.url", function(url) {
                         if (angular.isDefined(url)) {
                             tileLayerObj.setUrl(url);
                         }
@@ -245,11 +245,11 @@ angular.module("leaflet-directive").directive('legend', function ($log, leafletH
         transclude: false,
         require: 'leaflet',
 
-        link: function($scope, element, attrs, controller) {
+        link: function(scope, element, attrs, controller) {
             var isArray = leafletHelpers.isArray;
 
             controller.getMap().then(function(map) {
-                var legend = $scope.legend;
+                var legend = scope.legend;
 
                 if (!isArray(legend.colors) || !isArray(legend.labels) || legend.colors.length !== legend.labels.length) {
                     $log.warn("[AngularJS - Leaflet] legend.colors and legend.labels must be set.");
@@ -280,14 +280,14 @@ angular.module("leaflet-directive").directive('geojson', function ($log, $rootSc
         transclude: false,
         require: 'leaflet',
 
-        link: function($scope, element, attrs, controller) {
+        link: function(scope, element, attrs, controller) {
             var safeApply = leafletHelpers.safeApply,
                 isDefined = leafletHelpers.isDefined,
                 map = controller.getMap(),
                 leafletGeoJSON = {};
 
             controller.getMap().then(function(map) {
-                $scope.$watch("geojson", function(geojson) {
+                scope.$watch("geojson", function(geojson) {
                     if (!isDefined(geojson)) {
                         return;
                     }
@@ -301,7 +301,7 @@ angular.module("leaflet-directive").directive('geojson', function ($log, $rootSc
                             onEachFeatureDefault = function(feature, layer) {
                                 layer.on({
                                     mouseover: function(e) {
-                                        safeApply($scope, function() {
+                                        safeApply(scope, function() {
                                             geojson.selected = feature;
                                             $rootScope.$broadcast('leafletDirectiveMap.geojsonMouseover', e);
                                         });
@@ -310,13 +310,13 @@ angular.module("leaflet-directive").directive('geojson', function ($log, $rootSc
                                         if (resetStyleOnMouseout) {
                                             leafletGeoJSON.resetStyle(e.target);
                                         }
-                                        safeApply($scope, function() {
+                                        safeApply(scope, function() {
                                             geojson.selected = undefined;
                                             $rootScope.$broadcast('leafletDirectiveMap.geojsonMouseout', e);
                                         });
                                     },
                                     click: function(e) {
-                                        safeApply($scope, function() {
+                                        safeApply(scope, function() {
                                             $rootScope.$broadcast('leafletDirectiveMap.geojsonClick', geojson.selected, e);
                                         });
                                     }
@@ -356,9 +356,9 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                 return $scope.leafletLayers.promise;
             };
         },
-        link: function($scope, element, attrs, controller) {
-            var defaults = leafletMapDefaults($scope.defaults),
-                layers = $scope.layers,
+        link: function(scope, element, attrs, controller) {
+            var defaults = leafletMapDefaults(scope.defaults),
+                layers = scope.layers,
                 Helpers = leafletHelpers,
                 isDefined = leafletHelpers.isDefined,
                 isString = leafletHelpers.isString,
@@ -369,13 +369,13 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
 
                 if (isDefined(layers)) {
                     // Do we have a baselayers property?
-                    if (!isDefined(layers.baselayers) || Object.keys($scope.layers.baselayers).length <= 0) {
+                    if (!isDefined(layers.baselayers) || Object.keys(scope.layers.baselayers).length <= 0) {
                         // No baselayers property
                         $log.error('[AngularJS - Leaflet] At least one baselayer has to be defined');
                         return;
                     }
                     // We have baselayers to add to the map
-                    $scope.leafletLayers.resolve(leafletLayers);
+                    scope.leafletLayers.resolve(leafletLayers);
                     leafletData.setLayers(leafletLayers, attrs.id);
 
                     leafletLayers.baselayers = {};
@@ -420,7 +420,7 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                     }
 
                     // Watch for the base layers
-                    $scope.$watch('layers.baselayers', function(newBaseLayers) {
+                    scope.$watch('layers.baselayers', function(newBaseLayers) {
                         // Delete layers from the array
                         for (var name in leafletLayers.baselayers) {
                             if (newBaseLayers[name] === undefined) {
@@ -469,7 +469,7 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                     }, true);
 
                     // Watch for the overlay layers
-                    $scope.$watch('layers.overlays', function(newOverlayLayers) {
+                    scope.$watch('layers.overlays', function(newOverlayLayers) {
                         // Delete layers from the array
                         for (var name in leafletLayers.overlays) {
                             if (newOverlayLayers[name] === undefined) {
@@ -613,7 +613,7 @@ angular.module("leaflet-directive").directive('bounds', function ($log, leafletH
         transclude: false,
         require: 'leaflet',
 
-        link: function($scope, element, attrs, controller) {
+        link: function(scope, element, attrs, controller) {
             var isDefined = leafletHelpers.isDefined,
                 isNumber  = leafletHelpers.isNumber;
 
@@ -628,7 +628,7 @@ angular.module("leaflet-directive").directive('bounds', function ($log, leafletH
                 }
 
                 function setupBounds(map) {
-                    $scope.$watch('bounds', function(bounds) {
+                    scope.$watch('bounds', function(bounds) {
                         if (!isDefined(bounds) || !isBoundsValid(bounds)) {
                             $log.error('[AngularJS - Leaflet] Invalid bounds');
                             return;
@@ -658,8 +658,8 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
         transclude: false,
         require: ['leaflet', '?layers'],
 
-        link: function($scope, element, attrs, controller) {
-            var defaults = leafletMapDefaults($scope.defaults);
+        link: function(scope, element, attrs, controller) {
+            var defaults = leafletMapDefaults(scope.defaults);
             var mapController = controller[0];
             var Helpers = leafletHelpers,
                 isDefined = leafletHelpers.isDefined,
@@ -670,7 +670,7 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
 
 
             mapController.getMap().then(function(map) {
-                var markers = $scope.markers;
+                var markers = scope.markers;
                 var getLayers;
                 var leafletMarkers = {};
                 var groups = {};
@@ -708,7 +708,7 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
 
                 getLayers().then(function(layers) {
                     leafletData.setMarkers(leafletMarkers, attrs.id);
-                    $scope.$watch('markers', function(newMarkers) {
+                    scope.$watch('markers', function(newMarkers) {
                         // Delete markers from the array
                         for (var name in leafletMarkers) {
                             if (!isDefined(newMarkers[name])) {
@@ -822,11 +822,11 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
 
                                 // Broadcast old marker click name for backwards compatibility
                                 if (eventName === "click") {
-                                    safeApply($scope, function() {
+                                    safeApply(scope, function() {
                                         $rootScope.$broadcast('leafletDirectiveMarkersClick', markerName);
                                     });
                                 } else if (eventName === 'dragend') {
-                                    safeApply($scope, function() {
+                                    safeApply(scope, function() {
                                         marker_data.lat = marker.getLatLng().lat;
                                         marker_data.lng = marker.getLatLng().lng;
                                     });
@@ -837,7 +837,7 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                                     }
                                 }
 
-                                safeApply($scope, function(scope){
+                                safeApply(scope, function(scope){
                                     if (logic === "emit") {
                                         scope.$emit(broadcastName, {
                                             markerName: markerName,
@@ -875,41 +875,41 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                         var eventName;
                         var logic = "broadcast";
 
-                        if ($scope.eventBroadcast === undefined || $scope.eventBroadcast === null) {
+                        if (scope.eventBroadcast === undefined || scope.eventBroadcast === null) {
                             // Backward compatibility, if no event-broadcast attribute, all events are broadcasted
                             markerEvents = availableMarkerEvents;
-                        } else if (typeof $scope.eventBroadcast !== 'object') {
+                        } else if (typeof scope.eventBroadcast !== 'object') {
                             // Not a valid object
                             $log.warn("[AngularJS - Leaflet] event-broadcast must be an object check your model.");
                         } else {
                             // We have a possible valid object
-                            if ($scope.eventBroadcast.marker === undefined || $scope.eventBroadcast.marker === null) {
+                            if (scope.eventBroadcast.marker === undefined || scope.eventBroadcast.marker === null) {
                                 // We do not have events enable/disable do we do nothing (all enabled by default)
                                 markerEvents = availableMarkerEvents;
-                            } else if (typeof $scope.eventBroadcast.marker !== 'object') {
+                            } else if (typeof scope.eventBroadcast.marker !== 'object') {
                                 // Not a valid object
                                 $log.warn("[AngularJS - Leaflet] event-broadcast.marker must be an object check your model.");
                             } else {
                                 // We have a possible valid map object
                                 // Event propadation logic
-                                if ($scope.eventBroadcast.marker.logic !== undefined && $scope.eventBroadcast.marker.logic !== null) {
+                                if (scope.eventBroadcast.marker.logic !== undefined && scope.eventBroadcast.marker.logic !== null) {
                                     // We take care of possible propagation logic
-                                    if ($scope.eventBroadcast.marker.logic !== "emit" && $scope.eventBroadcast.marker.logic !== "broadcast") {
+                                    if (scope.eventBroadcast.marker.logic !== "emit" && scope.eventBroadcast.marker.logic !== "broadcast") {
                                         // This is an error
                                         $log.warn("[AngularJS - Leaflet] Available event propagation logic are: 'emit' or 'broadcast'.");
-                                    } else if ($scope.eventBroadcast.marker.logic === "emit") {
+                                    } else if (scope.eventBroadcast.marker.logic === "emit") {
                                         logic = "emit";
                                     }
                                 }
                                 // Enable / Disable
                                 var markerEventsEnable = false, markerEventsDisable = false;
-                                if ($scope.eventBroadcast.marker.enable !== undefined && $scope.eventBroadcast.marker.enable !== null) {
-                                    if (typeof $scope.eventBroadcast.marker.enable === 'object') {
+                                if (scope.eventBroadcast.marker.enable !== undefined && scope.eventBroadcast.marker.enable !== null) {
+                                    if (typeof scope.eventBroadcast.marker.enable === 'object') {
                                         markerEventsEnable = true;
                                     }
                                 }
-                                if ($scope.eventBroadcast.marker.disable !== undefined && $scope.eventBroadcast.marker.disable !== null) {
-                                    if (typeof $scope.eventBroadcast.marker.disable === 'object') {
+                                if (scope.eventBroadcast.marker.disable !== undefined && scope.eventBroadcast.marker.disable !== null) {
+                                    if (typeof scope.eventBroadcast.marker.disable === 'object') {
                                         markerEventsDisable = true;
                                     }
                                 }
@@ -923,8 +923,8 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                                     // At this point the marker object is OK, lets enable or disable events
                                     if (markerEventsEnable) {
                                         // Enable events
-                                        for (i = 0; i < $scope.eventBroadcast.marker.enable.length; i++) {
-                                            eventName = $scope.eventBroadcast.marker.enable[i];
+                                        for (i = 0; i < scope.eventBroadcast.marker.enable.length; i++) {
+                                            eventName = scope.eventBroadcast.marker.enable[i];
                                             // Do we have already the event enabled?
                                             if (markerEvents.indexOf(eventName) !== -1) {
                                                 // Repeated event, this is an error
@@ -943,8 +943,8 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                                     } else {
                                         // Disable events
                                         markerEvents = availableMarkerEvents;
-                                        for (i = 0; i < $scope.eventBroadcast.marker.disable.length; i++) {
-                                            eventName = $scope.eventBroadcast.marker.disable[i];
+                                        for (i = 0; i < scope.eventBroadcast.marker.disable.length; i++) {
+                                            eventName = scope.eventBroadcast.marker.disable[i];
                                             var index = markerEvents.indexOf(eventName);
                                             if (index === -1) {
                                                 // The event does not exist
@@ -966,7 +966,7 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                             });
                         }
 
-                        var clearWatch = $scope.$watch(scope_watch_name, function(data, old_data) {
+                        var clearWatch = scope.$watch(scope_watch_name, function(data, old_data) {
                             if (!isDefinedAndNotNull(data)) {
                                 marker.closePopup();
                                 // There is no easy way to know if a marker is added to a layer, so we search for it
@@ -1319,10 +1319,10 @@ angular.module("leaflet-directive").directive('paths', function ($log, leafletDa
         transclude: false,
         require: 'leaflet',
 
-        link: function($scope, element, attrs, controller) {
+        link: function(scope, element, attrs, controller) {
             var isDefined = leafletHelpers.isDefined,
-                defaults  = leafletMapDefaults($scope.defaults),
-                paths     = $scope.paths;
+                defaults  = leafletMapDefaults(scope.defaults),
+                paths     = scope.paths;
 
             controller.getMap().then(function(map) {
 
@@ -1336,7 +1336,7 @@ angular.module("leaflet-directive").directive('paths', function ($log, leafletDa
                     return;
                 }
 
-                $scope.$watch("paths", function (newPaths) {
+                scope.$watch("paths", function (newPaths) {
                     for (var new_name in newPaths) {
                         if (!isDefined(leafletPaths[new_name])) {
                             leafletPaths[new_name] = createPath(new_name, newPaths[new_name], map, defaults);
@@ -1444,7 +1444,7 @@ angular.module("leaflet-directive").directive('paths', function ($log, leafletDa
                 }
                 map.addLayer(path);
 
-                var clearWatch = $scope.$watch('paths.' + name, function(data, oldData) {
+                var clearWatch = scope.$watch('paths.' + name, function(data, oldData) {
                     if (!isDefined(data)) {
                         map.removeLayer(path);
                         clearWatch();
@@ -1486,9 +1486,9 @@ angular.module("leaflet-directive").directive('controls', function ($log, leafle
         transclude: false,
         require: 'leaflet',
 
-        link: function($scope, element, attrs, controller) {
+        link: function(scope, element, attrs, controller) {
             var isDefined = leafletHelpers.isDefined,
-                controls = $scope.controls;
+                controls = scope.controls;
             controller.getMap().then(function(map) {
                 if (isDefined(L.Control.Draw) && isDefined(controls.draw)) {
                     var drawControl = new L.Control.Draw(controls.draw.options);
@@ -1507,7 +1507,7 @@ angular.module("leaflet-directive").directive('eventBroadcast', function ($log, 
         transclude: false,
         require: 'leaflet',
 
-        link: function($scope, element, attrs, controller) {
+        link: function(scope, element, attrs, controller) {
             var safeApply = leafletHelpers.safeApply,
                 isDefinedAndNotNull = leafletHelpers.isDefinedAndNotNull,
                 isDefined = leafletHelpers.isDefined;
@@ -1520,7 +1520,7 @@ angular.module("leaflet-directive").directive('eventBroadcast', function ($log, 
                         // Put together broadcast name
                         var broadcastName = 'leafletDirectiveMap.' + eventName;
                         // Safely broadcast the event
-                        safeApply($scope, function(scope) {
+                        safeApply(scope, function(scope) {
                             if (logic === "emit") {
                                 scope.$emit(broadcastName, {
                                     leafletEvent : e
@@ -1576,41 +1576,41 @@ angular.module("leaflet-directive").directive('eventBroadcast', function ($log, 
                 var eventName;
                 var logic = "broadcast";
 
-                if (!isDefinedAndNotNull($scope.eventBroadcast)) {
+                if (!isDefinedAndNotNull(scope.eventBroadcast)) {
                     // Backward compatibility, if no event-broadcast attribute, all events are broadcasted
                     mapEvents = availableMapEvents;
-                } else if (typeof $scope.eventBroadcast !== 'object') {
+                } else if (typeof scope.eventBroadcast !== 'object') {
                     // Not a valid object
                     $log.warn("[AngularJS - Leaflet] event-broadcast must be an object check your model.");
                 } else {
                     // We have a possible valid object
-                    if ($scope.eventBroadcast.map === undefined || $scope.eventBroadcast.map === null) {
+                    if (scope.eventBroadcast.map === undefined || scope.eventBroadcast.map === null) {
                         // We do not have events enable/disable do we do nothing (all enabled by default)
                         mapEvents = availableMapEvents;
-                    } else if (typeof $scope.eventBroadcast.map !== 'object') {
+                    } else if (typeof scope.eventBroadcast.map !== 'object') {
                         // Not a valid object
                         $log.warn("[AngularJS - Leaflet] event-broadcast.map must be an object check your model.");
                     } else {
                         // We have a possible valid map object
                         // Event propadation logic
-                        if ($scope.eventBroadcast.map.logic !== undefined && $scope.eventBroadcast.map.logic !== null) {
+                        if (scope.eventBroadcast.map.logic !== undefined && scope.eventBroadcast.map.logic !== null) {
                             // We take care of possible propagation logic
-                            if ($scope.eventBroadcast.map.logic !== "emit" && $scope.eventBroadcast.map.logic !== "broadcast") {
+                            if (scope.eventBroadcast.map.logic !== "emit" && scope.eventBroadcast.map.logic !== "broadcast") {
                                 // This is an error
                                 $log.warn("[AngularJS - Leaflet] Available event propagation logic are: 'emit' or 'broadcast'.");
-                            } else if ($scope.eventBroadcast.map.logic === "emit") {
+                            } else if (scope.eventBroadcast.map.logic === "emit") {
                                 logic = "emit";
                             }
                         }
                         // Enable / Disable
                         var mapEventsEnable = false, mapEventsDisable = false;
-                        if ($scope.eventBroadcast.map.enable !== undefined && $scope.eventBroadcast.map.enable !== null) {
-                            if (typeof $scope.eventBroadcast.map.enable === 'object') {
+                        if (scope.eventBroadcast.map.enable !== undefined && scope.eventBroadcast.map.enable !== null) {
+                            if (typeof scope.eventBroadcast.map.enable === 'object') {
                                 mapEventsEnable = true;
                             }
                         }
-                        if ($scope.eventBroadcast.map.disable !== undefined && $scope.eventBroadcast.map.disable !== null) {
-                            if (typeof $scope.eventBroadcast.map.disable === 'object') {
+                        if (scope.eventBroadcast.map.disable !== undefined && scope.eventBroadcast.map.disable !== null) {
+                            if (typeof scope.eventBroadcast.map.disable === 'object') {
                                 mapEventsDisable = true;
                             }
                         }
@@ -1624,8 +1624,8 @@ angular.module("leaflet-directive").directive('eventBroadcast', function ($log, 
                             // At this point the map object is OK, lets enable or disable events
                             if (mapEventsEnable) {
                                 // Enable events
-                                for (i = 0; i < $scope.eventBroadcast.map.enable.length; i++) {
-                                    eventName = $scope.eventBroadcast.map.enable[i];
+                                for (i = 0; i < scope.eventBroadcast.map.enable.length; i++) {
+                                    eventName = scope.eventBroadcast.map.enable[i];
                                     // Do we have already the event enabled?
                                     if (mapEvents.indexOf(eventName) !== -1) {
                                         // Repeated event, this is an error
@@ -1644,8 +1644,8 @@ angular.module("leaflet-directive").directive('eventBroadcast', function ($log, 
                             } else {
                                 // Disable events
                                 mapEvents = availableMapEvents;
-                                for (i = 0; i < $scope.eventBroadcast.map.disable.length; i++) {
-                                    eventName = $scope.eventBroadcast.map.disable[i];
+                                for (i = 0; i < scope.eventBroadcast.map.disable.length; i++) {
+                                    eventName = scope.eventBroadcast.map.disable[i];
                                     var index = mapEvents.indexOf(eventName);
                                     if (index === -1) {
                                         // The event does not exist
@@ -1678,15 +1678,15 @@ angular.module("leaflet-directive").directive('maxbounds', function ($log, leafl
         transclude: false,
         require: 'leaflet',
 
-        link: function($scope, element, attrs, controller) {
+        link: function(scope, element, attrs, controller) {
             var isDefined = leafletHelpers.isDefined,
                 isNumber  = leafletHelpers.isNumber,
-                defaults = leafletMapDefaults($scope.defaults);
+                defaults = leafletMapDefaults(scope.defaults);
 
             controller.getMap().then(function(map) {
-                var maxBounds = $scope.maxBounds;
+                var maxBounds = scope.maxBounds;
                 if (isDefined(maxBounds) && isDefined(maxBounds.southWest) && isDefined(maxBounds.northEast)) {
-                    $scope.$watch("maxBounds", function (maxBounds) {
+                    scope.$watch("maxBounds", function (maxBounds) {
                         if (isDefined(maxBounds.southWest) && isDefined(maxBounds.northEast) && isNumber(maxBounds.southWest.lat) && isNumber(maxBounds.southWest.lng) && isNumber(maxBounds.northEast.lat) && isNumber(maxBounds.northEast.lng)) {
                             map.setMaxBounds(
                                 new L.LatLngBounds(

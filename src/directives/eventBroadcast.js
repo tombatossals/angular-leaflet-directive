@@ -6,7 +6,7 @@ angular.module("leaflet-directive").directive('eventBroadcast', function ($log, 
         transclude: false,
         require: 'leaflet',
 
-        link: function($scope, element, attrs, controller) {
+        link: function(scope, element, attrs, controller) {
             var safeApply = leafletHelpers.safeApply,
                 isDefinedAndNotNull = leafletHelpers.isDefinedAndNotNull,
                 isDefined = leafletHelpers.isDefined;
@@ -19,7 +19,7 @@ angular.module("leaflet-directive").directive('eventBroadcast', function ($log, 
                         // Put together broadcast name
                         var broadcastName = 'leafletDirectiveMap.' + eventName;
                         // Safely broadcast the event
-                        safeApply($scope, function(scope) {
+                        safeApply(scope, function(scope) {
                             if (logic === "emit") {
                                 scope.$emit(broadcastName, {
                                     leafletEvent : e
@@ -75,41 +75,41 @@ angular.module("leaflet-directive").directive('eventBroadcast', function ($log, 
                 var eventName;
                 var logic = "broadcast";
 
-                if (!isDefinedAndNotNull($scope.eventBroadcast)) {
+                if (!isDefinedAndNotNull(scope.eventBroadcast)) {
                     // Backward compatibility, if no event-broadcast attribute, all events are broadcasted
                     mapEvents = availableMapEvents;
-                } else if (typeof $scope.eventBroadcast !== 'object') {
+                } else if (typeof scope.eventBroadcast !== 'object') {
                     // Not a valid object
                     $log.warn("[AngularJS - Leaflet] event-broadcast must be an object check your model.");
                 } else {
                     // We have a possible valid object
-                    if ($scope.eventBroadcast.map === undefined || $scope.eventBroadcast.map === null) {
+                    if (scope.eventBroadcast.map === undefined || scope.eventBroadcast.map === null) {
                         // We do not have events enable/disable do we do nothing (all enabled by default)
                         mapEvents = availableMapEvents;
-                    } else if (typeof $scope.eventBroadcast.map !== 'object') {
+                    } else if (typeof scope.eventBroadcast.map !== 'object') {
                         // Not a valid object
                         $log.warn("[AngularJS - Leaflet] event-broadcast.map must be an object check your model.");
                     } else {
                         // We have a possible valid map object
                         // Event propadation logic
-                        if ($scope.eventBroadcast.map.logic !== undefined && $scope.eventBroadcast.map.logic !== null) {
+                        if (scope.eventBroadcast.map.logic !== undefined && scope.eventBroadcast.map.logic !== null) {
                             // We take care of possible propagation logic
-                            if ($scope.eventBroadcast.map.logic !== "emit" && $scope.eventBroadcast.map.logic !== "broadcast") {
+                            if (scope.eventBroadcast.map.logic !== "emit" && scope.eventBroadcast.map.logic !== "broadcast") {
                                 // This is an error
                                 $log.warn("[AngularJS - Leaflet] Available event propagation logic are: 'emit' or 'broadcast'.");
-                            } else if ($scope.eventBroadcast.map.logic === "emit") {
+                            } else if (scope.eventBroadcast.map.logic === "emit") {
                                 logic = "emit";
                             }
                         }
                         // Enable / Disable
                         var mapEventsEnable = false, mapEventsDisable = false;
-                        if ($scope.eventBroadcast.map.enable !== undefined && $scope.eventBroadcast.map.enable !== null) {
-                            if (typeof $scope.eventBroadcast.map.enable === 'object') {
+                        if (scope.eventBroadcast.map.enable !== undefined && scope.eventBroadcast.map.enable !== null) {
+                            if (typeof scope.eventBroadcast.map.enable === 'object') {
                                 mapEventsEnable = true;
                             }
                         }
-                        if ($scope.eventBroadcast.map.disable !== undefined && $scope.eventBroadcast.map.disable !== null) {
-                            if (typeof $scope.eventBroadcast.map.disable === 'object') {
+                        if (scope.eventBroadcast.map.disable !== undefined && scope.eventBroadcast.map.disable !== null) {
+                            if (typeof scope.eventBroadcast.map.disable === 'object') {
                                 mapEventsDisable = true;
                             }
                         }
@@ -123,8 +123,8 @@ angular.module("leaflet-directive").directive('eventBroadcast', function ($log, 
                             // At this point the map object is OK, lets enable or disable events
                             if (mapEventsEnable) {
                                 // Enable events
-                                for (i = 0; i < $scope.eventBroadcast.map.enable.length; i++) {
-                                    eventName = $scope.eventBroadcast.map.enable[i];
+                                for (i = 0; i < scope.eventBroadcast.map.enable.length; i++) {
+                                    eventName = scope.eventBroadcast.map.enable[i];
                                     // Do we have already the event enabled?
                                     if (mapEvents.indexOf(eventName) !== -1) {
                                         // Repeated event, this is an error
@@ -143,8 +143,8 @@ angular.module("leaflet-directive").directive('eventBroadcast', function ($log, 
                             } else {
                                 // Disable events
                                 mapEvents = availableMapEvents;
-                                for (i = 0; i < $scope.eventBroadcast.map.disable.length; i++) {
-                                    eventName = $scope.eventBroadcast.map.disable[i];
+                                for (i = 0; i < scope.eventBroadcast.map.disable.length; i++) {
+                                    eventName = scope.eventBroadcast.map.disable[i];
                                     var index = mapEvents.indexOf(eventName);
                                     if (index === -1) {
                                         // The event does not exist

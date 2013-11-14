@@ -11,9 +11,9 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                 return $scope.leafletLayers.promise;
             };
         },
-        link: function($scope, element, attrs, controller) {
-            var defaults = leafletMapDefaults($scope.defaults),
-                layers = $scope.layers,
+        link: function(scope, element, attrs, controller) {
+            var defaults = leafletMapDefaults(scope.defaults),
+                layers = scope.layers,
                 Helpers = leafletHelpers,
                 isDefined = leafletHelpers.isDefined,
                 isString = leafletHelpers.isString,
@@ -24,13 +24,13 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
 
                 if (isDefined(layers)) {
                     // Do we have a baselayers property?
-                    if (!isDefined(layers.baselayers) || Object.keys($scope.layers.baselayers).length <= 0) {
+                    if (!isDefined(layers.baselayers) || Object.keys(scope.layers.baselayers).length <= 0) {
                         // No baselayers property
                         $log.error('[AngularJS - Leaflet] At least one baselayer has to be defined');
                         return;
                     }
                     // We have baselayers to add to the map
-                    $scope.leafletLayers.resolve(leafletLayers);
+                    scope.leafletLayers.resolve(leafletLayers);
                     leafletData.setLayers(leafletLayers, attrs.id);
 
                     leafletLayers.baselayers = {};
@@ -75,7 +75,7 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                     }
 
                     // Watch for the base layers
-                    $scope.$watch('layers.baselayers', function(newBaseLayers) {
+                    scope.$watch('layers.baselayers', function(newBaseLayers) {
                         // Delete layers from the array
                         for (var name in leafletLayers.baselayers) {
                             if (newBaseLayers[name] === undefined) {
@@ -124,7 +124,7 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                     }, true);
 
                     // Watch for the overlay layers
-                    $scope.$watch('layers.overlays', function(newOverlayLayers) {
+                    scope.$watch('layers.overlays', function(newOverlayLayers) {
                         // Delete layers from the array
                         for (var name in leafletLayers.overlays) {
                             if (newOverlayLayers[name] === undefined) {

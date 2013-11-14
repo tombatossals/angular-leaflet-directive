@@ -26,14 +26,14 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
             };
         },
 
-        link: function($scope, element, attrs, controller) {
+        link: function(scope, element, attrs, controller) {
             var isDefined = leafletHelpers.isDefined,
-                defaults = leafletMapDefaults($scope.defaults);
+                defaults = leafletMapDefaults(scope.defaults);
 
             leafletData.setDefaults(defaults);
 
             // If we are going to set maxBounds, undefine the minZoom property
-            if (isDefined($scope.maxBounds)) {
+            if (isDefined(scope.maxBounds)) {
                 defaults.minZoom = undefined;
             }
 
@@ -70,7 +70,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
             });
 
             // Resolve the map object to the promises
-            $scope.leafletMap.resolve(map);
+            scope.leafletMap.resolve(map);
             leafletData.setMap(map, attrs.id);
 
             if (!isDefined(attrs.center)) {
@@ -79,7 +79,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
             }
 
             // If no layers nor tiles defined, set the default tileLayer
-            if (!isDefined(attrs.tiles) && (!isDefined(attrs.layers) || !isDefined($scope.layers.baselayers))) {
+            if (!isDefined(attrs.tiles) && (!isDefined(attrs.layers) || !isDefined(scope.layers.baselayers))) {
                 var tileLayerObj = L.tileLayer(defaults.tileLayer, defaults.tileLayerOptions);
                 tileLayerObj.addTo(map);
                 leafletData.setTiles(tileLayerObj);
