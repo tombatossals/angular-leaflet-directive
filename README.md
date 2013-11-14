@@ -8,6 +8,9 @@ See some basic examples:
 
 * [Basic example](http://tombatossals.github.io/angular-leaflet-directive/examples/simple-example.html)
 * [Custom parameters example](http://tombatossals.github.io/angular-leaflet-directive/examples/custom-parameters-example.html)
+* [Single marker example](http://tombatossals.github.io/angular-leaflet-directive/examples/marker-example.html)
+* [Marker addition example](http://tombatossals.github.io/angular-leaflet-directive/examples/marker-add-example.html)
+* [Marker with label example](http://tombatossals.github.io/angular-leaflet-directive/examples/marker-label-example.html)
 * [Markers example](http://tombatossals.github.io/angular-leaflet-directive/examples/markers-example.html)
 * [Polyline example](http://tombatossals.github.io/angular-leaflet-directive/examples/path-example.html)
 * [Tile changer example](http://tombatossals.github.io/angular-leaflet-directive/examples/tiles-example.html)
@@ -17,6 +20,8 @@ See some basic examples:
 * [Events example](http://tombatossals.github.io/angular-leaflet-directive/examples/events-example.html)
 * [Overlays example](http://tombatossals.github.io/angular-leaflet-directive/examples/overlays-example.html)
 * [Google Maps example](http://tombatossals.github.io/angular-leaflet-directive/examples/googlemaps-example.html)
+* [Accessing the leaflet map object](http://tombatossals.github.io/angular-leaflet-directive/examples/access-leaflet-object-example.html)
+* [Accessing the leaflet map object of two maps](http://tombatossals.github.io/angular-leaflet-directive/examples/double-map-example.html)
 
 
 To see it in action, go to the main page where you can find more examples and
