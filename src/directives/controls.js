@@ -8,7 +8,9 @@ angular.module("leaflet-directive").directive('controls', function ($log, leafle
 
         link: function(scope, element, attrs, controller) {
             var isDefined = leafletHelpers.isDefined,
-                controls = scope.controls;
+                leafletScope  = controller.getLeafletScope(),
+                controls = leafletScope.controls;
+
             controller.getMap().then(function(map) {
                 if (isDefined(L.Control.Draw) && isDefined(controls.draw)) {
                     var drawControl = new L.Control.Draw(controls.draw.options);

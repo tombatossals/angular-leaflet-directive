@@ -8,8 +8,9 @@ angular.module("leaflet-directive").directive('tiles', function ($log, leafletDa
 
         link: function(scope, element, attrs, controller) {
             var isDefined = leafletHelpers.isDefined,
+                leafletScope  = controller.getLeafletScope(),
                 defaults = leafletMapDefaults(scope.defaults),
-                tiles = scope.tiles;
+                tiles = leafletScope.tiles;
 
             controller.getMap().then(function(map) {
 
@@ -19,7 +20,7 @@ angular.module("leaflet-directive").directive('tiles', function ($log, leafletDa
 
                 if (angular.isDefined(tiles) && angular.isDefined(tiles.url)) {
                     tileLayerUrl = tiles.url;
-                    scope.$watch("tiles.url", function(url) {
+                    leafletScope.$watch("tiles.url", function(url) {
                         if (angular.isDefined(url)) {
                             tileLayerObj.setUrl(url);
                         }

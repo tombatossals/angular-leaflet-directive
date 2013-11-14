@@ -37,7 +37,7 @@ module.exports = function(grunt) {
                 }
             },
             source: {
-                src: ['dist/angular-leaflet-directive.js']
+                src: ['src/directives/*.js', 'src/services/*.js']
             },
             tests: {
                 src: ['test/unit/*.js', 'test/e2e/*.js'],
@@ -91,11 +91,11 @@ module.exports = function(grunt) {
                         'test/e2e/*.js'
                        ],
                 tasks: [
-                        'karma:background:run',
-                        'concat:dist',
                         'jshint',
+                        'concat:dist',
                         'ngmin',
                         'uglify',
+                        'karma:background:run',
                         'concat:license'
                        ]
             },

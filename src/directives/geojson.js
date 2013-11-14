@@ -10,10 +10,11 @@ angular.module("leaflet-directive").directive('geojson', function ($log, $rootSc
             var safeApply = leafletHelpers.safeApply,
                 isDefined = leafletHelpers.isDefined,
                 map = controller.getMap(),
+                leafletScope  = controller.getLeafletScope(),
                 leafletGeoJSON = {};
 
             controller.getMap().then(function(map) {
-                scope.$watch("geojson", function(geojson) {
+                leafletScope.$watch("geojson", function(geojson) {
                     if (!isDefined(geojson)) {
                         return;
                     }
@@ -27,7 +28,7 @@ angular.module("leaflet-directive").directive('geojson', function ($log, $rootSc
                             onEachFeatureDefault = function(feature, layer) {
                                 layer.on({
                                     mouseover: function(e) {
-                                        safeApply(scope, function() {
+                                        safeApply(leafletScope, function() {
                                             geojson.selected = feature;
                                             $rootScope.$broadcast('leafletDirectiveMap.geojsonMouseover', e);
                                         });
@@ -36,13 +37,13 @@ angular.module("leaflet-directive").directive('geojson', function ($log, $rootSc
                                         if (resetStyleOnMouseout) {
                                             leafletGeoJSON.resetStyle(e.target);
                                         }
-                                        safeApply(scope, function() {
+                                        safeApply(leafletScope, function() {
                                             geojson.selected = undefined;
                                             $rootScope.$broadcast('leafletDirectiveMap.geojsonMouseout', e);
                                         });
                                     },
                                     click: function(e) {
-                                        safeApply(scope, function() {
+                                        safeApply(leafletScope, function() {
                                             $rootScope.$broadcast('leafletDirectiveMap.geojsonClick', geojson.selected, e);
                                         });
                                     }

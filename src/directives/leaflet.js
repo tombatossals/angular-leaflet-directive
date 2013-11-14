@@ -1,4 +1,6 @@
 angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q, leafletData, leafletMapDefaults, leafletHelpers) {
+    var _leafletMap;
+
     return {
         restrict: "E",
         replace: true,
@@ -20,9 +22,13 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
         },
         template: '<div class="angular-leaflet-map" ng-transclude></div>',
         controller: function ($scope) {
-            $scope.leafletMap = $q.defer();
+            _leafletMap = $q.defer();
             this.getMap = function () {
-                return $scope.leafletMap.promise;
+                return _leafletMap.promise;
+            };
+
+            this.getLeafletScope = function() {
+                return $scope;
             };
         },
 
@@ -70,7 +76,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
             });
 
             // Resolve the map object to the promises
-            scope.leafletMap.resolve(map);
+            _leafletMap.resolve(map);
             leafletData.setMap(map, attrs.id);
 
             if (!isDefined(attrs.center)) {
@@ -79,7 +85,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
             }
 
             // If no layers nor tiles defined, set the default tileLayer
-            if (!isDefined(attrs.tiles) && (!isDefined(attrs.layers) || !isDefined(scope.layers.baselayers))) {
+            if (!isDefined(attrs.tiles) && (!isDefined(attrs.layers))) {
                 var tileLayerObj = L.tileLayer(defaults.tileLayer, defaults.tileLayerOptions);
                 tileLayerObj.addTo(map);
                 leafletData.setTiles(tileLayerObj);

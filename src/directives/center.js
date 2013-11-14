@@ -7,12 +7,13 @@ angular.module("leaflet-directive").directive('center', function ($log, $parse, 
         require: 'leaflet',
 
         link: function(scope, element, attrs, controller) {
-            var isDefined = leafletHelpers.isDefined,
-                isNumber  = leafletHelpers.isNumber,
-                safeApply = leafletHelpers.safeApply,
-                defaults  = leafletMapDefaults(scope.defaults),
-                center    = scope.center,
-                bounds    = scope.bounds;
+            var isDefined     = leafletHelpers.isDefined,
+                isNumber      = leafletHelpers.isNumber,
+                safeApply     = leafletHelpers.safeApply,
+                isValidCenter = leafletHelpers.isValidCenter,
+                leafletScope  = controller.getLeafletScope(),
+                center        = leafletScope.center,
+                defaults      = leafletMapDefaults(leafletScope.defaults);
 
             controller.getMap().then(function(map) {
 
@@ -33,17 +34,17 @@ angular.module("leaflet-directive").directive('center', function ($log, $parse, 
 
                 var movingMap = false;
 
-                scope.$watch("center", function(center) {
+                leafletScope.$watch("center", function(center) {
                     if (!isValidCenter(center)) {
                         $log.warn("[AngularJS - Leaflet] invalid 'center'");
-                        updateCenter(map, defaults.center);
+                        map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
                         return;
                     }
                     if (movingMap) {
                         // Can't update. The map is moving.
                         return;
                     }
-                    updateCenter(map, center);
+                    map.setView([center.lat, center.lng], center.zoom);
                 }, true);
 
                 map.on("movestart", function(/* event */) {
@@ -52,7 +53,7 @@ angular.module("leaflet-directive").directive('center', function ($log, $parse, 
 
                 map.on("moveend", function(/* event */) {
                     movingMap = false;
-                    safeApply(scope, function(scope) {
+                    safeApply(leafletScope, function(scope) {
                         if (centerModel) {
                             centerModel.lat.assign(scope, map.getCenter().lat);
                             centerModel.lng.assign(scope, map.getCenter().lng);
@@ -61,36 +62,6 @@ angular.module("leaflet-directive").directive('center', function ($log, $parse, 
                         scope.$emit("centerUpdated");
                     });
                 });
-
-                function updateBoundsInScope(map) {
-                    if (!bounds) {
-                        return;
-                    }
-
-                    var leafletBounds = map.getBounds();
-                    var sw_latlng = leafletBounds.getSouthWest();
-                    var ne_latlng = leafletBounds.getNorthEast();
-                    bounds = {
-                        southWest: {
-                            lat: sw_latlng.lat,
-                            lng: sw_latlng.lng
-                        },
-                        northEast: {
-                            lat: ne_latlng.lat,
-                            lng: ne_latlng.lng
-                        }
-                    };
-                }
-
-                function updateCenter(map, center) {
-                    map.setView([center.lat, center.lng], center.zoom);
-                    updateBoundsInScope(map);
-                }
-
-                function isValidCenter(center) {
-                    return isDefined(center) && isNumber(center.lat) && isNumber(center.lng) && isNumber(center.zoom);
-                }
-
             });
         }
     };

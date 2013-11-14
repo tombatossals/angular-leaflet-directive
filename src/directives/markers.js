@@ -14,11 +14,11 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                 isDefinedAndNotNull = leafletHelpers.isDefinedAndNotNull,
                 isString = leafletHelpers.isString,
                 isNumber  = leafletHelpers.isNumber,
-                safeApply = leafletHelpers.safeApply;
-
+                safeApply = leafletHelpers.safeApply,
+                leafletScope  = mapController.getLeafletScope(),
+                markers = leafletScope.markers;
 
             mapController.getMap().then(function(map) {
-                var markers = scope.markers;
                 var getLayers;
                 var leafletMarkers = {};
                 var groups = {};
@@ -56,7 +56,7 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
 
                 getLayers().then(function(layers) {
                     leafletData.setMarkers(leafletMarkers, attrs.id);
-                    scope.$watch('markers', function(newMarkers) {
+                    leafletScope.$watch('markers', function(newMarkers) {
                         // Delete markers from the array
                         for (var name in leafletMarkers) {
                             if (!isDefined(newMarkers[name])) {
@@ -170,11 +170,11 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
 
                                 // Broadcast old marker click name for backwards compatibility
                                 if (eventName === "click") {
-                                    safeApply(scope, function() {
+                                    safeApply(leafletScope, function() {
                                         $rootScope.$broadcast('leafletDirectiveMarkersClick', markerName);
                                     });
                                 } else if (eventName === 'dragend') {
-                                    safeApply(scope, function() {
+                                    safeApply(leafletScope, function() {
                                         marker_data.lat = marker.getLatLng().lat;
                                         marker_data.lng = marker.getLatLng().lng;
                                     });
@@ -185,7 +185,7 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                                     }
                                 }
 
-                                safeApply(scope, function(scope){
+                                safeApply(leafletScope, function(scope){
                                     if (logic === "emit") {
                                         scope.$emit(broadcastName, {
                                             markerName: markerName,
@@ -223,41 +223,41 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                         var eventName;
                         var logic = "broadcast";
 
-                        if (scope.eventBroadcast === undefined || scope.eventBroadcast === null) {
+                        if (leafletScope.eventBroadcast === undefined || leafletScope.eventBroadcast === null) {
                             // Backward compatibility, if no event-broadcast attribute, all events are broadcasted
                             markerEvents = availableMarkerEvents;
-                        } else if (typeof scope.eventBroadcast !== 'object') {
+                        } else if (typeof leafletScope.eventBroadcast !== 'object') {
                             // Not a valid object
                             $log.warn("[AngularJS - Leaflet] event-broadcast must be an object check your model.");
                         } else {
                             // We have a possible valid object
-                            if (scope.eventBroadcast.marker === undefined || scope.eventBroadcast.marker === null) {
+                            if (leafletScope.eventBroadcast.marker === undefined || leafletScope.eventBroadcast.marker === null) {
                                 // We do not have events enable/disable do we do nothing (all enabled by default)
                                 markerEvents = availableMarkerEvents;
-                            } else if (typeof scope.eventBroadcast.marker !== 'object') {
+                            } else if (typeof leafletScope.eventBroadcast.marker !== 'object') {
                                 // Not a valid object
                                 $log.warn("[AngularJS - Leaflet] event-broadcast.marker must be an object check your model.");
                             } else {
                                 // We have a possible valid map object
                                 // Event propadation logic
-                                if (scope.eventBroadcast.marker.logic !== undefined && scope.eventBroadcast.marker.logic !== null) {
+                                if (leafletScope.eventBroadcast.marker.logic !== undefined && leafletScope.eventBroadcast.marker.logic !== null) {
                                     // We take care of possible propagation logic
-                                    if (scope.eventBroadcast.marker.logic !== "emit" && scope.eventBroadcast.marker.logic !== "broadcast") {
+                                    if (leafletScope.eventBroadcast.marker.logic !== "emit" && leafletScope.eventBroadcast.marker.logic !== "broadcast") {
                                         // This is an error
                                         $log.warn("[AngularJS - Leaflet] Available event propagation logic are: 'emit' or 'broadcast'.");
-                                    } else if (scope.eventBroadcast.marker.logic === "emit") {
+                                    } else if (leafletScope.eventBroadcast.marker.logic === "emit") {
                                         logic = "emit";
                                     }
                                 }
                                 // Enable / Disable
                                 var markerEventsEnable = false, markerEventsDisable = false;
-                                if (scope.eventBroadcast.marker.enable !== undefined && scope.eventBroadcast.marker.enable !== null) {
-                                    if (typeof scope.eventBroadcast.marker.enable === 'object') {
+                                if (leafletScope.eventBroadcast.marker.enable !== undefined && leafletScope.eventBroadcast.marker.enable !== null) {
+                                    if (typeof leafletScope.eventBroadcast.marker.enable === 'object') {
                                         markerEventsEnable = true;
                                     }
                                 }
-                                if (scope.eventBroadcast.marker.disable !== undefined && scope.eventBroadcast.marker.disable !== null) {
-                                    if (typeof scope.eventBroadcast.marker.disable === 'object') {
+                                if (leafletScope.eventBroadcast.marker.disable !== undefined && leafletScope.eventBroadcast.marker.disable !== null) {
+                                    if (typeof leafletScope.eventBroadcast.marker.disable === 'object') {
                                         markerEventsDisable = true;
                                     }
                                 }
@@ -271,8 +271,8 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                                     // At this point the marker object is OK, lets enable or disable events
                                     if (markerEventsEnable) {
                                         // Enable events
-                                        for (i = 0; i < scope.eventBroadcast.marker.enable.length; i++) {
-                                            eventName = scope.eventBroadcast.marker.enable[i];
+                                        for (i = 0; i < leafletScope.eventBroadcast.marker.enable.length; i++) {
+                                            eventName = leafletScope.eventBroadcast.marker.enable[i];
                                             // Do we have already the event enabled?
                                             if (markerEvents.indexOf(eventName) !== -1) {
                                                 // Repeated event, this is an error
@@ -291,8 +291,8 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                                     } else {
                                         // Disable events
                                         markerEvents = availableMarkerEvents;
-                                        for (i = 0; i < scope.eventBroadcast.marker.disable.length; i++) {
-                                            eventName = scope.eventBroadcast.marker.disable[i];
+                                        for (i = 0; i < leafletScope.eventBroadcast.marker.disable.length; i++) {
+                                            eventName = leafletScope.eventBroadcast.marker.disable[i];
                                             var index = markerEvents.indexOf(eventName);
                                             if (index === -1) {
                                                 // The event does not exist
@@ -314,7 +314,7 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                             });
                         }
 
-                        var clearWatch = scope.$watch(scope_watch_name, function(data, old_data) {
+                        var clearWatch = leafletScope.$watch(scope_watch_name, function(data, old_data) {
                             if (!isDefinedAndNotNull(data)) {
                                 marker.closePopup();
                                 // There is no easy way to know if a marker is added to a layer, so we search for it

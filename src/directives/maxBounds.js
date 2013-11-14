@@ -9,12 +9,13 @@ angular.module("leaflet-directive").directive('maxbounds', function ($log, leafl
         link: function(scope, element, attrs, controller) {
             var isDefined = leafletHelpers.isDefined,
                 isNumber  = leafletHelpers.isNumber,
-                defaults = leafletMapDefaults(scope.defaults);
+                leafletScope  = controller.getLeafletScope(),
+                maxBounds = leafletScope.maxBounds;
+
 
             controller.getMap().then(function(map) {
-                var maxBounds = scope.maxBounds;
                 if (isDefined(maxBounds) && isDefined(maxBounds.southWest) && isDefined(maxBounds.northEast)) {
-                    scope.$watch("maxBounds", function (maxBounds) {
+                    leafletScope.$watch("maxBounds", function (maxBounds) {
                         if (isDefined(maxBounds.southWest) && isDefined(maxBounds.northEast) && isNumber(maxBounds.southWest.lat) && isNumber(maxBounds.southWest.lng) && isNumber(maxBounds.northEast.lat) && isNumber(maxBounds.northEast.lng)) {
                             map.setMaxBounds(
                                 new L.LatLngBounds(

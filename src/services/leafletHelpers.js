@@ -1,18 +1,23 @@
 angular.module("leaflet-directive").factory('leafletHelpers', function () {
+
+    // Determine if a reference is defined
+    function isDefined(value) {
+        return angular.isDefined(value);
+    }
+
+    // Determine if a reference is a number
+    function isNumber(value) {
+      return angular.isNumber(value);
+    }
+
     return {
-        // Determine if a reference is defined
-        isDefined: function(value) {
-            return angular.isDefined(value);
-        },
+        isDefined: isDefined,
+
+        isNumber: isNumber,
 
         // Determine if a reference is defined and not null
         isDefinedAndNotNull: function(value) {
             return angular.isDefined(value) && value !== null;
-        },
-
-        // Determine if a reference is a number
-        isNumber: function(value) {
-          return angular.isNumber(value);
         },
 
         // Determine if a reference is a string
@@ -33,6 +38,17 @@ angular.module("leaflet-directive").factory('leafletHelpers', function () {
         // Determine if two objects have the same properties
         equals: function(o1, o2) {
           return angular.equals(o1, o2);
+        },
+
+        isValidCenter: function(center) {
+            return isDefined(center) && isNumber(center.lat) && isNumber(center.lng) && isNumber(center.zoom);
+        },
+
+        getWatch: function(watchVar, attrs, scope) {
+            if (isDefined(attrs[watchVar] && isDefined(scope[attrs[watchVar]]))) {
+                return attrs[watchVar];
+            }
+            return watchVar;
         },
 
         safeApply: function($scope, fn) {
