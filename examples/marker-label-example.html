@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html ng-app="demoapp">
   <head>
-    <script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
+    <script src="leaflet/leaflet.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular.min.js"></script>
     <script src="../dist/angular-leaflet-directive.min.js"></script>
-    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" />
+    <script src="plugins/Leaflet.label/leaflet.label.js"></script>
+    <link rel="stylesheet" href="leaflet/leaflet.css" />
+    <link rel="stylesheet" href="plugins/Leaflet.label/leaflet.label.css" />
     <!--[if lte IE 8]>
-        <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.ie.css" />
+        <link rel="stylesheet" href="leaflet/leaflet.ie.css" />
     <![endif]-->
     <script>
         angular.module("demoapp", ["leaflet-directive"]);
@@ -19,12 +21,18 @@
                 },
                 markers: {
                     main_marker: {
-                        lat: 51,
+                        lat: 51.5,
                         lng: 0,
                         focus: true,
-                        message: "Hey, drag me if you want",
+                        //message: "Hey, drag me if you want",
                         title: "Marker",
-                        draggable: true
+                        draggable: true,
+                        label: {
+                            message: "Hey, drag me if you want",
+                            options: {
+                                noHide: true
+                            }
+                        }
                     }
                 }
             });

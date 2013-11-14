@@ -16,23 +16,26 @@
                     lat: 51.505,
                     lng: -0.09,
                     zoom: 8
-                },
-                markers: {
-                    main_marker: {
-                        lat: 51,
-                        lng: 0,
-                        focus: true,
-                        message: "Hey, drag me if you want",
-                        title: "Marker",
-                        draggable: true
-                    }
                 }
+            });
+
+            $scope.markers = new Array();
+
+            $scope.$on("leafletDirectiveMap.click", function(event, args){
+                var leafEvent = args.leafletEvent;
+
+                $scope.markers.push({
+                    lat: leafEvent.latlng.lat,
+                    lng: leafEvent.latlng.lng,
+                    message: "My Added Marker"
+                });
             });
         };
     </script>
   </head>
   <body ng-controller="DemoController">
-      <leaflet center="london" markers="markers" height="480px" width="640px">
+        <h3>Click on the map to add a marker</h3>
+      <leaflet center="london" markers="markers" event-broadcast="events" height="480px" width="640px">
       </leaflet>
   </body>
 </html>
