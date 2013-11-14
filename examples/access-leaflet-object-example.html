@@ -20,7 +20,9 @@
             });
 
             $scope.showLeaflet = function() {
-                leafletData.getMap().fitBounds([ [40.712, -74.227], [40.774, -74.125] ]);
+                leafletData.getMap().then(function(map) {
+                    map.fitBounds([ [40.712, -74.227], [40.774, -74.125] ]);
+                });
             };
        }]);
     </script>
