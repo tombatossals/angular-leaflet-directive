@@ -1,4 +1,4 @@
-angular.module("leaflet-directive").factory('leafletHelpers', function () {
+angular.module("leaflet-directive").factory('leafletHelpers', function ($q) {
 
     // Determine if a reference is defined
     function isDefined(value) {
@@ -58,6 +58,20 @@ angular.module("leaflet-directive").factory('leafletHelpers', function () {
             } else {
                 $scope.$apply(fn);
             }
+        },
+
+        getDefer: function(d, scopeId) {
+            if (!isDefined(scopeId)) {
+                scopeId = "main";
+            }
+            var defer;
+            if (!isDefined(d[scopeId])) {
+                defer = $q.defer();
+                d[scopeId] = defer;
+            } else {
+                defer = d[scopeId];
+            }
+            return defer;
         },
 
         AwesomeMarkersPlugin: {
