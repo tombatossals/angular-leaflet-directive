@@ -119,8 +119,8 @@ angular.module("leaflet-directive").directive('center', function ($log, $parse, 
                 leafletScope  = controller.getLeafletScope(),
                 center        = leafletScope.center;
 
-            controller.getMap().then(function(map) {
-                leafletMapDefaults.getDefaults().then(function(defaults) {
+            leafletMapDefaults.getDefaults().then(function(defaults) {
+                controller.getMap().then(function(map) {
                     if (isDefined(center)) {
                         if (center.autoDiscover === true) {
                             map.locate({ setView: true, maxZoom: defaults.maxZoom });
@@ -183,33 +183,34 @@ angular.module("leaflet-directive").directive('tiles', function ($log, leafletDa
         link: function(scope, element, attrs, controller) {
             var isDefined = leafletHelpers.isDefined,
                 leafletScope  = controller.getLeafletScope(),
-                defaults = leafletMapDefaults(scope.defaults),
                 tiles = leafletScope.tiles;
 
-            controller.getMap().then(function(map) {
+            leafletMapDefaults.getDefaults().then(function(defaults) {
+                controller.getMap().then(function(map) {
 
-                var tileLayerObj;
-                var tileLayerUrl = defaults.tileLayer;
-                var tileLayerOptions = defaults.tileLayerOptions;
+                    var tileLayerObj;
+                    var tileLayerUrl = defaults.tileLayer;
+                    var tileLayerOptions = defaults.tileLayerOptions;
 
-                if (angular.isDefined(tiles) && angular.isDefined(tiles.url)) {
-                    tileLayerUrl = tiles.url;
-                    leafletScope.$watch("tiles.url", function(url) {
-                        if (angular.isDefined(url)) {
-                            tileLayerObj.setUrl(url);
-                        }
-                    });
-                } else {
-                    $log.warn("[AngularJS - Leaflet] The 'tiles' definition doesn't have the 'url' property.");
-                }
+                    if (angular.isDefined(tiles) && angular.isDefined(tiles.url)) {
+                        tileLayerUrl = tiles.url;
+                        leafletScope.$watch("tiles.url", function(url) {
+                            if (angular.isDefined(url)) {
+                                tileLayerObj.setUrl(url);
+                            }
+                        });
+                    } else {
+                        $log.warn("[AngularJS - Leaflet] The 'tiles' definition doesn't have the 'url' property.");
+                    }
 
-                if (angular.isDefined(tiles) && angular.isDefined(tiles.options)) {
-                    angular.copy(tiles.options, tileLayerOptions);
-                }
+                    if (angular.isDefined(tiles) && angular.isDefined(tiles.options)) {
+                        angular.copy(tiles.options, tileLayerOptions);
+                    }
 
-                tileLayerObj = L.tileLayer(tileLayerUrl, tileLayerOptions);
-                tileLayerObj.addTo(map);
-                leafletData.setTiles(tileLayerObj, attrs.id);
+                    tileLayerObj = L.tileLayer(tileLayerUrl, tileLayerOptions);
+                    tileLayerObj.addTo(map);
+                    leafletData.setTiles(tileLayerObj, attrs.id);
+                });
             });
         }
     };
@@ -342,245 +343,245 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                 isString = leafletHelpers.isString,
                 leafletLayers = {},
                 leafletScope  = controller.getLeafletScope(),
-                defaults = leafletMapDefaults(leafletScope.defaults),
                 layers = leafletScope.layers;
 
+            leafletMapDefaults.getDefaults().then(function(defaults) {
+                controller.getMap().then(function(map) {
 
-            controller.getMap().then(function(map) {
-
-                if (isDefined(layers)) {
-                    // Do we have a baselayers property?
-                    if (!isDefined(layers.baselayers) || Object.keys(layers.baselayers).length <= 0) {
-                        // No baselayers property
-                        $log.error('[AngularJS - Leaflet] At least one baselayer has to be defined');
-                        return;
-                    }
-                    // We have baselayers to add to the map
-                    _leafletLayers.resolve(leafletLayers);
-                    leafletData.setLayers(leafletLayers, attrs.id);
-
-                    leafletLayers.baselayers = {};
-                    leafletLayers.controls = {};
-                    leafletLayers.controls.layers = new L.control.layers();
-                    leafletLayers.controls.layers.setPosition(defaults.controlLayersPosition);
-                    leafletLayers.controls.layers.addTo(map);
-
-
-                    // Setup all baselayers definitions
-                    var top = false;
-                    for (var layerName in layers.baselayers) {
-                        var newBaseLayer = createLayer(layers.baselayers[layerName]);
-                        if (newBaseLayer !== null) {
-                            leafletLayers.baselayers[layerName] = newBaseLayer;
-                            // Only add the visible layer to the map, layer control manages the addition to the map
-                            // of layers in its control
-                            if (layers.baselayers[layerName].top === true) {
-                                map.addLayer(leafletLayers.baselayers[layerName]);
-                                top = true;
-                            }
-                            leafletLayers.controls.layers.addBaseLayer(leafletLayers.baselayers[layerName], layers.baselayers[layerName].name);
-                        }
-                    }
-                    // If there is no visible layer add first to the map
-                    if (!top && Object.keys(leafletLayers.baselayers).length > 0) {
-                        map.addLayer(leafletLayers.baselayers[Object.keys(layers.baselayers)[0]]);
-                    }
-                    // Setup the Overlays
-                    leafletLayers.overlays = {};
-                    for (layerName in layers.overlays) {
-                        var newOverlayLayer = createLayer(layers.overlays[layerName]);
-                        if (newOverlayLayer !== null) {
-                            leafletLayers.overlays[layerName] = newOverlayLayer;
-                            // Only add the visible layer to the map, layer control manages the addition to the map
-                            // of layers in its control
-                            if (layers.overlays[layerName].visible === true) {
-                                map.addLayer(leafletLayers.overlays[layerName]);
-                            }
-                            leafletLayers.controls.layers.addOverlay(leafletLayers.overlays[layerName], layers.overlays[layerName].name);
-                        }
-                    }
-
-                    // Watch for the base layers
-                    leafletScope.$watch('layers.baselayers', function(newBaseLayers) {
-                        // Delete layers from the array
-                        for (var name in leafletLayers.baselayers) {
-                            if (newBaseLayers[name] === undefined) {
-                                // Remove the layer from the control
-                                leafletLayers.controls.layers.removeLayer(leafletLayers.baselayers[name]);
-                                // Remove from the map if it's on it
-                                if (map.hasLayer(leafletLayers.baselayers[name])) {
-                                    map.removeLayer(leafletLayers.baselayers[name]);
-                                }
-                                delete leafletLayers.baselayers[name];
-                            }
-                        }
-                        // add new layers
-                        for (var new_name in newBaseLayers) {
-                            if (leafletLayers.baselayers[new_name] === undefined) {
-                                var testBaseLayer = createLayer(newBaseLayers[new_name]);
-                                if (testBaseLayer !== null) {
-                                    leafletLayers.baselayers[new_name] = testBaseLayer;
-                                    // Only add the visible layer to the map, layer control manages the addition to the map
-                                    // of layers in its control
-                                    if (newBaseLayers[new_name].top === true) {
-                                        map.addLayer(leafletLayers.baselayers[new_name]);
-                                    }
-                                    leafletLayers.controls.layers.addBaseLayer(leafletLayers.baselayers[new_name], newBaseLayers[new_name].name);
-                                }
-                            }
-                        }
-                        if (Object.keys(leafletLayers.baselayers).length <= 0) {
+                    if (isDefined(layers)) {
+                        // Do we have a baselayers property?
+                        if (!isDefined(layers.baselayers) || Object.keys(layers.baselayers).length <= 0) {
                             // No baselayers property
                             $log.error('[AngularJS - Leaflet] At least one baselayer has to be defined');
-                        } else {
-                            //we have layers, so we need to make, at least, one active
-                            var found = false;
-                            // serach for an active layer
-                            for (var key in leafletLayers.baselayers) {
-                                if (map.hasLayer(leafletLayers.baselayers[key])) {
-                                    found = true;
-                                    break;
-                                }
-                            }
-                            // If there is no active layer make one active
-                            if (!found) {
-                                map.addLayer(leafletLayers.baselayers[Object.keys(layers.baselayers)[0]]);
-                            }
+                            return;
                         }
-                    }, true);
+                        // We have baselayers to add to the map
+                        _leafletLayers.resolve(leafletLayers);
+                        leafletData.setLayers(leafletLayers, attrs.id);
 
-                    // Watch for the overlay layers
-                    leafletScope.$watch('layers.overlays', function(newOverlayLayers) {
-                        // Delete layers from the array
-                        for (var name in leafletLayers.overlays) {
-                            if (newOverlayLayers[name] === undefined) {
-                                // Remove the layer from the control
-                                leafletLayers.controls.layers.removeLayer(leafletLayers.overlays[name]);
-                                // Remove from the map if it's on it
-                                if (map.hasLayer(leafletLayers.overlays[name])) {
-                                    map.removeLayer(leafletLayers.overlays[name]);
+                        leafletLayers.baselayers = {};
+                        leafletLayers.controls = {};
+                        leafletLayers.controls.layers = new L.control.layers();
+                        leafletLayers.controls.layers.setPosition(defaults.controlLayersPosition);
+                        leafletLayers.controls.layers.addTo(map);
+
+
+                        // Setup all baselayers definitions
+                        var top = false;
+                        for (var layerName in layers.baselayers) {
+                            var newBaseLayer = createLayer(layers.baselayers[layerName]);
+                            if (newBaseLayer !== null) {
+                                leafletLayers.baselayers[layerName] = newBaseLayer;
+                                // Only add the visible layer to the map, layer control manages the addition to the map
+                                // of layers in its control
+                                if (layers.baselayers[layerName].top === true) {
+                                    map.addLayer(leafletLayers.baselayers[layerName]);
+                                    top = true;
                                 }
-                                // TODO: Depending on the layer type we will have to delete what's included on it
-                                delete leafletLayers.overlays[name];
+                                leafletLayers.controls.layers.addBaseLayer(leafletLayers.baselayers[layerName], layers.baselayers[layerName].name);
                             }
                         }
-                        // add new layers
-                        for (var new_name in newOverlayLayers) {
-                            if (leafletLayers.overlays[new_name] === undefined) {
-                                var testOverlayLayer = createLayer(newOverlayLayers[new_name]);
-                                if (testOverlayLayer !== null) {
-                                    leafletLayers.overlays[new_name] = testOverlayLayer;
-                                    leafletLayers.controls.layers.addOverlay(leafletLayers.overlays[new_name], newOverlayLayers[new_name].name);
-                                    if (newOverlayLayers[new_name].visible === true) {
-                                        map.addLayer(leafletLayers.overlays[new_name]);
+                        // If there is no visible layer add first to the map
+                        if (!top && Object.keys(leafletLayers.baselayers).length > 0) {
+                            map.addLayer(leafletLayers.baselayers[Object.keys(layers.baselayers)[0]]);
+                        }
+                        // Setup the Overlays
+                        leafletLayers.overlays = {};
+                        for (layerName in layers.overlays) {
+                            var newOverlayLayer = createLayer(layers.overlays[layerName]);
+                            if (newOverlayLayer !== null) {
+                                leafletLayers.overlays[layerName] = newOverlayLayer;
+                                // Only add the visible layer to the map, layer control manages the addition to the map
+                                // of layers in its control
+                                if (layers.overlays[layerName].visible === true) {
+                                    map.addLayer(leafletLayers.overlays[layerName]);
+                                }
+                                leafletLayers.controls.layers.addOverlay(leafletLayers.overlays[layerName], layers.overlays[layerName].name);
+                            }
+                        }
+
+                        // Watch for the base layers
+                        leafletScope.$watch('layers.baselayers', function(newBaseLayers) {
+                            // Delete layers from the array
+                            for (var name in leafletLayers.baselayers) {
+                                if (newBaseLayers[name] === undefined) {
+                                    // Remove the layer from the control
+                                    leafletLayers.controls.layers.removeLayer(leafletLayers.baselayers[name]);
+                                    // Remove from the map if it's on it
+                                    if (map.hasLayer(leafletLayers.baselayers[name])) {
+                                        map.removeLayer(leafletLayers.baselayers[name]);
+                                    }
+                                    delete leafletLayers.baselayers[name];
+                                }
+                            }
+                            // add new layers
+                            for (var new_name in newBaseLayers) {
+                                if (leafletLayers.baselayers[new_name] === undefined) {
+                                    var testBaseLayer = createLayer(newBaseLayers[new_name]);
+                                    if (testBaseLayer !== null) {
+                                        leafletLayers.baselayers[new_name] = testBaseLayer;
+                                        // Only add the visible layer to the map, layer control manages the addition to the map
+                                        // of layers in its control
+                                        if (newBaseLayers[new_name].top === true) {
+                                            map.addLayer(leafletLayers.baselayers[new_name]);
+                                        }
+                                        leafletLayers.controls.layers.addBaseLayer(leafletLayers.baselayers[new_name], newBaseLayers[new_name].name);
                                     }
                                 }
                             }
-                        }
-                    }, true);
-                }
+                            if (Object.keys(leafletLayers.baselayers).length <= 0) {
+                                // No baselayers property
+                                $log.error('[AngularJS - Leaflet] At least one baselayer has to be defined');
+                            } else {
+                                //we have layers, so we need to make, at least, one active
+                                var found = false;
+                                // serach for an active layer
+                                for (var key in leafletLayers.baselayers) {
+                                    if (map.hasLayer(leafletLayers.baselayers[key])) {
+                                        found = true;
+                                        break;
+                                    }
+                                }
+                                // If there is no active layer make one active
+                                if (!found) {
+                                    map.addLayer(leafletLayers.baselayers[Object.keys(layers.baselayers)[0]]);
+                                }
+                            }
+                        }, true);
 
-                function createLayer(layerDefinition) {
-                    // Check if the baselayer has a valid type
-                    if (!isString(layerDefinition.type)) {
-                        $log.error('[AngularJS - Leaflet] A base layer must have a type');
-                        return null;
-                    } else if (layerDefinition.type !== 'xyz' && layerDefinition.type !== 'wms' && layerDefinition.type !== 'group' && layerDefinition.type !== 'markercluster' && layerDefinition.type !== 'google' && layerDefinition.type !== 'bing') {
-                        $log.error('[AngularJS - Leaflet] A layer must have a valid type: "xyz, wms, group, google"');
-                        return null;
+                        // Watch for the overlay layers
+                        leafletScope.$watch('layers.overlays', function(newOverlayLayers) {
+                            // Delete layers from the array
+                            for (var name in leafletLayers.overlays) {
+                                if (newOverlayLayers[name] === undefined) {
+                                    // Remove the layer from the control
+                                    leafletLayers.controls.layers.removeLayer(leafletLayers.overlays[name]);
+                                    // Remove from the map if it's on it
+                                    if (map.hasLayer(leafletLayers.overlays[name])) {
+                                        map.removeLayer(leafletLayers.overlays[name]);
+                                    }
+                                    // TODO: Depending on the layer type we will have to delete what's included on it
+                                    delete leafletLayers.overlays[name];
+                                }
+                            }
+                            // add new layers
+                            for (var new_name in newOverlayLayers) {
+                                if (leafletLayers.overlays[new_name] === undefined) {
+                                    var testOverlayLayer = createLayer(newOverlayLayers[new_name]);
+                                    if (testOverlayLayer !== null) {
+                                        leafletLayers.overlays[new_name] = testOverlayLayer;
+                                        leafletLayers.controls.layers.addOverlay(leafletLayers.overlays[new_name], newOverlayLayers[new_name].name);
+                                        if (newOverlayLayers[new_name].visible === true) {
+                                            map.addLayer(leafletLayers.overlays[new_name]);
+                                        }
+                                    }
+                                }
+                            }
+                        }, true);
                     }
-                    if (layerDefinition.type === 'xyz' || layerDefinition.type === 'wms') {
-                        // XYZ, WMS must have an url
-                        if (!isString(layerDefinition.url)) {
-                            $log.error('[AngularJS - Leaflet] A base layer must have an url');
+
+                    function createLayer(layerDefinition) {
+                        // Check if the baselayer has a valid type
+                        if (!isString(layerDefinition.type)) {
+                            $log.error('[AngularJS - Leaflet] A base layer must have a type');
+                            return null;
+                        } else if (layerDefinition.type !== 'xyz' && layerDefinition.type !== 'wms' && layerDefinition.type !== 'group' && layerDefinition.type !== 'markercluster' && layerDefinition.type !== 'google' && layerDefinition.type !== 'bing') {
+                            $log.error('[AngularJS - Leaflet] A layer must have a valid type: "xyz, wms, group, google"');
+                            return null;
+                        }
+                        if (layerDefinition.type === 'xyz' || layerDefinition.type === 'wms') {
+                            // XYZ, WMS must have an url
+                            if (!isString(layerDefinition.url)) {
+                                $log.error('[AngularJS - Leaflet] A base layer must have an url');
+                                return null;
+                            }
+                        }
+                        if (!isString(layerDefinition.name)) {
+                            $log.error('[AngularJS - Leaflet] A base layer must have a name');
+                            return null;
+                        }
+                        if (layerDefinition.layerParams === undefined || layerDefinition.layerParams === null || typeof layerDefinition.layerParams !== 'object') {
+                            layerDefinition.layerParams = {};
+                        }
+                        if (layerDefinition.layerOptions === undefined || layerDefinition.layerOptions === null || typeof layerDefinition.layerOptions !== 'object') {
+                            layerDefinition.layerOptions = {};
+                        }
+                        // Mix the layer specific parameters with the general Leaflet options. Although this is an overhead
+                        // the definition of a base layers is more 'clean' if the two types of parameters are differentiated
+                        var layer = null;
+                        for (var attrname in layerDefinition.layerParams) {
+                            layerDefinition.layerOptions[attrname] = layerDefinition.layerParams[attrname];
+                        }
+                        switch (layerDefinition.type) {
+                            case 'xyz':
+                                layer = createXyzLayer(layerDefinition.url, layerDefinition.layerOptions);
+                                break;
+                            case 'wms':
+                                layer = createWmsLayer(layerDefinition.url, layerDefinition.layerOptions);
+                                break;
+                            case 'group':
+                                layer = createGroupLayer();
+                                break;
+                            case 'markercluster':
+                                layer = createMarkerClusterLayer(layerDefinition.layerOptions);
+                                break;
+                            case 'google':
+                                layer = createGoogleLayer(layerDefinition.layerType, layerDefinition.layerOptions);
+                                break;
+                            case 'bing':
+                                layer = createBingLayer(layerDefinition.bingKey, layerDefinition.layerOptions);
+                                break;
+                            default:
+                                layer = null;
+                        }
+
+                        //TODO Add $watch to the layer properties
+                        return layer;
+                    }
+
+                    function createXyzLayer(url, options) {
+                        var layer = L.tileLayer(url, options);
+                        return layer;
+                    }
+
+                    function createWmsLayer(url, options) {
+                        var layer = L.tileLayer.wms(url, options);
+                        return layer;
+                    }
+
+                    function createGroupLayer() {
+                        var layer = L.layerGroup();
+                        return layer;
+                    }
+
+                    function createMarkerClusterLayer(options) {
+                        if (Helpers.MarkerClusterPlugin.isLoaded()) {
+                            var layer = new L.MarkerClusterGroup(options);
+                            return layer;
+                        } else {
                             return null;
                         }
                     }
-                    if (!isString(layerDefinition.name)) {
-                        $log.error('[AngularJS - Leaflet] A base layer must have a name');
-                        return null;
-                    }
-                    if (layerDefinition.layerParams === undefined || layerDefinition.layerParams === null || typeof layerDefinition.layerParams !== 'object') {
-                        layerDefinition.layerParams = {};
-                    }
-                    if (layerDefinition.layerOptions === undefined || layerDefinition.layerOptions === null || typeof layerDefinition.layerOptions !== 'object') {
-                        layerDefinition.layerOptions = {};
-                    }
-                    // Mix the layer specific parameters with the general Leaflet options. Although this is an overhead
-                    // the definition of a base layers is more 'clean' if the two types of parameters are differentiated
-                    var layer = null;
-                    for (var attrname in layerDefinition.layerParams) {
-                        layerDefinition.layerOptions[attrname] = layerDefinition.layerParams[attrname];
-                    }
-                    switch (layerDefinition.type) {
-                        case 'xyz':
-                            layer = createXyzLayer(layerDefinition.url, layerDefinition.layerOptions);
-                            break;
-                        case 'wms':
-                            layer = createWmsLayer(layerDefinition.url, layerDefinition.layerOptions);
-                            break;
-                        case 'group':
-                            layer = createGroupLayer();
-                            break;
-                        case 'markercluster':
-                            layer = createMarkerClusterLayer(layerDefinition.layerOptions);
-                            break;
-                        case 'google':
-                            layer = createGoogleLayer(layerDefinition.layerType, layerDefinition.layerOptions);
-                            break;
-                        case 'bing':
-                            layer = createBingLayer(layerDefinition.bingKey, layerDefinition.layerOptions);
-                            break;
-                        default:
-                            layer = null;
+
+                    function createGoogleLayer(type, options) {
+                        type = type || 'SATELLITE';
+                        if (Helpers.GoogleLayerPlugin.isLoaded()) {
+                            var layer = new L.Google(type, options);
+                            return layer;
+                        } else {
+                            return null;
+                        }
                     }
 
-                    //TODO Add $watch to the layer properties
-                    return layer;
-                }
-
-                function createXyzLayer(url, options) {
-                    var layer = L.tileLayer(url, options);
-                    return layer;
-                }
-
-                function createWmsLayer(url, options) {
-                    var layer = L.tileLayer.wms(url, options);
-                    return layer;
-                }
-
-                function createGroupLayer() {
-                    var layer = L.layerGroup();
-                    return layer;
-                }
-
-                function createMarkerClusterLayer(options) {
-                    if (Helpers.MarkerClusterPlugin.isLoaded()) {
-                        var layer = new L.MarkerClusterGroup(options);
-                        return layer;
-                    } else {
-                        return null;
+                    function createBingLayer(key, options) {
+                        if (Helpers.BingLayerPlugin.isLoaded()) {
+                            var layer = new L.BingLayer(key, options);
+                            return layer;
+                        } else {
+                            return null;
+                        }
                     }
-                }
-
-                function createGoogleLayer(type, options) {
-				    type = type || 'SATELLITE';
-				    if (Helpers.GoogleLayerPlugin.isLoaded()) {
-                        var layer = new L.Google(type, options);
-                        return layer;
-                    } else {
-                        return null;
-                    }
-                }
-
-                function createBingLayer(key, options) {
-				    if (Helpers.BingLayerPlugin.isLoaded()) {
-                        var layer = new L.BingLayer(key, options);
-                        return layer;
-                    } else {
-                        return null;
-                    }
-                }
+                });
             });
         }
     };
@@ -1323,154 +1324,155 @@ angular.module("leaflet-directive").directive('paths', function ($log, leafletDa
         link: function(scope, element, attrs, controller) {
             var isDefined = leafletHelpers.isDefined,
                 leafletScope  = controller.getLeafletScope(),
-                defaults  = leafletMapDefaults(leafletScope.defaults),
                 paths     = leafletScope.paths;
 
-            controller.getMap().then(function(map) {
+            leafletMapDefaults.getDefaults().then(function(defaults) {
+                controller.getMap().then(function(map) {
 
-                var leafletPaths = {};
-                leafletData.setPaths(leafletPaths, attrs.id);
+                    var leafletPaths = {};
+                    leafletData.setPaths(leafletPaths, attrs.id);
 
-                if (!isDefined(paths)) {
-                    return;
-                }
+                    if (!isDefined(paths)) {
+                        return;
+                    }
 
-                scope.$watch("paths", function (newPaths) {
-                    for (var new_name in newPaths) {
-                        if (!isDefined(leafletPaths[new_name])) {
-                            leafletPaths[new_name] = createPath(new_name, newPaths[new_name], map, defaults);
+                    scope.$watch("paths", function (newPaths) {
+                        for (var new_name in newPaths) {
+                            if (!isDefined(leafletPaths[new_name])) {
+                                leafletPaths[new_name] = createPath(new_name, newPaths[new_name], map, defaults);
+                            }
                         }
-                    }
-                    // Delete paths from the array
-                    for (var name in leafletPaths) {
-                        if (!isDefined(newPaths[name])) {
-                            delete leafletPaths[name];
+                        // Delete paths from the array
+                        for (var name in leafletPaths) {
+                            if (!isDefined(newPaths[name])) {
+                                delete leafletPaths[name];
+                            }
                         }
-                    }
-                }, true);
+                    }, true);
 
-                function createPath(name, scopePath, map, defaults) {
-                    var path;
-                    var options = {
-                        weight: defaults.path.weight,
-                        color: defaults.path.color,
-                        opacity: defaults.path.opacity
-                    };
-                    if(isDefined(scopePath.stroke)) {
-                        options.stroke = scopePath.stroke;
-                    }
-                    if(isDefined(scopePath.fill)) {
-                        options.fill = scopePath.fill;
-                    }
-                    if(isDefined(scopePath.fillColor)) {
-                        options.fillColor = scopePath.fillColor;
-                    }
-                    if(isDefined(scopePath.fillOpacity)) {
-                        options.fillOpacity = scopePath.fillOpacity;
-                    }
-                    if(isDefined(scopePath.smoothFactor)) {
-                        options.smoothFactor = scopePath.smoothFactor;
-                    }
-                    if(isDefined(scopePath.noClip)) {
-                        options.noClip = scopePath.noClip;
-                    }
-                    if(!isDefined(scopePath.type)) {
-                        scopePath.type = "polyline";
-                    }
+                    function createPath(name, scopePath, map, defaults) {
+                        var path;
+                        var options = {
+                            weight: defaults.path.weight,
+                            color: defaults.path.color,
+                            opacity: defaults.path.opacity
+                        };
+                        if(isDefined(scopePath.stroke)) {
+                            options.stroke = scopePath.stroke;
+                        }
+                        if(isDefined(scopePath.fill)) {
+                            options.fill = scopePath.fill;
+                        }
+                        if(isDefined(scopePath.fillColor)) {
+                            options.fillColor = scopePath.fillColor;
+                        }
+                        if(isDefined(scopePath.fillOpacity)) {
+                            options.fillOpacity = scopePath.fillOpacity;
+                        }
+                        if(isDefined(scopePath.smoothFactor)) {
+                            options.smoothFactor = scopePath.smoothFactor;
+                        }
+                        if(isDefined(scopePath.noClip)) {
+                            options.noClip = scopePath.noClip;
+                        }
+                        if(!isDefined(scopePath.type)) {
+                            scopePath.type = "polyline";
+                        }
 
-                    function setPathOptions(data) {
-                        if (isDefined(data.latlngs)) {
-                            switch(data.type) {
-                                default:
-                                case "polyline":
-                                case "polygon":
-                                    path.setLatLngs(convertToLeafletLatLngs(data.latlngs));
-                                    break;
-                                case "multiPolyline":
-                                case "multiPolygon":
-                                    path.setLatLngs(convertToLeafletMultiLatLngs(data.latlngs));
-                                    break;
-                                case "rectangle":
-                                    path.setBounds(new L.LatLngBounds(convertToLeafletLatLngs(data.latlngs)));
-                                    break;
-                                case "circle":
-                                case "circleMarker":
-                                    path.setLatLng(convertToLeafletLatLng(data.latlngs));
-                                    if (isDefined(data.radius)) {
-                                        path.setRadius(data.radius);
-                                    }
-                                    break;
+                        function setPathOptions(data) {
+                            if (isDefined(data.latlngs)) {
+                                switch(data.type) {
+                                    default:
+                                    case "polyline":
+                                    case "polygon":
+                                        path.setLatLngs(convertToLeafletLatLngs(data.latlngs));
+                                        break;
+                                    case "multiPolyline":
+                                    case "multiPolygon":
+                                        path.setLatLngs(convertToLeafletMultiLatLngs(data.latlngs));
+                                        break;
+                                    case "rectangle":
+                                        path.setBounds(new L.LatLngBounds(convertToLeafletLatLngs(data.latlngs)));
+                                        break;
+                                    case "circle":
+                                    case "circleMarker":
+                                        path.setLatLng(convertToLeafletLatLng(data.latlngs));
+                                        if (isDefined(data.radius)) {
+                                            path.setRadius(data.radius);
+                                        }
+                                        break;
+                                }
+                            }
+
+                            if (isDefined(data.weight)) {
+                                path.setStyle({ weight: data.weight });
+                            }
+
+                            if (isDefined(data.color)) {
+                                path.setStyle({ color: data.color });
+                            }
+
+                            if (isDefined(data.opacity)) {
+                                path.setStyle({ opacity: data.opacity });
                             }
                         }
 
-                        if (isDefined(data.weight)) {
-                            path.setStyle({ weight: data.weight });
+                        switch(scopePath.type) {
+                            default:
+                            case "polyline":
+                                path = new L.Polyline([], options);
+                                break;
+                            case "multiPolyline":
+                                path = new L.multiPolyline([[[0,0],[1,1]]], options);
+                                break;
+                            case "polygon":
+                                path = new L.Polygon([], options);
+                                break;
+                            case "multiPolygon":
+                                path = new L.MultiPolygon([[[0,0],[1,1],[0,1]]], options);
+                                break;
+                            case "rectangle":
+                                path = new L.Rectangle([[0,0],[1,1]], options);
+                                break;
+                            case "circle":
+                                path = new L.Circle([0,0], 1, options);
+                                break;
+                            case "circleMarker":
+                                path = new L.CircleMarker([0,0], options);
+                                break;
                         }
+                        map.addLayer(path);
 
-                        if (isDefined(data.color)) {
-                            path.setStyle({ color: data.color });
-                        }
+                        var clearWatch = scope.$watch('paths.' + name, function(data, oldData) {
+                            if (!isDefined(data)) {
+                                map.removeLayer(path);
+                                clearWatch();
+                                return;
+                            }
+                            setPathOptions(data);
+                        }, true);
 
-                        if (isDefined(data.opacity)) {
-                            path.setStyle({ opacity: data.opacity });
-                        }
+                        return path;
                     }
 
-                    switch(scopePath.type) {
-                        default:
-                        case "polyline":
-                            path = new L.Polyline([], options);
-                            break;
-                        case "multiPolyline":
-                            path = new L.multiPolyline([[[0,0],[1,1]]], options);
-                            break;
-                        case "polygon":
-                            path = new L.Polygon([], options);
-                            break;
-                        case "multiPolygon":
-                            path = new L.MultiPolygon([[[0,0],[1,1],[0,1]]], options);
-                            break;
-                        case "rectangle":
-                            path = new L.Rectangle([[0,0],[1,1]], options);
-                            break;
-                        case "circle":
-                            path = new L.Circle([0,0], 1, options);
-                            break;
-                        case "circleMarker":
-                            path = new L.CircleMarker([0,0], options);
-                            break;
-                    }
-                    map.addLayer(path);
-
-                    var clearWatch = scope.$watch('paths.' + name, function(data, oldData) {
-                        if (!isDefined(data)) {
-                            map.removeLayer(path);
-                            clearWatch();
-                            return;
-                        }
-                        setPathOptions(data);
-                    }, true);
-
-                    return path;
-                }
-
-                function convertToLeafletLatLng(latlng) {
-                    return new L.LatLng(latlng.lat, latlng.lng);
-                }
-
-                function convertToLeafletLatLngs(latlngs) {
-                    return latlngs.filter(function(latlng) {
-                        return !!latlng.lat && !!latlng.lng;
-                    }).map(function (latlng) {
+                    function convertToLeafletLatLng(latlng) {
                         return new L.LatLng(latlng.lat, latlng.lng);
-                    });
-                }
+                    }
 
-                function convertToLeafletMultiLatLngs(paths) {
-                    return paths.map(function(latlngs) {
-                        return convertToLeafletLatLngs(latlngs);
-                    });
-                }
+                    function convertToLeafletLatLngs(latlngs) {
+                        return latlngs.filter(function(latlng) {
+                            return !!latlng.lat && !!latlng.lng;
+                        }).map(function (latlng) {
+                            return new L.LatLng(latlng.lat, latlng.lng);
+                        });
+                    }
+
+                    function convertToLeafletMultiLatLngs(paths) {
+                        return paths.map(function(latlngs) {
+                            return convertToLeafletLatLngs(latlngs);
+                        });
+                    }
+                });
             });
         }
     };
@@ -1847,38 +1849,38 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
             }
         },
         getDefer = leafletHelpers.getDefer,
-        defaultsPromise = {
+        defaults = {
             main: $q.defer()
         };
 
     // Get the _defaults dictionary, and override the properties defined by the user
     return {
-        getDefaults: function () {
-            return defaultsPromise;
+        getDefaults: function (scopeId) {
+            var d = getDefer(defaults, scopeId);
+            return d.promise;
         },
 
-        setDefaults: function(defaults, scopeId) {
-            var leafletDefaults = getDefer(defaultsPromise, scopeId);
+        setDefaults: function(userDefaults, scopeId) {
+            var leafletDefaults = getDefer(defaults, scopeId);
 
-            if (isDefined(defaults)) {
-                _defaults.maxZoom = isDefined(defaults.maxZoom) ?  parseInt(defaults.maxZoom, 10) : _defaults.maxZoom;
-                _defaults.minZoom = isDefined(defaults.minZoom) ?  parseInt(defaults.minZoom, 10) : _defaults.minZoom;
-                _defaults.doubleClickZoom = isDefined(defaults.doubleClickZoom) ?  defaults.doubleClickZoom : _defaults.doubleClickZoom;
-                _defaults.scrollWheelZoom = isDefined(defaults.scrollWheelZoom) ?  defaults.scrollWheelZoom : _defaults.doubleClickZoom;
-                _defaults.zoomControl = isDefined(defaults.zoomControl) ?  defaults.zoomControl : _defaults.zoomControl;
-                _defaults.attributionControl = isDefined(defaults.attributionControl) ?  defaults.attributionControl : _defaults.attributionControl;
-                _defaults.tileLayer = isDefined(defaults.tileLayer) ? defaults.tileLayer : _defaults.tileLayer;
-                _defaults.zoomControlPosition = isDefined(defaults.zoomControlPosition) ? defaults.zoomControlPosition : _defaults.zoomControlPosition;
-                _defaults.keyboard = isDefined(defaults.keyboard) ? defaults.keyboard : _defaults.keyboard;
-                _defaults.dragging = isDefined(defaults.dragging) ? defaults.dragging : _defaults.dragging;
-                _defaults.controlLayersPosition = isDefined(defaults.controlLayersPosition) ? defaults.controlLayersPosition : _defaults.controlLayersPosition;
+            if (isDefined(userDefaults)) {
+                _defaults.maxZoom = isDefined(userDefaults.maxZoom) ?  parseInt(userDefaults.maxZoom, 10) : _defaults.maxZoom;
+                _defaults.minZoom = isDefined(userDefaults.minZoom) ?  parseInt(userDefaults.minZoom, 10) : _defaults.minZoom;
+                _defaults.doubleClickZoom = isDefined(userDefaults.doubleClickZoom) ?  userDefaults.doubleClickZoom : _defaults.doubleClickZoom;
+                _defaults.scrollWheelZoom = isDefined(userDefaults.scrollWheelZoom) ?  userDefaults.scrollWheelZoom : _defaults.doubleClickZoom;
+                _defaults.zoomControl = isDefined(userDefaults.zoomControl) ?  userDefaults.zoomControl : _defaults.zoomControl;
+                _defaults.attributionControl = isDefined(userDefaults.attributionControl) ?  userDefaults.attributionControl : _defaults.attributionControl;
+                _defaults.tileLayer = isDefined(userDefaults.tileLayer) ? userDefaults.tileLayer : _defaults.tileLayer;
+                _defaults.zoomControlPosition = isDefined(userDefaults.zoomControlPosition) ? userDefaults.zoomControlPosition : _defaults.zoomControlPosition;
+                _defaults.keyboard = isDefined(userDefaults.keyboard) ? userDefaults.keyboard : _defaults.keyboard;
+                _defaults.dragging = isDefined(userDefaults.dragging) ? userDefaults.dragging : _defaults.dragging;
+                _defaults.controlLayersPosition = isDefined(userDefaults.controlLayersPosition) ? userDefaults.controlLayersPosition : _defaults.controlLayersPosition;
 
-                if (isDefined(defaults.tileLayerOptions)) {
-                    angular.copy(defaults.tileLayerOptions, _defaults.tileLayerOptions);
+                if (isDefined(userDefaults.tileLayerOptions)) {
+                    angular.copy(userDefaults.tileLayerOptions, _defaults.tileLayerOptions);
                 }
-
-                leafletDefaults.resolve(_defaults);
             }
+            leafletDefaults.resolve(_defaults);
         }
     };
 });

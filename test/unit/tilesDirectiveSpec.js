@@ -5,13 +5,14 @@
 /* jasmine specs for directives go here */
 
 describe('Directive: leaflet', function() {
-    var $compile = null, $rootScope = null, leafletData = null;
+    var $compile = null, $rootScope = null, leafletData = null, leafletMapDefaults = null;
 
     beforeEach(module('leaflet-directive'));
-    beforeEach(inject(function(_$compile_, _$rootScope_, _leafletData_){
+    beforeEach(inject(function(_$compile_, _$rootScope_, _leafletData_, _leafletMapDefaults_){
         $compile = _$compile_;
         $rootScope = _$rootScope_;
         leafletData = _leafletData_;
+        leafletMapDefaults = _leafletMapDefaults_;
     }));
 
     afterEach(inject(function($rootScope) {
@@ -23,7 +24,9 @@ describe('Directive: leaflet', function() {
         var element = angular.element('<leaflet tiles="tiles"></leaflet>');
         element = $compile(element)($rootScope);
         leafletData.getTiles().then(function(leafletTiles) {
-            expect(leafletTiles._url).toEqual(leafletData.getDefaults().tileLayer);
+            leafletMapDefaults.getDefaults().then(function(defaults) {
+                expect(leafletTiles._url).toEqual(defaults.tileLayer);
+            });
         });
     });
 

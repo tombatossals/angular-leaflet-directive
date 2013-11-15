@@ -5,14 +5,15 @@
 /* jasmine specs for directives go here */
 
 describe('Directive: leaflet', function() {
-    var $compile = null, $rootScope = null, $timeout, leafletData = null;
+    var $compile = null, $rootScope = null, $timeout, leafletData = null, leafletMapDefaults = null;
 
     beforeEach(module('leaflet-directive'));
-    beforeEach(inject(function(_$compile_, _$rootScope_, _$timeout_, _leafletData_){
+    beforeEach(inject(function(_$compile_, _$rootScope_, _$timeout_, _leafletData_, _leafletMapDefaults_) {
         $compile = _$compile_;
         $rootScope = _$rootScope_;
         $timeout = _$timeout_;
         leafletData = _leafletData_;
+        leafletMapDefaults = _leafletMapDefaults_;
     }));
 
     afterEach(inject(function($rootScope) {
@@ -22,6 +23,7 @@ describe('Directive: leaflet', function() {
     it('should have loaded leaflet library inside the directive', function() {
         var element = angular.element('<leaflet></leaflet>');
         element = $compile(element)($rootScope);
+        $rootScope.$digest();
         expect(element.text()).toEqual('+-Leaflet | © OpenStreetMap contributors');
     });
 
@@ -39,7 +41,9 @@ describe('Directive: leaflet', function() {
         var element = angular.element('<leaflet></leaflet>');
         element = $compile(element)($rootScope);
         leafletData.getTiles().then(function(leafletTiles) {
-            expect(leafletTiles._url).toEqual(leafletData.getDefaults().tileLayer);
+            leafletMapDefaults.getDefaults().then(function(defaults) {
+                expect(leafletTiles._url).toEqual(defaults.tileLayer);
+            });
         });
     });
 
@@ -97,10 +101,12 @@ describe('Directive: leaflet', function() {
         var element = angular.element('<leaflet defaults="defaults"></leaflet>');
         element = $compile(element)($rootScope);
         leafletData.getTiles().then(function(leafletTiles) {
-            expect(leafletTiles.options.detectRetina).toEqual(true);
-            expect(leafletTiles.options.opacity).toEqual(0.8);
-            expect(leafletTiles._url).toEqual("http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png");
-            expect(leafletData.getDefaults().tileLayer).toEqual("http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png");
+            leafletMapDefaults.getDefaults().then(function(defaults) {
+                expect(leafletTiles.options.detectRetina).toEqual(true);
+                expect(leafletTiles.options.opacity).toEqual(0.8);
+                expect(leafletTiles._url).toEqual("http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png");
+                expect(defaults.tileLayer).toEqual("http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png");
+            });
         });
     });
 
