@@ -604,19 +604,19 @@ angular.module("leaflet-directive").directive('bounds', function ($log, leafletH
             controller.getMap().then(function(map) {
                 leafletScope.$watch('bounds', function(bounds) {
                     if (!isDefined(bounds) || !isBoundsValid(bounds)) {
-                        $log.error('[AngularJS - Leaflet] Invalid bounds');
-                        return;
-                    }
+                            $log.error('[AngularJS - Leaflet] Invalid bounds');
+                            return;
+                        }
 
-                    var southWest = bounds.southWest;
-                    var northEast = bounds.northEast;
-                    var new_latlng_bounds = new L.LatLngBounds(
-                            new L.LatLng(southWest.lat, southWest.lng),
-                            new L.LatLng(northEast.lat, northEast.lng));
+                        var southWest = bounds.getSouthWest();
+                        var northEast = bounds.getNorthEast();
+                        var new_latlng_bounds = new L.LatLngBounds(
+                                new L.LatLng(southWest.lat, southWest.lng),
+                                new L.LatLng(northEast.lat, northEast.lng));
 
-                    if (!map.getBounds().equals(new_latlng_bounds)) {
-                        map.fitBounds(new_latlng_bounds);
-                    }
+                        if (!map.getBounds().equals(new_latlng_bounds)) {
+                            map.fitBounds(new_latlng_bounds);
+                        }
                 }, true);
 
                 leafletScope.$watch('center', function(center) {
@@ -640,10 +640,9 @@ angular.module("leaflet-directive").directive('bounds', function ($log, leafletH
                 });
 
                 function isBoundsValid(bounds) {
-                    return isDefined(bounds) && isDefined(bounds.southWest) &&
-                        isDefined(bounds.northEast) && isNumber(bounds.southWest.lat) &&
-                        isNumber(bounds.southWest.lng) && isNumber(bounds.northEast.lat) &&
-                        isNumber(bounds.northEast.lng);
+                    if (isDefined(bounds) && isDefined(bounds.isValid)) {
+                        return bounds.isValid();
+                    }
                 }
 
             });
