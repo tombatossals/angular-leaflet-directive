@@ -9,7 +9,6 @@ angular.module("leaflet-directive").directive('geojson', function ($log, $rootSc
         link: function(scope, element, attrs, controller) {
             var safeApply = leafletHelpers.safeApply,
                 isDefined = leafletHelpers.isDefined,
-                map = controller.getMap(),
                 leafletScope  = controller.getLeafletScope(),
                 leafletGeoJSON = {};
 
