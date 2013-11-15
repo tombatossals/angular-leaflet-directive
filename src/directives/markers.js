@@ -17,7 +17,7 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                 leafletScope  = mapController.getLeafletScope(),
                 markers = leafletScope.markers;
 
-            leafletMapDefaults.getDefaults().then(function(defaults) {
+            leafletMapDefaults.getDefaults(attrs.id).then(function(defaults) {
                 mapController.getMap().then(function(map) {
                     var getLayers;
                     var leafletMarkers = {};

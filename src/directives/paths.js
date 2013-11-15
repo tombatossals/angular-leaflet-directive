@@ -11,7 +11,7 @@ angular.module("leaflet-directive").directive('paths', function ($log, leafletDa
                 leafletScope  = controller.getLeafletScope(),
                 paths     = leafletScope.paths;
 
-            leafletMapDefaults.getDefaults().then(function(defaults) {
+            leafletMapDefaults.getDefaults(attrs.id).then(function(defaults) {
                 controller.getMap().then(function(map) {
 
                     var leafletPaths = {};

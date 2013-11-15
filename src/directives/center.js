@@ -14,7 +14,7 @@ angular.module("leaflet-directive").directive('center', function ($log, $parse, 
                 leafletScope  = controller.getLeafletScope(),
                 center        = leafletScope.center;
 
-            leafletMapDefaults.getDefaults().then(function(defaults) {
+            leafletMapDefaults.getDefaults(attrs.id).then(function(defaults) {
                 controller.getMap().then(function(map) {
                     if (isDefined(center)) {
                         if (center.autoDiscover === true) {

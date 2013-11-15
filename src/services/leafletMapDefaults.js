@@ -1,6 +1,6 @@
 angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, leafletHelpers) {
-    var isDefined = leafletHelpers.isDefined,
-        _defaults = {
+    function _getDefaults() {
+        return {
             maxZoom: 18,
             minZoom: 1,
             keyboard: true,
@@ -40,7 +40,9 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
                 lng: 0,
                 zoom: 1
             }
-        },
+        };
+    }
+    var isDefined = leafletHelpers.isDefined,
         getDefer = leafletHelpers.getDefer,
         defaults = {
             main: $q.defer()
@@ -56,24 +58,26 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
         setDefaults: function(userDefaults, scopeId) {
             var leafletDefaults = getDefer(defaults, scopeId);
 
+            var newDefaults = _getDefaults();
+
             if (isDefined(userDefaults)) {
-                _defaults.maxZoom = isDefined(userDefaults.maxZoom) ?  parseInt(userDefaults.maxZoom, 10) : _defaults.maxZoom;
-                _defaults.minZoom = isDefined(userDefaults.minZoom) ?  parseInt(userDefaults.minZoom, 10) : _defaults.minZoom;
-                _defaults.doubleClickZoom = isDefined(userDefaults.doubleClickZoom) ?  userDefaults.doubleClickZoom : _defaults.doubleClickZoom;
-                _defaults.scrollWheelZoom = isDefined(userDefaults.scrollWheelZoom) ?  userDefaults.scrollWheelZoom : _defaults.doubleClickZoom;
-                _defaults.zoomControl = isDefined(userDefaults.zoomControl) ?  userDefaults.zoomControl : _defaults.zoomControl;
-                _defaults.attributionControl = isDefined(userDefaults.attributionControl) ?  userDefaults.attributionControl : _defaults.attributionControl;
-                _defaults.tileLayer = isDefined(userDefaults.tileLayer) ? userDefaults.tileLayer : _defaults.tileLayer;
-                _defaults.zoomControlPosition = isDefined(userDefaults.zoomControlPosition) ? userDefaults.zoomControlPosition : _defaults.zoomControlPosition;
-                _defaults.keyboard = isDefined(userDefaults.keyboard) ? userDefaults.keyboard : _defaults.keyboard;
-                _defaults.dragging = isDefined(userDefaults.dragging) ? userDefaults.dragging : _defaults.dragging;
-                _defaults.controlLayersPosition = isDefined(userDefaults.controlLayersPosition) ? userDefaults.controlLayersPosition : _defaults.controlLayersPosition;
+                newDefaults.maxZoom = isDefined(userDefaults.maxZoom) ?  parseInt(userDefaults.maxZoom, 10) : newDefaults.maxZoom;
+                newDefaults.minZoom = isDefined(userDefaults.minZoom) ?  parseInt(userDefaults.minZoom, 10) : newDefaults.minZoom;
+                newDefaults.doubleClickZoom = isDefined(userDefaults.doubleClickZoom) ?  userDefaults.doubleClickZoom : newDefaults.doubleClickZoom;
+                newDefaults.scrollWheelZoom = isDefined(userDefaults.scrollWheelZoom) ?  userDefaults.scrollWheelZoom : newDefaults.doubleClickZoom;
+                newDefaults.zoomControl = isDefined(userDefaults.zoomControl) ?  userDefaults.zoomControl : newDefaults.zoomControl;
+                newDefaults.attributionControl = isDefined(userDefaults.attributionControl) ?  userDefaults.attributionControl : newDefaults.attributionControl;
+                newDefaults.tileLayer = isDefined(userDefaults.tileLayer) ? userDefaults.tileLayer : newDefaults.tileLayer;
+                newDefaults.zoomControlPosition = isDefined(userDefaults.zoomControlPosition) ? userDefaults.zoomControlPosition : newDefaults.zoomControlPosition;
+                newDefaults.keyboard = isDefined(userDefaults.keyboard) ? userDefaults.keyboard : newDefaults.keyboard;
+                newDefaults.dragging = isDefined(userDefaults.dragging) ? userDefaults.dragging : newDefaults.dragging;
+                newDefaults.controlLayersPosition = isDefined(userDefaults.controlLayersPosition) ? userDefaults.controlLayersPosition : newDefaults.controlLayersPosition;
 
                 if (isDefined(userDefaults.tileLayerOptions)) {
-                    angular.copy(userDefaults.tileLayerOptions, _defaults.tileLayerOptions);
+                    angular.copy(userDefaults.tileLayerOptions, newDefaults.tileLayerOptions);
                 }
             }
-            leafletDefaults.resolve(_defaults);
+            leafletDefaults.resolve(newDefaults);
         }
     };
 });

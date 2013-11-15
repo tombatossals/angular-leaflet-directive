@@ -1,6 +1,4 @@
 angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q, leafletData, leafletMapDefaults, leafletHelpers) {
-    var _leafletMap;
-
     return {
         restrict: "E",
         replace: true,
@@ -22,9 +20,9 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
         },
         template: '<div class="angular-leaflet-map" ng-transclude></div>',
         controller: function ($scope) {
-            _leafletMap = $q.defer();
+            $scope.leafletMap = $q.defer();
             this.getMap = function () {
-                return _leafletMap.promise;
+                return $scope.leafletMap.promise;
             };
 
             this.getLeafletScope = function() {
@@ -35,8 +33,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
         link: function(scope, element, attrs, controller) {
             var isDefined = leafletHelpers.isDefined;
             leafletMapDefaults.setDefaults(scope.defaults, attrs.id);
-
-            leafletMapDefaults.getDefaults().then(function(defaults) {
+            leafletMapDefaults.getDefaults(attrs.id).then(function(defaults) {
                 // If we are going to set maxBounds, undefine the minZoom property
                 if (isDefined(scope.maxBounds)) {
                     defaults.minZoom = undefined;
@@ -75,7 +72,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
                 });
 
                 // Resolve the map object to the promises
-                _leafletMap.resolve(map);
+                scope.leafletMap.resolve(map);
                 leafletData.setMap(map, attrs.id);
 
                 if (!isDefined(attrs.center)) {

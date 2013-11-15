@@ -3,8 +3,6 @@
 "use strict";
 
 angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q, leafletData, leafletMapDefaults, leafletHelpers) {
-    var _leafletMap;
-
     return {
         restrict: "E",
         replace: true,
@@ -26,9 +24,9 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
         },
         template: '<div class="angular-leaflet-map" ng-transclude></div>',
         controller: function ($scope) {
-            _leafletMap = $q.defer();
+            $scope.leafletMap = $q.defer();
             this.getMap = function () {
-                return _leafletMap.promise;
+                return $scope.leafletMap.promise;
             };
 
             this.getLeafletScope = function() {
@@ -39,8 +37,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
         link: function(scope, element, attrs, controller) {
             var isDefined = leafletHelpers.isDefined;
             leafletMapDefaults.setDefaults(scope.defaults, attrs.id);
-
-            leafletMapDefaults.getDefaults().then(function(defaults) {
+            leafletMapDefaults.getDefaults(attrs.id).then(function(defaults) {
                 // If we are going to set maxBounds, undefine the minZoom property
                 if (isDefined(scope.maxBounds)) {
                     defaults.minZoom = undefined;
@@ -79,7 +76,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
                 });
 
                 // Resolve the map object to the promises
-                _leafletMap.resolve(map);
+                scope.leafletMap.resolve(map);
                 leafletData.setMap(map, attrs.id);
 
                 if (!isDefined(attrs.center)) {
@@ -119,7 +116,7 @@ angular.module("leaflet-directive").directive('center', function ($log, $parse, 
                 leafletScope  = controller.getLeafletScope(),
                 center        = leafletScope.center;
 
-            leafletMapDefaults.getDefaults().then(function(defaults) {
+            leafletMapDefaults.getDefaults(attrs.id).then(function(defaults) {
                 controller.getMap().then(function(map) {
                     if (isDefined(center)) {
                         if (center.autoDiscover === true) {
@@ -185,7 +182,7 @@ angular.module("leaflet-directive").directive('tiles', function ($log, leafletDa
                 leafletScope  = controller.getLeafletScope(),
                 tiles = leafletScope.tiles;
 
-            leafletMapDefaults.getDefaults().then(function(defaults) {
+            leafletMapDefaults.getDefaults(attrs.id).then(function(defaults) {
                 controller.getMap().then(function(map) {
 
                     var tileLayerObj;
@@ -345,7 +342,7 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                 leafletScope  = controller.getLeafletScope(),
                 layers = leafletScope.layers;
 
-            leafletMapDefaults.getDefaults().then(function(defaults) {
+            leafletMapDefaults.getDefaults(attrs.id).then(function(defaults) {
                 controller.getMap().then(function(map) {
 
                     if (isDefined(layers)) {
@@ -670,7 +667,7 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                 leafletScope  = mapController.getLeafletScope(),
                 markers = leafletScope.markers;
 
-            leafletMapDefaults.getDefaults().then(function(defaults) {
+            leafletMapDefaults.getDefaults(attrs.id).then(function(defaults) {
                 mapController.getMap().then(function(map) {
                     var getLayers;
                     var leafletMarkers = {};
@@ -1326,7 +1323,7 @@ angular.module("leaflet-directive").directive('paths', function ($log, leafletDa
                 leafletScope  = controller.getLeafletScope(),
                 paths     = leafletScope.paths;
 
-            leafletMapDefaults.getDefaults().then(function(defaults) {
+            leafletMapDefaults.getDefaults(attrs.id).then(function(defaults) {
                 controller.getMap().then(function(map) {
 
                     var leafletPaths = {};
@@ -1806,8 +1803,8 @@ angular.module("leaflet-directive").service('leafletData', function ($log, $q, l
 });
 
 angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, leafletHelpers) {
-    var isDefined = leafletHelpers.isDefined,
-        _defaults = {
+    function _getDefaults() {
+        return {
             maxZoom: 18,
             minZoom: 1,
             keyboard: true,
@@ -1847,7 +1844,9 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
                 lng: 0,
                 zoom: 1
             }
-        },
+        };
+    }
+    var isDefined = leafletHelpers.isDefined,
         getDefer = leafletHelpers.getDefer,
         defaults = {
             main: $q.defer()
@@ -1863,24 +1862,26 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
         setDefaults: function(userDefaults, scopeId) {
             var leafletDefaults = getDefer(defaults, scopeId);
 
+            var newDefaults = _getDefaults();
+
             if (isDefined(userDefaults)) {
-                _defaults.maxZoom = isDefined(userDefaults.maxZoom) ?  parseInt(userDefaults.maxZoom, 10) : _defaults.maxZoom;
-                _defaults.minZoom = isDefined(userDefaults.minZoom) ?  parseInt(userDefaults.minZoom, 10) : _defaults.minZoom;
-                _defaults.doubleClickZoom = isDefined(userDefaults.doubleClickZoom) ?  userDefaults.doubleClickZoom : _defaults.doubleClickZoom;
-                _defaults.scrollWheelZoom = isDefined(userDefaults.scrollWheelZoom) ?  userDefaults.scrollWheelZoom : _defaults.doubleClickZoom;
-                _defaults.zoomControl = isDefined(userDefaults.zoomControl) ?  userDefaults.zoomControl : _defaults.zoomControl;
-                _defaults.attributionControl = isDefined(userDefaults.attributionControl) ?  userDefaults.attributionControl : _defaults.attributionControl;
-                _defaults.tileLayer = isDefined(userDefaults.tileLayer) ? userDefaults.tileLayer : _defaults.tileLayer;
-                _defaults.zoomControlPosition = isDefined(userDefaults.zoomControlPosition) ? userDefaults.zoomControlPosition : _defaults.zoomControlPosition;
-                _defaults.keyboard = isDefined(userDefaults.keyboard) ? userDefaults.keyboard : _defaults.keyboard;
-                _defaults.dragging = isDefined(userDefaults.dragging) ? userDefaults.dragging : _defaults.dragging;
-                _defaults.controlLayersPosition = isDefined(userDefaults.controlLayersPosition) ? userDefaults.controlLayersPosition : _defaults.controlLayersPosition;
+                newDefaults.maxZoom = isDefined(userDefaults.maxZoom) ?  parseInt(userDefaults.maxZoom, 10) : newDefaults.maxZoom;
+                newDefaults.minZoom = isDefined(userDefaults.minZoom) ?  parseInt(userDefaults.minZoom, 10) : newDefaults.minZoom;
+                newDefaults.doubleClickZoom = isDefined(userDefaults.doubleClickZoom) ?  userDefaults.doubleClickZoom : newDefaults.doubleClickZoom;
+                newDefaults.scrollWheelZoom = isDefined(userDefaults.scrollWheelZoom) ?  userDefaults.scrollWheelZoom : newDefaults.doubleClickZoom;
+                newDefaults.zoomControl = isDefined(userDefaults.zoomControl) ?  userDefaults.zoomControl : newDefaults.zoomControl;
+                newDefaults.attributionControl = isDefined(userDefaults.attributionControl) ?  userDefaults.attributionControl : newDefaults.attributionControl;
+                newDefaults.tileLayer = isDefined(userDefaults.tileLayer) ? userDefaults.tileLayer : newDefaults.tileLayer;
+                newDefaults.zoomControlPosition = isDefined(userDefaults.zoomControlPosition) ? userDefaults.zoomControlPosition : newDefaults.zoomControlPosition;
+                newDefaults.keyboard = isDefined(userDefaults.keyboard) ? userDefaults.keyboard : newDefaults.keyboard;
+                newDefaults.dragging = isDefined(userDefaults.dragging) ? userDefaults.dragging : newDefaults.dragging;
+                newDefaults.controlLayersPosition = isDefined(userDefaults.controlLayersPosition) ? userDefaults.controlLayersPosition : newDefaults.controlLayersPosition;
 
                 if (isDefined(userDefaults.tileLayerOptions)) {
-                    angular.copy(userDefaults.tileLayerOptions, _defaults.tileLayerOptions);
+                    angular.copy(userDefaults.tileLayerOptions, newDefaults.tileLayerOptions);
                 }
             }
-            leafletDefaults.resolve(_defaults);
+            leafletDefaults.resolve(newDefaults);
         }
     };
 });
