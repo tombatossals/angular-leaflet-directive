@@ -713,7 +713,7 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                     leafletScope.$watch('markers', function(newMarkers) {
                         // Delete markers from the array
                         for (var name in leafletMarkers) {
-                            if (!isDefined(newMarkers[name])) {
+                            if (!isDefined(newMarkers) || !isDefined(newMarkers[name])) {
                                 // First we check if the marker is in a layer group
                                 leafletMarkers[name].closePopup();
                                 // There is no easy way to know if a marker is added to a layer, so we search for it
@@ -762,7 +762,7 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                         if (!isDefined(marker_data.layer)) {
                             if (isDefined(marker_data.group)) {
                                 if (!isDefined(groups[marker_data.group])) {
-                                    groups[marker_data.group] = L.markerClusterGroup({ spiderfyOnMaxZoom: false, showCoverageOnHover: false, zoomToBoundsOnClick: false });
+                                    groups[marker_data.group] = L.markerClusterGroup();
                                     map.addLayer(groups[marker_data.group]);
                                 }
                                 groups[marker_data.group].addLayer(marker);
