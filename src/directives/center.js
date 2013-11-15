@@ -14,8 +14,8 @@ angular.module("leaflet-directive").directive('center', function ($log, $parse, 
                 leafletScope  = controller.getLeafletScope(),
                 center        = leafletScope.center;
 
-            leafletMapDefaults.getDefaults(attrs.id).then(function(defaults) {
-                controller.getMap().then(function(map) {
+            controller.getMap().then(function(map) {
+                leafletMapDefaults.getDefaults(attrs.id).then(function(defaults) {
                     if (isDefined(center)) {
                         if (center.autoDiscover === true) {
                             map.locate({ setView: true, maxZoom: defaults.maxZoom });

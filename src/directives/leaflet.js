@@ -31,67 +31,66 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
         },
 
         link: function(scope, element, attrs, controller) {
-            var isDefined = leafletHelpers.isDefined;
-            leafletMapDefaults.setDefaults(scope.defaults, attrs.id);
-            leafletMapDefaults.getDefaults(attrs.id).then(function(defaults) {
-                // If we are going to set maxBounds, undefine the minZoom property
-                if (isDefined(scope.maxBounds)) {
-                    defaults.minZoom = undefined;
-                }
+            var isDefined = leafletHelpers.isDefined,
+                defaults = leafletMapDefaults.setDefaults(scope.defaults, attrs.id);
 
-                // Set width and height if they are defined
-                if (isDefined(attrs.width)) {
-                    if (isNaN(attrs.width)) {
-                        element.css('width', attrs.width);
-                    } else {
-                        element.css('width', attrs.width + 'px');
-                    }
-                }
-                if (isDefined(attrs.height)) {
-                    if (isNaN(attrs.height)) {
-                        element.css('height', attrs.height);
-                    } else {
-                        element.css('height', attrs.height + 'px');
-                    }
-                }
+            // If we are going to set maxBounds, undefine the minZoom property
+            if (isDefined(scope.maxBounds)) {
+                defaults.minZoom = undefined;
+            }
 
-                if (isDefined(attrs.marker)) {
-                     $log.warn("[AngularJS - Leaflet] The 'marker' property is currently deprecated, please use the 'markers' property instead.");
+            // Set width and height if they are defined
+            if (isDefined(attrs.width)) {
+                if (isNaN(attrs.width)) {
+                    element.css('width', attrs.width);
+                } else {
+                    element.css('width', attrs.width + 'px');
                 }
-
-                // Create the Leaflet Map Object with the options
-                var map = new L.Map(element[0], {
-                    maxZoom: defaults.maxZoom,
-                    minZoom: defaults.minZoom,
-                    keyboard: defaults.keyboard,
-                    dragging: defaults.dragging,
-                    zoomControl: defaults.zoomControl,
-                    doubleClickZoom: defaults.doubleClickZoom,
-                    scrollWheelZoom: defaults.scrollWheelZoom,
-                    attributionControl: defaults.attributionControl
-                });
-
-                // Resolve the map object to the promises
-                scope.leafletMap.resolve(map);
-                leafletData.setMap(map, attrs.id);
-
-                if (!isDefined(attrs.center)) {
-                     $log.warn("[AngularJS - Leaflet] 'center' is undefined in the current scope, did you forget to initialize it?");
-                     map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
+            }
+            if (isDefined(attrs.height)) {
+                if (isNaN(attrs.height)) {
+                    element.css('height', attrs.height);
+                } else {
+                    element.css('height', attrs.height + 'px');
                 }
+            }
 
-                // If no layers nor tiles defined, set the default tileLayer
-                if (!isDefined(attrs.tiles) && (!isDefined(attrs.layers))) {
-                    var tileLayerObj = L.tileLayer(defaults.tileLayer, defaults.tileLayerOptions);
-                    tileLayerObj.addTo(map);
-                    leafletData.setTiles(tileLayerObj);
-                }
+            if (isDefined(attrs.marker)) {
+                 $log.warn("[AngularJS - Leaflet] The 'marker' property is currently deprecated, please use the 'markers' property instead.");
+            }
 
-                // Set zoom control configuration
-                if (isDefined(map.zoomControl) && isDefined(defaults.zoomControlPosition)) {
-                    map.zoomControl.setPosition(defaults.zoomControlPosition);
-                }
+            // Create the Leaflet Map Object with the options
+            var map = new L.Map(element[0], {
+                maxZoom: defaults.maxZoom,
+                minZoom: defaults.minZoom,
+                keyboard: defaults.keyboard,
+                dragging: defaults.dragging,
+                zoomControl: defaults.zoomControl,
+                doubleClickZoom: defaults.doubleClickZoom,
+                scrollWheelZoom: defaults.scrollWheelZoom,
+                attributionControl: defaults.attributionControl
             });
+
+            // Resolve the map object to the promises
+            scope.leafletMap.resolve(map);
+            leafletData.setMap(map, attrs.id);
+
+            if (!isDefined(attrs.center)) {
+                 $log.warn("[AngularJS - Leaflet] 'center' is undefined in the current scope, did you forget to initialize it?");
+                 map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
+            }
+
+            // If no layers nor tiles defined, set the default tileLayer
+            if (!isDefined(attrs.tiles) && (!isDefined(attrs.layers))) {
+                var tileLayerObj = L.tileLayer(defaults.tileLayer, defaults.tileLayerOptions);
+                tileLayerObj.addTo(map);
+                leafletData.setTiles(tileLayerObj);
+            }
+
+            // Set zoom control configuration
+            if (isDefined(map.zoomControl) && isDefined(defaults.zoomControlPosition)) {
+                map.zoomControl.setPosition(defaults.zoomControlPosition);
+            }
         }
     };
 });

@@ -78,6 +78,8 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
                 }
             }
             leafletDefaults.resolve(newDefaults);
+
+            return newDefaults;
         }
     };
 });

@@ -21,8 +21,8 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                 leafletScope  = controller.getLeafletScope(),
                 layers = leafletScope.layers;
 
-            leafletMapDefaults.getDefaults(attrs.id).then(function(defaults) {
-                controller.getMap().then(function(map) {
+            controller.getMap().then(function(map) {
+                leafletMapDefaults.getDefaults(attrs.id).then(function(defaults) {
 
                     if (isDefined(layers)) {
                         // Do we have a baselayers property?

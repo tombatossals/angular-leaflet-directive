@@ -11,8 +11,8 @@ angular.module("leaflet-directive").directive('tiles', function ($log, leafletDa
                 leafletScope  = controller.getLeafletScope(),
                 tiles = leafletScope.tiles;
 
-            leafletMapDefaults.getDefaults(attrs.id).then(function(defaults) {
-                controller.getMap().then(function(map) {
+            controller.getMap().then(function(map) {
+                leafletMapDefaults.getDefaults(attrs.id).then(function(defaults) {
 
                     var tileLayerObj;
                     var tileLayerUrl = defaults.tileLayer;
