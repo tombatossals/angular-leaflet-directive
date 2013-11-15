@@ -34,7 +34,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
 
         link: function(scope, element, attrs, controller) {
             var isDefined = leafletHelpers.isDefined;
-            leafletMapDefaults.setDefaults(scope.defaults);
+            leafletMapDefaults.setDefaults(scope.defaults, attrs.id);
 
             leafletMapDefaults.getDefaults().then(function(defaults) {
                 // If we are going to set maxBounds, undefine the minZoom property
