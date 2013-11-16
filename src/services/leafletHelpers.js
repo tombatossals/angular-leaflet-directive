@@ -80,31 +80,19 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q) {
                 }
             },
             equal: function (iconA, iconB) {
-                if (!this.isLoaded) {
+                if (!this.isLoaded()) {
                     return false;
                 }
-                if (this.is(iconA) && this.is(iconB)) {
-                    return (iconA.options.icon === iconB.options.icon &&
-                            iconA.options.iconColor === iconB.options.iconColor &&
-                            iconA.options.color === iconB.options.color &&
-                            iconA.options.iconSize[0] === iconB.options.iconSize[0] &&
-                            iconA.options.iconSize[1] === iconB.options.iconSize[1] &&
-                            iconA.options.iconAnchor[0] === iconB.options.iconAnchor[0] &&
-                            iconA.options.iconAnchor[1] === iconB.options.iconAnchor[1] &&
-                            iconA.options.popupAnchor[0] === iconB.options.popupAnchor[0] &&
-                            iconA.options.popupAnchor[1] === iconB.options.popupAnchor[1] &&
-                            iconA.options.shadowAnchor[0] === iconB.options.shadowAnchor[0] &&
-                            iconA.options.shadowAnchor[1] === iconB.options.shadowAnchor[1] &&
-                            iconA.options.shadowSize[0] === iconB.options.shadowSize[0] &&
-                            iconA.options.shadowSize[1] === iconB.options.shadowSize[1]);
+                if (this.is(iconA)) {
+                    return angular.equals(iconA, iconB);
                 } else {
                     return false;
                 }
             }
         },
-        MarkerClusterPlugin: {
+        LabelPlugin: {
             isLoaded: function() {
-                return L.MarkerClusterGroup !== undefined;
+                return angular.isDefined(L.Label);
             },
             is: function(layer) {
                 if (this.isLoaded()) {
@@ -112,11 +100,23 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q) {
                 } else {
                     return false;
                 }
+            }
+        },
+        MarkerClusterPlugin: {
+            isLoaded: function() {
+                return angular.isDefined(L.MarkerClusterGroup);
             },
+            is: function(layer) {
+                if (this.isLoaded()) {
+                    return layer instanceof L.MarkerClusterGroup;
+                } else {
+                    return false;
+                }
+            }
         },
         GoogleLayerPlugin: {
             isLoaded: function() {
-                return L.Google !== undefined;
+                return angular.isDefined(L.Google);
             },
             is: function(layer) {
                 if (this.isLoaded()) {
@@ -124,11 +124,11 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q) {
                 } else {
                     return false;
                 }
-            },
+            }
         },
         BingLayerPlugin: {
             isLoaded: function() {
-                return L.BingLayer !== undefined;
+                return angular.isDefined(L.BingLayer);
             },
             is: function(layer) {
                 if (this.isLoaded()) {
@@ -136,7 +136,7 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q) {
                 } else {
                     return false;
                 }
-            },
+            }
         },
         Leaflet: {
             DivIcon: {
@@ -144,12 +144,8 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q) {
                     return icon instanceof L.DivIcon;
                 },
                 equal: function(iconA, iconB) {
-                    if (this.is(iconA) && this.is(iconB)) {
-                        return (iconA.options.html === iconB.options.html &&
-                                iconA.options.iconSize[0] === iconB.options.iconSize[0] &&
-                                iconA.options.iconSize[1] === iconB.options.iconSize[1] &&
-                                iconA.options.iconAnchor[0] === iconB.options.iconAnchor[0] &&
-                                iconA.options.iconAnchor[1] === iconB.options.iconAnchor[1]);
+                    if (this.is(iconA)) {
+                        return angular.equals(iconA, iconB);
                     } else {
                         return false;
                     }

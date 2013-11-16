@@ -116,7 +116,7 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                                     // We do not have a layer attr, so the marker goes to the map layer
                                     map.addLayer(marker);
                                 }
-                                if (isDefined(L.Label) && isDefined(marker_data.label) && isDefined(marker_data.label.options)) {
+                                if (leafletHelpers.LabelPlugin.isLoaded() && isDefined(marker_data.label) && isDefined(marker_data.label.options)) {
                                     if (marker_data.label.options.noHide === true) {
                                         marker.showLabel();
                                     }
@@ -648,7 +648,7 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                             if (data.message) {
                                 marker.bindPopup(data.message);
                             }
-                            if (isDefined(L.Label) && isDefined(data.label) && isDefined(data.label.message)) {
+                            if (leafletHelpers.LabelPlugin.isLoaded() && isDefined(data.label) && isDefined(data.label.message)) {
                                 marker.bindLabel(data.label.message, data.label.options);
                             }
 
