@@ -1,5 +1,6 @@
 angular.module("leaflet-directive").service('leafletData', function ($log, $q, leafletHelpers) {
-    var isDefined = leafletHelpers.isDefined;
+    var isDefined = leafletHelpers.isDefined,
+        getDefer = leafletHelpers.getDefer;
 
     var maps = {
         main: $q.defer()
@@ -19,20 +20,6 @@ angular.module("leaflet-directive").service('leafletData', function ($log, $q, l
     var geoJSON = {
         main: $q.defer()
     };
-
-    function getDefer(d, scopeId) {
-        if (!isDefined(scopeId)) {
-            scopeId = "main";
-        }
-        var defer;
-        if (!isDefined(d[scopeId])) {
-            defer = $q.defer();
-            d[scopeId] = defer;
-        } else {
-            defer = d[scopeId];
-        }
-        return defer;
-    }
 
     this.setMap = function(leafletMap, scopeId) {
         var map = getDefer(maps, scopeId);
