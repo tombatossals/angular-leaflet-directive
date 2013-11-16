@@ -4,7 +4,7 @@
 
 angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q, leafletData, leafletMapDefaults, leafletHelpers, leafletEvents) {
     return {
-        restrict: "E",
+        restrict: "EA",
         replace: true,
         transclude: true,
         scope: {
