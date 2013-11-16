@@ -1,19 +1,15 @@
 angular.module("leaflet-directive").factory('leafletHelpers', function ($q) {
 
-    // Determine if a reference is defined
-    function isDefined(value) {
-        return angular.isDefined(value);
-    }
-
-    // Determine if a reference is a number
-    function isNumber(value) {
-      return angular.isNumber(value);
-    }
-
     return {
-        isDefined: isDefined,
+        // Determine if a reference is defined
+        isDefined: function(value) {
+            return angular.isDefined(value);
+        },
 
-        isNumber: isNumber,
+        // Determine if a reference is a number
+        isNumber: function(value) {
+            return angular.isNumber(value);
+        },
 
         // Determine if a reference is defined and not null
         isDefinedAndNotNull: function(value) {
@@ -41,14 +37,8 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q) {
         },
 
         isValidCenter: function(center) {
-            return isDefined(center) && isNumber(center.lat) && isNumber(center.lng) && isNumber(center.zoom);
-        },
-
-        getWatch: function(watchVar, attrs, scope) {
-            if (isDefined(attrs[watchVar] && isDefined(scope[attrs[watchVar]]))) {
-                return attrs[watchVar];
-            }
-            return watchVar;
+            return angular.isDefined(center) && angular.isNumber(center.lat) &&
+                   angular.isNumber(center.lng) && angular.isNumber(center.zoom);
         },
 
         safeApply: function($scope, fn) {
@@ -61,11 +51,11 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q) {
         },
 
         getDefer: function(d, scopeId) {
-            if (!isDefined(scopeId)) {
+            if (!angular.isDefined(scopeId)) {
                 scopeId = "main";
             }
             var defer;
-            if (!isDefined(d[scopeId])) {
+            if (!angular.isDefined(d[scopeId])) {
                 defer = $q.defer();
                 d[scopeId] = defer;
             } else {
@@ -170,21 +160,8 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q) {
                     return icon instanceof L.Icon;
                 },
                 equal: function(iconA, iconB) {
-                    if (this.is(iconA) && this.is(iconB)) {
-                        return (iconA.options.iconUrl === iconB.options.iconUrl &&
-                                iconA.options.iconRetinaUrl === iconB.options.iconRetinaUrl &&
-                                iconA.options.iconSize[0] === iconB.options.iconSize[0] &&
-                                iconA.options.iconSize[1] === iconB.options.iconSize[1] &&
-                                iconA.options.iconAnchor[0] === iconB.options.iconAnchor[0] &&
-                                iconA.options.iconAnchor[1] === iconB.options.iconAnchor[1] &&
-                                iconA.options.shadowUrl === iconB.options.shadowUrl &&
-                                iconA.options.shadowRetinaUrl === iconB.options.shadowRetinaUrl &&
-                                iconA.options.shadowSize[0] === iconB.options.shadowSize[0] &&
-                                iconA.options.shadowSize[1] === iconB.options.shadowSize[1] &&
-                                iconA.options.shadowAnchor[0] === iconB.options.shadowAnchor[0] &&
-                                iconA.options.shadowAnchor[1] === iconB.options.shadowAnchor[1] &&
-                                iconA.options.popupAnchor[0] === iconB.options.popupAnchor[0] &&
-                                iconA.options.popupAnchor[1] === iconB.options.popupAnchor[1]);
+                    if (this.is(iconA)) {
+                        return angular.equals(iconA, iconB);
                     } else {
                         return false;
                     }
