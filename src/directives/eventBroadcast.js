@@ -1,4 +1,4 @@
-angular.module("leaflet-directive").directive('eventBroadcast', function ($log, $rootScope, leafletHelpers) {
+angular.module("leaflet-directive").directive('eventBroadcast', function ($log, $rootScope, leafletHelpers, leafletEvents) {
     return {
         restrict: "A",
         scope: false,
@@ -10,79 +10,20 @@ angular.module("leaflet-directive").directive('eventBroadcast', function ($log, 
             var safeApply = leafletHelpers.safeApply,
                 isDefinedAndNotNull = leafletHelpers.isDefinedAndNotNull,
                 isDefined = leafletHelpers.isDefined,
+                isObject = leafletHelpers.isObject,
                 leafletScope  = controller.getLeafletScope(),
-                eventBroadcast = leafletScope.eventBroadcast;
+                eventBroadcast = leafletScope.eventBroadcast,
+                availableMapEvents = leafletEvents.getAvailableMapEvents(),
+                genDispatchMapEvent = leafletEvents.genDispatchMapEvent;
 
             controller.getMap().then(function(map) {
-
-                function genDispatchMapEvent(eventName, logic) {
-                    return function(e) {
-                        // Put together broadcast name
-                        var broadcastName = 'leafletDirectiveMap.' + eventName;
-                        // Safely broadcast the event
-                        safeApply(leafletScope, function(scope) {
-                            if (logic === "emit") {
-                                scope.$emit(broadcastName, {
-                                    leafletEvent : e
-                                });
-                            } else if (logic === "broadcast") {
-                                $rootScope.$broadcast(broadcastName, {
-                                    leafletEvent : e
-                                });
-                            }
-                        });
-                    };
-                }
-
-                var availableMapEvents = [
-                    'click',
-                    'dblclick',
-                    'mousedown',
-                    'mouseup',
-                    'mouseover',
-                    'mouseout',
-                    'mousemove',
-                    'contextmenu',
-                    'focus',
-                    'blur',
-                    'preclick',
-                    'load',
-                    'unload',
-                    'viewreset',
-                    'movestart',
-                    'move',
-                    'moveend',
-                    'dragstart',
-                    'drag',
-                    'dragend',
-                    'zoomstart',
-                    'zoomend',
-                    'zoomlevelschange',
-                    'resize',
-                    'autopanstart',
-                    'layeradd',
-                    'layerremove',
-                    'baselayerchange',
-                    'overlayadd',
-                    'overlayremove',
-                    'locationfound',
-                    'locationerror',
-                    'popupopen',
-                    'popupclose'
-                ];
 
                 var mapEvents = [];
                 var i;
                 var eventName;
                 var logic = "broadcast";
 
-                if (!isDefinedAndNotNull(eventBroadcast)) {
-                    // Backward compatibility, if no event-broadcast attribute, all events are broadcasted
-                    mapEvents = availableMapEvents;
-                } else if (typeof eventBroadcast !== 'object') {
-                    // Not a valid object
-                    $log.warn("[AngularJS - Leaflet] event-broadcast must be an object check your model.");
-                } else {
+                if (isObject(eventBroadcast)) {
                     // We have a possible valid object
                     if (eventBroadcast.map === undefined || eventBroadcast.map === null) {
                         // We do not have events enable/disable do we do nothing (all enabled by default)
@@ -157,13 +98,16 @@ angular.module("leaflet-directive").directive('eventBroadcast', function ($log, 
                             }
                         }
                     }
-                }
 
-                for (i = 0; i < mapEvents.length; i++) {
-                    eventName = mapEvents[i];
-                    map.on(eventName, genDispatchMapEvent(eventName, logic), {
-                        eventName: eventName
-                    });
+                    for (i = 0; i < mapEvents.length; i++) {
+                        eventName = mapEvents[i];
+                        map.on(eventName, genDispatchMapEvent(leafletScope, eventName, logic), {
+                            eventName: eventName
+                        });
+                    }
+                } else {
+                    // Not a valid object
+                    $log.warn("[AngularJS - Leaflet] event-broadcast must be an object, check your model.");
                 }
             });
         }

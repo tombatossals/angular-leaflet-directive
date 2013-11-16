@@ -1,4 +1,4 @@
-angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q, leafletData, leafletMapDefaults, leafletHelpers) {
+angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q, leafletData, leafletMapDefaults, leafletHelpers, leafletEvents) {
     return {
         restrict: "E",
         replace: true,
@@ -32,7 +32,9 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
 
         link: function(scope, element, attrs, controller) {
             var isDefined = leafletHelpers.isDefined,
-                defaults = leafletMapDefaults.setDefaults(scope.defaults, attrs.id);
+                defaults = leafletMapDefaults.setDefaults(scope.defaults, attrs.id),
+                genDispatchMapEvent = leafletEvents.genDispatchMapEvent,
+                mapEvents = leafletEvents.getAvailableMapEvents();
 
             // If we are going to set maxBounds, undefine the minZoom property
             if (isDefined(scope.maxBounds)) {
@@ -91,6 +93,18 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
             if (isDefined(map.zoomControl) && isDefined(defaults.zoomControlPosition)) {
                 map.zoomControl.setPosition(defaults.zoomControlPosition);
             }
+
+            // if no event-broadcast attribute, all events are broadcasted
+            if (!isDefined(attrs.eventBroadcast)) {
+                var logic = "broadcast";
+                for (var i = 0; i < mapEvents.length; i++) {
+                    var eventName = mapEvents[i];
+                    map.on(eventName, genDispatchMapEvent(scope, eventName, logic), {
+                        eventName: eventName
+                    });
+                }
+            }
+
         }
     };
 });
