@@ -637,7 +637,8 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                             }
                             var moptions = {
                                 icon: micon,
-                                draggable: data.draggable ? true : false
+                                draggable: data.draggable ? true : false,
+                                clickable: isDefined(data.clickable) ? data.clickable : true
                             };
                             if (data.title) {
                                 moptions.title = data.title;
