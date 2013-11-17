@@ -161,14 +161,20 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                         if (!isString(layerDefinition.type)) {
                             $log.error('[AngularJS - Leaflet] A base layer must have a type');
                             return null;
-                        } else if (layerDefinition.type !== 'xyz' && layerDefinition.type !== 'wms' && layerDefinition.type !== 'group' && layerDefinition.type !== 'markercluster' && layerDefinition.type !== 'google' && layerDefinition.type !== 'bing') {
+                        } else if (layerDefinition.type !== 'xyz' && layerDefinition.type !== 'wms' && layerDefinition.type !== 'group' && layerDefinition.type !== 'markercluster' && layerDefinition.type !== 'google' && layerDefinition.type !== 'bing' && layerDefinition.type !== 'imageOverlay') {
                             $log.error('[AngularJS - Leaflet] A layer must have a valid type: "xyz, wms, group, google"');
                             return null;
                         }
-                        if (layerDefinition.type === 'xyz' || layerDefinition.type === 'wms') {
+                        if (layerDefinition.type === 'xyz' || layerDefinition.type === 'wms' || layerDefinition.type === 'imageOverlay') {
                             // XYZ, WMS must have an url
                             if (!isString(layerDefinition.url)) {
                                 $log.error('[AngularJS - Leaflet] A base layer must have an url');
+                                return null;
+                            }
+                        }
+                        if (layerDefinition.type === 'imageOverlay' && layerDefinition.bounds === undefined) {
+                            if (!isString(layerDefinition)) {
+                                $log.error('[AngularJS - Leaflet] An imageOverlay layer must have bounds');
                                 return null;
                             }
                         }
@@ -206,6 +212,9 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                                 break;
                             case 'bing':
                                 layer = createBingLayer(layerDefinition.bingKey, layerDefinition.layerOptions);
+                                break;
+                            case 'imageOverlay':
+                                layer = createImageOverlay(layerDefinition.url, layerDefinition.bounds, layerDefinition.layerOptions);
                                 break;
                             default:
                                 layer = null;
@@ -256,6 +265,11 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                         } else {
                             return null;
                         }
+                    }
+
+                    function createImageOverlay(url, bounds, options) {
+                        var layer = L.imageOverlay(url, bounds, options);
+                        return layer;
                     }
                 });
             });

@@ -98,6 +98,33 @@ describe('Directive: leaflet', function() {
         });
     });
 
+    it('should create image overlay layer if correctly configured', function() {
+        angular.extend($rootScope, {
+            layers: {
+                baselayers: {
+                    imageOverlay: {
+                        name: 'imageOverlay',
+                        type: 'imageOverlay',
+                        url: 'url',
+                        bounds: [[0,1], [1,0]],
+                        layerOptions: {
+                        }
+                    },
+                },
+            }
+        });
+        var element = angular.element('<leaflet layers="layers"></leaflet>');
+        element = $compile(element)($rootScope);
+        var map;
+        leafletData.getMap().then(function(leafletMap) {
+            map = leafletMap;
+        });
+        $rootScope.$digest();
+        leafletData.getLayers().then(function(layers) {
+            expect(map.hasLayer(layers.baselayers.imageOverlay)).toBe(true);
+        });
+    });
+
     it('should create two layers if correctly configured', function() {
         angular.extend($rootScope, {
             layers: {
@@ -245,6 +272,20 @@ describe('Directive: leaflet', function() {
                         layerOptions: {
                             layers: 'osm',
                             format: 'image/png'
+                        }
+                    },
+                    imageOverlay1: {
+                        name: 'imageOverlay',
+                        type: 'imageOverlay',
+                        bounds: [[0,1], [1,0]],
+                        layerOptions: {
+                        }
+                    },
+                    imageOverlay2: {
+                        name: 'imageOverlay',
+                        type: 'imageOverlay',
+                        url: 'url',
+                        layerOptions: {
                         }
                     },
                 },
