@@ -62,7 +62,7 @@ angular.module("leaflet-directive").directive('geojson', function ($log, $rootSc
                         leafletGeoJSON = L.geoJson(geojson.data, geojson.options);
 
                         if (leafletHelpers.LabelPlugin.isLoaded() && isDefined(geojson.options) && isDefined(geojson.options.label)) {
-                            leafletGeoJSON.bindLabel(geojson.options.label)
+                            leafletGeoJSON.bindLabel(geojson.options.label);
                         }
 
                         leafletData.setGeoJSON(leafletGeoJSON);
