@@ -74,7 +74,8 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
                 zoomControl: defaults.zoomControl,
                 doubleClickZoom: defaults.doubleClickZoom,
                 scrollWheelZoom: defaults.scrollWheelZoom,
-                attributionControl: defaults.attributionControl
+                attributionControl: defaults.attributionControl,
+                crs: defaults.crs
             });
 
             // Resolve the map object to the promises
@@ -495,14 +496,20 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                         if (!isString(layerDefinition.type)) {
                             $log.error('[AngularJS - Leaflet] A base layer must have a type');
                             return null;
-                        } else if (layerDefinition.type !== 'xyz' && layerDefinition.type !== 'wms' && layerDefinition.type !== 'group' && layerDefinition.type !== 'markercluster' && layerDefinition.type !== 'google' && layerDefinition.type !== 'bing') {
+                        } else if (layerDefinition.type !== 'xyz' && layerDefinition.type !== 'wms' && layerDefinition.type !== 'group' && layerDefinition.type !== 'markercluster' && layerDefinition.type !== 'google' && layerDefinition.type !== 'bing' && layerDefinition.type !== 'imageOverlay') {
                             $log.error('[AngularJS - Leaflet] A layer must have a valid type: "xyz, wms, group, google"');
                             return null;
                         }
-                        if (layerDefinition.type === 'xyz' || layerDefinition.type === 'wms') {
+                        if (layerDefinition.type === 'xyz' || layerDefinition.type === 'wms' || layerDefinition.type === 'imageOverlay') {
                             // XYZ, WMS must have an url
                             if (!isString(layerDefinition.url)) {
                                 $log.error('[AngularJS - Leaflet] A base layer must have an url');
+                                return null;
+                            }
+                        }
+                        if (layerDefinition.type === 'imageOverlay' && layerDefinition.bounds === undefined) {
+                            if (!isString(layerDefinition)) {
+                                $log.error('[AngularJS - Leaflet] An imageOverlay layer must have bounds');
                                 return null;
                             }
                         }
@@ -540,6 +547,9 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                                 break;
                             case 'bing':
                                 layer = createBingLayer(layerDefinition.bingKey, layerDefinition.layerOptions);
+                                break;
+                            case 'imageOverlay':
+                                layer = createImageOverlay(layerDefinition.url, layerDefinition.bounds, layerDefinition.layerOptions);
                                 break;
                             default:
                                 layer = null;
@@ -590,6 +600,11 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                         } else {
                             return null;
                         }
+                    }
+
+                    function createImageOverlay(url, bounds, options) {
+                        var layer = L.imageOverlay(url, bounds, options);
+                        return layer;
                     }
                 });
             });
@@ -1644,20 +1659,19 @@ angular.module("leaflet-directive").directive('maxbounds', function ($log, leafl
 
 
             controller.getMap().then(function(map) {
-                if (isDefined(maxBounds) && isDefined(maxBounds.southWest) && isDefined(maxBounds.northEast)) {
-                    leafletScope.$watch("maxBounds", function (maxBounds) {
-                        if (isDefined(maxBounds.southWest) && isDefined(maxBounds.northEast) && isNumber(maxBounds.southWest.lat) && isNumber(maxBounds.southWest.lng) && isNumber(maxBounds.northEast.lat) && isNumber(maxBounds.northEast.lng)) {
-                            map.setMaxBounds(
-                                new L.LatLngBounds(
-                                    new L.LatLng(maxBounds.southWest.lat, maxBounds.southWest.lng),
-                                    new L.LatLng(maxBounds.northEast.lat, maxBounds.northEast.lng)
-                                )
-                            );
-                        }
-                    });
-                } else {
-                    $log.warn("[AngularJS - Leaflet] 'maxBounds' is defined in the current scope, but not correctly initialized.");
-                }
+                leafletScope.$watch("maxBounds", function (maxBounds) {
+                    if (isDefined(maxBounds.southWest) && isDefined(maxBounds.northEast) && isNumber(maxBounds.southWest.lat) && isNumber(maxBounds.southWest.lng) && isNumber(maxBounds.northEast.lat) && isNumber(maxBounds.northEast.lng)) {
+                        map.setMaxBounds(
+                            new L.LatLngBounds(
+                                new L.LatLng(maxBounds.southWest.lat, maxBounds.southWest.lng),
+                                new L.LatLng(maxBounds.northEast.lat, maxBounds.northEast.lng)
+                            ),
+                            maxBounds.options
+                        );
+                    } else {
+                        map.setMaxBounds();
+                    }
+                });
             });
         }
     };
@@ -1761,6 +1775,7 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
             zoomsliderControl: false,
             zoomControlPosition: 'topleft',
             controlLayersPosition: 'topright',
+            crs: L.CRS.EPSG3857,
             tileLayer: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
             tileLayerOptions: {
                 attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -1821,6 +1836,7 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
                 newDefaults.keyboard = isDefined(userDefaults.keyboard) ? userDefaults.keyboard : newDefaults.keyboard;
                 newDefaults.dragging = isDefined(userDefaults.dragging) ? userDefaults.dragging : newDefaults.dragging;
                 newDefaults.controlLayersPosition = isDefined(userDefaults.controlLayersPosition) ? userDefaults.controlLayersPosition : newDefaults.controlLayersPosition;
+                newDefaults.crs = isDefined(userDefaults.crs) ? userDefaults.crs : newDefaults.crs;
 
                 if (isDefined(userDefaults.tileLayerOptions)) {
                     angular.copy(userDefaults.tileLayerOptions, newDefaults.tileLayerOptions);
