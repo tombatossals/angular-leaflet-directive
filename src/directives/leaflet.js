@@ -70,7 +70,8 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
                 zoomControl: defaults.zoomControl,
                 doubleClickZoom: defaults.doubleClickZoom,
                 scrollWheelZoom: defaults.scrollWheelZoom,
-                attributionControl: defaults.attributionControl
+                attributionControl: defaults.attributionControl,
+                crs: defaults.crs
             });
 
             // Resolve the map object to the promises
