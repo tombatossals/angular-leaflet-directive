@@ -770,6 +770,11 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                             }
                             // add new markers
                             for (var new_name in newMarkers) {
+                                // Using ngResource adds extra non-markers to the collection
+                                if (new_name === '$promise' || new_name === '$resolved') {
+                                    continue;
+                                }
+
                                 if (!isDefined(leafletMarkers[new_name])) {
                                     var newMarker = createMarker('markers.'+new_name, newMarkers[new_name], map);
                                     if (newMarker !== null) {

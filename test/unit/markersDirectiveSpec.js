@@ -86,6 +86,20 @@ describe('Directive: leaflet', function() {
         });
     });
 
+    it('should skip markers named $promise and $resolved', function() {
+        var markers = {
+            $promise: {},
+            $resolved: false
+        };
+        angular.extend($rootScope, { markers: markers });
+        var element = angular.element('<leaflet markers="markers"></leaflet>');
+        element = $compile(element)($rootScope);
+        $rootScope.$digest();
+        leafletData.getMarkers().then(function(leafletMarkers) {
+            expect(leafletMarkers).toEqual({});
+        });
+    });
+
     it('should detect errors in lat-lng (undefined lat) when marker is updated', function() {
         var mainMarkers = {
             paris: {
