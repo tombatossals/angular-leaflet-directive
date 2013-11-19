@@ -73,7 +73,10 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
                 newDefaults.keyboard = isDefined(userDefaults.keyboard) ? userDefaults.keyboard : newDefaults.keyboard;
                 newDefaults.dragging = isDefined(userDefaults.dragging) ? userDefaults.dragging : newDefaults.dragging;
                 newDefaults.controlLayersPosition = isDefined(userDefaults.controlLayersPosition) ? userDefaults.controlLayersPosition : newDefaults.controlLayersPosition;
-                newDefaults.crs = isDefined(userDefaults.crs) ? userDefaults.crs : newDefaults.crs;
+
+                if (isDefined(userDefaults.crs) && isDefined(L.CRS[userDefaults.crs])) {
+                    newDefaults.crs = L.CRS[userDefaults.crs];
+                }
 
                 if (isDefined(userDefaults.tileLayerOptions)) {
                     angular.copy(userDefaults.tileLayerOptions, newDefaults.tileLayerOptions);
