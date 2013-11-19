@@ -278,7 +278,8 @@ angular.module("leaflet-directive").directive('geojson', function ($log, $rootSc
 
             controller.getMap().then(function(map) {
                 leafletScope.$watch("geojson", function(geojson) {
-                    if (!isDefined(geojson)) {
+                    if (!isDefined(geojson) || !isDefined(geojson.data)) {
+                        leafletData.setGeoJSON();
                         return;
                     }
 
@@ -324,6 +325,11 @@ angular.module("leaflet-directive").directive('geojson', function ($log, $rootSc
                         }
 
                         leafletGeoJSON = L.geoJson(geojson.data, geojson.options);
+
+                        if (leafletHelpers.LabelPlugin.isLoaded() && isDefined(geojson.options) && isDefined(geojson.options.label)) {
+                            leafletGeoJSON.bindLabel(geojson.options.label);
+                        }
+
                         leafletData.setGeoJSON(leafletGeoJSON);
                         leafletGeoJSON.addTo(map);
                     }

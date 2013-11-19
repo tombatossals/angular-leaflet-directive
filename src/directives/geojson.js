@@ -14,7 +14,8 @@ angular.module("leaflet-directive").directive('geojson', function ($log, $rootSc
 
             controller.getMap().then(function(map) {
                 leafletScope.$watch("geojson", function(geojson) {
-                    if (!isDefined(geojson)) {
+                    if (!isDefined(geojson) || !isDefined(geojson.data)) {
+                        leafletData.setGeoJSON();
                         return;
                     }
 
