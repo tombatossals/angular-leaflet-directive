@@ -200,9 +200,9 @@ angular.module("leaflet-directive").directive('tiles', function ($log, leafletDa
                 leafletMapDefaults.getDefaults(attrs.id).then(function(defaults) {
                     if (angular.isDefined(tiles) && angular.isDefined(tiles.url)) {
                         var tileLayerObj;
-                        var tileLayerUrl = defaults.tileLayer;
-                        var tileLayerOptions = defaults.tileLayerOptions;
                         leafletScope.$watch("tiles", function(tiles, oldTiles) {
+                            var tileLayerOptions = defaults.tileLayerOptions;
+                            var tileLayerUrl = defaults.tileLayer;
                             if (!isDefined(oldTiles) || !isDefined(tileLayerObj)) {
                                 if (angular.isDefined(tiles) && angular.isDefined(tiles.options)) {
                                     angular.copy(tiles.options, tileLayerOptions);
@@ -220,6 +220,9 @@ angular.module("leaflet-directive").directive('tiles', function ($log, leafletDa
                                     map.removeLayer(tileLayerObj);
                                     tileLayerOptions = defaults.tileLayerOptions;
                                     angular.copy(tiles.options, tileLayerOptions);
+                                    if (isDefined(tiles.url)) {
+                                        tileLayerUrl = tiles.url;
+                                    }
                                     tileLayerObj = L.tileLayer(tileLayerUrl, tileLayerOptions);
                                     tileLayerObj.addTo(map);
                                     leafletData.setTiles(tileLayerObj, attrs.id);
@@ -290,13 +293,13 @@ angular.module("leaflet-directive").directive('geojson', function ($log, $rootSc
 
             controller.getMap().then(function(map) {
                 leafletScope.$watch("geojson", function(geojson) {
+                    if (isDefined(leafletGeoJSON)) {
+                        map.removeLayer(leafletGeoJSON);
+                    }
+
                     if (!isDefined(geojson) || !isDefined(geojson.data)) {
                         leafletData.setGeoJSON();
                         return;
-                    }
-
-                    if (isDefined(leafletGeoJSON)) {
-                        map.removeLayer(leafletGeoJSON);
                     }
 
                     if (isDefined(geojson.data)) {
