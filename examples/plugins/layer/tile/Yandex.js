@@ -95,15 +95,19 @@ L.Yandex = L.Class.extend({
 
 		// Check that ymaps.Map is ready
 		if (ymaps.Map === undefined) {
-			console.debug("L.Yandex: Waiting on ymaps.load('package.map')");
+			if (console) {
+				console.debug("L.Yandex: Waiting on ymaps.load('package.map')");
+			}
 			return ymaps.load(["package.map"], this._initMapObject, this);
 		}
 
 		// If traffic layer is requested check if control.TrafficControl is ready
 		if (this.options.traffic)
 			if (ymaps.control === undefined ||
-			    ymaps.control.TrafficControl === undefined) {
-				console.debug("L.Yandex: loading traffic and controls");
+					ymaps.control.TrafficControl === undefined) {
+				if (console) {
+					console.debug("L.Yandex: loading traffic and controls");
+				}
 				return ymaps.load(["package.traffic", "package.controls"],
 					this._initMapObject, this);
 			}
@@ -117,7 +121,7 @@ L.Yandex = L.Class.extend({
 			this._type = new ymaps.MapType("null", []);
 			map.container.getElement().style.background = "transparent";
 		}
-		map.setType(this._type)
+		map.setType(this._type);
 
 		this._yandex = map;
 		this._update(true);
@@ -147,7 +151,7 @@ L.Yandex = L.Class.extend({
 	_resize: function(force) {
 		var size = this._map.getSize(), style = this._container.style;
 		if (style.width == size.x + "px" &&
-		    style.height == size.y + "px")
+				style.height == size.y + "px")
 			if (force != true) return;
 		this.setElementSize(this._container, size);
 		var b = this._map.getBounds(), sw = b.getSouthWest(), ne = b.getNorthEast();
