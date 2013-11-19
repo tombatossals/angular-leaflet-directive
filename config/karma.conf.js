@@ -16,6 +16,7 @@ module.exports = function(karma) {
             'test/unit/pathsDirectiveSpec.js',
             'test/unit/layersDirectiveSpec.js',
             'test/unit/eventsDirectiveSpec.js',
+            'test/unit/geojsonDirectiveSpec.js',
             'test/unit/markersDirectiveSpec.js'
         ],
 

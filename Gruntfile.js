@@ -61,6 +61,7 @@ module.exports = function(grunt) {
         karma: {
             unit: {
                 configFile: 'config/karma.conf.js',
+                background: false
             },
             e2e: {
                 configFile: 'config/karma-e2e.conf.js'
