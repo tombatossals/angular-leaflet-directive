@@ -1,8 +1,6 @@
 angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, leafletHelpers) {
     function _getDefaults() {
         return {
-            maxZoom: 18,
-            minZoom: 1,
             keyboard: true,
             dragging: true,
             doubleClickZoom: true,
@@ -45,9 +43,7 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
     }
     var isDefined = leafletHelpers.isDefined,
         getDefer = leafletHelpers.getDefer,
-        defaults = {
-            main: $q.defer()
-        };
+        defaults = {};
 
     // Get the _defaults dictionary, and override the properties defined by the user
     return {
@@ -57,13 +53,9 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
         },
 
         setDefaults: function(userDefaults, scopeId) {
-            var leafletDefaults = getDefer(defaults, scopeId);
-
             var newDefaults = _getDefaults();
 
             if (isDefined(userDefaults)) {
-                newDefaults.maxZoom = isDefined(userDefaults.maxZoom) ?  parseInt(userDefaults.maxZoom, 10) : newDefaults.maxZoom;
-                newDefaults.minZoom = isDefined(userDefaults.minZoom) ?  parseInt(userDefaults.minZoom, 10) : newDefaults.minZoom;
                 newDefaults.doubleClickZoom = isDefined(userDefaults.doubleClickZoom) ?  userDefaults.doubleClickZoom : newDefaults.doubleClickZoom;
                 newDefaults.scrollWheelZoom = isDefined(userDefaults.scrollWheelZoom) ?  userDefaults.scrollWheelZoom : newDefaults.doubleClickZoom;
                 newDefaults.zoomControl = isDefined(userDefaults.zoomControl) ?  userDefaults.zoomControl : newDefaults.zoomControl;
@@ -81,7 +73,17 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
                 if (isDefined(userDefaults.tileLayerOptions)) {
                     angular.copy(userDefaults.tileLayerOptions, newDefaults.tileLayerOptions);
                 }
+
+                if (isDefined(userDefaults.maxZoom)) {
+                    newDefaults.maxZoom = userDefaults.maxZoom;
+                }
+
+                if (isDefined(userDefaults.minZoom)) {
+                    newDefaults.minZoom = userDefaults.minZoom;
+                }
             }
+
+            var leafletDefaults = getDefer(defaults, scopeId);
             leafletDefaults.resolve(newDefaults);
 
             return newDefaults;

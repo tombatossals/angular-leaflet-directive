@@ -2,24 +2,12 @@ angular.module("leaflet-directive").service('leafletData', function ($log, $q, l
     var isDefined = leafletHelpers.isDefined,
         getDefer = leafletHelpers.getDefer;
 
-    var maps = {
-        main: $q.defer()
-    };
-    var tiles = {
-        main: $q.defer()
-    };
-    var layers = {
-        main: $q.defer()
-    };
-    var paths = {
-        main: $q.defer()
-    };
-    var markers = {
-        main: $q.defer()
-    };
-    var geoJSON = {
-        main: $q.defer()
-    };
+    var maps = {};
+    var tiles = {};
+    var layers = {};
+    var paths = {};
+    var markers = {};
+    var geoJSON = {};
 
     this.setMap = function(leafletMap, scopeId) {
         var map = getDefer(maps, scopeId);

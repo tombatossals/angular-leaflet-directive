@@ -13,29 +13,44 @@ angular.module("leaflet-directive").directive('tiles', function ($log, leafletDa
 
             controller.getMap().then(function(map) {
                 leafletMapDefaults.getDefaults(attrs.id).then(function(defaults) {
-
-                    var tileLayerObj;
-                    var tileLayerUrl = defaults.tileLayer;
-                    var tileLayerOptions = defaults.tileLayerOptions;
-
                     if (angular.isDefined(tiles) && angular.isDefined(tiles.url)) {
-                        tileLayerUrl = tiles.url;
-                        leafletScope.$watch("tiles.url", function(url) {
-                            if (angular.isDefined(url)) {
-                                tileLayerObj.setUrl(url);
+                        var tileLayerObj;
+                        leafletScope.$watch("tiles", function(tiles, oldTiles) {
+                            var tileLayerOptions = defaults.tileLayerOptions;
+                            var tileLayerUrl = defaults.tileLayer;
+                            if (!isDefined(oldTiles) || !isDefined(tileLayerObj)) {
+                                if (angular.isDefined(tiles) && angular.isDefined(tiles.options)) {
+                                    angular.copy(tiles.options, tileLayerOptions);
+                                }
+
+                                if (angular.isDefined(tiles) && angular.isDefined(tiles.url)) {
+                                    tileLayerUrl = tiles.url;
+                                }
+
+                                tileLayerObj = L.tileLayer(tileLayerUrl, tileLayerOptions);
+                                tileLayerObj.addTo(map);
+                                leafletData.setTiles(tileLayerObj, attrs.id);
+                            } else {
+                                if (isDefined(tiles.options) && !angular.equals(tiles.options, tileLayerOptions)) {
+                                    map.removeLayer(tileLayerObj);
+                                    tileLayerOptions = defaults.tileLayerOptions;
+                                    angular.copy(tiles.options, tileLayerOptions);
+                                    if (isDefined(tiles.url)) {
+                                        tileLayerUrl = tiles.url;
+                                    }
+                                    tileLayerObj = L.tileLayer(tileLayerUrl, tileLayerOptions);
+                                    tileLayerObj.addTo(map);
+                                    leafletData.setTiles(tileLayerObj, attrs.id);
+
+                                } else if (angular.isDefined(tiles) && angular.isDefined(tiles.url)) {
+                                    tileLayerObj.setUrl(tiles.url);
+                                }
                             }
-                        });
+                        }, true);
                     } else {
                         $log.warn("[AngularJS - Leaflet] The 'tiles' definition doesn't have the 'url' property.");
                     }
 
-                    if (angular.isDefined(tiles) && angular.isDefined(tiles.options)) {
-                        angular.copy(tiles.options, tileLayerOptions);
-                    }
-
-                    tileLayerObj = L.tileLayer(tileLayerUrl, tileLayerOptions);
-                    tileLayerObj.addTo(map);
-                    leafletData.setTiles(tileLayerObj, attrs.id);
                 });
             });
         }

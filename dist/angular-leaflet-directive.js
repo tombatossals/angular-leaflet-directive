@@ -198,29 +198,44 @@ angular.module("leaflet-directive").directive('tiles', function ($log, leafletDa
 
             controller.getMap().then(function(map) {
                 leafletMapDefaults.getDefaults(attrs.id).then(function(defaults) {
-
-                    var tileLayerObj;
-                    var tileLayerUrl = defaults.tileLayer;
-                    var tileLayerOptions = defaults.tileLayerOptions;
-
                     if (angular.isDefined(tiles) && angular.isDefined(tiles.url)) {
-                        tileLayerUrl = tiles.url;
-                        leafletScope.$watch("tiles.url", function(url) {
-                            if (angular.isDefined(url)) {
-                                tileLayerObj.setUrl(url);
+                        var tileLayerObj;
+                        leafletScope.$watch("tiles", function(tiles, oldTiles) {
+                            var tileLayerOptions = defaults.tileLayerOptions;
+                            var tileLayerUrl = defaults.tileLayer;
+                            if (!isDefined(oldTiles) || !isDefined(tileLayerObj)) {
+                                if (angular.isDefined(tiles) && angular.isDefined(tiles.options)) {
+                                    angular.copy(tiles.options, tileLayerOptions);
+                                }
+
+                                if (angular.isDefined(tiles) && angular.isDefined(tiles.url)) {
+                                    tileLayerUrl = tiles.url;
+                                }
+
+                                tileLayerObj = L.tileLayer(tileLayerUrl, tileLayerOptions);
+                                tileLayerObj.addTo(map);
+                                leafletData.setTiles(tileLayerObj, attrs.id);
+                            } else {
+                                if (isDefined(tiles.options) && !angular.equals(tiles.options, tileLayerOptions)) {
+                                    map.removeLayer(tileLayerObj);
+                                    tileLayerOptions = defaults.tileLayerOptions;
+                                    angular.copy(tiles.options, tileLayerOptions);
+                                    if (isDefined(tiles.url)) {
+                                        tileLayerUrl = tiles.url;
+                                    }
+                                    tileLayerObj = L.tileLayer(tileLayerUrl, tileLayerOptions);
+                                    tileLayerObj.addTo(map);
+                                    leafletData.setTiles(tileLayerObj, attrs.id);
+
+                                } else if (angular.isDefined(tiles) && angular.isDefined(tiles.url)) {
+                                    tileLayerObj.setUrl(tiles.url);
+                                }
                             }
-                        });
+                        }, true);
                     } else {
                         $log.warn("[AngularJS - Leaflet] The 'tiles' definition doesn't have the 'url' property.");
                     }
 
-                    if (angular.isDefined(tiles) && angular.isDefined(tiles.options)) {
-                        angular.copy(tiles.options, tileLayerOptions);
-                    }
-
-                    tileLayerObj = L.tileLayer(tileLayerUrl, tileLayerOptions);
-                    tileLayerObj.addTo(map);
-                    leafletData.setTiles(tileLayerObj, attrs.id);
                 });
             });
         }
@@ -278,13 +293,13 @@ angular.module("leaflet-directive").directive('geojson', function ($log, $rootSc
 
             controller.getMap().then(function(map) {
                 leafletScope.$watch("geojson", function(geojson) {
+                    if (isDefined(leafletGeoJSON)) {
+                        map.removeLayer(leafletGeoJSON);
+                    }
+
                     if (!isDefined(geojson) || !isDefined(geojson.data)) {
                         leafletData.setGeoJSON();
                         return;
-                    }
-
-                    if (isDefined(leafletGeoJSON)) {
-                        map.removeLayer(leafletGeoJSON);
                     }
 
                     if (isDefined(geojson.data)) {
@@ -1688,24 +1703,12 @@ angular.module("leaflet-directive").service('leafletData', function ($log, $q, l
     var isDefined = leafletHelpers.isDefined,
         getDefer = leafletHelpers.getDefer;
 
-    var maps = {
-        main: $q.defer()
-    };
-    var tiles = {
-        main: $q.defer()
-    };
-    var layers = {
-        main: $q.defer()
-    };
-    var paths = {
-        main: $q.defer()
-    };
-    var markers = {
-        main: $q.defer()
-    };
-    var geoJSON = {
-        main: $q.defer()
-    };
+    var maps = {};
+    var tiles = {};
+    var layers = {};
+    var paths = {};
+    var markers = {};
+    var geoJSON = {};
 
     this.setMap = function(leafletMap, scopeId) {
         var map = getDefer(maps, scopeId);
@@ -1771,8 +1774,6 @@ angular.module("leaflet-directive").service('leafletData', function ($log, $q, l
 angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, leafletHelpers) {
     function _getDefaults() {
         return {
-            maxZoom: 18,
-            minZoom: 1,
             keyboard: true,
             dragging: true,
             doubleClickZoom: true,
@@ -1815,9 +1816,7 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
     }
     var isDefined = leafletHelpers.isDefined,
         getDefer = leafletHelpers.getDefer,
-        defaults = {
-            main: $q.defer()
-        };
+        defaults = {};
 
     // Get the _defaults dictionary, and override the properties defined by the user
     return {
@@ -1827,13 +1826,9 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
         },
 
         setDefaults: function(userDefaults, scopeId) {
-            var leafletDefaults = getDefer(defaults, scopeId);
-
             var newDefaults = _getDefaults();
 
             if (isDefined(userDefaults)) {
-                newDefaults.maxZoom = isDefined(userDefaults.maxZoom) ?  parseInt(userDefaults.maxZoom, 10) : newDefaults.maxZoom;
-                newDefaults.minZoom = isDefined(userDefaults.minZoom) ?  parseInt(userDefaults.minZoom, 10) : newDefaults.minZoom;
                 newDefaults.doubleClickZoom = isDefined(userDefaults.doubleClickZoom) ?  userDefaults.doubleClickZoom : newDefaults.doubleClickZoom;
                 newDefaults.scrollWheelZoom = isDefined(userDefaults.scrollWheelZoom) ?  userDefaults.scrollWheelZoom : newDefaults.doubleClickZoom;
                 newDefaults.zoomControl = isDefined(userDefaults.zoomControl) ?  userDefaults.zoomControl : newDefaults.zoomControl;
@@ -1851,7 +1846,17 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
                 if (isDefined(userDefaults.tileLayerOptions)) {
                     angular.copy(userDefaults.tileLayerOptions, newDefaults.tileLayerOptions);
                 }
+
+                if (isDefined(userDefaults.maxZoom)) {
+                    newDefaults.maxZoom = userDefaults.maxZoom;
+                }
+
+                if (isDefined(userDefaults.minZoom)) {
+                    newDefaults.minZoom = userDefaults.minZoom;
+                }
             }
+
+            var leafletDefaults = getDefer(defaults, scopeId);
             leafletDefaults.resolve(newDefaults);
 
             return newDefaults;
