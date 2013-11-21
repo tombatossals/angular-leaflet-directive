@@ -27,4 +27,78 @@ describe('Directive: geojson', function() {
             expect(geoJSON).not.toBeDefined();
         });
     });
+
+    it('should create a geoJSON tilelayer if a good structure is provided', function() {
+        angular.extend($rootScope, {
+            geojson: {
+                data: { "type": "FeatureCollection",
+                        "features": [ {
+                            "type": "Feature",
+                            "geometry": {"type": "Point", "coordinates": [102.0, 0.5]},
+                            "properties": {"prop0": "value0"}
+                        }, {
+                            "type": "Feature",
+                            "geometry": {
+                            "type": "LineString",
+                            "coordinates": [ [102.0, 0.0], [103.0, 1.0], [104.0, 0.0], [105.0, 1.0] ] },
+                            "properties": { "prop0": "value0", "prop1": 0.0 }
+                        }, {
+                            "type": "Feature",
+                            "geometry": {
+                                "type": "Polygon",
+                                "coordinates": [ [ [100.0, 0.0], [101.0, 0.0], [101.0, 1.0], [100.0, 1.0], [100.0, 0.0] ] ] },
+                                "properties": { "prop0": "value0", "prop1": {"this": "that"} }
+                        }
+                    ]
+                }
+            }
+        });
+        var element = angular.element('<leaflet geojson="geojson"></leaflet>');
+        element = $compile(element)($rootScope);
+        leafletData.getGeoJSON().then(function(geoJSON) {
+            expect(geoJSON).toBeDefined();
+        });
+    });
+
+    xit('should remove an already created geoJSON object if removed on scope', function() {
+        angular.extend($rootScope, {
+            geojson: {
+                data: { "type": "FeatureCollection",
+                        "features": [ {
+                            "type": "Feature",
+                            "geometry": {"type": "Point", "coordinates": [102.0, 0.5]},
+                            "properties": {"prop0": "value0"}
+                        }, {
+                            "type": "Feature",
+                            "geometry": {
+                            "type": "LineString",
+                            "coordinates": [ [102.0, 0.0], [103.0, 1.0], [104.0, 0.0], [105.0, 1.0] ] },
+                            "properties": { "prop0": "value0", "prop1": 0.0 }
+                        }, {
+                            "type": "Feature",
+                            "geometry": {
+                                "type": "Polygon",
+                                "coordinates": [ [ [100.0, 0.0], [101.0, 0.0], [101.0, 1.0], [100.0, 1.0], [100.0, 0.0] ] ] },
+                                "properties": { "prop0": "value0", "prop1": {"this": "that"} }
+                        }
+                    ]
+                }
+            }
+        });
+        var element = angular.element('<leaflet geojson="geojson"></leaflet>');
+        element = $compile(element)($rootScope);
+        var geoJSONObject = {};
+        leafletData.getGeoJSON().then(function(geoJSON) {
+            geoJSONObject = geoJSON;
+        });
+        $rootScope.$digest();
+        expect(geoJSONObject).toBeDefined();
+        $rootScope.geojson = {};
+        $rootScope.$digest();
+        leafletData.getGeoJSON().then(function(geoJSON) {
+            geoJSONObject = geoJSON;
+        });
+        $rootScope.$digest();
+        expect(geoJSONObject).not.toBeDefined();
+    });
 });
