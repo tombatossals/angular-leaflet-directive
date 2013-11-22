@@ -52,7 +52,16 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q) {
 
         getDefer: function(d, scopeId) {
             if (!angular.isDefined(scopeId)) {
-                scopeId = "main";
+                if (d.length > 1) {
+                    scopeId = "main";
+                } else {
+                    // Get the object key
+                    for (var i in d) {
+                        if (d.hasOwnProperty(i)) {
+                            scopeId = i;
+                        }
+                    }
+                }
             }
             var defer;
             if (!angular.isDefined(d[scopeId])) {
