@@ -695,7 +695,7 @@ angular.module("leaflet-directive").directive('bounds', function ($log, leafletH
     };
 });
 
-angular.module("leaflet-directive").directive('markers', function ($log, $rootScope, $q, leafletData, leafletHelpers, leafletMapDefaults) {
+angular.module("leaflet-directive").directive('markers', function ($log, $rootScope, $q, leafletData, leafletHelpers, leafletMapDefaults, leafletEvents) {
     return {
         restrict: "A",
         scope: false,
@@ -712,7 +712,8 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                 isNumber  = leafletHelpers.isNumber,
                 safeApply = leafletHelpers.safeApply,
                 leafletScope  = mapController.getLeafletScope(),
-                markers = leafletScope.markers;
+                markers = leafletScope.markers,
+                availableMarkerEvents = leafletEvents.getAvailableMarkerEvents();
 
             mapController.getMap().then(function(map) {
                 leafletMapDefaults.getDefaults(attrs.id).then(function(defaults) {
@@ -897,23 +898,6 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                                     });
                                 };
                             }
-
-                            // Set up marker event broadcasting
-                            var availableMarkerEvents = [
-                                'click',
-                                'dblclick',
-                                'mousedown',
-                                'mouseover',
-                                'mouseout',
-                                'contextmenu',
-                                'dragstart',
-                                'drag',
-                                'dragend',
-                                'move',
-                                'remove',
-                                'popupopen',
-                                'popupclose'
-                            ];
 
                             var markerEvents = [];
                             var i;
@@ -1919,6 +1903,45 @@ angular.module("leaflet-directive").factory('leafletEvents', function ($rootScop
                     } else if (logic === "broadcast") {
                         $rootScope.$broadcast(broadcastName, {
                             leafletEvent : e
+                        });
+                    }
+                });
+            };
+        },
+        getAvailableMarkerEvents: function() {
+            return [
+                'click',
+                'dblclick',
+                'mousedown',
+                'mouseover',
+                'mouseout',
+                'contextmenu',
+                'dragstart',
+                'drag',
+                'dragend',
+                'move',
+                'remove',
+                'popupopen',
+                'popupclose'
+            ];
+        },
+        genDispatchMarkerEvent: function(scope, eventName, logic, markerName) {
+            return function(e) {
+                // Put together broadcast name
+                var broadcastName = 'leafletDirectiveMarker.' + eventName;
+
+                // Safely broadcast the event
+                safeApply(scope, function(scope) {
+                    if (logic === "emit") {
+                        scope.$emit(broadcastName, {
+                            leafletEvent : e,
+                            markerName: markerName
+
+                        });
+                    } else if (logic === "broadcast") {
+                        $rootScope.$broadcast(broadcastName, {
+                            leafletEvent : e,
+                            markerName: markerName
                         });
                     }
                 });
