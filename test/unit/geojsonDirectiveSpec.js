@@ -60,7 +60,7 @@ describe('Directive: geojson', function() {
         });
     });
 
-    xit('should remove an already created geoJSON object if removed on scope', function() {
+    it('should remove the geoJSON layer from the map if geojson object removed from scope', function() {
         angular.extend($rootScope, {
             geojson: {
                 data: { "type": "FeatureCollection",
@@ -85,20 +85,24 @@ describe('Directive: geojson', function() {
                 }
             }
         });
+
         var element = angular.element('<leaflet geojson="geojson"></leaflet>');
         element = $compile(element)($rootScope);
-        var geoJSONObject = {};
-        leafletData.getGeoJSON().then(function(geoJSON) {
-            geoJSONObject = geoJSON;
+
+        var leafletGeoJSON = {},
+            leafletMap = {};
+
+        leafletData.getMap().then(function(map) {
+            leafletMap = map;
         });
+        leafletData.getGeoJSON().then(function(geoJSON) {
+            leafletGeoJSON = geoJSON;
+        });
+
         $rootScope.$digest();
-        expect(geoJSONObject).toBeDefined();
+        expect(leafletMap.hasLayer(leafletGeoJSON)).toBe(true);
         $rootScope.geojson = {};
         $rootScope.$digest();
-        leafletData.getGeoJSON().then(function(geoJSON) {
-            geoJSONObject = geoJSON;
-        });
-        $rootScope.$digest();
-        expect(geoJSONObject).not.toBeDefined();
+        expect(leafletMap.hasLayer(leafletGeoJSON)).toBe(false);
     });
 });
