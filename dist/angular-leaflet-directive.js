@@ -1663,18 +1663,28 @@ angular.module("leaflet-directive").directive('maxbounds', function ($log, leafl
 
             controller.getMap().then(function(map) {
                 leafletScope.$watch("maxBounds", function (maxBounds) {
-                    if (isDefined(maxBounds.southWest) && isDefined(maxBounds.northEast) && isNumber(maxBounds.southWest.lat) && isNumber(maxBounds.southWest.lng) && isNumber(maxBounds.northEast.lat) && isNumber(maxBounds.northEast.lng)) {
-                        map.setMaxBounds(
-                            new L.LatLngBounds(
-                                new L.LatLng(maxBounds.southWest.lat, maxBounds.southWest.lng),
-                                new L.LatLng(maxBounds.northEast.lat, maxBounds.northEast.lng)
-                            ),
-                            maxBounds.options
-                        );
-                    } else {
+                    if (!isValidBounds(maxBounds)) {
+                        // Unset any previous maxbounds
                         map.setMaxBounds();
+                        return;
                     }
+                    map.setMaxBounds(
+                        new L.LatLngBounds(
+                            new L.LatLng(maxBounds.southWest.lat, maxBounds.southWest.lng),
+                            new L.LatLng(maxBounds.northEast.lat, maxBounds.northEast.lng)
+                        ),
+                        maxBounds.options
+                    );
                 });
+
+                function isValidBounds(bounds) {
+                    return isDefined(bounds.southWest) &&
+                           isDefined(bounds.northEast) &&
+                           isNumber(bounds.southWest.lat) &&
+                           isNumber(bounds.southWest.lng) &&
+                           isNumber(bounds.northEast.lat) &&
+                           isNumber(bounds.northEast.lng);
+                }
             });
         }
     };
