@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html ng-app="demoapp">
   <head>
-    <script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular.min.js"></script>
+    <script src="http://cdn.leafletjs.com/leaflet-0.7/leaflet.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.1/angular.min.js"></script>
     <script src="../dist/angular-leaflet-directive.min.js"></script>
     <script src="plugins/Leaflet.draw/leaflet.draw.js"></script>
-    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" />
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7/leaflet.css" />
     <link rel="stylesheet" href="plugins/Leaflet.draw/leaflet.draw.css" />
     <!--[if lte IE 8]>
         <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.ie.css" />
     <![endif]-->
     <script>
         var app = angular.module("demoapp", ["leaflet-directive"]);
-        app.controller("DemoController", [ "$scope", function($scope) {
+        app.controller("DemoController", [ "$scope", "leafletData", function($scope, leafletData) {
            angular.extend($scope, {
                 london: {
                     lat: 51.505,
@@ -24,6 +24,12 @@
                     }
                 }
            });
+           leafletData.getMap().then(function(map) {
+               map.on('draw:created', function (e) {
+                   var layer = e.layer;
+                   console.log(JSON.stringify(layer.toGeoJSON()));
+               });
+           });
        }]);
     </script>
     <style>
@@ -34,7 +40,8 @@
     </style>
   </head>
   <body ng-controller="DemoController">
-    <h1>Center map example</h1>
+    <h1>Draw control example</h1>
+    <p>Draw a shape and a geoJSON data structure will be shown on the console.log.</p>
     <leaflet center="london" controls="controls" width="640" height="400"></leaflet>
   </body>
 </html>
