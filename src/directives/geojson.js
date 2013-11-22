@@ -26,6 +26,10 @@ angular.module("leaflet-directive").directive('geojson', function ($log, $rootSc
                     if (isDefined(geojson.data)) {
                         var resetStyleOnMouseout = geojson.resetStyleOnMouseout,
                             onEachFeatureDefault = function(feature, layer) {
+                                if (leafletHelpers.LabelPlugin.isLoaded() && isDefined(geojson.options) && isDefined(geojson.options.label)) {
+                                    layer.bindLabel(feature.properties.description);
+                                }
+
                                 layer.on({
                                     mouseover: function(e) {
                                         safeApply(leafletScope, function() {
@@ -61,10 +65,6 @@ angular.module("leaflet-directive").directive('geojson', function ($log, $rootSc
                         }
 
                         leafletGeoJSON = L.geoJson(geojson.data, geojson.options);
-
-                        if (leafletHelpers.LabelPlugin.isLoaded() && isDefined(geojson.options) && isDefined(geojson.options.label)) {
-                            leafletGeoJSON.bindLabel(geojson.options.label);
-                        }
 
                         leafletData.setGeoJSON(leafletGeoJSON);
                         leafletGeoJSON.addTo(map);
