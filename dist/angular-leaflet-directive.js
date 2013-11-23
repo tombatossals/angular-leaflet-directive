@@ -2069,7 +2069,6 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q) {
             var id = _obtainEffectiveMapId(d, mapId),
                 defer;
 
-            console.log(d, id);
             if (!angular.isDefined(d[id])) {
                 defer = $q.defer();
                 d[id] = defer;
