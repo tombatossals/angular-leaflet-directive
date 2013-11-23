@@ -27,7 +27,7 @@ angular.module("leaflet-directive").directive('geojson', function ($log, $rootSc
 
                     if (!onEachFeature) {
                         onEachFeature = function(feature, layer) {
-                            if (leafletHelpers.LabelPlugin.isLoaded() && isDefined(geojson.options) && isDefined(geojson.options.       label)) {
+                            if (leafletHelpers.LabelPlugin.isLoaded() && isDefined(geojson.label)) {
                                 layer.bindLabel(feature.properties.description);
                             }
 
