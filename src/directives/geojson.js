@@ -14,16 +14,19 @@ angular.module("leaflet-directive").directive('geojson', function ($log, $rootSc
 
             controller.getMap().then(function(map) {
                 leafletScope.$watch("geojson", function(geojson) {
-                    if (!(isDefined(geojson) && isDefined(geojson.data))) {
-                        return;
-                    }
-
                     if (isDefined(leafletGeoJSON) && map.hasLayer(leafletGeoJSON)) {
                         map.removeLayer(leafletGeoJSON);
                     }
 
+                    if (!(isDefined(geojson) && isDefined(geojson.data))) {
+                        return;
+                    }
+
                     var resetStyleOnMouseout = geojson.resetStyleOnMouseout,
-                        onEachFeatureDefault = function(feature, layer) {
+                        onEachFeature = geojson.onEachFeature;
+
+                    if (!onEachFeature) {
+                        onEachFeature = function(feature, layer) {
                             if (leafletHelpers.LabelPlugin.isLoaded() && isDefined(geojson.options) && isDefined(geojson.options.       label)) {
                                 layer.bindLabel(feature.properties.description);
                             }
@@ -51,16 +54,12 @@ angular.module("leaflet-directive").directive('geojson', function ($log, $rootSc
                                 }
                             });
                         };
-                    if (!isDefined(geojson.options)) {
-                        // If geojson.options is not defined then set it to the standard.
-                        geojson.options = {
-                            style: geojson.style,
-                            onEachFeature: onEachFeatureDefault
-                        };
-                    } else if (!isDefined(geojson.options.onEachFeature)) {
-                        // If geojson.options is defined, but onEachFeature is not defined then set onEachFeature to the default
-                        geojson.options.onEachFeature = onEachFeatureDefault;
                     }
+
+                    geojson.options = {
+                        style: geojson.style,
+                        onEachFeature: onEachFeature
+                    };
 
                     leafletGeoJSON = L.geoJson(geojson.data, geojson.options);
                     leafletData.setGeoJSON(leafletGeoJSON);
