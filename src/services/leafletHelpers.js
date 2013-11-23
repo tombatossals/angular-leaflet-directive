@@ -1,6 +1,6 @@
 angular.module("leaflet-directive").factory('leafletHelpers', function ($q) {
 
-    var _obtainEffectiveMapId = function(d, mapId) {
+    function _obtainEffectiveMapId(d, mapId) {
         var id;
         if (!angular.isDefined(mapId)) {
             if (d.length > 1) {
@@ -15,7 +15,15 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q) {
             }
         }
         return id;
-    };
+    }
+
+    function _convertToLeafletLatLngs(latlngs) {
+        return latlngs.filter(function(latlng) {
+            return !!latlng.lat && !!latlng.lng;
+        }).map(function (latlng) {
+            return new L.LatLng(latlng.lat, latlng.lng);
+        });
+    }
 
     return {
         // Determine if a reference is defined
@@ -56,6 +64,18 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q) {
         isValidCenter: function(center) {
             return angular.isDefined(center) && angular.isNumber(center.lat) &&
                    angular.isNumber(center.lng) && angular.isNumber(center.zoom);
+        },
+
+        convertToLeafletLatLngs: _convertToLeafletLatLngs,
+
+        convertToLeafletLatLng: function(latlng) {
+            return new L.LatLng(latlng.lat, latlng.lng);
+        },
+
+        convertToLeafletMultiLatLngs: function(paths) {
+            return paths.map(function(latlngs) {
+                return _convertToLeafletLatLngs(latlngs);
+            });
         },
 
         safeApply: function($scope, fn) {

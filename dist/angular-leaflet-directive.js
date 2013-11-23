@@ -232,7 +232,6 @@ angular.module("leaflet-directive").directive('tiles', function ($log, leafletDa
 
                         // If the options of the tilelayer is changed, we need to redraw the layer
                         if (isDefined(tiles.url) && isDefined(tiles.options) && !angular.equals(tiles.options, tileLayerOptions)) {
-                            console.log("changed ooptions", tiles.options, tileLayerOptions);
                             map.removeLayer(tileLayerObj);
                             tileLayerOptions = defaults.tileLayerOptions;
                             angular.copy(tiles.options, tileLayerOptions);
@@ -1365,25 +1364,30 @@ angular.module("leaflet-directive").directive('paths', function ($log, leafletDa
         link: function(scope, element, attrs, controller) {
             var isDefined = leafletHelpers.isDefined,
                 leafletScope  = controller.getLeafletScope(),
-                paths     = leafletScope.paths;
+                paths     = leafletScope.paths,
+                convertToLeafletLatLng = leafletHelpers.convertToLeafletLatLng,
+                convertToLeafletLatLngs = leafletHelpers.convertToLeafletLatLngs,
+                convertToLeafletMultiLatLngs = leafletHelpers.convertToLeafletMultiLatLngs;
 
             controller.getMap().then(function(map) {
                 leafletMapDefaults.getDefaults(attrs.id).then(function(defaults) {
-
-                    var leafletPaths = {};
-                    leafletData.setPaths(leafletPaths, attrs.id);
 
                     if (!isDefined(paths)) {
                         return;
                     }
 
+                    var leafletPaths = {};
+                    leafletData.setPaths(leafletPaths, attrs.id);
+
                     scope.$watch("paths", function (newPaths) {
+                        // Create the new paths
                         for (var new_name in newPaths) {
                             if (!isDefined(leafletPaths[new_name])) {
                                 leafletPaths[new_name] = createPath(new_name, newPaths[new_name], map, defaults);
                             }
                         }
-                        // Delete paths from the array
+
+                        // Delete paths (by name) from the array
                         for (var name in leafletPaths) {
                             if (!isDefined(newPaths[name])) {
                                 delete leafletPaths[name];
@@ -1494,24 +1498,6 @@ angular.module("leaflet-directive").directive('paths', function ($log, leafletDa
                         }, true);
 
                         return path;
-                    }
-
-                    function convertToLeafletLatLng(latlng) {
-                        return new L.LatLng(latlng.lat, latlng.lng);
-                    }
-
-                    function convertToLeafletLatLngs(latlngs) {
-                        return latlngs.filter(function(latlng) {
-                            return !!latlng.lat && !!latlng.lng;
-                        }).map(function (latlng) {
-                            return new L.LatLng(latlng.lat, latlng.lng);
-                        });
-                    }
-
-                    function convertToLeafletMultiLatLngs(paths) {
-                        return paths.map(function(latlngs) {
-                            return convertToLeafletLatLngs(latlngs);
-                        });
                     }
                 });
             });
@@ -1981,7 +1967,7 @@ angular.module("leaflet-directive").factory('leafletEvents', function ($rootScop
 
 angular.module("leaflet-directive").factory('leafletHelpers', function ($q) {
 
-    var _obtainEffectiveMapId = function(d, mapId) {
+    function _obtainEffectiveMapId(d, mapId) {
         var id;
         if (!angular.isDefined(mapId)) {
             if (d.length > 1) {
@@ -1996,7 +1982,15 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q) {
             }
         }
         return id;
-    };
+    }
+
+    function _convertToLeafletLatLngs(latlngs) {
+        return latlngs.filter(function(latlng) {
+            return !!latlng.lat && !!latlng.lng;
+        }).map(function (latlng) {
+            return new L.LatLng(latlng.lat, latlng.lng);
+        });
+    }
 
     return {
         // Determine if a reference is defined
@@ -2037,6 +2031,18 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q) {
         isValidCenter: function(center) {
             return angular.isDefined(center) && angular.isNumber(center.lat) &&
                    angular.isNumber(center.lng) && angular.isNumber(center.zoom);
+        },
+
+        convertToLeafletLatLngs: _convertToLeafletLatLngs,
+
+        convertToLeafletLatLng: function(latlng) {
+            return new L.LatLng(latlng.lat, latlng.lng);
+        },
+
+        convertToLeafletMultiLatLngs: function(paths) {
+            return paths.map(function(latlngs) {
+                return _convertToLeafletLatLngs(latlngs);
+            });
         },
 
         safeApply: function($scope, fn) {
