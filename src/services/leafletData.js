@@ -59,6 +59,13 @@ angular.module("leaflet-directive").service('leafletData', function ($log, $q, l
         return tile.promise;
     };
 
+    this.updateTiles = function(leafletTiles, mapId) {
+        var deferred = $q.defer();
+        var id = leafletHelpers.obtainEffectiveMapId(tiles, mapId);
+        tiles[id] = deferred;
+        deferred.resolve(leafletTiles);
+    };
+
     this.setGeoJSON = function(leafletGeoJSON, scopeId) {
         var geoJSONLayer = getDefer(geoJSON, scopeId);
         geoJSONLayer.resolve(leafletGeoJSON);

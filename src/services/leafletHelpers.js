@@ -1,5 +1,22 @@
 angular.module("leaflet-directive").factory('leafletHelpers', function ($q) {
 
+    var _obtainEffectiveMapId = function(d, mapId) {
+        var id;
+        if (!angular.isDefined(mapId)) {
+            if (d.length > 1) {
+                id = "main";
+            } else {
+                // Get the object key
+                for (var i in d) {
+                    if (d.hasOwnProperty(i)) {
+                        id = i;
+                    }
+                }
+            }
+        }
+        return id;
+    };
+
     return {
         // Determine if a reference is defined
         isDefined: function(value) {
@@ -50,25 +67,17 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q) {
             }
         },
 
-        getDefer: function(d, scopeId) {
-            if (!angular.isDefined(scopeId)) {
-                if (d.length > 1) {
-                    scopeId = "main";
-                } else {
-                    // Get the object key
-                    for (var i in d) {
-                        if (d.hasOwnProperty(i)) {
-                            scopeId = i;
-                        }
-                    }
-                }
-            }
-            var defer;
-            if (!angular.isDefined(d[scopeId])) {
+        obtainEffectiveMapId: _obtainEffectiveMapId,
+
+        getDefer: function(d, mapId) {
+            var id = _obtainEffectiveMapId(d, mapId),
+                defer;
+
+            if (!angular.isDefined(d[id])) {
                 defer = $q.defer();
-                d[scopeId] = defer;
+                d[id] = defer;
             } else {
-                defer = d[scopeId];
+                defer = d[id];
             }
             return defer;
         },
