@@ -1,22 +1,27 @@
 <!DOCTYPE html>
 <html ng-app="demoapp">
   <head>
-    <script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular.min.js"></script>
+    <script src="http://cdn.leafletjs.com/leaflet-0.7/leaflet.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.1/angular.min.js"></script>
     <script src="../dist/angular-leaflet-directive.min.js"></script>
-    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" />
-    <!--[if lte IE 8]>
-        <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.ie.css" />
-    <![endif]-->
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7/leaflet.css" />
     <script>
         var app = angular.module("demoapp", ["leaflet-directive"]);
-        app.controller('DemoController', function($scope) {
+        app.controller('DemoController', function($scope, leafletData) {
             $scope.center = {
                 lat: 40,
                 lng: 0,
                 zoom: 10
             };
+
             $scope.showMap = false;
+            $scope.$watch("showMap", function(value) {
+                if (value === true) {
+                    leafletData.getMap().then(function(map) {
+                        map.invalidateSize();
+                    });
+                }
+            });
         });
     </script>
   </head>
@@ -31,7 +36,7 @@
             <h2>Map</h2>
         </div>
         <div class="span12">
-            <leaflet width="320px" height="200px" center="center"></leaflet>
+            <leaflet width="600px" height="200px" center="center"></leaflet>
         </div>
     </div>
 
