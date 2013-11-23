@@ -3,7 +3,7 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q) {
     function _obtainEffectiveMapId(d, mapId) {
         var id;
         if (!angular.isDefined(mapId)) {
-            if (d.length > 1) {
+            if (Object.keys(d).length > 1) {
                 id = "main";
             } else {
                 // Get the object key
@@ -11,6 +11,10 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q) {
                     if (d.hasOwnProperty(i)) {
                         id = i;
                     }
+                }
+
+                if (!angular.isDefined(id)) {
+                    id = "main";
                 }
             }
         }
@@ -93,6 +97,7 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q) {
             var id = _obtainEffectiveMapId(d, mapId),
                 defer;
 
+            console.log(d, id);
             if (!angular.isDefined(d[id])) {
                 defer = $q.defer();
                 d[id] = defer;

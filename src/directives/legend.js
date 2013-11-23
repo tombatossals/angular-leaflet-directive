@@ -8,8 +8,13 @@ angular.module("leaflet-directive").directive('legend', function ($log, leafletH
 
         link: function(scope, element, attrs, controller) {
             var isArray      = leafletHelpers.isArray,
+                isDefined    = leafletHelpers.isDefined,
                 leafletScope = controller.getLeafletScope(),
                 legend       = leafletScope.legend;
+
+            if (!isDefined(legend)) {
+                return;
+            }
 
             controller.getMap().then(function(map) {
                 if (!isArray(legend.colors) || !isArray(legend.labels) || legend.colors.length !== legend.labels.length) {

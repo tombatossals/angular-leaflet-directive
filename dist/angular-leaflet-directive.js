@@ -263,8 +263,13 @@ angular.module("leaflet-directive").directive('legend', function ($log, leafletH
 
         link: function(scope, element, attrs, controller) {
             var isArray      = leafletHelpers.isArray,
+                isDefined    = leafletHelpers.isDefined,
                 leafletScope = controller.getLeafletScope(),
                 legend       = leafletScope.legend;
+
+            if (!isDefined(legend)) {
+                return;
+            }
 
             controller.getMap().then(function(map) {
                 if (!isArray(legend.colors) || !isArray(legend.labels) || legend.colors.length !== legend.labels.length) {
@@ -1970,7 +1975,7 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q) {
     function _obtainEffectiveMapId(d, mapId) {
         var id;
         if (!angular.isDefined(mapId)) {
-            if (d.length > 1) {
+            if (Object.keys(d).length > 1) {
                 id = "main";
             } else {
                 // Get the object key
@@ -1978,6 +1983,10 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q) {
                     if (d.hasOwnProperty(i)) {
                         id = i;
                     }
+                }
+
+                if (!angular.isDefined(id)) {
+                    id = "main";
                 }
             }
         }
@@ -2060,6 +2069,7 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q) {
             var id = _obtainEffectiveMapId(d, mapId),
                 defer;
 
+            console.log(d, id);
             if (!angular.isDefined(d[id])) {
                 defer = $q.defer();
                 d[id] = defer;
