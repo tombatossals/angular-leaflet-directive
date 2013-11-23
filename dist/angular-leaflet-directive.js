@@ -309,13 +309,12 @@ angular.module("leaflet-directive").directive('geojson', function ($log, $rootSc
 
             controller.getMap().then(function(map) {
                 leafletScope.$watch("geojson", function(geojson) {
-                    if (isDefined(leafletGeoJSON) && map.hasLayer(leafletGeoJSON)) {
-                        map.removeLayer(leafletGeoJSON);
+                    if (!(isDefined(geojson) && isDefined(geojson.data))) {
+                        return;
                     }
 
-                    if (!(isDefined(geojson) && isDefined(geojson.data))) {
-                        leafletData.setGeoJSON();
-                        return;
+                    if (isDefined(leafletGeoJSON) && map.hasLayer(leafletGeoJSON)) {
+                        map.removeLayer(leafletGeoJSON);
                     }
 
                     var resetStyleOnMouseout = geojson.resetStyleOnMouseout,
