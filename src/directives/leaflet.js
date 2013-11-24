@@ -20,11 +20,6 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
         },
         template: '<div class="angular-leaflet-map" ng-transclude></div>',
         controller: function ($scope) {
-            $scope.leafletMap = $q.defer();
-            this.getMap = function () {
-                return $scope.leafletMap.promise;
-            };
-
             this.getLeafletScope = function() {
                 return $scope;
             };
@@ -75,7 +70,6 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
             });
 
             // Resolve the map object to the promises
-            scope.leafletMap.resolve(map);
             leafletData.setMap(map, attrs.id);
 
             if (!isDefined(attrs.center)) {

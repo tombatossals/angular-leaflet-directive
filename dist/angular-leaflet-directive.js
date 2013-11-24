@@ -24,11 +24,6 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
         },
         template: '<div class="angular-leaflet-map" ng-transclude></div>',
         controller: function ($scope) {
-            $scope.leafletMap = $q.defer();
-            this.getMap = function () {
-                return $scope.leafletMap.promise;
-            };
-
             this.getLeafletScope = function() {
                 return $scope;
             };
@@ -79,7 +74,6 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
             });
 
             // Resolve the map object to the promises
-            scope.leafletMap.resolve(map);
             leafletData.setMap(map, attrs.id);
 
             if (!isDefined(attrs.center)) {
@@ -114,7 +108,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
     };
 });
 
-angular.module("leaflet-directive").directive('center', function ($log, $parse, leafletMapDefaults, leafletHelpers) {
+angular.module("leaflet-directive").directive('center', function ($log, $parse, leafletMapDefaults, leafletHelpers, leafletData) {
     return {
         restrict: "A",
         scope: false,
@@ -130,7 +124,7 @@ angular.module("leaflet-directive").directive('center', function ($log, $parse, 
                 leafletScope  = controller.getLeafletScope(),
                 center        = leafletScope.center;
 
-            controller.getMap().then(function(map) {
+            leafletData.getMap(attrs.id).then(function(map) {
                 leafletMapDefaults.getDefaults(attrs.id).then(function(defaults) {
                     if (isDefined(center)) {
                         if (center.autoDiscover === true) {
@@ -196,7 +190,7 @@ angular.module("leaflet-directive").directive('tiles', function ($log, leafletDa
                 leafletScope  = controller.getLeafletScope(),
                 tiles = leafletScope.tiles;
 
-            controller.getMap().then(function(map) {
+            leafletData.getMap(attrs.id).then(function(map) {
                 leafletMapDefaults.getDefaults(attrs.id).then(function(defaults) {
                     if (!isDefined(tiles) && !isDefined(tiles.url)) {
                         $log.warn("[AngularJS - Leaflet] The 'tiles' definition doesn't have the 'url' property.");
@@ -238,7 +232,7 @@ angular.module("leaflet-directive").directive('tiles', function ($log, leafletDa
                             tileLayerUrl = tiles.url;
                             tileLayerObj = L.tileLayer(tileLayerUrl, tileLayerOptions);
                             tileLayerObj.addTo(map);
-                            leafletData.updateTiles(tileLayerObj, attrs.id);
+                            leafletData.setTiles(tileLayerObj, attrs.id);
                             return;
                         }
 
@@ -253,7 +247,7 @@ angular.module("leaflet-directive").directive('tiles', function ($log, leafletDa
     };
 });
 
-angular.module("leaflet-directive").directive('legend', function ($log, leafletHelpers) {
+angular.module("leaflet-directive").directive('legend', function ($log, leafletHelpers, leafletData) {
     return {
         restrict: "A",
         scope: false,
@@ -271,7 +265,7 @@ angular.module("leaflet-directive").directive('legend', function ($log, leafletH
                 return;
             }
 
-            controller.getMap().then(function(map) {
+            leafletData.getMap(attrs.id).then(function(map) {
                 if (!isArray(legend.colors) || !isArray(legend.labels) || legend.colors.length !== legend.labels.length) {
                     $log.warn("[AngularJS - Leaflet] legend.colors and legend.labels must be set.");
                 } else {
@@ -307,7 +301,7 @@ angular.module("leaflet-directive").directive('geojson', function ($log, $rootSc
                 leafletScope  = controller.getLeafletScope(),
                 leafletGeoJSON = {};
 
-            controller.getMap().then(function(map) {
+            leafletData.getMap(attrs.id).then(function(map) {
                 leafletScope.$watch("geojson", function(geojson) {
                     if (isDefined(leafletGeoJSON) && map.hasLayer(leafletGeoJSON)) {
                         map.removeLayer(leafletGeoJSON);
@@ -388,7 +382,7 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                 leafletScope  = controller.getLeafletScope(),
                 layers = leafletScope.layers;
 
-            controller.getMap().then(function(map) {
+            leafletData.getMap(attrs.id).then(function(map) {
                 leafletMapDefaults.getDefaults(attrs.id).then(function(defaults) {
 
                     if (isDefined(layers)) {
@@ -644,7 +638,7 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
     };
 });
 
-angular.module("leaflet-directive").directive('bounds', function ($log, leafletHelpers) {
+angular.module("leaflet-directive").directive('bounds', function ($log, leafletHelpers, leafletData) {
     return {
         restrict: "A",
         scope: false,
@@ -659,7 +653,7 @@ angular.module("leaflet-directive").directive('bounds', function ($log, leafletH
                 bounds = leafletScope.bounds;
 
 
-            controller.getMap().then(function(map) {
+            leafletData.getMap(attrs.id).then(function(map) {
                 leafletScope.$watch('bounds', function(bounds) {
                     if (!isDefined(bounds) || !isBoundsValid(bounds)) {
                             $log.error('[AngularJS - Leaflet] Invalid bounds');
@@ -728,7 +722,7 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                 markers = leafletScope.markers,
                 availableMarkerEvents = leafletEvents.getAvailableMarkerEvents();
 
-            mapController.getMap().then(function(map) {
+            leafletData.getMap(attrs.id).then(function(map) {
                 leafletMapDefaults.getDefaults(attrs.id).then(function(defaults) {
                     var getLayers;
                     var leafletMarkers = {};
@@ -1372,7 +1366,7 @@ angular.module("leaflet-directive").directive('paths', function ($log, leafletDa
                 convertToLeafletLatLngs = leafletHelpers.convertToLeafletLatLngs,
                 convertToLeafletMultiLatLngs = leafletHelpers.convertToLeafletMultiLatLngs;
 
-            controller.getMap().then(function(map) {
+            leafletData.getMap(attrs.id).then(function(map) {
                 leafletMapDefaults.getDefaults(attrs.id).then(function(defaults) {
 
                     if (!isDefined(paths)) {
@@ -1508,7 +1502,7 @@ angular.module("leaflet-directive").directive('paths', function ($log, leafletDa
     };
 });
 
-angular.module("leaflet-directive").directive('controls', function ($log, leafletHelpers) {
+angular.module("leaflet-directive").directive('controls', function ($log, leafletHelpers, leafletData) {
     return {
         restrict: "A",
         scope: false,
@@ -1521,7 +1515,7 @@ angular.module("leaflet-directive").directive('controls', function ($log, leafle
                 leafletScope  = controller.getLeafletScope(),
                 controls = leafletScope.controls;
 
-            controller.getMap().then(function(map) {
+            leafletData.getMap(attrs.id).then(function(map) {
                 if (isDefined(L.Control.Draw) && isDefined(controls.draw)) {
                     var drawControl = new L.Control.Draw(controls.draw.options);
                     map.addControl(drawControl);
@@ -1531,7 +1525,7 @@ angular.module("leaflet-directive").directive('controls', function ($log, leafle
     };
 });
 
-angular.module("leaflet-directive").directive('eventBroadcast', function ($log, $rootScope, leafletHelpers, leafletEvents) {
+angular.module("leaflet-directive").directive('eventBroadcast', function ($log, $rootScope, leafletHelpers, leafletEvents, leafletData) {
     return {
         restrict: "A",
         scope: false,
@@ -1549,7 +1543,7 @@ angular.module("leaflet-directive").directive('eventBroadcast', function ($log, 
                 availableMapEvents = leafletEvents.getAvailableMapEvents(),
                 genDispatchMapEvent = leafletEvents.genDispatchMapEvent;
 
-            controller.getMap().then(function(map) {
+            leafletData.getMap(attrs.id).then(function(map) {
 
                 var mapEvents = [];
                 var i;
@@ -1647,7 +1641,7 @@ angular.module("leaflet-directive").directive('eventBroadcast', function ($log, 
     };
 });
 
-angular.module("leaflet-directive").directive('maxbounds', function ($log, leafletMapDefaults, leafletHelpers) {
+angular.module("leaflet-directive").directive('maxbounds', function ($log, leafletMapDefaults, leafletHelpers, leafletData) {
     return {
         restrict: "A",
         scope: false,
@@ -1662,7 +1656,7 @@ angular.module("leaflet-directive").directive('maxbounds', function ($log, leafl
                 maxBounds = leafletScope.maxBounds;
 
 
-            controller.getMap().then(function(map) {
+            leafletData.getMap(attrs.id).then(function(map) {
                 leafletScope.$watch("maxBounds", function (maxBounds) {
                     if (!isValidBounds(maxBounds)) {
                         // Unset any previous maxbounds
@@ -1693,7 +1687,9 @@ angular.module("leaflet-directive").directive('maxbounds', function ($log, leafl
 
 angular.module("leaflet-directive").service('leafletData', function ($log, $q, leafletHelpers) {
     var isDefined = leafletHelpers.isDefined,
-        getDefer = leafletHelpers.getDefer;
+        getDefer = leafletHelpers.getDefer,
+        getUnresolvedDefer = leafletHelpers.getUnresolvedDefer,
+        setResolvedDefer = leafletHelpers.setResolvedDefer;
 
     var maps = {};
     var tiles = {};
@@ -1703,70 +1699,69 @@ angular.module("leaflet-directive").service('leafletData', function ($log, $q, l
     var geoJSON = {};
 
     this.setMap = function(leafletMap, scopeId) {
-        var map = getDefer(maps, scopeId);
-        map.resolve(leafletMap);
+        var defer = getUnresolvedDefer(maps, scopeId);
+        defer.resolve(leafletMap);
+        setResolvedDefer(maps, scopeId);
     };
 
     this.getMap = function(scopeId) {
-        var map = getDefer(maps, scopeId);
-        return map.promise;
+        var defer = getDefer(maps, scopeId);
+        return defer.promise;
     };
 
     this.getPaths = function(scopeId) {
-        var path = getDefer(paths, scopeId);
-        return path.promise;
+        var defer = getDefer(paths, scopeId);
+        return defer.promise;
     };
 
     this.setPaths = function(leafletPaths, scopeId) {
-        var path = getDefer(paths, scopeId);
-        path.resolve(leafletPaths);
+        var defer = getUnresolvedDefer(paths, scopeId);
+        defer.resolve(leafletPaths);
+        setResolvedDefer(paths, scopeId);
     };
 
     this.getMarkers = function(scopeId) {
-        var marker = getDefer(markers, scopeId);
-        return marker.promise;
+        var defer = getDefer(markers, scopeId);
+        return defer.promise;
     };
 
     this.setMarkers = function(leafletMarkers, scopeId) {
-        var marker = getDefer(markers, scopeId);
-        marker.resolve(leafletMarkers);
+        var defer = getUnresolvedDefer(markers, scopeId);
+        defer.resolve(leafletMarkers);
+        setResolvedDefer(markers, scopeId);
     };
 
     this.getLayers = function(scopeId) {
-        var layer = getDefer(layers, scopeId);
-        return layer.promise;
+        var defer = getDefer(layers, scopeId);
+        return defer.promise;
     };
 
     this.setLayers = function(leafletLayers, scopeId) {
-        var layer = getDefer(layers, scopeId);
-        layer.resolve(leafletLayers);
+        var defer = getUnresolvedDefer(layers, scopeId);
+        defer.resolve(leafletLayers);
+        setResolvedDefer(layers, scopeId);
     };
 
     this.setTiles = function(leafletTiles, scopeId) {
-        var tile = getDefer(tiles, scopeId);
-        tile.resolve(leafletTiles);
+        var defer = getUnresolvedDefer(tiles, scopeId);
+        defer.resolve(leafletTiles);
+        setResolvedDefer(tiles, scopeId);
     };
 
     this.getTiles = function(scopeId) {
-        var tile = getDefer(tiles, scopeId);
-        return tile.promise;
-    };
-
-    this.updateTiles = function(leafletTiles, mapId) {
-        var deferred = $q.defer();
-        var id = leafletHelpers.obtainEffectiveMapId(tiles, mapId);
-        tiles[id] = deferred;
-        deferred.resolve(leafletTiles);
+        var defer = getDefer(tiles, scopeId);
+        return defer.promise;
     };
 
     this.setGeoJSON = function(leafletGeoJSON, scopeId) {
-        var geoJSONLayer = getDefer(geoJSON, scopeId);
-        geoJSONLayer.resolve(leafletGeoJSON);
+        var defer = getUnresolvedDefer(geoJSON, scopeId);
+        defer.resolve(leafletGeoJSON);
+        setResolvedDefer(geoJSON, scopeId);
     };
 
     this.getGeoJSON = function(scopeId) {
-        var geoJSONLayer = getDefer(geoJSON, scopeId);
-        return geoJSONLayer.promise;
+        var defer = getDefer(geoJSON, scopeId);
+        return defer.promise;
     };
 });
 
@@ -1815,13 +1810,14 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
     }
     var isDefined = leafletHelpers.isDefined,
         getDefer = leafletHelpers.getDefer,
+        getUnresolvedDefer = leafletHelpers.getUnresolvedDefer,
         defaults = {};
 
     // Get the _defaults dictionary, and override the properties defined by the user
     return {
         getDefaults: function (scopeId) {
-            var d = getDefer(defaults, scopeId);
-            return d.promise;
+            var defer = getDefer(defaults, scopeId);
+            return defer.promise;
         },
 
         setDefaults: function(userDefaults, scopeId) {
@@ -1855,7 +1851,7 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
                 }
             }
 
-            var leafletDefaults = getDefer(defaults, scopeId);
+            var leafletDefaults = getUnresolvedDefer(defaults, scopeId);
             leafletDefaults.resolve(newDefaults);
 
             return newDefaults;
@@ -1968,27 +1964,44 @@ angular.module("leaflet-directive").factory('leafletEvents', function ($rootScop
 });
 
 
-angular.module("leaflet-directive").factory('leafletHelpers', function ($q) {
+angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log) {
 
     function _obtainEffectiveMapId(d, mapId) {
-        var id;
+        var id, i;
         if (!angular.isDefined(mapId)) {
-            if (Object.keys(d).length > 1) {
-                id = "main";
-            } else {
-                // Get the object key
-                for (var i in d) {
+            if (Object.keys(d).length === 1) {
+                for (i in d) {
                     if (d.hasOwnProperty(i)) {
                         id = i;
                     }
                 }
-
-                if (!angular.isDefined(id)) {
-                    id = "main";
-                }
+            } else if (Object.keys(d).length === 0) {
+                id = "main";
+            } else {
+                $log.error("[AngularJS - Leaflet] - You have more than 1 map on the DOM, you must provide the map ID to the getMap() call");
             }
+        } else {
+            id = mapId;
         }
+
         return id;
+    }
+
+    function _getUnresolvedDefer(d, mapId) {
+        var id = _obtainEffectiveMapId(d, mapId),
+            defer;
+
+        if (!angular.isDefined(d[id]) || d[id].resolvedDefer === true) {
+            defer = $q.defer();
+            d[id] = {
+                defer: defer,
+                resolvedDefer: false
+            };
+        } else {
+            defer = d[id].defer;
+        }
+
+        return defer;
     }
 
     function _convertToLeafletLatLngs(latlngs) {
@@ -2066,14 +2079,19 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q) {
         getDefer: function(d, mapId) {
             var id = _obtainEffectiveMapId(d, mapId),
                 defer;
-
-            if (!angular.isDefined(d[id])) {
-                defer = $q.defer();
-                d[id] = defer;
+            if (!angular.isDefined(d[id]) || d[id].resolvedDefer === false) {
+                defer = _getUnresolvedDefer(d, mapId);
             } else {
-                defer = d[id];
+                defer = d[id].defer;
             }
             return defer;
+        },
+
+        getUnresolvedDefer: _getUnresolvedDefer,
+
+        setResolvedDefer: function(d, mapId) {
+            var id = _obtainEffectiveMapId(d, mapId);
+            d[id].resolvedDefer = true;
         },
 
         AwesomeMarkersPlugin: {

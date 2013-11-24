@@ -43,13 +43,14 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
     }
     var isDefined = leafletHelpers.isDefined,
         getDefer = leafletHelpers.getDefer,
+        getUnresolvedDefer = leafletHelpers.getUnresolvedDefer,
         defaults = {};
 
     // Get the _defaults dictionary, and override the properties defined by the user
     return {
         getDefaults: function (scopeId) {
-            var d = getDefer(defaults, scopeId);
-            return d.promise;
+            var defer = getDefer(defaults, scopeId);
+            return defer.promise;
         },
 
         setDefaults: function(userDefaults, scopeId) {
@@ -83,7 +84,7 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
                 }
             }
 
-            var leafletDefaults = getDefer(defaults, scopeId);
+            var leafletDefaults = getUnresolvedDefer(defaults, scopeId);
             leafletDefaults.resolve(newDefaults);
 
             return newDefaults;

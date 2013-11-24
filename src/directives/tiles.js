@@ -11,7 +11,7 @@ angular.module("leaflet-directive").directive('tiles', function ($log, leafletDa
                 leafletScope  = controller.getLeafletScope(),
                 tiles = leafletScope.tiles;
 
-            controller.getMap().then(function(map) {
+            leafletData.getMap(attrs.id).then(function(map) {
                 leafletMapDefaults.getDefaults(attrs.id).then(function(defaults) {
                     if (!isDefined(tiles) && !isDefined(tiles.url)) {
                         $log.warn("[AngularJS - Leaflet] The 'tiles' definition doesn't have the 'url' property.");
@@ -53,7 +53,7 @@ angular.module("leaflet-directive").directive('tiles', function ($log, leafletDa
                             tileLayerUrl = tiles.url;
                             tileLayerObj = L.tileLayer(tileLayerUrl, tileLayerOptions);
                             tileLayerObj.addTo(map);
-                            leafletData.updateTiles(tileLayerObj, attrs.id);
+                            leafletData.setTiles(tileLayerObj, attrs.id);
                             return;
                         }
 

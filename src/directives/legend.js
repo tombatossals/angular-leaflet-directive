@@ -1,4 +1,4 @@
-angular.module("leaflet-directive").directive('legend', function ($log, leafletHelpers) {
+angular.module("leaflet-directive").directive('legend', function ($log, leafletHelpers, leafletData) {
     return {
         restrict: "A",
         scope: false,
@@ -16,7 +16,7 @@ angular.module("leaflet-directive").directive('legend', function ($log, leafletH
                 return;
             }
 
-            controller.getMap().then(function(map) {
+            leafletData.getMap(attrs.id).then(function(map) {
                 if (!isArray(legend.colors) || !isArray(legend.labels) || legend.colors.length !== legend.labels.length) {
                     $log.warn("[AngularJS - Leaflet] legend.colors and legend.labels must be set.");
                 } else {

@@ -14,7 +14,7 @@ angular.module("leaflet-directive").directive('paths', function ($log, leafletDa
                 convertToLeafletLatLngs = leafletHelpers.convertToLeafletLatLngs,
                 convertToLeafletMultiLatLngs = leafletHelpers.convertToLeafletMultiLatLngs;
 
-            controller.getMap().then(function(map) {
+            leafletData.getMap(attrs.id).then(function(map) {
                 leafletMapDefaults.getDefaults(attrs.id).then(function(defaults) {
 
                     if (!isDefined(paths)) {

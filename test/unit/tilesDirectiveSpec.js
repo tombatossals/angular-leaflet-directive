@@ -71,6 +71,10 @@ describe('Directive: leaflet', function() {
         expect(leafletMap.hasLayer(leafletTiles)).toBe(true);
         $rootScope.tiles = {};
         $rootScope.$digest();
+        leafletData.getTiles().then(function(tiles) {
+            leafletTiles = tiles;
+        });
+        $rootScope.$digest();
         expect(leafletMap.hasLayer(leafletTiles)).toBe(false);
     });
 

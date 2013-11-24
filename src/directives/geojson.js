@@ -12,7 +12,7 @@ angular.module("leaflet-directive").directive('geojson', function ($log, $rootSc
                 leafletScope  = controller.getLeafletScope(),
                 leafletGeoJSON = {};
 
-            controller.getMap().then(function(map) {
+            leafletData.getMap(attrs.id).then(function(map) {
                 leafletScope.$watch("geojson", function(geojson) {
                     if (isDefined(leafletGeoJSON) && map.hasLayer(leafletGeoJSON)) {
                         map.removeLayer(leafletGeoJSON);

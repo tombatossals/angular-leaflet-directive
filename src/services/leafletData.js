@@ -1,6 +1,8 @@
 angular.module("leaflet-directive").service('leafletData', function ($log, $q, leafletHelpers) {
     var isDefined = leafletHelpers.isDefined,
-        getDefer = leafletHelpers.getDefer;
+        getDefer = leafletHelpers.getDefer,
+        getUnresolvedDefer = leafletHelpers.getUnresolvedDefer,
+        setResolvedDefer = leafletHelpers.setResolvedDefer;
 
     var maps = {};
     var tiles = {};
@@ -10,69 +12,68 @@ angular.module("leaflet-directive").service('leafletData', function ($log, $q, l
     var geoJSON = {};
 
     this.setMap = function(leafletMap, scopeId) {
-        var map = getDefer(maps, scopeId);
-        map.resolve(leafletMap);
+        var defer = getUnresolvedDefer(maps, scopeId);
+        defer.resolve(leafletMap);
+        setResolvedDefer(maps, scopeId);
     };
 
     this.getMap = function(scopeId) {
-        var map = getDefer(maps, scopeId);
-        return map.promise;
+        var defer = getDefer(maps, scopeId);
+        return defer.promise;
     };
 
     this.getPaths = function(scopeId) {
-        var path = getDefer(paths, scopeId);
-        return path.promise;
+        var defer = getDefer(paths, scopeId);
+        return defer.promise;
     };
 
     this.setPaths = function(leafletPaths, scopeId) {
-        var path = getDefer(paths, scopeId);
-        path.resolve(leafletPaths);
+        var defer = getUnresolvedDefer(paths, scopeId);
+        defer.resolve(leafletPaths);
+        setResolvedDefer(paths, scopeId);
     };
 
     this.getMarkers = function(scopeId) {
-        var marker = getDefer(markers, scopeId);
-        return marker.promise;
+        var defer = getDefer(markers, scopeId);
+        return defer.promise;
     };
 
     this.setMarkers = function(leafletMarkers, scopeId) {
-        var marker = getDefer(markers, scopeId);
-        marker.resolve(leafletMarkers);
+        var defer = getUnresolvedDefer(markers, scopeId);
+        defer.resolve(leafletMarkers);
+        setResolvedDefer(markers, scopeId);
     };
 
     this.getLayers = function(scopeId) {
-        var layer = getDefer(layers, scopeId);
-        return layer.promise;
+        var defer = getDefer(layers, scopeId);
+        return defer.promise;
     };
 
     this.setLayers = function(leafletLayers, scopeId) {
-        var layer = getDefer(layers, scopeId);
-        layer.resolve(leafletLayers);
+        var defer = getUnresolvedDefer(layers, scopeId);
+        defer.resolve(leafletLayers);
+        setResolvedDefer(layers, scopeId);
     };
 
     this.setTiles = function(leafletTiles, scopeId) {
-        var tile = getDefer(tiles, scopeId);
-        tile.resolve(leafletTiles);
+        var defer = getUnresolvedDefer(tiles, scopeId);
+        defer.resolve(leafletTiles);
+        setResolvedDefer(tiles, scopeId);
     };
 
     this.getTiles = function(scopeId) {
-        var tile = getDefer(tiles, scopeId);
-        return tile.promise;
-    };
-
-    this.updateTiles = function(leafletTiles, mapId) {
-        var deferred = $q.defer();
-        var id = leafletHelpers.obtainEffectiveMapId(tiles, mapId);
-        tiles[id] = deferred;
-        deferred.resolve(leafletTiles);
+        var defer = getDefer(tiles, scopeId);
+        return defer.promise;
     };
 
     this.setGeoJSON = function(leafletGeoJSON, scopeId) {
-        var geoJSONLayer = getDefer(geoJSON, scopeId);
-        geoJSONLayer.resolve(leafletGeoJSON);
+        var defer = getUnresolvedDefer(geoJSON, scopeId);
+        defer.resolve(leafletGeoJSON);
+        setResolvedDefer(geoJSON, scopeId);
     };
 
     this.getGeoJSON = function(scopeId) {
-        var geoJSONLayer = getDefer(geoJSON, scopeId);
-        return geoJSONLayer.promise;
+        var defer = getDefer(geoJSON, scopeId);
+        return defer.promise;
     };
 });

@@ -1,24 +1,41 @@
-angular.module("leaflet-directive").factory('leafletHelpers', function ($q) {
+angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log) {
 
     function _obtainEffectiveMapId(d, mapId) {
-        var id;
+        var id, i;
         if (!angular.isDefined(mapId)) {
-            if (Object.keys(d).length > 1) {
-                id = "main";
-            } else {
-                // Get the object key
-                for (var i in d) {
+            if (Object.keys(d).length === 1) {
+                for (i in d) {
                     if (d.hasOwnProperty(i)) {
                         id = i;
                     }
                 }
-
-                if (!angular.isDefined(id)) {
-                    id = "main";
-                }
+            } else if (Object.keys(d).length === 0) {
+                id = "main";
+            } else {
+                $log.error("[AngularJS - Leaflet] - You have more than 1 map on the DOM, you must provide the map ID to the getMap() call");
             }
+        } else {
+            id = mapId;
         }
+
         return id;
+    }
+
+    function _getUnresolvedDefer(d, mapId) {
+        var id = _obtainEffectiveMapId(d, mapId),
+            defer;
+
+        if (!angular.isDefined(d[id]) || d[id].resolvedDefer === true) {
+            defer = $q.defer();
+            d[id] = {
+                defer: defer,
+                resolvedDefer: false
+            };
+        } else {
+            defer = d[id].defer;
+        }
+
+        return defer;
     }
 
     function _convertToLeafletLatLngs(latlngs) {
@@ -96,14 +113,19 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q) {
         getDefer: function(d, mapId) {
             var id = _obtainEffectiveMapId(d, mapId),
                 defer;
-
-            if (!angular.isDefined(d[id])) {
-                defer = $q.defer();
-                d[id] = defer;
+            if (!angular.isDefined(d[id]) || d[id].resolvedDefer === false) {
+                defer = _getUnresolvedDefer(d, mapId);
             } else {
-                defer = d[id];
+                defer = d[id].defer;
             }
             return defer;
+        },
+
+        getUnresolvedDefer: _getUnresolvedDefer,
+
+        setResolvedDefer: function(d, mapId) {
+            var id = _obtainEffectiveMapId(d, mapId);
+            d[id].resolvedDefer = true;
         },
 
         AwesomeMarkersPlugin: {
