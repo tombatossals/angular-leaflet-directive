@@ -1,4 +1,4 @@
-angular.module("leaflet-directive").directive('controls', function ($log, leafletHelpers, leafletData) {
+angular.module("leaflet-directive").directive('controls', function ($log, leafletHelpers) {
     return {
         restrict: "A",
         scope: false,
@@ -11,7 +11,7 @@ angular.module("leaflet-directive").directive('controls', function ($log, leafle
                 leafletScope  = controller.getLeafletScope(),
                 controls = leafletScope.controls;
 
-            leafletData.getMap(attrs.id).then(function(map) {
+            controller.getMap().then(function(map) {
                 if (isDefined(L.Control.Draw) && isDefined(controls.draw)) {
                     var drawControl = new L.Control.Draw(controls.draw.options);
                     map.addControl(drawControl);

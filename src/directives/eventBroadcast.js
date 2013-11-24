@@ -1,4 +1,4 @@
-angular.module("leaflet-directive").directive('eventBroadcast', function ($log, $rootScope, leafletHelpers, leafletEvents, leafletData) {
+angular.module("leaflet-directive").directive('eventBroadcast', function ($log, $rootScope, leafletHelpers, leafletEvents) {
     return {
         restrict: "A",
         scope: false,
@@ -16,7 +16,7 @@ angular.module("leaflet-directive").directive('eventBroadcast', function ($log, 
                 availableMapEvents = leafletEvents.getAvailableMapEvents(),
                 genDispatchMapEvent = leafletEvents.genDispatchMapEvent;
 
-            leafletData.getMap(attrs.id).then(function(map) {
+            controller.getMap().then(function(map) {
 
                 var mapEvents = [];
                 var i;

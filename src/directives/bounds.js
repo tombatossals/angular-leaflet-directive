@@ -1,4 +1,4 @@
-angular.module("leaflet-directive").directive('bounds', function ($log, leafletHelpers, leafletData) {
+angular.module("leaflet-directive").directive('bounds', function ($log, leafletHelpers) {
     return {
         restrict: "A",
         scope: false,
@@ -13,7 +13,7 @@ angular.module("leaflet-directive").directive('bounds', function ($log, leafletH
                 bounds = leafletScope.bounds;
 
 
-            leafletData.getMap(attrs.id).then(function(map) {
+            controller.getMap().then(function(map) {
                 leafletScope.$watch('bounds', function(bounds) {
                     if (!isDefined(bounds) || !isBoundsValid(bounds)) {
                             $log.error('[AngularJS - Leaflet] Invalid bounds');

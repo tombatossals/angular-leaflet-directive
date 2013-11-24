@@ -1,4 +1,5 @@
 angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q, leafletData, leafletMapDefaults, leafletHelpers, leafletEvents) {
+    var _leafletMap;
     return {
         restrict: "EA",
         replace: true,
@@ -20,6 +21,11 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
         },
         template: '<div class="angular-leaflet-map" ng-transclude></div>',
         controller: function ($scope) {
+            _leafletMap = $q.defer();
+            this.getMap = function () {
+                return _leafletMap.promise;
+            };
+
             this.getLeafletScope = function() {
                 return $scope;
             };
@@ -70,6 +76,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
             });
 
             // Resolve the map object to the promises
+            _leafletMap.resolve(map);
             leafletData.setMap(map, attrs.id);
 
             if (!isDefined(attrs.center)) {

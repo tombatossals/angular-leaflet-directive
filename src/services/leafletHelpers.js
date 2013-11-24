@@ -12,7 +12,7 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
             } else if (Object.keys(d).length === 0) {
                 id = "main";
             } else {
-                $log.error("[AngularJS - Leaflet] - You have more than 1 map on the DOM, you must provide the map ID to the getMap() call");
+                $log.error("[AngularJS - Leaflet] - You have more than 1 map on the DOM, you must provide the map ID to the leafletData.getXXX call");
             }
         } else {
             id = mapId;

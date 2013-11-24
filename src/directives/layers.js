@@ -21,7 +21,7 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                 leafletScope  = controller.getLeafletScope(),
                 layers = leafletScope.layers;
 
-            leafletData.getMap(attrs.id).then(function(map) {
+            controller.getMap().then(function(map) {
                 leafletMapDefaults.getDefaults(attrs.id).then(function(defaults) {
 
                     if (isDefined(layers)) {
