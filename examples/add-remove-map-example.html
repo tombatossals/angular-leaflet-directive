@@ -28,7 +28,6 @@
         function MapCtrl($scope, leafletData) {
            $scope.makeFit = function() {
             leafletData.getMap().then(function(map) {
-                console.log("Map center: ", map._leaflet_id);
                 map.fitBounds([
                      [48.7120066603552, 9.04994057067812],
                      [48.6120066603552, 9.14994057067812]]);
