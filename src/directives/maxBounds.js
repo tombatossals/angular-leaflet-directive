@@ -3,7 +3,6 @@ angular.module("leaflet-directive").directive('maxbounds', function ($log, leafl
         restrict: "A",
         scope: false,
         replace: false,
-        transclude: false,
         require: 'leaflet',
 
         link: function(scope, element, attrs, controller) {

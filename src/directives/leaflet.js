@@ -3,7 +3,6 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
     return {
         restrict: "EA",
         replace: true,
-        transclude: true,
         scope: {
             center: '=center',
             defaults: '=defaults',
@@ -19,7 +18,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
             controls: '=controls',
             eventBroadcast: '=eventBroadcast'
         },
-        template: '<div class="angular-leaflet-map" ng-transclude></div>',
+        template: '<div class="angular-leaflet-map"></div>',
         controller: function ($scope) {
             _leafletMap = $q.defer();
             this.getMap = function () {

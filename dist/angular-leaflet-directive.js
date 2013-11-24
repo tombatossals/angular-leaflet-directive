@@ -7,7 +7,6 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
     return {
         restrict: "EA",
         replace: true,
-        transclude: true,
         scope: {
             center: '=center',
             defaults: '=defaults',
@@ -23,7 +22,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
             controls: '=controls',
             eventBroadcast: '=eventBroadcast'
         },
-        template: '<div class="angular-leaflet-map" ng-transclude></div>',
+        template: '<div class="angular-leaflet-map"></div>',
         controller: function ($scope) {
             _leafletMap = $q.defer();
             this.getMap = function () {
@@ -120,7 +119,6 @@ angular.module("leaflet-directive").directive('center', function ($log, $parse, 
         restrict: "A",
         scope: false,
         replace: false,
-        transclude: false,
         require: 'leaflet',
 
         link: function(scope, element, attrs, controller) {
@@ -189,7 +187,6 @@ angular.module("leaflet-directive").directive('tiles', function ($log, leafletDa
         restrict: "A",
         scope: false,
         replace: false,
-        transclude: false,
         require: 'leaflet',
 
         link: function(scope, element, attrs, controller) {
@@ -259,7 +256,6 @@ angular.module("leaflet-directive").directive('legend', function ($log, leafletH
         restrict: "A",
         scope: false,
         replace: false,
-        transclude: false,
         require: 'leaflet',
 
         link: function(scope, element, attrs, controller) {
@@ -299,7 +295,6 @@ angular.module("leaflet-directive").directive('geojson', function ($log, $rootSc
         restrict: "A",
         scope: false,
         replace: false,
-        transclude: false,
         require: 'leaflet',
 
         link: function(scope, element, attrs, controller) {
@@ -373,7 +368,6 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
         restrict: "A",
         scope: false,
         replace: false,
-        transclude: false,
         require: 'leaflet',
         controller: function ($scope) {
             _leafletLayers = $q.defer();
@@ -650,25 +644,26 @@ angular.module("leaflet-directive").directive('bounds', function ($log, leafletH
         restrict: "A",
         scope: false,
         replace: false,
-        transclude: false,
-        require: 'leaflet',
+        require: ['leaflet', 'center'],
 
         link: function(scope, element, attrs, controller) {
             var isDefined = leafletHelpers.isDefined,
                 isNumber  = leafletHelpers.isNumber,
-                leafletScope = controller.getLeafletScope(),
+                boundsIsValid = leafletHelpers.boundsIsValid,
+                mapController = controller[0],
+                leafletScope = mapController.getLeafletScope(),
                 bounds = leafletScope.bounds;
 
 
-            controller.getMap().then(function(map) {
+            mapController.getMap().then(function(map) {
                 leafletScope.$watch('bounds', function(bounds) {
-                    if (!isDefined(bounds) || !isBoundsValid(bounds)) {
+                    if (!isDefined(bounds) || !boundsIsValid(bounds)) {
                             $log.error('[AngularJS - Leaflet] Invalid bounds');
                             return;
                         }
 
-                        var southWest = bounds.getSouthWest();
-                        var northEast = bounds.getNorthEast();
+                        var southWest = bounds.southWest,
+                            northEast = bounds.northEast;
                         var new_latlng_bounds = new L.LatLngBounds(
                                 new L.LatLng(southWest.lat, southWest.lng),
                                 new L.LatLng(northEast.lat, northEast.lng));
@@ -697,13 +692,6 @@ angular.module("leaflet-directive").directive('bounds', function ($log, leafletH
                         }
                     };
                 });
-
-                function isBoundsValid(bounds) {
-                    if (isDefined(bounds) && isDefined(bounds.isValid)) {
-                        return bounds.isValid();
-                    }
-                }
-
             });
         }
     };
@@ -714,7 +702,6 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
         restrict: "A",
         scope: false,
         replace: false,
-        transclude: false,
         require: ['leaflet', '?layers'],
 
         link: function(scope, element, attrs, controller) {
@@ -1362,7 +1349,6 @@ angular.module("leaflet-directive").directive('paths', function ($log, leafletDa
         restrict: "A",
         scope: false,
         replace: false,
-        transclude: false,
         require: 'leaflet',
 
         link: function(scope, element, attrs, controller) {
@@ -1514,7 +1500,6 @@ angular.module("leaflet-directive").directive('controls', function ($log, leafle
         restrict: "A",
         scope: false,
         replace: false,
-        transclude: false,
         require: 'leaflet',
 
         link: function(scope, element, attrs, controller) {
@@ -1537,7 +1522,6 @@ angular.module("leaflet-directive").directive('eventBroadcast', function ($log, 
         restrict: "A",
         scope: false,
         replace: false,
-        transclude: false,
         require: 'leaflet',
 
         link: function(scope, element, attrs, controller) {
@@ -1653,7 +1637,6 @@ angular.module("leaflet-directive").directive('maxbounds', function ($log, leafl
         restrict: "A",
         scope: false,
         replace: false,
-        transclude: false,
         require: 'leaflet',
 
         link: function(scope, element, attrs, controller) {
@@ -2058,6 +2041,13 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
         isValidCenter: function(center) {
             return angular.isDefined(center) && angular.isNumber(center.lat) &&
                    angular.isNumber(center.lng) && angular.isNumber(center.zoom);
+        },
+
+        boundsIsValid: function(bounds) {
+            return angular.isDefined(bounds) && angular.isDefined(bounds.southWest) &&
+                   angular.isDefined(bounds.northEast) && angular.isNumber(bounds.southWest.lat) &&
+                   angular.isNumber(bounds.southWest.lng) && angular.isNumber(bounds.northEast.lat) &&
+                   angular.isNumber(bounds.northEast.lng);
         },
 
         convertToLeafletLatLngs: _convertToLeafletLatLngs,

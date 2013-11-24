@@ -3,7 +3,6 @@ angular.module("leaflet-directive").directive('center', function ($log, $parse, 
         restrict: "A",
         scope: false,
         replace: false,
-        transclude: false,
         require: 'leaflet',
 
         link: function(scope, element, attrs, controller) {

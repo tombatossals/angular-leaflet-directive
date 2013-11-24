@@ -87,6 +87,13 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
                    angular.isNumber(center.lng) && angular.isNumber(center.zoom);
         },
 
+        boundsIsValid: function(bounds) {
+            return angular.isDefined(bounds) && angular.isDefined(bounds.southWest) &&
+                   angular.isDefined(bounds.northEast) && angular.isNumber(bounds.southWest.lat) &&
+                   angular.isNumber(bounds.southWest.lng) && angular.isNumber(bounds.northEast.lat) &&
+                   angular.isNumber(bounds.northEast.lng);
+        },
+
         convertToLeafletLatLngs: _convertToLeafletLatLngs,
 
         convertToLeafletLatLng: function(latlng) {

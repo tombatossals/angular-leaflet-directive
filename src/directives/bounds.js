@@ -3,25 +3,26 @@ angular.module("leaflet-directive").directive('bounds', function ($log, leafletH
         restrict: "A",
         scope: false,
         replace: false,
-        transclude: false,
-        require: 'leaflet',
+        require: ['leaflet', 'center'],
 
         link: function(scope, element, attrs, controller) {
             var isDefined = leafletHelpers.isDefined,
                 isNumber  = leafletHelpers.isNumber,
-                leafletScope = controller.getLeafletScope(),
+                boundsIsValid = leafletHelpers.boundsIsValid,
+                mapController = controller[0],
+                leafletScope = mapController.getLeafletScope(),
                 bounds = leafletScope.bounds;
 
 
-            controller.getMap().then(function(map) {
+            mapController.getMap().then(function(map) {
                 leafletScope.$watch('bounds', function(bounds) {
-                    if (!isDefined(bounds) || !isBoundsValid(bounds)) {
+                    if (!isDefined(bounds) || !boundsIsValid(bounds)) {
                             $log.error('[AngularJS - Leaflet] Invalid bounds');
                             return;
                         }
 
-                        var southWest = bounds.getSouthWest();
-                        var northEast = bounds.getNorthEast();
+                        var southWest = bounds.southWest,
+                            northEast = bounds.northEast;
                         var new_latlng_bounds = new L.LatLngBounds(
                                 new L.LatLng(southWest.lat, southWest.lng),
                                 new L.LatLng(northEast.lat, northEast.lng));
@@ -50,13 +51,6 @@ angular.module("leaflet-directive").directive('bounds', function ($log, leafletH
                         }
                     };
                 });
-
-                function isBoundsValid(bounds) {
-                    if (isDefined(bounds) && isDefined(bounds.isValid)) {
-                        return bounds.isValid();
-                    }
-                }
-
             });
         }
     };
