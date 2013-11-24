@@ -11,10 +11,29 @@ angular.module("leaflet-directive").directive('center', function ($log, $parse, 
                 safeApply     = leafletHelpers.safeApply,
                 isValidCenter = leafletHelpers.isValidCenter,
                 leafletScope  = controller.getLeafletScope(),
-                center        = leafletScope.center;
+                center        = leafletScope.center,
+                equalsBounds   = leafletHelpers.equalsBounds,
+                createLeafletBounds = leafletHelpers.createLeafletBounds,
+                bounds        = leafletScope.bounds;
 
             controller.getMap().then(function(map) {
+
                 leafletMapDefaults.getDefaults(attrs.id).then(function(defaults) {
+
+                    /*
+                    function updateBoundsIfNeeded() {
+                        if (!bounds) {
+                            return;
+                        }
+
+                        var mapBounds = map.getBounds();
+                        var actualBounds = createLeafletBounds(bounds);
+                        if (!map.getBounds().equals(actualBounds)) {
+                            console.log("update bounds", map.getBounds(), actualBounds);
+                        }
+                    }
+                    */
+
                     if (isDefined(center)) {
                         if (center.autoDiscover === true) {
                             map.locate({ setView: true, maxZoom: defaults.maxZoom });
@@ -43,6 +62,7 @@ angular.module("leaflet-directive").directive('center', function ($log, $parse, 
                             return;
                         }
                         map.setView([center.lat, center.lng], center.zoom);
+                        //updateBoundsIfNeeded();
                     }, true);
 
                     map.on("movestart", function(/* event */) {
@@ -57,8 +77,8 @@ angular.module("leaflet-directive").directive('center', function ($log, $parse, 
                                 centerModel.lng.assign(scope, map.getCenter().lng);
                                 centerModel.zoom.assign(scope, map.getZoom());
                             }
-                            scope.$emit("centerUpdated");
                         });
+                        //updateBoundsIfNeeded();
                     });
                 });
             });
