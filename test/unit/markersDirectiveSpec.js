@@ -563,12 +563,10 @@ describe('Directive: leaflet', function() {
         leafletData.getMap().then(function(leafletMap) {
             map = leafletMap;
         });
-
         var markers;
         leafletData.getMarkers().then(function(leafletMarkers) {
             markers = leafletMarkers;
         });
-        $rootScope.$digest();
         var layers;
         leafletData.getLayers().then(function(leafletLayers) {
             layers = leafletLayers;

@@ -128,6 +128,7 @@ module.exports = function(grunt) {
                       'src/services/leafletData.js',
                       'src/services/leafletMapDefaults.js',
                       'src/services/leafletEvents.js',
+                      'src/services/leafletLayerHelpers.js',
                       'src/services/leafletHelpers.js'
                      ],
                 dest: 'dist/angular-leaflet-directive.js',
