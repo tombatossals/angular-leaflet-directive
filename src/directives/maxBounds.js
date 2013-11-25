@@ -9,7 +9,8 @@ angular.module("leaflet-directive").directive('maxbounds', function ($log, leafl
             var isDefined = leafletHelpers.isDefined,
                 isNumber  = leafletHelpers.isNumber,
                 leafletScope  = controller.getLeafletScope(),
-                maxBounds = leafletScope.maxBounds;
+                maxBounds = leafletScope.maxBounds,
+                isValidBounds = leafletHelpers.isValidBounds;
 
 
             controller.getMap().then(function(map) {
@@ -27,15 +28,6 @@ angular.module("leaflet-directive").directive('maxbounds', function ($log, leafl
                         maxBounds.options
                     );
                 });
-
-                function isValidBounds(bounds) {
-                    return isDefined(bounds.southWest) &&
-                           isDefined(bounds.northEast) &&
-                           isNumber(bounds.southWest.lat) &&
-                           isNumber(bounds.southWest.lng) &&
-                           isNumber(bounds.northEast.lat) &&
-                           isNumber(bounds.northEast.lng);
-                }
             });
         }
     };
