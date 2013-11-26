@@ -24,9 +24,12 @@
     "grunt-contrib-watch": "latest",
     "grunt-contrib-concat": "latest",
     "grunt-contrib-connect": "latest",
+    "grunt-contrib-connect": "latest",
     "grunt-karma": "latest",
     "jasmine-node": "latest",
     "grunt-ngmin": "latest",
+    "protractor": "latest",
+    "grunt-protractor-runner": "latest",
     "karma": "latest",
     "karma-ng-scenario": "latest"
   },
