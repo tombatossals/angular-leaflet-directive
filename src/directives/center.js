@@ -7,14 +7,10 @@ angular.module("leaflet-directive").directive('center', function ($log, $parse, 
 
         link: function(scope, element, attrs, controller) {
             var isDefined     = leafletHelpers.isDefined,
-                isNumber      = leafletHelpers.isNumber,
                 safeApply     = leafletHelpers.safeApply,
                 isValidCenter = leafletHelpers.isValidCenter,
                 leafletScope  = controller.getLeafletScope(),
-                center        = leafletScope.center,
-                equalsBounds   = leafletHelpers.equalsBounds,
-                createLeafletBounds = leafletHelpers.createLeafletBounds,
-                bounds        = leafletScope.bounds;
+                center        = leafletScope.center;
 
             controller.getMap().then(function(map) {
 

@@ -40,7 +40,7 @@ exports.config = {
   // The address of a running selenium server. If specified, Protractor will
   // connect to an already running instance of selenium. This usually looks like
   // seleniumAddress: 'http://localhost:4444/wd/hub'
-  seleniumAddress: 'http://localhost:4444/wd/hub',
+  //seleniumAddress: 'http://localhost:4444/wd/hub',
 
   // The timeout for each script run on the browser. This should be longer
   // than the maximum time your application needs to stabilize between tasks.
@@ -50,7 +50,7 @@ exports.config = {
   //
   // Spec patterns are relative to the location of this config.
   specs: [
-    'spec/*_spec.js',
+    '../test/e2e/*.js',
   ],
 
   // ----- Capabilities to be passed to the webdriver instance ----
@@ -67,7 +67,7 @@ exports.config = {
   //
   // A base URL for your application under test. Calls to protractor.get()
   // with relative paths will be prepended with this.
-  baseUrl: 'http://localhost:8000',
+  baseUrl: 'http://localhost:9999',
 
   // Selector for the element housing the angular app - this defaults to
   // body, but is necessary if ng-app is on a descendant of <body>

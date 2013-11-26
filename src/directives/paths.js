@@ -132,7 +132,7 @@ angular.module("leaflet-directive").directive('paths', function ($log, leafletDa
                         }
                         map.addLayer(path);
 
-                        var clearWatch = scope.$watch('paths.' + name, function(data, oldData) {
+                        var clearWatch = scope.$watch('paths.' + name, function(data) {
                             if (!isDefined(data)) {
                                 map.removeLayer(path);
                                 clearWatch();

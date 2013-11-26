@@ -1,5 +1,7 @@
 module.exports = function(grunt) {
 
+    require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
+
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
         shell: {
@@ -23,7 +25,7 @@ module.exports = function(grunt) {
 
         connect: {
             options: {
-                base: 'app/'
+                base: 'examples/'
             },
             webserver: {
                 options: {
@@ -53,7 +55,7 @@ module.exports = function(grunt) {
         protractor: {
             options: {
                 keepAlive: true,
-                configFile: "./test/protractor.conf.js"
+                configFile: "config/protractor.conf.js"
             },
             singlerun: {},
             auto: {
@@ -77,27 +79,57 @@ module.exports = function(grunt) {
             }
         },
 
+        ngmin: {
+            directives: {
+                expand: true,
+                cwd: 'dist',
+                src: ['angular-leaflet-directive.js'],
+                dest: 'dist',
+                ext: '.ngmin.js',
+                flatten: 'src/'
+            }
+        },
+
         jshint: {
             options: {
-                jquery: true,
-                smarttabs: true,
+                node: true,
+                browser: true,
+                esnext: true,
+                bitwise: true,
                 curly: true,
                 eqeqeq: true,
                 immed: true,
-                latedef: false,
+                indent: 4,
+                latedef: true,
                 newcap: true,
                 noarg: true,
-                sub: true,
+                regexp: true,
                 undef: true,
-                boss: true,
-                eqnull: true,
-                unused: false,
-                browser: true,
+                unused: true,
+                trailing: true,
+                smarttabs: true,
                 globals: {
-                    angular: true,
-                    console: true,
-                    module: true,
-                    L: true,
+                    angular: false,
+                    L: false,
+                    // Jasmine
+                    jasmine    : false,
+                    isCommonJS : false,
+                    exports    : false,
+                    spyOn      : false,
+                    it         : false,
+                    xit        : false,
+                    expect     : false,
+                    runs       : false,
+                    waits      : false,
+                    waitsFor   : false,
+                    beforeEach : false,
+                    afterEach  : false,
+                    describe   : false,
+                    xdescribe   : false,
+
+                    // Protractor
+                    protractor: false
+
                 }
             },
             source: {
@@ -113,25 +145,27 @@ module.exports = function(grunt) {
 
         karma: {
             unit: {
-                configFile: 'config/karma.conf.js',
-                background: false
-            },
-            background: {
-                configFile: 'config/karma.conf.js',
-                background: true,
+                configFile: 'config/karma-unit.conf.js',
                 autoWatch: false,
-                singleRun: false,
-                browsers: ['PhantomJS']
-            }
-        },
-        ngmin: {
-            directives: {
-                expand: true,
-                cwd: 'dist',
-                src: ['angular-leaflet-directive.js'],
-                dest: 'dist',
-                ext: '.ngmin.js',
-                flatten: 'src/'
+                singleRun: true
+            },
+            unit_auto: {
+                configFile: 'config/karma-unit.conf.js',
+                autoWatch: true,
+                singleRun: false
+            },
+            unit_coverage: {
+                configFile: 'config/karma-unit.conf.js',
+                autoWatch: false,
+                singleRun: true,
+                reporters: ['progress', 'coverage'],
+                preprocessors: {
+                    'app/scripts/*.js': ['coverage']
+                },
+                coverageReporter: {
+                    type : 'html',
+                    dir : 'coverage/'
+                }
             }
         },
 
@@ -139,12 +173,19 @@ module.exports = function(grunt) {
             options : {
                 livereload: 7777
             },
-            assets: {
-                files: ['app/styles/**/*.css','app/scripts/**/*.js'],
-                tasks: ['concat']
+            source: {
+                files: ['src/**/*.js'],
+                tasks: [
+                    'jshint',
+                    'concat:dist',
+                    'ngmin',
+                    'uglify',
+                    'test:unit',
+                    'concat:license'
+                ]
             },
             protractor: {
-                files: ['app/scripts/**/*.js','test/e2e/**/*.js'],
+                files: ['src/**/*.js','test/e2e/**/*.js'],
                 tasks: ['protractor:auto']
             }
         },
@@ -158,27 +199,6 @@ module.exports = function(grunt) {
             }
         },
 
-        watch: {
-            source: {
-                files: [
-                        'src/**/*.js',
-                        'test/unit/*.js',
-                        'test/e2e/*.js'
-                       ],
-                tasks: [
-                        'jshint',
-                        'concat:dist',
-                        'ngmin',
-                        'uglify',
-                        'karma:background:run',
-                        'concat:license'
-                       ]
-            },
-            grunt: {
-                files: ['Gruntfile.js'],
-                tasks: ['jshint:grunt']
-            }
-        },
         concat: {
             dist: {
                 options: {
@@ -186,32 +206,31 @@ module.exports = function(grunt) {
                     footer: '\n}());'
                 },
                 src: [
-                      'src/modules/Scope.SafeApply.js',
-                      'src/directives/leaflet.js',
-                      'src/directives/center.js',
-                      'src/directives/tiles.js',
-                      'src/directives/legend.js',
-                      'src/directives/geojson.js',
-                      'src/directives/layers.js',
-                      'src/directives/bounds.js',
-                      'src/directives/markers.js',
-                      'src/directives/paths.js',
-                      'src/directives/controls.js',
-                      'src/directives/eventBroadcast.js',
-                      'src/directives/maxBounds.js',
-                      'src/services/leafletData.js',
-                      'src/services/leafletMapDefaults.js',
-                      'src/services/leafletEvents.js',
-                      'src/services/leafletLayerHelpers.js',
-                      'src/services/leafletHelpers.js'
-                     ],
+                    'src/directives/leaflet.js',
+                    'src/directives/center.js',
+                    'src/directives/tiles.js',
+                    'src/directives/legend.js',
+                    'src/directives/geojson.js',
+                    'src/directives/layers.js',
+                    'src/directives/bounds.js',
+                    'src/directives/markers.js',
+                    'src/directives/paths.js',
+                    'src/directives/controls.js',
+                    'src/directives/eventBroadcast.js',
+                    'src/directives/maxBounds.js',
+                    'src/services/leafletData.js',
+                    'src/services/leafletMapDefaults.js',
+                    'src/services/leafletEvents.js',
+                    'src/services/leafletLayerHelpers.js',
+                    'src/services/leafletHelpers.js'
+                ],
                 dest: 'dist/angular-leaflet-directive.js',
             },
             license: {
                 src: [
-                      'src/header-MIT-license.txt',
-                      'dist/angular-leaflet-directive.min.no-header.js'
-                     ],
+                    'src/header-MIT-license.txt',
+                    'dist/angular-leaflet-directive.min.no-header.js'
+                ],
                 dest: 'dist/angular-leaflet-directive.min.js',
             }
         }
@@ -233,13 +252,13 @@ module.exports = function(grunt) {
 
     //installation-related
     grunt.registerTask('install', ['update','shell:protractor_install']);
-    grunt.registerTask('update', ['shell:npm_install', 'concat']);
+    grunt.registerTask('update', ['shell:npm_install']);
 
     //defaults
-    grunt.registerTask('default', ['dev']);
+    grunt.registerTask('default', ['watch:source']);
 
     //development
-    grunt.registerTask('dev', ['update', 'connect:devserver', 'open:devserver', 'watch:assets']);
+    grunt.registerTask('dev', ['connect:devserver', 'open:devserver', 'watch:source']);
 
     //server daemon
     grunt.registerTask('serve', ['connect:webserver']);

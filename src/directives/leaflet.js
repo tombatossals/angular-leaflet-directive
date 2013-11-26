@@ -30,7 +30,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
             };
         },
 
-        link: function(scope, element, attrs, controller) {
+        link: function(scope, element, attrs) {
             var isDefined = leafletHelpers.isDefined,
                 defaults = leafletMapDefaults.setDefaults(scope.defaults, attrs.id),
                 genDispatchMapEvent = leafletEvents.genDispatchMapEvent,
@@ -58,7 +58,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
             }
 
             if (isDefined(attrs.marker)) {
-                 $log.warn("[AngularJS - Leaflet] The 'marker' property is currently deprecated, please use the 'markers' property instead.");
+                $log.warn("[AngularJS - Leaflet] The 'marker' property is currently deprecated, please use the 'markers' property instead.");
             }
 
             // Create the Leaflet Map Object with the options
@@ -79,8 +79,8 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
             leafletData.setMap(map, attrs.id);
 
             if (!isDefined(attrs.center)) {
-                 $log.warn("[AngularJS - Leaflet] 'center' is undefined in the current scope, did you forget to initialize it?");
-                 map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
+                $log.warn("[AngularJS - Leaflet] 'center' is undefined in the current scope, did you forget to initialize it?");
+                map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
             }
 
             // If no layers nor tiles defined, set the default tileLayer

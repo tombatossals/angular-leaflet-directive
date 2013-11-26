@@ -59,7 +59,7 @@ describe('Directive: leaflet', function() {
             'locationerror',
             'popupopen',
             'popupclose'
-            ];
+        ];
 
         function setEventTrue(position) {
             check[mapEvents[position]] = true;

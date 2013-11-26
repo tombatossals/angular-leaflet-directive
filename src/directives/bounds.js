@@ -7,11 +7,8 @@ angular.module("leaflet-directive").directive('bounds', function ($log, leafletH
 
         link: function(scope, element, attrs, controller) {
             var isDefined = leafletHelpers.isDefined,
-                isNumber  = leafletHelpers.isNumber,
                 createLeafletBounds = leafletHelpers.createLeafletBounds,
-                leafletScope = controller.getLeafletScope(),
-                safeApply = leafletHelpers.safeApply,
-                bounds = leafletScope.bounds;
+                leafletScope = controller.getLeafletScope();
 
 
             controller.getMap().then(function(map) {

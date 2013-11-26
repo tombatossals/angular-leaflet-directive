@@ -18,7 +18,7 @@ angular.module("leaflet-directive").directive('tiles', function ($log, leafletDa
                     }
 
                     var tileLayerObj;
-                    leafletScope.$watch("tiles", function(tiles, oldTiles) {
+                    leafletScope.$watch("tiles", function(tiles) {
                         var tileLayerOptions = defaults.tileLayerOptions;
                         var tileLayerUrl = defaults.tileLayer;
 

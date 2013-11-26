@@ -55,15 +55,15 @@ describe('Directive: leaflet', function() {
             paths : {
                 p1: {
                     latlngs : [
-                                [
-                                    { lat: 0.966, lng: 2.02 },
-                                    { lat: 2.02, lng: 4.04 }
-                                ],
-                                [
-                                    { lat: 0.466, lng: 1.02 },
-                                    { lat: 1.02, lng: 3.04 }
-                                ]
-                            ],
+                        [
+                            { lat: 0.966, lng: 2.02 },
+                            { lat: 2.02, lng: 4.04 }
+                        ],
+                        [
+                            { lat: 0.466, lng: 1.02 },
+                            { lat: 1.02, lng: 3.04 }
+                        ]
+                    ],
                     type: 'multiPolyline'
                 }
             }

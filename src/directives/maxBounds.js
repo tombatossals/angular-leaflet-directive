@@ -6,10 +6,7 @@ angular.module("leaflet-directive").directive('maxbounds', function ($log, leafl
         require: 'leaflet',
 
         link: function(scope, element, attrs, controller) {
-            var isDefined = leafletHelpers.isDefined,
-                isNumber  = leafletHelpers.isNumber,
-                leafletScope  = controller.getLeafletScope(),
-                maxBounds = leafletScope.maxBounds,
+            var leafletScope  = controller.getLeafletScope(),
                 isValidBounds = leafletHelpers.isValidBounds;
 
 

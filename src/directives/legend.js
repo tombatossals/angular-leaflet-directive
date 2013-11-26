@@ -22,7 +22,7 @@ angular.module("leaflet-directive").directive('legend', function ($log, leafletH
                     var legendClass = legend.legendClass ? legend.legendClass : "legend";
                     var position = legend.position || 'bottomright';
                     var leafletLegend = L.control({ position: position });
-                    leafletLegend.onAdd = function (map) {
+                    leafletLegend.onAdd = function (/*map*/) {
                         var div = L.DomUtil.create('div', legendClass);
                         for (var i = 0; i < legend.colors.length; i++) {
                             div.innerHTML +=

@@ -6,10 +6,7 @@ angular.module("leaflet-directive").directive('eventBroadcast', function ($log, 
         require: 'leaflet',
 
         link: function(scope, element, attrs, controller) {
-            var safeApply = leafletHelpers.safeApply,
-                isDefinedAndNotNull = leafletHelpers.isDefinedAndNotNull,
-                isDefined = leafletHelpers.isDefined,
-                isObject = leafletHelpers.isObject,
+            var isObject = leafletHelpers.isObject,
                 leafletScope  = controller.getLeafletScope(),
                 eventBroadcast = leafletScope.eventBroadcast,
                 availableMapEvents = leafletEvents.getAvailableMapEvents(),

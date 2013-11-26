@@ -71,22 +71,22 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
 
         // Determine if a reference is a string
         isString: function(value) {
-          return angular.isString(value);
+            return angular.isString(value);
         },
 
         // Determine if a reference is an array
         isArray: function(value) {
-          return angular.isArray(value);
+            return angular.isArray(value);
         },
 
         // Determine if a reference is an object
         isObject: function(value) {
-          return angular.isObject(value);
+            return angular.isObject(value);
         },
 
         // Determine if two objects have the same properties
         equals: function(o1, o2) {
-          return angular.equals(o1, o2);
+            return angular.equals(o1, o2);
         },
 
         isValidCenter: function(center) {
