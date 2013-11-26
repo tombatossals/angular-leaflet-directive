@@ -1,14 +1,6 @@
-describe('Loading examples index.html', function() {
-    var ptor = protractor.getInstance(),
-        button;
-
-    beforeEach(function() {
-        ptor.get('/');
-        button = ptor.findElement(protractor.By.className('btn-say-hello'));
-        button.click();
-    });
-
-    it('loads simple-example.html', function() {
+describe('Loading simple-example.html', function() {
+    it('should load simple-example.html', function() {
+        browser.get('/simple-example.html');
         expect(true).toBe(true);
     });
 });
