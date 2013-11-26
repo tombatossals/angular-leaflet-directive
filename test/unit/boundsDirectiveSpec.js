@@ -38,7 +38,6 @@ describe('Directive: bounds', function() {
         });
         $rootScope.$digest();
         var mapBounds = map.getBounds();
-        console.log(mapBounds);
         expect(mapBounds.getSouthWest().lat).toBeCloseTo(51.508742458803326);
         expect(mapBounds.getSouthWest().lng).toBeCloseTo(-0.087890625);
         expect(mapBounds.getNorthEast().lat).toBeCloseTo(51.508742458803326);
