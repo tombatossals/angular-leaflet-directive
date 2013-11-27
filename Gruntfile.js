@@ -181,6 +181,7 @@ module.exports = function(grunt) {
                     'ngmin',
                     'uglify',
                     'test:unit',
+                    'test:e2e',
                     'concat:license'
                 ]
             },
@@ -263,4 +264,6 @@ module.exports = function(grunt) {
     //server daemon
     grunt.registerTask('serve', ['connect:webserver']);
 
+    //travis
+    grunt.registerTask('travis', 'test');
 };
