@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html ng-app="demoapp">
   <head>
-    <script src="http://cdn.leafletjs.com/leaflet-0.7/leaflet.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.2/angular.min.js"></script>
-    <script src="../dist/angular-leaflet-directive.min.js"></script>
+    <script src="http://cdn.leafletjs.com/leaflet-0.7/leaflet.js"></script>
+    <script src="http://tombatossals.github.io/angular-leaflet-directive/dist/angular-leaflet-directive.min.js"></script>
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7/leaflet.css" />
     <script>
-        var app = angular.module("demoapp", ["leaflet-directive"]);
+        var app = angular.module("demoapp", ['leaflet-directive']);
         app.controller("DemoController", [ "$scope", function($scope) {
-                // Nothing here!
+            // Nothing here!
         }]);
     </script>
   </head>
