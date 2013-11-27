@@ -240,7 +240,7 @@ module.exports = function(grunt) {
     //single run tests
     grunt.registerTask('test', ['jshint','test:unit', 'test:e2e']);
     grunt.registerTask('test:unit', ['karma:unit']);
-    grunt.registerTask('test:e2e', ['connect:testserver','protractor:singlerun']);
+    grunt.registerTask('test:e2e', ['connect:testserver', 'protractor:singlerun']);
 
     //autotest and watch tests
     grunt.registerTask('autotest', ['karma:unit_auto']);
@@ -265,5 +265,5 @@ module.exports = function(grunt) {
     grunt.registerTask('serve', ['connect:webserver']);
 
     //travis
-    grunt.registerTask('travis', 'test');
+    grunt.registerTask('travis', 'test:unit');
 };
