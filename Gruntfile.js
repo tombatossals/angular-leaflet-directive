@@ -46,6 +46,7 @@ module.exports = function(grunt) {
             coverage: {
                 options: {
                     base: 'coverage/',
+                    directory: 'coverage/',
                     port: 5555,
                     keepalive: true
                 }
@@ -55,7 +56,7 @@ module.exports = function(grunt) {
         protractor: {
             options: {
                 keepAlive: true,
-                configFile: "config/protractor.conf.js"
+                configFile: "test/protractor.conf.js"
             },
             singlerun: {},
             auto: {
@@ -145,22 +146,23 @@ module.exports = function(grunt) {
 
         karma: {
             unit: {
-                configFile: 'config/karma-unit.conf.js',
+                configFile: 'test/karma-unit.conf.js',
                 autoWatch: false,
                 singleRun: true
             },
             unit_auto: {
-                configFile: 'config/karma-unit.conf.js',
+                configFile: 'test/karma-unit.conf.js',
                 autoWatch: true,
                 singleRun: false
             },
             unit_coverage: {
-                configFile: 'config/karma-unit.conf.js',
+                configFile: 'test/karma-unit.conf.js',
                 autoWatch: false,
                 singleRun: true,
+                //logLevel: 'DEBUG',
                 reporters: ['progress', 'coverage'],
                 preprocessors: {
-                    'app/scripts/*.js': ['coverage']
+                    'dist/angular-leaflet-directive.js': ['coverage']
                 },
                 coverageReporter: {
                     type : 'html',
@@ -245,11 +247,11 @@ module.exports = function(grunt) {
     //autotest and watch tests
     grunt.registerTask('autotest', ['karma:unit_auto']);
     grunt.registerTask('autotest:unit', ['karma:unit_auto']);
-    grunt.registerTask('autotest:e2e', ['connect:testserver','shell:selenium','watch:protractor']);
+    grunt.registerTask('autotest:e2e', ['connect:testserver', 'shell:selenium', 'watch:protractor']);
 
     //coverage testing
     grunt.registerTask('test:coverage', ['karma:unit_coverage']);
-    grunt.registerTask('coverage', ['karma:unit_coverage','open:coverage','connect:coverage']);
+    grunt.registerTask('coverage', ['karma:unit_coverage', 'open:coverage', 'connect:coverage']);
 
     //installation-related
     grunt.registerTask('install', ['update','shell:protractor_install']);

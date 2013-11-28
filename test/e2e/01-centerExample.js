@@ -18,16 +18,9 @@ describe('Loading center-example.html', function() {
         });
     });
 
-    it('should update the map zoom value if changed the input zoom control', function() {
+    xit('should update the zoom value if the map is dragged', function() {
         driver.findElement(protractor.By.xpath('/html/body/form/input[3]')).sendKeys("2");
-        driver.findElement(protractor.By.xpath("//body[@ng-controller='DemoController']")).then(function(controller) {
-            //driver.executeScript("return angular.element(arguments[0]).scope().getMap", controller).then(function(getMap) {
-                //getMap().then(function(map) {
-                    //console.log(map.getZoom());
-                //});
-            //});
-            //.evaluate('leafletData.getMap()'));
-        });
+        ptor.sleep(3000);
     });
 
 });

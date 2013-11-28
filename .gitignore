@@ -11,3 +11,4 @@ dist/angular-leaflet-directive.ngmin.js
 dist/angular-leaflet-directive.min.no-header.js
 selenium
 coverage
+bower_components
