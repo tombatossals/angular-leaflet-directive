@@ -15,6 +15,9 @@ module.exports = function(grunt) {
                     async: true
                 }
             },
+            bower_install: {
+                command: './node_modules/.bin/bower install'
+            },
             protractor_install: {
                 command: 'node ./node_modules/protractor/bin/install_selenium_standalone'
             },
@@ -209,6 +212,7 @@ module.exports = function(grunt) {
                     footer: '\n}());'
                 },
                 src: [
+                    'bower_components/angularjs-scope.safeapply/src/Scope.SafeApply.js',
                     'src/directives/leaflet.js',
                     'src/directives/center.js',
                     'src/directives/tiles.js',
@@ -254,7 +258,7 @@ module.exports = function(grunt) {
     grunt.registerTask('coverage', ['karma:unit_coverage', 'open:coverage', 'connect:coverage']);
 
     //installation-related
-    grunt.registerTask('install', ['update','shell:protractor_install']);
+    grunt.registerTask('install', ['update', 'shell:bower_install', 'shell:protractor_install']);
     grunt.registerTask('update', ['shell:npm_install']);
 
     //defaults
