@@ -15,10 +15,12 @@
   ],
   "license": "MIT",
   "dependencies": {},
+  "peerdependencies": {
+    "grunt-cli": "latest"
+  },
   "devDependencies": {
     "matchdep": "latest",
     "grunt": "latest",
-    "grunt-cli": "latest",
     "grunt-contrib-connect": "latest",
     "grunt-contrib-jshint": "latest",
     "grunt-shell": "latest",
@@ -28,6 +30,7 @@
     "grunt-contrib-concat": "latest",
     "grunt-contrib-uglify": "latest",
     "grunt-open": "latest",
+    "grunt-bower-task": "latest",
     "karma-script-launcher": "latest",
     "karma-firefox-launcher": "latest",
     "karma-chrome-launcher": "latest",
