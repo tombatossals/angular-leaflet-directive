@@ -15,9 +15,6 @@
   ],
   "license": "MIT",
   "dependencies": {},
-  "peerdependencies": {
-    "grunt-cli": "latest"
-  },
   "devDependencies": {
     "matchdep": "latest",
     "grunt": "latest",
