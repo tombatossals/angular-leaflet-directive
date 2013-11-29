@@ -78,10 +78,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
                 crs: defaults.crs
             });
 
-            // Resolve the map object to the promises
             _leafletMap.resolve(map);
-            leafletData.setMap(map, attrs.id);
-
             if (!isDefined(attrs.center)) {
                 $log.warn("[AngularJS - Leaflet] 'center' is undefined in the current scope, did you forget to initialize it?");
                 map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
@@ -110,6 +107,10 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
                 }
             }
 
+            // Resolve the map object to the promises
+            map.whenReady(function() {
+                leafletData.setMap(map, attrs.id);
+            });
         }
     };
 });

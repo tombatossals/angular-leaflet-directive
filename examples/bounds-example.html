@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7/leaflet.css" />
     <script>
         var app = angular.module("demoapp", ["leaflet-directive"]);
-        app.controller("DemoController", [ "$scope", function($scope) {
+        app.controller("DemoController", [ "$scope", "leafletData", function($scope, leafletData) {
            angular.extend($scope, {
                london: {
                    lat: 51.505,
@@ -24,6 +24,10 @@
                         lng:-0.087890625,
                    }
                }
+           });
+           leafletData.getMap().then(function(map){
+                 var bounds = map.getBounds();
+                 console.log('northwest=' + bounds.getNorthWest().toString() + '&northeast=' + bounds.getNorthEast().toString() + '&southeast=' + bounds.getSouthEast().toString() + '&southwest=' + bounds.getSouthWest().toString());
            });
        }]);
     </script>
