@@ -10,6 +10,7 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                 Helpers = leafletHelpers,
                 isDefined = leafletHelpers.isDefined,
                 isDefinedAndNotNull = leafletHelpers.isDefinedAndNotNull,
+                MarkerClusterPlugin = leafletHelpers.MarkerClusterPlugin,
                 isString = leafletHelpers.isString,
                 isNumber  = leafletHelpers.isNumber,
                 safeApply = leafletHelpers.safeApply,
@@ -106,9 +107,14 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
 
                             // Marker belongs to a layer group?
                             if (!isDefined(marker_data.layer)) {
+
                                 if (isDefined(marker_data.group)) {
+                                    if (!MarkerClusterPlugin.isLoaded()) {
+                                        $log.error("[AngularJS - Leaflet] The MarkerCluster plugin is not loaded.");
+                                        return;
+                                    }
                                     if (!isDefined(groups[marker_data.group])) {
-                                        groups[marker_data.group] = L.MarkerClusterGroup();
+                                        groups[marker_data.group] = new L.MarkerClusterGroup();
                                         map.addLayer(groups[marker_data.group]);
                                     }
                                     groups[marker_data.group].addLayer(marker);
@@ -116,14 +122,17 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                                     // We do not have a layer attr, so the marker goes to the map layer
                                     map.addLayer(marker);
                                 }
+
                                 if (leafletHelpers.LabelPlugin.isLoaded() && isDefined(marker_data.label) && isDefined(marker_data.label.options)) {
                                     if (marker_data.label.options.noHide === true) {
                                         marker.showLabel();
                                     }
                                 }
+
                                 if (marker_data.focus === true) {
                                     marker.openPopup();
                                 }
+
                             } else if (isString(marker_data.layer)) {
                                 if (isDefinedAndNotNull(layers)) {
                                     // We have layers so continue testing
