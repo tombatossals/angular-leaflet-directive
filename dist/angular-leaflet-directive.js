@@ -682,7 +682,7 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                             if (!isDefined(marker_data.layer)) {
                                 if (isDefined(marker_data.group)) {
                                     if (!isDefined(groups[marker_data.group])) {
-                                        groups[marker_data.group] = L.markerClusterGroup();
+                                        groups[marker_data.group] = L.MarkerClusterGroup();
                                         map.addLayer(groups[marker_data.group]);
                                     }
                                     groups[marker_data.group].addLayer(marker);
