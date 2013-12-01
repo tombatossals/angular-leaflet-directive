@@ -41,16 +41,16 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
             }
         };
     }
+
     var isDefined = leafletHelpers.isDefined,
-        getDefer = leafletHelpers.getDefer,
-        getUnresolvedDefer = leafletHelpers.getUnresolvedDefer,
+        obtainEffectiveMapId = leafletHelpers.obtainEffectiveMapId,
         defaults = {};
 
     // Get the _defaults dictionary, and override the properties defined by the user
     return {
         getDefaults: function (scopeId) {
-            var defer = getDefer(defaults, scopeId);
-            return defer.promise;
+            var mapId = obtainEffectiveMapId(defaults, scopeId);
+            return defaults[mapId];
         },
 
         setDefaults: function(userDefaults, scopeId) {
@@ -84,9 +84,8 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
                 }
             }
 
-            var leafletDefaults = getUnresolvedDefer(defaults, scopeId);
-            leafletDefaults.resolve(newDefaults);
-
+            var mapId = obtainEffectiveMapId(defaults, scopeId);
+            defaults[mapId] = newDefaults;
             return newDefaults;
         }
     };

@@ -43,14 +43,12 @@ describe('Directive: leaflet', function() {
     it('should set default tile if not tiles nor layers are provided', function() {
         var element = angular.element('<leaflet></leaflet>');
         element = $compile(element)($rootScope);
-        var leafletTiles, defaults;
+        var leafletTiles;
         leafletData.getTiles().then(function(tiles) {
             leafletTiles = tiles;
         });
-        leafletMapDefaults.getDefaults().then(function(d) {
-            defaults = d;
-        });
         $rootScope.$digest();
+        var defaults = leafletMapDefaults.getDefaults();
         expect(leafletTiles._url).toEqual(defaults.tileLayer);
     });
 
@@ -116,15 +114,12 @@ describe('Directive: leaflet', function() {
         });
         var element = angular.element('<leaflet defaults="defaults"></leaflet>');
         element = $compile(element)($rootScope);
-        var leafletTiles, defaults;
+        var leafletTiles;
         leafletData.getTiles().then(function(tiles) {
             leafletTiles = tiles;
         });
-        leafletMapDefaults.getDefaults().then(function(d) {
-            defaults = d;
-        });
-
         $rootScope.$digest();
+        var defaults = leafletMapDefaults.getDefaults();
         expect(leafletTiles.options.detectRetina).toEqual(true);
         expect(leafletTiles.options.opacity).toEqual(0.8);
         expect(leafletTiles._url).toEqual("http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png");

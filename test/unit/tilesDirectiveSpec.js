@@ -24,9 +24,8 @@ describe('Directive: leaflet', function() {
         var element = angular.element('<leaflet tiles="tiles"></leaflet>');
         element = $compile(element)($rootScope);
         leafletData.getTiles().then(function(leafletTiles) {
-            leafletMapDefaults.getDefaults().then(function(defaults) {
-                expect(leafletTiles._url).toEqual(defaults.tileLayer);
-            });
+            var defaults = leafletMapDefaults.getDefaults();
+            expect(leafletTiles._url).toEqual(defaults.tileLayer);
         });
     });
 

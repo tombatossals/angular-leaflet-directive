@@ -183,7 +183,6 @@ module.exports = function(grunt) {
                     'ngmin',
                     'uglify',
                     'test:unit',
-                    'test:e2e',
                     'concat:license'
                 ]
             },
