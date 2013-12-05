@@ -24,7 +24,6 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                     groups = {},
                     getLayers;
 
-
                 if (isDefined(controller[1])) {
                     getLayers = controller[1].getLayers;
                 } else {
@@ -54,6 +53,11 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                 if (!isDefined(markers)) {
                     return;
                 }
+
+                var shouldWatch = (
+                    leafletScope.watchMarkers === undefined ||
+                    leafletScope.watchMarkers === 'true' || leafletScope.watchMarkers === true
+                );
 
                 getLayers().then(function(layers) {
                     leafletData.setMarkers(leafletMarkers, attrs.id);
@@ -100,7 +104,7 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                                 }
                             }
                         }
-                    }, true);
+                    }, shouldWatch);
 
                     function createMarker(scope_watch_name, marker_data, map) {
                         var marker = buildMarker(marker_data);
@@ -306,317 +310,319 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                             });
                         }
 
-                        var clearWatch = leafletScope.$watch(scope_watch_name, function(data, old_data) {
-                            if (!isDefinedAndNotNull(data)) {
-                                marker.closePopup();
-                                // There is no easy way to know if a marker is added to a layer, so we search for it
-                                // if there are overlays
-                                if (isDefinedAndNotNull(layers)) {
-                                    if (isDefined(layers.overlays)) {
-                                        for (var key in layers.overlays) {
-                                            if (layers.overlays[key] instanceof L.LayerGroup) {
-                                                if (layers.overlays[key].hasLayer(marker)) {
-                                                    layers.overlays[key].removeLayer(marker);
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                map.removeLayer(marker);
-                                clearWatch();
-                                return;
-                            }
-
-                            if (isDefined(old_data)) {
-
-                                //TODO Check for layers !== null
-                                //TODO Check for layers.overlays !== null !== undefined
-                                // It is possible the the layer has been removed or the layer marker does not exist
-
-                                // Update the layer group if present or move it to the map if not
-                                if (!isString(data.layer)) {
-                                    // There is no layer information, we move the marker to the map if it was in a layer group
-                                    if (isString(old_data.layer)) {
-                                        // Remove from the layer group that is supposed to be
-                                        if (isDefined(layers.overlays[old_data.layer])) {
-                                            if (layers.overlays[old_data.layer].hasLayer(marker)) {
-                                                layers.overlays[old_data.layer].removeLayer(marker);
-                                                // If the marker had a popup we close it because we do not know if the popup in on the map
-                                                // or on the layer group. This is ineficient, but as we can't check if the popup is opened
-                                                // in Leaflet we can't determine if it has to be open in the new layer. So removing the
-                                                // layer group of a marker always closes the popup.
-                                                // TODO: Improve popup behaviour when removing a marker from a layer group
-                                                marker.closePopup();
-                                            }
-                                        }
-                                        // Test if it is not on the map and add it
-                                        if (!map.hasLayer(marker)) {
-                                            map.addLayer(marker);
-                                        }
-                                    }
-                                } else if (isDefinedAndNotNull(old_data.layer) || old_data.layer !== data.layer) {
-                                    // If it was on a layer group we have to remove it
-                                    if (typeof old_data.layer === 'string') {
-                                        if (layers.overlays[old_data.layer] !== undefined) {
-                                            if (layers.overlays[old_data.layer].hasLayer(marker)) {
-                                                layers.overlays[old_data.layer].removeLayer(marker);
-                                            }
-                                        }
-                                    }
-                                    // If the marker had a popup we close it because we do not know how the new layer
-                                    // will be. This is ineficient, but as we can't check if the opoup is opened in Leaflet
-                                    // we can't determine if it has to be open in the new layer. So changing the layer group
-                                    // of a marker always closes the popup.
-                                    // TODO: Improve popup behaviour when changing a marker from a layer group
+                        if(shouldWatch) {
+                            var clearWatch = leafletScope.$watch(scope_watch_name, function(data, old_data) {
+                                if (!isDefinedAndNotNull(data)) {
                                     marker.closePopup();
-                                    // Remove it from the map in case the new layer is hidden or there is an error in the new layer
-                                    if (map.hasLayer(marker)) {
-                                        map.removeLayer(marker);
-                                    }
-                                    // The data.layer is defined so we add the marker to the layer if it is different from the old data
-                                    if (layers.overlays[data.layer] !== undefined) {
-                                        // Is a group layer?
-                                        var layerGroup = layers.overlays[data.layer];
-                                        if (layerGroup instanceof L.LayerGroup) {
-                                            // The marker goes to a correct layer group, so first of all we add it
-                                            layerGroup.addLayer(marker);
-                                            // The marker is automatically added to the map depending on the visibility
-                                            // of the layer, so we only have to open the popup if the marker is in the map
-                                            if (map.hasLayer(marker)) {
-                                                if (data.focus === true) {
-                                                    marker.openPopup();
-                                                }
-                                            }
-                                        } else {
-                                            $log.error('[AngularJS - Leaflet] A marker can only be added to a layer of type "group"');
-                                        }
-                                    } else {
-                                        $log.error('[AngularJS - Leaflet] You must use a name of an existing layer');
-                                    }
-                                } else {
-                                    // Never has to enter here...
-                                }
-
-                                // Update the draggable property
-                                if (data.draggable === undefined || data.draggable === null || data.draggable !== true) {
-                                    // If there isn't or wasn't the draggable property or is false and previously true update the dragging
-                                    // the !== true prevents for not boolean values in the draggable property
-                                    if (old_data.draggable !== undefined && old_data.draggable !== null && old_data.draggable === true) {
-                                        if (marker.dragging) {
-                                            marker.dragging.disable();
-                                        }
-                                    }
-                                } else if (old_data.draggable === undefined || old_data.draggable === null || old_data.draggable !== true) {
-                                    // The data.draggable property must be true so we update if there wasn't a previous value or it wasn't true
-                                    if (marker.dragging) {
-                                        marker.dragging.enable();
-                                    } else {
-                                        if (L.Handler.MarkerDrag) {
-                                            marker.dragging = new L.Handler.MarkerDrag(marker);
-                                            marker.options.draggable = true;
-                                            marker.dragging.enable();
-                                        }
-                                    }
-                                }
-
-                                // Update the icon property
-                                if (data.icon === undefined || data.icon === null || typeof data.icon !== 'object') {
-                                    // If there is no icon property or it's not an object
-                                    if (old_data.icon !== undefined && old_data.icon !== null && typeof old_data.icon === 'object') {
-                                        // If there was an icon before restore to the default
-                                        marker.setIcon(new LeafletIcon());
-                                        marker.closePopup();
-                                        marker.unbindPopup();
-                                        if (data.message !== undefined && data.message !== null && typeof data.message === 'string' && data.message !== "") {
-                                            marker.bindPopup(data.message);
-                                        }
-                                    }
-                                } else if (old_data.icon === undefined || old_data.icon === null || typeof old_data.icon !== 'object') {
-                                    // The data.icon exists so we create a new icon if there wasn't an icon before
-                                    var dragA = false;
-                                    if (marker.dragging) {
-                                        dragA = marker.dragging.enabled();
-                                    }
-                                    if (Helpers.AwesomeMarkersPlugin.is(data.icon)) {
-                                        // This icon is a L.AwesomeMarkers.Icon so it is using the AwesomeMarker PlugIn
-                                        marker.setIcon(data.icon);
-                                        // As the new icon creates a new DOM object some elements, as drag, are reseted.
-                                    } else if (Helpers.Leaflet.DivIcon.is(data.icon) || Helpers.Leaflet.Icon.is(data.icon)) {
-                                        // This is a Leaflet.DivIcon or a Leaflet.Icon
-                                        marker.setIcon(data.icon);
-                                    } else {
-                                        // This icon is a icon set in the model trough options
-                                        marker.setIcon(new LeafletIcon(data.icon));
-                                    }
-                                    if (dragA) {
-                                        marker.dragging.enable();
-                                    }
-                                    marker.closePopup();
-                                    marker.unbindPopup();
-                                    if (data.message !== undefined && data.message !== null && typeof data.message === 'string' && data.message !== "") {
-                                        marker.bindPopup(data.message);
-                                    }
-                                } else {
-                                    if (Helpers.AwesomeMarkersPlugin.is(data.icon)) {
-                                        // This icon is a L.AwesomeMarkers.Icon so it is using the AwesomeMarker PlugIn
-                                        if (!Helpers.AwesomeMarkersPlugin.equal(data.icon, old_data.icon)) {
-                                            var dragD = false;
-                                            if (marker.dragging) {
-                                                dragD = marker.dragging.enabled();
-                                            }
-                                            marker.setIcon(data.icon);
-                                            // As the new icon creates a new DOM object some elements, as drag, are reseted.
-                                            if (dragD) {
-                                                marker.dragging.enable();
-                                            }
-                                            //TODO: Improve depending on anchorPopup
-                                            marker.closePopup();
-                                            marker.unbindPopup();
-                                            if (data.message !== undefined && data.message !== null && typeof data.message === 'string' && data.message !== "") {
-                                                marker.bindPopup(data.message);
-                                            }
-                                        }
-                                    } else if (Helpers.Leaflet.DivIcon.is(data.icon)) {
-                                        // This is a Leaflet.DivIcon
-                                        if (!Helpers.Leaflet.DivIcon.equal(data.icon, old_data.icon)) {
-                                            var dragE = false;
-                                            if (marker.dragging) {
-                                                dragE = marker.dragging.enabled();
-                                            }
-                                            marker.setIcon(data.icon);
-                                            // As the new icon creates a new DOM object some elements, as drag, are reseted.
-                                            if (dragE) {
-                                                marker.dragging.enable();
-                                            }
-                                            //TODO: Improve depending on anchorPopup
-                                            marker.closePopup();
-                                            marker.unbindPopup();
-                                            if (data.message !== undefined && data.message !== null && typeof data.message === 'string' && data.message !== "") {
-                                                marker.bindPopup(data.message);
-                                            }
-                                        }
-                                    } else if (Helpers.Leaflet.Icon.is(data.icon)) {
-                                        // This is a Leaflet.DivIcon
-                                        if (!Helpers.Leaflet.Icon.equal(data.icon, old_data.icon)) {
-                                            var dragF = false;
-                                            if (marker.dragging) {
-                                                dragF = marker.dragging.enabled();
-                                            }
-                                            marker.setIcon(data.icon);
-                                            // As the new icon creates a new DOM object some elements, as drag, are reseted.
-                                            if (dragF) {
-                                                marker.dragging.enable();
-                                            }
-                                            //TODO: Improve depending on anchorPopup
-                                            marker.closePopup();
-                                            marker.unbindPopup();
-                                            if (data.message !== undefined && data.message !== null && typeof data.message === 'string' && data.message !== "") {
-                                                marker.bindPopup(data.message);
-                                            }
-                                        }
-                                    } else {
-                                        // This icon is an icon defined in the marker model through options
-                                        // There is an icon and there was an icon so if they are different we create a new icon
-                                        if (JSON.stringify(data.icon) !== JSON.stringify(old_data.icon)) {
-                                            var dragG = false;
-                                            if (marker.dragging) {
-                                                dragG = marker.dragging.enabled();
-                                            }
-                                            marker.setIcon(new LeafletIcon(data.icon));
-                                            if (dragG) {
-                                                marker.dragging.enable();
-                                            }
-                                            //TODO: Improve depending on anchorPopup
-                                            marker.closePopup();
-                                            marker.unbindPopup();
-                                            if (data.message !== undefined && data.message !== null && typeof data.message === 'string' && data.message !== "") {
-                                                marker.bindPopup(data.message);
-                                            }
-                                        }
-                                    }
-                                }
-
-                                // Update the Popup message property
-                                if (data.message === undefined || data.message === null || typeof data.message !== 'string' || data.message === "") {
-                                    // There is no popup to show, so if it has previously existed it must be unbinded
-                                    if (old_data.message !== undefined && old_data.message !== null && typeof old_data.message === 'string' && old_data.message !== "") {
-                                        marker.closePopup();
-                                        marker.unbindPopup();
-                                    }
-                                } else {
-                                    // There is some text in the popup, so we must show the text or update existing
-                                    if (old_data.message === undefined || old_data.message === null || typeof old_data.message !== 'string' || old_data.message === "") {
-                                        // There was no message before so we create it
-                                        marker.bindPopup(data.message);
-                                        if (data.focus === true) {
-                                            // If the focus is set, we must open the popup, because we do not know if it was opened before
-                                            marker.openPopup();
-                                        }
-                                    } else if (data.message !== old_data.message) {
-                                        // There was a different previous message so we update it
-                                        marker.setPopupContent(data.message);
-                                    }
-                                }
-
-                                // Update the focus property
-                                if (data.focus === undefined || data.focus === null || data.focus !== true) {
-                                    // If there is no focus property or it's false
-                                    if (old_data.focus !== undefined && old_data.focus !== null && old_data.focus === true) {
-                                        // If there was a focus property and was true we turn it off
-                                        marker.closePopup();
-                                    }
-                                } else if (old_data.focus === undefined || old_data.focus === null || old_data.focus !== true) {
-                                    // The data.focus property must be true so we update if there wasn't a previous value or it wasn't true
-                                    marker.openPopup();
-                                } else if(old_data.focus === true && data.focus === true){
-                                    // Reopen the popup when focus is still true
-                                    marker.openPopup();
-                                }
-
-                                // Update the lat-lng property (always present in marker properties)
-                                if (!(isNumber(data.lat) && isNumber(data.lng))) {
-                                    $log.warn('There are problems with lat-lng data, please verify your marker model');
-                                    // Remove the marker from the layers and map if it is not valid
+                                    // There is no easy way to know if a marker is added to a layer, so we search for it
+                                    // if there are overlays
                                     if (isDefinedAndNotNull(layers)) {
-                                        if (isDefinedAndNotNull(layers.overlays)) {
-                                            for (var olname in layers.overlays) {
-                                                if (layers.overlays[olname] instanceof L.LayerGroup || Helpers.MarkerClusterPlugin.is(layers.overlays[olname])) {
-                                                    if (layers.overlays[olname].hasLayer(marker)) {
-                                                        layers.overlays[olname].removeLayer(marker);
+                                        if (isDefined(layers.overlays)) {
+                                            for (var key in layers.overlays) {
+                                                if (layers.overlays[key] instanceof L.LayerGroup) {
+                                                    if (layers.overlays[key].hasLayer(marker)) {
+                                                        layers.overlays[key].removeLayer(marker);
                                                     }
                                                 }
                                             }
                                         }
                                     }
                                     map.removeLayer(marker);
-                                } else {
-                                    var cur_latlng = marker.getLatLng();
-                                    // On dragend event, scope will be updated, which
-                                    // triggers this watch expression. Then we call
-                                    // setLatLng and triggers move event on marker and
-                                    // causes digest already in progress error.
-                                    //
-                                    // This check is to make sure we don't trigger move
-                                    // event manually after dragend, which is redundant
-                                    // anyway. Because before dragend event fired, marker
-                                    // sate is already updated by leaflet.
-                                    if (cur_latlng.lat !== data.lat || cur_latlng.lng !== data.lng) {
-                                        // if the marker is in a clustermarker layer it has to be removed and added again to the layer
-                                        var isCluster = false;
-                                        if (isString(data.layer)) {
-                                            if (Helpers.MarkerClusterPlugin.is(layers.overlays[data.layer])) {
-                                                layers.overlays[data.layer].removeLayer(marker);
-                                                isCluster = true;
+                                    clearWatch();
+                                    return;
+                                }
+
+                                if (isDefined(old_data)) {
+
+                                    //TODO Check for layers !== null
+                                    //TODO Check for layers.overlays !== null !== undefined
+                                    // It is possible the the layer has been removed or the layer marker does not exist
+
+                                    // Update the layer group if present or move it to the map if not
+                                    if (!isString(data.layer)) {
+                                        // There is no layer information, we move the marker to the map if it was in a layer group
+                                        if (isString(old_data.layer)) {
+                                            // Remove from the layer group that is supposed to be
+                                            if (isDefined(layers.overlays[old_data.layer])) {
+                                                if (layers.overlays[old_data.layer].hasLayer(marker)) {
+                                                    layers.overlays[old_data.layer].removeLayer(marker);
+                                                    // If the marker had a popup we close it because we do not know if the popup in on the map
+                                                    // or on the layer group. This is ineficient, but as we can't check if the popup is opened
+                                                    // in Leaflet we can't determine if it has to be open in the new layer. So removing the
+                                                    // layer group of a marker always closes the popup.
+                                                    // TODO: Improve popup behaviour when removing a marker from a layer group
+                                                    marker.closePopup();
+                                                }
+                                            }
+                                            // Test if it is not on the map and add it
+                                            if (!map.hasLayer(marker)) {
+                                                map.addLayer(marker);
                                             }
                                         }
-                                        marker.setLatLng([data.lat, data.lng]);
-                                        if (isCluster) {
-                                            layers.overlays[data.layer].addLayer(marker);
+                                    } else if (isDefinedAndNotNull(old_data.layer) || old_data.layer !== data.layer) {
+                                        // If it was on a layer group we have to remove it
+                                        if (typeof old_data.layer === 'string') {
+                                            if (layers.overlays[old_data.layer] !== undefined) {
+                                                if (layers.overlays[old_data.layer].hasLayer(marker)) {
+                                                    layers.overlays[old_data.layer].removeLayer(marker);
+                                                }
+                                            }
+                                        }
+                                        // If the marker had a popup we close it because we do not know how the new layer
+                                        // will be. This is ineficient, but as we can't check if the opoup is opened in Leaflet
+                                        // we can't determine if it has to be open in the new layer. So changing the layer group
+                                        // of a marker always closes the popup.
+                                        // TODO: Improve popup behaviour when changing a marker from a layer group
+                                        marker.closePopup();
+                                        // Remove it from the map in case the new layer is hidden or there is an error in the new layer
+                                        if (map.hasLayer(marker)) {
+                                            map.removeLayer(marker);
+                                        }
+                                        // The data.layer is defined so we add the marker to the layer if it is different from the old data
+                                        if (layers.overlays[data.layer] !== undefined) {
+                                            // Is a group layer?
+                                            var layerGroup = layers.overlays[data.layer];
+                                            if (layerGroup instanceof L.LayerGroup) {
+                                                // The marker goes to a correct layer group, so first of all we add it
+                                                layerGroup.addLayer(marker);
+                                                // The marker is automatically added to the map depending on the visibility
+                                                // of the layer, so we only have to open the popup if the marker is in the map
+                                                if (map.hasLayer(marker)) {
+                                                    if (data.focus === true) {
+                                                        marker.openPopup();
+                                                    }
+                                                }
+                                            } else {
+                                                $log.error('[AngularJS - Leaflet] A marker can only be added to a layer of type "group"');
+                                            }
+                                        } else {
+                                            $log.error('[AngularJS - Leaflet] You must use a name of an existing layer');
+                                        }
+                                    } else {
+                                        // Never has to enter here...
+                                    }
+
+                                    // Update the draggable property
+                                    if (data.draggable === undefined || data.draggable === null || data.draggable !== true) {
+                                        // If there isn't or wasn't the draggable property or is false and previously true update the dragging
+                                        // the !== true prevents for not boolean values in the draggable property
+                                        if (old_data.draggable !== undefined && old_data.draggable !== null && old_data.draggable === true) {
+                                            if (marker.dragging) {
+                                                marker.dragging.disable();
+                                            }
+                                        }
+                                    } else if (old_data.draggable === undefined || old_data.draggable === null || old_data.draggable !== true) {
+                                        // The data.draggable property must be true so we update if there wasn't a previous value or it wasn't true
+                                        if (marker.dragging) {
+                                            marker.dragging.enable();
+                                        } else {
+                                            if (L.Handler.MarkerDrag) {
+                                                marker.dragging = new L.Handler.MarkerDrag(marker);
+                                                marker.options.draggable = true;
+                                                marker.dragging.enable();
+                                            }
+                                        }
+                                    }
+
+                                    // Update the icon property
+                                    if (data.icon === undefined || data.icon === null || typeof data.icon !== 'object') {
+                                        // If there is no icon property or it's not an object
+                                        if (old_data.icon !== undefined && old_data.icon !== null && typeof old_data.icon === 'object') {
+                                            // If there was an icon before restore to the default
+                                            marker.setIcon(new LeafletIcon());
+                                            marker.closePopup();
+                                            marker.unbindPopup();
+                                            if (data.message !== undefined && data.message !== null && typeof data.message === 'string' && data.message !== "") {
+                                                marker.bindPopup(data.message);
+                                            }
+                                        }
+                                    } else if (old_data.icon === undefined || old_data.icon === null || typeof old_data.icon !== 'object') {
+                                        // The data.icon exists so we create a new icon if there wasn't an icon before
+                                        var dragA = false;
+                                        if (marker.dragging) {
+                                            dragA = marker.dragging.enabled();
+                                        }
+                                        if (Helpers.AwesomeMarkersPlugin.is(data.icon)) {
+                                            // This icon is a L.AwesomeMarkers.Icon so it is using the AwesomeMarker PlugIn
+                                            marker.setIcon(data.icon);
+                                            // As the new icon creates a new DOM object some elements, as drag, are reseted.
+                                        } else if (Helpers.Leaflet.DivIcon.is(data.icon) || Helpers.Leaflet.Icon.is(data.icon)) {
+                                            // This is a Leaflet.DivIcon or a Leaflet.Icon
+                                            marker.setIcon(data.icon);
+                                        } else {
+                                            // This icon is a icon set in the model trough options
+                                            marker.setIcon(new LeafletIcon(data.icon));
+                                        }
+                                        if (dragA) {
+                                            marker.dragging.enable();
+                                        }
+                                        marker.closePopup();
+                                        marker.unbindPopup();
+                                        if (data.message !== undefined && data.message !== null && typeof data.message === 'string' && data.message !== "") {
+                                            marker.bindPopup(data.message);
+                                        }
+                                    } else {
+                                        if (Helpers.AwesomeMarkersPlugin.is(data.icon)) {
+                                            // This icon is a L.AwesomeMarkers.Icon so it is using the AwesomeMarker PlugIn
+                                            if (!Helpers.AwesomeMarkersPlugin.equal(data.icon, old_data.icon)) {
+                                                var dragD = false;
+                                                if (marker.dragging) {
+                                                    dragD = marker.dragging.enabled();
+                                                }
+                                                marker.setIcon(data.icon);
+                                                // As the new icon creates a new DOM object some elements, as drag, are reseted.
+                                                if (dragD) {
+                                                    marker.dragging.enable();
+                                                }
+                                                //TODO: Improve depending on anchorPopup
+                                                marker.closePopup();
+                                                marker.unbindPopup();
+                                                if (data.message !== undefined && data.message !== null && typeof data.message === 'string' && data.message !== "") {
+                                                    marker.bindPopup(data.message);
+                                                }
+                                            }
+                                        } else if (Helpers.Leaflet.DivIcon.is(data.icon)) {
+                                            // This is a Leaflet.DivIcon
+                                            if (!Helpers.Leaflet.DivIcon.equal(data.icon, old_data.icon)) {
+                                                var dragE = false;
+                                                if (marker.dragging) {
+                                                    dragE = marker.dragging.enabled();
+                                                }
+                                                marker.setIcon(data.icon);
+                                                // As the new icon creates a new DOM object some elements, as drag, are reseted.
+                                                if (dragE) {
+                                                    marker.dragging.enable();
+                                                }
+                                                //TODO: Improve depending on anchorPopup
+                                                marker.closePopup();
+                                                marker.unbindPopup();
+                                                if (data.message !== undefined && data.message !== null && typeof data.message === 'string' && data.message !== "") {
+                                                    marker.bindPopup(data.message);
+                                                }
+                                            }
+                                        } else if (Helpers.Leaflet.Icon.is(data.icon)) {
+                                            // This is a Leaflet.DivIcon
+                                            if (!Helpers.Leaflet.Icon.equal(data.icon, old_data.icon)) {
+                                                var dragF = false;
+                                                if (marker.dragging) {
+                                                    dragF = marker.dragging.enabled();
+                                                }
+                                                marker.setIcon(data.icon);
+                                                // As the new icon creates a new DOM object some elements, as drag, are reseted.
+                                                if (dragF) {
+                                                    marker.dragging.enable();
+                                                }
+                                                //TODO: Improve depending on anchorPopup
+                                                marker.closePopup();
+                                                marker.unbindPopup();
+                                                if (data.message !== undefined && data.message !== null && typeof data.message === 'string' && data.message !== "") {
+                                                    marker.bindPopup(data.message);
+                                                }
+                                            }
+                                        } else {
+                                            // This icon is an icon defined in the marker model through options
+                                            // There is an icon and there was an icon so if they are different we create a new icon
+                                            if (JSON.stringify(data.icon) !== JSON.stringify(old_data.icon)) {
+                                                var dragG = false;
+                                                if (marker.dragging) {
+                                                    dragG = marker.dragging.enabled();
+                                                }
+                                                marker.setIcon(new LeafletIcon(data.icon));
+                                                if (dragG) {
+                                                    marker.dragging.enable();
+                                                }
+                                                //TODO: Improve depending on anchorPopup
+                                                marker.closePopup();
+                                                marker.unbindPopup();
+                                                if (data.message !== undefined && data.message !== null && typeof data.message === 'string' && data.message !== "") {
+                                                    marker.bindPopup(data.message);
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    // Update the Popup message property
+                                    if (data.message === undefined || data.message === null || typeof data.message !== 'string' || data.message === "") {
+                                        // There is no popup to show, so if it has previously existed it must be unbinded
+                                        if (old_data.message !== undefined && old_data.message !== null && typeof old_data.message === 'string' && old_data.message !== "") {
+                                            marker.closePopup();
+                                            marker.unbindPopup();
+                                        }
+                                    } else {
+                                        // There is some text in the popup, so we must show the text or update existing
+                                        if (old_data.message === undefined || old_data.message === null || typeof old_data.message !== 'string' || old_data.message === "") {
+                                            // There was no message before so we create it
+                                            marker.bindPopup(data.message);
+                                            if (data.focus === true) {
+                                                // If the focus is set, we must open the popup, because we do not know if it was opened before
+                                                marker.openPopup();
+                                            }
+                                        } else if (data.message !== old_data.message) {
+                                            // There was a different previous message so we update it
+                                            marker.setPopupContent(data.message);
+                                        }
+                                    }
+
+                                    // Update the focus property
+                                    if (data.focus === undefined || data.focus === null || data.focus !== true) {
+                                        // If there is no focus property or it's false
+                                        if (old_data.focus !== undefined && old_data.focus !== null && old_data.focus === true) {
+                                            // If there was a focus property and was true we turn it off
+                                            marker.closePopup();
+                                        }
+                                    } else if (old_data.focus === undefined || old_data.focus === null || old_data.focus !== true) {
+                                        // The data.focus property must be true so we update if there wasn't a previous value or it wasn't true
+                                        marker.openPopup();
+                                    } else if(old_data.focus === true && data.focus === true){
+                                        // Reopen the popup when focus is still true
+                                        marker.openPopup();
+                                    }
+
+                                    // Update the lat-lng property (always present in marker properties)
+                                    if (!(isNumber(data.lat) && isNumber(data.lng))) {
+                                        $log.warn('There are problems with lat-lng data, please verify your marker model');
+                                        // Remove the marker from the layers and map if it is not valid
+                                        if (isDefinedAndNotNull(layers)) {
+                                            if (isDefinedAndNotNull(layers.overlays)) {
+                                                for (var olname in layers.overlays) {
+                                                    if (layers.overlays[olname] instanceof L.LayerGroup || Helpers.MarkerClusterPlugin.is(layers.overlays[olname])) {
+                                                        if (layers.overlays[olname].hasLayer(marker)) {
+                                                            layers.overlays[olname].removeLayer(marker);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        map.removeLayer(marker);
+                                    } else {
+                                        var cur_latlng = marker.getLatLng();
+                                        // On dragend event, scope will be updated, which
+                                        // triggers this watch expression. Then we call
+                                        // setLatLng and triggers move event on marker and
+                                        // causes digest already in progress error.
+                                        //
+                                        // This check is to make sure we don't trigger move
+                                        // event manually after dragend, which is redundant
+                                        // anyway. Because before dragend event fired, marker
+                                        // sate is already updated by leaflet.
+                                        if (cur_latlng.lat !== data.lat || cur_latlng.lng !== data.lng) {
+                                            // if the marker is in a clustermarker layer it has to be removed and added again to the layer
+                                            var isCluster = false;
+                                            if (isString(data.layer)) {
+                                                if (Helpers.MarkerClusterPlugin.is(layers.overlays[data.layer])) {
+                                                    layers.overlays[data.layer].removeLayer(marker);
+                                                    isCluster = true;
+                                                }
+                                            }
+                                            marker.setLatLng([data.lat, data.lng]);
+                                            if (isCluster) {
+                                                layers.overlays[data.layer].addLayer(marker);
+                                            }
                                         }
                                     }
                                 }
-                            }
-                        }, true);
+                            }, true);
+                        }
                         return marker;
                     }
 
