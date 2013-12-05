@@ -605,7 +605,6 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                     return;
                 }
 
-                console.log(leafletScope.watchMarkers);
                 var shouldWatch = (
                     leafletScope.watchMarkers === undefined ||
                     leafletScope.watchMarkers === 'true' || leafletScope.watchMarkers === true
