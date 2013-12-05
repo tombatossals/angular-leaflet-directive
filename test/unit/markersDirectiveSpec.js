@@ -505,45 +505,79 @@ describe('Directive: leaflet', function() {
         expect(markers.paris._popup._content).toEqual('this is paris');
     });
 
-    it('should watch marker icon bindings', function() {
-        var leaf_icon = L.icon({
-            iconUrl: 'http://leafletjs.com/docs/images/leaf-green.png',
-            shadowUrl: 'http://leafletjs.com/docs/images/leaf-shadow.png',
-            iconSize:     [38, 95],
-            shadowSize:   [50, 64],
-            iconAnchor:   [22, 94],
-            shadowAnchor: [4, 62],
-            popupAnchor:  [-3, -76]
-        });
-        var default_icon = L.icon({
-            iconUrl: 'http://cdn.leafletjs.com/leaflet-0.5.1/images/marker-icon.png',
-            shadowUrl: 'http://cdn.leafletjs.com/leaflet-0.5.1/images/marker-shadow.png',
-            iconSize: [25, 41],
-            iconAnchor: [12, 40],
-            popupAnchor: [0, 40],
-            shadowSize: [41, 41],
-            shadowAnchor: [12, 40]
-        });
-        var mainMarkers = {
-            m1: {
-                lat: 51.505,
-                lng: -0.09,
-                message: "I'm a static marker",
-                icon: leaf_icon,
-            },
-        };
+    describe('setting markers watches', function(){
+        var leafIcon, defaultIcon, mainMarkers, scope;
+        var LEAF_URL = 'http://leafletjs.com/docs/images/leaf-green.png';
+        var DEFAULT_URL = 'http://cdn.leafletjs.com/leaflet-0.5.1/images/marker-icon.png';
 
-        angular.extend($rootScope, { markers: mainMarkers });
-        var element = angular.element('<leaflet markers="markers"></leaflet>');
-        element = $compile(element)($rootScope);
-        var markers;
-        leafletData.getMarkers().then(function(leafletMarkers) {
-            markers = leafletMarkers;
+        beforeEach(function(){
+            leafIcon = L.icon({
+                iconUrl: LEAF_URL,
+                shadowUrl: 'http://leafletjs.com/docs/images/leaf-shadow.png',
+                iconSize:     [38, 95],
+                shadowSize:   [50, 64],
+                iconAnchor:   [22, 94],
+                shadowAnchor: [4, 62],
+                popupAnchor:  [-3, -76]
+            });
+            defaultIcon = L.icon({
+                iconUrl: DEFAULT_URL,
+                shadowUrl: 'http://cdn.leafletjs.com/leaflet-0.5.1/images/marker-shadow.png',
+                iconSize: [25, 41],
+                iconAnchor: [12, 40],
+                popupAnchor: [0, 40],
+                shadowSize: [41, 41],
+                shadowAnchor: [12, 40]
+            });
+
+            mainMarkers = {
+                m1: {
+                    lat: 123,
+                    lng: 456,
+                    icon: leafIcon
+                }
+            };
+
+            scope = $rootScope.$new();
+            scope.markers = mainMarkers;
         });
-        $rootScope.$digest();
-        expect(markers.m1.options.icon.iconUrl).toEqual(leaf_icon.iconUrl);
-        markers.m1.icon = default_icon;
-        $rootScope.$digest();
-        expect(markers.m1.options.icon.iconUrl).toEqual(default_icon.iconUrl);
+
+        it('watches marker icon bindings', function() {
+            scope.disableWatches = 'false';
+
+            var element = angular.element('<leaflet markers="markers" disableMarkersWatch="disableWatches"></leaflet>');
+            element = $compile(element)(scope);
+            var markers;
+            leafletData.getMarkers().then(function(leafletMarkers) {
+                markers = leafletMarkers;
+            });
+
+            scope.$digest();
+            expect(markers.m1.options.icon.options.iconUrl).toEqual(LEAF_URL);
+
+            mainMarkers.m1.icon = defaultIcon;
+            scope.$apply();
+            expect(markers.m1.options.icon.options.iconUrl).toEqual(DEFAULT_URL);
+        });
+
+        it('does not watch on markers when disableMarkersWatches is specified', function(){
+            scope.disableWatches = 'true';
+
+            var element = angular.element('<leaflet markers="markers" disableMarkersWatch="disableWatches"></leaflet>');
+            element = $compile(element)(scope);
+            var markers;
+            leafletData.getMarkers().then(function(leafletMarkers) {
+                markers = leafletMarkers;
+            });
+
+            scope.$digest();
+            expect(markers.m1.options.icon.options.iconUrl).toEqual(LEAF_URL);
+
+            mainMarkers.m1.icon = defaultIcon;
+            scope.$apply();
+            // should not change
+            expect(markers.m1.options.icon.options.iconUrl).toEqual(LEAF_URL);
+        });
+
     });
 });
