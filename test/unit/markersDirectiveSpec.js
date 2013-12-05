@@ -543,9 +543,7 @@ describe('Directive: leaflet', function() {
         });
 
         it('watches marker icon bindings', function() {
-            scope.disableWatches = 'false';
-
-            var element = angular.element('<leaflet markers="markers" disableMarkersWatch="disableWatches"></leaflet>');
+            var element = angular.element('<leaflet markers="markers" watchMarkers="true"></leaflet>');
             element = $compile(element)(scope);
             var markers;
             leafletData.getMarkers().then(function(leafletMarkers) {
@@ -560,10 +558,8 @@ describe('Directive: leaflet', function() {
             expect(markers.m1.options.icon.options.iconUrl).toEqual(DEFAULT_URL);
         });
 
-        it('does not watch on markers when disableMarkersWatches is specified', function(){
-            scope.disableWatches = 'true';
-
-            var element = angular.element('<leaflet markers="markers" disableMarkersWatch="disableWatches"></leaflet>');
+        it('does not watch on markers when watch is disabled', function(){
+            var element = angular.element('<leaflet markers="markers" watchMarkers="false"></leaflet>');
             element = $compile(element)(scope);
             var markers;
             leafletData.getMarkers().then(function(leafletMarkers) {

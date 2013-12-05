@@ -54,7 +54,11 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                     return;
                 }
 
-                var shouldWatch = (!leafletScope.disableMarkersWatch || leafletScope.disableMarkersWatch === 'false');
+                console.log(leafletScope.watchMarkers);
+                var shouldWatch = (
+                    leafletScope.watchMarkers === undefined ||
+                    leafletScope.watchMarkers === 'true' || leafletScope.watchMarkers === true
+                );
 
                 getLayers().then(function(layers) {
                     leafletData.setMarkers(leafletMarkers, attrs.id);

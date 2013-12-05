@@ -21,7 +21,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
             layers: '=layers',
             controls: '=controls',
             eventBroadcast: '=eventBroadcast',
-            disableMarkersWatch: '=disablemarkerswatch'
+            watchMarkers: '=watchmarkers'
         },
         template: '<div class="angular-leaflet-map"></div>',
         controller: function ($scope) {
@@ -605,7 +605,11 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                     return;
                 }
 
-                var shouldWatch = (!leafletScope.disableMarkersWatch || leafletScope.disableMarkersWatch === 'false');
+                console.log(leafletScope.watchMarkers);
+                var shouldWatch = (
+                    leafletScope.watchMarkers === undefined ||
+                    leafletScope.watchMarkers === 'true' || leafletScope.watchMarkers === true
+                );
 
                 getLayers().then(function(layers) {
                     leafletData.setMarkers(leafletMarkers, attrs.id);
