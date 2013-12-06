@@ -129,7 +129,10 @@ module.exports = function(grunt) {
                     xdescribe   : false,
 
                     // Protractor
-                    protractor: false
+                    protractor: false,
+                    browser: false,
+                    by: false,
+                    element: false
 
                 }
             },
