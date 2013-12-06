@@ -9,14 +9,14 @@ module.exports = function(grunt) {
                 stdout: true
             },
             selenium: {
-                command: './selenium/start',
+                command: 'node_modules/protractor/bin/webdriver-manager start',
                 options: {
                     stdout: false,
                     async: true
                 }
             },
-            protractor_install: {
-                command: 'node ./node_modules/protractor/bin/install_selenium_standalone'
+            protractor_update: {
+                command: 'node_modules/protractor/bin/webdriver-manager update'
             },
             npm_install: {
                 command: 'npm install'
@@ -250,7 +250,7 @@ module.exports = function(grunt) {
     //single run tests
     grunt.registerTask('test', ['jshint','test:unit', 'test:e2e']);
     grunt.registerTask('test:unit', ['karma:unit']);
-    grunt.registerTask('test:e2e', ['connect:testserver', 'protractor:singlerun']);
+    grunt.registerTask('test:e2e', ['shell:protractor_update', 'connect:testserver', 'protractor:singlerun']);
 
     //autotest and watch tests
     grunt.registerTask('autotest', ['karma:unit_auto']);
@@ -262,7 +262,7 @@ module.exports = function(grunt) {
     grunt.registerTask('coverage', ['karma:unit_coverage', 'open:coverage', 'connect:coverage']);
 
     //installation-related
-    grunt.registerTask('install', ['shell:npm_install', 'bower:install', 'shell:protractor_install']);
+    grunt.registerTask('install', ['shell:npm_install', 'bower:install', 'shell:protractor_update']);
 
     //defaults
     grunt.registerTask('default', ['watch:source']);
