@@ -42,7 +42,6 @@ angular.module("leaflet-directive").directive('center', function ($log, $parse, 
                         return;
                     }
                     map.setView([center.lat, center.lng], center.zoom);
-                    //updateBoundsIfNeeded();
                 }, true);
 
                 map.on("movestart", function(/* event */) {
@@ -58,7 +57,6 @@ angular.module("leaflet-directive").directive('center', function ($log, $parse, 
                             centerModel.zoom.assign(scope, map.getZoom());
                         }
                     });
-                    //updateBoundsIfNeeded();
                 });
             });
         }

@@ -10,20 +10,42 @@ angular.module("leaflet-directive").directive('bounds', function ($log, leafletH
                 createLeafletBounds = leafletHelpers.createLeafletBounds,
                 leafletScope = controller.getLeafletScope();
 
-
             controller.getMap().then(function(map) {
-                map.whenReady(function() {
-                    leafletScope.$watch('bounds', function(bounds) {
-                        if (!isDefined(bounds)) {
-                            $log.error('[AngularJS - Leaflet] Invalid bounds');
-                            return;
-                        }
 
-                        var leafletBounds = createLeafletBounds(bounds);
-                        if (!map.getBounds().equals(leafletBounds)) {
-                            map.fitBounds(leafletBounds);
+                function updateBoundsInScope() {
+                    if(!leafletScope.bounds) { return; }
+
+                    var bounds = map.getBounds();
+                    leafletScope.bounds = {
+                        northEast: {
+                            lat: bounds.getNorthEast().lat,
+                            lng: bounds.getNorthEast().lng
+                        },
+                        southWest: {
+                            lat: bounds.getSouthWest().lat,
+                            lng: bounds.getSouthWest().lng
                         }
-                    }, true);
+                    };
+                }
+
+                function boundsListener(newBounds) {
+                    if (!isDefined(newBounds)) {
+                        $log.error('[AngularJS - Leaflet] Invalid bounds');
+                        return;
+                    }
+
+                    var leafletBounds = createLeafletBounds(newBounds);
+                    if (leafletBounds && !map.getBounds().equals(leafletBounds)) {
+                        map.fitBounds(leafletBounds);
+                    }
+                }
+
+                map.on('moveend', updateBoundsInScope);
+                map.on('dragend', updateBoundsInScope);
+                map.on('zoomend', updateBoundsInScope);
+
+                map.whenReady(function() {
+                    leafletScope.$watch('bounds', boundsListener, true);
                 });
             });
         }
