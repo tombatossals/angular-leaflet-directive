@@ -67,17 +67,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
             }
 
             // Create the Leaflet Map Object with the options
-            var map = new L.Map(element[0], {
-                maxZoom: defaults.maxZoom,
-                minZoom: defaults.minZoom,
-                keyboard: defaults.keyboard,
-                dragging: defaults.dragging,
-                zoomControl: defaults.zoomControl,
-                doubleClickZoom: defaults.doubleClickZoom,
-                scrollWheelZoom: defaults.scrollWheelZoom,
-                attributionControl: defaults.attributionControl,
-                crs: defaults.crs
-            });
+            var map = new L.Map(element[0], leafletMapDefaults.getMapCreationDefaults(attrs.id));
 
             _leafletMap.resolve(map);
             if (!isDefined(attrs.center)) {
@@ -1610,6 +1600,7 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
         return {
             keyboard: true,
             dragging: true,
+            worldCopyJump: false,
             doubleClickZoom: true,
             scrollWheelZoom: true,
             zoomControl: true,
@@ -1660,6 +1651,38 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
             return defaults[mapId];
         },
 
+        getMapCreationDefaults: function (scopeId) {
+            var mapId = obtainEffectiveMapId(defaults, scopeId);
+            var d = defaults[mapId];
+
+            var mapDefaults = {
+                maxZoom: d.maxZoom,
+                minZoom: d.minZoom,
+                keyboard: d.keyboard,
+                dragging: d.dragging,
+                zoomControl: d.zoomControl,
+                doubleClickZoom: d.doubleClickZoom,
+                scrollWheelZoom: d.scrollWheelZoom,
+                attributionControl: d.attributionControl,
+                worldCopyJump: d.worldCopyJump,
+                crs: d.crs
+            };
+
+            if (isDefined(d.zoomAnimation)) {
+                mapDefaults.zoomAnimation = d.zoomAnimation;
+            }
+
+            if (isDefined(d.fadeAnimation)) {
+                mapDefaults.fadeAnimation = d.fadeAnimation;
+            }
+
+            if (isDefined(d.markerZoomAnimation)) {
+                mapDefaults.markerZoomAnimation = d.markerZoomAnimation;
+            }
+
+            return mapDefaults;
+        },
+
         setDefaults: function(userDefaults, scopeId) {
             var newDefaults = _getDefaults();
 
@@ -1688,6 +1711,22 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
 
                 if (isDefined(userDefaults.minZoom)) {
                     newDefaults.minZoom = userDefaults.minZoom;
+                }
+
+                if (isDefined(userDefaults.zoomAnimation)) {
+                    newDefaults.zoomAnimation = userDefaults.zoomAnimation;
+                }
+
+                if (isDefined(userDefaults.fadeAnimation)) {
+                    newDefaults.fadeAnimation = userDefaults.fadeAnimation;
+                }
+
+                if (isDefined(userDefaults.markerZoomAnimation)) {
+                    newDefaults.markerZoomAnimation = userDefaults.markerZoomAnimation;
+                }
+
+                if (isDefined(userDefaults.worldCopyJump)) {
+                    newDefaults.worldCopyJump = userDefaults.worldCopyJump;
                 }
             }
 

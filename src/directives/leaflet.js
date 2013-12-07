@@ -63,17 +63,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
             }
 
             // Create the Leaflet Map Object with the options
-            var map = new L.Map(element[0], {
-                maxZoom: defaults.maxZoom,
-                minZoom: defaults.minZoom,
-                keyboard: defaults.keyboard,
-                dragging: defaults.dragging,
-                zoomControl: defaults.zoomControl,
-                doubleClickZoom: defaults.doubleClickZoom,
-                scrollWheelZoom: defaults.scrollWheelZoom,
-                attributionControl: defaults.attributionControl,
-                crs: defaults.crs
-            });
+            var map = new L.Map(element[0], leafletMapDefaults.getMapCreationDefaults(attrs.id));
 
             _leafletMap.resolve(map);
             if (!isDefined(attrs.center)) {
