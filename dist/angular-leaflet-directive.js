@@ -62,14 +62,10 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
                 }
             }
 
-            if (isDefined(attrs.marker)) {
-                $log.warn("[AngularJS - Leaflet] The 'marker' property is currently deprecated, please use the 'markers' property instead.");
-            }
-
             // Create the Leaflet Map Object with the options
             var map = new L.Map(element[0], leafletMapDefaults.getMapCreationDefaults(attrs.id));
-
             _leafletMap.resolve(map);
+
             if (!isDefined(attrs.center)) {
                 $log.warn("[AngularJS - Leaflet] 'center' is undefined in the current scope, did you forget to initialize it?");
                 map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
