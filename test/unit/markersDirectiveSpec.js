@@ -5,7 +5,7 @@
 /* jasmine specs for directives go here */
 
 describe('Directive: leaflet', function() {
-    var $compile = null, $rootScope = null, leafletData = null, leafletHelpers = null, mainMarkers;
+    var $compile, $rootScope, leafletData, leafletHelpers, mainMarkers, mainLayers;
 
     beforeEach(module('leaflet-directive'));
     beforeEach(inject(function(_$compile_, _$rootScope_, _leafletData_, _leafletHelpers_){
@@ -24,6 +24,32 @@ describe('Directive: leaflet', function() {
             madrid: {
                 lat: 2.02,
                 lng: 4.04
+            }
+        };
+        mainLayers = {
+            baselayers: {
+                osm: {
+                    name: 'OpenStreetMap',
+                    type: 'xyz',
+                    url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                    layerOptions: {
+                        subdomains: ['a', 'b', 'c'],
+                        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                        continuousWorld: true
+                    }
+                }
+            },
+            overlays: {
+                cars: {
+                    name: 'cars',
+                    type: 'group',
+                    visible: true
+                },
+                trucks: {
+                    name: 'trucks',
+                    type: 'group',
+                    visible: false
+                }
             }
         };
     });
@@ -254,32 +280,6 @@ describe('Directive: leaflet', function() {
                 mainMarkers.paris.layer = 'cars';
                 mainMarkers.madrid.layer = 'trucks';
 
-                var mainLayers = {
-                    baselayers: {
-                        osm: {
-                            name: 'OpenStreetMap',
-                            type: 'xyz',
-                            url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                            layerOptions: {
-                                subdomains: ['a', 'b', 'c'],
-                                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-                                continuousWorld: true
-                            }
-                        }
-                    },
-                    overlays: {
-                        cars: {
-                            name: 'cars',
-                            type: 'group',
-                            visible: true
-                        },
-                        trucks: {
-                            name: 'trucks',
-                            type: 'group',
-                            visible: false
-                        }
-                    }
-                };
                 angular.extend($rootScope, { markers: mainMarkers, layers: mainLayers });
                 var element = angular.element('<leaflet markers="markers" layers="layers"></leaflet>');
                 element = $compile(element)($rootScope);
@@ -318,33 +318,9 @@ describe('Directive: leaflet', function() {
             it('validates (lng not a number) for a marker in a layer markercluster', function() {
                 mainMarkers.paris.layer = 'cars';
                 mainMarkers.madrid.layer = 'trucks';
+                mainLayers.overlays.cars.type = 'markercluster';
+                mainLayers.overlays.trucks.type = 'markercluster';
 
-                var mainLayers = {
-                    baselayers: {
-                        osm: {
-                            name: 'OpenStreetMap',
-                            type: 'xyz',
-                            url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                            layerOptions: {
-                                subdomains: ['a', 'b', 'c'],
-                                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-                                continuousWorld: true
-                            }
-                        }
-                    },
-                    overlays: {
-                        cars: {
-                            name: 'cars',
-                            type: 'markercluster',
-                            visible: true
-                        },
-                        trucks: {
-                            name: 'trucks',
-                            type: 'markercluster',
-                            visible: false
-                        }
-                    }
-                };
                 angular.extend($rootScope, { markers: mainMarkers, layers: mainLayers });
                 var element = angular.element('<leaflet markers="markers" layers="layers"></leaflet>');
                 element = $compile(element)($rootScope);
@@ -418,33 +394,9 @@ describe('Directive: leaflet', function() {
             // This case is tested because in a marker cluster the marker has to be removed from the layer
             mainMarkers.paris.layer = 'cars';
             mainMarkers.madrid.layer = 'trucks';
+            mainLayers.overlays.cars.type = 'markercluster';
+            mainLayers.overlays.trucks.type = 'markercluster';
 
-            var mainLayers = {
-                baselayers: {
-                    osm: {
-                        name: 'OpenStreetMap',
-                        type: 'xyz',
-                        url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                        layerOptions: {
-                            subdomains: ['a', 'b', 'c'],
-                            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-                            continuousWorld: true
-                        }
-                    }
-                },
-                overlays: {
-                    cars: {
-                        name: 'cars',
-                        type: 'markercluster',
-                        visible: true
-                    },
-                    trucks: {
-                        name: 'trucks',
-                        type: 'markercluster',
-                        visible: false
-                    }
-                }
-            };
             angular.extend($rootScope, { markers: mainMarkers, layers: mainLayers });
             var element = angular.element('<leaflet markers="markers" layers="layers"></leaflet>');
             element = $compile(element)($rootScope);
