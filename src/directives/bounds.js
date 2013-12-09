@@ -15,17 +15,21 @@ angular.module("leaflet-directive").directive('bounds', function ($log, leafletH
                 function updateBoundsInScope() {
                     if(!leafletScope.bounds) { return; }
 
-                    var bounds = map.getBounds();
-                    leafletScope.bounds = {
+                    var mapBounds = map.getBounds();
+                    var newScopeBounds = {
                         northEast: {
-                            lat: bounds.getNorthEast().lat,
-                            lng: bounds.getNorthEast().lng
+                            lat: mapBounds.getNorthEast().lat,
+                            lng: mapBounds.getNorthEast().lng
                         },
                         southWest: {
-                            lat: bounds.getSouthWest().lat,
-                            lng: bounds.getSouthWest().lng
+                            lat: mapBounds.getSouthWest().lat,
+                            lng: mapBounds.getSouthWest().lng
                         }
                     };
+
+                    if(!angular.equals(leafletScope.bounds, newScopeBounds)) {
+                        leafletScope.bounds = newScopeBounds;
+                    }
                 }
 
                 function boundsListener(newBounds) {

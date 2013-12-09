@@ -518,17 +518,21 @@ angular.module("leaflet-directive").directive('bounds', function ($log, leafletH
                 function updateBoundsInScope() {
                     if(!leafletScope.bounds) { return; }
 
-                    var bounds = map.getBounds();
-                    leafletScope.bounds = {
+                    var mapBounds = map.getBounds();
+                    var newScopeBounds = {
                         northEast: {
-                            lat: bounds.getNorthEast().lat,
-                            lng: bounds.getNorthEast().lng
+                            lat: mapBounds.getNorthEast().lat,
+                            lng: mapBounds.getNorthEast().lng
                         },
                         southWest: {
-                            lat: bounds.getSouthWest().lat,
-                            lng: bounds.getSouthWest().lng
+                            lat: mapBounds.getSouthWest().lat,
+                            lng: mapBounds.getSouthWest().lng
                         }
                     };
+
+                    if(!angular.equals(leafletScope.bounds, newScopeBounds)) {
+                        leafletScope.bounds = newScopeBounds;
+                    }
                 }
 
                 function boundsListener(newBounds) {
@@ -619,39 +623,49 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                 getLayers().then(function(layers) {
                     leafletData.setMarkers(leafletMarkers, attrs.id);
                     leafletScope.$watch('markers', function(newMarkers) {
-                        // Delete markers from the array
-                        for (var name in leafletMarkers) {
-                            if (!isDefined(newMarkers) || !isDefined(newMarkers[name])) {
-                                // First we check if the marker is in a layer group
-                                leafletMarkers[name].closePopup();
-                                // There is no easy way to know if a marker is added to a layer, so we search for it
-                                // if there are overlays
-                                if (isDefinedAndNotNull(layers)) {
-                                    if (isDefined(layers.overlays)) {
-                                        for (var key in layers.overlays) {
-                                            if (layers.overlays[key] instanceof L.LayerGroup) {
-                                                if (layers.overlays[key].hasLayer(leafletMarkers[name])) {
-                                                    layers.overlays[key].removeLayer(leafletMarkers[name]);
-                                                }
+
+                        function deleteMarker(name) {
+                            var marker = leafletMarkers[name];
+
+                            // First we check if the marker is in a layer group
+                            marker.closePopup();
+                            // There is no easy way to know if a marker is added to a layer, so we search for it
+                            // if there are overlays
+                            if (isDefinedAndNotNull(layers)) {
+                                if (isDefined(layers.overlays)) {
+                                    for (var key in layers.overlays) {
+                                        if (layers.overlays[key] instanceof L.LayerGroup) {
+                                            if (layers.overlays[key].hasLayer(marker)) {
+                                                layers.overlays[key].removeLayer(marker);
                                             }
                                         }
                                     }
                                 }
-                                if (isDefinedAndNotNull(groups)) {
-                                    for (var groupKey in groups) {
-                                        if (groups[groupKey].hasLayer(leafletMarkers[name])) {
-                                            groups[groupKey].removeLayer(leafletMarkers[name]);
-                                        }
+                            }
+                            if (isDefinedAndNotNull(groups)) {
+                                for (var groupKey in groups) {
+                                    if (groups[groupKey].hasLayer(marker)) {
+                                        groups[groupKey].removeLayer(marker);
                                     }
                                 }
+                            }
 
-                                // Remove the marker from the map
-                                map.removeLayer(leafletMarkers[name]);
-                                // TODO: If we remove the marker we don't have to clear the $watches?
-                                // Delete the marker
-                                delete leafletMarkers[name];
+                            // Remove the marker from the map
+                            map.removeLayer(marker);
+                            // TODO: If we remove the marker we don't have to clear the $watches?
+                            // Delete the marker
+                            delete leafletMarkers[name];
+                        }
+
+                        var noNewMarkers = !isDefined(newMarkers);
+                        // Delete markers from the array
+                        for (var name in leafletMarkers) {
+                            var markerRemoved = !isDefined(newMarkers[name]);
+                            if (noNewMarkers || markerRemoved) {
+                                deleteMarker(name);
                             }
                         }
+
                         // add new markers
                         for (var new_name in newMarkers) {
                             if (!isDefined(leafletMarkers[new_name])) {
