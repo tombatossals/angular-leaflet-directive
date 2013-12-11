@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html ng-app="demoapp">
+  <head>
+    <script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular.min.js"></script>
+    <script src="../dist/angular-leaflet-directive.js"></script>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" />
+    <!--[if lte IE 8]>
+        <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.ie.css" />
+    <![endif]-->
+    <script>
+        var app = angular.module("demoapp", ["leaflet-directive"]);
+        app.controller("DemoController", [ "$scope", "$log", "leafletData", function($scope, $log, leafletData) {
+            angular.extend($scope, {
+                defaults: {
+                  scrollWheelZoom: false,
+                  crs: 'Simple'
+                },
+                layers: {
+                    baselayers: {
+                        sanfrancisco: {
+                            name: 'SanFrancisco',
+                            type: 'imageOverlay',
+                            url: 'img/San-francisco-map.png',
+                            bounds: new L.LatLngBounds([0,1037], [911,0]),
+                            layerOptions: {
+                              noWrap: true,
+                            }
+                        }
+                    }
+                }
+            });
+
+            $scope.$on("leafletDirectiveMap.baselayerchange", function(event, args){
+              window.console.log('baselayerchange')
+              leafletData.getMap().then(function(map) {
+                  map.setView(new L.LatLng(1037 / 2, 911 / 2), 0);
+                });
+            });
+
+            $scope.markers = new Array();
+
+            $scope.$on("leafletDirectiveMap.click", function(event, args){
+                var leafEvent = args.leafletEvent;
+
+                $scope.markers.push({
+                    lat: leafEvent.latlng.lat,
+                    lng: leafEvent.latlng.lng,
+                    message: "My Added Marker"
+                });
+            });
+       }]);
+    </script>
+  </head>
+  <body ng-controller="DemoController">
+        <h3>Click on the map to add a marker</h3>
+      <leaflet defaults="defaults" layers="layers" markers="markers" height="480px" width="600px">
+      </leaflet>
+  </body>
+<!-- </html> -->

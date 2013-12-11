@@ -15,10 +15,7 @@ L.Google = L.Class.extend({
 		attribution: '',
 		opacity: 1,
 		continuousWorld: false,
-		noWrap: false,
-		mapOptions: {
-			backgroundColor: '#dddddd'
-		}
+		noWrap: false
 	},
 
 	// Possible types: SATELLITE, ROADMAP, HYBRID, TERRAIN
@@ -44,11 +41,9 @@ L.Google = L.Class.extend({
 
 		this._limitedUpdate = L.Util.limitExecByInterval(this._update, 150, this);
 		map.on('move', this._update, this);
+		//map.on('moveend', this._update, this);
 
-		map.on('zoomanim', this._handleZoomAnim, this);
-
-		//20px instead of 1em to avoid a slight overlap with google's attribution
-		map._controlCorners['bottomright'].style.marginBottom = "20px";
+		map._controlCorners['bottomright'].style.marginBottom = "1em";
 
 		this._reset();
 		this._update();
@@ -61,9 +56,6 @@ L.Google = L.Class.extend({
 		this._map.off('viewreset', this._resetCallback, this);
 
 		this._map.off('move', this._update, this);
-
-		this._map.off('zoomanim', this._handleZoomAnim, this);
-
 		map._controlCorners['bottomright'].style.marginBottom = "0em";
 		//this._map.off('moveend', this._update, this);
 	},
@@ -115,28 +107,15 @@ L.Google = L.Class.extend({
 		    draggable: false,
 		    disableDoubleClickZoom: true,
 		    scrollwheel: false,
-		    streetViewControl: false,
-		    styles: this.options.mapOptions.styles,
-		    backgroundColor: this.options.mapOptions.backgroundColor
+		    streetViewControl: false
 		});
 
 		var _this = this;
 		this._reposition = google.maps.event.addListenerOnce(map, "center_changed",
 			function() { _this.onReposition(); });
+
+		map.backgroundColor = '#ff0000';
 		this._google = map;
-
-		google.maps.event.addListenerOnce(map, "idle",
-			function() { _this._checkZoomLevels(); });
-	},
-
-	_checkZoomLevels: function() {
-		//setting the zoom level on the Google map may result in a different zoom level than the one requested
-		//(it won't go beyond the level for which they have data).
-		// verify and make sure the zoom levels on both Leaflet and Google maps are consistent
-		if (this._google.getZoom() !== this._map.getZoom()) {
-			//zoom levels are out of sync. Set the leaflet zoom level to match the google one
-			this._map.setZoom( this._google.getZoom() );
-		}
 	},
 
 	_resetCallback: function(e) {
@@ -147,17 +126,22 @@ L.Google = L.Class.extend({
 		this._initContainer();
 	},
 
-	_update: function(e) {
+	_update: function() {
 		if (!this._google) return;
 		this._resize();
 
-		var center = e && e.latlng ? e.latlng : this._map.getCenter();
+		var bounds = this._map.getBounds();
+		var ne = bounds.getNorthEast();
+		var sw = bounds.getSouthWest();
+		var google_bounds = new google.maps.LatLngBounds(
+			new google.maps.LatLng(sw.lat, sw.lng),
+			new google.maps.LatLng(ne.lat, ne.lng)
+		);
+		var center = this._map.getCenter();
 		var _center = new google.maps.LatLng(center.lat, center.lng);
 
 		this._google.setCenter(_center);
 		this._google.setZoom(this._map.getZoom());
-
-		this._checkZoomLevels();
 		//this._google.fitBounds(google_bounds);
 	},
 
@@ -169,16 +153,6 @@ L.Google = L.Class.extend({
 		this.setElementSize(this._container, size);
 		this.onReposition();
 	},
-
-
-	_handleZoomAnim: function (e) {
-		var center = e.center;
-		var _center = new google.maps.LatLng(center.lat, center.lng);
-
-		this._google.setCenter(_center);
-		this._google.setZoom(e.zoom);
-	},
-
 
 	onReposition: function() {
 		if (!this._google) return;
@@ -198,5 +172,5 @@ L.Google.asyncInitialize = function() {
 		}
 	}
 	L.Google.asyncWait = [];
-};
+}
 //})(window.google, L)

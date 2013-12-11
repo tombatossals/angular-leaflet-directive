@@ -12,17 +12,33 @@
         var app = angular.module("demoapp", ["leaflet-directive"]);
         app.controller("DemoController", [ "$scope", "leafletEvents", function($scope, leafletEvents) {
 
-            $scope.center  = {
+            $scope.center = {
                 lat: 51.505,
                 lng: -0.09,
                 zoom: 8
             };
 
+            $scope.markers = {
+                london: {
+                    lat: 51.505,
+                    lng: -0.09,
+                    draggable: true,
+                    message: "I'm a draggable marker",
+                    focus: true
+                }
+            }
+
+            $scope.events = {
+                markers: {
+                    enable: leafletEvents.getAvailableMarkerEvents(),
+                }
+            };
+
             $scope.eventDetected = "No events yet...";
-            var mapEvents = leafletEvents.getAvailableMapEvents();
-            for (var k in mapEvents){
-                var eventName = 'leafletDirectiveMap.' + mapEvents[k];
-                $scope.$on(eventName, function(event){
+            var markerEvents = leafletEvents.getAvailableMarkerEvents();
+            for (var k in markerEvents){
+                var eventName = 'leafletDirectiveMarker.' + markerEvents[k];
+                $scope.$on(eventName, function(event, args){
                     $scope.eventDetected = event.name;
                 });
             }
@@ -30,11 +46,10 @@
     </script>
   </head>
   <body ng-controller="DemoController">
-    <h1>Events example</h1>
-    <p>All map events are propagated by default.</p>
+    <h1>Marker Events example</h1>
     <ul ng-cloak>
         <li><strong ng-bind="eventDetected"></strong> event caught in listener.</li>
     </ul>
-    <leaflet center="center" width="640px" height="400px"></leaflet>
+    <leaflet event-broadcast="events" center="center" markers="markers" width="640px" height="400px"></leaflet>
   </body>
 </html>
