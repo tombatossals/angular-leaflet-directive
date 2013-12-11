@@ -5,7 +5,7 @@ describe('Loading simple-example.html', function() {
     var ptor, driver;
     beforeEach(function() {
         ptor = protractor.getInstance();
-        browser.get('/simple-example.html');
+        browser.get('simple-example.html');
         driver = ptor.driver;
     }, 30000);
 

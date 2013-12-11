@@ -5,7 +5,7 @@ describe('Loading bounds-example.html', function() {
     var ptor, driver;
     beforeEach(function() {
         ptor = protractor.getInstance();
-        browser.get('/bounds-example.html');
+        browser.get('bounds-example.html');
         driver = ptor.driver;
     });
 

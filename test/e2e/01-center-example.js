@@ -5,7 +5,7 @@ describe('Loading center-example.html', function() {
     var ptor, driver;
     beforeEach(function() {
         ptor = protractor.getInstance();
-        browser.get('/center-example.html');
+        browser.get('center-example.html');
         driver = ptor.driver;
     }, 30000);
 
