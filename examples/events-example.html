@@ -2,7 +2,7 @@
 <html ng-app="demoapp">
   <head>
     <script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular.min.js"></script>
     <script src="../dist/angular-leaflet-directive.min.js"></script>
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" />
     <!--[if lte IE 8]>
@@ -10,7 +10,7 @@
     <![endif]-->
     <script>
         var app = angular.module("demoapp", ["leaflet-directive"]);
-        app.controller("DemoController", [ "$scope", function($scope) {
+        app.controller("DemoController", [ "$scope", "leafletEvents", function($scope, leafletEvents) {
 
             $scope.center  = {
                 lat: 51.505,
@@ -19,44 +19,7 @@
             };
 
             $scope.eventDetected = "No events yet...";
-
-            var mapEvents = [
-                                'click',
-                                'dblclick',
-                                'mousedown',
-                                'mouseup',
-                                'mouseover',
-                                'mouseout',
-                                'mousemove',
-                                'contextmenu',
-                                'focus',
-                                'blur',
-                                'preclick',
-                                'load',
-                                'unload',
-                                'viewreset',
-                                'movestart',
-                                'move',
-                                //'moveend',
-                                'dragstart',
-                                'drag',
-                                //'dragend',
-                                'zoomstart',
-                                //'zoomend',
-                                'zoomlevelschange',
-                                'resize',
-                                'autopanstart',
-                                'layeradd',
-                                'layerremove',
-                                'baselayerchange',
-                                'overlayadd',
-                                'overlayremove',
-                                'locationfound',
-                                'locationerror',
-                                'popupopen',
-                                'popupclose'
-             ];
-
+            var mapEvents = leafletEvents.getAvailableMapEvents();
             for (var k in mapEvents){
                 var eventName = 'leafletDirectiveMap.' + mapEvents[k];
                 $scope.$on(eventName, function(event){
@@ -68,9 +31,10 @@
   </head>
   <body ng-controller="DemoController">
     <h1>Events example</h1>
+    <p>All map events are propagated by default.</p>
     <ul ng-cloak>
         <li><strong ng-bind="eventDetected"></strong> event caught in listener.</li>
     </ul>
-    <leaflet events="events" center="center" testing="testing" width="640px" height="400px"></leaflet>
+    <leaflet center="center" width="640px" height="400px"></leaflet>
   </body>
 </html>

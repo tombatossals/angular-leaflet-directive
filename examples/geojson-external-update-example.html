@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html ng-app="demoapp">
+  <head>
+    <script src="http://cdn.leafletjs.com/leaflet-0.7/leaflet.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.2/angular.min.js"></script>
+    <script src="../dist/angular-leaflet-directive.min.js"></script>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7/leaflet.css" />
+    <link rel="stylesheet" type="text/css" href="http://cloud.github.com/downloads/lafeber/world-flags-sprite/flags32.css" />
+
+    <!--[if lte IE 8]>
+        <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.ie.css" />
+    <![endif]-->
+    <style>
+        html {
+            font-family: sans-serif;
+        }
+
+        body, html { height: 100%; padding: 0; margin: 0; background: #EFEFEF;}
+
+        .info {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 5px;
+        }
+
+        div.box {
+            position: absolute;
+            top: 1em;
+            right: 1em;
+            z-index: 100;
+            padding: 1em;
+            text-align: center;
+        }
+
+        div.country {
+            font-size: 2em;
+            font-weight: bold;
+            position: absolute;
+            bottom: 1em;
+            left: 1em;
+            z-index: 100;
+            padding: .2em .5em;
+            line-height: 1.1em;
+            text-align: center;
+        }
+
+        div.leftPanel {
+            position: absolute;
+            right: 0;
+            top: 20%;
+            width: 20%;
+            height: 100%;
+        }
+        div.angular-leaflet-map {
+            width: 80%;
+            height: 100%;
+        }
+    </style>
+    <script>
+        var app = angular.module("demoapp", ["leaflet-directive"]);
+        var layers = {};
+        app.controller('DemoController', [ "$scope", "$http", "leafletData", function($scope, $http, leafletData) {
+
+            angular.extend($scope, {
+                center: {
+                    lat: 40.8471,
+                    lng: 14.0625,
+                    zoom: 2
+                }
+            });
+
+            function style(feature) {
+                return {
+                    fillColor: "red",
+                    weight: 2,
+                    opacity: 1,
+                    color: 'white',
+                    dashArray: '3',
+                    fillOpacity: 0.4
+                };
+            }
+
+            // Mouse over function, called from the Leaflet Map Events
+            function onEachFeature(feature, layer) {
+                layers[feature.properties.name] = layer;
+            }
+
+            // Get the countries data from a JSON
+            $http.get("json/all.json").success(function(data, status) {
+
+                // Put the countries on an associative array
+                $scope.countries = {};
+                for (var i=0; i< 200; i=i+20) {
+                    var country = data[i];
+                    $scope.countries[country['alpha-3']] = country;
+                }
+
+                $scope.selectCountry = function(country) {
+                    var layer = layers[country];
+                    layer.setStyle({
+                        weight: 2,
+                        color: 'black',
+                        fillColor: 'white',
+                        fillOpacity: 1,
+                        opacity: 1
+                    });
+                };
+
+                // Get the countries geojson data from a JSON
+                $http.get("json/countries.geo.json").success(function(data, status) {
+                    angular.extend($scope, {
+                        geojson: {
+                            data: data,
+                            style: style,
+                            onEachFeature: onEachFeature,
+                            resetStyleOnMouseout: true
+                        }
+                    });
+                });
+            });
+        }]);
+    </script>
+  </head>
+  <body ng-controller="DemoController">
+    <div class="info country f32">
+        <div ng-show="geojson.selected" class="flag" ng-class="countries[geojson.selected.id]['alpha-2']|lowercase"></div>
+        {{ geojson.selected.properties.name || 'No country'}}
+    </div>
+    <div class="info box">Map center: [ lat: {{ center.lat | number:4 }}, lng: {{ center.lng | number:4 }} ]</div>
+    <div class="leftPanel">
+        <ul>
+            <li ng-repeat="(key, country) in countries"><a ng-mouseover="selectCountry(country.name)" href="">{{ country.name }}</a></li>
+        </ul>
+    </div>
+    <leaflet center="center" events="events" geojson="geojson"></leaflet>
+  </body>
+</html>

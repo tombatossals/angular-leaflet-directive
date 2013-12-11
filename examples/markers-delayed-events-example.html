@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html ng-app="demoapp">
+  <head>
+    <script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular.min.js"></script>
+    <script src="../dist/angular-leaflet-directive.min.js"></script>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" />
+    <!--[if lte IE 8]>
+        <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.ie.css" />
+    <![endif]-->
+    <script>
+        var app = angular.module("demoapp", ["leaflet-directive"]);
+        app.controller("DemoController", ["$scope", "leafletEvents", function($scope, leafletEvents){
+            angular.extend($scope, {
+                london: {
+                    lat: 51.505,
+                    lng: -0.09,
+                    zoom: 8
+                },
+                markers: {}
+            });
+
+            $scope.addMarkers = function() {
+                angular.extend($scope, {
+                    markers: {
+                        m1: {
+                            lat: 51.505,
+                            lng: -0.09,
+                            message: "I'm a static marker",
+                        },
+                        m2: {
+                            lat: 51,
+                            lng: 0,
+                            focus: true,
+                            message: "Hey, drag me if you want",
+                            draggable: true
+                        }
+                    }
+                });
+            };
+
+            $scope.events = {
+                markers: {
+                    enable: leafletEvents.getAvailableMarkerEvents(),
+                }
+            };
+
+            $scope.eventDetected = "No events yet...";
+            var markerEvents = leafletEvents.getAvailableMarkerEvents();
+            for (var k in markerEvents){
+                var eventName = 'leafletDirectiveMarker.' + markerEvents[k];
+                $scope.$on(eventName, function(event, args){
+                    $scope.eventDetected = event.name;
+                });
+            }
+
+            $scope.removeMarkers = function() {
+                $scope.markers = {};
+            }
+
+            //$scope.addMarkers();
+        }]);
+    </script>
+  </head>
+  <body ng-controller="DemoController">
+      <a href="#" ng-click="removeMarkers()">Remove markers</a> #
+      <a href="#" ng-click="addMarkers()">Add markers</a>
+    <ul ng-cloak>
+        <li><strong ng-bind="eventDetected"></strong> event caught in listener.</li>
+    </ul>
+      <leaflet events-broadcast="events" center="london" markers="markers" height="480px" width="640px"></leaflet>
+  </body>
+</html>

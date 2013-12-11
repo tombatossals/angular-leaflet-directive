@@ -1,4 +1,4 @@
-# angular-leaflet-directive
+# angular-leaflet-directive [![Build Status](https://travis-ci.org/tombatossals/angular-leaflet-directive.png)](https://travis-ci.org/tombatossals/angular-leaflet-directive)
 
 [AngularJS](http://angularjs.org/) directive for the Leaflet Javascript
 Library. This software aims to easily embed maps managed by leaflet on your
@@ -8,6 +8,9 @@ See some basic examples:
 
 * [Basic example](http://tombatossals.github.io/angular-leaflet-directive/examples/simple-example.html)
 * [Custom parameters example](http://tombatossals.github.io/angular-leaflet-directive/examples/custom-parameters-example.html)
+* [Single marker example](http://tombatossals.github.io/angular-leaflet-directive/examples/marker-example.html)
+* [Marker addition example](http://tombatossals.github.io/angular-leaflet-directive/examples/marker-add-example.html)
+* [Marker with label example](http://tombatossals.github.io/angular-leaflet-directive/examples/marker-label-example.html)
 * [Markers example](http://tombatossals.github.io/angular-leaflet-directive/examples/markers-example.html)
 * [Polyline example](http://tombatossals.github.io/angular-leaflet-directive/examples/path-example.html)
 * [Tile changer example](http://tombatossals.github.io/angular-leaflet-directive/examples/tiles-example.html)
@@ -17,6 +20,8 @@ See some basic examples:
 * [Events example](http://tombatossals.github.io/angular-leaflet-directive/examples/events-example.html)
 * [Overlays example](http://tombatossals.github.io/angular-leaflet-directive/examples/overlays-example.html)
 * [Google Maps example](http://tombatossals.github.io/angular-leaflet-directive/examples/googlemaps-example.html)
+* [Accessing the leaflet map object](http://tombatossals.github.io/angular-leaflet-directive/examples/access-leaflet-object-example.html)
+* [Accessing the leaflet map object of two maps](http://tombatossals.github.io/angular-leaflet-directive/examples/double-map-example.html)
 
 
 To see it in action, go to the main page where you can find more examples and
@@ -67,31 +72,3 @@ Finally, you must include the markup directive on your HTML page, like this:
 ```html
 <leaflet defaults="defaults" center="center" height="480px" width="640px"></leaflet>
 ```
-
-
-## How to contribute
-
-You can use grunt/karma to test your code, and grunt/jshint to lint your code.
-First, make sure you have npm and grunt-cli installed globally.
-
-```
-# Inside the project dir, install the dependencies
-$ npm install
-
-# Set the PATH for the binaries of grunt
-$ export PATH=$PATH:node_modules/.bin
-
-# JSHINT
-$ grunt jshint
-Running "jshint:files" (jshint) task
->> 2 files lint free.
-
-Done, without errors.
-
-# KARMA
-$ grunt karma
-Running "karma:unit" (karma) task
-INFO [karma]: Karma server started at http://localhost:9018/
-INFO [launcher]: Starting browser PhantomJS
-INFO [PhantomJS 1.9 (Linux)]: Connected on socket id y6MlOmYdWFtvS-F83ZHu
-PhantomJS 1.9 (Linux): Executed 8 of 8 SUCCESS (0.438 secs / 0.137 secs)
