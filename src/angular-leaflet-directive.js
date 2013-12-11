@@ -147,6 +147,19 @@ leafletDirective.directive('leaflet', function ($http, $log, $parse, $rootScope)
                 }
             },
         },
+        AGSLayerPlugin: {
+            isLoaded: function() {
+                return lvector !== undefined && lvector.AGS !== undefined;
+            },
+            is: function(layer) {
+                if (this.isLoaded()) {
+                    return layer instanceof lvector.AGS;
+                } else {
+                    return false;
+                }
+            },
+        },
+        
         Leaflet: {
             DivIcon: {
                 is: function(icon) {
@@ -624,7 +637,11 @@ leafletDirective.directive('leaflet', function ($http, $log, $parse, $rootScope)
                                     layers.overlays[new_name] = testOverlayLayer;
                                     layers.controls.layers.addOverlay(layers.overlays[new_name], newOverlayLayers[new_name].name);
                                     if (newOverlayLayers[new_name].visible === true) {
-                                        map.addLayer(layers.overlays[new_name]);
+                                        if($scope.layers.overlays[new_name] !== undefined && $scope.layers.overlays[new_name].type === 'ags') {
+                                        	layers.overlays[new_name].setMap(map);
+                                        } else {
+                                        	map.addLayer(layers.overlays[new_name]);
+                                        }
                                     }
                                 }
                             }
@@ -640,14 +657,14 @@ leafletDirective.directive('leaflet', function ($http, $log, $parse, $rootScope)
                 if (layerDefinition.type === undefined || layerDefinition.type === null || typeof layerDefinition.type !== 'string') {
                     $log.error('[AngularJS - Leaflet] A base layer must have a type');
                     return null;
-                } else if (layerDefinition.type !== 'xyz' && layerDefinition.type !== 'wms' && layerDefinition.type !== 'wfs' && layerDefinition.type !== 'group' && layerDefinition.type !== 'markercluster' && layerDefinition.type !== 'google' && layerDefinition.type !== 'bing') {
-                    $log.error('[AngularJS - Leaflet] A layer must have a valid type: "xyz, wms, wfs, group, google"');
+                } else if (layerDefinition.type !== 'xyz' && layerDefinition.type !== 'wms' && layerDefinition.type !== 'wfs' && layerDefinition.type !== 'group' && layerDefinition.type !== 'markercluster' && layerDefinition.type !== 'google' && layerDefinition.type !== 'bing' && layerDefinition.type !== 'ags') {
+                    $log.error('[AngularJS - Leaflet] A layer must have a valid type: "xyz, wms, wfs, group, google, ags"');
                     return null;
                 }
-                if (layerDefinition.type === 'xyz' || layerDefinition.type === 'wms' || layerDefinition.type === 'wfs') {
-                    // XYZ, WMS must have an url
+                if (layerDefinition.type === 'xyz' || layerDefinition.type === 'wms' || layerDefinition.type === 'wfs' || layerDefinition.type === 'ags') {
+                    // XYZ, WMS, WFS, AGS must have an url
                     if (layerDefinition.url === undefined || layerDefinition.url === null || typeof layerDefinition.url !== 'string') {
-                        $log.error('[AngularJS - Leaflet] A base layer must have an url');
+                        $log.error('[AngularJS - Leaflet] XYZ, WMS, WFS, AGS Layer must have an url');
                         return null;
                     }
                 }
@@ -690,6 +707,9 @@ leafletDirective.directive('leaflet', function ($http, $log, $parse, $rootScope)
                     break;
                 case 'bing':
                     layer = createBingLayer(layerDefinition.bingKey, layerDefinition.layerOptions);
+                    break;
+                case 'ags':
+                    layer = createAGSLayer(layerDefinition.url, layerDefinition.layerOptions);
                     break;
                 default:
                     layer = null;
@@ -759,6 +779,24 @@ leafletDirective.directive('leaflet', function ($http, $log, $parse, $rootScope)
                     return null;
                 }
             }
+            
+            function createAGSLayer(url, options) {
+            	if (Helpers.AGSLayerPlugin.isLoaded()) {
+	            	angular.extend(options, {
+	            		url: url
+	            	});
+	            	var layer = new lvector.AGS(options);
+	            	layer.onAdd = function(map) {
+                		this.setMap(map);
+                	};
+                	layer.onRemove = function(map) {
+                		this.setMap(null);
+                	};
+	            	return layer;
+            	} else {
+                    return null;
+                }
+            }
 
             function setupTiles() {
                 var tileLayerObj, key;
@@ -799,14 +837,14 @@ leafletDirective.directive('leaflet', function ($http, $log, $parse, $rootScope)
                     if (!$scope.legend.colors || !$scope.legend.labels || $scope.legend.colors.length !== $scope.legend.labels.length) {
                          $log.warn("[AngularJS - Leaflet] legend.colors and legend.labels must be set.");
                     } else {
-                        var legendClass=$scope.legendClass ? $scope.legendClass : "legend";
+                        var legendClass=$scope.legendClass ? $scope.legendClass : "info legend";
                         var position = $scope.legend.position || 'bottomright';
                         var legend = L.control({position: position });
                         legend.onAdd = function (map) {
                             var div = L.DomUtil.create('div', legendClass);
                             for (var i = 0; i < $scope.legend.colors.length; i++) {
                                 div.innerHTML +=
-                                    '<div><i style="background:' + $scope.legend.colors[i] + '"></i>' + $scope.legend.labels[i] + '</div>';
+                                    '<div class="outline"><i style="background:' + $scope.legend.colors[i] + '"></i></div><div class="info-label">' + $scope.legend.labels[i] + '</div>';
                             }
                             return div;
                         };
