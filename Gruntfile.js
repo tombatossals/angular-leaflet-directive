@@ -26,6 +26,12 @@ module.exports = function(grunt) {
             }
         },
 
+        changelog: {
+            options: {
+                //dest: "CHANGELOG.md"
+            }
+        },
+
         connect: {
             options: {
                 base: ''

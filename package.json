@@ -40,7 +40,8 @@
     "karma": "latest",
     "protractor": "0.14.0",
     "grunt-protractor-runner": "latest",
-    "grunt-shell-spawn": "latest"
+    "grunt-shell-spawn": "latest",
+    "grunt-conventional-changelog": "latest"
   },
   "scripts": {
     "test": "grunt travis --verbose"
