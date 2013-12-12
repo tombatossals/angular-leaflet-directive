@@ -6,15 +6,15 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
             worldCopyJump: false,
             doubleClickZoom: true,
             scrollWheelZoom: true,
-            attributionControl: true,
             zoomControl: true,
-            zoomControlPosition: 'topleft',
+            attributionControl: true,
             zoomsliderControl: false,
-            layercontrol: {
-				position: 'topright',
+			layercontrol: {
+				position:'topright',
 				control: L.control.layers,
 				collapsed: true
 	        },
+            controlLayersPosition: 'topright',
             crs: L.CRS.EPSG3857,
             tileLayer: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
             tileLayerOptions: {
@@ -97,11 +97,13 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
                 newDefaults.doubleClickZoom = isDefined(userDefaults.doubleClickZoom) ?  userDefaults.doubleClickZoom : newDefaults.doubleClickZoom;
                 newDefaults.scrollWheelZoom = isDefined(userDefaults.scrollWheelZoom) ?  userDefaults.scrollWheelZoom : newDefaults.doubleClickZoom;
                 newDefaults.zoomControl = isDefined(userDefaults.zoomControl) ?  userDefaults.zoomControl : newDefaults.zoomControl;
+				newDefaults.zoomsliderControl = isDefined(userDefaults.zoomsliderControl) ?  userDefaults.zoomsliderControl : newDefaults.zoomsliderControl;
                 newDefaults.attributionControl = isDefined(userDefaults.attributionControl) ?  userDefaults.attributionControl : newDefaults.attributionControl;
                 newDefaults.tileLayer = isDefined(userDefaults.tileLayer) ? userDefaults.tileLayer : newDefaults.tileLayer;
                 newDefaults.zoomControlPosition = isDefined(userDefaults.zoomControlPosition) ? userDefaults.zoomControlPosition : newDefaults.zoomControlPosition;
                 newDefaults.keyboard = isDefined(userDefaults.keyboard) ? userDefaults.keyboard : newDefaults.keyboard;
                 newDefaults.dragging = isDefined(userDefaults.dragging) ? userDefaults.dragging : newDefaults.dragging;
+                
                 newDefaults.controlLayersPosition = isDefined(userDefaults.controlLayersPosition) ? userDefaults.controlLayersPosition : newDefaults.controlLayersPosition;
 
                 if (isDefined(userDefaults.crs) && isDefined(L.CRS[userDefaults.crs])) {

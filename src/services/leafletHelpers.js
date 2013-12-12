@@ -244,6 +244,18 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
                 }
             },
         },
+		DynamicMapLayerPlugin: {
+			isLoaded: function() {
+				return L.esri !== undefined && L.esri.dynamicMapLayer !== undefined;
+			},
+			is: function(layer) {
+				if (this.isLoaded()) {
+					return layer instanceof L.esri.dynamicMapLayer;
+				} else {
+					return false;
+				}
+			},
+        },
         Leaflet: {
             DivIcon: {
                 is: function(icon) {
