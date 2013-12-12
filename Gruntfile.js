@@ -2,6 +2,9 @@ module.exports = function(grunt) {
 
     require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
 
+    var fs = require('fs'),
+        saucelabsConfig = fs.existsSync('saucelabs.json') && grunt.file.readJSON('saucelabs.json');
+
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
         shell: {
@@ -61,7 +64,7 @@ module.exports = function(grunt) {
             singlerun: {},
             saucelabs: {
                 options: {
-                    args: grunt.file.readJSON('saucelabs.json')
+                    args: saucelabsConfig
                 }
             },
             auto: {
