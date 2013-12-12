@@ -26,11 +26,7 @@ module.exports = function(grunt) {
             }
         },
 
-        changelog: {
-            options: {
-                //dest: "CHANGELOG.md"
-            }
-        },
+        changelog: {},
 
         connect: {
             options: {
