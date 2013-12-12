@@ -58,7 +58,6 @@ L.Util.extend(L.KML, {
 
 	parseKML: function (xml) {
 		var style = this.parseStyle(xml);
-		this.parseStyleMap(xml, style);
 		var el = xml.getElementsByTagName("Folder");
 		var layers = [], l;
 		for (var i = 0; i < el.length; i++) {
@@ -109,7 +108,7 @@ L.Util.extend(L.KML, {
 					var value = e.childNodes[0].nodeValue;
 					if (key === 'color') {
 						options.opacity = parseInt(value.substring(0, 2), 16) / 255.0;
-						options.color = "#" + value.substring(6, 8) + value.substring(4, 6) + value.substring(2, 4);
+						options.color = "#" + value.substring(2, 8);
 					} else if (key === 'width') {
 						options.weight = value;
 					} else if (key === 'Icon') {
@@ -146,27 +145,6 @@ L.Util.extend(L.KML, {
 			style['#' + e.getAttribute('id')] = options;
 		}
 		return style;
-	},
-	
-	parseStyleMap: function (xml, existingStyles) {
-		var sl = xml.getElementsByTagName("StyleMap");
-		
-		for (var i = 0; i < sl.length; i++) {
-			var e = sl[i], el;
-			var smKey, smStyleUrl;
-			
-			el = e.getElementsByTagName("key");
-			if (el && el[0]) { smKey = el[0].textContent; }
-			el = e.getElementsByTagName("styleUrl");
-			if (el && el[0]) { smStyleUrl = el[0].textContent; }
-			
-			if (smKey=='normal')
-			{
-				existingStyles['#' + e.getAttribute('id')] = existingStyles[smStyleUrl];
-			}
-		}
-		
-		return;
 	},
 
 	parseFolder: function (xml, style) {
@@ -228,7 +206,7 @@ L.Util.extend(L.KML, {
 
 		var name, descr = "";
 		el = place.getElementsByTagName('name');
-		if (el.length && el[0].childNodes.length) {
+		if (el.length) {
 			name = el[0].childNodes[0].nodeValue;
 		}
 		el = place.getElementsByTagName('description');
