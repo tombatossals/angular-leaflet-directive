@@ -25,7 +25,7 @@ module.exports = function(grunt) {
 
         connect: {
             options: {
-                base: 'examples/'
+                base: ''
             },
             webserver: {
                 options: {
@@ -59,6 +59,11 @@ module.exports = function(grunt) {
                 configFile: "test/protractor.conf.js"
             },
             singlerun: {},
+            saucelabs: {
+                options: {
+                    args: grunt.file.readJSON('saucelabs.json')
+                }
+            },
             auto: {
                 keepAlive: true,
                 options: {

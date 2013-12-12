@@ -1,4 +1,5 @@
 {
+    "baseUrl": "http://tombatossals.github.io/angular-leaflet-directive/examples",
     "sauceUser": null,
     "sauceKey": null,
 }
