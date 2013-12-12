@@ -82,6 +82,15 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
             if (isDefined(map.zoomControl) && isDefined(defaults.zoomControlPosition)) {
                 map.zoomControl.setPosition(defaults.zoomControlPosition);
             }
+            
+            if(isDefined(map.zoomControl) && defaults.zoomControl===false) {
+                map.zoomControl.removeFrom(map);
+            }
+
+            if(isDefined(map.zoomsliderControl) && isDefined(defaults.zoomsliderControl) && defaults.zoomsliderControl===false) {
+                map.zoomsliderControl.removeFrom(map);
+            }
+            
 
             // if no event-broadcast attribute, all events are broadcasted
             if (!isDefined(attrs.eventBroadcast)) {
@@ -364,6 +373,8 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
 
             controller.getMap().then(function(map) {
                 var defaults = leafletMapDefaults.getDefaults(attrs.id);
+                
+				$log.log(defaults);
 
                 // Do we have a baselayers property?
                 if (!isDefined(layers) || !isDefined(layers.baselayers) || Object.keys(layers.baselayers).length === 0) {
@@ -375,6 +386,24 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                 // We have baselayers to add to the map
                 _leafletLayers.resolve(leafletLayers);
                 leafletData.setLayers(leafletLayers, attrs.id);
+
+				/*
+				 * if(defaults) {
+					var controlOptions = {
+						collapsed: defaults.layercontrol && defaults.layercontrol.collapsed
+					};
+					if(defaults.layercontrol && defaults.layercontrol.control) {
+						layers.controls.layers =
+							defaults.layercontrol.control.apply(this, [[], [], controlOptions]);
+					} else {
+						layers.controls.layers = new L.control.layers([[], [], controlOptions]);
+					}
+					
+					if(defaults.layercontrol && defaults.layercontrol.position) {
+						layers.controls.layers.setPosition(defaults.layercontrol.position);
+					}
+                }
+				 */
 
                 leafletLayers.baselayers = {};
                 leafletLayers.controls = {};
@@ -1385,9 +1414,13 @@ angular.module("leaflet-directive").directive('controls', function ($log, leafle
         restrict: "A",
         scope: false,
         replace: false,
-        require: 'leaflet',
+        require: '?^leaflet',
 
         link: function(scope, element, attrs, controller) {
+			if(!controller) {
+				return;
+			}
+
             var isDefined = leafletHelpers.isDefined,
                 leafletScope  = controller.getLeafletScope(),
                 controls = leafletScope.controls;
@@ -1396,6 +1429,12 @@ angular.module("leaflet-directive").directive('controls', function ($log, leafle
                 if (isDefined(L.Control.Draw) && isDefined(controls.draw)) {
                     var drawControl = new L.Control.Draw(controls.draw.options);
                     map.addControl(drawControl);
+                }
+                
+                if(isDefined(controls.custom)) {
+					for(var i = 0; i < controls.custom.length; i++) {
+						map.addControl(controls.custom[i]);
+					}
                 }
             });
         }
@@ -1636,7 +1675,11 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
             zoomControl: true,
             attributionControl: true,
             zoomsliderControl: false,
-            zoomControlPosition: 'topleft',
+			layercontrol: {
+				position:'topright',
+				control: L.control.layers,
+				collapsed: true
+	        },
             controlLayersPosition: 'topright',
             crs: L.CRS.EPSG3857,
             tileLayer: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -1720,11 +1763,13 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
                 newDefaults.doubleClickZoom = isDefined(userDefaults.doubleClickZoom) ?  userDefaults.doubleClickZoom : newDefaults.doubleClickZoom;
                 newDefaults.scrollWheelZoom = isDefined(userDefaults.scrollWheelZoom) ?  userDefaults.scrollWheelZoom : newDefaults.doubleClickZoom;
                 newDefaults.zoomControl = isDefined(userDefaults.zoomControl) ?  userDefaults.zoomControl : newDefaults.zoomControl;
+				newDefaults.zoomsliderControl = isDefined(userDefaults.zoomsliderControl) ?  userDefaults.zoomsliderControl : newDefaults.zoomsliderControl;
                 newDefaults.attributionControl = isDefined(userDefaults.attributionControl) ?  userDefaults.attributionControl : newDefaults.attributionControl;
                 newDefaults.tileLayer = isDefined(userDefaults.tileLayer) ? userDefaults.tileLayer : newDefaults.tileLayer;
                 newDefaults.zoomControlPosition = isDefined(userDefaults.zoomControlPosition) ? userDefaults.zoomControlPosition : newDefaults.zoomControlPosition;
                 newDefaults.keyboard = isDefined(userDefaults.keyboard) ? userDefaults.keyboard : newDefaults.keyboard;
                 newDefaults.dragging = isDefined(userDefaults.dragging) ? userDefaults.dragging : newDefaults.dragging;
+                
                 newDefaults.controlLayersPosition = isDefined(userDefaults.controlLayersPosition) ? userDefaults.controlLayersPosition : newDefaults.controlLayersPosition;
 
                 if (isDefined(userDefaults.crs) && isDefined(L.CRS[userDefaults.crs])) {
@@ -1884,6 +1929,19 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
     function createWmsLayer(url, options) {
         return L.tileLayer.wms(url, options);
     }
+    
+    function createWfsLayer(url, layerName, options) {
+		if (Helpers.WFSLayerPlugin.isLoaded()) {
+			if(options.crs && 'string' === typeof options.crs) {
+				/*jshint -W061 */
+				options.crs = eval(options.crs);
+			}
+			var layer = new L.GeoJSON.WFS(url, layerName, options);
+			return layer;
+		} else {
+			return null;
+		}
+    }
 
     function createGroupLayer() {
         return L.layerGroup();
@@ -1913,6 +1971,33 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
             return null;
         }
     }
+    
+    function createAGSLayer(url, options) {
+		if (Helpers.AGSLayerPlugin.isLoaded()) {
+			angular.extend(options, {
+				url: url
+			});
+			var layer = new lvector.AGS(options);
+			layer.onAdd = function(map) {
+				this.setMap(map);
+			};
+			layer.onRemove = function() {
+				this.setMap(null);
+			};
+			return layer;
+		} else {
+			return null;
+        }
+    }
+    
+    function createDynamicMapLayer(url, options) {
+		if (Helpers.DynamicMapLayerPlugin.isLoaded()) {
+			var layer = L.esri.dynamicMapLayer(url, options);
+			return layer;
+		} else {
+			return null;
+		}
+	}
 
     function createImageOverlay(url, bounds, options) {
         return L.imageOverlay(url, bounds, options);
@@ -1924,16 +2009,20 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
             if (!isString(layerDefinition.type)) {
                 $log.error('[AngularJS - Leaflet] A base layer must have a type');
                 return null;
-            } else if (layerDefinition.type !== 'xyz' && layerDefinition.type !== 'wms' && layerDefinition.type !== 'group' && layerDefinition.type !== 'markercluster' && layerDefinition.type !== 'google' && layerDefinition.type !== 'bing' && layerDefinition.type !== 'imageOverlay') {
-                $log.error('[AngularJS - Leaflet] A layer must have a valid type: "xyz, wms, group, google"');
+            } else if (layerDefinition.type !== 'xyz' && layerDefinition.type !== 'wms' && layerDefinition.type !== 'wfs' && layerDefinition.type !== 'group' && layerDefinition.type !== 'markercluster' && layerDefinition.type !== 'google' && layerDefinition.type !== 'bing' && layerDefinition.type !== 'ags' && layerDefinition.type !== 'dynamic' && layerDefinition.type !== 'imageOverlay') {
+                $log.error('[AngularJS - Leaflet] A layer must have a valid type: "xyz, wms, wfs, group, google, ags, dynamic"');
                 return null;
             }
-            if (layerDefinition.type === 'xyz' || layerDefinition.type === 'wms' || layerDefinition.type === 'imageOverlay') {
-                // XYZ, WMS must have an url
+            if (layerDefinition.type === 'xyz' || layerDefinition.type === 'wms' || layerDefinition.type === 'wfs' || layerDefinition.type === 'imageOverlay' || layerDefinition.type === 'ags' || layerDefinition.type === 'dynamic') {
+                // XYZ, WMS, WFS, AGS, Dynamic, must have an url
                 if (!isString(layerDefinition.url)) {
                     $log.error('[AngularJS - Leaflet] A base layer must have an url');
                     return null;
                 }
+            }
+            if(layerDefinition.type === 'wfs' && layerDefinition.layer === undefined) {
+				$log.error('[AngularJS - Leaflet] A WFS layer must have an layer');
+                return null;
             }
             if (layerDefinition.type === 'imageOverlay' && layerDefinition.bounds === undefined) {
                 if (!isString(layerDefinition)) {
@@ -1965,6 +2054,9 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
                 case 'wms':
                     layer = createWmsLayer(layerDefinition.url, layerDefinition.layerOptions);
                     break;
+                case 'wfs':
+					layer = createWfsLayer(layerDefinition.url, layerDefinition.layer, layerDefinition.layerOptions);
+					break;
                 case 'group':
                     layer = createGroupLayer();
                     break;
@@ -1977,6 +2069,12 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
                 case 'bing':
                     layer = createBingLayer(layerDefinition.bingKey, layerDefinition.layerOptions);
                     break;
+                case 'ags':
+                    layer = createAGSLayer(layerDefinition.url, layerDefinition.layerOptions);
+                    break;
+				case 'dynamic':
+					layer = createDynamicMapLayer(layerDefinition.url, layerDefinition.layerOptions);
+					break;
                 case 'imageOverlay':
                     layer = createImageOverlay(layerDefinition.url, layerDefinition.bounds, layerDefinition.layerOptions);
                     break;
@@ -2211,6 +2309,42 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
                     return false;
                 }
             }
+        },
+        WFSLayerPlugin: {
+            isLoaded: function() {
+                return L.GeoJSON.WFS !== undefined;
+            },
+            is: function(layer) {
+                if (this.isLoaded()) {
+                    return layer instanceof L.GeoJSON.WFS;
+                } else {
+                    return false;
+                }
+            },
+        },
+        AGSLayerPlugin: {
+            isLoaded: function() {
+                return lvector !== undefined && lvector.AGS !== undefined;
+            },
+            is: function(layer) {
+                if (this.isLoaded()) {
+                    return layer instanceof lvector.AGS;
+                } else {
+                    return false;
+                }
+            },
+        },
+		DynamicMapLayerPlugin: {
+			isLoaded: function() {
+				return L.esri !== undefined && L.esri.dynamicMapLayer !== undefined;
+			},
+			is: function(layer) {
+				if (this.isLoaded()) {
+					return layer instanceof L.esri.dynamicMapLayer;
+				} else {
+					return false;
+				}
+			},
         },
         Leaflet: {
             DivIcon: {

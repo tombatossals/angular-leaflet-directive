@@ -7,9 +7,14 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
             doubleClickZoom: true,
             scrollWheelZoom: true,
             zoomControl: true,
-            attributionControl: true,
             zoomsliderControl: false,
             zoomControlPosition: 'topleft',
+            attributionControl: true,
+			layercontrol: {
+				position:'topright',
+				control: L.control.layers,
+				collapsed: true
+	        },
             controlLayersPosition: 'topright',
             crs: L.CRS.EPSG3857,
             tileLayer: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -17,15 +22,15 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
                 attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             },
             icon: {
-                url: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-icon.png',
-                retinaUrl: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-icon-2x.png',
+                url: 'http://cdn.leafletjs.com/leaflet-0.7/images/marker-icon.png',
+                retinaUrl: 'http://cdn.leafletjs.com/leaflet-0.7/images/marker-icon-2x.png',
                 size: [25, 41],
                 anchor: [12, 40],
                 labelAnchor: [10, -20],
                 popup: [0, -40],
                 shadow: {
-                    url: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-shadow.png',
-                    retinaUrl: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-shadow.png',
+                    url: 'http://cdn.leafletjs.com/leaflet-0.7/images/marker-shadow.png',
+                    retinaUrl: 'http://cdn.leafletjs.com/leaflet-0.7/images/marker-shadow.png',
                     size: [41, 41],
                     anchor: [12, 40]
                 }
@@ -93,11 +98,13 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
                 newDefaults.doubleClickZoom = isDefined(userDefaults.doubleClickZoom) ?  userDefaults.doubleClickZoom : newDefaults.doubleClickZoom;
                 newDefaults.scrollWheelZoom = isDefined(userDefaults.scrollWheelZoom) ?  userDefaults.scrollWheelZoom : newDefaults.doubleClickZoom;
                 newDefaults.zoomControl = isDefined(userDefaults.zoomControl) ?  userDefaults.zoomControl : newDefaults.zoomControl;
+				newDefaults.zoomsliderControl = isDefined(userDefaults.zoomsliderControl) ?  userDefaults.zoomsliderControl : newDefaults.zoomsliderControl;
                 newDefaults.attributionControl = isDefined(userDefaults.attributionControl) ?  userDefaults.attributionControl : newDefaults.attributionControl;
                 newDefaults.tileLayer = isDefined(userDefaults.tileLayer) ? userDefaults.tileLayer : newDefaults.tileLayer;
                 newDefaults.zoomControlPosition = isDefined(userDefaults.zoomControlPosition) ? userDefaults.zoomControlPosition : newDefaults.zoomControlPosition;
                 newDefaults.keyboard = isDefined(userDefaults.keyboard) ? userDefaults.keyboard : newDefaults.keyboard;
                 newDefaults.dragging = isDefined(userDefaults.dragging) ? userDefaults.dragging : newDefaults.dragging;
+                
                 newDefaults.controlLayersPosition = isDefined(userDefaults.controlLayersPosition) ? userDefaults.controlLayersPosition : newDefaults.controlLayersPosition;
 
                 if (isDefined(userDefaults.crs) && isDefined(L.CRS[userDefaults.crs])) {

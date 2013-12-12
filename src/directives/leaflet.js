@@ -78,6 +78,15 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
             if (isDefined(map.zoomControl) && isDefined(defaults.zoomControlPosition)) {
                 map.zoomControl.setPosition(defaults.zoomControlPosition);
             }
+            
+            if(isDefined(map.zoomControl) && defaults.zoomControl===false) {
+                map.zoomControl.removeFrom(map);
+            }
+
+            if(isDefined(map.zoomsliderControl) && isDefined(defaults.zoomsliderControl) && defaults.zoomsliderControl===false) {
+                map.zoomsliderControl.removeFrom(map);
+            }
+            
 
             // if no event-broadcast attribute, all events are broadcasted
             if (!isDefined(attrs.eventBroadcast)) {

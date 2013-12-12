@@ -12,3 +12,4 @@ dist/angular-leaflet-directive.min.no-header.js
 coverage
 bower_components
 saucelabs.json
+lib
