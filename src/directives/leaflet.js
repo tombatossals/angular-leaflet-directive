@@ -1,4 +1,4 @@
-angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q, leafletData, leafletMapDefaults, leafletHelpers, leafletEvents) {
+angular.module("leaflet-directive", []).directive('leaflet', function ($q, leafletData, leafletMapDefaults, leafletHelpers, leafletEvents) {
     var _leafletMap;
     return {
         restrict: "EA",
@@ -63,7 +63,6 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
             _leafletMap.resolve(map);
 
             if (!isDefined(attrs.center)) {
-                $log.warn("[AngularJS - Leaflet] 'center' is undefined in the current scope, did you forget to initialize it?");
                 map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
             }
 
@@ -78,7 +77,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
             if (isDefined(map.zoomControl) && isDefined(defaults.zoomControlPosition)) {
                 map.zoomControl.setPosition(defaults.zoomControlPosition);
             }
-            
+
             if(isDefined(map.zoomControl) && defaults.zoomControl===false) {
                 map.zoomControl.removeFrom(map);
             }
@@ -86,7 +85,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
             if(isDefined(map.zoomsliderControl) && isDefined(defaults.zoomsliderControl) && defaults.zoomsliderControl===false) {
                 map.zoomsliderControl.removeFrom(map);
             }
-            
+
 
             // if no event-broadcast attribute, all events are broadcasted
             if (!isDefined(attrs.eventBroadcast)) {
