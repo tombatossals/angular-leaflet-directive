@@ -42,7 +42,7 @@
     "grunt-protractor-runner": "latest",
     "grunt-shell-spawn": "latest",
     "grunt-conventional-changelog": "latest",
-    "grunt-bump"
+    "grunt-bump": "latest"
   },
   "scripts": {
     "test": "grunt travis --verbose"
