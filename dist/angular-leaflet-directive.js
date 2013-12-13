@@ -2,7 +2,7 @@
 
 "use strict";
 
-angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q, leafletData, leafletMapDefaults, leafletHelpers, leafletEvents) {
+angular.module("leaflet-directive", []).directive('leaflet', function ($q, leafletData, leafletMapDefaults, leafletHelpers, leafletEvents) {
     var _leafletMap;
     return {
         restrict: "EA",
@@ -67,7 +67,6 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
             _leafletMap.resolve(map);
 
             if (!isDefined(attrs.center)) {
-                $log.warn("[AngularJS - Leaflet] 'center' is undefined in the current scope, did you forget to initialize it?");
                 map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
             }
 
@@ -82,7 +81,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
             if (isDefined(map.zoomControl) && isDefined(defaults.zoomControlPosition)) {
                 map.zoomControl.setPosition(defaults.zoomControlPosition);
             }
-            
+
             if(isDefined(map.zoomControl) && defaults.zoomControl===false) {
                 map.zoomControl.removeFrom(map);
             }
@@ -90,7 +89,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($log, $q,
             if(isDefined(map.zoomsliderControl) && isDefined(defaults.zoomsliderControl) && defaults.zoomsliderControl===false) {
                 map.zoomsliderControl.removeFrom(map);
             }
-            
+
 
             // if no event-broadcast attribute, all events are broadcasted
             if (!isDefined(attrs.eventBroadcast)) {
@@ -1673,8 +1672,9 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
             doubleClickZoom: true,
             scrollWheelZoom: true,
             zoomControl: true,
-            attributionControl: true,
             zoomsliderControl: false,
+            zoomControlPosition: 'topleft',
+            attributionControl: true,
 			layercontrol: {
 				position:'topright',
 				control: L.control.layers,
@@ -1687,15 +1687,15 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
                 attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             },
             icon: {
-                url: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-icon.png',
-                retinaUrl: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-icon-2x.png',
+                url: 'http://cdn.leafletjs.com/leaflet-0.7/images/marker-icon.png',
+                retinaUrl: 'http://cdn.leafletjs.com/leaflet-0.7/images/marker-icon-2x.png',
                 size: [25, 41],
                 anchor: [12, 40],
                 labelAnchor: [10, -20],
                 popup: [0, -40],
                 shadow: {
-                    url: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-shadow.png',
-                    retinaUrl: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-shadow.png',
+                    url: 'http://cdn.leafletjs.com/leaflet-0.7/images/marker-shadow.png',
+                    retinaUrl: 'http://cdn.leafletjs.com/leaflet-0.7/images/marker-shadow.png',
                     size: [41, 41],
                     anchor: [12, 40]
                 }
