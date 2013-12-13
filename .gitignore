@@ -11,5 +11,6 @@ js/angular-leaflet-directive-webpage.ngmin.js
 .project
 node_modules
 bower_components
-coverage
+coverage/*.json
 selenium
+saucelabs.json
