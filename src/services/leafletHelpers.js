@@ -220,6 +220,42 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
                 }
             }
         },
+        WFSLayerPlugin: {
+            isLoaded: function() {
+                return L.GeoJSON.WFS !== undefined;
+            },
+            is: function(layer) {
+                if (this.isLoaded()) {
+                    return layer instanceof L.GeoJSON.WFS;
+                } else {
+                    return false;
+                }
+            },
+        },
+        AGSLayerPlugin: {
+            isLoaded: function() {
+                return lvector !== undefined && lvector.AGS !== undefined;
+            },
+            is: function(layer) {
+                if (this.isLoaded()) {
+                    return layer instanceof lvector.AGS;
+                } else {
+                    return false;
+                }
+            },
+        },
+		DynamicMapLayerPlugin: {
+			isLoaded: function() {
+				return L.esri !== undefined && L.esri.dynamicMapLayer !== undefined;
+			},
+			is: function(layer) {
+				if (this.isLoaded()) {
+					return layer instanceof L.esri.dynamicMapLayer;
+				} else {
+					return false;
+				}
+			},
+        },
         Leaflet: {
             DivIcon: {
                 is: function(icon) {

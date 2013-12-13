@@ -138,6 +138,7 @@ module.exports = function(grunt) {
                 globals: {
                     angular: false,
                     L: false,
+                    lvector: false,
                     // Jasmine
                     jasmine    : false,
                     isCommonJS : false,
@@ -159,7 +160,6 @@ module.exports = function(grunt) {
                     browser: false,
                     by: false,
                     element: false
-
                 }
             },
             source: {

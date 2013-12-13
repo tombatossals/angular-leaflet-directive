@@ -22,6 +22,8 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
 
             controller.getMap().then(function(map) {
                 var defaults = leafletMapDefaults.getDefaults(attrs.id);
+                
+				$log.log(defaults);
 
                 // Do we have a baselayers property?
                 if (!isDefined(layers) || !isDefined(layers.baselayers) || Object.keys(layers.baselayers).length === 0) {
@@ -33,6 +35,24 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                 // We have baselayers to add to the map
                 _leafletLayers.resolve(leafletLayers);
                 leafletData.setLayers(leafletLayers, attrs.id);
+
+				/*
+				 * if(defaults) {
+					var controlOptions = {
+						collapsed: defaults.layercontrol && defaults.layercontrol.collapsed
+					};
+					if(defaults.layercontrol && defaults.layercontrol.control) {
+						layers.controls.layers =
+							defaults.layercontrol.control.apply(this, [[], [], controlOptions]);
+					} else {
+						layers.controls.layers = new L.control.layers([[], [], controlOptions]);
+					}
+					
+					if(defaults.layercontrol && defaults.layercontrol.position) {
+						layers.controls.layers.setPosition(defaults.layercontrol.position);
+					}
+                }
+				 */
 
                 leafletLayers.baselayers = {};
                 leafletLayers.controls = {};

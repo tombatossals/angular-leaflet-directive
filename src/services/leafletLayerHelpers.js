@@ -10,6 +10,19 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
     function createWmsLayer(url, options) {
         return L.tileLayer.wms(url, options);
     }
+    
+    function createWfsLayer(url, layerName, options) {
+		if (Helpers.WFSLayerPlugin.isLoaded()) {
+			if(options.crs && 'string' === typeof options.crs) {
+				/*jshint -W061 */
+				options.crs = eval(options.crs);
+			}
+			var layer = new L.GeoJSON.WFS(url, layerName, options);
+			return layer;
+		} else {
+			return null;
+		}
+    }
 
     function createGroupLayer() {
         return L.layerGroup();
@@ -39,6 +52,33 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
             return null;
         }
     }
+    
+    function createAGSLayer(url, options) {
+		if (Helpers.AGSLayerPlugin.isLoaded()) {
+			angular.extend(options, {
+				url: url
+			});
+			var layer = new lvector.AGS(options);
+			layer.onAdd = function(map) {
+				this.setMap(map);
+			};
+			layer.onRemove = function() {
+				this.setMap(null);
+			};
+			return layer;
+		} else {
+			return null;
+        }
+    }
+    
+    function createDynamicMapLayer(url, options) {
+		if (Helpers.DynamicMapLayerPlugin.isLoaded()) {
+			var layer = L.esri.dynamicMapLayer(url, options);
+			return layer;
+		} else {
+			return null;
+		}
+	}
 
     function createImageOverlay(url, bounds, options) {
         return L.imageOverlay(url, bounds, options);
@@ -50,16 +90,20 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
             if (!isString(layerDefinition.type)) {
                 $log.error('[AngularJS - Leaflet] A base layer must have a type');
                 return null;
-            } else if (layerDefinition.type !== 'xyz' && layerDefinition.type !== 'wms' && layerDefinition.type !== 'group' && layerDefinition.type !== 'markercluster' && layerDefinition.type !== 'google' && layerDefinition.type !== 'bing' && layerDefinition.type !== 'imageOverlay') {
-                $log.error('[AngularJS - Leaflet] A layer must have a valid type: "xyz, wms, group, google"');
+            } else if (layerDefinition.type !== 'xyz' && layerDefinition.type !== 'wms' && layerDefinition.type !== 'wfs' && layerDefinition.type !== 'group' && layerDefinition.type !== 'markercluster' && layerDefinition.type !== 'google' && layerDefinition.type !== 'bing' && layerDefinition.type !== 'ags' && layerDefinition.type !== 'dynamic' && layerDefinition.type !== 'imageOverlay') {
+                $log.error('[AngularJS - Leaflet] A layer must have a valid type: "xyz, wms, wfs, group, google, ags, dynamic"');
                 return null;
             }
-            if (layerDefinition.type === 'xyz' || layerDefinition.type === 'wms' || layerDefinition.type === 'imageOverlay') {
-                // XYZ, WMS must have an url
+            if (layerDefinition.type === 'xyz' || layerDefinition.type === 'wms' || layerDefinition.type === 'wfs' || layerDefinition.type === 'imageOverlay' || layerDefinition.type === 'ags' || layerDefinition.type === 'dynamic') {
+                // XYZ, WMS, WFS, AGS, Dynamic, must have an url
                 if (!isString(layerDefinition.url)) {
                     $log.error('[AngularJS - Leaflet] A base layer must have an url');
                     return null;
                 }
+            }
+            if(layerDefinition.type === 'wfs' && layerDefinition.layer === undefined) {
+				$log.error('[AngularJS - Leaflet] A WFS layer must have an layer');
+                return null;
             }
             if (layerDefinition.type === 'imageOverlay' && layerDefinition.bounds === undefined) {
                 if (!isString(layerDefinition)) {
@@ -91,6 +135,9 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
                 case 'wms':
                     layer = createWmsLayer(layerDefinition.url, layerDefinition.layerOptions);
                     break;
+                case 'wfs':
+					layer = createWfsLayer(layerDefinition.url, layerDefinition.layer, layerDefinition.layerOptions);
+					break;
                 case 'group':
                     layer = createGroupLayer();
                     break;
@@ -103,6 +150,12 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
                 case 'bing':
                     layer = createBingLayer(layerDefinition.bingKey, layerDefinition.layerOptions);
                     break;
+                case 'ags':
+                    layer = createAGSLayer(layerDefinition.url, layerDefinition.layerOptions);
+                    break;
+				case 'dynamic':
+					layer = createDynamicMapLayer(layerDefinition.url, layerDefinition.layerOptions);
+					break;
                 case 'imageOverlay':
                     layer = createImageOverlay(layerDefinition.url, layerDefinition.bounds, layerDefinition.layerOptions);
                     break;
