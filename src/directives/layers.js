@@ -62,16 +62,18 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                 var top = false;
                 for (var layerName in layers.baselayers) {
                     var newBaseLayer = createLayer(layers.baselayers[layerName]);
-                    if (isDefined(newBaseLayer)) {
-                        leafletLayers.baselayers[layerName] = newBaseLayer;
-                        // Only add the visible layer to the map, layer control manages the addition to the map
-                        // of layers in its control
-                        if (layers.baselayers[layerName].top === true) {
-                            map.addLayer(leafletLayers.baselayers[layerName]);
-                            top = true;
-                        }
-                        leafletLayers.controls.layers.addBaseLayer(leafletLayers.baselayers[layerName], layers.baselayers[layerName].name);
+                    if (!isDefined(newBaseLayer)) {
+                        delete layers.baselayers[layerName];
+                        continue;
                     }
+                    leafletLayers.baselayers[layerName] = newBaseLayer;
+                    // Only add the visible layer to the map, layer control manages the addition to the map
+                    // of layers in its control
+                    if (layers.baselayers[layerName].top === true) {
+                        map.addLayer(leafletLayers.baselayers[layerName]);
+                        top = true;
+                    }
+                    leafletLayers.controls.layers.addBaseLayer(leafletLayers.baselayers[layerName], layers.baselayers[layerName].name);
                 }
 
                 // If there is no visible layer add first to the map
