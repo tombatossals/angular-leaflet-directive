@@ -55,7 +55,6 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                 leafletLayers.controls = {};
                 leafletLayers.controls.layers = new L.control.layers();
                 leafletLayers.controls.layers.setPosition(defaults.controlLayersPosition);
-                leafletLayers.controls.layers.addTo(map);
 
 
                 // Setup all baselayers definitions
@@ -73,7 +72,13 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                         map.addLayer(leafletLayers.baselayers[layerName]);
                         top = true;
                     }
+
                     leafletLayers.controls.layers.addBaseLayer(leafletLayers.baselayers[layerName], layers.baselayers[layerName].name);
+                }
+
+                // Only add the layers switch selector control if we have more than one baselayer
+                if (Object.keys(layers.baselayers).length > 1) {
+                    leafletLayers.controls.layers.addTo(map);
                 }
 
                 // If there is no visible layer add first to the map
