@@ -14,7 +14,6 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
         },
         link: function(scope, element, attrs, controller) {
             var isDefined = leafletHelpers.isDefined,
-                isDefinedAndNotNull = leafletHelpers.isDefinedAndNotNull,
                 leafletLayers = {},
                 leafletScope  = controller.getLeafletScope(),
                 layers = leafletScope.layers,
@@ -22,8 +21,6 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
 
             controller.getMap().then(function(map) {
                 var defaults = leafletMapDefaults.getDefaults(attrs.id);
-                
-				$log.log(defaults);
 
                 // Do we have a baselayers property?
                 if (!isDefined(layers) || !isDefined(layers.baselayers) || Object.keys(layers.baselayers).length === 0) {
@@ -47,7 +44,7 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
 					} else {
 						layers.controls.layers = new L.control.layers([[], [], controlOptions]);
 					}
-					
+
 					if(defaults.layercontrol && defaults.layercontrol.position) {
 						layers.controls.layers.setPosition(defaults.layercontrol.position);
 					}
@@ -65,7 +62,7 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                 var top = false;
                 for (var layerName in layers.baselayers) {
                     var newBaseLayer = createLayer(layers.baselayers[layerName]);
-                    if (newBaseLayer !== null) {
+                    if (isDefined(newBaseLayer)) {
                         leafletLayers.baselayers[layerName] = newBaseLayer;
                         // Only add the visible layer to the map, layer control manages the addition to the map
                         // of layers in its control
@@ -85,7 +82,7 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                 leafletLayers.overlays = {};
                 for (layerName in layers.overlays) {
                     var newOverlayLayer = createLayer(layers.overlays[layerName]);
-                    if (newOverlayLayer !== null) {
+                    if (isDefined(newOverlayLayer)) {
                         leafletLayers.overlays[layerName] = newOverlayLayer;
                         // Only add the visible layer to the map, layer control manages the addition to the map
                         // of layers in its control
@@ -114,7 +111,7 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                     for (var new_name in newBaseLayers) {
                         if (leafletLayers.baselayers[new_name] === undefined) {
                             var testBaseLayer = createLayer(newBaseLayers[new_name]);
-                            if (testBaseLayer !== null) {
+                            if (isDefined(testBaseLayer)) {
                                 leafletLayers.baselayers[new_name] = testBaseLayer;
                                 // Only add the visible layer to the map, layer control manages the addition to the map
                                 // of layers in its control
@@ -164,7 +161,7 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                     for (var new_name in newOverlayLayers) {
                         if (!isDefined(leafletLayers.overlays[new_name])) {
                             var testOverlayLayer = createLayer(newOverlayLayers[new_name]);
-                            if (isDefinedAndNotNull(testOverlayLayer)) {
+                            if (isDefined(testOverlayLayer)) {
                                 leafletLayers.overlays[new_name] = testOverlayLayer;
                                 leafletLayers.controls.layers.addOverlay(leafletLayers.overlays[new_name], newOverlayLayers[new_name].name);
                                 if (newOverlayLayers[new_name].visible === true) {
