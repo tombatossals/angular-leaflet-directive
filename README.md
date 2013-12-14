@@ -16,6 +16,7 @@ See some basic examples:
 * [Tile changer example](http://tombatossals.github.io/angular-leaflet-directive/examples/tiles-example.html)
 * [Legend example](http://tombatossals.github.io/angular-leaflet-directive/examples/legend-example.html)
 * [GeoJson example](http://tombatossals.github.io/angular-leaflet-directive/examples/geojson-example.html)
+* [Simple layers example](http://tombatossals.github.io/angular-leaflet-directive/examples/layers-simple-example.html)
 * [Layers example](http://tombatossals.github.io/angular-leaflet-directive/examples/layers-example.html)
 * [Events example](http://tombatossals.github.io/angular-leaflet-directive/examples/events-example.html)
 * [Overlays example](http://tombatossals.github.io/angular-leaflet-directive/examples/overlays-example.html)
