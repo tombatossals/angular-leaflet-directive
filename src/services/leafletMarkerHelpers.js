@@ -1,4 +1,6 @@
-angular.module("leaflet-directive").factory('leafletMarkerHelpers', function () {
+angular.module("leaflet-directive").factory('leafletMarkerHelpers', function (leafletHelpers) {
+
+    var isDefined = leafletHelpers.isDefined;
 
     var LeafletDefaultIcon = L.Icon.extend({
         options: {
@@ -17,9 +19,39 @@ angular.module("leaflet-directive").factory('leafletMarkerHelpers', function () 
         }
     });
 
+    var getLeafletIcon = function(data) {
+        return new LeafletDefaultIcon(data);
+    };
+
     return {
-        getLeafletIcon: function(data) {
-            return new LeafletDefaultIcon(data);
+        getLeafletIcon: getLeafletIcon,
+
+        buildMarker: function(data) {
+            var micon = null;
+            if (data.icon) {
+                micon = data.icon;
+            } else {
+                micon = getLeafletIcon();
+            }
+            var moptions = {
+                icon: micon,
+                draggable: data.draggable ? true : false,
+                clickable: isDefined(data.clickable) ? data.clickable : true,
+                riseOnHover: isDefined(data.riseOnHover) ? data.riseOnHover : false
+            };
+            if (data.title) {
+                moptions.title = data.title;
+            }
+            var marker = new L.marker(data, moptions);
+
+            if (data.message) {
+                marker.bindPopup(data.message);
+            }
+            if (leafletHelpers.LabelPlugin.isLoaded() && isDefined(data.label) && isDefined(data.label.message)) {
+                marker.bindLabel(data.label.message, data.label.options);
+            }
+
+            return marker;
         }
     };
 

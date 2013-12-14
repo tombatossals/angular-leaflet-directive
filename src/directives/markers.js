@@ -17,6 +17,7 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                 leafletScope  = mapController.getLeafletScope(),
                 markers = leafletScope.markers,
                 getLeafletIcon = leafletMarkerHelpers.getLeafletIcon,
+                buildMarker = leafletMarkerHelpers.buildMarker,
                 availableMarkerEvents = leafletEvents.getAvailableMarkerEvents();
 
             mapController.getMap().then(function(map) {
@@ -617,34 +618,6 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                                 }
                             }, true);
                         }
-                        return marker;
-                    }
-
-                    function buildMarker(data) {
-                        var micon = null;
-                        if (data.icon) {
-                            micon = data.icon;
-                        } else {
-                            micon = getLeafletIcon();
-                        }
-                        var moptions = {
-                            icon: micon,
-                            draggable: data.draggable ? true : false,
-                            clickable: isDefined(data.clickable) ? data.clickable : true,
-                            riseOnHover: isDefined(data.riseOnHover) ? data.riseOnHover : false
-                        };
-                        if (data.title) {
-                            moptions.title = data.title;
-                        }
-                        var marker = new L.marker(data, moptions);
-
-                        if (data.message) {
-                            marker.bindPopup(data.message);
-                        }
-                        if (leafletHelpers.LabelPlugin.isLoaded() && isDefined(data.label) && isDefined(data.label.message)) {
-                            marker.bindLabel(data.label.message, data.label.options);
-                        }
-
                         return marker;
                     }
                 });
