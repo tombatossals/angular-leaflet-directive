@@ -593,7 +593,7 @@ angular.module("leaflet-directive").directive('bounds', function ($log, leafletH
     };
 });
 
-angular.module("leaflet-directive").directive('markers', function ($log, $rootScope, $q, leafletData, leafletHelpers, leafletMapDefaults, leafletEvents) {
+angular.module("leaflet-directive").directive('markers', function ($log, $rootScope, $q, leafletData, leafletHelpers, leafletMapDefaults, leafletMarkerHelpers, leafletEvents) {
     return {
         restrict: "A",
         scope: false,
@@ -611,11 +611,11 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                 safeApply = leafletHelpers.safeApply,
                 leafletScope  = mapController.getLeafletScope(),
                 markers = leafletScope.markers,
+                getLeafletIcon = leafletMarkerHelpers.getLeafletIcon,
                 availableMarkerEvents = leafletEvents.getAvailableMarkerEvents();
 
             mapController.getMap().then(function(map) {
-                var defaults = leafletMapDefaults.getDefaults(attrs.id),
-                    leafletMarkers = {},
+                var leafletMarkers = {},
                     groups = {},
                     getLayers;
 
@@ -628,22 +628,6 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                         return deferred.promise;
                     };
                 }
-
-                // Default leaflet icon object used in all markers as a default
-                var LeafletIcon = L.Icon.extend({
-                    options: {
-                        iconUrl: defaults.icon.url,
-                        iconRetinaUrl: defaults.icon.retinaUrl,
-                        iconSize: defaults.icon.size,
-                        iconAnchor: defaults.icon.anchor,
-                        labelAnchor: defaults.icon.labelAnchor,
-                        popupAnchor: defaults.icon.popup,
-                        shadowUrl: defaults.icon.shadow.url,
-                        shadowRetinaUrl: defaults.icon.shadow.retinaUrl,
-                        shadowSize: defaults.icon.shadow.size,
-                        shadowAnchor: defaults.icon.shadow.anchor
-                    }
-                });
 
                 if (!isDefined(markers)) {
                     return;
@@ -1034,7 +1018,7 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                                         // If there is no icon property or it's not an object
                                         if (old_data.icon !== undefined && old_data.icon !== null && typeof old_data.icon === 'object') {
                                             // If there was an icon before restore to the default
-                                            marker.setIcon(new LeafletIcon());
+                                            marker.setIcon(getLeafletIcon());
                                             marker.closePopup();
                                             marker.unbindPopup();
                                             if (data.message !== undefined && data.message !== null && typeof data.message === 'string' && data.message !== "") {
@@ -1056,7 +1040,7 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                                             marker.setIcon(data.icon);
                                         } else {
                                             // This icon is a icon set in the model trough options
-                                            marker.setIcon(new LeafletIcon(data.icon));
+                                            marker.setIcon(getLeafletIcon(data.icon));
                                         }
                                         if (dragA) {
                                             marker.dragging.enable();
@@ -1132,7 +1116,7 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                                                 if (marker.dragging) {
                                                     dragG = marker.dragging.enabled();
                                                 }
-                                                marker.setIcon(new LeafletIcon(data.icon));
+                                                marker.setIcon(getLeafletIcon(data.icon));
                                                 if (dragG) {
                                                     marker.dragging.enable();
                                                 }
@@ -1236,7 +1220,7 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                         if (data.icon) {
                             micon = data.icon;
                         } else {
-                            micon = new LeafletIcon();
+                            micon = getLeafletIcon();
                         }
                         var moptions = {
                             icon: micon,
@@ -1692,20 +1676,6 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
             tileLayerOptions: {
                 attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             },
-            icon: {
-                url: 'http://cdn.leafletjs.com/leaflet-0.7/images/marker-icon.png',
-                retinaUrl: 'http://cdn.leafletjs.com/leaflet-0.7/images/marker-icon-2x.png',
-                size: [25, 41],
-                anchor: [12, 40],
-                labelAnchor: [10, -20],
-                popup: [0, -40],
-                shadow: {
-                    url: 'http://cdn.leafletjs.com/leaflet-0.7/images/marker-shadow.png',
-                    retinaUrl: 'http://cdn.leafletjs.com/leaflet-0.7/images/marker-shadow.png',
-                    size: [41, 41],
-                    anchor: [12, 40]
-                }
-            },
             path: {
                 weight: 10,
                 opacity: 1,
@@ -1775,7 +1745,7 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
                 newDefaults.zoomControlPosition = isDefined(userDefaults.zoomControlPosition) ? userDefaults.zoomControlPosition : newDefaults.zoomControlPosition;
                 newDefaults.keyboard = isDefined(userDefaults.keyboard) ? userDefaults.keyboard : newDefaults.keyboard;
                 newDefaults.dragging = isDefined(userDefaults.dragging) ? userDefaults.dragging : newDefaults.dragging;
-                
+
                 newDefaults.controlLayersPosition = isDefined(userDefaults.controlLayersPosition) ? userDefaults.controlLayersPosition : newDefaults.controlLayersPosition;
 
                 if (isDefined(userDefaults.crs) && isDefined(L.CRS[userDefaults.crs])) {
@@ -1923,7 +1893,7 @@ angular.module("leaflet-directive").factory('leafletEvents', function ($rootScop
 });
 
 
-angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($rootScope, $q, $log, leafletHelpers) {
+angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($rootScope, $log, leafletHelpers) {
     var Helpers = leafletHelpers,
         isString = leafletHelpers.isString,
         isObject = leafletHelpers.isObject,
@@ -2094,6 +2064,33 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
             return layerTypes[layerDefinition.type].createLayer(params);
         }
     };
+});
+
+angular.module("leaflet-directive").factory('leafletMarkerHelpers', function () {
+
+    var LeafletDefaultIcon = L.Icon.extend({
+        options: {
+            iconUrl: 'http://cdn.leafletjs.com/leaflet-0.7/images/marker-icon.png',
+            iconRetinaUrl: 'http://cdn.leafletjs.com/leaflet-0.7/images/marker-icon-2x.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 40],
+            labelAnchor: [10, -20],
+            popupAnchor: [0, -40],
+            shadow: {
+                url: 'http://cdn.leafletjs.com/leaflet-0.7/images/marker-shadow.png',
+                retinaUrl: 'http://cdn.leafletjs.com/leaflet-0.7/images/marker-shadow.png',
+                size: [41, 41],
+                anchor: [12, 40]
+            }
+        }
+    });
+
+    return {
+        getLeafletIcon: function(data) {
+            return new LeafletDefaultIcon(data);
+        }
+    };
+
 });
 
 angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log) {
