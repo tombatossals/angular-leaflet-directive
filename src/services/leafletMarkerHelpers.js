@@ -2,7 +2,6 @@ angular.module("leaflet-directive").factory('leafletMarkerHelpers', function ($r
 
     var isDefined = leafletHelpers.isDefined,
         Helpers = leafletHelpers,
-        isDefinedAndNotNull = leafletHelpers.isDefinedAndNotNull,
         MarkerClusterPlugin = leafletHelpers.MarkerClusterPlugin,
         isString = leafletHelpers.isString,
         isNumber  = leafletHelpers.isNumber,
@@ -31,6 +30,10 @@ angular.module("leaflet-directive").factory('leafletMarkerHelpers', function ($r
     };
 
     var buildMarker = function(data) {
+        if (!isDefined(data)) {
+            return;
+        }
+
         var micon = null;
         if (data.icon) {
             micon = data.icon;
@@ -104,7 +107,7 @@ angular.module("leaflet-directive").factory('leafletMarkerHelpers', function ($r
 
             // There is no easy way to know if a marker is added to a layer, so we search for it
             // if there are overlays
-            if (isDefinedAndNotNull(layers) && isDefined(layers.overlays)) {
+            if (isDefined(layers) && isDefined(layers.overlays)) {
                 for (var key in layers.overlays) {
                     if (layers.overlays[key] instanceof L.LayerGroup) {
                         if (layers.overlays[key].hasLayer(marker)) {
@@ -114,7 +117,7 @@ angular.module("leaflet-directive").factory('leafletMarkerHelpers', function ($r
                 }
             }
 
-            if (isDefinedAndNotNull(groups)) {
+            if (isDefined(groups)) {
                 for (var groupKey in groups) {
                     if (groups[groupKey].hasLayer(marker)) {
                         groups[groupKey].removeLayer(marker);
@@ -128,6 +131,10 @@ angular.module("leaflet-directive").factory('leafletMarkerHelpers', function ($r
 
         createMarker: function(scope_watch_name, marker_data, leafletScope, map, layers, groups, shouldWatch) {
             var marker = buildMarker(marker_data);
+
+            if (!isDefined(marker)) {
+                return;
+            }
 
             if (isDefined(marker_data.layer) && !isString(marker_data.layer)) {
                 $log.error('[AngularJS - Leaflet] A layername must be a string');
@@ -181,7 +188,7 @@ angular.module("leaflet-directive").factory('leafletMarkerHelpers', function ($r
                 var layerGroup = layers.overlays[marker_data.layer];
                 if (!(layerGroup instanceof L.LayerGroup)) {
                     $log.error('[AngularJS - Leaflet] A marker can only be added to a layer of type "group"');
-                    return null;
+                    return;
                 }
 
                 // The marker goes to a correct layer group, so first of all we add it
@@ -199,7 +206,7 @@ angular.module("leaflet-directive").factory('leafletMarkerHelpers', function ($r
             var eventName;
             var logic = "broadcast";
 
-            if (!isDefinedAndNotNull(leafletScope.eventBroadcast)) {
+            if (!isDefined(leafletScope.eventBroadcast)) {
                 // Backward compatibility, if no event-broadcast attribute, all events are broadcasted
                 markerEvents = availableMarkerEvents;
             } else if (typeof leafletScope.eventBroadcast !== 'object') {
@@ -292,11 +299,11 @@ angular.module("leaflet-directive").factory('leafletMarkerHelpers', function ($r
 
             if (shouldWatch) {
                 var clearWatch = leafletScope.$watch(scope_watch_name, function(data, old_data) {
-                    if (!isDefinedAndNotNull(data)) {
+                    if (!isDefined(data)) {
                         marker.closePopup();
                         // There is no easy way to know if a marker is added to a layer, so we search for it
                         // if there are overlays
-                        if (isDefinedAndNotNull(layers)) {
+                        if (isDefined(layers)) {
                             if (isDefined(layers.overlays)) {
                                 for (var key in layers.overlays) {
                                     if (layers.overlays[key] instanceof L.LayerGroup) {
@@ -339,7 +346,7 @@ angular.module("leaflet-directive").factory('leafletMarkerHelpers', function ($r
                                     map.addLayer(marker);
                                 }
                             }
-                        } else if (isDefinedAndNotNull(old_data.layer) || old_data.layer !== data.layer) {
+                        } else if (isDefined(old_data.layer) || old_data.layer !== data.layer) {
                             // If it was on a layer group we have to remove it
                             if (typeof old_data.layer === 'string') {
                                 if (layers.overlays[old_data.layer] !== undefined) {
@@ -562,8 +569,8 @@ angular.module("leaflet-directive").factory('leafletMarkerHelpers', function ($r
                         if (!(isNumber(data.lat) && isNumber(data.lng))) {
                             $log.warn('There are problems with lat-lng data, please verify your marker model');
                             // Remove the marker from the layers and map if it is not valid
-                            if (isDefinedAndNotNull(layers)) {
-                                if (isDefinedAndNotNull(layers.overlays)) {
+                            if (isDefined(layers)) {
+                                if (isDefined(layers.overlays)) {
                                     for (var olname in layers.overlays) {
                                         if (layers.overlays[olname] instanceof L.LayerGroup || Helpers.MarkerClusterPlugin.is(layers.overlays[olname])) {
                                             if (layers.overlays[olname].hasLayer(marker)) {

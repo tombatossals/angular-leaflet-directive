@@ -51,7 +51,7 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                         for (var new_name in newMarkers) {
                             if (!isDefined(leafletMarkers[new_name])) {
                                 var newMarker = createMarker('markers.'+new_name, newMarkers[new_name], leafletScope, map, layers, groups, shouldWatch);
-                                if (newMarker !== null) {
+                                if (isDefined(newMarker)) {
                                     leafletMarkers[new_name] = newMarker;
                                 }
                             }
