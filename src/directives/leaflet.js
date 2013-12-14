@@ -16,8 +16,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($q, leafl
             tiles: '=tiles',
             layers: '=layers',
             controls: '=controls',
-            eventBroadcast: '=eventBroadcast',
-            watchMarkers: '=watchmarkers'
+            eventBroadcast: '=eventBroadcast'
         },
         template: '<div class="angular-leaflet-map"></div>',
         controller: function ($scope) {

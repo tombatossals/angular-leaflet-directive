@@ -32,10 +32,7 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                     return;
                 }
 
-                var shouldWatch = (
-                    leafletScope.watchMarkers === undefined ||
-                    leafletScope.watchMarkers === 'true' || leafletScope.watchMarkers === true
-                );
+                var shouldWatch = (!isDefined(attrs.watchMarkers) ||attrs.watchMarkers === 'true');
 
                 getLayers().then(function(layers) {
                     leafletData.setMarkers(leafletMarkers, attrs.id);
