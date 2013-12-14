@@ -58,6 +58,44 @@ angular.module("leaflet-directive").factory('leafletMarkerHelpers', function ($r
         return marker;
     };
 
+    var genDispatchEventCB = function(eventName, logic, scope_watch_name, leafletScope, marker, marker_data) {
+        return function(e) {
+            var broadcastName = 'leafletDirectiveMarker.' + eventName;
+            var markerName = scope_watch_name.replace('markers.', '');
+
+            // Broadcast old marker click name for backwards compatibility
+            if (eventName === "click") {
+                safeApply(leafletScope, function() {
+                    $rootScope.$broadcast('leafletDirectiveMarkersClick', markerName);
+                });
+            } else if (eventName === 'dragend') {
+                safeApply(leafletScope, function() {
+                    marker_data.lat = marker.getLatLng().lat;
+                    marker_data.lng = marker.getLatLng().lng;
+                });
+                if (marker_data.message) {
+                    if (marker_data.focus === true) {
+                        marker.openPopup();
+                    }
+                }
+            }
+
+            safeApply(leafletScope, function(scope){
+                if (logic === "emit") {
+                    scope.$emit(broadcastName, {
+                        markerName: markerName,
+                        leafletEvent: e
+                    });
+                } else {
+                    $rootScope.$broadcast(broadcastName, {
+                        markerName: markerName,
+                        leafletEvent: e
+                    });
+                }
+            });
+        };
+    };
+
     return {
         getLeafletIcon: getLeafletIcon,
 
@@ -121,8 +159,8 @@ angular.module("leaflet-directive").factory('leafletMarkerHelpers', function ($r
                     marker.openPopup();
                 }
 
+            // The marker belongs to a group
             } else  {
-                // The marker belongs to a group
                 if (!isDefined(layers)) {
                     $log.error('[AngularJS - Leaflet] You must add layers to the directive if used in a marker');
                     return;
@@ -156,50 +194,12 @@ angular.module("leaflet-directive").factory('leafletMarkerHelpers', function ($r
                 }
             }
 
-            function genDispatchEventCB(eventName, logic) {
-                return function(e) {
-                    var broadcastName = 'leafletDirectiveMarker.' + eventName;
-                    var markerName = scope_watch_name.replace('markers.', '');
-
-                    // Broadcast old marker click name for backwards compatibility
-                    if (eventName === "click") {
-                        safeApply(leafletScope, function() {
-                            $rootScope.$broadcast('leafletDirectiveMarkersClick', markerName);
-                        });
-                    } else if (eventName === 'dragend') {
-                        safeApply(leafletScope, function() {
-                            marker_data.lat = marker.getLatLng().lat;
-                            marker_data.lng = marker.getLatLng().lng;
-                        });
-                        if (marker_data.message) {
-                            if (marker_data.focus === true) {
-                                marker.openPopup();
-                            }
-                        }
-                    }
-
-                    safeApply(leafletScope, function(scope){
-                        if (logic === "emit") {
-                            scope.$emit(broadcastName, {
-                                markerName: markerName,
-                                leafletEvent: e
-                            });
-                        } else {
-                            $rootScope.$broadcast(broadcastName, {
-                                markerName: markerName,
-                                leafletEvent: e
-                            });
-                        }
-                    });
-                };
-            }
-
             var markerEvents = [];
             var i;
             var eventName;
             var logic = "broadcast";
 
-            if (leafletScope.eventBroadcast === undefined || leafletScope.eventBroadcast === null) {
+            if (!isDefinedAndNotNull(leafletScope.eventBroadcast)) {
                 // Backward compatibility, if no event-broadcast attribute, all events are broadcasted
                 markerEvents = availableMarkerEvents;
             } else if (typeof leafletScope.eventBroadcast !== 'object') {
@@ -284,7 +284,7 @@ angular.module("leaflet-directive").factory('leafletMarkerHelpers', function ($r
 
             for (i = 0; i < markerEvents.length; i++) {
                 eventName = markerEvents[i];
-                marker.on(eventName, genDispatchEventCB(eventName, logic), {
+                marker.on(eventName, genDispatchEventCB(eventName, logic, scope_watch_name, leafletScope, marker, marker_data), {
                     eventName: eventName,
                     scope_watch_name: scope_watch_name
                 });
