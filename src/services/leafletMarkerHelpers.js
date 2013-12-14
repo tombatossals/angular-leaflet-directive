@@ -5,6 +5,7 @@ angular.module("leaflet-directive").factory('leafletMarkerHelpers', function ($r
         MarkerClusterPlugin = leafletHelpers.MarkerClusterPlugin,
         isString = leafletHelpers.isString,
         isNumber  = leafletHelpers.isNumber,
+        isObject = leafletHelpers.isObject,
         safeApply = leafletHelpers.safeApply,
         availableMarkerEvents = leafletEvents.getAvailableMarkerEvents();
 
@@ -214,10 +215,10 @@ angular.module("leaflet-directive").factory('leafletMarkerHelpers', function ($r
                 $log.warn("[AngularJS - Leaflet] event-broadcast must be an object check your model.");
             } else {
                 // We have a possible valid object
-                if (leafletScope.eventBroadcast.marker === undefined || leafletScope.eventBroadcast.marker === null) {
+                if (!isDefined(leafletScope.eventBroadcast.marker)) {
                     // We do not have events enable/disable do we do nothing (all enabled by default)
                     markerEvents = availableMarkerEvents;
-                } else if (typeof leafletScope.eventBroadcast.marker !== 'object') {
+                } else if (isObject(leafletScope.eventBroadcast.marker)) {
                     // Not a valid object
                     $log.warn("[AngularJS - Leaflet] event-broadcast.marker must be an object check your model.");
                 } else {
