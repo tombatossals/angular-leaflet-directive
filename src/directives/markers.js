@@ -18,6 +18,7 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                 markers = leafletScope.markers,
                 getLeafletIcon = leafletMarkerHelpers.getLeafletIcon,
                 buildMarker = leafletMarkerHelpers.buildMarker,
+                deleteMarker = leafletMarkerHelpers.deleteMarker,
                 availableMarkerEvents = leafletEvents.getAvailableMarkerEvents();
 
             mapController.getMap().then(function(map) {
@@ -47,46 +48,10 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                 getLayers().then(function(layers) {
                     leafletData.setMarkers(leafletMarkers, attrs.id);
                     leafletScope.$watch('markers', function(newMarkers) {
-
-                        function deleteMarker(name) {
-                            var marker = leafletMarkers[name];
-
-                            // First we check if the marker is in a layer group
-                            marker.closePopup();
-                            // There is no easy way to know if a marker is added to a layer, so we search for it
-                            // if there are overlays
-                            if (isDefinedAndNotNull(layers)) {
-                                if (isDefined(layers.overlays)) {
-                                    for (var key in layers.overlays) {
-                                        if (layers.overlays[key] instanceof L.LayerGroup) {
-                                            if (layers.overlays[key].hasLayer(marker)) {
-                                                layers.overlays[key].removeLayer(marker);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            if (isDefinedAndNotNull(groups)) {
-                                for (var groupKey in groups) {
-                                    if (groups[groupKey].hasLayer(marker)) {
-                                        groups[groupKey].removeLayer(marker);
-                                    }
-                                }
-                            }
-
-                            // Remove the marker from the map
-                            map.removeLayer(marker);
-                            // TODO: If we remove the marker we don't have to clear the $watches?
-                            // Delete the marker
-                            delete leafletMarkers[name];
-                        }
-
-                        var noNewMarkers = !isDefined(newMarkers);
                         // Delete markers from the array
                         for (var name in leafletMarkers) {
-                            var markerRemoved = !isDefined(newMarkers[name]);
-                            if (noNewMarkers || markerRemoved) {
-                                deleteMarker(name);
+                            if (!isDefined(newMarkers) || !isDefined(newMarkers[name])) {
+                                deleteMarker(map, leafletMarkers, layers, groups, name);
                             }
                         }
 
@@ -305,7 +270,7 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                             });
                         }
 
-                        if(shouldWatch) {
+                        if (shouldWatch) {
                             var clearWatch = leafletScope.$watch(scope_watch_name, function(data, old_data) {
                                 if (!isDefinedAndNotNull(data)) {
                                     marker.closePopup();

@@ -1,6 +1,7 @@
 angular.module("leaflet-directive").factory('leafletMarkerHelpers', function (leafletHelpers) {
 
-    var isDefined = leafletHelpers.isDefined;
+    var isDefined = leafletHelpers.isDefined,
+        isDefinedAndNotNull = leafletHelpers.isDefinedAndNotNull;
 
     var LeafletDefaultIcon = L.Icon.extend({
         options: {
@@ -52,6 +53,33 @@ angular.module("leaflet-directive").factory('leafletMarkerHelpers', function (le
             }
 
             return marker;
+        },
+
+        deleteMarker: function(map, leafletMarkers, layers, groups, name) {
+            var marker = leafletMarkers[name];
+
+            // There is no easy way to know if a marker is added to a layer, so we search for it
+            // if there are overlays
+            if (isDefinedAndNotNull(layers) && isDefined(layers.overlays)) {
+                for (var key in layers.overlays) {
+                    if (layers.overlays[key] instanceof L.LayerGroup) {
+                        if (layers.overlays[key].hasLayer(marker)) {
+                            layers.overlays[key].removeLayer(marker);
+                        }
+                    }
+                }
+            }
+
+            if (isDefinedAndNotNull(groups)) {
+                for (var groupKey in groups) {
+                    if (groups[groupKey].hasLayer(marker)) {
+                        groups[groupKey].removeLayer(marker);
+                    }
+                }
+            }
+
+            map.removeLayer(marker);
+            delete leafletMarkers[name];
         }
     };
 
