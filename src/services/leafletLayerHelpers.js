@@ -4,121 +4,106 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
         isObject = leafletHelpers.isObject,
         isDefined = leafletHelpers.isDefined;
 
-    var types = {
+    var layerTypes = {
         xyz: {
-            mustHaveUrl: true
+            mustHaveUrl: true,
+            createLayer: function(params) {
+                return L.tileLayer(params.url, params.options);
+            }
         },
         wms: {
-            mustHaveUrl: true
+            mustHaveUrl: true,
+            createLayer: function(params) {
+                return L.tileLayer.wms(params.url, params.options);
+            }
         },
         wfs: {
             mustHaveUrl: true,
-            mustHaveLayer : true
+            mustHaveLayer : true,
+            createLayer: function(params) {
+                if (!Helpers.WFSLayerPlugin.isLoaded()) {
+                    return;
+                }
+                var options = angular.copy(params.options);
+                if(options.crs && 'string' === typeof options.crs) {
+                    /*jshint -W061 */
+                    options.crs = eval(options.crs);
+                }
+                return new L.GeoJSON.WFS(params.url, params.layer, options);
+            }
         },
         group: {
-            mustHaveUrl: false
+            mustHaveUrl: false,
+            createLayer: function () {
+                return L.layerGroup();
+            }
         },
         google: {
-            mustHaveUrl: false
+            mustHaveUrl: false,
+            createLayer: function(params) {
+                var type = params.type || 'SATELLITE';
+                if (!Helpers.GoogleLayerPlugin.isLoaded()) {
+                    return;
+                }
+                return new L.Google(type, params.options);
+            }
         },
         ags: {
-            mustHaveUrl: true
+            mustHaveUrl: true,
+            createLayer: function(params) {
+                if (!Helpers.AGSLayerPlugin.isLoaded()) {
+                    return;
+                }
+
+                var options = angular.copy(params.options);
+                angular.extend(options, {
+                    url: params.url
+                });
+                var layer = new lvector.AGS(options);
+                layer.onAdd = function(map) {
+                    this.setMap(map);
+                };
+                layer.onRemove = function() {
+                    this.setMap(null);
+                };
+                return layer;
+            }
         },
         dynamic: {
-            mustHaveUrl: true
+            mustHaveUrl: true,
+            createLayer: function(params) {
+                if (!Helpers.DynamicMapLayerPlugin.isLoaded()) {
+                    return;
+                }
+                return L.esri.dynamicMapLayer(params.url, params.options);
+            }
         },
         markercluster: {
-            mustHaveUrl: false
+            mustHaveUrl: false,
+            createLayer: function(params) {
+                if (!Helpers.MarkerClusterPlugin.isLoaded()) {
+                    return;
+                }
+                return new L.MarkerClusterGroup(params.options);
+            }
         },
         bing: {
-            mustHaveUrl: true
+            mustHaveUrl: true,
+            createLayer: function(params) {
+                if (!Helpers.BingLayerPlugin.isLoaded()) {
+                    return;
+                }
+                return new L.BingLayer(params.key, params.options);
+            }
         },
         imageOverlay: {
             mustHaveUrl: true,
-            mustHaveBounds : true
+            mustHaveBounds : true,
+            createLayer: function(params) {
+                return L.imageOverlay(params.url, params.bounds, params.options);
+            }
         }
     };
-
-    function createXyzLayer(url, options) {
-        return L.tileLayer(url, options);
-    }
-
-    function createWmsLayer(url, options) {
-        return L.tileLayer.wms(url, options);
-    }
-
-    function createWfsLayer(url, layerName, options) {
-        if (Helpers.WFSLayerPlugin.isLoaded()) {
-            if(options.crs && 'string' === typeof options.crs) {
-                /*jshint -W061 */
-                options.crs = eval(options.crs);
-            }
-            var layer = new L.GeoJSON.WFS(url, layerName, options);
-            return layer;
-        } else {
-            return null;
-        }
-    }
-
-    function createGroupLayer() {
-        return L.layerGroup();
-    }
-
-    function createMarkerClusterLayer(options) {
-        if (Helpers.MarkerClusterPlugin.isLoaded()) {
-            return new L.MarkerClusterGroup(options);
-        } else {
-            return null;
-        }
-    }
-
-    function createGoogleLayer(type, options) {
-        type = type || 'SATELLITE';
-        if (Helpers.GoogleLayerPlugin.isLoaded()) {
-            return new L.Google(type, options);
-        } else {
-            return null;
-        }
-    }
-
-    function createBingLayer(key, options) {
-        if (Helpers.BingLayerPlugin.isLoaded()) {
-            return new L.BingLayer(key, options);
-        } else {
-            return null;
-        }
-    }
-
-    function createAGSLayer(url, options) {
-        if (Helpers.AGSLayerPlugin.isLoaded()) {
-            angular.extend(options, {
-                url: url
-            });
-            var layer = new lvector.AGS(options);
-            layer.onAdd = function(map) {
-                this.setMap(map);
-            };
-            layer.onRemove = function() {
-                this.setMap(null);
-            };
-            return layer;
-        } else {
-            return null;
-        }
-    }
-
-    function createDynamicMapLayer(url, options) {
-        if (Helpers.DynamicMapLayerPlugin.isLoaded()) {
-            var layer = L.esri.dynamicMapLayer(url, options);
-            return layer;
-        } else {
-            return null;
-        }
-    }
-
-    function createImageOverlay(url, bounds, options) {
-        return L.imageOverlay(url, bounds, options);
-    }
 
     function isValidLayerType(layerDefinition) {
         // Check if the baselayer has a valid type
@@ -126,23 +111,23 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
             return false;
         }
 
-        if (Object.keys(types).indexOf(layerDefinition.type) === -1) {
-            $log.error('[AngularJS - Leaflet] A layer must have a valid type: ' + Object.keys(types));
+        if (Object.keys(layerTypes).indexOf(layerDefinition.type) === -1) {
+            $log.error('[AngularJS - Leaflet] A layer must have a valid type: ' + Object.keys(layerTypes));
             return false;
         }
 
         // Check if the layer must have an URL
-        if (types[layerDefinition.type].mustHaveUrl && !isString(layerDefinition.url)) {
+        if (layerTypes[layerDefinition.type].mustHaveUrl && !isString(layerDefinition.url)) {
             $log.error('[AngularJS - Leaflet] A base layer must have an url');
             return false;
         }
 
-        if(types[layerDefinition.type].mustHaveLayer && !isDefined(layerDefinition.layer)) {
+        if(layerTypes[layerDefinition.type].mustHaveLayer && !isDefined(layerDefinition.layer)) {
             $log.error('[AngularJS - Leaflet] The type of layer ' + layerDefinition.type + ' must have an layer defined');
             return false;
         }
 
-        if (types[layerDefinition.type].mustHaveBounds && !isDefined(layerDefinition.bounds)) {
+        if (layerTypes[layerDefinition.type].mustHaveBounds && !isDefined(layerDefinition.bounds)) {
             $log.error('[AngularJS - Leaflet] The type of layer ' + layerDefinition.type + ' must have bounds defined');
             return false ;
         }
@@ -168,45 +153,20 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
 
             // Mix the layer specific parameters with the general Leaflet options. Although this is an overhead
             // the definition of a base layers is more 'clean' if the two types of parameters are differentiated
-            var layer;
             for (var attrname in layerDefinition.layerParams) {
                 layerDefinition.layerOptions[attrname] = layerDefinition.layerParams[attrname];
             }
-            switch (layerDefinition.type) {
-                case 'xyz':
-                    layer = createXyzLayer(layerDefinition.url, layerDefinition.layerOptions);
-                    break;
-                case 'wms':
-                    layer = createWmsLayer(layerDefinition.url, layerDefinition.layerOptions);
-                    break;
-                case 'wfs':
-                    layer = createWfsLayer(layerDefinition.url, layerDefinition.layer, layerDefinition.layerOptions);
-                    break;
-                case 'group':
-                    layer = createGroupLayer();
-                    break;
-                case 'markercluster':
-                    layer = createMarkerClusterLayer(layerDefinition.layerOptions);
-                    break;
-                case 'google':
-                    layer = createGoogleLayer(layerDefinition.layerType, layerDefinition.layerOptions);
-                    break;
-                case 'bing':
-                    layer = createBingLayer(layerDefinition.bingKey, layerDefinition.layerOptions);
-                    break;
-                case 'ags':
-                    layer = createAGSLayer(layerDefinition.url, layerDefinition.layerOptions);
-                    break;
-                case 'dynamic':
-                    layer = createDynamicMapLayer(layerDefinition.url, layerDefinition.layerOptions);
-                    break;
-                case 'imageOverlay':
-                    layer = createImageOverlay(layerDefinition.url, layerDefinition.bounds, layerDefinition.layerOptions);
-                    break;
-            }
+
+            var params = {
+                url: layerDefinition.url,
+                options: layerDefinition.layerOptions,
+                layer: layerDefinition.layer,
+                bounds: layerDefinition.bounds,
+                key: layerDefinition.key
+            };
 
             //TODO Add $watch to the layer properties
-            return layer;
+            return layerTypes[layerDefinition.type].createLayer(params);
         }
     };
 });

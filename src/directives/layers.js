@@ -85,6 +85,7 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                 if (!top && Object.keys(leafletLayers.baselayers).length > 0) {
                     map.addLayer(leafletLayers.baselayers[Object.keys(layers.baselayers)[0]]);
                 }
+
                 // Setup the Overlays
                 leafletLayers.overlays = {};
                 for (layerName in layers.overlays) {
@@ -104,7 +105,7 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                 leafletScope.$watch('layers.baselayers', function(newBaseLayers) {
                     // Delete layers from the array
                     for (var name in leafletLayers.baselayers) {
-                        if (newBaseLayers[name] === undefined) {
+                        if (!isDefined(newBaseLayers[name])) {
                             // Remove the layer from the control
                             leafletLayers.controls.layers.removeLayer(leafletLayers.baselayers[name]);
                             // Remove from the map if it's on it
@@ -116,7 +117,7 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                     }
                     // add new layers
                     for (var new_name in newBaseLayers) {
-                        if (leafletLayers.baselayers[new_name] === undefined) {
+                        if (!isDefined(leafletLayers.baselayers[new_name])) {
                             var testBaseLayer = createLayer(newBaseLayers[new_name]);
                             if (isDefined(testBaseLayer)) {
                                 leafletLayers.baselayers[new_name] = testBaseLayer;
@@ -129,23 +130,23 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                             }
                         }
                     }
-                    if (Object.keys(leafletLayers.baselayers).length <= 0) {
-                        // No baselayers property
+                    if (Object.keys(leafletLayers.baselayers).length === 0) {
                         $log.error('[AngularJS - Leaflet] At least one baselayer has to be defined');
-                    } else {
-                        //we have layers, so we need to make, at least, one active
-                        var found = false;
-                        // serach for an active layer
-                        for (var key in leafletLayers.baselayers) {
-                            if (map.hasLayer(leafletLayers.baselayers[key])) {
-                                found = true;
-                                break;
-                            }
+                        return;
+                    }
+
+                    //we have layers, so we need to make, at least, one active
+                    var found = false;
+                    // search for an active layer
+                    for (var key in leafletLayers.baselayers) {
+                        if (map.hasLayer(leafletLayers.baselayers[key])) {
+                            found = true;
+                            break;
                         }
-                        // If there is no active layer make one active
-                        if (!found) {
-                            map.addLayer(leafletLayers.baselayers[Object.keys(layers.baselayers)[0]]);
-                        }
+                    }
+                    // If there is no active layer make one active
+                    if (!found) {
+                        map.addLayer(leafletLayers.baselayers[Object.keys(layers.baselayers)[0]]);
                     }
                 }, true);
 
@@ -164,6 +165,7 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                             delete leafletLayers.overlays[name];
                         }
                     }
+
                     // add new layers
                     for (var new_name in newOverlayLayers) {
                         if (!isDefined(leafletLayers.overlays[new_name])) {
