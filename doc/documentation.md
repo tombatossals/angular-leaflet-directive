@@ -84,7 +84,7 @@ Take a look at the [AnguarJS controller documentation](http://docs.angularjs.org
 Detailed Documentation
 ======================
 
-We have much more possibilities than showing a simple map, but this will need that we take a closer look at the main directive and sub-directives listed below:
+We have much more possibilities than showing a simple map, but this will need that we take a closer look at the main directive and sub-directives, listed below:
 
 * [Leaflet directive](https://github.com/tombatossals/angular-leaflet-directive/blob/master/doc/leaflet-directive.md)
 * [Center directive](https://github.com/tombatossals/angular-leaflet-directive/blob/master/doc/center-directive.md)
