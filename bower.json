@@ -1,11 +1,14 @@
 {
-  "name": "angular-leaflet-directive-testing-libraries",
+  "name": "angular-leaflet-directive",
   "dependencies": {
-    "angular": "1.2.2",
-    "angular-route": "1.2.2",
-    "angular-animate": "1.2.2",
-    "angular-mocks": "1.2.2",
-    "leaflet-dist": "0.7",
+    "angular": "1.2.x",
+    "angular-route": "1.2.x",
+    "angular-animate": "1.2.x",
+    "angular-mocks": "1.2.x",
+    "leaflet-dist": "0.7.x",
     "leaflet.markerclusterer": "0.2"
+  },
+  "resolutions": {
+    "angular": "1.2.4"
   }
 }

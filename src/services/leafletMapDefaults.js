@@ -21,20 +21,6 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
             tileLayerOptions: {
                 attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             },
-            icon: {
-                url: 'http://cdn.leafletjs.com/leaflet-0.7/images/marker-icon.png',
-                retinaUrl: 'http://cdn.leafletjs.com/leaflet-0.7/images/marker-icon-2x.png',
-                size: [25, 41],
-                anchor: [12, 40],
-                labelAnchor: [10, -20],
-                popup: [0, -40],
-                shadow: {
-                    url: 'http://cdn.leafletjs.com/leaflet-0.7/images/marker-shadow.png',
-                    retinaUrl: 'http://cdn.leafletjs.com/leaflet-0.7/images/marker-shadow.png',
-                    size: [41, 41],
-                    anchor: [12, 40]
-                }
-            },
             path: {
                 weight: 10,
                 opacity: 1,
@@ -104,7 +90,7 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
                 newDefaults.zoomControlPosition = isDefined(userDefaults.zoomControlPosition) ? userDefaults.zoomControlPosition : newDefaults.zoomControlPosition;
                 newDefaults.keyboard = isDefined(userDefaults.keyboard) ? userDefaults.keyboard : newDefaults.keyboard;
                 newDefaults.dragging = isDefined(userDefaults.dragging) ? userDefaults.dragging : newDefaults.dragging;
-                
+
                 newDefaults.controlLayersPosition = isDefined(userDefaults.controlLayersPosition) ? userDefaults.controlLayersPosition : newDefaults.controlLayersPosition;
 
                 if (isDefined(userDefaults.crs) && isDefined(L.CRS[userDefaults.crs])) {

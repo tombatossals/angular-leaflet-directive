@@ -102,6 +102,22 @@ describe('Directive: leaflet', function() {
         expect(leafletMap.getMinZoom()).toEqual(0);
     });
 
+    it('should set the CSS width and height if they are passed as string attributes', function() {
+        var element = angular.element('<leaflet defaults="defaults" width="640px" height="480px"></leaflet>');
+        element = $compile(element)($rootScope);
+
+        expect(element.css("width")).toBe("640px");
+        expect(element.css("height")).toBe("480px");
+    });
+
+    it('should set the CSS width and height if they are passed as number attributes', function() {
+        var element = angular.element('<leaflet defaults="defaults" width=640 height=480></leaflet>');
+        element = $compile(element)($rootScope);
+
+        expect(element.css("width")).toBe("640px");
+        expect(element.css("height")).toBe("480px");
+    });
+
     it('should set tileLayer and tileLayer options if specified', function() {
         angular.extend($rootScope, {
             defaults: {
