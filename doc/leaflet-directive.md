@@ -1,15 +1,15 @@
 Leaflet directive Documentation
 ===============================
 
-This directive acts as an intermediary between the AngularJS framework and the Leaflet map management library. It's composed of a main directive **&lt;leaflet&gt;** and sub-directives coded as attributes of the main directive. For example, we could add to our HTML code:
+This directive acts as an intermediary between the AngularJS framework and the Leaflet map management library. It's composed of a main directive **&lt;leaflet&gt;** and attributes (coded as sub-directives) of the main directive. For example, we could add to our HTML code:
 
 ```
 <leaflet center="center" width="640px" height="480px">
 ```
 
-Here we have the main **leaflet** directive, with the sub-directive **center** and two attribues (withouth bi-directional binding) **width** and **height**.
+Here we have the main **leaflet** directive, with the attribute **center** and two more attributes (without bi-directional binding) **width** and **height**.
 
-Before detailing how to use the directive and its sub-directives, let's talk about initializing our web page to be able to work with the directive. We must load the required JS libraries and CSS in our HTML:
+Before detailing how to use the directive and its attributes, let's talk about initializing our web page to be able to work with the directive. We must load the required JS libraries and CSS in our HTML:
 
 ```
 <html>
@@ -81,10 +81,10 @@ You can see this example in action on the [simple-example.html demo file](http:/
 Take a look at the [AnguarJS controller documentation](http://docs.angularjs.org/guide/controller) if you want to learn more about Angular controller definition, or to the [AngularJS ngApp](http://docs.angularjs.org/api/ng.directive:ngApp) to know how to bootstrap an Angular application.
 
 
-Sub-directives Documentation
-============================
+Attributes Documentation
+========================
 
-We have much more possibilities than showing a simple map, but this will need that we take a closer look at the sub-directives, listed below:
+We have much more possibilities than showing a simple map, but this will need that we take a closer look at the attributes, listed below:
 
-* [Defaults directive](https://github.com/tombatossals/angular-leaflet-directive/blob/master/doc/defaults-directive.md)
-* [Center directive](https://github.com/tombatossals/angular-leaflet-directive/blob/master/doc/center-directive.md)
+* [Defaults attribute](https://github.com/tombatossals/angular-leaflet-directive/blob/master/doc/defaults-attribute.md)
+* [Center attribute](https://github.com/tombatossals/angular-leaflet-directive/blob/master/doc/center-attribute.md)
