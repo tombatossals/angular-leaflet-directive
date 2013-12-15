@@ -38,7 +38,7 @@
     "karma-phantomjs-launcher": "*",
     "karma-coverage": "*",
     "karma": "*",
-    "protractor": "0.14.0",
+    "protractor": "*",
     "grunt-protractor-runner": "*",
     "grunt-shell-spawn": "*",
     "grunt-conventional-changelog": "*",
