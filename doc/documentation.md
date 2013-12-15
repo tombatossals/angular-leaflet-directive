@@ -86,5 +86,6 @@ Detailed Documentation
 
 We have much more possibilities than showing a simple map, but this will need that we take a closer look at the main directive and sub-directives, listed below:
 
-* [Leaflet directive](https://github.com/tombatossals/angular-leaflet-directive/blob/master/doc/leaflet-directive.md)
+* [Leaflet main directive](https://github.com/tombatossals/angular-leaflet-directive/blob/master/doc/leaflet-directive.md)
+* [Defaults directive](https://github.com/tombatossals/angular-leaflet-directive/blob/master/doc/defaults-directive.md)
 * [Center directive](https://github.com/tombatossals/angular-leaflet-directive/blob/master/doc/center-directive.md)
