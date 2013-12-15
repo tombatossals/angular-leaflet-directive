@@ -11,16 +11,16 @@ It will define the default parameters from which we want to initialize our map. 
 
 We can define some custom parameters that apply to the Leaflet map creation. These are 
 
-* [maxZoom](http://leafletjs.com/reference.html#map-maxzoom).
-* [minZoom](http://leafletjs.com/reference.html#map-minzoom).
-* [keyboard](http://leafletjs.com/reference.html#map-keyboard).
-* [dragging](http://leafletjs.com/reference.html#map-dragging).
-* [zoomControl](http://leafletjs.com/reference.html#map-zoomcontrol).
-* [doubleClickZoom](http://leafletjs.com/reference.html#map-doubleclickzoom).
-* [scrollWheelZoom](http://leafletjs.com/reference.html#map-scrollwheelzoom).
-* [attributionControl](http://leafletjs.com/reference.html#map-attributioncontrol).
-* [zoomAnimation](http://leafletjs.com/reference.html#map-zoomanimation).
-* [fadeAnimation](http://leafletjs.com/reference.html#map-fadeanimation).
-* [markerZoomAnimation](http://leafletjs.com/reference.html#map-markerzoomanimation).
-* [worldCopyJump](http://leafletjs.com/reference.html#map-worldcopyjump).
-* [crs](http://leafletjs.com/reference.html#map-crs). Coordinate reference system. Here we will use four possible values as string: [ "EPSG3857", "EPSG4326", "EPSG3395", "Simple" ]. [More information](http://leafletjs.com/reference.html#defined-crs-l.crs.epsg3857).
+* [maxZoom](http://leafletjs.com/reference.html#map-maxzoom). *Number*. From 1 to 20.
+* [minZoom](http://leafletjs.com/reference.html#map-minzoom). *Number* From 1 to 20.
+* [keyboard](http://leafletjs.com/reference.html#map-keyboard). *Boolean*. Allows the use of the keyboard to navigate the map.
+* [dragging](http://leafletjs.com/reference.html#map-dragging). *Boolean*. Allows to drag the mouse, or make it static.
+* [zoomControl](http://leafletjs.com/reference.html#map-zoomcontrol). *Boolean*. Put the zoom control on the map or not.
+* [doubleClickZoom](http://leafletjs.com/reference.html#map-doubleclickzoom). *Boolean*. Allows to zoom with the double-click mouse action.
+* [scrollWheelZoom](http://leafletjs.com/reference.html#map-scrollwheelzoom). *Boolean*. Allows to zoom with the mouse wheel.
+* [attributionControl](http://leafletjs.com/reference.html#map-attributioncontrol). *Boolean*. Shows or hides the attribution text control.
+* [zoomAnimation](http://leafletjs.com/reference.html#map-zoomanimation). *Boolean*. Animate the zoom action or not.
+* [fadeAnimation](http://leafletjs.com/reference.html#map-fadeanimation). *Boolean*. Enable/disable the tile fade animation.
+* [markerZoomAnimation](http://leafletjs.com/reference.html#map-markerzoomanimation). *Boolean*. Enable/disable the marker zoom animation.
+* [worldCopyJump](http://leafletjs.com/reference.html#map-worldcopyjump). *Boolean*.
+* [crs](http://leafletjs.com/reference.html#map-crs). *String*. Coordinate reference system. Here we will use four possible values: [ "EPSG3857", "EPSG4326", "EPSG3395", "Simple" ]. [More information](http://leafletjs.com/reference.html#defined-crs-l.crs.epsg3857).
