@@ -1043,7 +1043,7 @@ angular.module("leaflet-directive").service('leafletData', function ($log, $q, l
     };
 });
 
-angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, leafletHelpers) {
+angular.module("leaflet-directive").factory('leafletMapDefaults', function (leafletHelpers) {
     function _getDefaults() {
         return {
             keyboard: true,
