@@ -7,7 +7,7 @@ This directive acts as an intermediary between the AngularJS framework and the L
 <leaflet center="center" width="640px" height="480px">
 ```
 
-Here we have the main **leaflet** directive, with the sub-directive **center** and two attribues (withouth bi-directional binding) **with** and **height**.
+Here we have the main **leaflet** directive, with the sub-directive **center** and two attribues (withouth bi-directional binding) **width** and **height**.
 
 Before detailing how to use the directive and its sub-directives, let's talk about initializing our web page to be able to work with the directive. We must load the following required JS libraries and CSS in our HTML, like this example:
 
