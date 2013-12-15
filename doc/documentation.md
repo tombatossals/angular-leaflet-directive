@@ -1,7 +1,52 @@
 Documentation
 =============
 
-This directive acts as an intermediary between the AngularJS framework and the Leaflet map management library. It's composed of a main directive **<leaflet>** and sub-directives coded as attributes of the main directive. For example:
+This directive acts as an intermediary between the AngularJS framework and the Leaflet map management library. It's composed of a main directive **&lt;leaflet&gt;** and sub-directives coded as attributes of the main directive. For example, we could add to our HTML code:
 
 ```
+<leaflet center="center" width="640px" height="480px">
 ```
+
+Here we have the main **leaflet** directive, with the sub-directive **center** and two attribues (withouth bi-directional binding) **with** and **height**.
+
+Before detailing how to use the directive and its sub-directives, let's talk about initializing our web page to be able to work with the directive. We must load the following required JS libraries and CSS in our HTML, like this example:
+
+```
+<html>
+  <head>
+     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular.min.js"></script>
+     <script src="http://cdn.leafletjs.com/leaflet-0.7.1/leaflet.js"></script>
+     <script src="http://tombatossals.github.io/angular-leaflet-directive/dist/angular-leaflet-directive.min.js"></script>
+     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.1/leaflet.css" />
+  </head>
+  ...
+</html>
+```
+
+After loading the required libraries, we only need to define our AngularJS application (depending on 'leaflet-library') and an application controller. Let's see the complete code to load our first map:
+
+```
+<!DOCTYPE html>
+<html ng-app="demoapp">
+  <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular.min.js"></script>
+    <script src="http://cdn.leafletjs.com/leaflet-0.7.1/leaflet.js"></script>
+    <script src="http://tombatossals.github.io/angular-leaflet-directive/dist/angular-leaflet-directive.min.js"></script>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.1/leaflet.css" />
+    <script>
+       var app = angular.module("demoapp", ['leaflet-directive']);
+       app.controller("DemoController", [ "$scope", function($scope) {
+           // Nothing here!
+       }]);
+    </script>
+  </head>
+  <body ng-controller="DemoController">
+    <leaflet width="640px" height="480px"></leaflet>
+  </body>
+</html>
+
+```
+
+You can see this example in action on the [simple-example.html demo file](http://tombatossals.github.io/angular-leaflet-directive/examples/simple-example.html).
+
+Take a look at the [AnguarJS controller documentation](http://docs.angularjs.org/guide/controller) if you want to learn more about Angular controller definition.
