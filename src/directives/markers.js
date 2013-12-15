@@ -29,10 +29,12 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                 }
 
                 if (!isDefined(markers)) {
+                    $log.error('[AngularJS - Leaflet] Received an empty "markers" variable.');
                     return;
                 }
 
-                var shouldWatch = (!isDefined(attrs.watchMarkers) ||attrs.watchMarkers === 'true');
+                // Should we watch for every specific marker on the map?
+                var shouldWatch = (!isDefined(attrs.watchMarkers) || attrs.watchMarkers === 'true');
 
                 getLayers().then(function(layers) {
                     leafletData.setMarkers(leafletMarkers, attrs.id);
