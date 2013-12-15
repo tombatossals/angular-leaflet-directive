@@ -9,7 +9,7 @@ This directive acts as an intermediary between the AngularJS framework and the L
 
 Here we have the main **leaflet** directive, with the sub-directive **center** and two attribues (withouth bi-directional binding) **width** and **height**.
 
-Before detailing how to use the directive and its sub-directives, let's talk about initializing our web page to be able to work with the directive. We must load the following required JS libraries and CSS in our HTML, like this example:
+Before detailing how to use the directive and its sub-directives, let's talk about initializing our web page to be able to work with the directive. We must load the required JS libraries and CSS in our HTML:
 
 ```
 <html>
@@ -19,11 +19,40 @@ Before detailing how to use the directive and its sub-directives, let's talk abo
      <script src="http://tombatossals.github.io/angular-leaflet-directive/dist/angular-leaflet-directive.min.js"></script>
      <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.1/leaflet.css" />
   </head>
-  ...
 </html>
 ```
 
-After loading the required libraries, we only need to define our AngularJS application (depending on 'leaflet-library') and an application controller. Let's see the complete code to load our first map:
+After loading the required libraries, we only need to define our AngularJS application (depending on 'leaflet-library') and an application controller to be able to load our map. Showing the map on screen will require that we set the width and height CSS properties of the div including the Leaflet map. We have a lot of alternatives for this, let's see the main ones.
+
+* We can add *height* and *width* attributes to our *leaflet* directive inline. Example:
+```
+<leaflet width="640px" height="480px">
+```
+
+* We can set the *width* and *height* of the common CSS class '*angular-leaflet-map*' applied to all maps. Beware this will be applied to all maps rendered on your application. Example:
+```
+<style>
+  .angular-leaflet-map {
+    width: 640px;
+    height: 480px;
+  }
+</style>
+```
+
+* We can set and *id* to our map, and set the CSS properties to this specifid id. Example:
+```
+<style>
+  #main {
+    width: 640px;
+    height: 480px;
+  }
+</style>
+...
+<leaflet id="main"></leaflet>
+```
+
+
+Great, let's see now the complete HTML and inline javascript code needed to load our first map:
 
 ```
 <!DOCTYPE html>
