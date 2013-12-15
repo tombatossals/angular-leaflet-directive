@@ -44,6 +44,7 @@ npm http GET https://registry.npmjs.org/grunt-ngmin
 ├── useragent@2.0.7 (lru-cache@2.2.4)
 ├── connect@2.8.8 (methods@0.0.1, uid2@0.0.2, fresh@0.2.0, cookie@0.1.0, ..., send@0.1.4)
 └── socket.io@0.9.16 (base64id@0.1.0, policyfile@0.0.4, redis@0.7.3, socket.io-client@0.9.16)
+$
 ```
 
 Once you have the development dependencies installed, we can use our predefined grunt tasks. For example:
