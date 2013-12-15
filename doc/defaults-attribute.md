@@ -23,4 +23,4 @@ We can define some custom parameters that apply to the Leaflet map creation. The
 * [fadeAnimation](http://leafletjs.com/reference.html#map-fadeanimation).
 * [markerZoomAnimation](http://leafletjs.com/reference.html#map-markerzoomanimation).
 * [worldCopyJump](http://leafletjs.com/reference.html#map-worldcopyjump).
-* [crs](http://leafletjs.com/reference.html#map-crs). Coordinate reference system. Here we will use four possible values as string: [ "EPSG3857", "EPSG4326", "EPSG3395", "Simple" ]. [More information](http://leafletjs.com/reference.html#defined-crs-l.crs.epsg3857)
+* [crs](http://leafletjs.com/reference.html#map-crs). Coordinate reference system. Here we will use four possible values as string: [ "EPSG3857", "EPSG4326", "EPSG3395", "Simple" ]. [More information](http://leafletjs.com/reference.html#defined-crs-l.crs.epsg3857).
