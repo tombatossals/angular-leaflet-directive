@@ -1,5 +1,5 @@
-Documentation
-=============
+Basic Documentation
+===================
 
 This directive acts as an intermediary between the AngularJS framework and the Leaflet map management library. It's composed of a main directive **&lt;leaflet&gt;** and sub-directives coded as attributes of the main directive. For example, we could add to our HTML code:
 
@@ -78,4 +78,13 @@ Great, let's see now the complete HTML and inline javascript code needed to load
 
 You can see this example in action on the [simple-example.html demo file](http://tombatossals.github.io/angular-leaflet-directive/examples/simple-example.html).
 
-Take a look at the [AnguarJS controller documentation](http://docs.angularjs.org/guide/controller) if you want to learn more about Angular controller definition.
+Take a look at the [AnguarJS controller documentation](http://docs.angularjs.org/guide/controller) if you want to learn more about Angular controller definition, or to the [AngularJS ngApp](http://docs.angularjs.org/api/ng.directive:ngApp) to know how to bootstrap an Angular application.
+
+
+Detailed Documentation
+======================
+
+We have much more possibilities than showing a simple map, but this will need that we take a closer look at the main directive and sub-directives listed below:
+
+* [Leaflet directive](https://github.com/tombatossals/angular-leaflet-directive/blob/master/doc/leaflet-directive.md)
+* [Center directive](https://github.com/tombatossals/angular-leaflet-directive/blob/master/doc/center-directive.md)
