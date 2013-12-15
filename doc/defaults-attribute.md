@@ -11,17 +11,16 @@ It will define the default parameters from which we want to initialize our map. 
 
 We can define some custom parameters that apply to the Leaflet map creation. These are 
 
-* **maxZoom**. Related Leaflet documentation [here](http://leafletjs.com/reference.html#map-maxzoom).
-* **minZoom**. Related Leaflet documentation [here](http://leafletjs.com/reference.html#map-minzoom).
-* **keyboard**. Related Leaflet documentation [here](http://leafletjs.com/reference.html#map-keyboard).
-* **dragging**. Related Leaflet documentation [here](http://leafletjs.com/reference.html#map-dragging).
-* **zoomControl**. Related Leaflet documentation [here](http://leafletjs.com/reference.html#map-zoomcontrol).
-* **doubleClickZoom**. Related Leaflet documentation [here](http://leafletjs.com/reference.html#map-doubleclickzoom).
-* **scrollWheelZoom**. Related Leaflet documentation [here](http://leafletjs.com/reference.html#map-scrollwheelzoom).
-* **attributionControl**. Related Leaflet documentation [here](http://leafletjs.com/reference.html#map-attributioncontrol).
-* **zoomAnimation**. Related Leaflet documentation [here](http://leafletjs.com/reference.html#map-zoomanimation).
-* **fadeAnimation**. Related Leaflet documentation [here](http://leafletjs.com/reference.html#map-fadeanimation).
-* **markerZoomAnimation**. Related Leaflet documentation [here](http://leafletjs.com/reference.html#map-markerzoomanimation).
-* **worldCopyJump**. Related Leaflet documentation [here](http://leafletjs.com/reference.html#map-worldcopyjump).
-* **crs**. Coordinate reference system. Four possible values, as string: [ "EPSG3857", "EPSG4326", "EPSG3395", "Simple" ]. Related Leaflet documentation [here](http://leafletjs.com/reference.html#map-crs). Information about the four CRS possible values [here](http://leafletjs.com/reference.html#defined-crs-l.crs.epsg3857)
-* 
+* [maxZoom](http://leafletjs.com/reference.html#map-maxzoom).
+* [minZoom](http://leafletjs.com/reference.html#map-minzoom).
+* [keyboard](http://leafletjs.com/reference.html#map-keyboard).
+* [dragging](http://leafletjs.com/reference.html#map-dragging).
+* [zoomControl](http://leafletjs.com/reference.html#map-zoomcontrol).
+* [doubleClickZoom](http://leafletjs.com/reference.html#map-doubleclickzoom).
+* [scrollWheelZoom](http://leafletjs.com/reference.html#map-scrollwheelzoom).
+* [attributionControl](http://leafletjs.com/reference.html#map-attributioncontrol).
+* [zoomAnimation](http://leafletjs.com/reference.html#map-zoomanimation).
+* [fadeAnimation](http://leafletjs.com/reference.html#map-fadeanimation).
+* [markerZoomAnimation](http://leafletjs.com/reference.html#map-markerzoomanimation).
+* [worldCopyJump](http://leafletjs.com/reference.html#map-worldcopyjump).
+* [crs](http://leafletjs.com/reference.html#map-crs). Coordinate reference system. Here we will use four possible values as string: [ "EPSG3857", "EPSG4326", "EPSG3395", "Simple" ]. [More information](http://leafletjs.com/reference.html#defined-crs-l.crs.epsg3857)
