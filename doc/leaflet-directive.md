@@ -26,7 +26,7 @@ After loading the required libraries, we only need to define our AngularJS appli
 
 * We can add *height* and *width* attributes to our *leaflet* directive inline. Example:
 ```
-<leaflet width="640px" height="480px">
+<leaflet width="640px" height="480px"></leaflet>
 ```
 
 * We can set the *width* and *height* of the common CSS class '*angular-leaflet-map*' applied to all maps. Beware this will be applied to all maps rendered on your application. Example:
