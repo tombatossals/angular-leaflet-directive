@@ -22,7 +22,7 @@ Before detailing how to use the directive and its attributes, let's talk about i
 </html>
 ```
 
-After loading the required libraries, we only need to define our AngularJS application (depending on 'leaflet-library') and an application controller to be able to load our map. Showing the map on screen will require that we set the width and height CSS properties of the div including the Leaflet map. We have a lot of alternatives for this, let's see the main ones.
+After loading the required libraries, we only need to define our AngularJS application (depending on 'openlayers-library') and an application controller to be able to load our map. Showing the map on screen will require that we set the width and height CSS properties of the div including the Leaflet map. We have a lot of alternatives for this, let's see the main ones.
 
 * We can add *height* and *width* attributes to our *leaflet* directive inline. Example:
 ```
