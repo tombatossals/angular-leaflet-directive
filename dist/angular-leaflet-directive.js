@@ -12,7 +12,6 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($q, leafl
             defaults: '=defaults',
             maxBounds: '=maxbounds',
             bounds: '=bounds',
-            marker: '=marker',
             markers: '=markers',
             legend: '=legend',
             geojson: '=geojson',
