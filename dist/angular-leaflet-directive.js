@@ -124,20 +124,21 @@ angular.module("leaflet-directive").directive('center', function ($log, $parse, 
 
             controller.getMap().then(function(map) {
                 var defaults = leafletMapDefaults.getDefaults(attrs.id);
-                if (isDefined(center)) {
-                    if (center.autoDiscover === true) {
-                        map.locate({ setView: true, maxZoom: defaults.maxZoom });
-                    }
 
-                    var centerModel = {
-                        lat:  $parse("center.lat"),
-                        lng:  $parse("center.lng"),
-                        zoom: $parse("center.zoom")
-                    };
-                } else {
-                    $log.warn("[AngularJS - Leaflet] 'center' is undefined in the current scope, did you forget to initialize it?");
+                if (!isDefined(center)) {
                     map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
+                    return;
                 }
+
+                if (center.autoDiscover === true) {
+                    map.locate({ setView: true, maxZoom: defaults.maxZoom });
+                }
+
+                var centerModel = {
+                    lat:  $parse("center.lat"),
+                    lng:  $parse("center.lng"),
+                    zoom: $parse("center.zoom")
+                };
 
                 var movingMap = false;
 
