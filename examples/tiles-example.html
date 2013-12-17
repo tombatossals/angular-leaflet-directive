@@ -4,6 +4,8 @@
     <script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular.min.js"></script>
     <script src="../dist/angular-leaflet-directive.min.js"></script>
+
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" />
     <!--[if lte IE 8]>
         <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.ie.css" />
@@ -22,7 +24,7 @@
                     options: {
                         opacity: 0.9,
                         detectRetina: true,
-                        reuseTiles: true,
+                        reuseTiles: true
                     }
                 }
             });
@@ -35,6 +37,28 @@
                 $scope.tiles.url = "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
             };
         };
+
+        function DemoZoomLevelController($scope)
+        {
+
+            angular.extend($scope, {
+                london: {
+                    lat: 51.505,
+                    lng: -0.09,
+                    zoom: 10
+                },
+                tiles: {
+                    url: "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+
+                }
+            });
+
+            $scope.$watch("london.zoom", function(zoom) {
+                $scope.tiles.url = (zoom > 12)
+                        ? "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        : "http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
+            });
+        }
     </script>
     <style>
         .angular-leaflet-map {
@@ -43,10 +67,46 @@
         }
     </style>
   </head>
-  <body ng-controller="DemoController">
-    <button ng-click="changeToOpenCycleMaps()">OpenCycleMaps</button>
-    <button ng-click="changeToOpenStreetMaps()">OpenStreetMaps</button>
-    <p>TileLayer Url: {{ tiles.url }}</p>
-    <leaflet center="london" tiles="tiles" defaults="defaults"></leaflet>
+  <body>
+  <div class="container">
+      <div ng-controller="DemoController">
+
+          <div class="row">
+              <h2>This is a map that can change tiles by demand</h2>
+          </div>
+
+          <div class="row">
+              <p>
+              <button ng-click="changeToOpenCycleMaps()" class="btn btn-default">OpenCycleMaps</button>
+              <button ng-click="changeToOpenStreetMaps()" class="btn btn-default">OpenStreetMaps</button>
+              </p>
+          </div>
+
+          <div class="row">
+              <p>Current TileLayer Url: {{ tiles.url }}</p>
+          </div>
+
+          <div class="row">
+            <leaflet center="london" tiles="tiles" defaults="defaults"></leaflet>
+          </div>
+      </div>
+
+      <div ng-controller="DemoZoomLevelController">
+
+          <div class="row">
+              <h2>This is a map with dynamic tile change depending on zoom level</h2>
+          </div>
+
+          <div class="row">
+              <p>Current TileLayer Url: {{ tiles.url }}</p>
+              <p>Current Zoom Level: {{ london.zoom }}</p>
+          </div>
+
+          <div class="row">
+              <leaflet center="london" tiles="tiles"></leaflet>
+          </div>
+      </div>
+  </div>
+
   </body>
 </html>
