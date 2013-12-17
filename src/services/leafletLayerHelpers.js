@@ -161,6 +161,7 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
                 url: layerDefinition.url,
                 options: layerDefinition.layerOptions,
                 layer: layerDefinition.layer,
+                type: layerDefinition.layerType,
                 bounds: layerDefinition.bounds,
                 key: layerDefinition.key
             };
