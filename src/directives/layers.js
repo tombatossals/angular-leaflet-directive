@@ -132,6 +132,8 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                     }
                 }, true);
 
+                var overLayersNotVisible = {};
+
                 // Watch for the overlay layers
                 leafletScope.$watch('layers.overlays', function(newOverlayLayers) {
                     // Delete layers from the array
@@ -159,6 +161,14 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                                     map.addLayer(leafletLayers.overlays[new_name]);
                                 }
                             }
+                        }
+
+                        // watch for the .visible property to hide/show overLayers
+                        if (overLayersNotVisible[new_name] && newOverlayLayers[new_name].visible && !map.hasLayer(leafletLayers.overlays[new_name])) {
+                            map.addLayer(overLayersNotVisible[new_name]);
+                        } else if (newOverlayLayers[new_name].visible == false && map.hasLayer(leafletLayers.overlays[new_name])) {
+                            overLayersNotVisible[new_name] = leafletLayers.overlays[new_name];
+                            map.removeLayer(leafletLayers.overlays[new_name]);
                         }
                     }
                 }, true);
