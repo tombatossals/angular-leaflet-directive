@@ -13,14 +13,17 @@ describe('Loading center-example.html', function() {
         element(by.className('leaflet-control-zoom-in')).click();
         // Wait for zoom animation
         ptor.sleep(300);
-        element(by.xpath('/html/body/form/input[3]')).getAttribute("value").then(function(zoom) {
+        element(by.model("center.zoom")).then(function(zoom) {
             expect(zoom).toBe('5');
         });
     });
 
-    xit('should update the zoom value if the map is dragged', function() {
-        element(by.xpath('/html/body/form/input[3]')).sendKeys("2");
-        ptor.sleep(3000);
+    it('should update the zoom value if the map is dragged', function() {
+        element(by.css('img.leaflet-map-pane')).find().then(function(el) {
+            console.log(el.getLocation());
+            browser.actions().mouseDown(el.find(), protractor.Button.LEFT).mouseMove({ x: 1400, y: 1200 }).perform();
+            ptor.sleep(1300);
+        });
     });
 
 });
