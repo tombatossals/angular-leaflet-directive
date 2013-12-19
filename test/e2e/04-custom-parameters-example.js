@@ -14,6 +14,8 @@ describe('Loading custom-parameters-example.html', function() {
             return ptor.isElementPresent(by.css('img.leaflet-tile-loaded'));
         });
 
-        var tile = element(by.css('img.leaflet-tile-loaded'));
+        element(by.xpath('//img[contains(@class, "leaflet-tile-loaded")][1]')).getAttribute("src").then(function(src) {
+            expect(src).toContain("tile.opencyclemap.org");
+        });
     });
 });
