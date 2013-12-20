@@ -56,17 +56,12 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
     return {
         // Determine if a reference is defined
         isDefined: function(value) {
-            return angular.isDefined(value);
+            return angular.isDefined(value) && value !== null;
         },
 
         // Determine if a reference is a number
         isNumber: function(value) {
             return angular.isNumber(value);
-        },
-
-        // Determine if a reference is defined and not null
-        isDefinedAndNotNull: function(value) {
-            return angular.isDefined(value) && value !== null;
         },
 
         // Determine if a reference is a string

@@ -5,7 +5,7 @@ describe('Loading marker-add-example.html', function() {
     var ptor, driver;
     beforeEach(function() {
         ptor = protractor.getInstance();
-        browser.get('/marker-add-example.html');
+        browser.get('marker-add-example.html');
         driver = ptor.driver;
     });
 

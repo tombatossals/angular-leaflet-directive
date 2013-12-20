@@ -1,170 +1,173 @@
-angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($rootScope, $q, $log, leafletHelpers) {
+angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($rootScope, $log, leafletHelpers) {
     var Helpers = leafletHelpers,
-        isString = leafletHelpers.isString;
+        isString = leafletHelpers.isString,
+        isObject = leafletHelpers.isObject,
+        isDefined = leafletHelpers.isDefined;
 
+    var layerTypes = {
+        xyz: {
+            mustHaveUrl: true,
+            createLayer: function(params) {
+                return L.tileLayer(params.url, params.options);
+            }
+        },
+        wms: {
+            mustHaveUrl: true,
+            createLayer: function(params) {
+                return L.tileLayer.wms(params.url, params.options);
+            }
+        },
+        wfs: {
+            mustHaveUrl: true,
+            mustHaveLayer : true,
+            createLayer: function(params) {
+                if (!Helpers.WFSLayerPlugin.isLoaded()) {
+                    return;
+                }
+                var options = angular.copy(params.options);
+                if(options.crs && 'string' === typeof options.crs) {
+                    /*jshint -W061 */
+                    options.crs = eval(options.crs);
+                }
+                return new L.GeoJSON.WFS(params.url, params.layer, options);
+            }
+        },
+        group: {
+            mustHaveUrl: false,
+            createLayer: function () {
+                return L.layerGroup();
+            }
+        },
+        google: {
+            mustHaveUrl: false,
+            createLayer: function(params) {
+                var type = params.type || 'SATELLITE';
+                if (!Helpers.GoogleLayerPlugin.isLoaded()) {
+                    return;
+                }
+                return new L.Google(type, params.options);
+            }
+        },
+        ags: {
+            mustHaveUrl: true,
+            createLayer: function(params) {
+                if (!Helpers.AGSLayerPlugin.isLoaded()) {
+                    return;
+                }
 
-    function createXyzLayer(url, options) {
-        return L.tileLayer(url, options);
-    }
-
-    function createWmsLayer(url, options) {
-        return L.tileLayer.wms(url, options);
-    }
-    
-    function createWfsLayer(url, layerName, options) {
-		if (Helpers.WFSLayerPlugin.isLoaded()) {
-			if(options.crs && 'string' === typeof options.crs) {
-				/*jshint -W061 */
-				options.crs = eval(options.crs);
-			}
-			var layer = new L.GeoJSON.WFS(url, layerName, options);
-			return layer;
-		} else {
-			return null;
-		}
-    }
-
-    function createGroupLayer() {
-        return L.layerGroup();
-    }
-
-    function createMarkerClusterLayer(options) {
-        if (Helpers.MarkerClusterPlugin.isLoaded()) {
-            return new L.MarkerClusterGroup(options);
-        } else {
-            return null;
+                var options = angular.copy(params.options);
+                angular.extend(options, {
+                    url: params.url
+                });
+                var layer = new lvector.AGS(options);
+                layer.onAdd = function(map) {
+                    this.setMap(map);
+                };
+                layer.onRemove = function() {
+                    this.setMap(null);
+                };
+                return layer;
+            }
+        },
+        dynamic: {
+            mustHaveUrl: true,
+            createLayer: function(params) {
+                if (!Helpers.DynamicMapLayerPlugin.isLoaded()) {
+                    return;
+                }
+                return L.esri.dynamicMapLayer(params.url, params.options);
+            }
+        },
+        markercluster: {
+            mustHaveUrl: false,
+            createLayer: function(params) {
+                if (!Helpers.MarkerClusterPlugin.isLoaded()) {
+                    return;
+                }
+                return new L.MarkerClusterGroup(params.options);
+            }
+        },
+        bing: {
+            mustHaveUrl: true,
+            createLayer: function(params) {
+                if (!Helpers.BingLayerPlugin.isLoaded()) {
+                    return;
+                }
+                return new L.BingLayer(params.key, params.options);
+            }
+        },
+        imageOverlay: {
+            mustHaveUrl: true,
+            mustHaveBounds : true,
+            createLayer: function(params) {
+                return L.imageOverlay(params.url, params.bounds, params.options);
+            }
         }
-    }
+    };
 
-    function createGoogleLayer(type, options) {
-        type = type || 'SATELLITE';
-        if (Helpers.GoogleLayerPlugin.isLoaded()) {
-            return new L.Google(type, options);
-        } else {
-            return null;
+    function isValidLayerType(layerDefinition) {
+        // Check if the baselayer has a valid type
+        if (!isString(layerDefinition.type)) {
+            return false;
         }
-    }
 
-    function createBingLayer(key, options) {
-        if (Helpers.BingLayerPlugin.isLoaded()) {
-            return new L.BingLayer(key, options);
-        } else {
-            return null;
+        if (Object.keys(layerTypes).indexOf(layerDefinition.type) === -1) {
+            $log.error('[AngularJS - Leaflet] A layer must have a valid type: ' + Object.keys(layerTypes));
+            return false;
         }
-    }
-    
-    function createAGSLayer(url, options) {
-		if (Helpers.AGSLayerPlugin.isLoaded()) {
-			angular.extend(options, {
-				url: url
-			});
-			var layer = new lvector.AGS(options);
-			layer.onAdd = function(map) {
-				this.setMap(map);
-			};
-			layer.onRemove = function() {
-				this.setMap(null);
-			};
-			return layer;
-		} else {
-			return null;
-        }
-    }
-    
-    function createDynamicMapLayer(url, options) {
-		if (Helpers.DynamicMapLayerPlugin.isLoaded()) {
-			var layer = L.esri.dynamicMapLayer(url, options);
-			return layer;
-		} else {
-			return null;
-		}
-	}
 
-    function createImageOverlay(url, bounds, options) {
-        return L.imageOverlay(url, bounds, options);
+        // Check if the layer must have an URL
+        if (layerTypes[layerDefinition.type].mustHaveUrl && !isString(layerDefinition.url)) {
+            $log.error('[AngularJS - Leaflet] A base layer must have an url');
+            return false;
+        }
+
+        if(layerTypes[layerDefinition.type].mustHaveLayer && !isDefined(layerDefinition.layer)) {
+            $log.error('[AngularJS - Leaflet] The type of layer ' + layerDefinition.type + ' must have an layer defined');
+            return false;
+        }
+
+        if (layerTypes[layerDefinition.type].mustHaveBounds && !isDefined(layerDefinition.bounds)) {
+            $log.error('[AngularJS - Leaflet] The type of layer ' + layerDefinition.type + ' must have bounds defined');
+            return false ;
+        }
+        return true;
     }
 
     return {
         createLayer: function(layerDefinition) {
-            // Check if the baselayer has a valid type
-            if (!isString(layerDefinition.type)) {
-                $log.error('[AngularJS - Leaflet] A base layer must have a type');
-                return null;
-            } else if (layerDefinition.type !== 'xyz' && layerDefinition.type !== 'wms' && layerDefinition.type !== 'wfs' && layerDefinition.type !== 'group' && layerDefinition.type !== 'markercluster' && layerDefinition.type !== 'google' && layerDefinition.type !== 'bing' && layerDefinition.type !== 'ags' && layerDefinition.type !== 'dynamic' && layerDefinition.type !== 'imageOverlay') {
-                $log.error('[AngularJS - Leaflet] A layer must have a valid type: "xyz, wms, wfs, group, google, ags, dynamic"');
-                return null;
+            if (!isValidLayerType(layerDefinition)) {
+                return;
             }
-            if (layerDefinition.type === 'xyz' || layerDefinition.type === 'wms' || layerDefinition.type === 'wfs' || layerDefinition.type === 'imageOverlay' || layerDefinition.type === 'ags' || layerDefinition.type === 'dynamic') {
-                // XYZ, WMS, WFS, AGS, Dynamic, must have an url
-                if (!isString(layerDefinition.url)) {
-                    $log.error('[AngularJS - Leaflet] A base layer must have an url');
-                    return null;
-                }
-            }
-            if(layerDefinition.type === 'wfs' && layerDefinition.layer === undefined) {
-				$log.error('[AngularJS - Leaflet] A WFS layer must have an layer');
-                return null;
-            }
-            if (layerDefinition.type === 'imageOverlay' && layerDefinition.bounds === undefined) {
-                if (!isString(layerDefinition)) {
-                    $log.error('[AngularJS - Leaflet] An imageOverlay layer must have bounds');
-                    return null;
-                }
-            }
+
             if (!isString(layerDefinition.name)) {
                 $log.error('[AngularJS - Leaflet] A base layer must have a name');
-                return null;
+                return;
             }
-            if (layerDefinition.layerParams === undefined || layerDefinition.layerParams === null || typeof layerDefinition.layerParams !== 'object') {
+            if (!isObject(layerDefinition.layerParams)) {
                 layerDefinition.layerParams = {};
             }
-            if (layerDefinition.layerOptions === undefined || layerDefinition.layerOptions === null || typeof layerDefinition.layerOptions !== 'object') {
+            if (!isObject(layerDefinition.layerOptions)) {
                 layerDefinition.layerOptions = {};
             }
 
             // Mix the layer specific parameters with the general Leaflet options. Although this is an overhead
             // the definition of a base layers is more 'clean' if the two types of parameters are differentiated
-            var layer = null;
             for (var attrname in layerDefinition.layerParams) {
                 layerDefinition.layerOptions[attrname] = layerDefinition.layerParams[attrname];
             }
-            switch (layerDefinition.type) {
-                case 'xyz':
-                    layer = createXyzLayer(layerDefinition.url, layerDefinition.layerOptions);
-                    break;
-                case 'wms':
-                    layer = createWmsLayer(layerDefinition.url, layerDefinition.layerOptions);
-                    break;
-                case 'wfs':
-					layer = createWfsLayer(layerDefinition.url, layerDefinition.layer, layerDefinition.layerOptions);
-					break;
-                case 'group':
-                    layer = createGroupLayer();
-                    break;
-                case 'markercluster':
-                    layer = createMarkerClusterLayer(layerDefinition.layerOptions);
-                    break;
-                case 'google':
-                    layer = createGoogleLayer(layerDefinition.layerType, layerDefinition.layerOptions);
-                    break;
-                case 'bing':
-                    layer = createBingLayer(layerDefinition.bingKey, layerDefinition.layerOptions);
-                    break;
-                case 'ags':
-                    layer = createAGSLayer(layerDefinition.url, layerDefinition.layerOptions);
-                    break;
-				case 'dynamic':
-					layer = createDynamicMapLayer(layerDefinition.url, layerDefinition.layerOptions);
-					break;
-                case 'imageOverlay':
-                    layer = createImageOverlay(layerDefinition.url, layerDefinition.bounds, layerDefinition.layerOptions);
-                    break;
-                default:
-                    layer = null;
-            }
+
+            var params = {
+                url: layerDefinition.url,
+                options: layerDefinition.layerOptions,
+                layer: layerDefinition.layer,
+                type: layerDefinition.layerType,
+                bounds: layerDefinition.bounds,
+                key: layerDefinition.key
+            };
 
             //TODO Add $watch to the layer properties
-            return layer;
+            return layerTypes[layerDefinition.type].createLayer(params);
         }
     };
 });

@@ -1,4 +1,5 @@
-# angular-leaflet-directive [![Build Status](https://travis-ci.org/tombatossals/angular-leaflet-directive.png)](https://travis-ci.org/tombatossals/angular-leaflet-directive)
+# angular-leaflet-directive [![Build Status](https://travis-ci.org/tombatossals/angular-leaflet-directive.png)](https://travis-ci.org/tombatossals/angular-leaflet-directive) [![Dependency Status](https://gemnasium.com/tombatossals/angular-leaflet-directive.png)](https://gemnasium.com/tombatossals/angular-leaflet-directive)
+
 
 [AngularJS](http://angularjs.org/) directive for the Leaflet Javascript
 Library. This software aims to easily embed maps managed by leaflet on your
@@ -12,10 +13,12 @@ See some basic examples:
 * [Marker addition example](http://tombatossals.github.io/angular-leaflet-directive/examples/marker-add-example.html)
 * [Marker with label example](http://tombatossals.github.io/angular-leaflet-directive/examples/marker-label-example.html)
 * [Markers example](http://tombatossals.github.io/angular-leaflet-directive/examples/markers-example.html)
+* [Marker groups example](http://tombatossals.github.io/angular-leaflet-directive/examples/marker-groups-example.html)
 * [Polyline example](http://tombatossals.github.io/angular-leaflet-directive/examples/path-example.html)
 * [Tile changer example](http://tombatossals.github.io/angular-leaflet-directive/examples/tiles-example.html)
 * [Legend example](http://tombatossals.github.io/angular-leaflet-directive/examples/legend-example.html)
 * [GeoJson example](http://tombatossals.github.io/angular-leaflet-directive/examples/geojson-example.html)
+* [Simple layers example](http://tombatossals.github.io/angular-leaflet-directive/examples/layers-simple-example.html)
 * [Layers example](http://tombatossals.github.io/angular-leaflet-directive/examples/layers-example.html)
 * [Events example](http://tombatossals.github.io/angular-leaflet-directive/examples/events-example.html)
 * [Overlays example](http://tombatossals.github.io/angular-leaflet-directive/examples/overlays-example.html)

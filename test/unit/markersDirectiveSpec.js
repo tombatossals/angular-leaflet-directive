@@ -115,7 +115,7 @@ describe('Directive: leaflet', function() {
     });
 
     describe('when a marker is updated', function(){
-        
+
         describe('detecting errors in lat-lng', function(){
             it('validates (undefined lat)', function() {
                 angular.extend($rootScope, { markers: mainMarkers });
@@ -511,7 +511,7 @@ describe('Directive: leaflet', function() {
         });
 
         it('does not watch on markers when watch is disabled', function(){
-            var element = angular.element('<leaflet markers="markers" watchMarkers="false"></leaflet>');
+            var element = angular.element('<leaflet markers="markers" watch-markers="false"></leaflet>');
             element = $compile(element)(scope);
             var markers;
             leafletData.getMarkers().then(function(leafletMarkers) {

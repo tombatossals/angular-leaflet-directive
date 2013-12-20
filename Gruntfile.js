@@ -2,6 +2,9 @@ module.exports = function(grunt) {
 
     require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
 
+    var fs = require('fs'),
+        saucelabsConfig = fs.existsSync('saucelabs.json') && grunt.file.readJSON('saucelabs.json');
+
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
         shell: {
@@ -23,9 +26,27 @@ module.exports = function(grunt) {
             }
         },
 
+        changelog: {},
+
+        bump: {
+            options: {
+                files: ['package.json'],
+                updateConfigs: [],
+                commit: true,
+                commitMessage: 'Release v%VERSION%',
+                commitFiles: ['package.json'],
+                createTag: true,
+                tagName: 'v%VERSION%',
+                tagMessage: 'Version %VERSION%',
+                push: true,
+                pushTo: 'origin',
+                gitDescribeOptions: '--tags --always --abbrev=1 --dirty=-d'
+            }
+        },
+
         connect: {
             options: {
-                base: 'examples/'
+                base: ''
             },
             webserver: {
                 options: {
@@ -59,6 +80,11 @@ module.exports = function(grunt) {
                 configFile: "test/protractor.conf.js"
             },
             singlerun: {},
+            saucelabs: {
+                options: {
+                    args: saucelabsConfig
+                }
+            },
             auto: {
                 keepAlive: true,
                 options: {
@@ -179,7 +205,7 @@ module.exports = function(grunt) {
                 livereload: 7777
             },
             source: {
-                files: ['src/**/*.js', 'test/unit/**'],
+                files: ['src/**/*.js', 'test/unit/**.js', 'test/e2e/**.js'],
                 tasks: [
                     'jshint',
                     'concat:dist',
@@ -236,6 +262,7 @@ module.exports = function(grunt) {
                     'src/services/leafletMapDefaults.js',
                     'src/services/leafletEvents.js',
                     'src/services/leafletLayerHelpers.js',
+                    'src/services/leafletMarkerHelpers.js',
                     'src/services/leafletHelpers.js'
                 ],
                 dest: 'dist/angular-leaflet-directive.js',
