@@ -19,7 +19,7 @@ describe('Loading bounds-example.html', function() {
         expect(element(by.model("bounds.northEast.lat")).getAttribute("value")).toBe("61.18562468142283");
         expect(element(by.model("bounds.northEast.lng")).getAttribute("value")).toBe("28.037109375");
 
-        element(by.xpath('.//*[@title="Zoom in"]')).click().then(function(el) {
+        element(by.xpath('.//*[@title="Zoom in"]')).click().then(function() {
             ptor.sleep(400);
             expect(element(by.model("bounds.southWest.lat")).getAttribute("value")).toBe("45.706179285330855");
             expect(element(by.model("bounds.southWest.lng")).getAttribute("value")).toBe("-14.150390625");

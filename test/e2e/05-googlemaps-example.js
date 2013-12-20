@@ -15,7 +15,7 @@ describe('Loading googlemaps-example.html', function() {
         });
 
         var img1 = element(by.xpath('//img[contains(@draggable, "false")][1]'));
-        expect(img1.getAttribute("src")).toMatch("mt.\.googleapis\.com");
+        expect(img1.getAttribute("src")).toMatch("mt.\\.googleapis\\.com");
 
         ptor.actions().mouseMove(element(by.xpath('//a[contains(@class, "leaflet-control-layers-toggle")][1]')).find()).perform();
 
@@ -25,7 +25,7 @@ describe('Loading googlemaps-example.html', function() {
             input.click().then(function() {
                 ptor.sleep(300);
                 var img1 = element(by.xpath('//img[contains(@draggable, "false")][1]'));
-                expect(img1.getAttribute("src")).toMatch("khm.\.googleapis\.com");
+                expect(img1.getAttribute("src")).toMatch("khm.\\.googleapis\\.com");
             });
         });
     });
