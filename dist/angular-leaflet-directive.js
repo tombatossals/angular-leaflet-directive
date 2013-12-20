@@ -267,7 +267,8 @@ angular.module("leaflet-directive").directive('legend', function ($log, leafletH
                         var div = L.DomUtil.create('div', legendClass);
                         for (var i = 0; i < legend.colors.length; i++) {
                             div.innerHTML +=
-                                '<div><i style="background:' + legend.colors[i] + '"></i>' + legend.labels[i] + '</div>';
+                                '<div class="outline"><i style="background:' + legend.colors[i] + '"></i></div>' +
+                                '<div class="info-label">' + legend.labels[i] + '</div>';
                         }
                         return div;
                     };
@@ -374,8 +375,6 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
             controller.getMap().then(function(map) {
                 var defaults = leafletMapDefaults.getDefaults(attrs.id);
                 
-				$log.log(defaults);
-
                 // Do we have a baselayers property?
                 if (!isDefined(layers) || !isDefined(layers.baselayers) || Object.keys(layers.baselayers).length === 0) {
                     // No baselayers property
@@ -387,28 +386,22 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                 _leafletLayers.resolve(leafletLayers);
                 leafletData.setLayers(leafletLayers, attrs.id);
 
-				/*
-				 * if(defaults) {
-					var controlOptions = {
-						collapsed: defaults.layercontrol && defaults.layercontrol.collapsed
-					};
-					if(defaults.layercontrol && defaults.layercontrol.control) {
-						layers.controls.layers =
-							defaults.layercontrol.control.apply(this, [[], [], controlOptions]);
-					} else {
-						layers.controls.layers = new L.control.layers([[], [], controlOptions]);
-					}
-					
-					if(defaults.layercontrol && defaults.layercontrol.position) {
-						layers.controls.layers.setPosition(defaults.layercontrol.position);
-					}
-                }
-				 */
-
                 leafletLayers.baselayers = {};
                 leafletLayers.controls = {};
-                leafletLayers.controls.layers = new L.control.layers();
-                leafletLayers.controls.layers.setPosition(defaults.controlLayersPosition);
+                
+                var controlOptions = {
+					collapsed: defaults.controlLayer && defaults.controlLayer.collapsed
+				};
+				if(defaults.controlLayer && isDefined(defaults.controlLayer.control)) {
+					leafletLayers.controls.layers =
+						defaults.controlLayer.control.apply(this, [[], [], controlOptions]);
+				} else {
+					leafletLayers.controls.layers = new L.control.layers([[], [], controlOptions]);
+				}
+				
+				if(defaults.controlLayer && isDefined(defaults.controlLayer.position)) {
+					leafletLayers.controls.layers.setPosition(defaults.controlLayer.position);
+				}
                 leafletLayers.controls.layers.addTo(map);
 
 
@@ -1673,29 +1666,29 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
             doubleClickZoom: true,
             scrollWheelZoom: true,
             zoomControl: true,
-            attributionControl: true,
             zoomsliderControl: false,
-			layercontrol: {
+            zoomControlPosition: 'topleft',
+            attributionControl: true,
+			controlLayer: {
 				position:'topright',
 				control: L.control.layers,
 				collapsed: true
 	        },
-            controlLayersPosition: 'topright',
             crs: L.CRS.EPSG3857,
             tileLayer: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
             tileLayerOptions: {
                 attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             },
             icon: {
-                url: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-icon.png',
-                retinaUrl: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-icon-2x.png',
+                url: 'http://cdn.leafletjs.com/leaflet-0.7/images/marker-icon.png',
+                retinaUrl: 'http://cdn.leafletjs.com/leaflet-0.7/images/marker-icon-2x.png',
                 size: [25, 41],
                 anchor: [12, 40],
                 labelAnchor: [10, -20],
                 popup: [0, -40],
                 shadow: {
-                    url: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-shadow.png',
-                    retinaUrl: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-shadow.png',
+                    url: 'http://cdn.leafletjs.com/leaflet-0.7/images/marker-shadow.png',
+                    retinaUrl: 'http://cdn.leafletjs.com/leaflet-0.7/images/marker-shadow.png',
                     size: [41, 41],
                     anchor: [12, 40]
                 }
@@ -1769,8 +1762,10 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
                 newDefaults.zoomControlPosition = isDefined(userDefaults.zoomControlPosition) ? userDefaults.zoomControlPosition : newDefaults.zoomControlPosition;
                 newDefaults.keyboard = isDefined(userDefaults.keyboard) ? userDefaults.keyboard : newDefaults.keyboard;
                 newDefaults.dragging = isDefined(userDefaults.dragging) ? userDefaults.dragging : newDefaults.dragging;
-                
-                newDefaults.controlLayersPosition = isDefined(userDefaults.controlLayersPosition) ? userDefaults.controlLayersPosition : newDefaults.controlLayersPosition;
+
+				if(isDefined(userDefaults.controlLayer)) {
+					angular.extend(newDefaults.controlLayer, userDefaults.controlLayer);
+				}
 
                 if (isDefined(userDefaults.crs) && isDefined(L.CRS[userDefaults.crs])) {
                     newDefaults.crs = L.CRS[userDefaults.crs];

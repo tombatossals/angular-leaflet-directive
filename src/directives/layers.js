@@ -23,8 +23,6 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
             controller.getMap().then(function(map) {
                 var defaults = leafletMapDefaults.getDefaults(attrs.id);
                 
-				$log.log(defaults);
-
                 // Do we have a baselayers property?
                 if (!isDefined(layers) || !isDefined(layers.baselayers) || Object.keys(layers.baselayers).length === 0) {
                     // No baselayers property
@@ -36,28 +34,22 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                 _leafletLayers.resolve(leafletLayers);
                 leafletData.setLayers(leafletLayers, attrs.id);
 
-				/*
-				 * if(defaults) {
-					var controlOptions = {
-						collapsed: defaults.layercontrol && defaults.layercontrol.collapsed
-					};
-					if(defaults.layercontrol && defaults.layercontrol.control) {
-						layers.controls.layers =
-							defaults.layercontrol.control.apply(this, [[], [], controlOptions]);
-					} else {
-						layers.controls.layers = new L.control.layers([[], [], controlOptions]);
-					}
-					
-					if(defaults.layercontrol && defaults.layercontrol.position) {
-						layers.controls.layers.setPosition(defaults.layercontrol.position);
-					}
-                }
-				 */
-
                 leafletLayers.baselayers = {};
                 leafletLayers.controls = {};
-                leafletLayers.controls.layers = new L.control.layers();
-                leafletLayers.controls.layers.setPosition(defaults.controlLayersPosition);
+                
+                var controlOptions = {
+					collapsed: defaults.controlLayer && defaults.controlLayer.collapsed
+				};
+				if(defaults.controlLayer && isDefined(defaults.controlLayer.control)) {
+					leafletLayers.controls.layers =
+						defaults.controlLayer.control.apply(this, [[], [], controlOptions]);
+				} else {
+					leafletLayers.controls.layers = new L.control.layers([[], [], controlOptions]);
+				}
+				
+				if(defaults.controlLayer && isDefined(defaults.controlLayer.position)) {
+					leafletLayers.controls.layers.setPosition(defaults.controlLayer.position);
+				}
                 leafletLayers.controls.layers.addTo(map);
 
 

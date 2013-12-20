@@ -21,7 +21,8 @@ angular.module("leaflet-directive").directive('legend', function ($log, leafletH
                         var div = L.DomUtil.create('div', legendClass);
                         for (var i = 0; i < legend.colors.length; i++) {
                             div.innerHTML +=
-                                '<div><i style="background:' + legend.colors[i] + '"></i>' + legend.labels[i] + '</div>';
+                                '<div class="outline"><i style="background:' + legend.colors[i] + '"></i></div>' +
+                                '<div class="info-label">' + legend.labels[i] + '</div>';
                         }
                         return div;
                     };
