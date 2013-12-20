@@ -13,6 +13,7 @@ See some basic examples:
 * [Marker addition example](http://tombatossals.github.io/angular-leaflet-directive/examples/marker-add-example.html)
 * [Marker with label example](http://tombatossals.github.io/angular-leaflet-directive/examples/marker-label-example.html)
 * [Markers example](http://tombatossals.github.io/angular-leaflet-directive/examples/markers-example.html)
+* [Marker groups example](http://tombatossals.github.io/angular-leaflet-directive/examples/marker-groups-example.html)
 * [Polyline example](http://tombatossals.github.io/angular-leaflet-directive/examples/path-example.html)
 * [Tile changer example](http://tombatossals.github.io/angular-leaflet-directive/examples/tiles-example.html)
 * [Legend example](http://tombatossals.github.io/angular-leaflet-directive/examples/legend-example.html)
