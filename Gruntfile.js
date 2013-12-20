@@ -205,7 +205,7 @@ module.exports = function(grunt) {
                 livereload: 7777
             },
             source: {
-                files: ['src/**/*.js', 'test/unit/**'],
+                files: ['src/**/*.js', 'test/unit/**.js', 'test/e2e/**.js'],
                 tasks: [
                     'jshint',
                     'concat:dist',
