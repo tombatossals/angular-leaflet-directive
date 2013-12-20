@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html ng-app="demoapp">
 <head>
-    <script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular.min.js"></script>
+    <script src="http://cdn.leafletjs.com/leaflet-0.7.1/leaflet.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular.min.js"></script>
     <script src="../dist/angular-leaflet-directive.js"></script>
     <script src="plugins/markercluster/leaflet.markercluster-src.js"></script>
-    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" />
-    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
-    <!--[if lte IE 8]>
-    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.ie.css" />
-    <![endif]-->
+    <script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.1/leaflet.css" />
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css">
     <script>
         angular.module("demoapp", ["leaflet-directive"]);
 
@@ -116,13 +116,14 @@
         <h2>This is a map with two hidden marker groups</h2>
     </div>
     <div class="row">
-        <p>
-            Click here to hide or show the groups:
+        <p>Click here to hide or show the groups:</p>
+        <div class="btn-group" data-toggle="buttons">
             <button type="button" ng-click="toggleLayer('red')" class="btn btn-default">Red</button>
             <button type="button" ng-click="toggleLayer('blue')" class="btn btn-default">blue</button>
 
-        </p>
+        </div>
     </div>
+    <br />
     <div class="row">
         <leaflet center="london" markers="markers" layers="layers" height="480px" width="640px"></leaflet>
     </div>
