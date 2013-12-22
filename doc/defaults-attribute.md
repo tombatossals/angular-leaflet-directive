@@ -9,7 +9,7 @@ This sub-directive needs the **leaflet** main directive, so it is normaly used a
 
 It will define the default parameters from which we want to initialize our map. It's not used as a bi-directional attribute, so it will only apply the initial map parameters and nothing more. Let's see its possibilities.
 
-We can define some custom parameters that apply to the Leaflet map creation. This is the list:
+We can define some specific parameters that apply to the Leaflet map creation. Only the parameters listed belo will be passed to Leaflet on the map creation process. This is the list:
 
 * [maxZoom](http://leafletjs.com/reference.html#map-maxzoom). *Number*. From 1 to 20.
 * [minZoom](http://leafletjs.com/reference.html#map-minzoom). *Number* From 1 to 20.
