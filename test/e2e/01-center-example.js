@@ -21,7 +21,7 @@ describe('Loading center-example.html', function() {
         expect(element(by.model("london.lng")).getAttribute("value")).toBe('-0.09');
         var el = element(by.xpath('.//img[contains(@class, "leaflet-tile-loaded")][1]'));
         browser.actions().dragAndDrop(el.find(), { x: 40, y: 40 }).perform();
-        ptor.sleep(t 300);
+        ptor.sleep(300);
         expect(element(by.model("london.lat")).getAttribute("value")).toBe('51.505');
         expect(element(by.model("london.lng")).getAttribute("value")).toBe('-0.09');
     });
