@@ -8,6 +8,8 @@ Library. This software aims to easily embed maps managed by leaflet on your
 See some basic examples:
 
 * [Basic example](http://tombatossals.github.io/angular-leaflet-directive/examples/simple-example.html)
+* [Center example](http://tombatossals.github.io/angular-leaflet-directive/examples/center-example.html)
+* [Center autodiscover example](http://tombatossals.github.io/angular-leaflet-directive/examples/center-autodiscover-example.html)
 * [Custom parameters example](http://tombatossals.github.io/angular-leaflet-directive/examples/custom-parameters-example.html)
 * [Single marker example](http://tombatossals.github.io/angular-leaflet-directive/examples/marker-example.html)
 * [Marker addition example](http://tombatossals.github.io/angular-leaflet-directive/examples/marker-add-example.html)
