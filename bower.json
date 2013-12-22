@@ -6,7 +6,7 @@
     "angular-animate": "1.2.x",
     "angular-mocks": "1.2.x",
     "leaflet-dist": "0.7.x",
-    "leaflet.markerclusterer": "0.2"
+    "leaflet.markerclusterer": "0.4"
   },
   "resolutions": {
     "angular": "1.2.4"
