@@ -14,6 +14,7 @@ describe('Loading googlemaps-example.html', function() {
             return ptor.isElementPresent(by.xpath('//img[contains(@draggable, "false")]'));
         });
 
+        ptor.sleep(300);
         var img1 = element(by.xpath('//img[contains(@draggable, "false")][1]'));
         expect(img1.getAttribute("src")).toMatch("mt.\\.googleapis\\.com");
 

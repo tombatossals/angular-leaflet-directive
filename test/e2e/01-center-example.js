@@ -13,17 +13,17 @@ describe('Loading center-example.html', function() {
         element(by.className('leaflet-control-zoom-in')).click();
         // Wait for zoom animation
         ptor.sleep(300);
-        element(by.model("center.zoom")).then(function(zoom) {
-            expect(zoom).toBe('5');
-        });
+        expect(element(by.model("london.zoom")).getAttribute("value")).toBe('5');
     });
 
-    it('should update the zoom value if the map is dragged', function() {
-        element(by.css('img.leaflet-map-pane')).find().then(function(el) {
-            console.log(el.getLocation());
-            browser.actions().mouseDown(el.find(), protractor.Button.LEFT).mouseMove({ x: 1400, y: 1200 }).perform();
-            ptor.sleep(1300);
-        });
+    it('should update the center value if the map is dragged', function() {
+        expect(element(by.model("london.lat")).getAttribute("value")).toBe('51.505');
+        expect(element(by.model("london.lng")).getAttribute("value")).toBe('-0.09');
+        var el = element(by.xpath('.//img[contains(@class, "leaflet-tile-loaded")][1]'));
+        browser.actions().dragAndDrop(el.find(), { x: 40, y: 40 }).perform();
+        ptor.sleep(t 300);
+        expect(element(by.model("london.lat")).getAttribute("value")).toBe('51.505');
+        expect(element(by.model("london.lng")).getAttribute("value")).toBe('-0.09');
     });
 
 });
