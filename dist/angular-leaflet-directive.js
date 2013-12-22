@@ -130,20 +130,17 @@ angular.module("leaflet-directive").directive('center', function ($log, $parse, 
                     return;
                 }
 
-                if (center.autoDiscover === true) {
-                    map.locate({ setView: true, maxZoom: defaults.maxZoom });
-                }
-
                 var centerModel = {
                     lat:  $parse("center.lat"),
                     lng:  $parse("center.lng"),
-                    zoom: $parse("center.zoom")
+                    zoom: $parse("center.zoom"),
+                    autoDiscover: $parse("center.autoDiscover")
                 };
 
                 var movingMap = false;
 
                 leafletScope.$watch("center", function(center) {
-                    if (!isValidCenter(center)) {
+                    if (!isValidCenter(center) && center.autoDiscover !== true) {
                         $log.warn("[AngularJS - Leaflet] invalid 'center'");
                         map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
                         return;
@@ -152,6 +149,17 @@ angular.module("leaflet-directive").directive('center', function ($log, $parse, 
                         // Can't update. The map is moving.
                         return;
                     }
+
+                    if (center.autoDiscover === true) {
+                        map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
+                        if (isDefined(defaults.maxZoom)) {
+                            map.locate({ setView: true, maxZoom: defaults.maxZoom });
+                        } else {
+                            map.locate({ setView: true });
+                        }
+                        return;
+                    }
+
                     map.setView([center.lat, center.lng], center.zoom);
                 }, true);
 
@@ -166,9 +174,21 @@ angular.module("leaflet-directive").directive('center', function ($log, $parse, 
                             centerModel.lat.assign(scope, map.getCenter().lat);
                             centerModel.lng.assign(scope, map.getCenter().lng);
                             centerModel.zoom.assign(scope, map.getZoom());
+                            centerModel.autoDiscover.assign(scope, false);
                         }
                     });
                 });
+
+                if (center.autoDiscover === true) {
+                    map.on("locationerror", function() {
+                        $log.warn("[AngularJS - Leaflet] The Geolocation API is unauthorized on this page.");
+                        if (isValidCenter(center)) {
+                            map.setView([center.lat, center.lng], center.zoom);
+                        } else {
+                            map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
+                        }
+                    });
+                }
             });
         }
     };
