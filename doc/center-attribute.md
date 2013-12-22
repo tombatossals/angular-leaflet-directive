@@ -38,3 +38,28 @@ And after that, in our HTML code we will define our leaflet directive like this:
 ```
 
 And that's all. A full example of using this attribute can be found [here](http://tombatossals.github.io/angular-leaflet-directive/examples/center-example.html).
+
+Autodiscover
+------------
+The _lat_, _lng_, and _center_ properties are mandatory to make the center work, but we have an optional property which we can use to auto-discover the position of the user browsing our page using the [W3C Geolocation API](http://dev.w3.org/geo/api/spec-source.html) using the corresponding methods defined on the [Leaflet API](http://leafletjs.com/reference.html#map-locate).
+
+For example, we could show the user map position on start, or conditionally when he press a button. This property is defined like this:
+
+```
+angular.extend($scope, {
+    center: {
+        lat: 51.505,
+        lng: -0.09,
+        zoom: 4,
+        autoDiscover: true
+    }
+});
+```
+
+We can see an example of how to use it [here](http://tombatossals.github.io/angular-leaflet-directive/examples/center-autodiscover-example.html).
+
+
+Development information
+-----------------------
+Each change to our scope defined _center_ object will update the map, or viceversa. This is accomplished via an angularJS watcher, defined [here](https://github.com/tombatossals/angular-leaflet-directive/blob/master/src/directives/center.js#L35) in our code. When we change our map center or zoom, our _center_ object will be updated, these events are defined [here](https://github.com/tombatossals/angular-leaflet-directive/blob/master/src/directives/center.js#L48) in our code.
+
