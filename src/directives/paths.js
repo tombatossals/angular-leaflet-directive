@@ -22,6 +22,8 @@ angular.module("leaflet-directive").directive('paths', function ($log, leafletDa
 
                 var leafletPaths = {};
                 leafletData.setPaths(leafletPaths, attrs.id);
+                
+                scope.paths = paths;
 
                 scope.$watch("paths", function (newPaths) {
                     // Create the new paths
