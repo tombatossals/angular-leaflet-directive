@@ -26,7 +26,7 @@ $scope.bounds = {
 Defining the bounds is a little complex, so we have a helper which will allow us to be more concise on the definition making use of and array with two arrays with to values inside (lat, lng). To use it, we must make use of the _leafletBoundsHelpers_ service on our controller. For example:
 
 ```
-app.controller("DemoController", [ "$scope", "leafletBoundsHelpers", function($scope,                   leafletBoundsHelpers) {
+app.controller("DemoController", [ "$scope", "leafletBoundsHelpers", function($scope, leafletBoundsHelpers) {
     var bounds = leafletBoundsHelpers.createBoundsFromArray([
          [ 51.508742458803326, -0.087890625 ],
          [ 51.508742458803326, -0.087890625 ]
