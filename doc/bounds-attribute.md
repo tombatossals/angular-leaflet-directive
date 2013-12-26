@@ -34,6 +34,7 @@ app.controller("DemoController", [ "$scope", "leafletBoundsHelpers", function($s
     angular.extend($scope, {
         bounds: bounds
     });
+});
 ```
 
 And that's all, we can see how the _$scope.bounds_ object is updated when we are interacting with the map, like [this example](http://tombatossals.github.io/angular-leaflet-directive/examples/bounds-example.html).
