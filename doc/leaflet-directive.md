@@ -88,4 +88,4 @@ We have much more possibilities than showing a simple map, but this will need th
 
 * [Defaults attribute](https://github.com/tombatossals/angular-leaflet-directive/blob/master/doc/defaults-attribute.md)
 * [Center attribute](https://github.com/tombatossals/angular-leaflet-directive/blob/master/doc/center-attribute.md)
-* * [Bounds attribute](https://github.com/tombatossals/angular-leaflet-directive/blob/master/doc/bounds-attribute.md)
+* [Bounds attribute](https://github.com/tombatossals/angular-leaflet-directive/blob/master/doc/bounds-attribute.md)
