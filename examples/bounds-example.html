@@ -15,18 +15,9 @@
             ]);
 
             angular.extend($scope, {
-                london: {
-                    lat: 51.505,
-                    lng: -0.09,
-                    zoom: 4
-                },
                 bounds: bounds
             });
 
-            leafletData.getMap().then(function(map){
-                 var bounds = map.getBounds();
-                 console.log('northwest=' + bounds.getNorthWest().toString() + '&northeast=' + bounds.getNorthEast().toString() + '&southeast=' + bounds.getSouthEast().toString() + '&southwest=' + bounds.getSouthWest().toString());
-            });
         }]);
     </script>
     <style>
@@ -49,6 +40,6 @@
         Lat : <input type="number" step="any" ng-model="bounds.northEast.lat" />
         Lng : <input type="number" step="any" ng-model="bounds.northEast.lng" />
     </form>
-    <leaflet center="london" bounds="bounds" width="640" height="400"></leaflet>
+    <leaflet bounds="bounds" width="640" height="400"></leaflet>
   </body>
 </html>
