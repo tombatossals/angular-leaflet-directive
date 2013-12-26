@@ -565,6 +565,7 @@ angular.module("leaflet-directive").directive('bounds', function ($log, leafletH
                 leafletScope = controller.getLeafletScope();
 
             controller.getMap().then(function(map) {
+                var initializing = true;
 
                 map.whenReady(function() {
                     leafletScope.$watch('bounds', function(newBounds) {
@@ -573,16 +574,19 @@ angular.module("leaflet-directive").directive('bounds', function ($log, leafletH
                             return;
                         }
 
+                        initializing = false;
                         var leafletBounds = createLeafletBounds(newBounds);
                         if (leafletBounds && !map.getBounds().equals(leafletBounds)) {
                             map.fitBounds(leafletBounds);
                         }
                     }, true);
-                });
 
-                map.on('moveend', updateBoundsInScope, leafletScope, map);
-                map.on('dragend', updateBoundsInScope, leafletScope, map);
-                map.on('zoomend', updateBoundsInScope, leafletScope, map);
+                    map.on('dragend zoomend', function() {
+                        if (!initializing) {
+                            updateBoundsInScope(leafletScope, map);
+                        }
+                    });
+                });
 
             });
         }
@@ -1499,10 +1503,10 @@ angular.module("leaflet-directive").factory('leafletBoundsHelpers', function ($l
         createBoundsFromArray: function(boundsArray) {
             if (!(isArray(boundsArray) && boundsArray.length === 2 &&
                   isArray(boundsArray[0]) && isArray(boundsArray[1]) &&
-                  boundsArray[0].length === 2 && boundsArray[1].lenth === 2 &&
+                  boundsArray[0].length === 2 && boundsArray[1].length === 2 &&
                   isNumber(boundsArray[0][0]) && isNumber(boundsArray[0][1]) &&
                   isNumber(boundsArray[1][0]) && isNumber(boundsArray[1][1]))) {
-                $log.warn("[AngularJS - Leaflet] The bounds array is not valid.");
+                $log.error("[AngularJS - Leaflet] The bounds array is not valid.");
                 return;
             }
 
@@ -1520,8 +1524,6 @@ angular.module("leaflet-directive").factory('leafletBoundsHelpers', function ($l
         },
 
         updateBoundsInScope: function(leafletScope, map) {
-            if(!leafletScope.bounds) { return; }
-
             var mapBounds = map.getBounds();
             var newScopeBounds = {
                 northEast: {

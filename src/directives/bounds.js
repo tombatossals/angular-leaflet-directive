@@ -12,6 +12,7 @@ angular.module("leaflet-directive").directive('bounds', function ($log, leafletH
                 leafletScope = controller.getLeafletScope();
 
             controller.getMap().then(function(map) {
+                var initializing = true;
 
                 map.whenReady(function() {
                     leafletScope.$watch('bounds', function(newBounds) {
@@ -20,16 +21,19 @@ angular.module("leaflet-directive").directive('bounds', function ($log, leafletH
                             return;
                         }
 
+                        initializing = false;
                         var leafletBounds = createLeafletBounds(newBounds);
                         if (leafletBounds && !map.getBounds().equals(leafletBounds)) {
                             map.fitBounds(leafletBounds);
                         }
                     }, true);
-                });
 
-                map.on('moveend', updateBoundsInScope, leafletScope, map);
-                map.on('dragend', updateBoundsInScope, leafletScope, map);
-                map.on('zoomend', updateBoundsInScope, leafletScope, map);
+                    map.on('dragend zoomend', function() {
+                        if (!initializing) {
+                            updateBoundsInScope(leafletScope, map);
+                        }
+                    });
+                });
 
             });
         }
