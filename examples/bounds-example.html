@@ -1,35 +1,33 @@
 <!DOCTYPE html>
 <html ng-app="demoapp">
   <head>
-    <script src="http://cdn.leafletjs.com/leaflet-0.7/leaflet.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.2/angular.min.js"></script>
+    <script src="http://cdn.leafletjs.com/leaflet-0.7.1/leaflet.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.6/angular.min.js"></script>
     <script src="../dist/angular-leaflet-directive.min.js"></script>
-    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7/leaflet.css" />
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.1/leaflet.css" />
     <script>
         var app = angular.module("demoapp", ["leaflet-directive"]);
-        app.controller("DemoController", [ "$scope", "leafletData", function($scope, leafletData) {
-           angular.extend($scope, {
-               london: {
-                   lat: 51.505,
-                   lng: -0.09,
-                   zoom: 4
-               },
-               bounds: {
-                   southWest: {
-                       lat:51.508742458803326,
-                       lng: -0.087890625,
-                   },
-                   northEast: {
-                       lat:51.508742458803326,
-                        lng:-0.087890625,
-                   }
-               }
-           });
-           leafletData.getMap().then(function(map){
+        app.controller("DemoController", [ "$scope", "leafletData", "leafletBoundsHelpers", function($scope, leafletData, leafletBoundsHelpers) {
+
+            var bounds = leafletBoundsHelpers.createBoundsFromArray([
+                [ 51.508742458803326, -0.087890625 ],
+                [ 51.508742458803326, -0.087890625 ]
+            ]);
+
+            angular.extend($scope, {
+                london: {
+                    lat: 51.505,
+                    lng: -0.09,
+                    zoom: 4
+                },
+                bounds: bounds
+            });
+
+            leafletData.getMap().then(function(map){
                  var bounds = map.getBounds();
                  console.log('northwest=' + bounds.getNorthWest().toString() + '&northeast=' + bounds.getNorthEast().toString() + '&southeast=' + bounds.getSouthEast().toString() + '&southwest=' + bounds.getSouthWest().toString());
-           });
-       }]);
+            });
+        }]);
     </script>
     <style>
         input {
