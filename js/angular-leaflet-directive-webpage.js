@@ -14,6 +14,21 @@ app.config(['$routeProvider', '$locationProvider', function($routeProvider, $loc
     $locationProvider.hashPrefix('!');
 }]);
 
+app.controller("BoundsController", [ '$scope', 'leafletBoundsHelpers', function($scope, leafletBoundsHelpers) {
+
+    var bounds = leafletBoundsHelpers.createBoundsFromArray([
+        [ 51.508742458803326, -0.087890625 ],
+        [ 51.508742458803326, -0.087890625 ]
+    ]);
+
+    angular.extend($scope, {
+        bounds: bounds,
+        defaults: {
+            scrollWheelZoom: false
+        }
+    });
+}]);
+
 app.controller("CenterController", [ '$scope', function($scope) {
 
     angular.extend($scope, {
@@ -339,6 +354,10 @@ app.controller("MenuController", [ '$scope', '$location', function($scope, $loca
         {
             key: 'custom-parameters',
             description: 'Custom Parameters'
+        },
+        {
+            key: 'bounds',
+            description: 'Bounds'
         },
         {
             key: 'events',

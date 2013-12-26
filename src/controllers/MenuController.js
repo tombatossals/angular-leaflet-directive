@@ -14,6 +14,10 @@ app.controller("MenuController", [ '$scope', '$location', function($scope, $loca
             description: 'Custom Parameters'
         },
         {
+            key: 'bounds',
+            description: 'Bounds'
+        },
+        {
             key: 'events',
             description: 'Events'
         },

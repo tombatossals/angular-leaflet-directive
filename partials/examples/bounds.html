@@ -1,0 +1,59 @@
+<div class="col-md-10" ng-controller="BoundsController">
+    <leaflet bounds="bounds" defaults="defaults"></leaflet>
+    <form class="form-inline" role="form">
+        <div class="form-group">
+            <div class="control-group col col-lg-2">
+                <label for="mapCenter" class="control-label">NorthEast</strong>
+            </div>
+            <div class="control-group col col-lg-3">
+                <div class="input-group">
+                    <span class="input-group-addon">lat</span>
+                    <input class="form-control" type="number" step="any" ng-model="bounds.northEast.lat" />
+                </div>
+            </div>
+            <div class="control-group col col-lg-3">
+                <div class="input-group">
+                    <span class="input-group-addon">lng</span>
+                    <input class="form-control" type="number" step="any" ng-model="bounds.northEast.lng" />
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="control-group col col-lg-2">
+                <label for="mapCenter" class="control-label">SouthWest</strong>
+            </div>
+            <div class="control-group col col-lg-3">
+                <div class="input-group">
+                    <span class="input-group-addon">lat</span>
+                    <input class="form-control" type="number" step="any" ng-model="bounds.southWest.lat" />
+                </div>
+            </div>
+            <div class="control-group col col-lg-3">
+                <div class="input-group">
+                    <span class="input-group-addon">lng</span>
+                    <input class="form-control" type="number" step="any" ng-model="bounds.southWest.lng" />
+                </div>
+            </div>
+        </div>
+    </form>
+    <h2>Bounds example</h2>
+    <p>We can center and position a region on the map based on two points defining a rectangle (nort-east, south-west). Every change we made to these points on our scope will be reflected on the map, and viceversa.</p>
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="" ng-click="activeTab='html'" data-toggle="tab">HTML code</a></li>
+        <li><a href="" ng-click="activeTab='javascript'" data-toggle="tab">Javascript Angular controller</a></li>
+    </ul>
+    <div class="tab-container" ng-switch on="activeTab">
+        <div hljs ng-switch-default>
+<div ng-controller="BoundsController">
+    <form>
+        Latitude NorthEast: <input type="number" step="any" ng-model="bounds.northEast.lat" />
+        Longitude NorthEast: <input type="number" step="any" ng-model="bounds.northEast.lng" />
+        Latitude SouthWest: <input type="number" step="any" ng-model="bounds.southWest.lat" />
+        Longitude SouthWest: <input type="number" step="any" ng-model="bounds.southWest.lng" />
+    </form>
+    <leaflet bounds="bounds"></leaflet>
+</div></div>
+        <div hljs ng-switch-when="javascript" include="'src/controllers/BoundsController.js'"></div>
+    </div>
+    <p>You can see a standalone example of this code <a href="examples/bounds-example.html">here</a>.</p>
+</div>

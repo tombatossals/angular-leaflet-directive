@@ -136,3 +136,7 @@ div.mainPageDemo {
     margin-top: 5px;
     margin-bottom: 5px;
 }
+
+.form-inline .form-group {
+    margin-bottom: .4em;
+}
