@@ -12,6 +12,7 @@ See some basic examples:
 * [Center autodiscover example](http://tombatossals.github.io/angular-leaflet-directive/examples/center-autodiscover-example.html)
 * [Custom parameters example](http://tombatossals.github.io/angular-leaflet-directive/examples/custom-parameters-example.html)
 * [Bounds example](http://tombatossals.github.io/angular-leaflet-directive/examples/bounds-example.html)
+* [MaxBounds example](http://tombatossals.github.io/angular-leaflet-directive/examples/maxbounds-example.html)
 * [Single marker example](http://tombatossals.github.io/angular-leaflet-directive/examples/marker-example.html)
 * [Marker addition example](http://tombatossals.github.io/angular-leaflet-directive/examples/marker-add-example.html)
 * [Marker with label example](http://tombatossals.github.io/angular-leaflet-directive/examples/marker-label-example.html)
