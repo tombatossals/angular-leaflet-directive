@@ -262,6 +262,7 @@ module.exports = function(grunt) {
                     'src/services/leafletMapDefaults.js',
                     'src/services/leafletEvents.js',
                     'src/services/leafletLayerHelpers.js',
+                    'src/services/leafletBoundsHelpers.js',
                     'src/services/leafletMarkerHelpers.js',
                     'src/services/leafletHelpers.js'
                 ],

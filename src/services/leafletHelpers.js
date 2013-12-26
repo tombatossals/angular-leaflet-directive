@@ -21,13 +21,6 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
         return id;
     }
 
-    function _isValidBounds(bounds) {
-        return angular.isDefined(bounds) && angular.isDefined(bounds.southWest) &&
-               angular.isDefined(bounds.northEast) && angular.isNumber(bounds.southWest.lat) &&
-               angular.isNumber(bounds.southWest.lng) && angular.isNumber(bounds.northEast.lat) &&
-               angular.isNumber(bounds.northEast.lng);
-    }
-
     function _getUnresolvedDefer(d, mapId) {
         var id = _obtainEffectiveMapId(d, mapId),
             defer;
@@ -87,17 +80,6 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
         isValidCenter: function(center) {
             return angular.isDefined(center) && angular.isNumber(center.lat) &&
                    angular.isNumber(center.lng) && angular.isNumber(center.zoom);
-        },
-
-        isValidBounds: _isValidBounds,
-
-        createLeafletBounds: function(bounds) {
-            if (_isValidBounds(bounds)) {
-                return L.latLngBounds([bounds.southWest.lat, bounds.southWest.lng],
-                                      [bounds.northEast.lat, bounds.northEast.lng ]);
-            } else {
-                return false;
-            }
         },
 
         convertToLeafletLatLngs: _convertToLeafletLatLngs,

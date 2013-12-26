@@ -551,7 +551,7 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
     };
 });
 
-angular.module("leaflet-directive").directive('bounds', function ($log, leafletHelpers) {
+angular.module("leaflet-directive").directive('bounds', function ($log, leafletHelpers, leafletBoundsHelpers) {
     return {
         restrict: "A",
         scope: false,
@@ -560,50 +560,30 @@ angular.module("leaflet-directive").directive('bounds', function ($log, leafletH
 
         link: function(scope, element, attrs, controller) {
             var isDefined = leafletHelpers.isDefined,
-                createLeafletBounds = leafletHelpers.createLeafletBounds,
+                createLeafletBounds = leafletBoundsHelpers.createLeafletBounds,
+                updateBoundsInScope = leafletBoundsHelpers.updateBoundsInScope,
                 leafletScope = controller.getLeafletScope();
 
             controller.getMap().then(function(map) {
 
-                function updateBoundsInScope() {
-                    if(!leafletScope.bounds) { return; }
-
-                    var mapBounds = map.getBounds();
-                    var newScopeBounds = {
-                        northEast: {
-                            lat: mapBounds.getNorthEast().lat,
-                            lng: mapBounds.getNorthEast().lng
-                        },
-                        southWest: {
-                            lat: mapBounds.getSouthWest().lat,
-                            lng: mapBounds.getSouthWest().lng
-                        }
-                    };
-
-                    if(!angular.equals(leafletScope.bounds, newScopeBounds)) {
-                        leafletScope.bounds = newScopeBounds;
-                    }
-                }
-
-                function boundsListener(newBounds) {
-                    if (!isDefined(newBounds)) {
-                        $log.error('[AngularJS - Leaflet] Invalid bounds');
-                        return;
-                    }
-
-                    var leafletBounds = createLeafletBounds(newBounds);
-                    if (leafletBounds && !map.getBounds().equals(leafletBounds)) {
-                        map.fitBounds(leafletBounds);
-                    }
-                }
-
-                map.on('moveend', updateBoundsInScope);
-                map.on('dragend', updateBoundsInScope);
-                map.on('zoomend', updateBoundsInScope);
-
                 map.whenReady(function() {
-                    leafletScope.$watch('bounds', boundsListener, true);
+                    leafletScope.$watch('bounds', function(newBounds) {
+                        if (!isDefined(newBounds)) {
+                            $log.error('[AngularJS - Leaflet] Invalid bounds');
+                            return;
+                        }
+
+                        var leafletBounds = createLeafletBounds(newBounds);
+                        if (leafletBounds && !map.getBounds().equals(leafletBounds)) {
+                            map.fitBounds(leafletBounds);
+                        }
+                    }, true);
                 });
+
+                map.on('moveend', updateBoundsInScope, leafletScope, map);
+                map.on('dragend', updateBoundsInScope, leafletScope, map);
+                map.on('zoomend', updateBoundsInScope, leafletScope, map);
+
             });
         }
     };
@@ -967,7 +947,7 @@ angular.module("leaflet-directive").directive('eventBroadcast', function ($log, 
     };
 });
 
-angular.module("leaflet-directive").directive('maxbounds', function ($log, leafletMapDefaults, leafletHelpers) {
+angular.module("leaflet-directive").directive('maxbounds', function ($log, leafletMapDefaults, leafletBoundsHelpers) {
     return {
         restrict: "A",
         scope: false,
@@ -976,7 +956,7 @@ angular.module("leaflet-directive").directive('maxbounds', function ($log, leafl
 
         link: function(scope, element, attrs, controller) {
             var leafletScope  = controller.getLeafletScope(),
-                isValidBounds = leafletHelpers.isValidBounds;
+                isValidBounds = leafletBoundsHelpers.isValidBounds;
 
 
             controller.getMap().then(function(map) {
@@ -1488,6 +1468,75 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
 
             //TODO Add $watch to the layer properties
             return layerTypes[layerDefinition.type].createLayer(params);
+        }
+    };
+});
+
+angular.module("leaflet-directive").factory('leafletBoundsHelpers', function ($log, leafletHelpers) {
+
+    var isArray = leafletHelpers.isArray,
+        isNumber = leafletHelpers.isNumber;
+
+    function _isValidBounds(bounds) {
+        return angular.isDefined(bounds) && angular.isDefined(bounds.southWest) &&
+               angular.isDefined(bounds.northEast) && angular.isNumber(bounds.southWest.lat) &&
+               angular.isNumber(bounds.southWest.lng) && angular.isNumber(bounds.northEast.lat) &&
+               angular.isNumber(bounds.northEast.lng);
+    }
+
+    return {
+        createLeafletBounds: function(bounds) {
+            if (_isValidBounds(bounds)) {
+                return L.latLngBounds([bounds.southWest.lat, bounds.southWest.lng],
+                                      [bounds.northEast.lat, bounds.northEast.lng ]);
+            } else {
+                return false;
+            }
+        },
+
+        isValidBounds: _isValidBounds,
+
+        createBoundsFromArray: function(boundsArray) {
+            if (!(isArray(boundsArray) && boundsArray.length === 2 &&
+                  isArray(boundsArray[0]) && isArray(boundsArray[1]) &&
+                  boundsArray[0].length === 2 && boundsArray[1].lenth === 2 &&
+                  isNumber(boundsArray[0][0]) && isNumber(boundsArray[0][1]) &&
+                  isNumber(boundsArray[1][0]) && isNumber(boundsArray[1][1]))) {
+                $log.warn("[AngularJS - Leaflet] The bounds array is not valid.");
+                return;
+            }
+
+            return {
+                northEast: {
+                    lat: boundsArray[0][0],
+                    lng: boundsArray[0][1]
+                },
+                southWest: {
+                    lat: boundsArray[1][0],
+                    lng: boundsArray[1][1]
+                }
+            };
+
+        },
+
+        updateBoundsInScope: function(leafletScope, map) {
+            if(!leafletScope.bounds) { return; }
+
+            var mapBounds = map.getBounds();
+            var newScopeBounds = {
+                northEast: {
+                    lat: mapBounds.getNorthEast().lat,
+                    lng: mapBounds.getNorthEast().lng
+                },
+                southWest: {
+                    lat: mapBounds.getSouthWest().lat,
+                    lng: mapBounds.getSouthWest().lng
+                }
+            };
+
+            if(!angular.equals(leafletScope.bounds, newScopeBounds)) {
+                leafletScope.bounds = newScopeBounds;
+            }
         }
     };
 });
@@ -2133,13 +2182,6 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
         return id;
     }
 
-    function _isValidBounds(bounds) {
-        return angular.isDefined(bounds) && angular.isDefined(bounds.southWest) &&
-               angular.isDefined(bounds.northEast) && angular.isNumber(bounds.southWest.lat) &&
-               angular.isNumber(bounds.southWest.lng) && angular.isNumber(bounds.northEast.lat) &&
-               angular.isNumber(bounds.northEast.lng);
-    }
-
     function _getUnresolvedDefer(d, mapId) {
         var id = _obtainEffectiveMapId(d, mapId),
             defer;
@@ -2199,17 +2241,6 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
         isValidCenter: function(center) {
             return angular.isDefined(center) && angular.isNumber(center.lat) &&
                    angular.isNumber(center.lng) && angular.isNumber(center.zoom);
-        },
-
-        isValidBounds: _isValidBounds,
-
-        createLeafletBounds: function(bounds) {
-            if (_isValidBounds(bounds)) {
-                return L.latLngBounds([bounds.southWest.lat, bounds.southWest.lng],
-                                      [bounds.northEast.lat, bounds.northEast.lng ]);
-            } else {
-                return false;
-            }
         },
 
         convertToLeafletLatLngs: _convertToLeafletLatLngs,
