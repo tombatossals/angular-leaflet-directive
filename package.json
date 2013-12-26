@@ -37,7 +37,7 @@
     "karma-coffee-preprocessor": "*",
     "karma-phantomjs-launcher": "*",
     "karma-coverage": "*",
-    "karma": "*",
+    "karma": "~0.10.x",
     "protractor": "*",
     "grunt-protractor-runner": "*",
     "grunt-shell-spawn": "*",

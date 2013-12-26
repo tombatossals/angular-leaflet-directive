@@ -970,13 +970,10 @@ angular.module("leaflet-directive").directive('maxbounds', function ($log, leafl
                         map.setMaxBounds();
                         return;
                     }
-                    map.setMaxBounds(
-                        new L.LatLngBounds(
-                            new L.LatLng(maxBounds.southWest.lat, maxBounds.southWest.lng),
-                            new L.LatLng(maxBounds.northEast.lat, maxBounds.northEast.lng)
-                        ),
-                        maxBounds.options
-                    );
+                    map.setMaxBounds( [
+                        [ maxBounds.southWest.lat, maxBounds.southWest.lng ],
+                        [ maxBounds.northEast.lat, maxBounds.northEast.lng ]
+                    ]);
                 });
             });
         }

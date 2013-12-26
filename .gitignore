@@ -9,7 +9,9 @@ libpeerconnection.log
 node_modules
 dist/angular-leaflet-directive.ngmin.js
 dist/angular-leaflet-directive.min.no-header.js
+js/angular-leaflet-directive-webpage.ngmin.js
 coverage
 bower_components
 saucelabs.json
 lib
+
