@@ -7,7 +7,7 @@ This sub-directive needs the **leaflet** main directive, so it is normaly used a
 <leaflet center="center"></leaflet>
 ```
 
-It will map an object _center_ of our controller scope with the corresponding object on our directive isolated scope. It's a bidirectional relationship, so a change in this object on the controller scope will affect the map center position, or an interaction on the map wich changes the map center will update our _center_ values. Let's define the center model with an example:
+It will map an object _center_ of our controller scope with the corresponding object on our directive isolated scope. It's a bidirectional relationship, so a change in this object on the controller scope will affect the map center position, or an interaction on the map which changes the map center will update our _center_ values. Let's define the center model with an example:
 
 ```
 $scope.center = {
