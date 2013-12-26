@@ -1,4 +1,4 @@
-'Bounds' Attribute Documentation
+'bounds' Attribute Documentation
 ==================================
 
 This sub-directive needs the **leaflet** main directive, so it is normaly used as an attribute of the *leaflet* tag, like this:
