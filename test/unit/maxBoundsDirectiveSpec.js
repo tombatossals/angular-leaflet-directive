@@ -27,12 +27,12 @@ describe('Directive: leaflet', function() {
             },
             maxBounds: {
                 southWest: {
-                    lat: 47.200,
-                    lng: 15.200
+                    lat: 52.14823737817847,
+                    lng: 20.793685913085934
                 },
                 northEast: {
-                    lat: 47.200,
-                    lng: 15.200
+                    lat: 52.31645452105213,
+                    lng: 21.233139038085938
                 }
             }
         });

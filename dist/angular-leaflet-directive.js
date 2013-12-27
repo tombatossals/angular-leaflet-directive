@@ -965,9 +965,11 @@ angular.module("leaflet-directive").directive('maxbounds', function ($log, leafl
 
             controller.getMap().then(function(map) {
                 leafletScope.$watch("maxBounds", function (maxBounds) {
+                    // Unset any previous maxbounds
+                    map.setMaxBounds();
+                    map.fire("zoomlevelschange");
+
                     if (!isValidBounds(maxBounds)) {
-                        // Unset any previous maxbounds
-                        map.setMaxBounds();
                         return;
                     }
                     map.setMaxBounds( [
@@ -1112,7 +1114,6 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function (leaf
 
             var mapDefaults = {
                 maxZoom: d.maxZoom,
-                minZoom: d.minZoom,
                 keyboard: d.keyboard,
                 dragging: d.dragging,
                 zoomControl: d.zoomControl,
@@ -1122,6 +1123,10 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function (leaf
                 worldCopyJump: d.worldCopyJump,
                 crs: d.crs
             };
+
+            if (isDefined(d.minZoom)) {
+                mapDefaults.minZoom = d.minZoom;
+            }
 
             if (isDefined(d.zoomAnimation)) {
                 mapDefaults.zoomAnimation = d.zoomAnimation;

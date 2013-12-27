@@ -12,9 +12,11 @@ angular.module("leaflet-directive").directive('maxbounds', function ($log, leafl
 
             controller.getMap().then(function(map) {
                 leafletScope.$watch("maxBounds", function (maxBounds) {
+                    // Unset any previous maxbounds
+                    map.setMaxBounds();
+                    map.fire("zoomlevelschange");
+
                     if (!isValidBounds(maxBounds)) {
-                        // Unset any previous maxbounds
-                        map.setMaxBounds();
                         return;
                     }
                     map.setMaxBounds( [
