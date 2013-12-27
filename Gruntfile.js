@@ -76,21 +76,13 @@ module.exports = function(grunt) {
 
         protractor: {
             options: {
-                keepAlive: true,
+                keepAlive: false,
                 configFile: "test/protractor.conf.js"
             },
             singlerun: {},
             saucelabs: {
                 options: {
                     args: saucelabsConfig
-                }
-            },
-            auto: {
-                keepAlive: true,
-                options: {
-                    args: {
-                        seleniumPort: 4444
-                    }
                 }
             }
         },
@@ -179,11 +171,6 @@ module.exports = function(grunt) {
                 autoWatch: false,
                 singleRun: true
             },
-            unit_auto: {
-                configFile: 'test/karma-unit.conf.js',
-                autoWatch: true,
-                singleRun: false
-            },
             unit_coverage: {
                 configFile: 'test/karma-unit.conf.js',
                 autoWatch: false,
@@ -214,10 +201,6 @@ module.exports = function(grunt) {
                     'test:unit',
                     'concat:license'
                 ]
-            },
-            protractor: {
-                files: ['src/**/*.js','test/e2e/**/*.js'],
-                tasks: ['protractor:auto']
             }
         },
 
@@ -282,11 +265,6 @@ module.exports = function(grunt) {
     grunt.registerTask('test', ['jshint','test:unit', 'test:e2e']);
     grunt.registerTask('test:unit', ['karma:unit']);
     grunt.registerTask('test:e2e', ['shell:protractor_update', 'connect:testserver', 'protractor:singlerun']);
-
-    //autotest and watch tests
-    grunt.registerTask('autotest', ['karma:unit_auto']);
-    grunt.registerTask('autotest:unit', ['karma:unit_auto']);
-    grunt.registerTask('autotest:e2e', ['connect:testserver', 'shell:selenium', 'watch:protractor']);
 
     //coverage testing
     grunt.registerTask('test:coverage', ['karma:unit_coverage']);
