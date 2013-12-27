@@ -35,11 +35,6 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($q, leafl
                 genDispatchMapEvent = leafletEvents.genDispatchMapEvent,
                 mapEvents = leafletEvents.getAvailableMapEvents();
 
-            // If we are going to set maxbounds, undefine the minZoom property
-            if (isDefined(scope.maxbounds)) {
-                defaults.minZoom = undefined;
-            }
-
             // Set width and height if they are defined
             if (isDefined(attrs.width)) {
                 if (isNaN(attrs.width)) {

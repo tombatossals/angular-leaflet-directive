@@ -20,11 +20,8 @@ describe('Directive: leaflet', function() {
         $rootScope.$apply();
     }));
 
-    it('should unset the minzoom if maxbounds specified', function() {
+    it('should change the center if maxbounds specified', function() {
         angular.extend($rootScope, {
-            defaults: {
-                minZoom: 4,
-            },
             maxbounds: {
                 southWest: {
                     lat: 52.14823737817847,
@@ -34,6 +31,9 @@ describe('Directive: leaflet', function() {
                     lat: 52.31645452105213,
                     lng: 21.233139038085938
                 }
+            },
+            defaults: {
+                zoomAnimation: false
             }
         });
         var element = angular.element('<leaflet defaults="defaults" maxbounds="maxbounds"></leaflet>');
@@ -43,7 +43,8 @@ describe('Directive: leaflet', function() {
             leafletMap = map;
         });
         $rootScope.$digest();
-        expect(leafletMap.getMinZoom()).toEqual(0);
+        expect(leafletMap.getCenter().lat).toBe(52.23242563023071);
+        expect(leafletMap.getCenter().lng).toBe(21.013412475585938);
     });
 
 });

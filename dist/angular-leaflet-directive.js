@@ -39,11 +39,6 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($q, leafl
                 genDispatchMapEvent = leafletEvents.genDispatchMapEvent,
                 mapEvents = leafletEvents.getAvailableMapEvents();
 
-            // If we are going to set maxbounds, undefine the minZoom property
-            if (isDefined(scope.maxbounds)) {
-                defaults.minZoom = undefined;
-            }
-
             // Set width and height if they are defined
             if (isDefined(attrs.width)) {
                 if (isNaN(attrs.width)) {
@@ -965,17 +960,18 @@ angular.module("leaflet-directive").directive('maxbounds', function ($log, leafl
 
             controller.getMap().then(function(map) {
                 leafletScope.$watch("maxbounds", function (maxbounds) {
-                    // Unset any previous maxbounds
-                    map.setMaxBounds();
-                    map.fire("zoomlevelschange");
-
                     if (!isValidBounds(maxbounds)) {
+                        // Unset any previous maxbounds
+                        map.setMaxBounds();
                         return;
                     }
-                    map.setMaxBounds( [
+                    var bounds = [
                         [ maxbounds.southWest.lat, maxbounds.southWest.lng ],
                         [ maxbounds.northEast.lat, maxbounds.northEast.lng ]
-                    ]);
+                    ];
+
+                    map.setMaxBounds(bounds);
+                    map.fitBounds(bounds);
                 });
             });
         }
