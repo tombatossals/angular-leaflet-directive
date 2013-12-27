@@ -1,4 +1,4 @@
-app.controller("MaxBoundsController", [ '$scope', function($scope) {
+app.controller("MaxboundsController", [ '$scope', function($scope) {
 
     var regions = {
         london: {

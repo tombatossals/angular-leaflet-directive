@@ -18,7 +18,7 @@ app.controller("MenuController", [ '$scope', '$location', function($scope, $loca
             description: 'Bounds'
         },
         {
-            key: 'maxBounds',
+            key: 'maxbounds',
             description: 'Max Bounds'
         },
         {

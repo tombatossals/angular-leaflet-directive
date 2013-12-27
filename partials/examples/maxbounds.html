@@ -1,27 +1,27 @@
-<div class="col-md-10" ng-controller="MaxBoundsController">
+<div class="col-md-10" ng-controller="MaxboundsController">
     <button class="btn btn-primary padright" ng-click="setRegion('london')">London Region</button>
     <button class="btn btn-primary padright" ng-click="setRegion('lisbon')">Lisbon Region</button>
     <button class="btn btn-primary padright" ng-click="setRegion('warszawa')">Warszawa Region</button>
-    <button class="btn btn-primary padright" ng-click="setRegion('')">Unset maxBounds</button>
+    <button class="btn btn-primary padright" ng-click="setRegion('')">Unset maxbounds</button>
 
-    <leaflet maxBounds="maxBounds" defaults="defaults"></leaflet>
+    <leaflet maxbounds="maxbounds" defaults="defaults"></leaflet>
     <h2>Max Bounds example</h2>
-    <p>We can limit the panning/zoom of the map into a region defined on the maxBounds coordinates, forcing the map to stay on the specified portion of map and not allowing going out of there.</p>
+    <p>We can limit the panning/zoom of the map into a region defined on the maxbounds coordinates, forcing the map to stay on the specified portion of map and not allowing going out of there.</p>
     <ul class="nav nav-tabs">
         <li class="active"><a href="" ng-click="activeTab='html'" data-toggle="tab">HTML code</a></li>
         <li><a href="" ng-click="activeTab='javascript'" data-toggle="tab">Javascript Angular controller</a></li>
     </ul>
     <div class="tab-container" ng-switch on="activeTab">
         <div hljs ng-switch-default>
-<div ng-controller="MaxBoundsController">
+<div ng-controller="MaxboundsController">
      <button class="btn btn-primary padright" ng-click="setRegion('london')">London Region</button>
      <button class="btn btn-primary padright" ng-click="setRegion('lisbon')">Lisbon Region</button>
      <button class="btn btn-primary padright" ng-click="setRegion('warszawa')">Warszawa Region</button>
-     <button class="btn btn-primary padright" ng-click="setRegion('')">Unset maxBounds</button>
+     <button class="btn btn-primary padright" ng-click="setRegion('')">Unset maxbounds</button>
 
-     <leaflet maxBounds="maxBounds" defaults="defaults"></leaflet>
+     <leaflet maxbounds="maxbounds" defaults="defaults"></leaflet>
 </div></div>
-        <div hljs ng-switch-when="javascript" include="'src/controllers/MaxBoundsController.js'"></div>
+        <div hljs ng-switch-when="javascript" include="'src/controllers/MaxboundsController.js'"></div>
     </div>
     <p>You can see a standalone example of this code <a href="examples/maxbounds-example.html">here</a>.</p>
 </div>

@@ -340,7 +340,7 @@ app.controller("MarkerController", [ '$scope', function($scope) {
     });
 }]);
 
-app.controller("MaxBoundsController", [ '$scope', function($scope) {
+app.controller("MaxboundsController", [ '$scope', function($scope) {
 
     var regions = {
         london: {
@@ -377,14 +377,14 @@ app.controller("MaxBoundsController", [ '$scope', function($scope) {
 
     $scope.setRegion = function(region) {
         if (!region) {
-            $scope.maxBounds = {};
+            $scope.maxbounds = {};
         } else {
-            $scope.maxBounds = regions[region];
+            $scope.maxbounds = regions[region];
         }
     };
 
     angular.extend($scope, {
-        maxBounds: regions.london,
+        maxbounds: regions.london,
         defaults: {
             scrollWheelZoom: false
         }
@@ -411,7 +411,7 @@ app.controller("MenuController", [ '$scope', '$location', function($scope, $loca
             description: 'Bounds'
         },
         {
-            key: 'maxBounds',
+            key: 'maxbounds',
             description: 'Max Bounds'
         },
         {
