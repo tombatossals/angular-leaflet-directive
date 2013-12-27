@@ -13,11 +13,11 @@ It will map an object _maxbounds_ of our controller scope with the corresponding
 $scope.maxbounds = {
     southWest: {
         lat:51.508742458803326,
-        lng: -0.087890625,
+        lng: -0.087890625
     },
     northEast: {
         lat:51.508742458803326,
-       lng:-0.087890625,
+       lng:-0.087890625
     }
 
 }
