@@ -415,6 +415,14 @@ app.controller("MenuController", [ '$scope', '$location', function($scope, $loca
             description: 'Max Bounds'
         },
         {
+            key: 'tiles',
+            description: 'Tiles'
+        },
+        {
+            key: 'tiles-zoom-changer',
+            description: 'Tiles Zoom Changer'
+        },
+        {
             key: 'events',
             description: 'Events'
         },
@@ -572,6 +580,61 @@ app.controller("SimpleMapController", [ '$scope', function($scope) {
         defaults: {
             scrollWheelZoom: false
         }
+    });
+}]);
+
+app.controller("TilesController", [ '$scope', function($scope) {
+
+    var tilesDict = {
+        openstreetmap: {
+            url: "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            options: {
+                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }
+        },
+        opencyclemap: {
+            url: "http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png",
+            options: {
+                attribution: 'All maps &copy; <a href="http://www.opencyclemap.org">OpenCycleMap</a>, map data &copy; <a href="http://www.openstreetmap.org">OpenStreetMap</a> (<a href="http://www.openstreetmap.org/copyright">ODbL</a>'
+            }
+        }
+    };
+
+    angular.extend($scope, {
+        sidney: {
+            lat: -33.8830,
+            lng: 151.2166,
+            zoom: 10
+        },
+        tiles: tilesDict.opencyclemap,
+        defaults: {
+            scrollWheelZoom: false
+        }
+    });
+
+    $scope.changeTiles = function(tiles) {
+        $scope.tiles = tilesDict[tiles];
+    };
+} ]);
+
+app.controller("TilesZoomChangerController", [ '$scope', function($scope) {
+    angular.extend($scope, {
+        cairo: {
+            lat: 30.05,
+            lng: 31.25,
+            zoom: 10
+        },
+        tiles: {
+            url: "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        },
+        defaults: {
+            scrollWheelZoom: false
+        }
+    });
+
+    $scope.$watch("cairo.zoom", function(zoom) {
+        $scope.tiles.url = (zoom > 12) ? "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                : "http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
     });
 }]);
 

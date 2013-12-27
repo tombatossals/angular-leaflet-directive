@@ -22,6 +22,14 @@ app.controller("MenuController", [ '$scope', '$location', function($scope, $loca
             description: 'Max Bounds'
         },
         {
+            key: 'tiles',
+            description: 'Tiles'
+        },
+        {
+            key: 'tiles-zoom-changer',
+            description: 'Tiles Zoom Changer'
+        },
+        {
             key: 'events',
             description: 'Events'
         },

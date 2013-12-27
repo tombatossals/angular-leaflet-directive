@@ -1,0 +1,21 @@
+<div class="col-md-10" ng-controller="TilesZoomChangerController">
+    <leaflet center="cairo" tiles="tiles" defaults="defaults"></leaflet>
+    <p>Current TileLayer Url: {{ tiles.url }}</p>
+    <p>Current Zoom Level: {{ cairo.zoom }}</p>
+    <h2>Tiles Zoom Changer example</h2>
+    <p>With the ability of changing the tiles easily we could, for example, change the tiles when the zoom reaches a value. Zoom in some times on this map to see this effect in action.</p>
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="" ng-click="activeTab='html'" data-toggle="tab">HTML code</a></li>
+        <li><a href="" ng-click="activeTab='javascript'" data-toggle="tab">Javascript Angular controller</a></li>
+    </ul>
+    <div class="tab-container" ng-switch on="activeTab">
+        <div hljs ng-switch-default>
+<div ng-controller="TilesZoomChangerController">
+    <leaflet center="cairo" tiles="tiles" defaults="defaults"></leaflet>
+    <p>Current TileLayer Url: {{ tiles.url }}</p>
+    <p>Current Zoom Level: {{ cairo.zoom }}</p>
+</div></div>
+        <div hljs ng-switch-when="javascript" include="'src/controllers/TilesZoomChangerController.js'"></div>
+    </div>
+    <p>You can see a standalone example of this code <a href="examples/tiles-zoom-changer-example.html">here</a>.</p>
+</div>
