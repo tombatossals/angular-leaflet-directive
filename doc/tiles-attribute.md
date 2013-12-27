@@ -19,7 +19,7 @@ $scope.tiles = {
 }
 ```
 
-The options passed to this object are the same passed to the leaflet tile object, documented [here](http://leafletjs.com/reference.html#tilelayer-options).
+The options passed to this object could have a lot of attributes, and are the same passed to the leaflet tile object, documented [here](http://leafletjs.com/reference.html#tilelayer-options).
 
 
 And that's all, we can see how the map is affected when we change the _tiles_ scope object values, like these examples:
