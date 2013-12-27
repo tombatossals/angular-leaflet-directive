@@ -69,5 +69,6 @@
     </form>
 
     <leaflet maxBounds="maxBounds" defaults="defaults"></leaflet>
+    <p ng-show="maxBounds.northEast" class="result">Maxbounds: NE(lat: {{ maxBounds.northEast.lat }}, lng: {{ maxBounds.northEast.lng }}) SW(lat: {{ maxBounds.southWest.lat }}, lng: {{ maxBounds.southWest.lng }})</p>
   </body>
 </html>

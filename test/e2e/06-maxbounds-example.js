@@ -1,6 +1,6 @@
 'use strict';
 
-describe('Loading bounds-example.html', function() {
+describe('Loading maxbounds-example.html', function() {
 
     var ptor, driver;
     beforeEach(function() {
@@ -9,23 +9,31 @@ describe('Loading bounds-example.html', function() {
         driver = ptor.driver;
     });
 
-    it('should update the bounds values in the input if clicked the zoom control', function() {
+    it('should update the maxbounds values if clicked the buttons', function() {
         ptor.wait(function() {
             return ptor.isElementPresent(by.css('img.leaflet-tile-loaded'));
         });
 
-        expect(element(by.model("bounds.southWest.lat")).getAttribute("value")).toBe("51.508074696286876");
-        expect(element(by.model("bounds.southWest.lng")).getAttribute("value")).toBe("-0.08960723876953125");
-        expect(element(by.model("bounds.northEast.lat")).getAttribute("value")).toBe("51.509410211532874");
-        expect(element(by.model("bounds.northEast.lng")).getAttribute("value")).toBe("-0.08617401123046874");
-
-        element(by.xpath('.//*[@title="Zoom out"]')).click().then(function() {
-            ptor.sleep(400);
-            expect(element(by.model("bounds.southWest.lat")).getAttribute("value")).toBe("51.507406923983446");
-            expect(element(by.model("bounds.southWest.lng")).getAttribute("value")).toBe("-0.0913238525390625");
-            expect(element(by.model("bounds.northEast.lat")).getAttribute("value")).toBe("51.510077954475555");
-            expect(element(by.model("bounds.northEast.lng")).getAttribute("value")).toBe("-0.0844573974609375");
+        element(by.xpath('.//button[text()="London region"]')).click().then(function() {
+            expect(element(by.css("p.result")).getText()).toBe("Maxbounds: NE(lat: 51.51280224425956, lng: -0.11681556701660155) SW(lat: 51.50211782162702, lng: -0.14428138732910156)");
         });
 
+        element(by.xpath('.//button[text()="Lisbon region"]')).click().then(function() {
+            element(by.xpath('.//*[@title="Zoom out"]')).click().then(function() {
+                expect(element(by.css("p.result")).getText()).toBe("Maxbounds: NE(lat: 38.72703673982525, lng: -9.110498428344725) SW(lat: 38.700247900602726, lng: -9.165430068969727)");
+            });
+        });
+
+        element(by.xpath('.//button[text()="Warszawa region"]')).click().then(function() {
+            var zoomout = element(by.xpath('.//*[@title="Zoom out"]'));
+            zoomout.click();
+            zoomout.click();
+            zoomout.click().then(function() {
+                expect(element(by.css("p.result")).getText()).toBe("Maxbounds: NE(lat: 52.31645452105213, lng: 21.233139038085938) SW(lat: 52.14823737817847, lng: 20.793685913085934)");
+            });
+        });
+        element(by.xpath('.//button[text()="Unset maxbounds"]')).click().then(function() {
+            expect(element(by.css("p.result")).getText()).toBe("");
+        });
     });
 });
