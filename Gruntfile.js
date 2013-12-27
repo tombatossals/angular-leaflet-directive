@@ -33,6 +33,7 @@ module.exports = function(grunt) {
                     app: true,
                     angular: true,
                     module: true,
+                    console: true,
                     L: true,
                 }
             },
