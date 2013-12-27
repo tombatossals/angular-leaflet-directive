@@ -6,7 +6,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($q, leafl
         scope: {
             center: '=center',
             defaults: '=defaults',
-            maxBounds: '=maxbounds',
+            maxbounds: '=maxbounds',
             bounds: '=bounds',
             markers: '=markers',
             legend: '=legend',
@@ -35,8 +35,8 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($q, leafl
                 genDispatchMapEvent = leafletEvents.genDispatchMapEvent,
                 mapEvents = leafletEvents.getAvailableMapEvents();
 
-            // If we are going to set maxBounds, undefine the minZoom property
-            if (isDefined(scope.maxBounds)) {
+            // If we are going to set maxbounds, undefine the minZoom property
+            if (isDefined(scope.maxbounds)) {
                 defaults.minZoom = undefined;
             }
 

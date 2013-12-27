@@ -10,7 +10,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($q, leafl
         scope: {
             center: '=center',
             defaults: '=defaults',
-            maxBounds: '=maxbounds',
+            maxbounds: '=maxbounds',
             bounds: '=bounds',
             markers: '=markers',
             legend: '=legend',
@@ -39,8 +39,8 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($q, leafl
                 genDispatchMapEvent = leafletEvents.genDispatchMapEvent,
                 mapEvents = leafletEvents.getAvailableMapEvents();
 
-            // If we are going to set maxBounds, undefine the minZoom property
-            if (isDefined(scope.maxBounds)) {
+            // If we are going to set maxbounds, undefine the minZoom property
+            if (isDefined(scope.maxbounds)) {
                 defaults.minZoom = undefined;
             }
 
@@ -964,17 +964,17 @@ angular.module("leaflet-directive").directive('maxbounds', function ($log, leafl
 
 
             controller.getMap().then(function(map) {
-                leafletScope.$watch("maxBounds", function (maxBounds) {
+                leafletScope.$watch("maxbounds", function (maxbounds) {
                     // Unset any previous maxbounds
                     map.setMaxBounds();
                     map.fire("zoomlevelschange");
 
-                    if (!isValidBounds(maxBounds)) {
+                    if (!isValidBounds(maxbounds)) {
                         return;
                     }
                     map.setMaxBounds( [
-                        [ maxBounds.southWest.lat, maxBounds.southWest.lng ],
-                        [ maxBounds.northEast.lat, maxBounds.northEast.lng ]
+                        [ maxbounds.southWest.lat, maxbounds.southWest.lng ],
+                        [ maxbounds.northEast.lat, maxbounds.northEast.lng ]
                     ]);
                 });
             });

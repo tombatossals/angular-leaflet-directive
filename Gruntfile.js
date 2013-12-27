@@ -240,7 +240,7 @@ module.exports = function(grunt) {
                     'src/directives/paths.js',
                     'src/directives/controls.js',
                     'src/directives/eventBroadcast.js',
-                    'src/directives/maxBounds.js',
+                    'src/directives/maxbounds.js',
                     'src/services/leafletData.js',
                     'src/services/leafletMapDefaults.js',
                     'src/services/leafletEvents.js',

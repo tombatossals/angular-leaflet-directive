@@ -11,17 +11,17 @@ angular.module("leaflet-directive").directive('maxbounds', function ($log, leafl
 
 
             controller.getMap().then(function(map) {
-                leafletScope.$watch("maxBounds", function (maxBounds) {
+                leafletScope.$watch("maxbounds", function (maxbounds) {
                     // Unset any previous maxbounds
                     map.setMaxBounds();
                     map.fire("zoomlevelschange");
 
-                    if (!isValidBounds(maxBounds)) {
+                    if (!isValidBounds(maxbounds)) {
                         return;
                     }
                     map.setMaxBounds( [
-                        [ maxBounds.southWest.lat, maxBounds.southWest.lng ],
-                        [ maxBounds.northEast.lat, maxBounds.northEast.lng ]
+                        [ maxbounds.southWest.lat, maxbounds.southWest.lng ],
+                        [ maxbounds.northEast.lat, maxbounds.northEast.lng ]
                     ]);
                 });
             });

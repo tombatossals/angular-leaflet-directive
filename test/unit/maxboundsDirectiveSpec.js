@@ -25,7 +25,7 @@ describe('Directive: leaflet', function() {
             defaults: {
                 minZoom: 4,
             },
-            maxBounds: {
+            maxbounds: {
                 southWest: {
                     lat: 52.14823737817847,
                     lng: 20.793685913085934
@@ -36,7 +36,7 @@ describe('Directive: leaflet', function() {
                 }
             }
         });
-        var element = angular.element('<leaflet defaults="defaults" maxBounds="maxBounds"></leaflet>');
+        var element = angular.element('<leaflet defaults="defaults" maxbounds="maxbounds"></leaflet>');
         element = $compile(element)($rootScope);
         var leafletMap;
         leafletData.getMap().then(function(map) {
