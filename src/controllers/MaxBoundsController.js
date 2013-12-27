@@ -35,14 +35,14 @@ app.controller("MaxBoundsController", [ '$scope', function($scope) {
 
     $scope.setRegion = function(region) {
         if (!region) {
-            $scope.maxBounds = {};
+            $scope.maxbounds = {};
         } else {
-            $scope.maxBounds = regions[region];
+            $scope.maxbounds = regions[region];
         }
     };
 
     angular.extend($scope, {
-        maxBounds: {},
+        maxbounds: regions.london,
         defaults: {
             scrollWheelZoom: false
         }

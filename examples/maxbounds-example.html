@@ -45,7 +45,7 @@
             };
 
             angular.extend($scope, {
-                maxBounds: {},
+                maxbounds: {},
                 defaults: {
                     minZoom: 4
                 }
@@ -62,13 +62,13 @@
   </head>
   <body ng-controller="DemoController">
     <form>
-        <button ng-click="maxBounds=regions.london">London region</button>
-        <button ng-click="maxBounds=regions.lisbon">Lisbon region</button>
-        <button ng-click="maxBounds=regions.warszawa">Warszawa region</button>
-        <button ng-click="maxBounds={}">Unset maxbounds</button>
+        <button ng-click="maxbounds=regions.london">London region</button>
+        <button ng-click="maxbounds=regions.lisbon">Lisbon region</button>
+        <button ng-click="maxbounds=regions.warszawa">Warszawa region</button>
+        <button ng-click="maxbounds={}">Unset maxbounds</button>
     </form>
 
-    <leaflet maxBounds="maxBounds" defaults="defaults"></leaflet>
-    <p ng-show="maxBounds.northEast" class="result">Maxbounds: NE(lat: {{ maxBounds.northEast.lat }}, lng: {{ maxBounds.northEast.lng }}) SW(lat: {{ maxBounds.southWest.lat }}, lng: {{ maxBounds.southWest.lng }})</p>
+    <leaflet maxbounds="maxbounds" defaults="defaults"></leaflet>
+    <p ng-show="maxbounds.northEast" class="result">Maxbounds: NE(lat: {{ maxbounds.northEast.lat }}, lng: {{ maxbounds.northEast.lng }}) SW(lat: {{ maxbounds.southWest.lat }}, lng: {{ maxbounds.southWest.lng }})</p>
   </body>
 </html>

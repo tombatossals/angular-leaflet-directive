@@ -384,7 +384,7 @@ app.controller("MaxBoundsController", [ '$scope', function($scope) {
     };
 
     angular.extend($scope, {
-        maxBounds: {},
+        maxBounds: regions.london,
         defaults: {
             scrollWheelZoom: false
         }
