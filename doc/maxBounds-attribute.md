@@ -1,16 +1,16 @@
-'bounds' Attribute Documentation
-==================================
+'maxBounds' Attribute Documentation
+===================================
 
 This sub-directive needs the **leaflet** main directive, so it is normaly used as an attribute of the *leaflet* tag, like this:
 
 ```
-<leaflet bounds="bounds"></leaflet>
+<leaflet maxBounds="maxBounds"></leaflet>
 ```
 
-It will map an object _bounds_ of our controller scope with the corresponding object on our leaflet directive isolated scope. It's a bidirectional relationship, so a change in this object on the controller scope object will affect the map bounds, or an interaction on the map which changes the map position will update our _bounds_ values. Let's define the bounds model with an example:
+It will map an object _maxBounds_ of our controller scope with the corresponding object on our leaflet directive isolated scope. It's not a bidirectional relationship, only the changes made to our _maxBounds_ object on the controller scope will affect the map, but no viceversa.
 
 ```
-$scope.bounds = {
+$scope.maxBounds = {
     southWest: {
         lat:51.508742458803326,
         lng: -0.087890625,
@@ -27,14 +27,14 @@ Defining the bounds is a little complex, so we have a helper which will allow us
 
 ```
 app.controller("DemoController", [ "$scope", "leafletBoundsHelpers", function($scope, leafletBoundsHelpers) {
-    var bounds = leafletBoundsHelpers.createBoundsFromArray([
+    var maxBounds = leafletBoundsHelpers.createBoundsFromArray([
          [ 51.508742458803326, -0.087890625 ],
          [ 51.508742458803326, -0.087890625 ]
     ]);
     angular.extend($scope, {
-        bounds: bounds
+        maxBounds: maxBounds
     });
 });
 ```
 
-And that's all, we can see how the _$scope.bounds_ object is updated when we are interacting with the map, like [this example](http://tombatossals.github.io/angular-leaflet-directive/examples/bounds-example.html).
+And that's all, we can see how the map is affected when we change the _maxBounds_ scope values, like [this example](http://tombatossals.github.io/angular-leaflet-directive/examples/maxbounds-example.html).
