@@ -283,5 +283,5 @@ module.exports = function(grunt) {
     grunt.registerTask('serve', ['connect:webserver']);
 
     //travis
-    grunt.registerTask('travis', 'bower:install', 'test:unit');
+    grunt.registerTask('travis', ['bower:install', 'test:unit', 'test:e2e']);
 };
