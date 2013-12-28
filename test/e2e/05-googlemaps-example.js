@@ -5,7 +5,7 @@ describe('Loading googlemaps-example.html', function() {
     var ptor, driver;
     beforeEach(function() {
         ptor = protractor.getInstance();
-        browser.get('/examples/googlemaps-example.html');
+        browser.get('googlemaps-example.html');
         driver = ptor.driver;
     });
 

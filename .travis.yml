@@ -1,6 +1,11 @@
 language: node_js
 node_js:
   - "0.10"
+env:
+    global:
+        - secure: "Ugov4QqHxEN4976jaQvtQigwwB7wiG0vxiE4pIDiZKJ67py0d0kLZXI4CzNs8zV5EOrkR+ug2cs9vTmA8CdSmhQcx4SVwFoim/ReoQb9AK76+tgEso+F3nZpE1jeIorKN2/LAXtwkHOZa9WaDwhMlCULJxJ8DZoMsXkc5Xq3c6A="
+        - secure: "QW7a9wCfc4u+MGnPyLzE+HHRhAhTf0a1mqixoUB2MVNL/hZ7+nXAOL/oz3LxodPpwH3NEl4RyqteGS15XpJvZKuKXiyHWbrfSLHz7DD1LYuIzc7UOgyBTXF0C97DP5ae7zui+qvDOe67ud+qBerroP9jdcx+mSVQgMIAfF1uWY4="
+
 before_script:
   - npm install -g grunt-cli
   - npm install -g bower

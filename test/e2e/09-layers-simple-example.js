@@ -5,7 +5,7 @@ describe('Loading layers-simple-example.html', function() {
     var ptor, driver;
     beforeEach(function() {
         ptor = protractor.getInstance();
-        browser.get('/examples/layers-simple-example.html');
+        browser.get('layers-simple-example.html');
         driver = ptor.driver;
     });
 
