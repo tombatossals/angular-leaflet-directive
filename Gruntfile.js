@@ -1,9 +1,8 @@
 module.exports = function(grunt) {
 
     require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
-
-    var fs = require('fs'),
-        saucelabsConfig = fs.existsSync('saucelabs.json') && grunt.file.readJSON('saucelabs.json');
+    var sauceUser = process.env.SAUCE_USERNAME,
+        sauceKey = process.env.SAUCE_ACCESS_KEY;
 
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
@@ -82,7 +81,11 @@ module.exports = function(grunt) {
             singlerun: {},
             saucelabs: {
                 options: {
-                    args: saucelabsConfig
+                    args: {
+                        baseUrl: "http://tombatossals.github.io/angular-leaflet-directive/examples/",
+                        sauceUser: sauceUser,
+                        sauceKey: sauceKey
+                    }
                 }
             }
         },
