@@ -90,3 +90,5 @@ We have much more possibilities than showing a simple map, but this will need th
 * [_center_ attribute](https://github.com/tombatossals/angular-leaflet-directive/blob/master/doc/center-attribute.md)
 * [_bounds_ attribute](https://github.com/tombatossals/angular-leaflet-directive/blob/master/doc/bounds-attribute.md)
 * [_maxbounds_ attribute](https://github.com/tombatossals/angular-leaflet-directive/blob/master/doc/maxbounds-attribute.md)
+* [_tiles_ attribute](https://github.com/tombatossals/angular-leaflet-directive/blob/master/doc/tiles-attribute.md)
+* [_layers_ attribute](https://github.com/tombatossals/angular-leaflet-directive/blob/master/doc/layers-attribute.md)
