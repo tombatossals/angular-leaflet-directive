@@ -286,5 +286,5 @@ module.exports = function(grunt) {
     grunt.registerTask('serve', ['connect:webserver']);
 
     //travis
-    grunt.registerTask('travis', ['bower:install', 'test:unit', 'protractor:saucelabs']);
+    grunt.registerTask('travis', ['bower:install', 'test:unit', 'shell:protractor_update', 'protractor:saucelabs']);
 };
