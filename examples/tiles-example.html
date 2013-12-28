@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html ng-app="demoapp">
+  <head>
+    <script src="http://cdn.leafletjs.com/leaflet-0.7.1/leaflet.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.6/angular.min.js"></script>
+    <script src="../dist/angular-leaflet-directive.min.js"></script>
+
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.1/leaflet.css" />
+    <script>
+        angular.module("demoapp", ["leaflet-directive"]);
+        function DemoController($scope) {
+            var tilesDict = {
+                openstreetmap: {
+                    url: "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                    options: {
+                        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    }
+                },
+                opencyclemap: {
+                    url: "http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png",
+                    options: {
+                        attribution: 'All maps &copy; <a href="http://www.opencyclemap.org">OpenCycleMap</a>, map data &copy; <a href="http://www.openstreetmap.org">OpenStreetMap</a> (<a href="http://www.openstreetmap.org/copyright">ODbL</a>'
+                    }
+                }
+            };
+
+            angular.extend($scope, {
+                london: {
+                    lat: 51.505,
+                    lng: -0.09,
+                    zoom: 8
+                },
+                tiles: tilesDict.opencyclemap
+            });
+
+            $scope.changeTiles = function(tiles) {
+                $scope.tiles = tilesDict[tiles];
+            };
+        };
+    </script>
+    <style>
+        .angular-leaflet-map {
+            width: 640px;
+            height: 400px;
+        }
+    </style>
+  </head>
+  <body>
+  <div class="container">
+      <div ng-controller="DemoController">
+
+          <div class="row">
+              <h2>This is a map that can change tiles by demand</h2>
+          </div>
+
+          <div class="row">
+              <p>
+              <button ng-click="changeTiles('opencyclemap')" class="btn btn-default">OpenCycleMaps</button>
+              <button ng-click="changeTiles('openstreetmap')" class="btn btn-default">OpenStreetMaps</button>
+              </p>
+          </div>
+
+          <div class="row">
+              <p>Current TileLayer Url: {{ tiles.url }}</p>
+          </div>
+
+          <div class="row">
+            <leaflet center="london" tiles="tiles" defaults="defaults"></leaflet>
+          </div>
+      </div>
+  </div>
+
+  </body>
+</html>

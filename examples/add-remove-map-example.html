@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html ng-app="demoApp">
+  <head>
+    <script src="http://cdn.leafletjs.com/leaflet-0.7/leaflet.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.2/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.2/angular-route.min.js"></script>
+    <script src="../dist/angular-leaflet-directive.min.js"></script>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7/leaflet.css" />
+    <style>
+        .angular-leaflet-map {
+            width: 480px;
+            height: 360px;
+        }
+    </style>
+    <script>
+        var myApp = angular.module('demoApp',['ngRoute', 'leaflet-directive'])
+        .config(function ($routeProvider) {
+            $routeProvider
+                .when('/', {
+                    template: '<a href="#/map">Go to Map</a>'
+                })
+                .when('/map', {
+                    template: '<button type="button" ng-click="makeFit()">Make Fit!</button><a href="#/">Go Back!</a><leaflet></leaflet>',
+                    controller: 'MapCtrl'
+                })
+            });
+
+        function MapCtrl($scope, leafletData) {
+           $scope.makeFit = function() {
+            leafletData.getMap().then(function(map) {
+                map.fitBounds([
+                     [48.7120066603552, 9.04994057067812],
+                     [48.6120066603552, 9.14994057067812]]);
+            });
+          };
+        }
+        </script>
+  </head>
+  <body ng-controller="MapCtrl">
+    <ng-view></ng-view>
+  </body>
+</html>
