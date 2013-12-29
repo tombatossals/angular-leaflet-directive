@@ -30,8 +30,16 @@ app.controller("MenuController", [ '$scope', '$location', function($scope, $loca
             description: 'Tiles Zoom Changer'
         },
         {
-            key: 'events',
-            description: 'Events'
+            key: 'layers-simple',
+            description: 'Layers Simple'
+        },
+        {
+            key: 'overlays-simple',
+            description: 'Overlays Simple'
+        },
+        {
+            key: 'google-maps',
+            description: 'Google Maps'
         },
         {
             key: 'marker',
@@ -58,8 +66,8 @@ app.controller("MenuController", [ '$scope', '$location', function($scope, $loca
             description: 'Customized markers'
         },
         {
-            key: 'google-maps',
-            description: 'Google Maps'
+            key: 'events',
+            description: 'Events'
         },
     ];
 }]);
