@@ -3,6 +3,8 @@
   "dependencies": {
     "angular": "1.2.x",
     "jquery": "2.0.x",
+    "highlightjs": "7.3.x",
+    "angular-highlightjs": "0.1.x",
     "bootstrap": "3.0.x",
     "angular-route": "1.2.x",
     "angular-animate": "1.2.x",
