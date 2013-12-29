@@ -1,3 +1,38 @@
+<a name="v0.7.2"></a>
+### v0.7.2 (2013-12-29)
+
+
+#### Bug Fixes
+
+* **build:**
+  * When a baselayer + overlay was added the layer switch control was not shown. ([20ca399c](https://github.com/tombatossals/angular-leaflet-directive/commit/20ca399c9e4fab41d1d8e73db63610e0c9504bc1))
+  * Solved some performance and functional issues with the "bounds" attribute. ([901259a8](https://github.com/tombatossals/angular-leaflet-directive/commit/901259a8fd93e15b6cf6450fa704b160fc9113d2))
+* **features:** Reworked 'maxBounds' attribute with new maxbounds-example.html ([e60a1528](https://github.com/tombatossals/angular-leaflet-directive/commit/e60a1528616405015f98392f94c3bc2c96e557f8))
+* **tests:** Fixed the waiting times on the protractor e2e test googlemaps-example.html ([4e67f35e](https://github.com/tombatossals/angular-leaflet-directive/commit/4e67f35ef9e72de3e0e7d05d62099714b905b1d8))
+
+
+#### Features
+
+* **build:**
+  * 'maxbounds' updated to work with leaflet 0.7.1 ([fe575010](https://github.com/tombatossals/angular-leaflet-directive/commit/fe57501046b9e4edfffa0897d7566b1c54cf6765))
+  * 'maxBounds' attribute renamed as 'maxbounds'. ([b2f541c3](https://github.com/tombatossals/angular-leaflet-directive/commit/b2f541c38b017f28f171b914ab96fcdf5b3be40f))
+  * Updated grunt-protractor-runner and protractor configuration to version 0.15.0 ([ea836c3a](https://github.com/tombatossals/angular-leaflet-directive/commit/ea836c3a27aab60a2d8feab0dd84de42bb337a0d))
+  * Added a new createBoundsFromArray helper, proposed by @lukasz-zak here: https:// ([0adacda1](https://github.com/tombatossals/angular-leaflet-directive/commit/0adacda1173113e514db2ecd5d20128ec42caacd))
+  * Added a new service of bounds helpers: leafletBoundsHelpers ([eac699aa](https://github.com/tombatossals/angular-leaflet-directive/commit/eac699aae039b82e0dec8da80b0b53b9ba1f7256))
+* **documentation:**
+  * Added the 'layers' documentation section. ([bf783e8a](https://github.com/tombatossals/angular-leaflet-directive/commit/bf783e8a18a23c89c6eeda1737097acd0388f88a))
+  * Added the layers attribute documentation ([d26b01a1](https://github.com/tombatossals/angular-leaflet-directive/commit/d26b01a15cb0f8fdd4265a2c7749d33d07ffd56a))
+* **examples:**
+  * Added a new example: layers-imageoverlay-example.html ([ebfd4b6a](https://github.com/tombatossals/angular-leaflet-directive/commit/ebfd4b6a687656b0b6ca2ed0b5a6ef94b6db1d59))
+  * Added a new overlays-simple-example.html ([55a24a2e](https://github.com/tombatossals/angular-leaflet-directive/commit/55a24a2e41b4842e0c58775ccc18e75268f70978))
+  * Added the tiles-zoom-changer example by @yagoferrer as an standalone example. ([8abe8b4e](https://github.com/tombatossals/angular-leaflet-directive/commit/8abe8b4e3ed5c1284244742063ebfceab2ce6467))
+* **test:**
+  * Added a test for overlay-simple-example.html ([61342200](https://github.com/tombatossals/angular-leaflet-directive/commit/6134220022a8416a384f94c50395e5a447297eda))
+  * Added the SauceLabs selenium testing to the travis build CI ([51d51544](https://github.com/tombatossals/angular-leaflet-directive/commit/51d51544b3d7760c790515b2f6343c736c8e9df4))
+  * Added a new e2e test for layers-simple-example.html ([85ac00fc](https://github.com/tombatossals/angular-leaflet-directive/commit/85ac00fc015a22130b0490a04ee32d106e4936db))
+  * Added a new test for the maxbounds-example.html ([ee45e410](https://github.com/tombatossals/angular-leaflet-directive/commit/ee45e410736b40a17e846918a3f8223fd870e098))
+* **tests:** Added a new e2e test for: layers-imageoverlay-example.html ([5eb20dc1](https://github.com/tombatossals/angular-leaflet-directive/commit/5eb20dc128c7c3866fce15475a277c5858ae3b05))
+
 <a name="v0.7.1"></a>
 ## v0.7.1 (2013-12-22)
 
