@@ -1,0 +1,17 @@
+<div class="col-md-10" ng-controller="OverlaysSimpleController">
+    <leaflet center="eeuu" layers="layers" defaults="defaults"></leaflet>
+    <h2>Overlays simple example</h2>
+    <p>We can define a baselayer and a list of overlays via the <strong>layers</strong> attribute, so the user will see a control to activate/deactivate the overlays on the top right corner, like in this example.</p>
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="" ng-click="activeTab='html'" data-toggle="tab">HTML code</a></li>
+        <li><a href="" ng-click="activeTab='javascript'" data-toggle="tab">Javascript Angular controller</a></li>
+    </ul>
+    <div class="tab-container" ng-switch on="activeTab">
+        <div hljs ng-switch-default>
+<div ng-controller="OverlaysSimpleController">
+    <leaflet center="eeuu" layers="layers" defaults="defaults"></leaflet>
+</div></div>
+        <div hljs ng-switch-when="javascript" include="'src/controllers/OverlaysSimpleController.js'"></div>
+    </div>
+    <p>You can see a standalone example of this code <a href="examples/overlays-simple-example.html">here</a>.</p>
+</div>
