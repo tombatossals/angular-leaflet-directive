@@ -28,11 +28,8 @@
             <li><a href="" ng-click="activeTab='css'" data-toggle="tab">CSS includes</a></li>
         </ul>
         <div class="tab-container" ng-switch on="activeTab">
-            <div hljs ng-switch-default>
-<script src="http://cdn.leafletjs.com/leaflet-0.7/leaflet.js"></script>
-<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.1/angular.min.js"></script>
-<script src="/js/angular-leaflet-directive.min.js"></script></div>
-            <div hljs ng-switch-when="css"><link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7/leaflet.css" /></div>
+            <div hljs ng-switch-default include="'javascript.inc'"></div>
+            <div hljs ng-switch-when="css" include="'css.inc'" /></div>
         </div>
         <br />
         <p>And that's all. Now you can start embedding maps to your application adding the custom tag <code>&lt;leaflet&gt;</code> with some attributes on your HTML code, and interacting with the <span class="label label-danger">scope</span> of your controller. Let's see how it works and how you can use it in the <a href="#!/examples/simple-map">examples page</a>, or take a look of what can be accomplished with it on the demos below.</p>

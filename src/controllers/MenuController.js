@@ -38,6 +38,10 @@ app.controller("MenuController", [ '$scope', '$location', function($scope, $loca
             description: 'Overlays Simple'
         },
         {
+            key: 'imageoverlay',
+            description: 'Image Overlay'
+        },
+        {
             key: 'google-maps',
             description: 'Google Maps'
         },
