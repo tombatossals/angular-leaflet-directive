@@ -14,6 +14,7 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
         },
         link: function(scope, element, attrs, controller) {
             var isDefined = leafletHelpers.isDefined,
+                isObject = leafletHelpers.isObject,
                 leafletLayers = {},
                 leafletScope  = controller.getLeafletScope(),
                 layers = leafletScope.layers,
@@ -58,8 +59,12 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                     leafletLayers.controls.layers.addBaseLayer(leafletLayers.baselayers[layerName], layers.baselayers[layerName].name);
                 }
 
-                // Only add the layers switch selector control if we have more than one baselayer
-                if (Object.keys(layers.baselayers).length > 1) {
+                // Only add the layers switch selector control if we have more than one baselayer + overlay
+                var numberOfLayers = Object.keys(layers.baselayers).length;
+                if (isObject(layers.overlays)) {
+                    numberOfLayers += Object.keys(layers.overlays).length;
+                }
+                if (numberOfLayers > 1) {
                     leafletLayers.controls.layers.addTo(map);
                 }
 
