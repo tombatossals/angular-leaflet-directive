@@ -2,10 +2,16 @@
   "name": "angular-leaflet-directive",
   "dependencies": {
     "angular": "1.2.x",
+    "jquery": "2.0.x",
+    "bootstrap": "3.0.x",
     "angular-route": "1.2.x",
     "angular-animate": "1.2.x",
     "angular-mocks": "1.2.x",
     "leaflet-dist": "0.7.x",
-    "leaflet.markerclusterer": "0.4"
+    "leaflet.markerclusterer": "0.4",
+    "leaflet.draw": "0.2.2",
+    "Leaflet.label": "0.2.1",
+    "Leaflet.awesome-markers": "*",
+    "leaflet-plugins": "1.0.0"
   }
 }
