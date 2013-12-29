@@ -1,0 +1,46 @@
+<html>
+<head>
+	<title>Leaflet</title>
+	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" />
+	<script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
+	<!--<script src="http://api-maps.yandex.ru/2.0/?load=package.map&lang=ru-RU" type="text/javascript"></script>-->
+	<script src="../layer/Layer.Deferred.js"></script>
+	<!--<script src="../layer/tile/Yandex.js"></script>-->
+</head>
+<body>
+	<div style="width:100%; height:100%" id="map"></div>
+<script type='text/javascript'>
+var map = new L.Map('map', {center: new L.LatLng(67.6755, 33.936), zoom: 10, zoomAnimation: false });
+var osm = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
+
+var layerdefs = {
+	mapnik: { name: "Mapnik", js: [],
+		init: function() {return new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');}},
+	kosmo: { name: "Космоснимки", js: [],
+		init: function() {return new L.TileLayer('http://{s}.tile.osmosnimki.ru/kosmo/{z}/{x}/{y}.png', {attribution:'Tiles Courtesy of <a href="http://kosmosnimki.ru/" target="_blank">kosmosnimki.ru</a>'});}},
+	gsat: { name: "Google", js: ["/leaflet-plugins/layer/tile/Google.js", "http://maps.google.com/maps/api/js?v=3.2&sensor=false&callback=L.Google.asyncInitialize"],
+		init: function() {return new L.Google(); }},
+	ysat: { name: "Yandex", js: ["/leaflet-plugins/layer/tile/Yandex.js", "http://api-maps.yandex.ru/2.0/?load=package.map&lang=ru-RU"],
+		init: function() {return new L.Yandex("satellite"); }},
+	nyak: { name: "НЯК", js: ["/leaflet-plugins/layer/tile/Yandex.js", "http://api-maps.yandex.ru/2.0/?load=package.map&lang=ru-RU"],
+		init: function() {return new L.Yandex("publicMap"); }},
+	traffic: { name: "Пробки", js: ["/leaflet-plugins/layer/tile/Yandex.js", "http://api-maps.yandex.ru/2.0/?load=package.map&lang=ru-RU"],
+		init: function() {return new L.Yandex("null", {traffic: true, opacity: 0.8, overlay: true}); }, overlay: true},
+	mso: { name: "Mapsurfer", js: [], overlay: true,
+		init: function() {return new L.TileLayer('http://129.206.74.245:8003/tms_h.ashx?x={x}&y={y}&z={z}');}},
+	bing: { name: "Bing", js: ["/leaflet-plugins/layer/tile/Bing.js"],
+		init: function() {return new L.BingLayer("Anqm0F_JjIZvT0P3abS6KONpaBaKuTnITRrnYuiJCE0WOhH6ZbE4DzeT6brvKVR5");}},
+};
+
+var yndx = new L.DeferredLayer(layerdefs.ysat);
+//var ytraffic = new L.Yandex("null", {traffic:true, opacity:0.8, overlay:true});
+var ytraffic = new L.DeferredLayer(layerdefs.traffic);
+
+map.addLayer(osm);
+//map.addLayer(ytraffic);
+map.addControl(new L.Control.Layers({'OSM':osm, "Yandex":yndx},
+				    {"Пробки":ytraffic}));
+</script>
+ 
+</body>
+</html>

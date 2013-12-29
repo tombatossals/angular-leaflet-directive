@@ -1,0 +1,19 @@
+{
+	"name": "leaflet.label",
+	"version": "0.2.1",
+	"description": "Labels for leaflet maps",
+	"devDependencies": {
+		"jshint": "~2.1.4",
+		"uglify-js": "~2.3.6"
+	},
+	"main": "dist/leaflet.label.js",
+	"scripts": {
+		"test": "jake test",
+		"prepublish": "jake"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/Leaflet/Leaflet.label.git"
+	},
+	"keywords": ["gis", "map"]
+}

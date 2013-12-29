@@ -1,0 +1,13 @@
+{
+  "name": "leaflet.markerclusterer",
+  "homepage": "https://github.com/Leaflet/Leaflet.markercluster",
+  "_release": "0.4",
+  "_resolution": {
+    "type": "tag",
+    "tag": "0.4",
+    "commit": "20cf8edd0dfc51ace1db1eee0cf34cf0533a2fb9"
+  },
+  "_source": "git://github.com/Leaflet/Leaflet.markercluster.git",
+  "_target": "0.4",
+  "_originalSource": "leaflet.markerclusterer"
+}

@@ -1,0 +1,14 @@
+{
+  "name": "leaflet.draw",
+  "homepage": "https://github.com/Leaflet/Leaflet.draw",
+  "version": "0.2.2",
+  "_release": "0.2.2",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.2.2",
+    "commit": "1a8294f1818ac0ef4aaa9c9606c30052bf3dfbca"
+  },
+  "_source": "git://github.com/Leaflet/Leaflet.draw.git",
+  "_target": "0.2.2",
+  "_originalSource": "leaflet.draw"
+}

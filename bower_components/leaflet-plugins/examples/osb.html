@@ -1,0 +1,24 @@
+<html>
+<!--
+  vim: sts=4 sw=4 et
+  -->
+<head>
+    <title>Leaflet</title>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" />
+    <link rel="stylesheet" href="../css/osb.css" />
+    <script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
+    <script src="../layer/OpenStreetBugs.js"></script>
+</head>
+</head>
+<body>
+    <div style="width:100%; height:100%" id="map"></div>
+    <script type="text/javascript">
+
+var map = new L.Map('map', {center: new L.LatLng(57.62, 39.89), zoom: 11});
+
+map.addLayer(new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'));
+map.addLayer(new L.OpenStreetBugs());
+
+</script>
+</body>
+</html>

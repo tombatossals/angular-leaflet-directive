@@ -1,0 +1,27 @@
+<html>
+<head>
+	<title>Leaflet</title>
+	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" />
+	<script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
+	<script src="../layer/Marker.Rotate.js"></script>
+</head>
+<body>
+	<div style="width:100%; height:100%" id="map"></div>
+<script type='text/javascript'>
+var map = new L.Map('map', {center: new L.LatLng(67.6755, 33.936), zoom: 10});
+map.addLayer(new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'));
+
+var marker = new L.Marker(map.getCenter(), {iconAngle: 90});
+map.addLayer(marker);
+
+var angle = 0;
+function _rotate() {
+	marker.setIconAngle(angle);
+	angle = (angle + 10) % 360;
+	setTimeout(_rotate, 1000);
+}
+_rotate();
+</script>
+ 
+</body>
+</html>

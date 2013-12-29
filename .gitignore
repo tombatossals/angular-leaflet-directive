@@ -10,7 +10,6 @@ js/angular-leaflet-directive-webpage.ngmin.js
 .idea
 .project
 node_modules
-bower_components
 coverage/*.json
 selenium
 saucelabs.json

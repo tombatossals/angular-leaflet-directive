@@ -1,0 +1,48 @@
+.leaflet-control-distance {
+	-moz-border-radius: 7px;
+	-webkit-border-radius: 7px;
+	border-radius: 7px;
+
+	padding: 5px;
+	background-color: rgba(0, 0, 0, 0.25);
+}
+
+.leaflet-control-distance a, .leaflet-control-distance div {
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	border-radius: 4px;
+
+	padding: 2px;
+	background-position: 50% 50%;
+	background-repeat: no-repeat;
+	background-color: rgba(255, 255, 255, 0.75);
+}
+
+.leaflet-control-distance a {
+	width: 16px;
+	height: 16px;
+	display: inline-block;
+}
+
+.leaflet-control-distance div {
+	font: 11px/1.5 "Helvetica Neue", Arial, Helvetica, sans-serif;
+	color: #333;
+	height: 16px;
+	margin-top: 5px;
+	white-space: nowrap;
+}
+
+.leaflet-control-distance-edit {
+	/* http://openclipart.org/detail/114727/ftview-ruler-by-anonymous */
+	background-image: url('measure.png');
+}
+
+.leaflet-control-distance-delete {
+	margin-left: 5px;
+	/* Based on http://openclipart.org/detail/34729/architetto----tasto-8-by-anonymous */
+	background-image: url('cross.png');
+}
+
+a.leaflet-control-distance-active {
+	background-color: yellow;
+}

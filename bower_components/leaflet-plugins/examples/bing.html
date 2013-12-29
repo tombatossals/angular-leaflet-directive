@@ -1,0 +1,19 @@
+<html>
+<head>
+	<title>Leaflet</title>
+	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" />
+	<script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
+	<script src="../layer/tile/Bing.js"></script>
+</head>
+<body>
+	<div style="width:100%; height:100%" id="map"></div>
+<script type='text/javascript'>
+var map = new L.Map('map', {center: new L.LatLng(67.6755, 33.936), zoom: 10 });
+var osm = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
+var bing = new L.BingLayer("Anqm0F_JjIZvT0P3abS6KONpaBaKuTnITRrnYuiJCE0WOhH6ZbE4DzeT6brvKVR5");
+map.addLayer(bing);
+map.addControl(new L.Control.Layers({'OSM':osm, "Bing":bing}, {}));
+</script>
+ 
+</body>
+</html>
