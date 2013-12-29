@@ -1,7 +1,7 @@
 <div class="col-md-10" ng-controller="ImageOverlayController">
     <leaflet center="center" layers="layers" defaults="defaults"></leaflet>
     <h2>ImageOverlay example</h2>
-    <p>We can define a baselayer and a list of overlays via the <strong>layers</strong> attribute, so the user will see a control to activate/deactivate the overlays on the top right corner, like in this example.</p>
+    <p>We can define a baselayer type of <strong>imageOverlay</strong>, so we will not be interacting with map tiles, but a single image, which can be panned and zoomed inside the leaflet map container.</p>
     <ul class="nav nav-tabs">
         <li class="active"><a href="" ng-click="activeTab='html'" data-toggle="tab">HTML code</a></li>
         <li><a href="" ng-click="activeTab='javascript'" data-toggle="tab">Javascript Angular controller</a></li>
