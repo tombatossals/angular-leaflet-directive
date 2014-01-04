@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.2.7-build.2029+sha.80e7a45
+ * @license AngularJS v1.2.8-build.2068+sha.d9ed9c5
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -1577,6 +1577,10 @@ function MockHttpExpectation(method, url, data, headers) {
   this.toString = function() {
     return method + ' ' + url;
   };
+}
+
+function createMockXhr() {
+  return new MockXhr();
 }
 
 function MockXhr() {
