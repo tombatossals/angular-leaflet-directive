@@ -5,13 +5,14 @@
 /* jasmine specs for directives go here */
 
 describe('Directive: leaflet', function() {
-    var $compile = null, $rootScope = null, leafletData = null;
+    var $compile = null, $rootScope = null, leafletData = null, leafletHelpers = null;
 
     beforeEach(module('leaflet-directive'));
-    beforeEach(inject(function(_$compile_, _$rootScope_, _leafletData_){
+    beforeEach(inject(function(_$compile_, _$rootScope_, _leafletData_, _leafletHelpers_){
         $compile = _$compile_;
         $rootScope = _$rootScope_;
         leafletData = _leafletData_;
+        leafletHelpers = _leafletHelpers_;
     }));
 
 
@@ -502,5 +503,49 @@ describe('Directive: leaflet', function() {
         expect(true).toBe(true);
     });
 
+    it('should broadcast label events',function() {
+        spyOn($rootScope, '$broadcast');
+        spyOn(leafletHelpers.LabelPlugin, 'isLoaded').andReturn(true);
+        L.Label = L.Class.extend({
+            includes: L.Mixin.Events,
+        });
 
+        L.BaseMarkerMethods = {
+            bindLabel: function (content, options) {
+                this.label = new L.Label(options, this);
+                return this;
+            }
+        };
+
+        L.Marker.include(L.BaseMarkerMethods);
+
+        var marker = {
+            lat: 0.966,
+            lng: 2.02,
+            message: 'this is paris',
+            label: {
+                message: 'test',
+                options: {
+                    clickable: true
+                }
+            }
+        };
+
+        angular.extend($rootScope, {
+            markers: {
+                marker: marker
+            }
+        });
+
+        var element = angular.element('<leaflet testing="testing" markers="markers"></leaflet>');
+        $compile(element)($rootScope);
+        $rootScope.$digest();
+        leafletData.getMarkers().then(function(leafletMarkers){
+            leafletMarkers.marker.label.fireEvent('mouseover');
+        });
+
+        $rootScope.$digest();
+
+        expect($rootScope.$broadcast.mostRecentCall.args[0]).toEqual('leafletDirectiveLabel.mouseover');
+    });
 });
