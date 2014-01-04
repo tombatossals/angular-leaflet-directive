@@ -7,25 +7,24 @@ This sub-directive needs the **leaflet** main directive, so it is normaly used a
 <leaflet layers="layers"></leaflet>
 ```
 
-It will map an object _layers_ of our controller scope with the corresponding object on our directive isolated scope. It's not a bidirectional relationship, so only the changes made in this object on the controller scope will affect the map center position. Let's define the layers model with an example:
+It will map an object _layers_ of our controller scope with the corresponding object on our directive isolated scope. It's not a bidirectional relationship, so only the changes made in this object on the controller scope will affect the layers definition in
+our leaflet map. Let's define the layers model with an example:
 
 ```
 $scope.layers = {
-    layers: {
-        baselayers: {
-            osm: {
-                name: 'OpenStreetMap',
-                url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                type: 'xyz'
-            },
-            cloudmade: {
-                name: 'Cloudmade Tourist',
-                type: 'xyz',
-                url: 'http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png',
-                layerParams: {
-                    key: '007b9471b4c74da4a6ec7ff43552b16f',
-                    styleId: 7
-                }
+    baselayers: {
+        osm: {
+            name: 'OpenStreetMap',
+            url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+            type: 'xyz'
+        },
+        cloudmade: {
+            name: 'Cloudmade Tourist',
+            type: 'xyz',
+            url: 'http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png',
+            layerParams: {
+                key: '007b9471b4c74da4a6ec7ff43552b16f',
+                styleId: 7
             }
         }
     }
