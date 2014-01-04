@@ -38,14 +38,6 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
         return defer;
     }
 
-    function _convertToLeafletLatLngs(latlngs) {
-        return latlngs.filter(function(latlng) {
-            return !!latlng.lat && !!latlng.lng;
-        }).map(function (latlng) {
-            return new L.LatLng(latlng.lat, latlng.lng);
-        });
-    }
-
     return {
         // Determine if a reference is defined
         isDefined: function(value) {
@@ -82,16 +74,9 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
                    angular.isNumber(center.lng) && angular.isNumber(center.zoom);
         },
 
-        convertToLeafletLatLngs: _convertToLeafletLatLngs,
-
-        convertToLeafletLatLng: function(latlng) {
-            return new L.LatLng(latlng.lat, latlng.lng);
-        },
-
-        convertToLeafletMultiLatLngs: function(paths) {
-            return paths.map(function(latlngs) {
-                return _convertToLeafletLatLngs(latlngs);
-            });
+        isValidPoint: function(point) {
+            return angular.isDefined(point) && angular.isNumber(point.lat) &&
+                   angular.isNumber(point.lng);
         },
 
         safeApply: function($scope, fn) {
