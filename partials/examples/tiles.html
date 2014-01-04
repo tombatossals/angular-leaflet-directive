@@ -1,7 +1,7 @@
 <div class="col-md-10" ng-controller="TilesController">
-    <button ng-click="changeTiles('opencyclemap')" class="btn btn-default">OpenCycleMaps</button>
-    <button ng-click="changeTiles('openstreetmap')" class="btn btn-default">OpenStreetMaps</button>
     <leaflet center="sidney" tiles="tiles" defaults="defaults"></leaflet>
+    <button ng-click="changeTiles('opencyclemap')" class="btn btn-primary padright">OpenCycleMaps</button>
+    <button ng-click="changeTiles('openstreetmap')" class="btn btn-primary padright">OpenStreetMaps</button>
     <h2>Tiles example</h2>
     <p>We can change the active tiles easily via the <strong>tiles</strong> attribute. For example, we could change them when the user press a button, like in this demo.</p>
     <ul class="nav nav-tabs">
