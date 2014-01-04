@@ -92,3 +92,4 @@ We have much more possibilities than showing a simple map, but this will need th
 * [_maxbounds_ attribute](https://github.com/tombatossals/angular-leaflet-directive/blob/master/doc/maxbounds-attribute.md)
 * [_tiles_ attribute](https://github.com/tombatossals/angular-leaflet-directive/blob/master/doc/tiles-attribute.md)
 * [_layers_ attribute](https://github.com/tombatossals/angular-leaflet-directive/blob/master/doc/layers-attribute.md)
+* [_paths_ attribute](https://github.com/tombatossals/angular-leaflet-directive/blob/master/doc/paths-attribute.md)
