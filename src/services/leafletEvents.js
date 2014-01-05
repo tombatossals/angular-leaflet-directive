@@ -97,6 +97,40 @@ angular.module("leaflet-directive").factory('leafletEvents', function ($rootScop
                     }
                 });
             };
+        },
+        getAvailableLabelEvents: function() {
+            return [
+                'click',
+                'dblclick',
+                'mousedown',
+                'mouseover',
+                'mouseout',
+                'contextmenu'
+            ];
+        },
+        genDispatchLabelEvent: function(scope, eventName, logic, label, scope_watch_name) {
+            return function(e) {
+                // Put together broadcast name
+                var broadcastName = 'leafletDirectiveLabel.' + eventName;
+                var markerName = scope_watch_name.replace('markers.', '');
+
+                // Safely broadcast the event
+                safeApply(scope, function(scope) {
+                    if (logic === "emit") {
+                        scope.$emit(broadcastName, {
+                            leafletEvent : e,
+                            label: label,
+                            markerName: markerName
+                        });
+                    } else if (logic === "broadcast") {
+                        $rootScope.$broadcast(broadcastName, {
+                            leafletEvent : e,
+                            label: label,
+                            markerName: markerName
+                        });
+                    }
+                });
+            };
         }
     };
 });
