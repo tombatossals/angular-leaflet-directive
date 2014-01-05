@@ -7,6 +7,7 @@ angular.module("leaflet-directive").directive('center', function ($log, $parse, 
 
         link: function(scope, element, attrs, controller) {
             var isDefined     = leafletHelpers.isDefined,
+                isNumber      = leafletHelpers.isNumber,
                 safeApply     = leafletHelpers.safeApply,
                 isValidCenter = leafletHelpers.isValidCenter,
                 leafletScope  = controller.getLeafletScope(),
@@ -41,8 +42,12 @@ angular.module("leaflet-directive").directive('center', function ($log, $parse, 
                     }
 
                     if (center.autoDiscover === true) {
-                        map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
-                        if (isDefined(defaults.maxZoom)) {
+                        if (!isNumber(center.zoom)) {
+                            map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
+                        }
+                        if (isNumber(center.zoom) && center.zoom > defaults.center.zoom) {
+                            map.locate({ setView: true, maxZoom: center.zoom });
+                        } else if (isDefined(defaults.maxZoom)) {
                             map.locate({ setView: true, maxZoom: defaults.maxZoom });
                         } else {
                             map.locate({ setView: true });
