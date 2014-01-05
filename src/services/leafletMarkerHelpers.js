@@ -26,6 +26,18 @@ angular.module("leaflet-directive").factory('leafletMarkerHelpers', function ($r
         }
     });
 
+    var hasLabel = function(marker) {
+        return Helpers.LabelPlugin.isLoaded() && isDefined(marker.label);
+    };
+
+    var genLabelEvents = function(leafletScope, logic, marker, scope_watch_name) {
+        var labelEvents = leafletEvents.getAvailableLabelEvents();
+        for (var i = 0; i < labelEvents.length; i++) {
+            var eventName = labelEvents[i];
+            marker.label.on(eventName, leafletEvents.genDispatchLabelEvent(leafletScope, eventName, logic, marker.label, scope_watch_name));
+        }
+    };
+
     var getLeafletIcon = function(data) {
         return new LeafletDefaultIcon(data);
     };
@@ -296,6 +308,10 @@ angular.module("leaflet-directive").factory('leafletMarkerHelpers', function ($r
                     eventName: eventName,
                     scope_watch_name: scope_watch_name
                 });
+            }
+
+            if (hasLabel(marker)) {
+                genLabelEvents(leafletScope, logic, marker, scope_watch_name);
             }
 
             if (shouldWatch) {
