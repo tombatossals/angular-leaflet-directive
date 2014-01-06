@@ -1,4 +1,4 @@
-angular.module("leaflet-directive").directive('paths', function ($log, leafletData, leafletMapDefaults, leafletHelpers, leafletPathsHelpers) {
+angular.module("leaflet-directive").directive('paths', function ($log, leafletData, leafletMapDefaults, leafletHelpers, leafletPathsHelpers, leafletEvents) {
     return {
         restrict: "A",
         scope: false,
@@ -10,6 +10,7 @@ angular.module("leaflet-directive").directive('paths', function ($log, leafletDa
                 leafletScope  = controller.getLeafletScope(),
                 paths     = leafletScope.paths,
                 createPath = leafletPathsHelpers.createPath,
+                bindPathEvents = leafletEvents.bindPathEvents,
                 setPathOptions = leafletPathsHelpers.setPathOptions;
 
             controller.getMap().then(function(map) {
@@ -38,6 +39,7 @@ angular.module("leaflet-directive").directive('paths', function ($log, leafletDa
                     // Create the new paths
                     for (var newName in newPaths) {
                         if (!isDefined(leafletPaths[newName])) {
+                            var pathData = newPaths[newName];
                             var newPath = createPath(newName, newPaths[newName], defaults);
 
                             // Listen for changes on the new path
@@ -46,6 +48,8 @@ angular.module("leaflet-directive").directive('paths', function ($log, leafletDa
                                 map.addLayer(newPath);
                                 watchPathFn(newPath, newName);
                             }
+
+                            bindPathEvents(newPath, newName, pathData, leafletScope);
                         }
                     }
 
