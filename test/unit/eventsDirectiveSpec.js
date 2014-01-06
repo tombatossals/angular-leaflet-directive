@@ -503,7 +503,7 @@ describe('Directive: leaflet', function() {
         expect(true).toBe(true);
     });
 
-    it('should broadcast label events',function() {
+    xit('should broadcast label events',function() {
         spyOn($rootScope, '$broadcast');
         spyOn(leafletHelpers.LabelPlugin, 'isLoaded').andReturn(true);
         L.Label = L.Class.extend({
