@@ -503,7 +503,7 @@ describe('Directive: leaflet', function() {
         expect(true).toBe(true);
     });
 
-    xit('should broadcast label events',function() {
+    it('should broadcast label events',function() {
         spyOn($rootScope, '$broadcast');
         spyOn(leafletHelpers.LabelPlugin, 'isLoaded').andReturn(true);
         L.Label = L.Class.extend({
@@ -546,6 +546,6 @@ describe('Directive: leaflet', function() {
 
         $rootScope.$digest();
 
-        //expect($rootScope.$broadcast.mostRecentCall.args[0]).toEqual('leafletDirectiveLabel.mouseover');
+        expect($rootScope.$broadcast.mostRecentCall.args[0]).toEqual('leafletDirectiveLabel.mouseover');
     });
 });

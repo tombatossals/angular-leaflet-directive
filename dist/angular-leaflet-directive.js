@@ -1212,6 +1212,40 @@ angular.module("leaflet-directive").factory('leafletEvents', function ($rootScop
                     }
                 });
             };
+        },
+        getAvailableLabelEvents: function() {
+            return [
+                'click',
+                'dblclick',
+                'mousedown',
+                'mouseover',
+                'mouseout',
+                'contextmenu'
+            ];
+        },
+        genDispatchLabelEvent: function(scope, eventName, logic, label, scope_watch_name) {
+            return function(e) {
+                // Put together broadcast name
+                var broadcastName = 'leafletDirectiveLabel.' + eventName;
+                var markerName = scope_watch_name.replace('markers.', '');
+
+                // Safely broadcast the event
+                safeApply(scope, function(scope) {
+                    if (logic === "emit") {
+                        scope.$emit(broadcastName, {
+                            leafletEvent : e,
+                            label: label,
+                            markerName: markerName
+                        });
+                    } else if (logic === "broadcast") {
+                        $rootScope.$broadcast(broadcastName, {
+                            leafletEvent : e,
+                            label: label,
+                            markerName: markerName
+                        });
+                    }
+                });
+            };
         }
     };
 });
@@ -1739,6 +1773,18 @@ angular.module("leaflet-directive").factory('leafletMarkerHelpers', function ($r
         }
     });
 
+    var hasLabel = function(marker) {
+        return Helpers.LabelPlugin.isLoaded() && isDefined(marker.label);
+    };
+
+    var genLabelEvents = function(leafletScope, logic, marker, scope_watch_name) {
+        var labelEvents = leafletEvents.getAvailableLabelEvents();
+        for (var i = 0; i < labelEvents.length; i++) {
+            var eventName = labelEvents[i];
+            marker.label.on(eventName, leafletEvents.genDispatchLabelEvent(leafletScope, eventName, logic, marker.label, scope_watch_name));
+        }
+    };
+
     var getLeafletIcon = function(data) {
         return new LeafletDefaultIcon(data);
     };
@@ -2009,6 +2055,10 @@ angular.module("leaflet-directive").factory('leafletMarkerHelpers', function ($r
                     eventName: eventName,
                     scope_watch_name: scope_watch_name
                 });
+            }
+
+            if (hasLabel(marker)) {
+                genLabelEvents(leafletScope, logic, marker, scope_watch_name);
             }
 
             if (shouldWatch) {
