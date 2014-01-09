@@ -12,11 +12,11 @@
                 london: {
                     lat: 51.505,
                     lng: -0.09,
-                    zoom: 5
+                    zoom: 4
                 },
-                paths : {
+                europeanPaths: {
                     p1: {
-                        color: '#000',
+                        color: 'red',
                         weight: 8,
                         latlngs: [
                             { lat: 51.50, lng: -0.082 },
@@ -25,19 +25,7 @@
                         ],
                     }
                 }
-            })
-
-            $scope.myPath = {
-                p1: {
-                    color: '#0ff',
-                    weight: 8,
-                    latlngs: [
-                        { lat: 48.83, lng: 2.37 },
-                        { lat: 41.91, lng: 12.48 }
-                    ],
-                }
-            }
-
+            });
         }]);
     </script>
     <style>
@@ -48,6 +36,6 @@
     </style>
   </head>
   <body ng-controller="DemoController">
-    <leaflet center="london" paths="myPath"></leaflet>
+    <leaflet center="london" paths="europeanPaths"></leaflet>
   </body>
 </html>

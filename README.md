@@ -21,6 +21,7 @@ See some basic examples:
 * [Single marker example](http://tombatossals.github.io/angular-leaflet-directive/examples/marker-example.html)
 * [Google Maps example](http://tombatossals.github.io/angular-leaflet-directive/examples/googlemaps-example.html)
 * [Paths Simple example](http://tombatossals.github.io/angular-leaflet-directive/examples/paths-simple-example.html)
+* [Paths Types example](http://tombatossals.github.io/angular-leaflet-directive/examples/paths-types-example.html)
 * [Paths example](http://tombatossals.github.io/angular-leaflet-directive/examples/paths-example.html)
 * [Marker addition example](http://tombatossals.github.io/angular-leaflet-directive/examples/marker-add-example.html)
 * [Marker with label example](http://tombatossals.github.io/angular-leaflet-directive/examples/marker-label-example.html)
