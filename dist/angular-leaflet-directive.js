@@ -656,7 +656,7 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
     };
 });
 
-angular.module("leaflet-directive").directive('paths', function ($log, leafletData, leafletMapDefaults, leafletHelpers, leafletPathHelpers) {
+angular.module("leaflet-directive").directive('paths', function ($log, leafletData, leafletMapDefaults, leafletHelpers, leafletPathsHelpers) {
     return {
         restrict: "A",
         scope: false,
@@ -667,8 +667,8 @@ angular.module("leaflet-directive").directive('paths', function ($log, leafletDa
             var isDefined = leafletHelpers.isDefined,
                 leafletScope  = controller.getLeafletScope(),
                 paths     = leafletScope.paths,
-                createPath = leafletPathHelpers.createPath,
-                setPathOptions = leafletPathHelpers.setPathOptions;
+                createPath = leafletPathsHelpers.createPath,
+                setPathOptions = leafletPathsHelpers.setPathOptions;
 
             controller.getMap().then(function(map) {
                 var defaults = leafletMapDefaults.getDefaults(attrs.id);
@@ -692,17 +692,17 @@ angular.module("leaflet-directive").directive('paths', function ($log, leafletDa
                     }, true);
                 };
 
-                scope.$watch("paths", function (newPaths) {
+                leafletScope.$watch("paths", function (newPaths) {
                     // Create the new paths
-                    for (var new_name in newPaths) {
-                        if (!isDefined(leafletPaths[new_name])) {
-                            var newPath = createPath(new_name, newPaths[new_name], defaults);
+                    for (var newName in newPaths) {
+                        if (!isDefined(leafletPaths[newName])) {
+                            var newPath = createPath(newName, newPaths[newName], defaults);
 
                             // Listen for changes on the new path
                             if (isDefined(newPath)) {
-                                leafletPaths[new_name] = newPath;
+                                leafletPaths[newName] = newPath;
                                 map.addLayer(newPath);
-                                watchPathFn(newPath, new_name);
+                                watchPathFn(newPath, newName);
                             }
                         }
                     }
@@ -1425,7 +1425,7 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
     };
 });
 
-angular.module("leaflet-directive").factory('leafletPathHelpers', function ($rootScope, $log, leafletHelpers) {
+angular.module("leaflet-directive").factory('leafletPathsHelpers', function ($rootScope, $log, leafletHelpers) {
     var isDefined = leafletHelpers.isDefined,
         isArray = leafletHelpers.isArray,
         isNumber = leafletHelpers.isNumber,
@@ -1659,6 +1659,9 @@ angular.module("leaflet-directive").factory('leafletPathHelpers', function ($roo
 
     return {
         setPathOptions: function(leafletPath, pathType, data) {
+            if(!isDefined(pathType)) {
+                pathType = "polyline";
+            }
             pathTypes[pathType].setPath(leafletPath, data);
         },
         createPath: function(name, path, defaults) {
