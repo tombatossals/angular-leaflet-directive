@@ -1,4 +1,4 @@
-angular.module("leaflet-directive").directive('markers', function ($log, $rootScope, $q, leafletData, leafletHelpers, leafletMapDefaults, leafletMarkerHelpers) {
+angular.module("leaflet-directive").directive('markers', function ($log, $rootScope, $q, leafletData, leafletHelpers, leafletMapDefaults, leafletMarkersHelpers) {
     return {
         restrict: "A",
         scope: false,
@@ -10,14 +10,15 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                 isDefined = leafletHelpers.isDefined,
                 leafletScope  = mapController.getLeafletScope(),
                 markers = leafletScope.markers,
-                deleteMarker = leafletMarkerHelpers.deleteMarker,
-                createMarker = leafletMarkerHelpers.createMarker;
+                deleteMarker = leafletMarkersHelpers.deleteMarker,
+                createMarker = leafletMarkersHelpers.createMarker;
 
             mapController.getMap().then(function(map) {
                 var leafletMarkers = {},
                     groups = {},
                     getLayers;
 
+                // If the layers attribute is used, we must wait until the layers are created
                 if (isDefined(controller[1])) {
                     getLayers = controller[1].getLayers;
                 } else {
@@ -47,11 +48,11 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                         }
 
                         // add new markers
-                        for (var new_name in newMarkers) {
-                            if (!isDefined(leafletMarkers[new_name])) {
-                                var newMarker = createMarker('markers.'+new_name, newMarkers[new_name], leafletScope, map, layers, groups, shouldWatch);
+                        for (var newName in newMarkers) {
+                            if (!isDefined(leafletMarkers[newName])) {
+                                var newMarker = createMarker('markers.'+newName, newMarkers[newName], leafletScope, map, layers, groups, shouldWatch);
                                 if (isDefined(newMarker)) {
-                                    leafletMarkers[new_name] = newMarker;
+                                    leafletMarkers[newName] = newMarker;
                                 }
                             }
                         }

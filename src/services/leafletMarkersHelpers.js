@@ -1,4 +1,4 @@
-angular.module("leaflet-directive").factory('leafletMarkerHelpers', function ($rootScope, leafletHelpers, $log, leafletEvents) {
+angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($rootScope, leafletHelpers, $log, leafletEvents) {
 
     var isDefined = leafletHelpers.isDefined,
         Helpers = leafletHelpers,

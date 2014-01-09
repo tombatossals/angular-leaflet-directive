@@ -248,7 +248,7 @@ module.exports = function(grunt) {
                     'src/services/leafletLayerHelpers.js',
                     'src/services/leafletPathsHelpers.js',
                     'src/services/leafletBoundsHelpers.js',
-                    'src/services/leafletMarkerHelpers.js',
+                    'src/services/leafletMarkersHelpers.js',
                     'src/services/leafletHelpers.js'
                 ],
                 dest: 'dist/angular-leaflet-directive.js',
