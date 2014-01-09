@@ -21,6 +21,8 @@ angular.module("leaflet-directive").directive('paths', function ($log, leafletDa
 
                 var leafletPaths = {};
                 leafletData.setPaths(leafletPaths, attrs.id);
+                
+                scope.paths = paths;
 
                 // Function for listening every single path once created
                 var watchPathFn = function(leafletPath, name) {
