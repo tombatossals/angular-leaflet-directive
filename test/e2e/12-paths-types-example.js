@@ -1,11 +1,11 @@
 'use strict';
 
-describe('Loading paths-simple-example.html', function() {
+describe('Loading paths-types-example.html', function() {
 
     var ptor, driver;
     beforeEach(function() {
         ptor = protractor.getInstance();
-        browser.get('paths-simple-example.html');
+        browser.get('paths-types-example.html');
         driver = ptor.driver;
     });
 
