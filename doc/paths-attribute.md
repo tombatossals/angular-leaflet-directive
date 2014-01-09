@@ -31,3 +31,9 @@ We can define these types of paths:
 * rectangle.
 * circle.
 * circleMarker.
+
+Examples
+--------
+These two demos show the use of this functionality:
+* [http://tombatossals.github.io/angular-leaflet-directive/examples/paths-simple-example.html](http://tombatossals.github.io/angular-leaflet-directive/examples/paths-simple-example.html)
+* [http://tombatossals.github.io/angular-leaflet-directive/examples/paths-example.html](http://tombatossals.github.io/angular-leaflet-directive/examples/paths-example.html)
