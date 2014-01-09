@@ -34,17 +34,17 @@ angular.module("leaflet-directive").directive('paths', function ($log, leafletDa
                     }, true);
                 };
 
-                scope.$watch("paths", function (newPaths) {
+                leafletScope.$watch("paths", function (newPaths) {
                     // Create the new paths
-                    for (var new_name in newPaths) {
-                        if (!isDefined(leafletPaths[new_name])) {
-                            var newPath = createPath(new_name, newPaths[new_name], defaults);
+                    for (var newName in newPaths) {
+                        if (!isDefined(leafletPaths[newName])) {
+                            var newPath = createPath(newName, newPaths[newName], defaults);
 
                             // Listen for changes on the new path
                             if (isDefined(newPath)) {
-                                leafletPaths[new_name] = newPath;
+                                leafletPaths[newName] = newPath;
                                 map.addLayer(newPath);
-                                watchPathFn(newPath, new_name);
+                                watchPathFn(newPath, newName);
                             }
                         }
                     }
