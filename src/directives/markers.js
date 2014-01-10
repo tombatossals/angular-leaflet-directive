@@ -43,7 +43,8 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                         // Delete markers from the array
                         for (var name in leafletMarkers) {
                             if (!isDefined(newMarkers) || !isDefined(newMarkers[name])) {
-                                deleteMarker(map, leafletMarkers, layers, groups, name);
+                                deleteMarker(map, leafletMarkers[name], layers, groups);
+                                delete leafletMarkers[name];
                             }
                         }
 
@@ -51,9 +52,11 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                         for (var newName in newMarkers) {
                             if (!isDefined(leafletMarkers[newName])) {
                                 var newMarker = createMarker('markers.'+newName, newMarkers[newName], leafletScope, map, layers, groups, shouldWatch);
-                                if (isDefined(newMarker)) {
-                                    leafletMarkers[newName] = newMarker;
+                                if (!isDefined(newMarker)) {
+                                    $log.error('[AngularJS - Leaflet] Received invalid data on the marker ¡ ' + newName + '.');
+                                    continue;
                                 }
+                                leafletMarkers[newName] = newMarker;
                             }
                         }
                     }, shouldWatch);
