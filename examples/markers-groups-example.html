@@ -16,16 +16,18 @@
         function DemoController($scope) {
 
             var icons = {
-                blue: L.divIcon({
+                blue: {
+                    type: 'div',
                     iconSize: [10, 10],
                     className: 'blue',
                     iconAnchor:  [5, 5]
-                }),
-                red: L.divIcon({
+                },
+                red: {
+                    type: 'div',
                     iconSize: [10, 10],
                     className: 'red',
                     iconAnchor:  [5, 5]
-                })
+                }
             }
 
             angular.extend($scope, {

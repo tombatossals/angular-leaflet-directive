@@ -54,10 +54,6 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
 
     var createLeafletIcon = function(iconData) {
         if (isDefined(iconData) && isDefined(iconData.type) && iconData.type === 'div') {
-            if (!isDefined(iconData.html)) {
-                $log.error('[AngularJS - Leaflet] The div icon definition must have an "html" property.');
-                return new L.Icon.Default();
-            }
             return new L.divIcon(iconData);
         }
 
