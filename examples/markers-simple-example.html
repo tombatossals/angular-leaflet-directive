@@ -29,7 +29,9 @@
     </script>
   </head>
   <body ng-controller="DemoController">
-      <leaflet center="london" markers="markers" height="480px" width="640px">
-      </leaflet>
+    <p>
+      Marker (lat/lng): <input type="number" ng-model="markers.mainMarker.lat" /> <input type="number" ng-model="markers.mainMarker.lng" />
+    </p>
+    <leaflet center="london" markers="markers" height="480px" width="640px"></leaflet>
   </body>
 </html>
