@@ -33,7 +33,6 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                 }
 
                 if (!isDefined(markers)) {
-                    $log.error('[AngularJS - Leaflet] Received an empty "markers" variable.');
                     return;
                 }
 
