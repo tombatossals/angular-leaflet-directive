@@ -1,3 +1,55 @@
+<a name="v0.7.3"></a>
+### v0.7.3 (2014-01-11)
+
+The most important change of this release is the overhaul of the markers attribute, which has some implications to mantain backwards compatibility. The icon definition inside a marker must be done without calling explicitly Leaflet Icon creation function. So, instead of:
+
+```
+marker = {
+    name: "example",
+    icon: L.icon({
+        ...
+    })
+}
+```
+
+We will use:
+```
+marker = {
+    name: "example",
+    icon: {
+        ...
+    }
+}
+```
+
+You can take a look at the demo page to see examples of this change:
+[http://tombatossals.github.io/angular-leaflet-directive/#!/examples/customized-markers](http://tombatossals.github.io/angular-leaflet-directive/#!/examples/customized-markers)
+
+#### Features
+
+* **Gruntfile:** Updated protractor-runner to allow running the e2e tests from various browsers f ([01e9f0da](https://github.com/tombatossals/angular-leaflet-directive/commit/01e9f0da2d8044ed59300d660f2d666a09bd15ac))
+* **build:**
+  * Added the possibility to group the markers in MarkerCluster without using overla ([0d35b2c6](https://github.com/tombatossals/angular-leaflet-directive/commit/0d35b2c68d81d5c0a5557d7a51d23ba2798104d6))
+  * Moved all the event management functionality into leafletEvents service. ([cd5fc09a](https://github.com/tombatossals/angular-leaflet-directive/commit/cd5fc09af881089e011cc40e1fae2ca6247681bd))
+  * Refactor paths attribute ([c321784e](https://github.com/tombatossals/angular-leaflet-directive/commit/c321784e51cb4f20eca0c0455cd1d4e85391d35b))
+* **documentation:**
+  * Updated paths attribute documentation ([082b16c4](https://github.com/tombatossals/angular-leaflet-directive/commit/082b16c46a30a6d712d0f3a8fe180ad76ea1fb4e))
+  * Started the paths attribute documentation ([972cad1e](https://github.com/tombatossals/angular-leaflet-directive/commit/972cad1e01b306a45f28fe1ce5ea235c8536c80b))
+* **examples:**
+  * New example of layer+markers with markerclustering usage ([d0230d07](https://github.com/tombatossals/angular-leaflet-directive/commit/d0230d07daa56ce584bb7b698c1fb02ee13c2587))
+  * New examples of markers attribute. ([753e509f](https://github.com/tombatossals/angular-leaflet-directive/commit/753e509fd5850ad56a22b54ba9ac95ecdea2faf4))
+  * Added a new and simplified paths example ([2e991d73](https://github.com/tombatossals/angular-leaflet-directive/commit/2e991d73e7b29cdca869a2e330719e566eac6f91))
+  * Added a new simplified example to the paths attribute ([c380b742](https://github.com/tombatossals/angular-leaflet-directive/commit/c380b74256a380a9fddf79e19cf7c45d80782498))
+  * Added a new paths example: paths-simple-example.html ([66bc6920](https://github.com/tombatossals/angular-leaflet-directive/commit/66bc6920d63e888833a11697e507aaeddc9f0756))
+  * All the examples dependencies linked to the bower_components folder. ([d9b0cdbf](https://github.com/tombatossals/angular-leaflet-directive/commit/d9b0cdbf2511adc63eb340770e572af325cd9340))
+* **markers:** The icon definition has ben changed to be an object of properties, not a Leaflet ([b45df205](https://github.com/tombatossals/angular-leaflet-directive/commit/b45df2050ca3771c07e5e105db81074cf5a2fe80))
+* **tests:** Added a new E2E protractor tests for the paths-simple-example.html ([c74c2314](https://github.com/tombatossals/angular-leaflet-directive/commit/c74c2314f437c3be994c1c0c20a993020370ac4f))
+
+#### Bug Fixes
+
+* **paths:** Solved a bug on the scope watching of the paths attribute. ([0663b309](https://github.com/tombatossals/angular-leaflet-directive/commit/0663b309b99cb98629390a6f58424ed671007eec))
+
+
 <a name="v0.7.2"></a>
 ### v0.7.2 (2013-12-29)
 
