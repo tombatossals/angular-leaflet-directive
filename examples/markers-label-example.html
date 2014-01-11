@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html ng-app="demoapp">
+  <head>
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/leaflet-dist/leaflet.js"></script>
+    <script src="../bower_components/Leaflet.label/dist/leaflet.label.js"></script>
+    <script src="../dist/angular-leaflet-directive.min.js"></script>
+    <link rel="stylesheet" href="../bower_components/leaflet-dist/leaflet.css" />
+    <link rel="stylesheet" href="../bower_components/Leaflet.label/dist/leaflet.label.css" />
+    <!--[if lte IE 8]>
+        <link rel="stylesheet" href="leaflet/leaflet.ie.css" />
+    <![endif]-->
+    <script>
+        angular.module("demoapp", ["leaflet-directive"]);
+        function DemoController($scope) {
+            angular.extend($scope, {
+                london: {
+                    lat: 51.505,
+                    lng: -0.09,
+                    zoom: 8
+                },
+                markers: {
+                    main_marker: {
+                        lat: 51.5,
+                        lng: 0,
+                        focus: true,
+                        //message: "Hey, drag me if you want",
+                        title: "Marker",
+                        draggable: true,
+                        label: {
+                            message: "Hey, drag me if you want",
+                            options: {
+                                noHide: true
+                            }
+                        }
+                    }
+                }
+            });
+        };
+    </script>
+  </head>
+  <body ng-controller="DemoController">
+      <leaflet center="london" markers="markers" height="480px" width="640px">
+      </leaflet>
+  </body>
+</html>

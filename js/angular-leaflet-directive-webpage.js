@@ -66,7 +66,8 @@ app.controller("CustomParametersController", [ '$scope', function($scope) {
 app.controller("CustomizedMarkersController", [ '$scope', function($scope) {
 
     var local_icons = {
-        leaf_icon: L.icon({
+        default_icon: {},
+        leaf_icon: {
             iconUrl: 'examples/img/leaf-green.png',
             shadowUrl: 'examples/img/leaf-shadow.png',
              iconSize:     [38, 95], // size of the icon
@@ -74,24 +75,16 @@ app.controller("CustomizedMarkersController", [ '$scope', function($scope) {
             iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
             shadowAnchor: [4, 62],  // the same for the shadow
             popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
-        }),
-        default_icon: L.icon({
-            iconUrl: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-icon.png',
-            shadowUrl: 'http://cdn.leafletjs.com/leaflet-0.6.4/images/marker-shadow.png',
-            iconSize: [25, 41],
-            iconAnchor: [12, 40],
-            popupAnchor: [0, -40],
-            shadowSize: [41, 41],
-            shadowAnchor: [12, 40]
-        }),
-        div_icon: L.divIcon({
+        },
+        div_icon: {
+            type: 'div',
             iconSize: [230, 0],
             html: 'Using <strong>Bold text as an icon</strong>: Lisbon',
             popupAnchor:  [0, 0]
-        }),
-        object_icon: {
-            iconUrl: 'http://leafletjs.com/docs/images/leaf-orange.png',
-            shadowUrl: 'http://leafletjs.com/docs/images/leaf-shadow.png',
+        },
+        orange_leaf_icon: {
+            iconUrl: 'examples/img/leaf-orange.png',
+            shadowUrl: 'examples/img/leaf-shadow.png',
             iconSize:     [38, 95],
             shadowSize:   [50, 64],
             iconAnchor:   [22, 94],
@@ -645,38 +638,38 @@ app.controller("PathController", [ '$scope', function($scope) {
             london: {
                 lat: 51.50,
                 lng: -0.082,
-                icon: L.icon({
+                icon: {
                     iconUrl: 'examples/img/100x100_PNG/bigben100.png',
                     iconSize: [80, 80],
                     iconAnchor: [40, 80],
                     popupAnchor: [0, 0],
                     shadowSize: [0, 0],
                     shadowAnchor: [0, 0]
-                })
+                }
             },
             paris: {
                 lat: 48.83,
                 lng: 2.37,
-                icon: L.icon({
+                icon: {
                     iconUrl: 'examples/img/100x100_PNG/eiffel100.png',
                     iconSize: [80, 80],
                     iconAnchor: [40, 60],
                     popupAnchor: [0, 0],
                     shadowSize: [0, 0],
                     shadowAnchor: [0, 0]
-                })
+                }
             },
             roma: {
                 lat: 41.91,
                 lng: 12.48,
-                icon: L.icon({
+                icon: {
                     iconUrl: 'examples/img/100x100_PNG/colosseum100.png',
                     iconSize: [60, 60],
                     iconAnchor: [30, 40],
                     popupAnchor: [0, 0],
                     shadowSize: [0, 0],
                     shadowAnchor: [0, 0]
-                })
+                }
             }
         },
         defaults: {
