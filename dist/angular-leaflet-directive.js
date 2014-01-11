@@ -1528,6 +1528,7 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
             mustHaveUrl: false,
             createLayer: function(params) {
                 if (!Helpers.MarkerClusterPlugin.isLoaded()) {
+                    $log.error('[AngularJS - Leaflet] The markercluster plugin is not loaded.');
                     return;
                 }
                 return new L.MarkerClusterGroup(params.options);
