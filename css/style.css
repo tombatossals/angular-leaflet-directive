@@ -4,7 +4,7 @@ body {
 }
 
 body {
-    padding: 30px;
+    padding-top: 30px;
 }
 
 .navbar {
@@ -130,6 +130,10 @@ div.mainPageDemo {
 
 .navbar {
     border-radius: 4px 4px 0 0;
+}
+
+.navbar-nav.navbar-right:last-child {
+    margin-right: 0px;
 }
 
 .multilayer > .btn, .multilayer > .btn-group {
