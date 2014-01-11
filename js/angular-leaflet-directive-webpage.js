@@ -600,6 +600,7 @@ app.controller("OverlaysSimpleController", [ '$scope', function($scope) {
                 wms: {
                     name: 'EEUU States (WMS)',
                     type: 'wms',
+                    visible: true,
                     url: 'http://suite.opengeo.org/geoserver/usa/wms',
                     layerParams: {
                         layers: 'usa:states',
