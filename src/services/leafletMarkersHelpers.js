@@ -1,10 +1,12 @@
 angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($rootScope, leafletHelpers, $log) {
 
     var isDefined = leafletHelpers.isDefined,
+        MarkerClusterPlugin = leafletHelpers.MarkerClusterPlugin,
         Helpers = leafletHelpers,
         isString = leafletHelpers.isString,
         isNumber  = leafletHelpers.isNumber,
-        isObject = leafletHelpers.isObject;
+        isObject = leafletHelpers.isObject,
+        groups = {};
 
     var createLeafletIcon = function(iconData) {
         if (isDefined(iconData) && isDefined(iconData.type) && iconData.type === 'div') {
@@ -31,6 +33,15 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
                 }
             }
         }
+
+        if (isDefined(groups)) {
+            for (var groupKey in groups) {
+                if (groups[groupKey].hasLayer(marker)) {
+                    groups[groupKey].removeLayer(marker);
+                }
+            }
+        }
+
         if (map.hasLayer(marker)) {
             map.removeLayer(marker);
         }
@@ -54,6 +65,23 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
             };
 
             return new L.marker(markerData, markerOptions);
+        },
+
+        addMarkerToGroup: function(marker, groupName, map) {
+            if (!isString(groupName)) {
+                $log.error('[AngularJS - Leaflet] The marker group you have specified is invalid.');
+                return;
+            }
+
+            if (!MarkerClusterPlugin.isLoaded()) {
+                $log.error("[AngularJS - Leaflet] The MarkerCluster plugin is not loaded.");
+                return;
+            }
+            if (!isDefined(groups[groupName])) {
+                groups[groupName] = new L.MarkerClusterGroup();
+                map.addLayer(groups[groupName]);
+            }
+            groups[groupName].addLayer(marker);
         },
 
         addMarkerWatcher: function(marker, name, leafletScope, layers, map) {

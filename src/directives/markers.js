@@ -14,6 +14,7 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                 markers = leafletScope.markers,
                 deleteMarker = leafletMarkersHelpers.deleteMarker,
                 addMarkerWatcher = leafletMarkersHelpers.addMarkerWatcher,
+                addMarkerToGroup = leafletMarkersHelpers.addMarkerToGroup,
                 bindMarkerEvents = leafletEvents.bindMarkerEvents,
                 createMarker = leafletMarkersHelpers.createMarker;
 
@@ -53,7 +54,7 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                                 var markerData = newMarkers[newName];
                                 var marker = createMarker(markerData);
                                 if (!isDefined(marker)) {
-                                    $log.error('[AngularJS - Leaflet] Received invalid data on the marker ¡ ' + newName + '.');
+                                    $log.error('[AngularJS - Leaflet] Received invalid data on the marker ' + newName + '.');
                                     continue;
                                 }
                                 leafletMarkers[newName] = marker;
@@ -61,6 +62,11 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                                 // Bind message
                                 if (isDefined(markerData.message)) {
                                     marker.bindPopup(markerData.message);
+                                }
+
+                                // Add the marker to a cluster group if needed
+                                if (isDefined(markerData.group)) {
+                                    addMarkerToGroup(marker, markerData.group, map);
                                 }
 
                                 // Show label if defined
