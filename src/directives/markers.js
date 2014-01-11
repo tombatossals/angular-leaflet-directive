@@ -1,4 +1,4 @@
-angular.module("leaflet-directive").directive('markers', function ($log, $rootScope, $q, leafletData, leafletHelpers, leafletMapDefaults, leafletMarkersHelpers) {
+angular.module("leaflet-directive").directive('markers', function ($log, $rootScope, $q, leafletData, leafletHelpers, leafletMapDefaults, leafletMarkersHelpers, leafletEvents) {
     return {
         restrict: "A",
         scope: false,
@@ -14,7 +14,7 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                 markers = leafletScope.markers,
                 deleteMarker = leafletMarkersHelpers.deleteMarker,
                 addMarkerWatcher = leafletMarkersHelpers.addMarkerWatcher,
-                addMarkerEvents = leafletMarkersHelpers.addMarkerEvents,
+                bindMarkerEvents = leafletEvents.bindMarkerEvents,
                 createMarker = leafletMarkersHelpers.createMarker;
 
             mapController.getMap().then(function(map) {
@@ -115,7 +115,7 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                                 if (shouldWatch) {
                                     addMarkerWatcher(marker, newName, leafletScope, layers, map);
                                 }
-                                addMarkerEvents(marker, newName, markerData, leafletScope);
+                                bindMarkerEvents(marker, newName, markerData, leafletScope);
                             }
                         }
                     }, true);
