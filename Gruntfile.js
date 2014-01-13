@@ -74,9 +74,9 @@ module.exports = function(grunt) {
         protractor: {
             options: {
                 keepAlive: false,
-                configFile: "test/protractor.conf.js"
+                configFile: 'test/protractor.conf.js',
             },
-            singlerun: {},
+            run: {},
             saucelabs: {
                 options: {
                     args: {
@@ -246,9 +246,9 @@ module.exports = function(grunt) {
                     'src/services/leafletMapDefaults.js',
                     'src/services/leafletEvents.js',
                     'src/services/leafletLayerHelpers.js',
-                    'src/services/leafletPathHelpers.js',
+                    'src/services/leafletPathsHelpers.js',
                     'src/services/leafletBoundsHelpers.js',
-                    'src/services/leafletMarkerHelpers.js',
+                    'src/services/leafletMarkersHelpers.js',
                     'src/services/leafletHelpers.js'
                 ],
                 dest: 'dist/angular-leaflet-directive.js',
@@ -266,7 +266,8 @@ module.exports = function(grunt) {
     //single run tests
     grunt.registerTask('test', ['jshint','test:unit', 'test:e2e']);
     grunt.registerTask('test:unit', ['karma:unit']);
-    grunt.registerTask('test:e2e', ['shell:protractor_update', 'connect:testserver', 'protractor:singlerun']);
+    grunt.registerTask('test:e2e', ['shell:protractor_update', 'connect:testserver', 'protractor:run']);
+    grunt.registerTask('test:e2e-firefox', ['shell:protractor_update', 'connect:testserver', 'protractor:firefox']);
 
     //coverage testing
     grunt.registerTask('test:coverage', ['karma:unit_coverage']);

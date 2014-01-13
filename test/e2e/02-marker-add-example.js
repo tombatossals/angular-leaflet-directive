@@ -1,11 +1,11 @@
 'use strict';
 
-describe('Loading marker-add-example.html', function() {
+describe('Loading markers-add-example.html', function() {
 
     var ptor, driver;
     beforeEach(function() {
         ptor = protractor.getInstance();
-        browser.get('marker-add-example.html');
+        browser.get('markers-add-example.html');
         driver = ptor.driver;
     });
 

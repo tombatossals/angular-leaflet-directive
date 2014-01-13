@@ -1,4 +1,4 @@
-angular.module("leaflet-directive").factory('leafletPathHelpers', function ($rootScope, $log, leafletHelpers) {
+angular.module("leaflet-directive").factory('leafletPathsHelpers', function ($rootScope, $log, leafletHelpers) {
     var isDefined = leafletHelpers.isDefined,
         isArray = leafletHelpers.isArray,
         isNumber = leafletHelpers.isNumber,
@@ -232,6 +232,9 @@ angular.module("leaflet-directive").factory('leafletPathHelpers', function ($roo
 
     return {
         setPathOptions: function(leafletPath, pathType, data) {
+            if(!isDefined(pathType)) {
+                pathType = "polyline";
+            }
             pathTypes[pathType].setPath(leafletPath, data);
         },
         createPath: function(name, path, defaults) {

@@ -1,4 +1,4 @@
-angular.module("leaflet-directive").directive('paths', function ($log, leafletData, leafletMapDefaults, leafletHelpers, leafletPathHelpers) {
+angular.module("leaflet-directive").directive('paths', function ($log, leafletData, leafletMapDefaults, leafletHelpers, leafletPathsHelpers) {
     return {
         restrict: "A",
         scope: false,
@@ -9,8 +9,8 @@ angular.module("leaflet-directive").directive('paths', function ($log, leafletDa
             var isDefined = leafletHelpers.isDefined,
                 leafletScope  = controller.getLeafletScope(),
                 paths     = leafletScope.paths,
-                createPath = leafletPathHelpers.createPath,
-                setPathOptions = leafletPathHelpers.setPathOptions;
+                createPath = leafletPathsHelpers.createPath,
+                setPathOptions = leafletPathsHelpers.setPathOptions;
 
             controller.getMap().then(function(map) {
                 var defaults = leafletMapDefaults.getDefaults(attrs.id);
@@ -34,17 +34,17 @@ angular.module("leaflet-directive").directive('paths', function ($log, leafletDa
                     }, true);
                 };
 
-                scope.$watch("paths", function (newPaths) {
+                leafletScope.$watch("paths", function (newPaths) {
                     // Create the new paths
-                    for (var new_name in newPaths) {
-                        if (!isDefined(leafletPaths[new_name])) {
-                            var newPath = createPath(new_name, newPaths[new_name], defaults);
+                    for (var newName in newPaths) {
+                        if (!isDefined(leafletPaths[newName])) {
+                            var newPath = createPath(newName, newPaths[newName], defaults);
 
                             // Listen for changes on the new path
                             if (isDefined(newPath)) {
-                                leafletPaths[new_name] = newPath;
+                                leafletPaths[newName] = newPath;
                                 map.addLayer(newPath);
-                                watchPathFn(newPath, new_name);
+                                watchPathFn(newPath, newName);
                             }
                         }
                     }

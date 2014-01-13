@@ -28,19 +28,15 @@ angular.module("leaflet-directive").directive('center', function ($log, $parse, 
                     autoDiscover: $parse("center.autoDiscover")
                 };
 
-                var movingMap = false;
+                var changingModel = false;
 
                 leafletScope.$watch("center", function(center) {
+                    changingModel = true;
                     if (!isValidCenter(center) && center.autoDiscover !== true) {
                         $log.warn("[AngularJS - Leaflet] invalid 'center'");
                         map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
                         return;
                     }
-                    if (movingMap) {
-                        // Can't update. The map is moving.
-                        return;
-                    }
-
                     if (center.autoDiscover === true) {
                         if (!isNumber(center.zoom)) {
                             map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
@@ -56,14 +52,14 @@ angular.module("leaflet-directive").directive('center', function ($log, $parse, 
                     }
 
                     map.setView([center.lat, center.lng], center.zoom);
+                    changingModel = false;
                 }, true);
 
-                map.on("movestart", function(/* event */) {
-                    movingMap = true;
-                });
-
                 map.on("moveend", function(/* event */) {
-                    movingMap = false;
+                    if (changingModel) {
+                        return;
+                    }
+
                     safeApply(leafletScope, function(scope) {
                         if (centerModel) {
                             centerModel.lat.assign(scope, map.getCenter().lat);
