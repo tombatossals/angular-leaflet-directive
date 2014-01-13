@@ -97,6 +97,16 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
                 return new L.BingLayer(params.key, params.options);
             }
         },
+        yandex: {
+            mustHaveUrl: false,
+            createLayer: function(params) {
+                var type = params.type || 'map';
+                if (!Helpers.YandexLayerPlugin.isLoaded()) {
+                    return;
+                }
+                return new L.Yandex(type, params.options);
+            }
+        },
         imageOverlay: {
             mustHaveUrl: true,
             mustHaveBounds : true,

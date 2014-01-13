@@ -206,6 +206,18 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
                 }
             },
         },
+        YandexLayerPlugin: {
+            isLoaded: function() {
+                return angular.isDefined(L.Yandex);
+            },
+            is: function(layer) {
+                if (this.isLoaded()) {
+                    return layer instanceof L.Yandex;
+                } else {
+                    return false;
+                }
+            }
+        },
 		DynamicMapLayerPlugin: {
 			isLoaded: function() {
 				return L.esri !== undefined && L.esri.dynamicMapLayer !== undefined;
