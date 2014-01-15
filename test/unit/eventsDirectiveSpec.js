@@ -703,7 +703,7 @@ describe('Directive: leaflet', function() {
         // https://github.com/tombatossals/angular-leaflet-directive
         var $scope = $rootScope.$new();
         $scope.events = {
-            marker: {
+            path: {
                 enable: ['click', 'foo'],
                 logic: "emit"
             }
