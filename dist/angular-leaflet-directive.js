@@ -576,7 +576,7 @@ angular.module("leaflet-directive").directive('bounds', function ($log, leafletH
                         }
                     }, true);
 
-                    map.on('dragend zoomend', function() {
+                    map.on('moveend dragend zoomend', function() {
                         if (!initializing) {
                             updateBoundsInScope(leafletScope, map);
                         }
