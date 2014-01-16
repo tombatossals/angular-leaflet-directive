@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.2.9-build.2118+sha.f4a4f42
+ * @license AngularJS v1.2.10-build.2145+sha.6a9ccac
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -448,7 +448,6 @@ function $RouteProvider(){
           }
         };
 
-    updateRoute();
     $rootScope.$on('$locationChangeSuccess', updateRoute);
 
     return $route;
@@ -670,6 +669,15 @@ ngRouteModule.directive('ngView', ngViewFillContentFactory);
  *
  * @scope
  * @priority 400
+ * @param {string=} onload Expression to evaluate whenever the view updates.
+ *
+ * @param {string=} autoscroll Whether `ngView` should call {@link ng.$anchorScroll
+ *                  $anchorScroll} to scroll the viewport after the view is updated.
+ *
+ *                  - If the attribute is not set, disable scrolling.
+ *                  - If the attribute is set without value, enable scrolling.
+ *                  - Otherwise enable scrolling only if the `autoscroll` attribute value evaluated
+ *                    as an expression yields a truthy value.
  * @example
     <example module="ngViewExample" deps="angular-route.js" animations="true">
       <file name="index.html">
