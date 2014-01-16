@@ -182,9 +182,16 @@ module.exports = function(grunt) {
                     'dist/angular-leaflet-directive.js': ['coverage']
                 },
                 coverageReporter: {
-                    type : 'html',
+                    type : 'lcov',
                     dir : 'coverage/'
                 }
+            }
+        },
+
+        coveralls: {
+            options: {
+                debug: true,
+                coverage_dir: 'coverage'
             }
         },
 
@@ -286,5 +293,5 @@ module.exports = function(grunt) {
     grunt.registerTask('serve', ['connect:webserver']);
 
     //travis
-    grunt.registerTask('travis', ['bower:install', 'test:unit', 'shell:protractor_update', 'protractor:saucelabs']);
+    grunt.registerTask('travis', ['bower:install', 'test:unit', 'karma:unit_coverage', 'coveralls', 'shell:protractor_update', 'protractor:saucelabs']);
 };

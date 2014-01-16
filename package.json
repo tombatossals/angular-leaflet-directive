@@ -37,12 +37,13 @@
     "karma-coffee-preprocessor": "*",
     "karma-phantomjs-launcher": "*",
     "karma-coverage": "*",
-    "karma": "~0.10.x",
+    "karma": "*",
     "protractor": "*",
     "grunt-protractor-runner": "*",
     "grunt-shell-spawn": "*",
     "grunt-conventional-changelog": "*",
-    "grunt-bump": "*"
+    "grunt-bump": "*",
+    "grunt-karma-coveralls": "*"
   },
   "scripts": {
     "test": "grunt travis --verbose"
