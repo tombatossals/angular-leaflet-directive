@@ -1,4 +1,6 @@
-# angular-leaflet-directive [![Build Status](https://travis-ci.org/tombatossals/angular-leaflet-directive.png)](https://travis-ci.org/tombatossals/angular-leaflet-directive) [![Dependency Status](https://gemnasium.com/tombatossals/angular-leaflet-directive.png)](https://gemnasium.com/tombatossals/angular-leaflet-directive)
+# angular-leaflet-directive 
+[![Build Status](https://travis-ci.org/tombatossals/angular-leaflet-directive.png)](https://travis-ci.org/tombatossals/angular-leaflet-directive) [![Dependency Status](https://gemnasium.com/tombatossals/angular-leaflet-directive.png)](https://gemnasium.com/tombatossals/angular-leaflet-directive) [![Coverage Status](https://coveralls.io/repos/tombatossals/angular-leaflet-directive/badge.png?branch=master)](https://coveralls.io/r/tombatossals/angular-leaflet-directive?branch=master)
+
 
 
 [AngularJS](http://angularjs.org/) directive for the Leaflet Javascript
