@@ -11,5 +11,6 @@ js/angular-leaflet-directive-webpage.ngmin.js
 .project
 node_modules
 coverage/*.json
+coverage/**/lcov.info
 selenium
 saucelabs.json
