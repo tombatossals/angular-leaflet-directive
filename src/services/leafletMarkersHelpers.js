@@ -70,7 +70,8 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
                 title: isDefined(markerData.title) ? markerData.title : '',
                 draggable: isDefined(markerData.draggable) ? markerData.draggable : false,
                 clickable: isDefined(markerData.clickable) ? markerData.clickable : true,
-                riseOnHover: isDefined(markerData.riseOnHover) ? markerData.riseOnHover : false
+                riseOnHover: isDefined(markerData.riseOnHover) ? markerData.riseOnHover : false,
+                zIndexOffset: isDefined(markerData.zIndexOffset) ? markerData.zIndexOffset : 0
             };
 
             return new L.marker(markerData, markerOptions);
