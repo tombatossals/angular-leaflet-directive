@@ -52,11 +52,11 @@ angular.module("leaflet-directive").directive('center', function ($log, $parse, 
                     }
 
                     map.setView([center.lat, center.lng], center.zoom);
-                    changingModel = false;
                 }, true);
 
                 map.on("moveend", function(/* event */) {
                     if (changingModel) {
+                        changingModel = false;
                         return;
                     }
 
