@@ -163,7 +163,7 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
                 }
 
                 // Update the draggable property
-                if (markerData.draggable !== true && oldMarkerData.draggable === true && marker.dragging === true) {
+                if (markerData.draggable !== true && oldMarkerData.draggable === true && (marker.dragging !== undefined && marker.dragging !== null)) {
                     marker.dragging.disable();
                 }
                 if (markerData.draggable === true && oldMarkerData.draggable !== true) {
