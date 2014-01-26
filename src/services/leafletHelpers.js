@@ -110,8 +110,8 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
 
         AwesomeMarkersPlugin: {
             isLoaded: function() {
-                if (L.AwesomeMarkers !== undefined) {
-                    return (L.AwesomeMarkers.Icon !== undefined);
+                if (angular.isDefined(L.AwesomeMarkers) && angular.isDefined(L.AwesomeMarkers.Icon)) {
+                    return true;
                 } else {
                     return false;
                 }

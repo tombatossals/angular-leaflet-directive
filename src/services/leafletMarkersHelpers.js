@@ -2,6 +2,7 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
 
     var isDefined = leafletHelpers.isDefined,
         MarkerClusterPlugin = leafletHelpers.MarkerClusterPlugin,
+        AwesomeMarkersPlugin = leafletHelpers.AwesomeMarkersPlugin,
         Helpers = leafletHelpers,
         isString = leafletHelpers.isString,
         isNumber  = leafletHelpers.isNumber,
@@ -9,6 +10,14 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
         groups = {};
 
     var createLeafletIcon = function(iconData) {
+        if (isDefined(iconData) && isDefined(iconData.type) && iconData.type === 'awesomeMarker') {
+            if (!AwesomeMarkersPlugin.isLoaded()) {
+                $log.error('[AngularJS - Leaflet] The AwesomeMarkers Plugin is not loaded.');
+            }
+
+            return new L.AwesomeMarkers.icon(iconData);
+        }
+
         if (isDefined(iconData) && isDefined(iconData.type) && iconData.type === 'div') {
             return new L.divIcon(iconData);
         }
@@ -216,7 +225,7 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
                 }
 
                 // There is some text in the popup, so we must show the text or update existing
-                if (isString(markerData) && !isString(oldMarkerData)) {
+                if (isString(markerData.message) && !isString(oldMarkerData.message)) {
                     // There was no message before so we create it
                     marker.bindPopup(markerData.message);
                     if (markerData.focus === true) {
@@ -225,7 +234,7 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
                     }
                 }
 
-                if (isString(markerData) && isString(oldMarkerData) && markerData.message !== oldMarkerData.message) {
+                if (isString(markerData.message) && isString(oldMarkerData.message) && markerData.message !== oldMarkerData.message) {
                     // There was a different previous message so we update it
                     marker.setPopupContent(markerData.message);
                 }
