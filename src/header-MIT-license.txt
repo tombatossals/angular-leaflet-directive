@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  *
- * angular-google-maps
+ * angular-leaflet-directive
  * https://github.com/tombatossals/angular-leaflet-directive
  *
  * @authors https://github.com/tombatossals/angular-leaflet-directive/graphs/contributors
