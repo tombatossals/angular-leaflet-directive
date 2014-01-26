@@ -28,6 +28,7 @@ See some basic examples:
 * [Marker with label example](http://tombatossals.github.io/angular-leaflet-directive/examples/markers-label-example.html)
 * [Marker with group clustering example](http://tombatossals.github.io/angular-leaflet-directive/examples/markers-clustering-example.html)
 * [Marker groups example](http://tombatossals.github.io/angular-leaflet-directive/examples/markers-groups-example.html)
+* [Marker update properties example](http://tombatossals.github.io/angular-leaflet-directive/examples/markers-update-example.html)
 * [Markers dynamic add/remove example](http://tombatossals.github.io/angular-leaflet-directive/examples/markers-dynamic-addremove-example.html)
 * [Marker addition example](http://tombatossals.github.io/angular-leaflet-directive/examples/markers-add-example.html)
 * [Legend example](http://tombatossals.github.io/angular-leaflet-directive/examples/legend-example.html)
