@@ -1,5 +1,5 @@
 # angular-leaflet-directive 
-[![Build Status](https://travis-ci.org/tombatossals/angular-leaflet-directive.png)](https://travis-ci.org/tombatossals/angular-leaflet-directive) [![Dependency Status](https://gemnasium.com/tombatossals/angular-leaflet-directive.png)](https://gemnasium.com/tombatossals/angular-leaflet-directive) [![Coverage Status](https://coveralls.io/repos/tombatossals/angular-leaflet-directive/badge.png?branch=master)](https://coveralls.io/r/tombatossals/angular-leaflet-directive?branch=master)
+[![Build Status](https://travis-ci.org/tombatossals/angular-leaflet-directive.png)](https://travis-ci.org/tombatossals/angular-leaflet-directive) [![Dependency Status](https://gemnasium.com/tombatossals/angular-leaflet-directive.png)](https://gemnasium.com/tombatossals/angular-leaflet-directive) [![Coverage Status](https://coveralls.io/repos/tombatossals/angular-leaflet-directive/badge.png?branch=master)](http://tombatossals.github.io/angular-leaflet-directive/coverage/PhantomJS%201.9.2%20\(Linux\)/dist/angular-leaflet-directive.js.html)
 
 
 
@@ -28,6 +28,7 @@ See some basic examples:
 * [Marker with label example](http://tombatossals.github.io/angular-leaflet-directive/examples/markers-label-example.html)
 * [Marker with group clustering example](http://tombatossals.github.io/angular-leaflet-directive/examples/markers-clustering-example.html)
 * [Marker groups example](http://tombatossals.github.io/angular-leaflet-directive/examples/markers-groups-example.html)
+* [Marker update properties example](http://tombatossals.github.io/angular-leaflet-directive/examples/markers-update-example.html)
 * [Markers dynamic add/remove example](http://tombatossals.github.io/angular-leaflet-directive/examples/markers-dynamic-addremove-example.html)
 * [Marker addition example](http://tombatossals.github.io/angular-leaflet-directive/examples/markers-add-example.html)
 * [Legend example](http://tombatossals.github.io/angular-leaflet-directive/examples/legend-example.html)
