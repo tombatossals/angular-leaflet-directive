@@ -23,7 +23,7 @@
     "leaflet.draw": "0.2.2",
     "Leaflet.label": "0.2.1",
     "Leaflet.awesome-markers": "*",
-    "leaflet-plugins": "1.0.0"
+    "leaflet-plugins": "1.0.1"
   },
   "ignore": [
     "**/.*",
