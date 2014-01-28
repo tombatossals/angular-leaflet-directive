@@ -30,8 +30,19 @@ Marker attributes
 -----------------
 Every marker can have these properties:
 
-* **lat**.
-* **lng**.
+* **lat**. Number. Latitude.
+* **lng**. Number. Longitude.
 * **focus**. true/false. Shows/hide the popup of the marker (only one can be active).
-* **message**. Message to show on the popup.
+* **message**. String. Message to show on the popup.
 * **draggable**. true/false. Make the marker draggable.
+
+There are a special type of property called _label_ which uses the [Leaflet.label plugin ](https://github.com/Leaflet/Leaflet.label) to show a special label on hover the marker. These are the properties we need to define to use it:
+
+```
+label: {
+    message: "Hey, drag me if you want",
+    options: {
+        noHide: true
+    }
+}
+```
