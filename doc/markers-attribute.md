@@ -49,3 +49,12 @@ label: {
 
 You can see an example of this special label [here](http://tombatossals.github.io/angular-leaflet-directive/examples/markers-label-example.html).
 
+
+Markers watches
+---------------
+Every marker you add to the map is watched for changes by default, so a change in a marker property will be reflected on the map directly. This feature can be disabled if you don't need to dynamic modification of markers and prefer better performance. This is the command used to disable markers watchers:
+
+```
+<leaflet markers="markers" watch-markers="false"></leaflet>
+```
+
