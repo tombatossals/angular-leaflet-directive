@@ -58,3 +58,14 @@ Every marker you add to the map is watched for changes by default, so a change i
 <leaflet markers="markers" watch-markers="false"></leaflet>
 ```
 
+By default the markers will be watched, so we can change its properties dinamically, like in [this demo](http://tombatossals.github.io/angular-leaflet-directive/examples/markers-update-example.html).
+
+
+Markers inside overlays
+-----------------------
+We can group the markers inside a layer overlay, so the layer switch selector control will appear and we could activate/deactive overlays with their markers.
+
+Let's see an example of this feature on [this demo](http://tombatossals.github.io/angular-leaflet-directive/examples/markers-groups-example.html).
+
+This special renderin can be accomplished defining overlays of type _group_ and with _name_ property, and the markers will need a special property _layer_ with the name of the overlay we've previously defined.
+
