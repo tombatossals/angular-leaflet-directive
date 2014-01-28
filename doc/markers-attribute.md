@@ -36,7 +36,7 @@ Every marker can have these properties:
 * **message**. String. Message to show on the popup.
 * **draggable**. true/false. Make the marker draggable.
 
-There are a special type of property called _label_ which uses the [Leaflet.label plugin ](https://github.com/Leaflet/Leaflet.label) to show a special label on hover the marker. These are the properties we need to define to use it:
+There are a special type of property called _label_ which uses the [Leaflet.label plugin ](https://github.com/Leaflet/Leaflet.label) to show a fixed special label on the marker, or on hovering it. This is the marker property we need to define to use it:
 
 ```
 label: {
@@ -46,3 +46,6 @@ label: {
     }
 }
 ```
+
+You can see an example of this special label [here](http://tombatossals.github.io/angular-leaflet-directive/examples/markers-label-example.html).
+
