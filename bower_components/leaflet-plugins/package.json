@@ -1,0 +1,22 @@
+{
+  "author": "Pavel Shramov",
+  "name": "leaflet-plugins",
+  "version": "1.0.1",
+  "description": "Miscellaneous plugins for Leaflet library for services that need to display route information and need satellite imagery from different providers",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:shramov/leaflet-plugins.git"
+  },
+  "contributors": [
+    "Bruno Bergot <bruno@eliaz.fr>",
+    "Andrey Lushchick <andrew@lushchick.org>"
+  ],
+  "keywords": [
+    "leaflet",
+    "plugins",
+    "map",
+    "google",
+    "bing",
+    "yandex"
+  ]
+}
