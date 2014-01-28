@@ -102,7 +102,7 @@
                     </div>
                     <h3>Icon</h3>
                     <div class="btn-group" data-toggle="buttons">
-                        <label class="btn btn-primary" ng-class="{ active: markers.m1.icon == iconA }">
+                        <label class="btn btn-primary" ng-class="{ active: markers.m1.icon != iconB && markers.m1.icon != iconC }">
                             <input type="radio" ng-model="markers.m1.icon" ng-value="iconA" class="btn btn-default">Default</button>
                         </label>
                         <label class="btn btn-primary" ng-class="{ active: markers.m1.icon == iconB }">
@@ -112,15 +112,15 @@
                             <input type="radio" ng-model="markers.m1.icon" ng-value="iconC" class="btn btn-default">AwesomeMarker Icon</button>
                         </label>
                     </div>
-                    <h3 ng-disabled="markers.m1.icon == iconC">AwesomeIcon color</h3>
-                    <div class="btn-group" data-toggle="buttons" ng-disabled="markers.m1.icon != iconC">
-                        <label class="btn btn-primary" ng-class="{ active: iconC.color == 'red' }">
+                    <h3 ng-show="markers.m1.icon == iconC">AwesomeIcon color</h3>
+                    <div class="btn-group" data-toggle="buttons" ng-show="markers.m1.icon == iconC">
+                        <label class="btn btn-primary" ng-class="{ active: iconC.markerColor == 'red' }">
                             <input type="radio" ng-click="iconC.markerColor" ng-value="'red'" class="btn btn-default">Red</button>
                         </label>
-                        <label class="btn btn-primary" ng-class="{ active: iconC.color == 'blue' }">
+                        <label class="btn btn-primary" ng-class="{ active: iconC.markerColor == 'blue' }">
                             <input type="radio" ng-model="iconC.markerColor" ng-value="'blue'" class="btn btn-default">Blue</button>
                         </label>
-                        <label class="btn btn-primary" ng-class="{ active: iconC.color == 'green' }">
+                        <label class="btn btn-primary" ng-class="{ active: iconC.markerColor == 'green' }">
                             <input type="radio" ng-model="iconC.markerColor" ng-value="'green'" class="btn btn-default">Green</button>
                         </label>
                     </div>
