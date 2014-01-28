@@ -2324,6 +2324,11 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
                     marker.unbindPopup();
                 }
 
+                // Update the label content
+                if (Helpers.LabelPlugin.isLoaded() && isDefined(markerData.label) && isDefined(markerData.label.message) && !angular.equals(markerData.label.message, oldMarkerData.label.message)) {
+                    marker.updateLabelContent(markerData.label.message);
+                }
+
                 // There is some text in the popup, so we must show the text or update existing
                 if (isString(markerData.message) && !isString(oldMarkerData.message)) {
                     // There was no message before so we create it
