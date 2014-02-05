@@ -37,6 +37,7 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                 leafletLayers.baselayers = {};
                 leafletLayers.controls = {};
                 leafletLayers.controls.layers = new L.control.layers();
+                leafletLayers.controls.layers.options = layers.options;
                 leafletLayers.controls.layers.setPosition(defaults.controlLayersPosition);
 
 
