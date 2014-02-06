@@ -1707,7 +1707,17 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
             createLayer: function(params) {
                 return L.imageOverlay(params.url, params.bounds, params.options);
             }
-        }
+        },
+        geoJSON:{
+            mustHaveUrl: true,
+            createLayer: function(params) {
+                if (!Helpers.GeoJSONPlugin.isLoaded()) {
+                    return;
+                }
+                    console.log("geoJSON", new L.TileLayer.GeoJSON(params.url, params.pluginOptions, params.options))
+                    return new L.TileLayer.GeoJSON(params.url, params.pluginOptions, params.options);
+                }
+        },
     };
 
     function isValidLayerType(layerDefinition) {
@@ -1768,7 +1778,8 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
                 layer: layerDefinition.layer,
                 type: layerDefinition.layerType,
                 bounds: layerDefinition.bounds,
-                key: layerDefinition.key
+                key: layerDefinition.key,
+                pluginOptions: layerDefinition.pluginOptions
             };
 
             //TODO Add $watch to the layer properties
@@ -2620,6 +2631,18 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
 					return false;
 				}
 			},
+        },
+        GeoJSONPlugin: {
+            isLoaded: function(){
+                return angular.isDefined(L.TileLayer.GeoJSON);
+            },
+            is: function(layer) {
+                if (this.isLoaded()) {
+                    return layer instanceof L.TileLayer.GeoJSON;
+                } else {
+                    return false;
+                }
+            }
         },
         Leaflet: {
             DivIcon: {
