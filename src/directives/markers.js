@@ -62,7 +62,7 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
 
                                 // Bind message
                                 if (isDefined(markerData.message)) {
-                                    marker.bindPopup(markerData.message);
+                                    marker.bindPopup(markerData.message, markerData.popupOptions);
                                 }
 
                                 // Add the marker to a cluster group if needed
