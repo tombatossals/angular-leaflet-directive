@@ -100,6 +100,60 @@ describe('Directive: leaflet', function() {
         });
     });
 
+    it('should bind label to main marker if message is given', function() {
+        spyOn(leafletHelpers.LabelPlugin, 'isLoaded').andReturn(true);
+        L.Label = L.Class.extend({
+            includes: L.Mixin.Events,
+        });
+
+        L.BaseMarkerMethods = {
+            bindLabel: function(content, options) {
+                this.label = new L.Label(options, this);
+                this.label._content = content;
+                return this;
+            },
+            updateLabelContent: function(content) {
+                this.label._content = content;
+            }
+        };
+
+        L.Marker.include(L.BaseMarkerMethods);
+
+        var marker = {
+            lat: 0.966,
+            lng: 2.02,
+            message: 'this is paris',
+            label: {
+                message: 'original',
+                options: {
+                    clickable: true
+                }
+            }
+        };
+
+        angular.extend($rootScope, {
+            markers: {
+                marker: marker
+            }
+        });
+
+        var element = angular.element('<leaflet markers="markers"></leaflet>');
+        $compile(element)($rootScope);
+        $rootScope.$digest();
+        leafletData.getMarkers().then(function(leafletMarkers){
+            var leafletMainMarker = leafletMarkers.marker;
+            expect(leafletMainMarker.label._content).toEqual('original');
+        });
+
+        marker.label.message = 'new';
+
+        $rootScope.$digest();
+        leafletData.getMarkers().then(function(leafletMarkers){
+            var leafletMainMarker = leafletMarkers.marker;
+            expect(leafletMainMarker.label._content).toEqual('new');
+        });
+    });
+
     // Markers
     it('should create markers on the map', function() {
         angular.extend($rootScope, { markers: mainMarkers });
