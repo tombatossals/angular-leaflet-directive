@@ -22,8 +22,9 @@
     "leaflet.markerclusterer": "0.4",
     "leaflet.draw": "0.2.2",
     "Leaflet.label": "0.2.1",
+    "leaflet-tilelayer-geojson": "*",
     "Leaflet.awesome-markers": "*",
-    "leaflet-plugins": "1.0.0"
+    "leaflet-plugins": "1.0.1"
   },
   "ignore": [
     "**/.*",

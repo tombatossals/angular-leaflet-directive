@@ -604,6 +604,7 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                 markers = leafletScope.markers,
                 deleteMarker = leafletMarkersHelpers.deleteMarker,
                 addMarkerWatcher = leafletMarkersHelpers.addMarkerWatcher,
+                listenMarkerEvents = leafletMarkersHelpers.listenMarkerEvents,
                 addMarkerToGroup = leafletMarkersHelpers.addMarkerToGroup,
                 bindMarkerEvents = leafletEvents.bindMarkerEvents,
                 createMarker = leafletMarkersHelpers.createMarker;
@@ -710,6 +711,7 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
 
                                 if (shouldWatch) {
                                     addMarkerWatcher(marker, newName, leafletScope, layers, map);
+                                    listenMarkerEvents(marker, markerData, leafletScope);
                                 }
                                 bindMarkerEvents(marker, newName, markerData, leafletScope);
                             }
@@ -2103,6 +2105,7 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
     var isDefined = leafletHelpers.isDefined,
         MarkerClusterPlugin = leafletHelpers.MarkerClusterPlugin,
         AwesomeMarkersPlugin = leafletHelpers.AwesomeMarkersPlugin,
+        safeApply     = leafletHelpers.safeApply,
         Helpers = leafletHelpers,
         isString = leafletHelpers.isString,
         isNumber  = leafletHelpers.isNumber,
@@ -2201,6 +2204,19 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
                 map.addLayer(groups[groupName]);
             }
             groups[groupName].addLayer(marker);
+        },
+
+        listenMarkerEvents: function(marker, markerData, leafletScope) {
+            marker.on("popupopen", function(/* event */) {
+                safeApply(leafletScope, function() {
+                    markerData.focus = true;
+                });
+            });
+            marker.on("popupclose", function(/* event */) {
+                safeApply(leafletScope, function() {
+                    markerData.focus = false;
+                });
+            });
         },
 
         addMarkerWatcher: function(marker, name, leafletScope, layers, map) {

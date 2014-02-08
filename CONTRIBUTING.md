@@ -26,7 +26,7 @@ There are a some Grunt tasks defined to ease the development cycle. Let's see ho
 First, make sure you have npm and grunt-cli installed globally. Let's install the dependencies.
 
 ```
-# Inside the project dir, install the dependencies
+# Inside the project dir, install the nodeJS dependencies
 $ npm install
 npm http GET https://registry.npmjs.org/protractor/0.14.0
 npm http GET https://registry.npmjs.org/matchdep
@@ -45,6 +45,21 @@ npm http GET https://registry.npmjs.org/grunt-ngmin
 ├── connect@2.8.8 (methods@0.0.1, uid2@0.0.2, fresh@0.2.0, cookie@0.1.0, ..., send@0.1.4)
 └── socket.io@0.9.16 (base64id@0.1.0, policyfile@0.0.4, redis@0.7.3, socket.io-client@0.9.16)
 $
+```
+
+And we must install the client libraries dependencies with _bower_ too:
+```
+[dave@haddock angular-leaflet-directive]$ bower install
+bower angular#1.2.x             cached git://github.com/angular/bower-angular.git#1.2.6-build.1989+sha.b0474cb
+bower angular#1.2.x           validate 1.2.6-build.1989+sha.b0474cb against git://github.com/angular/bower-angular.git#1.2.x
+...
+angular-route#1.2.10-build.2164+sha.8b395ff bower_components/angular-route
+└── angular#1.2.10-build.2164+sha.8b395ff
+
+angular-animate#1.2.10-build.2164+sha.8b395ff bower_components/angular-animate
+└── angular#1.2.10-build.2164+sha.8b395ff
+
+angular#1.2.10-build.2164+sha.8b395ff bower_components/angular
 ```
 
 Once you have the development dependencies installed, we can use our predefined grunt tasks. For example:
