@@ -105,7 +105,8 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                                         marker.openPopup();
                                     }
 
-                                } else {
+                                // Add the marker to the map if it hasn't been added to a layer or to a group
+                                } else if (!isDefined(markerData.group)) {
                                     // We do not have a layer attr, so the marker goes to the map layer
                                     map.addLayer(marker);
                                     if (markerData.focus === true) {
