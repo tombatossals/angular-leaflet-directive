@@ -49,3 +49,4 @@ We are not limited to one type of layers, we can define other types:
 * WFS Layer.
 * GoogleMaps Layer.
 * MarkerCluster Layer.
+* GeoJSON Layer.
