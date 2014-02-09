@@ -1407,7 +1407,7 @@ angular.module("leaflet-directive").factory('leafletEvents', function ($rootScop
                 if (!isDefined(leafletScope.eventBroadcast.marker)) {
                     // We do not have events enable/disable do we do nothing (all enabled by default)
                     markerEvents = _getAvailableMarkerEvents();
-                } else if (isObject(leafletScope.eventBroadcast.marker)) {
+                } else if (!isObject(leafletScope.eventBroadcast.marker)) {
                     // Not a valid object
                     $log.warn("[AngularJS - Leaflet] event-broadcast.marker must be an object check your model.");
                 } else {
@@ -1607,6 +1607,15 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
             mustHaveUrl: true,
             createLayer: function(params) {
                 return L.tileLayer(params.url, params.options);
+            }
+        },
+        geoJSON:{
+            mustHaveUrl: true,
+            createLayer: function(params) {
+                if (!Helpers.GeoJSONPlugin.isLoaded()) {
+                    return;
+                }
+                return new L.TileLayer.GeoJSON(params.url, params.pluginOptions, params.options);
             }
         },
         wms: {
@@ -2635,6 +2644,18 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
 					return false;
 				}
 			},
+        },
+        GeoJSONPlugin: {
+            isLoaded: function(){
+                return angular.isDefined(L.TileLayer.GeoJSON);
+            },
+            is: function(layer) {
+                if (this.isLoaded()) {
+                    return layer instanceof L.TileLayer.GeoJSON;
+                } else {
+                    return false;
+                }
+            }
         },
         Leaflet: {
             DivIcon: {

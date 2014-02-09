@@ -230,6 +230,18 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
 				}
 			},
         },
+        GeoJSONPlugin: {
+            isLoaded: function(){
+                return angular.isDefined(L.TileLayer.GeoJSON);
+            },
+            is: function(layer) {
+                if (this.isLoaded()) {
+                    return layer instanceof L.TileLayer.GeoJSON;
+                } else {
+                    return false;
+                }
+            }
+        },
         Leaflet: {
             DivIcon: {
                 is: function(icon) {
