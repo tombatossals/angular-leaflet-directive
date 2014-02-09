@@ -1,0 +1,13 @@
+{
+  "name": "leaflet-tilelayer-geojson",
+  "homepage": "https://github.com/glenrobertson/leaflet-tilelayer-geojson",
+  "_release": "ef12f59fe4",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "ef12f59fe4d4380655fe46b51cb904c1994232bc"
+  },
+  "_source": "git://github.com/glenrobertson/leaflet-tilelayer-geojson.git",
+  "_target": "*",
+  "_originalSource": "leaflet-tilelayer-geojson"
+}
