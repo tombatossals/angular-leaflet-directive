@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html ng-app="demoapp">
+<head>
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/leaflet-dist/leaflet.js"></script>
+    <script src="../dist/angular-leaflet-directive.min.js"></script>
+    <script src="../bower_components/Leaflet.label/dist/leaflet.label.js"></script>
+    <script src="../bower_components/leaflet.markerclusterer/dist/leaflet.markercluster.js"></script>
+    <link rel="stylesheet" href="../bower_components/leaflet-dist/leaflet.css" />
+    <link rel="stylesheet" href="../bower_components/Leaflet.label/dist/leaflet.label.css" />
+    <link rel="stylesheet" href="../bower_components/leaflet.markerclusterer/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="../bower_components/leaflet.markerclusterer/dist/MarkerCluster.Default.css" />
+    <script>
+        angular.module("demoapp", ["leaflet-directive"]);
+
+        function DemoController($scope) {
+
+            angular.extend($scope, {
+                london: {
+                    lat: 51.505,
+                    lng: -0.09,
+                    zoom: 8
+                },
+
+                markers: {
+
+                    stoke: {
+                        group: 'london',
+                        lat: 51.5615,
+                        lng: -0.0731,
+                        label: {
+                            message: "Stoke",
+                            options: {
+                                noHide: true
+                            }
+                        }
+                    },
+
+                    dalston: {
+                        group: 'london',
+                        lat: 51.545,
+                        lng: -0.070,
+                        label: {
+                            message: "Dalston",
+                            options: {
+                                noHide: true
+                            }
+                        }
+                    },
+
+                    wandsworth: {
+                        group: 'london',
+                        lat: 51.4644,
+                        lng:-0.1924,
+                        label: {
+                            message: "Wandsworth",
+                            options: {
+                                noHide: true
+                            }
+                        }
+                    },
+
+                    battersea: {
+                        group: 'london',
+                        lat: 51.4638,
+                        lng: -0.1677,
+                        label: {
+                            message: "Battersea",
+                            options: {
+                                noHide: true
+                            }
+                        }
+                    }
+                },
+            });
+        };
+    </script>
+</head>
+<body ng-controller="DemoController">
+<div class="container">
+    <h2>Marker clustering example without layers</h2>
+    <leaflet center="london" markers="markers" height="480px" width="640px"></leaflet>
+</div>
+</body>
+</html>

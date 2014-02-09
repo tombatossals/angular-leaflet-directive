@@ -402,6 +402,9 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                 leafletLayers.baselayers = {};
                 leafletLayers.controls = {};
                 leafletLayers.controls.layers = new L.control.layers();
+                if (isDefined(layers.options)) {
+                    leafletLayers.controls.layers.options = layers.options;
+                }
                 leafletLayers.controls.layers.setPosition(defaults.controlLayersPosition);
 
 
@@ -652,7 +655,7 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
 
                                 // Bind message
                                 if (isDefined(markerData.message)) {
-                                    marker.bindPopup(markerData.message);
+                                    marker.bindPopup(markerData.message, markerData.popupOptions);
                                 }
 
                                 // Add the marker to a cluster group if needed
@@ -695,7 +698,8 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                                         marker.openPopup();
                                     }
 
-                                } else {
+                                // Add the marker to the map if it hasn't been added to a layer or to a group
+                                } else if (!isDefined(markerData.group)) {
                                     // We do not have a layer attr, so the marker goes to the map layer
                                     map.addLayer(marker);
                                     if (markerData.focus === true) {
@@ -1611,6 +1615,12 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
                 return L.tileLayer.wms(params.url, params.options);
             }
         },
+        wmts: {
+            mustHaveUrl: true,
+            createLayer: function(params) {
+                return L.tileLayer.wmts(params.url, params.options);
+            }
+        },
         wfs: {
             mustHaveUrl: true,
             mustHaveLayer : true,
@@ -2338,6 +2348,11 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
                 if (!isString(markerData.message) && isString(oldMarkerData.message)) {
                     marker.closePopup();
                     marker.unbindPopup();
+                }
+
+                // Update the label content
+                if (Helpers.LabelPlugin.isLoaded() && isDefined(markerData.label) && isDefined(markerData.label.message) && !angular.equals(markerData.label.message, oldMarkerData.label.message)) {
+                    marker.updateLabelContent(markerData.label.message);
                 }
 
                 // There is some text in the popup, so we must show the text or update existing
