@@ -70,3 +70,58 @@ Let's see an example of this feature on [this demo](http://tombatossals.github.i
 
 This special rendering can be accomplished defining overlays of type _group_ and with _name_ property, and the markers will need a special property _layer_ with the name of the overlay we've previously defined.
 
+Marker clustering without overlays
+----------------------------------
+We can use the [marker clustering plugin](https://github.com/Leaflet/Leaflet.markercluster) of Leaflet to group our markers depending of the zoom we're using. This can be accomplished by simply setting the _type_ property of the marker to the value _group_. Example:
+
+```
+markers: {
+    battersea: {
+        group: 'london',
+        lat: 51.4638,
+        lng: -0.1677
+    },
+    stoke: {
+        group: 'london',
+        lat: 51.5615,
+        lng: -0.0731
+    }
+```
+
+You can see an example running this [here](http://tombatossals.github.io/angular-leaflet-directive/examples/markers-clustering-without-overlays-example.html)
+
+Marker clustering with overlays
+-------------------------------
+We can mix the overlays functionality with the marker clustering, grouping our markers by overlays. See this example:
+
+```
+layers: {
+    baselayers: { ... },
+    overlays: {
+        northTaiwan: {
+            name: "North cities",
+            type: "markercluster",
+            visible: true
+        }
+    }
+}
+
+markers: {
+    taipei: {
+        layer: "northTaiwan",
+        lat: 25.0391667,
+        lng: 121.525,
+    },
+    yangmei: {
+        layer: "northTaiwan",
+        lat: 24.9166667,
+        lng: 121.1333333
+    },
+    hsinchu: {
+        layer: "northTaiwan",
+        lat: 24.8047222,
+        lng: 120.9713889
+    },
+```
+
+You can see the complete example [here](http://tombatossals.github.io/angular-leaflet-directive/examples/markers-clustering-example.html)
