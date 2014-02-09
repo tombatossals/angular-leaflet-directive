@@ -217,7 +217,7 @@ angular.module("leaflet-directive").factory('leafletEvents', function ($rootScop
                 if (!isDefined(leafletScope.eventBroadcast.marker)) {
                     // We do not have events enable/disable do we do nothing (all enabled by default)
                     markerEvents = _getAvailableMarkerEvents();
-                } else if (isObject(leafletScope.eventBroadcast.marker)) {
+                } else if (!isObject(leafletScope.eventBroadcast.marker)) {
                     // Not a valid object
                     $log.warn("[AngularJS - Leaflet] event-broadcast.marker must be an object check your model.");
                 } else {
