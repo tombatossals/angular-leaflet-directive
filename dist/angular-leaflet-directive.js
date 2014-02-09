@@ -1707,17 +1707,7 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
             createLayer: function(params) {
                 return L.imageOverlay(params.url, params.bounds, params.options);
             }
-        },
-        geoJSON:{
-            mustHaveUrl: true,
-            createLayer: function(params) {
-                if (!Helpers.GeoJSONPlugin.isLoaded()) {
-                    return;
-                }
-                    console.log("geoJSON", new L.TileLayer.GeoJSON(params.url, params.pluginOptions, params.options))
-                    return new L.TileLayer.GeoJSON(params.url, params.pluginOptions, params.options);
-                }
-        },
+        }
     };
 
     function isValidLayerType(layerDefinition) {
@@ -1778,8 +1768,7 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
                 layer: layerDefinition.layer,
                 type: layerDefinition.layerType,
                 bounds: layerDefinition.bounds,
-                key: layerDefinition.key,
-                pluginOptions: layerDefinition.pluginOptions
+                key: layerDefinition.key
             };
 
             //TODO Add $watch to the layer properties
@@ -2351,6 +2340,11 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
                     marker.unbindPopup();
                 }
 
+                // Update the label content
+                if (Helpers.LabelPlugin.isLoaded() && isDefined(markerData.label) && isDefined(markerData.label.message) && !angular.equals(markerData.label.message, oldMarkerData.label.message)) {
+                    marker.updateLabelContent(markerData.label.message);
+                }
+
                 // There is some text in the popup, so we must show the text or update existing
                 if (isString(markerData.message) && !isString(oldMarkerData.message)) {
                     // There was no message before so we create it
@@ -2631,18 +2625,6 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
 					return false;
 				}
 			},
-        },
-        GeoJSONPlugin: {
-            isLoaded: function(){
-                return angular.isDefined(L.TileLayer.GeoJSON);
-            },
-            is: function(layer) {
-                if (this.isLoaded()) {
-                    return layer instanceof L.TileLayer.GeoJSON;
-                } else {
-                    return false;
-                }
-            }
         },
         Leaflet: {
             DivIcon: {
