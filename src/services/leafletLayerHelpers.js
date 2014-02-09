@@ -17,6 +17,12 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
                 return L.tileLayer.wms(params.url, params.options);
             }
         },
+        wmts: {
+            mustHaveUrl: true,
+            createLayer: function(params) {
+                return L.tileLayer.wmts(params.url, params.options);
+            }
+        },
         wfs: {
             mustHaveUrl: true,
             mustHaveLayer : true,
