@@ -67,7 +67,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($q, leafl
             if (!isDefined(attrs.tiles) && (!isDefined(attrs.layers))) {
                 var tileLayerObj = L.tileLayer(defaults.tileLayer, defaults.tileLayerOptions);
                 tileLayerObj.addTo(map);
-                leafletData.setTiles(tileLayerObj);
+                leafletData.setTiles(tileLayerObj, attrs.id);
             }
 
             // Set zoom control configuration
@@ -342,6 +342,7 @@ angular.module("leaflet-directive").directive('geojson', function ($log, $rootSc
                                 },
                                 click: function(e) {
                                     safeApply(leafletScope, function() {
+                                        geojson.selected = feature;
                                         $rootScope.$broadcast('leafletDirectiveMap.geojsonClick', geojson.selected, e);
                                     });
                                 }
