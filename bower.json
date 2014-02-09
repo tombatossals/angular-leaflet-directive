@@ -12,12 +12,12 @@
     "dist/angular-leaflet-directive.min.js"
   ],
   "dependencies": {
-    "angular": "1.2.x",
-    "jquery": "2.0.x",
+    "angular": "1.2.6",
+    "jquery": "2.1.0",
     "bootstrap": "3.0.x",
-    "angular-route": "1.2.x",
-    "angular-animate": "1.2.x",
-    "angular-mocks": "1.2.x",
+    "angular-route": "1.2.6",
+    "angular-animate": "1.2.6",
+    "angular-mocks": "1.2.6",
     "leaflet-dist": "0.7.x",
     "leaflet.markerclusterer": "0.4",
     "leaflet.draw": "0.2.2",
