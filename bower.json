@@ -26,9 +26,6 @@
     "Leaflet.awesome-markers": "*",
     "leaflet-plugins": "1.0.1"
   },
-  "resolutions": {
-      "angular": "angular#1.2.6"
-  },
   "ignore": [
     "**/.*",
     "src",
