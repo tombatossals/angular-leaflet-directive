@@ -1,3 +1,17 @@
+<a name="v0.7.4"></a>
+### v0.7.4 (2014-02-09)
+
+
+#### Features
+
+* **build:**
+  * Solved some bugs with the markers management, and reworked example markers-updat ([754db7f6](https://github.com/tombatossals/angular-leaflet-directive/commit/754db7f6fa3bf0221f61fe45da5600d3cb11c539))
+  * Embed default marker icon as a base64 string. Thanks to @couclock for reporting  ([b0e40cb5](https://github.com/tombatossals/angular-leaflet-directive/commit/b0e40cb585fba476e30ce5aa1477c9fcd3afc4f6))
+  * travis integration with coveralls.io. ([82709893](https://github.com/tombatossals/angular-leaflet-directive/commit/82709893f494c34606c729ee7b39c002128d1cc1))
+* **documentation:** Initial "markers" attribute documentation. ([ec7dc696](https://github.com/tombatossals/angular-leaflet-directive/commit/ec7dc6960566cbcf90008b0c216100c918100cab))
+* **layers:** Added the GeoJSON layer functionality by @cktong. ([fba0d0d1](https://github.com/tombatossals/angular-leaflet-directive/commit/fba0d0d11af16beb2785d70b822f21dde3f235bf))
+* **markers:** When a marker popup is changed on map the marker object is updated in the scope ([ae66898a](https://github.com/tombatossals/angular-leaflet-directive/commit/ae66898adb17cc20b8a91fe783bc26b0c07552b3))
+
 <a name="v0.7.3"></a>
 ### v0.7.3 (2014-01-11)
 
