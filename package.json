@@ -20,6 +20,10 @@
     "grunt-contrib-jshint": "latest",
     "grunt-contrib-watch": "latest",
     "grunt-contrib-concat": "latest",
-    "grunt-ngmin": "latest"
+    "grunt-ngmin": "latest",
+    "node-static": "latest"
+  },
+  "scripts": {
+    "start": "node_modules/node-static/bin/cli.js"
   }
 }
