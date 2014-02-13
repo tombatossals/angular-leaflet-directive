@@ -11,10 +11,25 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
                 return L.tileLayer(params.url, params.options);
             }
         },
+        geoJSON:{
+            mustHaveUrl: true,
+            createLayer: function(params) {
+                if (!Helpers.GeoJSONPlugin.isLoaded()) {
+                    return;
+                }
+                return new L.TileLayer.GeoJSON(params.url, params.pluginOptions, params.options);
+            }
+        },
         wms: {
             mustHaveUrl: true,
             createLayer: function(params) {
                 return L.tileLayer.wms(params.url, params.options);
+            }
+        },
+        wmts: {
+            mustHaveUrl: true,
+            createLayer: function(params) {
+                return L.tileLayer.wmts(params.url, params.options);
             }
         },
         wfs: {
@@ -82,6 +97,7 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
             mustHaveUrl: false,
             createLayer: function(params) {
                 if (!Helpers.MarkerClusterPlugin.isLoaded()) {
+                    $log.error('[AngularJS - Leaflet] The markercluster plugin is not loaded.');
                     return;
                 }
                 return new L.MarkerClusterGroup(params.options);
@@ -94,6 +110,16 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
                     return;
                 }
                 return new L.BingLayer(params.key, params.options);
+            }
+        },
+        yandex: {
+            mustHaveUrl: false,
+            createLayer: function(params) {
+                var type = params.type || 'map';
+                if (!Helpers.YandexLayerPlugin.isLoaded()) {
+                    return;
+                }
+                return new L.Yandex(type, params.options);
             }
         },
         imageOverlay: {

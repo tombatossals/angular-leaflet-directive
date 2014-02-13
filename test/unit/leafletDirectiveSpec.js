@@ -76,32 +76,6 @@ describe('Directive: leaflet', function() {
         expect(leafletMap.getMinZoom()).toEqual(4);
     });
 
-    it('should unset the minzoom if maxbounds specified', function() {
-        angular.extend($rootScope, {
-            defaults: {
-                minZoom: 4,
-            },
-            maxBounds: {
-                southWest: {
-                    lat: 47.200,
-                    lng: 15.200
-                },
-                northEast: {
-                    lat: 47.200,
-                    lng: 15.200
-                }
-            }
-        });
-        var element = angular.element('<leaflet defaults="defaults" maxBounds="maxBounds"></leaflet>');
-        element = $compile(element)($rootScope);
-        var leafletMap;
-        leafletData.getMap().then(function(map) {
-            leafletMap = map;
-        });
-        $rootScope.$digest();
-        expect(leafletMap.getMinZoom()).toEqual(0);
-    });
-
     it('should set the CSS width and height if they are passed as string attributes', function() {
         var element = angular.element('<leaflet defaults="defaults" width="640px" height="480px"></leaflet>');
         element = $compile(element)($rootScope);

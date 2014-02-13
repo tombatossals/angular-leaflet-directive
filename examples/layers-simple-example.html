@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html ng-app="demoapp">
 <head>
-    <script src="http://cdn.leafletjs.com/leaflet-0.7.1/leaflet.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular.min.js"></script>
-    <script src="../dist/angular-leaflet-directive.js"></script>
-    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.1/leaflet.css" />
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/leaflet-dist/leaflet.js"></script>
+    <script src="../dist/angular-leaflet-directive.min.js"></script>
+    <link rel="stylesheet" href="../bower_components/leaflet-dist/leaflet.css" />
     <script>
         var app = angular.module("demoapp", ["leaflet-directive"]);
         app.controller("DemoController", [ "$scope", function($scope) {
@@ -62,7 +62,7 @@
     </div>
     <div class="right">
         <h1>Layers definition</h1>
-        <p>You can easily define add various layers with a layer selector on the top right defining <strong>layers</strong> like this.</p>
+        <p>You can easily add various layers to your map, including a layer selector on the top right, defining <strong>layers</strong> like this.</p>
         <pre ng-bind="layers | json"></pre>
     </div>
 </body>

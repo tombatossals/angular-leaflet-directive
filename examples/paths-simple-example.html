@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html ng-app="demoapp">
+  <head>
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/leaflet-dist/leaflet.js"></script>
+    <script src="../dist/angular-leaflet-directive.min.js"></script>
+    <link rel="stylesheet" href="../bower_components/leaflet-dist/leaflet.css" />
+    <script>
+        var app = angular.module("demoapp", ["leaflet-directive"]);
+        app.controller("DemoController", [ "$scope", function($scope) {
+            angular.extend($scope, {
+                london: {
+                    lat: 51.505,
+                    lng: -0.09,
+                    zoom: 4
+                },
+                europeanPaths: {
+                    p1: {
+                        color: 'red',
+                        weight: 8,
+                        latlngs: [
+                            { lat: 51.50, lng: -0.082 },
+                            { lat: 48.83, lng: 2.37 },
+                            { lat: 41.91, lng: 12.48 }
+                        ],
+                    }
+                }
+            });
+        }]);
+    </script>
+    <style>
+        .angular-leaflet-map {
+            width: 640px;
+            height: 400px;
+        }
+    </style>
+  </head>
+  <body ng-controller="DemoController">
+    <leaflet center="london" paths="europeanPaths"></leaflet>
+  </body>
+</html>

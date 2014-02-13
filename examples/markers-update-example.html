@@ -1,15 +1,14 @@
 <!DOCTYPE html>
 <html ng-app="demoapp">
   <head>
-    <script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet-src.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular.min.js"></script>
-    <script src="./plugins/awesome-markers/leaflet.awesome-markers.js"></script>
-    <link rel="stylesheet" href="./plugins/awesome-markers/leaflet.awesome-markers.css">
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/leaflet-dist/leaflet.js"></script>
     <script src="../dist/angular-leaflet-directive.min.js"></script>
-    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" />
-    <!--[if lte IE 8]>
-        <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.ie.css" />
-    <![endif]-->
+    <script src="../bower_components/Leaflet.awesome-markers/dist/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="../bower_components/leaflet-dist/leaflet.css" />
+    <link rel="stylesheet" href="../bower_components/Leaflet.awesome-markers/dist/leaflet.awesome-markers.css">
+    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap-theme.min.css">
     <script>
         angular.module("demoapp", ["leaflet-directive"]);
         function DemoController($scope) {
@@ -22,28 +21,27 @@
                 markers: {
                     m1: {
                         lat: 51.505,
-                        lng: -0.09
+                        lng: -0.09,
+                        focus: true,
+                        draggable: false,
+                        message: "Hi there!",
+                        icon: {}
                     }
                 },
-                iconA: {
-                	iconUrl: 'http://cdn.leafletjs.com/leaflet-0.5.1/images/marker-icon.png'
-                },
+                iconA: {},
                 iconB: {
-                	iconUrl: 'http://leafletjs.com/docs/images/leaf-orange.png',
-                	shadowUrl: 'http://leafletjs.com/docs/images/leaf-shadow.png',
+                	iconUrl: 'img/leaf-orange.png',
+                	shadowUrl: 'img/leaf-shadow.png',
                 	iconSize:     [38, 95],
                     shadowSize:   [50, 64],
                     iconAnchor:   [22, 94],
                     shadowAnchor: [4, 62]
                 },
-                iconC: L.AwesomeMarkers.icon({
-                    icon: 'cofee',
-                    color: 'red'
-                }),
-                iconD: L.AwesomeMarkers.icon({
-                    icon: 'cofee',
-                    color: 'green'
-                })
+                iconC: {
+                    type: 'awesomeMarker',
+                    icon: 'tag',
+                    markerColor: 'red'
+                }
             });
             $scope.$on('leafletDirectiveMarker.click', function(e, args) {
                 // Args will contain the marker name and other relevant information
@@ -59,35 +57,94 @@
             });
         };
     </script>
+    <style>
+        html,body {
+            height: 100%;
+        }
+        .angular-leaflet-map {
+            margin-top: 20px;
+            height: 100%;
+        }
+        .fullheight {
+            height: 100%;
+        }
+    </style>
   </head>
   <body ng-controller="DemoController">
-      <leaflet center="london" markers="markers" height="480px" width="640px">
-      </leaflet>
-      <label>Lat: <input ng-model="markers.m1.lat" type="number"></label>
-      <label>Lon: <input ng-model="markers.m1.lng" type="number"></label>
-      <br/>
-      <label>Popup: <input ng-model="markers.m1.message" type="text"></label>
-      <input type="radio" ng-model="markers.m1.message" ng-value="null" name="mess"> null value
-      <input type="radio" ng-model="markers.m1.message" ng-value="123" name="mess"> not a string
-      <br/>
-      Draggable:
-          <input type="radio" ng-model="markers.m1.draggable" ng-value="true" name="drag"> Yes
-          <input type="radio" ng-model="markers.m1.draggable" ng-value="false" name="drag"> No
-          <input type="radio" ng-model="markers.m1.draggable" ng-value="'error'" name="drag"> Not a boolean value
-          <input type="radio" ng-model="markers.m1.draggable" ng-value="null" name="drag"> null value
-      <br/>
-      Focus:
-          <input type="radio" ng-model="markers.m1.focus" ng-value="true" name="focus"> Yes
-          <input type="radio" ng-model="markers.m1.focus" ng-value="false" name="focus"> No
-          <input type="radio" ng-model="markers.m1.focus" ng-value="'error'" name="focus"> Not a boolean value
-          <input type="radio" ng-model="markers.m1.focus" ng-value="null" name="focus"> null value
-      <br/>
-      Icon:
-          <input type="radio" ng-model="markers.m1.icon" ng-value="iconA" name="icon"> Default
-          <input type="radio" ng-model="markers.m1.icon" ng-value="iconB" name="icon"> Other (Leaflet Icon)
-          <input type="radio" ng-model="markers.m1.icon" ng-value="iconC" name="icon"> Red (AwesomeMarker Icon)
-          <input type="radio" ng-model="markers.m1.icon" ng-value="iconD" name="icon"> Green (AwesomeMarker Icon)
-          <input type="radio" ng-model="markers.m1.icon" ng-value="'error'" name="icon"> Not a icon
-          <input type="radio" ng-model="markers.m1.icon" ng-value="null" name="icon"> null value
+    <div class="container fullheight">
+        <div class="row">
+            <h1>Dynamic update marker properties</h1>
+            <div class="col-md-5">
+                <form role="form" class="form-horizontal">
+                    <h3>Marker position</h3>
+                    <input ng-model="markers.m1.lat" type="number">
+                    <input ng-model="markers.m1.lng" type="number">
+
+                    <h3>Popup text</h3>
+                    <div class="btn-group" data-toggle="buttons">
+                        <label class="btn btn-primary" ng-class="{ active: markers.m1.focus == true }">
+                            <input type="radio" name="focus" ng-click="markers.m1.focus=true;" />Focus
+                        </label>
+                        <label class="btn btn-primary" ng-class="{ active: markers.m1.focus == false }">
+                            <input type="radio" name="focus" ng-click="markers.m1.focus=false;" />Not focus
+                        </label>
+                    </div>
+                    <br /><br />
+                    Popup message: <input ng-model="markers.m1.message" type="text"></label>
+                    <h3>Draggable</h3>
+                    <div class="btn-group" data-toggle="buttons">
+                        <label class="btn btn-primary" ng-class="{ active: markers.m1.draggable == true }">
+                            <input type="radio" name="draggable" ng-model="markers.m1.draggable" ng-value="true" />Draggable
+                        </label>
+                        <label class="btn btn-primary" ng-class="{ active: markers.m1.draggable == false }">
+                            <input type="radio" name="draggable" ng-model="markers.m1.draggable" ng-value="false" />Not draggable
+                        </label>
+                    </div>
+                    <h3>Icon</h3>
+                    <div class="btn-group" data-toggle="buttons">
+                        <label class="btn btn-primary" ng-class="{ active: markers.m1.icon != iconB && markers.m1.icon != iconC }">
+                            <input type="radio" ng-model="markers.m1.icon" ng-value="iconA" class="btn btn-default">Default</button>
+                        </label>
+                        <label class="btn btn-primary" ng-class="{ active: markers.m1.icon == iconB }">
+                            <input type="radio" ng-model="markers.m1.icon" ng-value="iconB" class="btn btn-default">Leaflet Icon</button>
+                        </label>
+                        <label class="btn btn-primary" ng-class="{ active: markers.m1.icon == iconC }">
+                            <input type="radio" ng-model="markers.m1.icon" ng-value="iconC" class="btn btn-default">AwesomeMarker Icon</button>
+                        </label>
+                    </div>
+                    <h3 ng-show="markers.m1.icon == iconC">AwesomeIcon color</h3>
+                    <div class="btn-group" data-toggle="buttons" ng-show="markers.m1.icon == iconC">
+                        <label class="btn btn-primary" ng-class="{ active: iconC.markerColor == 'red' }">
+                            <input type="radio" ng-click="iconC.markerColor" ng-value="'red'" class="btn btn-default">Red</button>
+                        </label>
+                        <label class="btn btn-primary" ng-class="{ active: iconC.markerColor == 'blue' }">
+                            <input type="radio" ng-model="iconC.markerColor" ng-value="'blue'" class="btn btn-default">Blue</button>
+                        </label>
+                        <label class="btn btn-primary" ng-class="{ active: iconC.markerColor == 'green' }">
+                            <input type="radio" ng-model="iconC.markerColor" ng-value="'green'" class="btn btn-default">Green</button>
+                        </label>
+                    </div>
+                    <h3 ng-show="markers.m1.icon == iconC">AwesomeIcon icon</h3>
+                    <div class="btn-group" data-toggle="buttons" ng-show="markers.m1.icon == iconC">
+                        <label class="btn btn-primary" ng-class="{ active: iconC.icon == 'tag' }">
+                            <input type="radio" ng-click="iconC.icon" ng-value="'tag'" class="btn btn-default">Tag</button>
+                        </label>
+                        <label class="btn btn-primary" ng-class="{ active: iconC.icon == 'usd' }">
+                            <input type="radio" ng-model="iconC.icon" ng-value="'usd'" class="btn btn-default">USD</button>
+                        </label>
+                        <label class="btn btn-primary" ng-class="{ active: iconC.color == 'heart' }">
+                            <input type="radio" ng-model="iconC.icon" ng-value="'heart'" class="btn btn-default">Heart</button>
+                        </label>
+                        <label class="btn btn-primary" ng-class="{ active: iconC.color == 'home' }">
+                            <input type="radio" ng-model="iconC.icon" ng-value="'home'" class="btn btn-default">Home</button>
+                        </label>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-4">
+                <leaflet center="london" markers="markers" height="480px" width="640px"></leaflet>
+            </div>
+        </div>
+     </div>
   </body>
 </html>

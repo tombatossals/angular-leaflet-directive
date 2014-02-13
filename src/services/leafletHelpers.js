@@ -21,13 +21,6 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
         return id;
     }
 
-    function _isValidBounds(bounds) {
-        return angular.isDefined(bounds) && angular.isDefined(bounds.southWest) &&
-               angular.isDefined(bounds.northEast) && angular.isNumber(bounds.southWest.lat) &&
-               angular.isNumber(bounds.southWest.lng) && angular.isNumber(bounds.northEast.lat) &&
-               angular.isNumber(bounds.northEast.lng);
-    }
-
     function _getUnresolvedDefer(d, mapId) {
         var id = _obtainEffectiveMapId(d, mapId),
             defer;
@@ -43,14 +36,6 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
         }
 
         return defer;
-    }
-
-    function _convertToLeafletLatLngs(latlngs) {
-        return latlngs.filter(function(latlng) {
-            return !!latlng.lat && !!latlng.lng;
-        }).map(function (latlng) {
-            return new L.LatLng(latlng.lat, latlng.lng);
-        });
     }
 
     return {
@@ -94,27 +79,9 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
                    angular.isNumber(center.lng) && angular.isNumber(center.zoom);
         },
 
-        isValidBounds: _isValidBounds,
-
-        createLeafletBounds: function(bounds) {
-            if (_isValidBounds(bounds)) {
-                return L.latLngBounds([bounds.southWest.lat, bounds.southWest.lng],
-                                      [bounds.northEast.lat, bounds.northEast.lng ]);
-            } else {
-                return false;
-            }
-        },
-
-        convertToLeafletLatLngs: _convertToLeafletLatLngs,
-
-        convertToLeafletLatLng: function(latlng) {
-            return new L.LatLng(latlng.lat, latlng.lng);
-        },
-
-        convertToLeafletMultiLatLngs: function(paths) {
-            return paths.map(function(latlngs) {
-                return _convertToLeafletLatLngs(latlngs);
-            });
+        isValidPoint: function(point) {
+            return angular.isDefined(point) && angular.isNumber(point.lat) &&
+                   angular.isNumber(point.lng);
         },
 
         safeApply: function($scope, fn) {
@@ -148,8 +115,8 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
 
         AwesomeMarkersPlugin: {
             isLoaded: function() {
-                if (L.AwesomeMarkers !== undefined) {
-                    return (L.AwesomeMarkers.Icon !== undefined);
+                if (angular.isDefined(L.AwesomeMarkers) && angular.isDefined(L.AwesomeMarkers.Icon)) {
+                    return true;
                 } else {
                     return false;
                 }
@@ -244,6 +211,18 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
                 }
             },
         },
+        YandexLayerPlugin: {
+            isLoaded: function() {
+                return angular.isDefined(L.Yandex);
+            },
+            is: function(layer) {
+                if (this.isLoaded()) {
+                    return layer instanceof L.Yandex;
+                } else {
+                    return false;
+                }
+            }
+        },
 		DynamicMapLayerPlugin: {
 			isLoaded: function() {
 				return L.esri !== undefined && L.esri.dynamicMapLayer !== undefined;
@@ -255,6 +234,18 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
 					return false;
 				}
 			},
+        },
+        GeoJSONPlugin: {
+            isLoaded: function(){
+                return angular.isDefined(L.TileLayer.GeoJSON);
+            },
+            is: function(layer) {
+                if (this.isLoaded()) {
+                    return layer instanceof L.TileLayer.GeoJSON;
+                } else {
+                    return false;
+                }
+            }
         },
         Leaflet: {
             DivIcon: {

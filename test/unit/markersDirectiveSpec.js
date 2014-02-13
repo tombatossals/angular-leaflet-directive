@@ -100,6 +100,60 @@ describe('Directive: leaflet', function() {
         });
     });
 
+    it('should bind label to main marker if message is given', function() {
+        spyOn(leafletHelpers.LabelPlugin, 'isLoaded').andReturn(true);
+        L.Label = L.Class.extend({
+            includes: L.Mixin.Events,
+        });
+
+        L.BaseMarkerMethods = {
+            bindLabel: function(content, options) {
+                this.label = new L.Label(options, this);
+                this.label._content = content;
+                return this;
+            },
+            updateLabelContent: function(content) {
+                this.label._content = content;
+            }
+        };
+
+        L.Marker.include(L.BaseMarkerMethods);
+
+        var marker = {
+            lat: 0.966,
+            lng: 2.02,
+            message: 'this is paris',
+            label: {
+                message: 'original',
+                options: {
+                    clickable: true
+                }
+            }
+        };
+
+        angular.extend($rootScope, {
+            markers: {
+                marker: marker
+            }
+        });
+
+        var element = angular.element('<leaflet markers="markers"></leaflet>');
+        $compile(element)($rootScope);
+        $rootScope.$digest();
+        leafletData.getMarkers().then(function(leafletMarkers){
+            var leafletMainMarker = leafletMarkers.marker;
+            expect(leafletMainMarker.label._content).toEqual('original');
+        });
+
+        marker.label.message = 'new';
+
+        $rootScope.$digest();
+        leafletData.getMarkers().then(function(leafletMarkers){
+            var leafletMainMarker = leafletMarkers.marker;
+            expect(leafletMainMarker.label._content).toEqual('new');
+        });
+    });
+
     // Markers
     it('should create markers on the map', function() {
         angular.extend($rootScope, { markers: mainMarkers });
@@ -463,7 +517,7 @@ describe('Directive: leaflet', function() {
         var DEFAULT_URL = 'http://cdn.leafletjs.com/leaflet-0.5.1/images/marker-icon.png';
 
         beforeEach(function(){
-            leafIcon = L.icon({
+            leafIcon = {
                 iconUrl: LEAF_URL,
                 shadowUrl: 'http://leafletjs.com/docs/images/leaf-shadow.png',
                 iconSize:     [38, 95],
@@ -471,8 +525,8 @@ describe('Directive: leaflet', function() {
                 iconAnchor:   [22, 94],
                 shadowAnchor: [4, 62],
                 popupAnchor:  [-3, -76]
-            });
-            defaultIcon = L.icon({
+            };
+            defaultIcon = {
                 iconUrl: DEFAULT_URL,
                 shadowUrl: 'http://cdn.leafletjs.com/leaflet-0.5.1/images/marker-shadow.png',
                 iconSize: [25, 41],
@@ -480,7 +534,7 @@ describe('Directive: leaflet', function() {
                 popupAnchor: [0, 40],
                 shadowSize: [41, 41],
                 shadowAnchor: [12, 40]
-            });
+            };
 
             mainMarkers = {
                 m1: {
@@ -503,7 +557,8 @@ describe('Directive: leaflet', function() {
             });
 
             scope.$digest();
-            expect(markers.m1.options.icon.options.iconUrl).toEqual(LEAF_URL);
+            var icon = markers.m1.options.icon;
+            expect(icon.options.iconUrl).toEqual(LEAF_URL);
 
             mainMarkers.m1.icon = defaultIcon;
             scope.$apply();

@@ -48,6 +48,7 @@ angular.module("leaflet-directive").directive('geojson', function ($log, $rootSc
                                 },
                                 click: function(e) {
                                     safeApply(leafletScope, function() {
+                                        geojson.selected = feature;
                                         $rootScope.$broadcast('leafletDirectiveMap.geojsonClick', geojson.selected, e);
                                     });
                                 }

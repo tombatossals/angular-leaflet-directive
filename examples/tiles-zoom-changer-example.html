@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html ng-app="demoapp">
+  <head>
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/leaflet-dist/leaflet.js"></script>
+    <script src="../dist/angular-leaflet-directive.min.js"></script>
+    <link rel="stylesheet" href="../bower_components/leaflet-dist/leaflet.css" />
+    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <script>
+        var app = angular.module("demoapp", ["leaflet-directive"]);
+        app.controller('DemoZoomLevelController', [ "$scope", function($scope) {
+
+            angular.extend($scope, {
+                london: {
+                    lat: 51.505,
+                    lng: -0.09,
+                    zoom: 10
+                },
+                tiles: {
+                    url: "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+
+                }
+            });
+
+            $scope.$watch("london.zoom", function(zoom) {
+                $scope.tiles.url = (zoom > 12)
+                        ? "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        : "http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
+            });
+        } ]);
+    </script>
+    <style>
+        .angular-leaflet-map {
+            width: 640px;
+            height: 400px;
+        }
+    </style>
+  </head>
+  <body>
+  <div class="container">
+      <div ng-controller="DemoZoomLevelController">
+
+          <div class="row">
+              <h2>This is a map with dynamic tile change depending on zoom level</h2>
+          </div>
+
+          <div class="row">
+              <p>Current TileLayer Url: {{ tiles.url }}</p>
+              <p>Current Zoom Level: {{ london.zoom }}</p>
+          </div>
+
+          <div class="row">
+              <leaflet center="london" tiles="tiles"></leaflet>
+          </div>
+      </div>
+  </div>
+
+  </body>
+</html>

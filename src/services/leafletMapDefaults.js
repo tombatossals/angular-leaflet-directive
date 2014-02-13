@@ -50,7 +50,6 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
 
             var mapDefaults = {
                 maxZoom: d.maxZoom,
-                minZoom: d.minZoom,
                 keyboard: d.keyboard,
                 dragging: d.dragging,
                 zoomControl: d.zoomControl,
@@ -60,6 +59,10 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
                 worldCopyJump: d.worldCopyJump,
                 crs: d.crs
             };
+
+            if (isDefined(d.minZoom)) {
+                mapDefaults.minZoom = d.minZoom;
+            }
 
             if (isDefined(d.zoomAnimation)) {
                 mapDefaults.zoomAnimation = d.zoomAnimation;

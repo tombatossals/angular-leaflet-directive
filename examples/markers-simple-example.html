@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html ng-app="demoapp">
+  <head>
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/leaflet-dist/leaflet.js"></script>
+    <script src="../dist/angular-leaflet-directive.min.js"></script>
+    <link rel="stylesheet" href="../bower_components/leaflet-dist/leaflet.css" />
+    <script>
+        angular.module("demoapp", ["leaflet-directive"]);
+        function DemoController($scope) {
+            angular.extend($scope, {
+                london: {
+                    lat: 51.505,
+                    lng: -0.09,
+                    zoom: 8
+                },
+                markers: {
+                    mainMarker: {
+                        lat: 51,
+                        lng: 0,
+                        focus: true,
+                        message: "Hey, drag me if you want",
+                        draggable: true
+                    }
+                }
+            });
+        };
+    </script>
+  </head>
+  <body ng-controller="DemoController">
+    <p>
+      Marker (lat/lng): <input type="number" ng-model="markers.mainMarker.lat" /> <input type="number" ng-model="markers.mainMarker.lng" />
+    </p>
+    <leaflet center="london" markers="markers" height="480px" width="640px"></leaflet>
+  </body>
+</html>

@@ -2,7 +2,7 @@
   "author": "https://github.com/tombatossals/angular-leaflet-directive/graphs/contributors",
   "name": "angular-leaflet-directive",
   "description": "angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps",
-  "version": "0.7.0",
+  "version": "0.7.5",
   "homepage": "http://tombatossals.github.io/angular-leaflet-directive/",
   "repository": {
     "type": "git",
@@ -42,7 +42,8 @@
     "grunt-protractor-runner": "*",
     "grunt-shell-spawn": "*",
     "grunt-conventional-changelog": "*",
-    "grunt-bump": "*"
+    "grunt-bump": "*",
+    "grunt-karma-coveralls": "*"
   },
   "scripts": {
     "test": "grunt travis --verbose"

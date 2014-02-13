@@ -86,5 +86,10 @@ Attributes Documentation
 
 We have much more possibilities than showing a simple map, but this will need that we take a closer look at the attributes, listed below:
 
-* [Defaults attribute](https://github.com/tombatossals/angular-leaflet-directive/blob/master/doc/defaults-attribute.md)
-* [Center attribute](https://github.com/tombatossals/angular-leaflet-directive/blob/master/doc/center-attribute.md)
+* [_defaults_ attribute](https://github.com/tombatossals/angular-leaflet-directive/blob/master/doc/defaults-attribute.md)
+* [_center_ attribute](https://github.com/tombatossals/angular-leaflet-directive/blob/master/doc/center-attribute.md)
+* [_bounds_ attribute](https://github.com/tombatossals/angular-leaflet-directive/blob/master/doc/bounds-attribute.md)
+* [_maxbounds_ attribute](https://github.com/tombatossals/angular-leaflet-directive/blob/master/doc/maxbounds-attribute.md)
+* [_tiles_ attribute](https://github.com/tombatossals/angular-leaflet-directive/blob/master/doc/tiles-attribute.md)
+* [_layers_ attribute](https://github.com/tombatossals/angular-leaflet-directive/blob/master/doc/layers-attribute.md)
+* [_paths_ attribute](https://github.com/tombatossals/angular-leaflet-directive/blob/master/doc/paths-attribute.md)

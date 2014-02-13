@@ -1,4 +1,4 @@
-angular.module("leaflet-directive").directive('bounds', function ($log, leafletHelpers) {
+angular.module("leaflet-directive").directive('bounds', function ($log, leafletHelpers, leafletBoundsHelpers) {
     return {
         restrict: "A",
         scope: false,
@@ -7,50 +7,34 @@ angular.module("leaflet-directive").directive('bounds', function ($log, leafletH
 
         link: function(scope, element, attrs, controller) {
             var isDefined = leafletHelpers.isDefined,
-                createLeafletBounds = leafletHelpers.createLeafletBounds,
+                createLeafletBounds = leafletBoundsHelpers.createLeafletBounds,
+                updateBoundsInScope = leafletBoundsHelpers.updateBoundsInScope,
                 leafletScope = controller.getLeafletScope();
 
             controller.getMap().then(function(map) {
-
-                function updateBoundsInScope() {
-                    if(!leafletScope.bounds) { return; }
-
-                    var mapBounds = map.getBounds();
-                    var newScopeBounds = {
-                        northEast: {
-                            lat: mapBounds.getNorthEast().lat,
-                            lng: mapBounds.getNorthEast().lng
-                        },
-                        southWest: {
-                            lat: mapBounds.getSouthWest().lat,
-                            lng: mapBounds.getSouthWest().lng
-                        }
-                    };
-
-                    if(!angular.equals(leafletScope.bounds, newScopeBounds)) {
-                        leafletScope.bounds = newScopeBounds;
-                    }
-                }
-
-                function boundsListener(newBounds) {
-                    if (!isDefined(newBounds)) {
-                        $log.error('[AngularJS - Leaflet] Invalid bounds');
-                        return;
-                    }
-
-                    var leafletBounds = createLeafletBounds(newBounds);
-                    if (leafletBounds && !map.getBounds().equals(leafletBounds)) {
-                        map.fitBounds(leafletBounds);
-                    }
-                }
-
-                map.on('moveend', updateBoundsInScope);
-                map.on('dragend', updateBoundsInScope);
-                map.on('zoomend', updateBoundsInScope);
+                var initializing = true;
 
                 map.whenReady(function() {
-                    leafletScope.$watch('bounds', boundsListener, true);
+                    leafletScope.$watch('bounds', function(newBounds) {
+                        if (!isDefined(newBounds)) {
+                            $log.error('[AngularJS - Leaflet] Invalid bounds');
+                            return;
+                        }
+
+                        initializing = false;
+                        var leafletBounds = createLeafletBounds(newBounds);
+                        if (leafletBounds && !map.getBounds().equals(leafletBounds)) {
+                            map.fitBounds(leafletBounds);
+                        }
+                    }, true);
+
+                    map.on('moveend dragend zoomend', function() {
+                        if (!initializing) {
+                            updateBoundsInScope(leafletScope, map);
+                        }
+                    });
                 });
+
             });
         }
     };

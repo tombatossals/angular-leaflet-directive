@@ -6,7 +6,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($q, leafl
         scope: {
             center: '=center',
             defaults: '=defaults',
-            maxBounds: '=maxbounds',
+            maxbounds: '=maxbounds',
             bounds: '=bounds',
             markers: '=markers',
             legend: '=legend',
@@ -34,11 +34,6 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($q, leafl
                 defaults = leafletMapDefaults.setDefaults(scope.defaults, attrs.id),
                 genDispatchMapEvent = leafletEvents.genDispatchMapEvent,
                 mapEvents = leafletEvents.getAvailableMapEvents();
-
-            // If we are going to set maxBounds, undefine the minZoom property
-            if (isDefined(scope.maxBounds)) {
-                defaults.minZoom = undefined;
-            }
 
             // Set width and height if they are defined
             if (isDefined(attrs.width)) {
@@ -68,7 +63,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($q, leafl
             if (!isDefined(attrs.tiles) && (!isDefined(attrs.layers))) {
                 var tileLayerObj = L.tileLayer(defaults.tileLayer, defaults.tileLayerOptions);
                 tileLayerObj.addTo(map);
-                leafletData.setTiles(tileLayerObj);
+                leafletData.setTiles(tileLayerObj, attrs.id);
             }
 
             // Set zoom control configuration

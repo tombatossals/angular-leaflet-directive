@@ -2,9 +2,6 @@ module.exports = function(grunt) {
 
     require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
 
-    var fs = require('fs'),
-        saucelabsConfig = fs.existsSync('saucelabs.json') && grunt.file.readJSON('saucelabs.json');
-
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
         shell: {
@@ -76,20 +73,16 @@ module.exports = function(grunt) {
 
         protractor: {
             options: {
-                keepAlive: true,
-                configFile: "test/protractor.conf.js"
+                keepAlive: false,
+                configFile: 'test/protractor.conf.js',
             },
-            singlerun: {},
+            run: {},
             saucelabs: {
                 options: {
-                    args: saucelabsConfig
-                }
-            },
-            auto: {
-                keepAlive: true,
-                options: {
                     args: {
-                        seleniumPort: 4444
+                        baseUrl: "http://tombatossals.github.io/angular-leaflet-directive/examples/",
+                        sauceUser: process.env.SAUCE_USERNAME,
+                        sauceKey: process.env.SAUCE_ACCESS_KEY
                     }
                 }
             }
@@ -179,11 +172,6 @@ module.exports = function(grunt) {
                 autoWatch: false,
                 singleRun: true
             },
-            unit_auto: {
-                configFile: 'test/karma-unit.conf.js',
-                autoWatch: true,
-                singleRun: false
-            },
             unit_coverage: {
                 configFile: 'test/karma-unit.conf.js',
                 autoWatch: false,
@@ -194,9 +182,16 @@ module.exports = function(grunt) {
                     'dist/angular-leaflet-directive.js': ['coverage']
                 },
                 coverageReporter: {
-                    type : 'html',
+                    type : 'lcov',
                     dir : 'coverage/'
                 }
+            }
+        },
+
+        coveralls: {
+            options: {
+                debug: true,
+                coverage_dir: 'coverage'
             }
         },
 
@@ -214,10 +209,6 @@ module.exports = function(grunt) {
                     'test:unit',
                     'concat:license'
                 ]
-            },
-            protractor: {
-                files: ['src/**/*.js','test/e2e/**/*.js'],
-                tasks: ['protractor:auto']
             }
         },
 
@@ -257,12 +248,14 @@ module.exports = function(grunt) {
                     'src/directives/paths.js',
                     'src/directives/controls.js',
                     'src/directives/eventBroadcast.js',
-                    'src/directives/maxBounds.js',
+                    'src/directives/maxbounds.js',
                     'src/services/leafletData.js',
                     'src/services/leafletMapDefaults.js',
                     'src/services/leafletEvents.js',
                     'src/services/leafletLayerHelpers.js',
-                    'src/services/leafletMarkerHelpers.js',
+                    'src/services/leafletPathsHelpers.js',
+                    'src/services/leafletBoundsHelpers.js',
+                    'src/services/leafletMarkersHelpers.js',
                     'src/services/leafletHelpers.js'
                 ],
                 dest: 'dist/angular-leaflet-directive.js',
@@ -280,12 +273,8 @@ module.exports = function(grunt) {
     //single run tests
     grunt.registerTask('test', ['jshint','test:unit', 'test:e2e']);
     grunt.registerTask('test:unit', ['karma:unit']);
-    grunt.registerTask('test:e2e', ['shell:protractor_update', 'connect:testserver', 'protractor:singlerun']);
-
-    //autotest and watch tests
-    grunt.registerTask('autotest', ['karma:unit_auto']);
-    grunt.registerTask('autotest:unit', ['karma:unit_auto']);
-    grunt.registerTask('autotest:e2e', ['connect:testserver', 'shell:selenium', 'watch:protractor']);
+    grunt.registerTask('test:e2e', ['shell:protractor_update', 'connect:testserver', 'protractor:run']);
+    grunt.registerTask('test:e2e-firefox', ['shell:protractor_update', 'connect:testserver', 'protractor:firefox']);
 
     //coverage testing
     grunt.registerTask('test:coverage', ['karma:unit_coverage']);
@@ -304,5 +293,5 @@ module.exports = function(grunt) {
     grunt.registerTask('serve', ['connect:webserver']);
 
     //travis
-    grunt.registerTask('travis', 'bower:install', 'test:unit');
+    grunt.registerTask('travis', ['bower:install', 'test:unit', 'karma:unit_coverage', 'coveralls', 'shell:protractor_update', 'protractor:saucelabs']);
 };
