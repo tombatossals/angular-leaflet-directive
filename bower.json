@@ -19,7 +19,7 @@
     "angular-animate": "1.2.x",
     "angular-mocks": "1.2.x",
     "leaflet-dist": "0.7.x",
-    "leaflet.markerclusterer": "0.4",
+    "leaflet.markerclusterer": "",
     "leaflet.draw": "0.2.2",
     "Leaflet.label": "0.2.1",
     "leaflet-tilelayer-geojson": "*",
