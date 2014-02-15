@@ -104,7 +104,7 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
             }
         },
         bing: {
-            mustHaveUrl: true,
+            mustHaveUrl: false,
             createLayer: function(params) {
                 if (!Helpers.BingLayerPlugin.isLoaded()) {
                     return;

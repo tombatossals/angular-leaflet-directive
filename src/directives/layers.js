@@ -36,11 +36,30 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
 
                 leafletLayers.baselayers = {};
                 leafletLayers.controls = {};
-                leafletLayers.controls.layers = new L.control.layers();
+				/* Remote               
+				leafletLayers.controls.layers = new L.control.layers();
                 if (isDefined(layers.options)) {
                     leafletLayers.controls.layers.options = layers.options;
                 }
                 leafletLayers.controls.layers.setPosition(defaults.controlLayersPosition);
+				*/
+
+				/* Local
+				 var controlOptions = {
+					collapsed: defaults.controlLayer && defaults.controlLayer.collapsed
+				};
+				if(defaults.controlLayer && isDefined(defaults.controlLayer.control)) {
+					leafletLayers.controls.layers =
+						defaults.controlLayer.control.apply(this, [[], [], controlOptions]);
+				} else {
+					leafletLayers.controls.layers = new L.control.layers([[], [], controlOptions]);
+				}
+				
+				if(defaults.controlLayer && isDefined(defaults.controlLayer.position)) {
+					leafletLayers.controls.layers.setPosition(defaults.controlLayer.position);
+				}
+                leafletLayers.controls.layers.addTo(map);
+				*/
 
 
                 // Setup all baselayers definitions

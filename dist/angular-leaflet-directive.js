@@ -258,7 +258,7 @@ angular.module("leaflet-directive").directive('tiles', function ($log, leafletDa
     };
 });
 
-angular.module("leaflet-directive").directive('legend', function ($log, leafletHelpers) {
+angular.module("leaflet-directive").directive('legend', function ($log, $http, leafletHelpers) {
     return {
         restrict: "A",
         scope: false,
@@ -267,21 +267,50 @@ angular.module("leaflet-directive").directive('legend', function ($log, leafletH
 
         link: function(scope, element, attrs, controller) {
             var isArray      = leafletHelpers.isArray,
+				isDefined = leafletHelpers.isDefined,
+				isFunction = leafletHelpers.isFunction,
                 leafletScope = controller.getLeafletScope(),
                 legend       = leafletScope.legend;
 
+            var legendClass = legend.legendClass ? legend.legendClass : "legend";
+            var position = legend.position || 'bottomright';
+            var leafletLegend = L.control({ position: position });
+            
             controller.getMap().then(function(map) {
-                if (!isArray(legend.colors) || !isArray(legend.labels) || legend.colors.length !== legend.labels.length) {
+				if(isDefined(legend.url)) {
+					$http.get(legend.url)
+						.success(function(legendData) {
+							leafletLegend.onAdd = function (/*map*/) {
+								var div = L.DomUtil.create('div', legendClass);
+								for (var i = 0; i < legendData.layers.length; i++) {
+									var layer = legendData.layers[i];
+									div.innerHTML += '<div class="info-title">' + layer.layerName + '</div>';
+									for(var j = 0; j < layer.legend.length; j++) {
+										var leg = layer.legend[j];
+										div.innerHTML +=
+											'<div class="inline"><img src="data:' + leg.contentType + ';base64,' + leg.imageData + '" /></div>' +
+											'<div class="info-label">' + leg.label + '</div>';
+									}
+								}
+								return div;
+							};
+		                    leafletLegend.addTo(map);
+							if(isDefined(legend.loadedData) && isFunction(legend.loadedData)) {
+								legend.loadedData();
+							}
+						})
+						.error(function() {
+							$log.warn('[AngularJS - Leaflet] legend.url not loaded.');
+						});
+				} else if (!isArray(legend.colors) || !isArray(legend.labels) || legend.colors.length !== legend.labels.length) {
                     $log.warn("[AngularJS - Leaflet] legend.colors and legend.labels must be set.");
                 } else {
-                    var legendClass = legend.legendClass ? legend.legendClass : "legend";
-                    var position = legend.position || 'bottomright';
-                    var leafletLegend = L.control({ position: position });
                     leafletLegend.onAdd = function (/*map*/) {
                         var div = L.DomUtil.create('div', legendClass);
                         for (var i = 0; i < legend.colors.length; i++) {
                             div.innerHTML +=
-                                '<div><i style="background:' + legend.colors[i] + '"></i>' + legend.labels[i] + '</div>';
+                                '<div class="outline"><i style="background:' + legend.colors[i] + '"></i></div>' +
+                                '<div class="info-label">' + legend.labels[i] + '</div>';
                         }
                         return div;
                     };
@@ -402,11 +431,29 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
 
                 leafletLayers.baselayers = {};
                 leafletLayers.controls = {};
+<<<<<<< HEAD
+                
+                var controlOptions = {
+					collapsed: defaults.controlLayer && defaults.controlLayer.collapsed
+				};
+				if(defaults.controlLayer && isDefined(defaults.controlLayer.control)) {
+					leafletLayers.controls.layers =
+						defaults.controlLayer.control.apply(this, [[], [], controlOptions]);
+				} else {
+					leafletLayers.controls.layers = new L.control.layers([[], [], controlOptions]);
+				}
+				
+				if(defaults.controlLayer && isDefined(defaults.controlLayer.position)) {
+					leafletLayers.controls.layers.setPosition(defaults.controlLayer.position);
+				}
+                leafletLayers.controls.layers.addTo(map);
+=======
                 leafletLayers.controls.layers = new L.control.layers();
                 if (isDefined(layers.options)) {
                     leafletLayers.controls.layers.options = layers.options;
                 }
                 leafletLayers.controls.layers.setPosition(defaults.controlLayersPosition);
+>>>>>>> tombatossals-master
 
 
                 // Setup all baselayers definitions
@@ -1050,7 +1097,7 @@ angular.module("leaflet-directive").service('leafletData', function ($log, $q, l
     };
 });
 
-angular.module("leaflet-directive").factory('leafletMapDefaults', function (leafletHelpers) {
+angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, leafletHelpers) {
     function _getDefaults() {
         return {
             keyboard: true,
@@ -1062,12 +1109,11 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function (leaf
             zoomsliderControl: false,
             zoomControlPosition: 'topleft',
             attributionControl: true,
-			layercontrol: {
+			controlLayer: {
 				position:'topright',
 				control: L.control.layers,
 				collapsed: true
 	        },
-            controlLayersPosition: 'topright',
             crs: L.CRS.EPSG3857,
             tileLayer: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
             tileLayerOptions: {
@@ -1146,7 +1192,9 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function (leaf
                 newDefaults.keyboard = isDefined(userDefaults.keyboard) ? userDefaults.keyboard : newDefaults.keyboard;
                 newDefaults.dragging = isDefined(userDefaults.dragging) ? userDefaults.dragging : newDefaults.dragging;
 
-                newDefaults.controlLayersPosition = isDefined(userDefaults.controlLayersPosition) ? userDefaults.controlLayersPosition : newDefaults.controlLayersPosition;
+				if(isDefined(userDefaults.controlLayer)) {
+					angular.extend(newDefaults.controlLayer, userDefaults.controlLayer);
+				}
 
                 if (isDefined(userDefaults.crs) && isDefined(L.CRS[userDefaults.crs])) {
                     newDefaults.crs = L.CRS[userDefaults.crs];
@@ -1703,7 +1751,7 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
             }
         },
         bing: {
-            mustHaveUrl: true,
+            mustHaveUrl: false,
             createLayer: function(params) {
                 if (!Helpers.BingLayerPlugin.isLoaded()) {
                     return;
@@ -2479,6 +2527,11 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
         isObject: function(value) {
             return angular.isObject(value);
         },
+        
+		// Determine if a reference is a function.
+		isFunction: function(value) {
+			return angular.isFunction(value);
+		},
 
         // Determine if two objects have the same properties
         equals: function(o1, o2) {
