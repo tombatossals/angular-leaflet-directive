@@ -31,6 +31,7 @@ angular.module("leaflet-directive").directive('center', function ($log, $parse, 
                 var changingModel = false;
 
                 if (attrs.centerUrlParams === "yes") {
+                    console.log("center");
                     leafletScope.$watch("$locationChangeSuccess", function() {
                         var params = $location.search();
                         if (isDefined(params.leafletZoom)) {
