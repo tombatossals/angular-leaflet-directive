@@ -409,11 +409,12 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
         },
         link: function(scope, element, attrs, controller) {
             var isDefined = leafletHelpers.isDefined,
-                isObject = leafletHelpers.isObject,
                 leafletLayers = {},
                 leafletScope  = controller.getLeafletScope(),
                 layers = leafletScope.layers,
-                createLayer = leafletLayerHelpers.createLayer;
+                createLayer = leafletLayerHelpers.createLayer,
+                addControlLayers = leafletLayerHelpers.addControlLayers,
+                controlLayersAdded = false;
 
             controller.getMap().then(function(map) {
                 var defaults = leafletMapDefaults.getDefaults(attrs.id);
@@ -431,30 +432,23 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
 
                 leafletLayers.baselayers = {};
                 leafletLayers.controls = {};
-<<<<<<< HEAD
-                
-                var controlOptions = {
-					collapsed: defaults.controlLayer && defaults.controlLayer.collapsed
+				
+				var controlOptions = {
+					collapsed: defaults.controlLayers && defaults.controlLayers.collapsed
 				};
-				if(defaults.controlLayer && isDefined(defaults.controlLayer.control)) {
+				if(defaults.controlLayers && isDefined(defaults.controlLayers.control)) {
 					leafletLayers.controls.layers =
-						defaults.controlLayer.control.apply(this, [[], [], controlOptions]);
+						defaults.controlLayers.control.apply(this, [[], [], controlOptions]);
 				} else {
 					leafletLayers.controls.layers = new L.control.layers([[], [], controlOptions]);
 				}
 				
-				if(defaults.controlLayer && isDefined(defaults.controlLayer.position)) {
-					leafletLayers.controls.layers.setPosition(defaults.controlLayer.position);
+				if(defaults.controlLayers && isDefined(defaults.controlLayers.position)) {
+					leafletLayers.controls.layers.setPosition(defaults.controlLayers.position);
 				}
-                leafletLayers.controls.layers.addTo(map);
-=======
-                leafletLayers.controls.layers = new L.control.layers();
                 if (isDefined(layers.options)) {
                     leafletLayers.controls.layers.options = layers.options;
                 }
-                leafletLayers.controls.layers.setPosition(defaults.controlLayersPosition);
->>>>>>> tombatossals-master
-
 
                 // Setup all baselayers definitions
                 var oneVisibleLayer = false;
@@ -476,12 +470,9 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                 }
 
                 // Only add the layers switch selector control if we have more than one baselayer + overlay
-                var numberOfLayers = Object.keys(layers.baselayers).length;
-                if (isObject(layers.overlays)) {
-                    numberOfLayers += Object.keys(layers.overlays).length;
-                }
-                if (numberOfLayers > 1) {
-                    leafletLayers.controls.layers.addTo(map);
+                var added = addControlLayers(map, leafletLayers.controls.layers, layers.baselayers, layers.overlays, controlLayersAdded);
+                if(added !== null) {
+					controlLayersAdded = added;
                 }
 
                 // If there is no visible layer add first to the map
@@ -508,6 +499,10 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
 
                 // Watch for the base layers
                 leafletScope.$watch('layers.baselayers', function(newBaseLayers) {
+                    var added = addControlLayers(map, leafletLayers.controls.layers, newBaseLayers, layers.overlays, controlLayersAdded);
+					if(added !== null) {
+						controlLayersAdded = added;
+					}
                     // Delete layers from the array
                     for (var name in leafletLayers.baselayers) {
                         if (!isDefined(newBaseLayers[name])) {
@@ -557,6 +552,10 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
 
                 // Watch for the overlay layers
                 leafletScope.$watch('layers.overlays', function(newOverlayLayers) {
+                    var added = addControlLayers(map, leafletLayers.controls.layers, layers.baselayers, newOverlayLayers, controlLayersAdded);
+					if(added !== null) {
+						controlLayersAdded = added;
+					}
                     // Delete layers from the array
                     for (var name in leafletLayers.overlays) {
                         if (!isDefined(newOverlayLayers[name])) {
@@ -860,7 +859,16 @@ angular.module("leaflet-directive").directive('controls', function ($log, leafle
 
             controller.getMap().then(function(map) {
                 if (isDefined(L.Control.Draw) && isDefined(controls.draw)) {
-                    var drawControl = new L.Control.Draw(controls.draw.options);
+					var drawnItems = new L.FeatureGroup();
+					map.addLayer(drawnItems);
+					var options = {
+						edit: {
+							featureGroup: drawnItems
+						}
+					};
+					angular.extend(options, controls.draw.options);
+					
+                    var drawControl = new L.Control.Draw(options);
                     map.addControl(drawControl);
                 }
                 
@@ -1109,7 +1117,7 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
             zoomsliderControl: false,
             zoomControlPosition: 'topleft',
             attributionControl: true,
-			controlLayer: {
+			controlLayers: {
 				position:'topright',
 				control: L.control.layers,
 				collapsed: true
@@ -1192,8 +1200,8 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
                 newDefaults.keyboard = isDefined(userDefaults.keyboard) ? userDefaults.keyboard : newDefaults.keyboard;
                 newDefaults.dragging = isDefined(userDefaults.dragging) ? userDefaults.dragging : newDefaults.dragging;
 
-				if(isDefined(userDefaults.controlLayer)) {
-					angular.extend(newDefaults.controlLayer, userDefaults.controlLayer);
+				if(isDefined(userDefaults.controlLayers)) {
+					angular.extend(newDefaults.controlLayers, userDefaults.controlLayers);
 				}
 
                 if (isDefined(userDefaults.crs) && isDefined(L.CRS[userDefaults.crs])) {
@@ -1412,7 +1420,16 @@ angular.module("leaflet-directive").factory('leafletEvents', function ($rootScop
                 'locationfound',
                 'locationerror',
                 'popupopen',
-                'popupclose'
+                'popupclose',
+                'draw:created',
+                'draw:edited',
+                'draw:deleted',
+                'draw:drawstart',
+                'draw:drawstop',
+                'draw:editstart',
+                'draw:editstop',
+                'draw:deletestart',
+                'draw:deletestop'
             ];
         },
 
@@ -1841,6 +1858,24 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
 
             //TODO Add $watch to the layer properties
             return layerTypes[layerDefinition.type].createLayer(params);
+        },
+        
+        addControlLayers: function(map, control, baselayers, overlays, loaded) {
+            var numberOfLayers = 0;
+            if (isObject(baselayers)) {
+                numberOfLayers += Object.keys(baselayers).length;
+            }
+            if (isObject(overlays)) {
+                numberOfLayers += Object.keys(overlays).length;
+            }
+            if (numberOfLayers > 1 && loaded === false) {
+                control.addTo(map);
+				return true;
+            } else if(numberOfLayers <= 1 && loaded === true){
+				control.removeFrom(map);
+				return false;
+            }
+            return null;
         }
     };
 });

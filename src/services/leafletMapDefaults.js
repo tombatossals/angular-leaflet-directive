@@ -10,7 +10,7 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
             zoomsliderControl: false,
             zoomControlPosition: 'topleft',
             attributionControl: true,
-			controlLayer: {
+			controlLayers: {
 				position:'topright',
 				control: L.control.layers,
 				collapsed: true
@@ -93,8 +93,8 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
                 newDefaults.keyboard = isDefined(userDefaults.keyboard) ? userDefaults.keyboard : newDefaults.keyboard;
                 newDefaults.dragging = isDefined(userDefaults.dragging) ? userDefaults.dragging : newDefaults.dragging;
 
-				if(isDefined(userDefaults.controlLayer)) {
-					angular.extend(newDefaults.controlLayer, userDefaults.controlLayer);
+				if(isDefined(userDefaults.controlLayers)) {
+					angular.extend(newDefaults.controlLayers, userDefaults.controlLayers);
 				}
 
                 if (isDefined(userDefaults.crs) && isDefined(L.CRS[userDefaults.crs])) {
