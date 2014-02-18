@@ -103,7 +103,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($q, leafl
     };
 });
 
-angular.module("leaflet-directive").directive('center', function ($log, $parse, leafletMapDefaults, leafletHelpers) {
+angular.module("leaflet-directive").directive('center', function ($log, $parse, $location, leafletMapDefaults, leafletHelpers) {
     return {
         restrict: "A",
         scope: false,
@@ -134,6 +134,17 @@ angular.module("leaflet-directive").directive('center', function ($log, $parse, 
                 };
 
                 var changingModel = false;
+
+                if (attrs.centerUrlParams === "yes") {
+                    console.log("center");
+                    leafletScope.$watch("$locationChangeSuccess", function() {
+                        var params = $location.search();
+                        if (isDefined(params.leafletZoom)) {
+                            console.log(params.leafletZoom);
+                            centerModel.zoom.assign(params.leafletZoom);
+                        }
+                    });
+                }
 
                 leafletScope.$watch("center", function(center) {
                     changingModel = true;
@@ -409,7 +420,7 @@ angular.module("leaflet-directive").directive('geojson', function ($log, $rootSc
     };
 });
 
-angular.module("leaflet-directive").directive('layers', function ($log, $q, leafletData, leafletHelpers, leafletMapDefaults, leafletLayerHelpers) {
+angular.module("leaflet-directive").directive('layers', function ($log, $q, leafletData, leafletHelpers, leafletMapDefaults, leafletLayerHelpers, leafletControlHelpers) {
     var _leafletLayers;
 
     return {
@@ -429,7 +440,7 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                 leafletScope  = controller.getLeafletScope(),
                 layers = leafletScope.layers,
                 createLayer = leafletLayerHelpers.createLayer,
-                addControlLayers = leafletLayerHelpers.addControlLayers,
+                addControlLayers = leafletControlHelpers.addControlLayers,
                 isControlLayersAdded = false;
 
             controller.getMap().then(function(map) {
@@ -451,13 +462,11 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
 
                 // Setup the control options
                 var controlOptions = {
-                    collapsed: defaults.controlLayers && defaults.controlLayers.collapsed
+                    collapsed: defaults.controls.layers.collapsed,
+                    posiiton: defaults.controls.layers.position
                 };
                 leafletLayers.controls.layers = new L.control.layers([], [], controlOptions);
 
-                if (defaults.controlLayers && isDefined(defaults.controlLayers.position)) {
-                    leafletLayers.controls.layers.setPosition(defaults.controlLayers.position);
-                }
                 if (isDefined(layers.options)) {
                     leafletLayers.controls.layers.options = layers.options;
                 }
@@ -1123,10 +1132,13 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
             zoomsliderControl: false,
             zoomControlPosition: 'topleft',
             attributionControl: true,
-			controlLayers: {
-				position:'topright',
-				collapsed: true
-	        },
+            controls: {
+                layers: {
+                    visible: true,
+                    position:'topright',
+                    collapsed: true
+                }
+            },
             crs: L.CRS.EPSG3857,
             tileLayer: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
             tileLayerOptions: {
@@ -1198,16 +1210,16 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
                 newDefaults.doubleClickZoom = isDefined(userDefaults.doubleClickZoom) ?  userDefaults.doubleClickZoom : newDefaults.doubleClickZoom;
                 newDefaults.scrollWheelZoom = isDefined(userDefaults.scrollWheelZoom) ?  userDefaults.scrollWheelZoom : newDefaults.doubleClickZoom;
                 newDefaults.zoomControl = isDefined(userDefaults.zoomControl) ?  userDefaults.zoomControl : newDefaults.zoomControl;
-				newDefaults.zoomsliderControl = isDefined(userDefaults.zoomsliderControl) ?  userDefaults.zoomsliderControl : newDefaults.zoomsliderControl;
+                newDefaults.zoomsliderControl = isDefined(userDefaults.zoomsliderControl) ?  userDefaults.zoomsliderControl : newDefaults.zoomsliderControl;
                 newDefaults.attributionControl = isDefined(userDefaults.attributionControl) ?  userDefaults.attributionControl : newDefaults.attributionControl;
                 newDefaults.tileLayer = isDefined(userDefaults.tileLayer) ? userDefaults.tileLayer : newDefaults.tileLayer;
                 newDefaults.zoomControlPosition = isDefined(userDefaults.zoomControlPosition) ? userDefaults.zoomControlPosition : newDefaults.zoomControlPosition;
                 newDefaults.keyboard = isDefined(userDefaults.keyboard) ? userDefaults.keyboard : newDefaults.keyboard;
                 newDefaults.dragging = isDefined(userDefaults.dragging) ? userDefaults.dragging : newDefaults.dragging;
 
-				if(isDefined(userDefaults.controlLayers)) {
-					angular.extend(newDefaults.controlLayers, userDefaults.controlLayers);
-				}
+                if(isDefined(userDefaults.controlLayers)) {
+                    angular.extend(newDefaults.controlLayers, userDefaults.controlLayers);
+                }
 
                 if (isDefined(userDefaults.crs) && isDefined(L.CRS[userDefaults.crs])) {
                     newDefaults.crs = L.CRS[userDefaults.crs];
@@ -1863,8 +1875,14 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
 
             //TODO Add $watch to the layer properties
             return layerTypes[layerDefinition.type].createLayer(params);
-        },
+        }
+    };
+});
 
+angular.module("leaflet-directive").factory('leafletControlHelpers', function ($rootScope, $log, leafletHelpers) {
+    var isObject = leafletHelpers.isObject;
+
+    return {
         addControlLayers: function(map, control, baselayers, overlays, loaded) {
             var numberOfLayers = 0;
             if (isObject(baselayers)) {
@@ -1874,12 +1892,14 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
                 numberOfLayers += Object.keys(overlays).length;
             }
             if (numberOfLayers > 1 && loaded === false) {
-                control.addTo(map);
+                if (!map.hasLayer(control)) {
+                    control.addTo(map);
+                }
 				return true;
             }
             if(numberOfLayers <= 1 && loaded === true){
-				map.removeControl(control);
-				return false;
+				//map.removeControl(control);
+				//return false;
             }
             return loaded;
         }
