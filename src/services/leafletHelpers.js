@@ -63,6 +63,11 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
         isObject: function(value) {
             return angular.isObject(value);
         },
+        
+		// Determine if a reference is a function.
+		isFunction: function(value) {
+			return angular.isFunction(value);
+		},
 
         // Determine if two objects have the same properties
         equals: function(o1, o2) {

@@ -173,7 +173,16 @@ angular.module("leaflet-directive").factory('leafletEvents', function ($rootScop
                 'locationfound',
                 'locationerror',
                 'popupopen',
-                'popupclose'
+                'popupclose',
+                'draw:created',
+                'draw:edited',
+                'draw:deleted',
+                'draw:drawstart',
+                'draw:drawstop',
+                'draw:editstart',
+                'draw:editstop',
+                'draw:deletestart',
+                'draw:deletestop'
             ];
         },
 

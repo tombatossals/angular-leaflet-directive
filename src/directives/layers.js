@@ -14,11 +14,12 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
         },
         link: function(scope, element, attrs, controller) {
             var isDefined = leafletHelpers.isDefined,
-                isObject = leafletHelpers.isObject,
                 leafletLayers = {},
                 leafletScope  = controller.getLeafletScope(),
                 layers = leafletScope.layers,
-                createLayer = leafletLayerHelpers.createLayer;
+                createLayer = leafletLayerHelpers.createLayer,
+                addControlLayers = leafletLayerHelpers.addControlLayers,
+                isControlLayersAdded = false;
 
             controller.getMap().then(function(map) {
                 var defaults = leafletMapDefaults.getDefaults(attrs.id);
@@ -36,12 +37,19 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
 
                 leafletLayers.baselayers = {};
                 leafletLayers.controls = {};
-                leafletLayers.controls.layers = new L.control.layers();
+
+                // Setup the control options
+                var controlOptions = {
+                    collapsed: defaults.controlLayers && defaults.controlLayers.collapsed
+                };
+                leafletLayers.controls.layers = new L.control.layers([], [], controlOptions);
+
+                if (defaults.controlLayers && isDefined(defaults.controlLayers.position)) {
+                    leafletLayers.controls.layers.setPosition(defaults.controlLayers.position);
+                }
                 if (isDefined(layers.options)) {
                     leafletLayers.controls.layers.options = layers.options;
                 }
-                leafletLayers.controls.layers.setPosition(defaults.controlLayersPosition);
-
 
                 // Setup all baselayers definitions
                 var oneVisibleLayer = false;
@@ -60,15 +68,6 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                     }
 
                     leafletLayers.controls.layers.addBaseLayer(leafletLayers.baselayers[layerName], layers.baselayers[layerName].name);
-                }
-
-                // Only add the layers switch selector control if we have more than one baselayer + overlay
-                var numberOfLayers = Object.keys(layers.baselayers).length;
-                if (isObject(layers.overlays)) {
-                    numberOfLayers += Object.keys(layers.overlays).length;
-                }
-                if (numberOfLayers > 1) {
-                    leafletLayers.controls.layers.addTo(map);
                 }
 
                 // If there is no visible layer add first to the map
@@ -140,6 +139,10 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                     if (!found) {
                         map.addLayer(leafletLayers.baselayers[Object.keys(layers.baselayers)[0]]);
                     }
+
+                    // Only add the layers switch selector control if we have more than one baselayer + overlay
+                    isControlLayersAdded = addControlLayers(map, leafletLayers.controls.layers, newBaseLayers, layers.overlays, isControlLayersAdded);
+
                 }, true);
 
                 // Watch for the overlay layers
@@ -178,6 +181,10 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                             map.removeLayer(leafletLayers.overlays[newName]);
                         }
                     }
+
+                    // Only add the layers switch selector control if we have more than one baselayer + overlay
+                    isControlLayersAdded = addControlLayers(map, leafletLayers.controls.layers, layers.baselayers, newOverlayLayers, isControlLayersAdded);
+
                 }, true);
             });
         }

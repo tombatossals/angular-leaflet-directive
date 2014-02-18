@@ -1,4 +1,4 @@
-angular.module("leaflet-directive").factory('leafletMapDefaults', function (leafletHelpers) {
+angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, leafletHelpers) {
     function _getDefaults() {
         return {
             keyboard: true,
@@ -10,12 +10,10 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function (leaf
             zoomsliderControl: false,
             zoomControlPosition: 'topleft',
             attributionControl: true,
-			layercontrol: {
+			controlLayers: {
 				position:'topright',
-				control: L.control.layers,
 				collapsed: true
 	        },
-            controlLayersPosition: 'topright',
             crs: L.CRS.EPSG3857,
             tileLayer: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
             tileLayerOptions: {
@@ -94,7 +92,9 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function (leaf
                 newDefaults.keyboard = isDefined(userDefaults.keyboard) ? userDefaults.keyboard : newDefaults.keyboard;
                 newDefaults.dragging = isDefined(userDefaults.dragging) ? userDefaults.dragging : newDefaults.dragging;
 
-                newDefaults.controlLayersPosition = isDefined(userDefaults.controlLayersPosition) ? userDefaults.controlLayersPosition : newDefaults.controlLayersPosition;
+				if(isDefined(userDefaults.controlLayers)) {
+					angular.extend(newDefaults.controlLayers, userDefaults.controlLayers);
+				}
 
                 if (isDefined(userDefaults.crs) && isDefined(L.CRS[userDefaults.crs])) {
                     newDefaults.crs = L.CRS[userDefaults.crs];
