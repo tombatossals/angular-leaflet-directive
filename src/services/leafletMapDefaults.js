@@ -12,7 +12,6 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
             attributionControl: true,
 			controlLayers: {
 				position:'topright',
-				control: L.control.layers,
 				collapsed: true
 	        },
             crs: L.CRS.EPSG3857,
