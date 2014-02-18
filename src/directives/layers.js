@@ -1,4 +1,4 @@
-angular.module("leaflet-directive").directive('layers', function ($log, $q, leafletData, leafletHelpers, leafletMapDefaults, leafletLayerHelpers) {
+angular.module("leaflet-directive").directive('layers', function ($log, $q, leafletData, leafletHelpers, leafletMapDefaults, leafletLayerHelpers, leafletControlHelpers) {
     var _leafletLayers;
 
     return {
@@ -18,7 +18,7 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                 leafletScope  = controller.getLeafletScope(),
                 layers = leafletScope.layers,
                 createLayer = leafletLayerHelpers.createLayer,
-                addControlLayers = leafletLayerHelpers.addControlLayers,
+                addControlLayers = leafletControlHelpers.addControlLayers,
                 isControlLayersAdded = false;
 
             controller.getMap().then(function(map) {
@@ -40,13 +40,11 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
 
                 // Setup the control options
                 var controlOptions = {
-                    collapsed: defaults.controlLayers && defaults.controlLayers.collapsed
+                    collapsed: defaults.controls.layers.collapsed,
+                    posiiton: defaults.controls.layers.position
                 };
                 leafletLayers.controls.layers = new L.control.layers([], [], controlOptions);
 
-                if (defaults.controlLayers && isDefined(defaults.controlLayers.position)) {
-                    leafletLayers.controls.layers.setPosition(defaults.controlLayers.position);
-                }
                 if (isDefined(layers.options)) {
                     leafletLayers.controls.layers.options = layers.options;
                 }

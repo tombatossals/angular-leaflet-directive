@@ -194,25 +194,6 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
 
             //TODO Add $watch to the layer properties
             return layerTypes[layerDefinition.type].createLayer(params);
-        },
-
-        addControlLayers: function(map, control, baselayers, overlays, loaded) {
-            var numberOfLayers = 0;
-            if (isObject(baselayers)) {
-                numberOfLayers += Object.keys(baselayers).length;
-            }
-            if (isObject(overlays)) {
-                numberOfLayers += Object.keys(overlays).length;
-            }
-            if (numberOfLayers > 1 && loaded === false) {
-                control.addTo(map);
-				return true;
-            }
-            if(numberOfLayers <= 1 && loaded === true){
-				map.removeControl(control);
-				return false;
-            }
-            return loaded;
         }
     };
 });
