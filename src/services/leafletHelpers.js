@@ -175,6 +175,11 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
                 }
             }
         },
+        ChinaLayerPlugin: {
+            isLoaded: function() {
+                return angular.isDefined(L.tileLayer.chinaProvider);
+            }
+        },
         BingLayerPlugin: {
             isLoaded: function() {
                 return angular.isDefined(L.BingLayer);
