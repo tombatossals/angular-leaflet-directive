@@ -94,7 +94,7 @@ module.exports = function(grunt) {
             },
             dist: {
                 files: {
-                    'dist/<%= pkg.name %>.min.no-header.js': ['dist/angular-leaflet-directive.ngmin.js']
+                    'dist/<%= pkg.name %>.min.no-header.js': ['dist/angular-leaflet-directive.js']
                 }
             }
         },
@@ -103,9 +103,9 @@ module.exports = function(grunt) {
             directives: {
                 expand: true,
                 cwd: 'dist',
-                src: ['angular-leaflet-directive.js'],
+                src: ['angular-leaflet-directive.pre.js'],
                 dest: 'dist',
-                ext: '.ngmin.js',
+                ext: '.js',
                 flatten: 'src/'
             }
         },
@@ -259,7 +259,7 @@ module.exports = function(grunt) {
                     'src/services/leafletMarkersHelpers.js',
                     'src/services/leafletHelpers.js'
                 ],
-                dest: 'dist/angular-leaflet-directive.js',
+                dest: 'dist/angular-leaflet-directive.pre.js',
             },
             license: {
                 src: [
