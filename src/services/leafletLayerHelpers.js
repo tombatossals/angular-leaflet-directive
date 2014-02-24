@@ -63,6 +63,16 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
                 return new L.Google(type, params.options);
             }
         },
+        china:{
+            mustHaveUrl:false,
+            createLayer:function(params){
+                var type = params.type || '';
+                if(!Helpers.ChinaLayerPlugin.isLoaded()){
+                    return;
+                }
+                return L.tileLayer.chinaProvider(type, params.options);
+            }
+        },
         ags: {
             mustHaveUrl: true,
             createLayer: function(params) {
