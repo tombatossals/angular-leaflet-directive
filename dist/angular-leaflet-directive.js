@@ -103,13 +103,25 @@
     'leafletMapDefaults',
     'leafletHelpers',
     function ($log, $parse, $location, leafletMapDefaults, leafletHelpers) {
+      var isDefined = leafletHelpers.isDefined, isNumber = leafletHelpers.isNumber, equals = leafletHelpers.equals, safeApply = leafletHelpers.safeApply, isValidCenter = leafletHelpers.isValidCenter;
+      var updateCenterUrlParams = function (center) {
+        if (isNumber(center.lat) && isNumber(center.lng) && isNumber(center.zoom)) {
+          var centerParams = {
+              lat: center.lat,
+              lng: center.lng,
+              zoom: center.zoom
+            };
+          $location.path('');
+          $location.search(centerParams);
+        }
+      };
       return {
         restrict: 'A',
         scope: false,
         replace: false,
         require: 'leaflet',
         link: function (scope, element, attrs, controller) {
-          var isDefined = leafletHelpers.isDefined, isNumber = leafletHelpers.isNumber, safeApply = leafletHelpers.safeApply, isValidCenter = leafletHelpers.isValidCenter, leafletScope = controller.getLeafletScope(), center = leafletScope.center;
+          var leafletScope = controller.getLeafletScope(), center = leafletScope.center;
           controller.getMap().then(function (map) {
             var defaults = leafletMapDefaults.getDefaults(attrs.id);
             if (!isDefined(center)) {
@@ -127,16 +139,26 @@
               };
             var changingModel = false;
             if (attrs.centerUrlParams === 'yes') {
-              console.log('center');
-              leafletScope.$watch('$locationChangeSuccess', function () {
-                var params = $location.search();
-                if (isDefined(params.leafletZoom)) {
-                  console.log(params.leafletZoom);
-                  centerModel.zoom.assign(params.leafletZoom);
+              leafletScope.$watch(function () {
+                return $location.search();
+              }, function (search) {
+                console.log('center1', search);
+                if (isDefined(search) && isDefined(search.lat) && isDefined(search.lng) && isDefined(search.zoom)) {
+                  var actualCenter = {
+                      lat: centerModel.lat(),
+                      lng: centerModel.lng(),
+                      zoom: centerModel.zoom()
+                    };
+                  if (!equals(search, actualCenter)) {
+                    centerModel.lat.assign(search.lat);
+                    centerModel.lng.assign(search.lng);
+                    centerModel.zoom.assign(search.zoom);
+                  }
                 }
               });
             }
             leafletScope.$watch('center', function (center) {
+              console.log('watch', center.zoom);
               changingModel = true;
               if (!isValidCenter(center) && center.autoDiscover !== true) {
                 $log.warn('[AngularJS - Leaflet] invalid \'center\'');
@@ -172,6 +194,9 @@
                 center.lat,
                 center.lng
               ], center.zoom);
+              if (attrs.centerUrlParams) {
+                updateCenterUrlParams(center);
+              }
               changingModel = false;
             }, true);
             map.on('moveend', function () {
@@ -184,6 +209,9 @@
                   centerModel.lng.assign(scope, map.getCenter().lng);
                   centerModel.zoom.assign(scope, map.getZoom());
                   centerModel.autoDiscover.assign(scope, false);
+                  if (attrs.centerUrlParams) {
+                    updateCenterUrlParams(center);
+                  }
                 }
               });
             });
@@ -195,11 +223,17 @@
                     center.lat,
                     center.lng
                   ], center.zoom);
+                  if (attrs.centerUrlParams) {
+                    updateCenterUrlParams(center);
+                  }
                 } else {
                   map.setView([
                     defaults.center.lat,
                     defaults.center.lng
                   ], defaults.center.zoom);
+                  if (attrs.centerUrlParams) {
+                    updateCenterUrlParams(center);
+                  }
                 }
               });
             }
