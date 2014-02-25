@@ -20,6 +20,7 @@ See some basic examples:
 * [Layers simple example](http://tombatossals.github.io/angular-leaflet-directive/examples/tiles-simple-example.html)
 * [Overlays simple example](http://tombatossals.github.io/angular-leaflet-directive/examples/overlays-simple-example.html)
 * [ImageOverlay simple example](http://tombatossals.github.io/angular-leaflet-directive/examples/layers-imageoverlay-example.html)
+* [Dynamic add/remove layers/overlays example](http://tombatossals.github.io/angular-leaflet-directive/examples/layers-add-remove.html)
 * [Google Maps example](http://tombatossals.github.io/angular-leaflet-directive/examples/googlemaps-example.html)
 * [Paths Simple example](http://tombatossals.github.io/angular-leaflet-directive/examples/paths-simple-example.html)
 * [Paths Types example](http://tombatossals.github.io/angular-leaflet-directive/examples/paths-types-example.html)

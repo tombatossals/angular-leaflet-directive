@@ -5,7 +5,7 @@ module.exports = function(karma) {
 
         // list of files / patterns to load in the browser
         files: [
-            'bower_components/leaflet-dist/leaflet.js',
+            'bower_components/leaflet-dist/leaflet-src.js',
             'bower_components/angular/angular.js',
             'bower_components/leaflet.markerclusterer/dist/leaflet.markercluster.js',
             'bower_components/angular-mocks/angular-mocks.js',
