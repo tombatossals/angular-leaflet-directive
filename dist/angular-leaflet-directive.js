@@ -2174,7 +2174,8 @@
               draggable: isDefined(markerData.draggable) ? markerData.draggable : false,
               clickable: isDefined(markerData.clickable) ? markerData.clickable : true,
               riseOnHover: isDefined(markerData.riseOnHover) ? markerData.riseOnHover : false,
-              zIndexOffset: isDefined(markerData.zIndexOffset) ? markerData.zIndexOffset : 0
+              zIndexOffset: isDefined(markerData.zIndexOffset) ? markerData.zIndexOffset : 0,
+              iconAngle: isDefined(markerData.iconAngle) ? markerData.iconAngle : 0
             };
           return new L.marker(markerData, markerOptions);
         },
