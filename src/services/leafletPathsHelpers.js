@@ -23,29 +23,26 @@ angular.module("leaflet-directive").factory('leafletPathsHelpers', function ($ro
     }
 
     function _getOptions(path, defaults) {
-        var options = {
-            weight: defaults.path.weight,
-            color: defaults.path.color,
-            opacity: defaults.path.opacity
-        };
+        var availableOptions = [
+            // Path options
+            'stroke', 'weight', 'color', 'opacity',
+            'fill', 'fillColor', 'fillOpacity',
+            'dashArray', 'lineCap', 'lineJoin', 'clickable',
+            'pointerEvents', 'className',
 
-        if(isDefined(path.stroke)) {
-            options.stroke = path.stroke;
-        }
-        if(isDefined(path.fill)) {
-            options.fill = path.fill;
-        }
-        if(isDefined(path.fillColor)) {
-            options.fillColor = path.fillColor;
-        }
-        if(isDefined(path.fillOpacity)) {
-            options.fillOpacity = path.fillOpacity;
-        }
-        if(isDefined(path.smoothFactor)) {
-            options.smoothFactor = path.smoothFactor;
-        }
-        if(isDefined(path.noClip)) {
-            options.noClip = path.noClip;
+            // Polyline options
+            'smoothFactor', 'noClip'
+        ];
+
+        var options = {};
+        for (var i = 0; i < availableOptions.length; i++) {
+            var optionName = availableOptions[i];
+
+            if (isDefined(path[optionName])) {
+                options[optionName] = path[optionName];
+            } else if (isDefined(defaults.path[optionName])) {
+                options[optionName] = defaults.path[optionName];
+            }
         }
 
         return options;
