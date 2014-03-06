@@ -6,7 +6,7 @@ angular.module("leaflet-directive").factory('leafletPathsHelpers', function ($ro
 
     function _convertToLeafletLatLngs(latlngs) {
         return latlngs.filter(function(latlng) {
-            return !!latlng.lat && !!latlng.lng;
+            return isValidPoint(latlng);
         }).map(function (latlng) {
             return new L.LatLng(latlng.lat, latlng.lng);
         });
