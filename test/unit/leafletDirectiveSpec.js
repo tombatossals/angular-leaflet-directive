@@ -147,4 +147,21 @@ describe('Directive: leaflet', function() {
         $rootScope.$digest();
         expect(leafletMap.zoomControl).toBe(undefined);
     });
+
+    it('should unset from leafletData after scope destroy', function () {
+        var element = angular.element('<leaflet></leaflet>');
+        var $scope = $rootScope.$new();
+
+        element = $compile(element)($scope);
+
+        $scope.$destroy();
+        $rootScope.$digest();
+
+        var shouldNotBeMap;
+        leafletData.getMap().then(function (map) {
+            shouldNotBeMap = map;
+        });
+        $rootScope.$digest();
+        expect(shouldNotBeMap).toBe(undefined);
+    });
 });
