@@ -95,6 +95,10 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($q, leafl
             map.whenReady(function() {
                 leafletData.setMap(map, attrs.id);
             });
+
+            scope.$on('$destroy', function () {
+                leafletData.unresolveMap(attrs.id);
+            });
         }
     };
 });
