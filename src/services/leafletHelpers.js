@@ -202,7 +202,7 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
                 } else {
                     return false;
                 }
-            },
+            }
         },
         AGSLayerPlugin: {
             isLoaded: function() {
@@ -214,7 +214,7 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
                 } else {
                     return false;
                 }
-            },
+            }
         },
         YandexLayerPlugin: {
             isLoaded: function() {
@@ -238,7 +238,7 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
 				} else {
 					return false;
 				}
-			},
+			}
         },
         GeoJSONPlugin: {
             isLoaded: function(){
