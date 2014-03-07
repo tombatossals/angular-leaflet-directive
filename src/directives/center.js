@@ -31,7 +31,7 @@ angular.module("leaflet-directive").directive('center',
             controller.getMap().then(function(map) {
                 var defaults = leafletMapDefaults.getDefaults(attrs.id);
 
-                if (!isDefined(center)) {
+                if (!isDefined(center) || !(center.lat && center.lng)) {
                     map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
                     return;
                 }
