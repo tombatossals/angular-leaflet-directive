@@ -1,4 +1,5 @@
-angular.module("leaflet-directive").directive('center', function ($log, $parse, $location, leafletMapDefaults, leafletHelpers) {
+angular.module("leaflet-directive").directive('center',
+    function ($log, $parse, $location, leafletMapDefaults, leafletHelpers, leafletBoundsHelpers) {
     return {
         restrict: "A",
         scope: false,
@@ -9,6 +10,7 @@ angular.module("leaflet-directive").directive('center', function ($log, $parse, 
             var isDefined     = leafletHelpers.isDefined,
                 isNumber      = leafletHelpers.isNumber,
                 safeApply     = leafletHelpers.safeApply,
+                updateBoundsInScope = leafletBoundsHelpers.updateBoundsInScope,
                 isValidCenter = leafletHelpers.isValidCenter,
                 leafletScope  = controller.getLeafletScope(),
                 center        = leafletScope.center;
@@ -72,6 +74,8 @@ angular.module("leaflet-directive").directive('center', function ($log, $parse, 
                     }
 
                     safeApply(leafletScope, function(scope) {
+                        updateBoundsInScope(scope, map);
+
                         if (centerModel) {
                             centerModel.lat.assign(scope, map.getCenter().lat);
                             centerModel.lng.assign(scope, map.getCenter().lng);
