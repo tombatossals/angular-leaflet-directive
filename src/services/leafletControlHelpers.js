@@ -18,9 +18,17 @@ angular.module("leaflet-directive").factory('leafletControlHelpers', function ($
         var defaults = leafletMapDefaults.getDefaults(mapId);
         var controlOptions = {
             collapsed: defaults.controls.layers.collapsed,
-            posiiton: defaults.controls.layers.position
+            position: defaults.controls.layers.position
         };
-        return new L.control.layers([], [], controlOptions);
+        
+        var control;
+        if(defaults.controls.layers && isDefined(defaults.controls.layers.control)) {
+			control = defaults.controls.layers.control.apply(this, [[], [], controlOptions]);
+		} else {
+			control = new L.control.layers([], [], controlOptions);
+		}
+        
+        return control;
     };
 
     return {
