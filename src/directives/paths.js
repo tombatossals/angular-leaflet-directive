@@ -42,6 +42,11 @@ angular.module("leaflet-directive").directive('paths', function ($log, leafletDa
                             var pathData = newPaths[newName];
                             var newPath = createPath(newName, newPaths[newName], defaults);
 
+                            // Show label if defined
+                            if (leafletHelpers.LabelPlugin.isLoaded() && isDefined(pathData.label) && isDefined(pathData.label.message)) {
+                                newPath.bindLabel(pathData.label.message, pathData.label.options);
+                            }
+
                             // Listen for changes on the new path
                             if (isDefined(newPath)) {
                                 leafletPaths[newName] = newPath;
