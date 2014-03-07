@@ -755,6 +755,9 @@
                 if (!isDefined(leafletPaths[newName])) {
                   var pathData = newPaths[newName];
                   var newPath = createPath(newName, newPaths[newName], defaults);
+                  if (isDefined(newPath) && isDefined(pathData.message)) {
+                    newPath.bindPopup(pathData.message);
+                  }
                   // Listen for changes on the new path
                   if (isDefined(newPath)) {
                     leafletPaths[newName] = newPath;
@@ -1794,7 +1797,7 @@
       var isDefined = leafletHelpers.isDefined, isArray = leafletHelpers.isArray, isNumber = leafletHelpers.isNumber, isValidPoint = leafletHelpers.isValidPoint;
       function _convertToLeafletLatLngs(latlngs) {
         return latlngs.filter(function (latlng) {
-          return !!latlng.lat && !!latlng.lng;
+          return isValidPoint(latlng);
         }).map(function (latlng) {
           return new L.LatLng(latlng.lat, latlng.lng);
         });
@@ -1808,28 +1811,31 @@
         });
       }
       function _getOptions(path, defaults) {
-        var options = {
-            weight: defaults.path.weight,
-            color: defaults.path.color,
-            opacity: defaults.path.opacity
-          };
-        if (isDefined(path.stroke)) {
-          options.stroke = path.stroke;
-        }
-        if (isDefined(path.fill)) {
-          options.fill = path.fill;
-        }
-        if (isDefined(path.fillColor)) {
-          options.fillColor = path.fillColor;
-        }
-        if (isDefined(path.fillOpacity)) {
-          options.fillOpacity = path.fillOpacity;
-        }
-        if (isDefined(path.smoothFactor)) {
-          options.smoothFactor = path.smoothFactor;
-        }
-        if (isDefined(path.noClip)) {
-          options.noClip = path.noClip;
+        var availableOptions = [
+            'stroke',
+            'weight',
+            'color',
+            'opacity',
+            'fill',
+            'fillColor',
+            'fillOpacity',
+            'dashArray',
+            'lineCap',
+            'lineJoin',
+            'clickable',
+            'pointerEvents',
+            'className',
+            'smoothFactor',
+            'noClip'
+          ];
+        var options = {};
+        for (var i = 0; i < availableOptions.length; i++) {
+          var optionName = availableOptions[i];
+          if (isDefined(path[optionName])) {
+            options[optionName] = path[optionName];
+          } else if (isDefined(defaults.path[optionName])) {
+            options[optionName] = defaults.path[optionName];
+          }
         }
         return options;
       }

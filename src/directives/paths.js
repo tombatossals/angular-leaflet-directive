@@ -42,6 +42,10 @@ angular.module("leaflet-directive").directive('paths', function ($log, leafletDa
                             var pathData = newPaths[newName];
                             var newPath = createPath(newName, newPaths[newName], defaults);
 
+							if (isDefined(newPath) && isDefined(pathData.message)) {
+                                newPath.bindPopup(pathData.message);
+                            }
+
                             // Listen for changes on the new path
                             if (isDefined(newPath)) {
                                 leafletPaths[newName] = newPath;
