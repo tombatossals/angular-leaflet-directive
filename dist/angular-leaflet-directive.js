@@ -106,13 +106,21 @@
     'leafletMapDefaults',
     'leafletHelpers',
     function ($log, $parse, $location, leafletMapDefaults, leafletHelpers) {
+      var isDefined = leafletHelpers.isDefined, isNumber = leafletHelpers.isNumber, equals = leafletHelpers.equals, safeApply = leafletHelpers.safeApply, isValidCenter = leafletHelpers.isValidCenter;
+      var updateCenterUrlParams = function (center) {
+        if (isNumber(center.lat) && isNumber(center.lng) && isNumber(center.zoom)) {
+          var centerParams = { c: center.lat + ':' + center.lng + ':' + center.zoom };
+          $location.path('');
+          $location.search(centerParams);
+        }
+      };
       return {
         restrict: 'A',
         scope: false,
         replace: false,
         require: 'leaflet',
         link: function (scope, element, attrs, controller) {
-          var isDefined = leafletHelpers.isDefined, isNumber = leafletHelpers.isNumber, safeApply = leafletHelpers.safeApply, isValidCenter = leafletHelpers.isValidCenter, leafletScope = controller.getLeafletScope(), center = leafletScope.center;
+          var leafletScope = controller.getLeafletScope(), center = leafletScope.center;
           controller.getMap().then(function (map) {
             var defaults = leafletMapDefaults.getDefaults(attrs.id);
             if (!isDefined(center)) {
@@ -128,19 +136,63 @@
                 zoom: $parse('center.zoom'),
                 autoDiscover: $parse('center.autoDiscover')
               };
-            var changingModel = false;
-            if (attrs.centerUrlParams === 'yes') {
-              console.log('center');
-              leafletScope.$watch('$locationChangeSuccess', function () {
-                var params = $location.search();
-                if (isDefined(params.leafletZoom)) {
-                  console.log(params.leafletZoom);
-                  centerModel.zoom.assign(params.leafletZoom);
+            var changingCenterFromModel = false;
+            var changingCenterFromUrl = false;
+            var initialCenterParamsFromURL;
+            if (attrs.urlHashCenter === 'yes') {
+              var extractCenter = function (params) {
+                var centerParam;
+                if (isDefined(params.c)) {
+                  var cParam = params.c.split(':');
+                  if (cParam.length === 3) {
+                    centerParam = {
+                      lat: parseFloat(cParam[0]),
+                      lng: parseFloat(cParam[1]),
+                      zoom: parseInt(cParam[2], 10)
+                    };
+                  }
                 }
+                return centerParam;
+              };
+              var search = $location.search();
+              initialCenterParamsFromURL = extractCenter(search);
+              leafletScope.$on('$locationChangeSuccess', function () {
+                var search = $location.search();
+                changingCenterFromUrl = true;
+                if (isDefined(search.c)) {
+                  var urlParams = search.c.split(':');
+                  if (urlParams.length === 3) {
+                    var urlCenter = {
+                        lat: parseFloat(urlParams[0]),
+                        lng: parseFloat(urlParams[1]),
+                        zoom: parseInt(urlParams[2], 10)
+                      };
+                    var actualCenter = {
+                        lat: leafletScope.center.lat,
+                        lng: leafletScope.center.lng,
+                        zoom: leafletScope.center.zoom
+                      };
+                    if (urlCenter && !equals(urlCenter, actualCenter)) {
+                      leafletScope.center = {
+                        lat: urlCenter.lat,
+                        lng: urlCenter.lng,
+                        zoom: urlCenter.zoom
+                      };
+                    }
+                  }
+                }
+                changingCenterFromUrl = false;
               });
             }
             leafletScope.$watch('center', function (center) {
-              changingModel = true;
+              if (changingCenterFromUrl) {
+                return;
+              }
+              // The center from the URL has priority
+              if (attrs.urlHashCenter === 'yes' && isDefined(initialCenterParamsFromURL)) {
+                angular.copy(initialCenterParamsFromURL, center);
+                initialCenterParamsFromURL = undefined;
+              }
               if (!isValidCenter(center) && center.autoDiscover !== true) {
                 $log.warn('[AngularJS - Leaflet] invalid \'center\'');
                 map.setView([
@@ -149,6 +201,7 @@
                 ], defaults.center.zoom);
                 return;
               }
+              changingCenterFromModel = true;
               if (center.autoDiscover === true) {
                 if (!isNumber(center.zoom)) {
                   map.setView([
@@ -175,10 +228,13 @@
                 center.lat,
                 center.lng
               ], center.zoom);
-              changingModel = false;
+              if (attrs.urlHashCenter) {
+                updateCenterUrlParams(center);
+              }
+              changingCenterFromModel = false;
             }, true);
             map.on('moveend', function () {
-              if (changingModel) {
+              if (changingCenterFromModel || changingCenterFromUrl) {
                 return;
               }
               safeApply(leafletScope, function (scope) {
@@ -187,6 +243,9 @@
                   centerModel.lng.assign(scope, map.getCenter().lng);
                   centerModel.zoom.assign(scope, map.getZoom());
                   centerModel.autoDiscover.assign(scope, false);
+                  if (attrs.urlHashCenter) {
+                    updateCenterUrlParams(center);
+                  }
                 }
               });
             });
@@ -198,11 +257,17 @@
                     center.lat,
                     center.lng
                   ], center.zoom);
+                  if (attrs.urlHashCenter) {
+                    updateCenterUrlParams(center);
+                  }
                 } else {
                   map.setView([
                     defaults.center.lat,
                     defaults.center.lng
                   ], defaults.center.zoom);
+                  if (attrs.urlHashCenter) {
+                    updateCenterUrlParams(center);
+                  }
                 }
               });
             }
@@ -1794,7 +1859,7 @@
       var isDefined = leafletHelpers.isDefined, isArray = leafletHelpers.isArray, isNumber = leafletHelpers.isNumber, isValidPoint = leafletHelpers.isValidPoint;
       function _convertToLeafletLatLngs(latlngs) {
         return latlngs.filter(function (latlng) {
-          return !!latlng.lat && !!latlng.lng;
+          return isValidPoint(latlng);
         }).map(function (latlng) {
           return new L.LatLng(latlng.lat, latlng.lng);
         });
@@ -1808,28 +1873,31 @@
         });
       }
       function _getOptions(path, defaults) {
-        var options = {
-            weight: defaults.path.weight,
-            color: defaults.path.color,
-            opacity: defaults.path.opacity
-          };
-        if (isDefined(path.stroke)) {
-          options.stroke = path.stroke;
-        }
-        if (isDefined(path.fill)) {
-          options.fill = path.fill;
-        }
-        if (isDefined(path.fillColor)) {
-          options.fillColor = path.fillColor;
-        }
-        if (isDefined(path.fillOpacity)) {
-          options.fillOpacity = path.fillOpacity;
-        }
-        if (isDefined(path.smoothFactor)) {
-          options.smoothFactor = path.smoothFactor;
-        }
-        if (isDefined(path.noClip)) {
-          options.noClip = path.noClip;
+        var availableOptions = [
+            'stroke',
+            'weight',
+            'color',
+            'opacity',
+            'fill',
+            'fillColor',
+            'fillOpacity',
+            'dashArray',
+            'lineCap',
+            'lineJoin',
+            'clickable',
+            'pointerEvents',
+            'className',
+            'smoothFactor',
+            'noClip'
+          ];
+        var options = {};
+        for (var i = 0; i < availableOptions.length; i++) {
+          var optionName = availableOptions[i];
+          if (isDefined(path[optionName])) {
+            options[optionName] = path[optionName];
+          } else if (isDefined(defaults.path[optionName])) {
+            options[optionName] = defaults.path[optionName];
+          }
         }
         return options;
       }

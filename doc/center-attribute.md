@@ -63,3 +63,11 @@ Development information
 -----------------------
 Each change to our scope defined _center_ object will update the map, or viceversa. This is accomplished via an angularJS watcher, defined [here](https://github.com/tombatossals/angular-leaflet-directive/blob/v0.7.0/src/directives/center.js#L34) in our code. When we change our map center or zoom, our _center_ object will be updated, these events are defined [here](https://github.com/tombatossals/angular-leaflet-directive/blob/v0.7.0/src/directives/center.js#L47) in our code.
 
+Center position coded on a hash URL param
+------------------------------------------
+We can use a special feature of the center attribute which allow us to synchronize the center position of the map with the URL, adding to it a special GET parameter where the center is coded. Then we can persist the map position on the browser URL.
+```
+<leaflet center="center" url-hash-center="yes" />
+```
+
+You can take a look of this feature on this [demo](http://tombatossals.github.io/angular-leaflet-directive/examples/url-hash-center-example.html).
