@@ -1,7 +1,7 @@
 {
   "name": "leaflet",
   "version": "0.7.2",
-  "main": "leaflet.js",
+  "main": ["leaflet.js", "leaflet.css"],
   "description": "Leaflet Bower package",
   "ignore": [
     ".DS_Store",
