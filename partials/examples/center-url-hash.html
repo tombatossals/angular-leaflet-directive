@@ -26,14 +26,14 @@
         </div>
     </form>
     <h2>Center Url Hash example</h2>
-    <p>Let's position our map. We can center and zoom an specific position of the map via a bi-directional property called <strong>center</strong>, which 3 properties inside: <span class="label label-warning">lat</span>, <span class="label label-warning">lng</span> and <span class="label label-warning">zoom</span>. This properties could be changed on the fly, updating our map position, and viceversa.</p>
+    <p>We can use a special functionality which will allow us to synchronize the map center with a url GET param, and viceversa. You can see it on this example, where the URL changes when the <i>center model</i> or the <i>map center</i> is changed. If you copy and paste the URL in another browser window the GET param will take priority and will center the map on the defined position.</p>
     <ul class="nav nav-tabs">
         <li class="active"><a href="" ng-click="activeTab='html'" data-toggle="tab">HTML code</a></li>
         <li><a href="" ng-click="activeTab='javascript'" data-toggle="tab">Javascript Angular controller</a></li>
     </ul>
     <div class="tab-container" ng-switch on="activeTab">
         <div hljs ng-switch-default>
-<div ng-controller="CenterController">
+<div ng-controller="CenterUrlHashController">
     <form>
         Latitude : <input type="number" step="any" ng-model="center.lat" />
         Longitude : <input type="number" step="any" ng-model="center.lng" />
@@ -41,7 +41,7 @@
     </form>
     <leaflet center="center"></leaflet>
 </div></div>
-        <div hljs ng-switch-when="javascript" include="'src/controllers/CenterController.js'"></div>
+        <div hljs ng-switch-when="javascript" include="'src/controllers/CenterUrlHashController.js'"></div>
     </div>
-    <p>You can see a standalone example of this code <a href="examples/center-example.html">here</a>.</p>
+    <p>You can see a standalone example of this code <a href="examples/url-hash-center-example.html">here</a>.</p>
 </div>
