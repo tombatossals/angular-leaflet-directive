@@ -76,7 +76,7 @@ module.exports = function(grunt) {
                 keepAlive: false,
                 configFile: 'test/protractor.conf.js',
                 args: {
-                    specs: [ 'test/e2e/13*.js' ],
+                    specs: [ 'test/e2e/*.js' ],
                 }
             },
             run: {},
