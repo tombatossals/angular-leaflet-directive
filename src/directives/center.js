@@ -1,5 +1,5 @@
 angular.module("leaflet-directive").directive('center',
-    function ($log, $parse, $location, leafletMapDefaults, leafletHelpers, leafletBoundsHelpers) {
+    function ($log, $q, $parse, $location, leafletMapDefaults, leafletHelpers, leafletBoundsHelpers) {
 
     var isDefined     = leafletHelpers.isDefined,
         isNumber      = leafletHelpers.isNumber,
@@ -18,30 +18,33 @@ angular.module("leaflet-directive").directive('center',
         }
     };
 
+    var _leafletCenter;
+
     return {
         restrict: "A",
         scope: false,
         replace: false,
         require: 'leaflet',
-
+        controller: function () {
+            _leafletCenter = $q.defer();
+            this.getCenter = function() {
+                return _leafletCenter.promise;
+            };
+        },
         link: function(scope, element, attrs, controller) {
             var leafletScope  = controller.getLeafletScope(),
-                center        = leafletScope.center;
+                centerModel   = leafletScope.center;
 
             controller.getMap().then(function(map) {
                 var defaults = leafletMapDefaults.getDefaults(attrs.id);
 
-                if (!isDefined(center) || !(center.lat && center.lng)) {
+                if (!isDefined(centerModel)) {
+                    $log.error('The "center" property is not defined in the main scope');
                     map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
                     return;
+                } else if (!(isDefined(centerModel.lat) && isDefined(centerModel.lng))) {
+                    angular.copy(defaults.center, centerModel);
                 }
-
-                var centerModel = {
-                    lat:  $parse("center.lat"),
-                    lng:  $parse("center.lng"),
-                    zoom: $parse("center.zoom"),
-                    autoDiscover: $parse("center.autoDiscover")
-                };
 
                 var changingCenterFromModel = false;
                 var changingCenterFromUrl = false;
@@ -126,33 +129,35 @@ angular.module("leaflet-directive").directive('center',
                         updateBoundsInScope(scope, map);
 
                         if (centerModel) {
-                            centerModel.lat.assign(scope, map.getCenter().lat);
-                            centerModel.lng.assign(scope, map.getCenter().lng);
-                            centerModel.zoom.assign(scope, map.getZoom());
-                            centerModel.autoDiscover.assign(scope, false);
+                            centerModel.lat = map.getCenter().lat;
+                            centerModel.lng = map.getCenter().lng;
+                            centerModel.zoom = map.getZoom();
+                            centerModel.autoDiscover = false;
                             if (attrs.urlHashCenter) {
-                                updateCenterUrlParams(center);
+                                updateCenterUrlParams(centerModel);
                             }
                         }
                     });
                 });
 
-                if (center.autoDiscover === true) {
+                if (centerModel.autoDiscover === true) {
                     map.on("locationerror", function() {
                         $log.warn("[AngularJS - Leaflet] The Geolocation API is unauthorized on this page.");
-                        if (isValidCenter(center)) {
-                            map.setView([center.lat, center.lng], center.zoom);
+                        if (isValidCenter(centerModel)) {
+                            map.setView([centerModel.lat, centerModel.lng], centerModel.zoom);
                             if (attrs.urlHashCenter) {
-                                updateCenterUrlParams(center);
+                                updateCenterUrlParams(centerModel);
                             }
                         } else {
                             map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
                             if (attrs.urlHashCenter) {
-                                updateCenterUrlParams(center);
+                                updateCenterUrlParams(centerModel);
                             }
                         }
                     });
                 }
+                _leafletCenter.resolve(centerModel);
+
             });
         }
     };
