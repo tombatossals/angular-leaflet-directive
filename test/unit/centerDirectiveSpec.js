@@ -109,7 +109,7 @@ describe('Directive: leaflet center', function() {
                 centerUrlHash = u;
             });
             scope.$digest();
-            expect(centerUrlHash.c).toBe('9.5:-1.8:8');
+            expect(centerUrlHash).toBe('9.5:-1.8:8');
         });
     });
 });
