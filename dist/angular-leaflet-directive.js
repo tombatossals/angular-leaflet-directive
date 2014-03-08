@@ -109,8 +109,11 @@
       var isDefined = leafletHelpers.isDefined, isNumber = leafletHelpers.isNumber, equals = leafletHelpers.equals, safeApply = leafletHelpers.safeApply, isValidCenter = leafletHelpers.isValidCenter;
       var updateCenterUrlParams = function (scope, center) {
         if (isNumber(center.lat) && isNumber(center.lng) && isNumber(center.zoom)) {
-          var centerUrlHash = { c: center.lat + ':' + center.lng + ':' + center.zoom };
-          scope.$emit('centerUrlHash', centerUrlHash);
+          var centerUrlHash = center.lat + ':' + center.lng + ':' + center.zoom;
+          var search = $location.search();
+          if (!isDefined(search.c) || search.c !== centerUrlHash) {
+            scope.$emit('centerUrlHash', centerUrlHash);
+          }
         }
       };
       var _leafletCenter;
