@@ -43,24 +43,6 @@ angular.module("leaflet-directive").factory('leafletBoundsHelpers', function ($l
                 }
             };
 
-        },
-
-        updateBoundsInScope: function(leafletScope, map) {
-            var mapBounds = map.getBounds();
-            var newScopeBounds = {
-                northEast: {
-                    lat: mapBounds.getNorthEast().lat,
-                    lng: mapBounds.getNorthEast().lng
-                },
-                southWest: {
-                    lat: mapBounds.getSouthWest().lat,
-                    lng: mapBounds.getSouthWest().lng
-                }
-            };
-
-            if(!angular.equals(leafletScope.bounds, newScopeBounds)) {
-                leafletScope.bounds = newScopeBounds;
-            }
         }
     };
 });

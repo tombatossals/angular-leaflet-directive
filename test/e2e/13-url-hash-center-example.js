@@ -11,8 +11,9 @@ describe('Loading center-example.html', function() {
 
     it('should update the url in the center value is changed from the form', function() {
         element(by.xpath('//input[1]')).clear();
-        element(by.xpath('//input[1]')).sendKeys('9');
         ptor.sleep(1000);
+        element(by.xpath('//input[1]')).sendKeys('9');
+        ptor.sleep(2000);
         element(by.xpath('//input[2]')).clear();
         element(by.xpath('//input[2]')).sendKeys('7');
         ptor.sleep(1000);
