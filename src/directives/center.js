@@ -7,13 +7,12 @@ angular.module("leaflet-directive").directive('center',
         safeApply     = leafletHelpers.safeApply,
         isValidCenter = leafletHelpers.isValidCenter;
 
-    var updateCenterUrlParams = function(center) {
+    var updateCenterUrlParams = function(scope, center) {
         if (isNumber(center.lat) && isNumber(center.lng) && isNumber(center.zoom)) {
-            var centerParams = {
+            var centerUrlHash = {
                 c: center.lat + ":" + center.lng + ":" + center.zoom
             };
-            $location.path("");
-            $location.search(centerParams);
+            scope.$emit("centerUrlHash", centerUrlHash);
         }
     };
 
@@ -114,7 +113,7 @@ angular.module("leaflet-directive").directive('center',
 
                     map.setView([center.lat, center.lng], center.zoom);
                     if (attrs.urlHashCenter) {
-                        updateCenterUrlParams(center);
+                        updateCenterUrlParams(leafletScope, center);
                     }
                     changingCenterFromModel = false;
                 }, true);
@@ -131,7 +130,7 @@ angular.module("leaflet-directive").directive('center',
                             centerModel.zoom = map.getZoom();
                             centerModel.autoDiscover = false;
                             if (attrs.urlHashCenter) {
-                                updateCenterUrlParams(centerModel);
+                                updateCenterUrlParams(scope, centerModel);
                             }
                             scope.$broadcast("newCenter", centerModel);
                         }
@@ -144,12 +143,12 @@ angular.module("leaflet-directive").directive('center',
                         if (isValidCenter(centerModel)) {
                             map.setView([centerModel.lat, centerModel.lng], centerModel.zoom);
                             if (attrs.urlHashCenter) {
-                                updateCenterUrlParams(centerModel);
+                                updateCenterUrlParams(leafletScope, centerModel);
                             }
                         } else {
                             map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
                             if (attrs.urlHashCenter) {
-                                updateCenterUrlParams(centerModel);
+                                updateCenterUrlParams(leafletScope, centerModel);
                             }
                         }
                     });

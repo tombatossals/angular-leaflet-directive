@@ -103,14 +103,13 @@ describe('Directive: leaflet center', function() {
         it('should update the url hash if changes the center', function() {
             var element = angular.element('<leaflet center="center" url-hash-center="yes"></leaflet>');
             element = $compile(element)(scope);
-            var map;
-            leafletData.getMap().then(function(leafletMap) {
-                map = leafletMap;
-            });
             scope.center = { lat: 9.5, lng: -1.8, zoom: 8 };
-            $rootScope.$digest();
-            var location = $location.search();
-            expect(location.c).toEqual('9.5:-1.8:8');
+            var centerUrlHash;
+            scope.$on("centerUrlHash", function(event, u) {
+                centerUrlHash = u;
+            });
+            scope.$digest();
+            expect(centerUrlHash.c).toBe('9.5:-1.8:8');
         });
     });
 });
