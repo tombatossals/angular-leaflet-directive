@@ -58,8 +58,8 @@ app.controller("CenterUrlHashController", [ '$scope', '$location', function($sco
     });
 
     $scope.$on("centerUrlHash", function(event, centerHash) {
-        console.log(centerHash);
-        $location.search(centerHash);
+        console.log(centerHash, "hola");
+        $location.search({ c: centerHash });
     });
 }]);
 
