@@ -58,6 +58,7 @@ L.Util.extend(L.KML, {
 
 	parseKML: function (xml) {
 		var style = this.parseStyle(xml);
+		this.parseStyleMap(xml, style);
 		var el = xml.getElementsByTagName("Folder");
 		var layers = [], l;
 		for (var i = 0; i < el.length; i++) {
@@ -146,6 +147,27 @@ L.Util.extend(L.KML, {
 		}
 		return style;
 	},
+	
+	parseStyleMap: function (xml, existingStyles) {
+		var sl = xml.getElementsByTagName("StyleMap");
+		
+		for (var i = 0; i < sl.length; i++) {
+			var e = sl[i], el;
+			var smKey, smStyleUrl;
+			
+			el = e.getElementsByTagName("key");
+			if (el && el[0]) { smKey = el[0].textContent; }
+			el = e.getElementsByTagName("styleUrl");
+			if (el && el[0]) { smStyleUrl = el[0].textContent; }
+			
+			if (smKey=='normal')
+			{
+				existingStyles['#' + e.getAttribute('id')] = existingStyles[smStyleUrl];
+			}
+		}
+		
+		return;
+	},
 
 	parseFolder: function (xml, style) {
 		var el, layers = [], l;
@@ -206,7 +228,7 @@ L.Util.extend(L.KML, {
 
 		var name, descr = "";
 		el = place.getElementsByTagName('name');
-		if (el.length) {
+		if (el.length && el[0].childNodes.length) {
 			name = el[0].childNodes[0].nodeValue;
 		}
 		el = place.getElementsByTagName('description');
@@ -275,7 +297,7 @@ L.Util.extend(L.KML, {
 		var el = xml.getElementsByTagName('coordinates');
 		var coords = [];
 		for (var j = 0; j < el.length; j++) {
-			// text might span many childnodes
+			// text might span many childNodes
 			coords = coords.concat(this._read_coords(el[j]));
 		}
 		return coords;

@@ -1,8 +1,8 @@
 <html>
 <head>
 	<title>Leaflet</title>
-	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" />
-	<script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
+	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7/leaflet.css" />
+	<script src="http://cdn.leafletjs.com/leaflet-0.7/leaflet.js"></script>
 	<script src="../layer/Marker.Text.js"></script>
 </head>
 <body>
@@ -11,7 +11,7 @@
 var map = new L.Map('map', {center: new L.LatLng(67.66904, 33.68595), zoom: 10});
 map.addLayer(new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'));
 
-var marker = new L.Marker.Text(map.getCenter(), 'Маркер');
+var marker = new L.Marker.Text(map.getCenter(), 'Sweet!');
 map.addLayer(new L.Marker(map.getCenter(), {opacity: 0.5}));
 map.addLayer(marker);
 

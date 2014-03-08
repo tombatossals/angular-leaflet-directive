@@ -1,19 +1,43 @@
 {
   "name": "angular-leaflet-directive",
+  "description": "AngularJS directive to embed an interact with maps managed by Leaflet library",
+  "keywords": [
+    "angularjs",
+    "javascript",
+    "directive",
+    "leaflet"
+  ],
+  "main": [
+    "dist/angular-leaflet-directive.js",
+    "dist/angular-leaflet-directive.min.js"
+  ],
   "dependencies": {
     "angular": "1.2.x",
-    "jquery": "2.0.x",
-    "highlightjs": "7.3.x",
-    "angular-highlightjs": "0.1.x",
-    "bootstrap": "3.0.x",
+    "leaflet-dist": "0.7.x"
+  },
+  "devDependencies": {
+    "jquery": "2.1.x",
+    "bootstrap": "3.1.x",
     "angular-route": "1.2.x",
     "angular-animate": "1.2.x",
     "angular-mocks": "1.2.x",
-    "leaflet-dist": "0.7.x",
     "leaflet.markerclusterer": "0.4",
     "leaflet.draw": "0.2.2",
     "Leaflet.label": "0.2.1",
+    "leaflet-tilelayer-geojson": "*",
     "Leaflet.awesome-markers": "*",
-    "leaflet-plugins": "1.0.0"
-  }
+    "leaflet-plugins": "1.0.1",
+    "esri-leaflet": "0.0.1-beta.4"
+  },
+  "ignore": [
+    "**/.*",
+    "src",
+    "doc",
+    "examples",
+    "test",
+    "*.md",
+    "Gruntfile.js",
+    "package.json",
+    "bower.json"
+  ]
 }
