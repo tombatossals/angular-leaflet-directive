@@ -107,11 +107,10 @@
     'leafletHelpers',
     function ($log, $q, $location, leafletMapDefaults, leafletHelpers) {
       var isDefined = leafletHelpers.isDefined, isNumber = leafletHelpers.isNumber, equals = leafletHelpers.equals, safeApply = leafletHelpers.safeApply, isValidCenter = leafletHelpers.isValidCenter;
-      var updateCenterUrlParams = function (center) {
+      var updateCenterUrlParams = function (scope, center) {
         if (isNumber(center.lat) && isNumber(center.lng) && isNumber(center.zoom)) {
-          var centerParams = { c: center.lat + ':' + center.lng + ':' + center.zoom };
-          $location.path('');
-          $location.search(centerParams);
+          var centerUrlHash = { c: center.lat + ':' + center.lng + ':' + center.zoom };
+          scope.$emit('centerUrlHash', centerUrlHash);
         }
       };
       var _leafletCenter;
@@ -233,7 +232,7 @@
                 center.lng
               ], center.zoom);
               if (attrs.urlHashCenter) {
-                updateCenterUrlParams(center);
+                updateCenterUrlParams(leafletScope, center);
               }
               changingCenterFromModel = false;
             }, true);
@@ -248,7 +247,7 @@
                   centerModel.zoom = map.getZoom();
                   centerModel.autoDiscover = false;
                   if (attrs.urlHashCenter) {
-                    updateCenterUrlParams(centerModel);
+                    updateCenterUrlParams(scope, centerModel);
                   }
                   scope.$broadcast('newCenter', centerModel);
                 }
@@ -263,7 +262,7 @@
                     centerModel.lng
                   ], centerModel.zoom);
                   if (attrs.urlHashCenter) {
-                    updateCenterUrlParams(centerModel);
+                    updateCenterUrlParams(leafletScope, centerModel);
                   }
                 } else {
                   map.setView([
@@ -271,7 +270,7 @@
                     defaults.center.lng
                   ], defaults.center.zoom);
                   if (attrs.urlHashCenter) {
-                    updateCenterUrlParams(centerModel);
+                    updateCenterUrlParams(leafletScope, centerModel);
                   }
                 }
               });
