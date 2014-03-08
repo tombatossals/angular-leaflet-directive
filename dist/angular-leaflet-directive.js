@@ -101,12 +101,14 @@
   ]);
   angular.module('leaflet-directive').directive('center', [
     '$log',
+    '$q',
     '$parse',
     '$location',
     'leafletMapDefaults',
     'leafletHelpers',
-    function ($log, $parse, $location, leafletMapDefaults, leafletHelpers) {
-      var isDefined = leafletHelpers.isDefined, isNumber = leafletHelpers.isNumber, equals = leafletHelpers.equals, safeApply = leafletHelpers.safeApply, isValidCenter = leafletHelpers.isValidCenter;
+    'leafletBoundsHelpers',
+    function ($log, $q, $parse, $location, leafletMapDefaults, leafletHelpers, leafletBoundsHelpers) {
+      var isDefined = leafletHelpers.isDefined, isNumber = leafletHelpers.isNumber, equals = leafletHelpers.equals, safeApply = leafletHelpers.safeApply, updateBoundsInScope = leafletBoundsHelpers.updateBoundsInScope, isValidCenter = leafletHelpers.isValidCenter;
       var updateCenterUrlParams = function (center) {
         if (isNumber(center.lat) && isNumber(center.lng) && isNumber(center.zoom)) {
           var centerParams = { c: center.lat + ':' + center.lng + ':' + center.zoom };
@@ -114,28 +116,32 @@
           $location.search(centerParams);
         }
       };
+      var _leafletCenter;
       return {
         restrict: 'A',
         scope: false,
         replace: false,
         require: 'leaflet',
+        controller: function () {
+          _leafletCenter = $q.defer();
+          this.getCenter = function () {
+            return _leafletCenter.promise;
+          };
+        },
         link: function (scope, element, attrs, controller) {
-          var leafletScope = controller.getLeafletScope(), center = leafletScope.center;
+          var leafletScope = controller.getLeafletScope(), centerModel = leafletScope.center;
           controller.getMap().then(function (map) {
             var defaults = leafletMapDefaults.getDefaults(attrs.id);
-            if (!isDefined(center)) {
+            if (!isDefined(centerModel)) {
+              $log.error('The "center" property is not defined in the main scope');
               map.setView([
                 defaults.center.lat,
                 defaults.center.lng
               ], defaults.center.zoom);
               return;
+            } else if (!(isDefined(centerModel.lat) && isDefined(centerModel.lng))) {
+              angular.copy(defaults.center, centerModel);
             }
-            var centerModel = {
-                lat: $parse('center.lat'),
-                lng: $parse('center.lng'),
-                zoom: $parse('center.zoom'),
-                autoDiscover: $parse('center.autoDiscover')
-              };
             var changingCenterFromModel = false;
             var changingCenterFromUrl = false;
             var initialCenterParamsFromURL;
@@ -238,27 +244,28 @@
                 return;
               }
               safeApply(leafletScope, function (scope) {
+                updateBoundsInScope(scope, map);
                 if (centerModel) {
-                  centerModel.lat.assign(scope, map.getCenter().lat);
-                  centerModel.lng.assign(scope, map.getCenter().lng);
-                  centerModel.zoom.assign(scope, map.getZoom());
-                  centerModel.autoDiscover.assign(scope, false);
+                  centerModel.lat = map.getCenter().lat;
+                  centerModel.lng = map.getCenter().lng;
+                  centerModel.zoom = map.getZoom();
+                  centerModel.autoDiscover = false;
                   if (attrs.urlHashCenter) {
-                    updateCenterUrlParams(center);
+                    updateCenterUrlParams(centerModel);
                   }
                 }
               });
             });
-            if (center.autoDiscover === true) {
+            if (centerModel.autoDiscover === true) {
               map.on('locationerror', function () {
                 $log.warn('[AngularJS - Leaflet] The Geolocation API is unauthorized on this page.');
-                if (isValidCenter(center)) {
+                if (isValidCenter(centerModel)) {
                   map.setView([
-                    center.lat,
-                    center.lng
-                  ], center.zoom);
+                    centerModel.lat,
+                    centerModel.lng
+                  ], centerModel.zoom);
                   if (attrs.urlHashCenter) {
-                    updateCenterUrlParams(center);
+                    updateCenterUrlParams(centerModel);
                   }
                 } else {
                   map.setView([
@@ -266,11 +273,12 @@
                     defaults.center.lng
                   ], defaults.center.zoom);
                   if (attrs.urlHashCenter) {
-                    updateCenterUrlParams(center);
+                    updateCenterUrlParams(centerModel);
                   }
                 }
               });
             }
+            _leafletCenter.resolve(centerModel);
           });
         }
       };
@@ -342,7 +350,8 @@
     '$log',
     '$http',
     'leafletHelpers',
-    function ($log, $http, leafletHelpers) {
+    'leafletLegendHelpers',
+    function ($log, $http, leafletHelpers, leafletLegendHelpers) {
       return {
         restrict: 'A',
         scope: false,
@@ -352,57 +361,37 @@
           var isArray = leafletHelpers.isArray, isDefined = leafletHelpers.isDefined, isFunction = leafletHelpers.isFunction, leafletScope = controller.getLeafletScope(), legend = leafletScope.legend;
           var legendClass = legend.legendClass ? legend.legendClass : 'legend';
           var position = legend.position || 'bottomright';
-          var leafletLegend = L.control({ position: position });
+          var leafletLegend;
           controller.getMap().then(function (map) {
-            if (isDefined(legend.url)) {
-              $http.get(legend.url).success(function (legendData) {
-                leafletLegend.onAdd = function () {
-                  var div = L.DomUtil.create('div', legendClass);
-                  if (!L.Browser.touch) {
-                    L.DomEvent.disableClickPropagation(div);
-                    L.DomEvent.on(div, 'mousewheel', L.DomEvent.stopPropagation);
-                  } else {
-                    L.DomEvent.on(div, 'click', L.DomEvent.stopPropagation);
-                  }
-                  if (legendData.error) {
-                    div.innerHTML += '<div class="info-title alert alert-danger">' + legendData.error.message + '</div>';
-                  } else {
-                    for (var i = 0; i < legendData.layers.length; i++) {
-                      var layer = legendData.layers[i];
-                      div.innerHTML += '<div class="info-title">' + layer.layerName + '</div>';
-                      for (var j = 0; j < layer.legend.length; j++) {
-                        var leg = layer.legend[j];
-                        div.innerHTML += '<div class="inline"><img src="data:' + leg.contentType + ';base64,' + leg.imageData + '" /></div>' + '<div class="info-label">' + leg.label + '</div>';
-                      }
-                    }
-                  }
-                  return div;
-                };
-                leafletLegend.addTo(map);
+            if (!isDefined(legend.url) && (!isArray(legend.colors) || !isArray(legend.labels) || legend.colors.length !== legend.labels.length)) {
+              $log.warn('[AngularJS - Leaflet] legend.colors and legend.labels must be set.');
+            } else if (isDefined(legend.url)) {
+              $log.info('[AngularJS - Leaflet] loading arcgis legend service.');
+            } else {
+              // TODO: Watch array legend.
+              leafletLegend = L.control({ position: position });
+              leafletLegend.onAdd = leafletLegendHelpers.getOnAddArrayLegend(legend, legendClass);
+              leafletLegend.addTo(map);
+            }
+            leafletScope.$watch('legend.url', function (newURL) {
+              if (!isDefined(newURL)) {
+                return;
+              }
+              $http.get(newURL).success(function (legendData) {
+                if (isDefined(leafletLegend)) {
+                  leafletLegendHelpers.updateArcGISLegend(leafletLegend.getContainer(), legendData);
+                } else {
+                  leafletLegend = L.control({ position: position });
+                  leafletLegend.onAdd = leafletLegendHelpers.getOnAddArcGISLegend(legendData, legendClass);
+                  leafletLegend.addTo(map);
+                }
                 if (isDefined(legend.loadedData) && isFunction(legend.loadedData)) {
                   legend.loadedData();
                 }
               }).error(function () {
                 $log.warn('[AngularJS - Leaflet] legend.url not loaded.');
               });
-            } else if (!isArray(legend.colors) || !isArray(legend.labels) || legend.colors.length !== legend.labels.length) {
-              $log.warn('[AngularJS - Leaflet] legend.colors and legend.labels must be set.');
-            } else {
-              leafletLegend.onAdd = function () {
-                var div = L.DomUtil.create('div', legendClass);
-                for (var i = 0; i < legend.colors.length; i++) {
-                  div.innerHTML += '<div class="outline"><i style="background:' + legend.colors[i] + '"></i></div>' + '<div class="info-label">' + legend.labels[i] + '</div>';
-                }
-                if (!L.Browser.touch) {
-                  L.DomEvent.disableClickPropagation(div);
-                  L.DomEvent.on(div, 'mousewheel', L.DomEvent.stopPropagation);
-                } else {
-                  L.DomEvent.on(div, 'click', L.DomEvent.stopPropagation);
-                }
-                return div;
-              };
-              leafletLegend.addTo(map);
-            }
+            });
           });
         }
       };
@@ -634,27 +623,25 @@
         restrict: 'A',
         scope: false,
         replace: false,
-        require: 'leaflet',
+        require: [
+          'leaflet',
+          'center'
+        ],
         link: function (scope, element, attrs, controller) {
-          var isDefined = leafletHelpers.isDefined, createLeafletBounds = leafletBoundsHelpers.createLeafletBounds, updateBoundsInScope = leafletBoundsHelpers.updateBoundsInScope, leafletScope = controller.getLeafletScope();
-          controller.getMap().then(function (map) {
-            var initializing = true;
-            map.whenReady(function () {
-              leafletScope.$watch('bounds', function (newBounds) {
-                if (!isDefined(newBounds)) {
-                  $log.error('[AngularJS - Leaflet] Invalid bounds');
-                  return;
-                }
-                initializing = false;
-                var leafletBounds = createLeafletBounds(newBounds);
-                if (leafletBounds && !map.getBounds().equals(leafletBounds)) {
-                  map.fitBounds(leafletBounds);
-                }
-              }, true);
-              map.on('moveend dragend zoomend', function () {
-                if (!initializing) {
-                  updateBoundsInScope(leafletScope, map);
-                }
+          var isDefined = leafletHelpers.isDefined, createLeafletBounds = leafletBoundsHelpers.createLeafletBounds, leafletScope = controller[0].getLeafletScope(), mapController = controller[0], centerController = controller[1];
+          mapController.getMap().then(function (map) {
+            centerController.getCenter().then(function () {
+              map.whenReady(function () {
+                leafletScope.$watch('bounds', function (newBounds) {
+                  if (!isDefined(newBounds)) {
+                    $log.error('[AngularJS - Leaflet] Invalid bounds');
+                    return;
+                  }
+                  var leafletBounds = createLeafletBounds(newBounds);
+                  if (leafletBounds && !map.getBounds().equals(leafletBounds)) {
+                    map.fitBounds(leafletBounds);
+                  }
+                }, true);
               });
             });
           });
@@ -820,6 +807,10 @@
                 if (!isDefined(leafletPaths[newName])) {
                   var pathData = newPaths[newName];
                   var newPath = createPath(newName, newPaths[newName], defaults);
+                  // Show label if defined
+                  if (leafletHelpers.LabelPlugin.isLoaded() && isDefined(pathData.label) && isDefined(pathData.label.message)) {
+                    newPath.bindLabel(pathData.label.message, pathData.label.options);
+                  }
                   // Listen for changes on the new path
                   if (isDefined(newPath)) {
                     leafletPaths[newName] = newPath;
@@ -1173,8 +1164,8 @@
             newDefaults.zoomControlPosition = isDefined(userDefaults.zoomControlPosition) ? userDefaults.zoomControlPosition : newDefaults.zoomControlPosition;
             newDefaults.keyboard = isDefined(userDefaults.keyboard) ? userDefaults.keyboard : newDefaults.keyboard;
             newDefaults.dragging = isDefined(userDefaults.dragging) ? userDefaults.dragging : newDefaults.dragging;
-            if (isDefined(userDefaults.controlLayers)) {
-              angular.extend(newDefaults.controlLayers, userDefaults.controlLayers);
+            if (isDefined(userDefaults.controls)) {
+              angular.extend(newDefaults.controls, userDefaults.controls);
             }
             if (isDefined(userDefaults.crs) && isDefined(L.CRS[userDefaults.crs])) {
               newDefaults.crs = L.CRS[userDefaults.crs];
@@ -1814,9 +1805,19 @@
         var defaults = leafletMapDefaults.getDefaults(mapId);
         var controlOptions = {
             collapsed: defaults.controls.layers.collapsed,
-            posiiton: defaults.controls.layers.position
+            position: defaults.controls.layers.position
           };
-        return new L.control.layers([], [], controlOptions);
+        var control;
+        if (defaults.controls.layers && isDefined(defaults.controls.layers.control)) {
+          control = defaults.controls.layers.control.apply(this, [
+            [],
+            [],
+            controlOptions
+          ]);
+        } else {
+          control = new L.control.layers([], [], controlOptions);
+        }
+        return control;
       };
       return {
         layersControlMustBeVisible: _controlLayersMustBeVisible,
@@ -1851,6 +1852,56 @@
       };
     }
   ]);
+  angular.module('leaflet-directive').factory('leafletLegendHelpers', function () {
+    var _updateArcGISLegend = function (div, legendData) {
+      div.innerHTML = '';
+      if (legendData.error) {
+        div.innerHTML += '<div class="info-title alert alert-danger">' + legendData.error.message + '</div>';
+      } else {
+        for (var i = 0; i < legendData.layers.length; i++) {
+          var layer = legendData.layers[i];
+          div.innerHTML += '<div class="info-title">' + layer.layerName + '</div>';
+          for (var j = 0; j < layer.legend.length; j++) {
+            var leg = layer.legend[j];
+            div.innerHTML += '<div class="inline"><img src="data:' + leg.contentType + ';base64,' + leg.imageData + '" /></div>' + '<div class="info-label">' + leg.label + '</div>';
+          }
+        }
+      }
+    };
+    var _getOnAddArcGISLegend = function (legendData, legendClass) {
+      return function () {
+        var div = L.DomUtil.create('div', legendClass);
+        if (!L.Browser.touch) {
+          L.DomEvent.disableClickPropagation(div);
+          L.DomEvent.on(div, 'mousewheel', L.DomEvent.stopPropagation);
+        } else {
+          L.DomEvent.on(div, 'click', L.DomEvent.stopPropagation);
+        }
+        _updateArcGISLegend(div, legendData);
+        return div;
+      };
+    };
+    var _getOnAddArrayLegend = function (legend, legendClass) {
+      return function () {
+        var div = L.DomUtil.create('div', legendClass);
+        for (var i = 0; i < legend.colors.length; i++) {
+          div.innerHTML += '<div class="outline"><i style="background:' + legend.colors[i] + '"></i></div>' + '<div class="info-label">' + legend.labels[i] + '</div>';
+        }
+        if (!L.Browser.touch) {
+          L.DomEvent.disableClickPropagation(div);
+          L.DomEvent.on(div, 'mousewheel', L.DomEvent.stopPropagation);
+        } else {
+          L.DomEvent.on(div, 'click', L.DomEvent.stopPropagation);
+        }
+        return div;
+      };
+    };
+    return {
+      getOnAddArcGISLegend: _getOnAddArcGISLegend,
+      getOnAddArrayLegend: _getOnAddArrayLegend,
+      updateArcGISLegend: _updateArcGISLegend
+    };
+  });
   angular.module('leaflet-directive').factory('leafletPathsHelpers', [
     '$rootScope',
     '$log',
