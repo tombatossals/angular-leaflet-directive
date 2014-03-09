@@ -106,7 +106,7 @@
     'leafletMapDefaults',
     'leafletHelpers',
     function ($log, $q, $location, leafletMapDefaults, leafletHelpers) {
-      var isDefined = leafletHelpers.isDefined, isNumber = leafletHelpers.isNumber, equals = leafletHelpers.equals, safeApply = leafletHelpers.safeApply, isSameCenterOnMap = leafletHelpers.isSameCenterOnMap, isValidCenter = leafletHelpers.isValidCenter;
+      var isDefined = leafletHelpers.isDefined, isNumber = leafletHelpers.isNumber, equals = leafletHelpers.equals, safeApply = leafletHelpers.safeApply, isValidCenter = leafletHelpers.isValidCenter;
       var notifyNewCenter = function (scope, attrs, moveend) {
         if (isDefined(moveend)) {
           scope.$broadcast('centerChanged', scope.center);
@@ -118,6 +118,7 @@
         var centerUrlHash = center.lat + ':' + center.lng + ':' + center.zoom;
         var search = $location.search();
         if (!isDefined(search.c) || search.c !== centerUrlHash) {
+          console.log('update hash', centerUrlHash);
           scope.$emit('centerUrlHash', centerUrlHash);
         }
       };
@@ -147,10 +148,9 @@
             } else if (!(isDefined(centerModel.lat) && isDefined(centerModel.lng))) {
               angular.copy(defaults.center, centerModel);
             }
-            var changingCenterFromModel = false;
-            var changingCenterFromUrl = false;
+            var changedCenterFromModel = false;
+            var changedCenterFromMoveEnd = false;
             var initialCenterParamsFromURL;
-            var mapInitialized = false;
             if (attrs.urlHashCenter === 'yes') {
               var extractCenter = function (params) {
                 var centerParam;
@@ -170,7 +170,6 @@
               initialCenterParamsFromURL = extractCenter(search);
               leafletScope.$on('$locationChangeSuccess', function () {
                 var search = $location.search();
-                changingCenterFromUrl = true;
                 if (isDefined(search.c)) {
                   var urlParams = search.c.split(':');
                   if (urlParams.length === 3) {
@@ -185,6 +184,7 @@
                         zoom: leafletScope.center.zoom
                       };
                     if (urlCenter && !equals(urlCenter, actualCenter)) {
+                      console.log('changing from url');
                       leafletScope.center = {
                         lat: urlCenter.lat,
                         lng: urlCenter.lng,
@@ -193,14 +193,11 @@
                     }
                   }
                 }
-                changingCenterFromUrl = false;
               });
             }
             leafletScope.$watch('center', function (center) {
-              if (changingCenterFromUrl) {
-                return;
-              }
-              if (mapInitialized && isSameCenterOnMap(center, map)) {
+              if (changedCenterFromMoveEnd) {
+                changedCenterFromMoveEnd = false;
                 return;
               }
               // The center from the URL has priority
@@ -216,7 +213,7 @@
                 ], defaults.center.zoom);
                 return;
               }
-              changingCenterFromModel = true;
+              changedCenterFromModel = true;
               if (center.autoDiscover === true) {
                 if (!isNumber(center.zoom)) {
                   map.setView([
@@ -239,28 +236,26 @@
                 }
                 return;
               }
+              console.log('changed from model', center);
               map.setView([
                 center.lat,
                 center.lng
               ], center.zoom);
               notifyNewCenter(leafletScope, attrs);
-              changingCenterFromModel = false;
             }, true);
-            map.whenReady(function () {
-              mapInitialized = true;
-            });
             map.on('moveend', function () {
-              if (changingCenterFromModel || changingCenterFromUrl) {
+              if (changedCenterFromModel) {
+                changedCenterFromModel = false;
                 return;
               }
+              changedCenterFromMoveEnd = true;
               safeApply(leafletScope, function () {
-                if (centerModel && !isSameCenterOnMap(centerModel, map)) {
-                  centerModel.lat = map.getCenter().lat;
-                  centerModel.lng = map.getCenter().lng;
-                  centerModel.zoom = map.getZoom();
-                  centerModel.autoDiscover = false;
-                  notifyNewCenter(leafletScope, attrs, true);
-                }
+                centerModel.lat = map.getCenter().lat;
+                centerModel.lng = map.getCenter().lng;
+                centerModel.zoom = map.getZoom();
+                centerModel.autoDiscover = false;
+                notifyNewCenter(leafletScope, attrs, true);
+                console.log('changed from moveend', centerModel);
               });
             });
             if (centerModel.autoDiscover === true) {

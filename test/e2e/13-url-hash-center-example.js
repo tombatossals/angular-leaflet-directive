@@ -1,6 +1,6 @@
 'use strict';
 
-describe('Loading center-example.html', function() {
+describe('Loading url-hash-center-example.html', function() {
 
     var ptor, driver;
     beforeEach(function() {
