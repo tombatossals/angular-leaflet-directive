@@ -90,8 +90,6 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
             if (mapCenter.lat === centerModel.lat && mapCenter.lng === centerModel.lng && zoom === centerModel.zoom) {
                 return true;
             }
-            console.log("comparing false", mapCenter.lat, mapCenter.lng, zoom, centerModel);
-
             return false;
         },
 

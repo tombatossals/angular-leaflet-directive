@@ -8,13 +8,14 @@ angular.module("leaflet-directive").directive('center',
         isSameCenterOnMap = leafletHelpers.isSameCenterOnMap,
         isValidCenter = leafletHelpers.isValidCenter;
 
-    var updateCenterUrlParams = function(scope, center) {
-        if (isNumber(center.lat) && isNumber(center.lng) && isNumber(center.zoom)) {
-            var centerUrlHash = center.lat + ":" + center.lng + ":" + center.zoom;
-            var search = $location.search();
-            if (!isDefined(search.c) || search.c !== centerUrlHash) {
-                scope.$emit("centerUrlHash", centerUrlHash);
-            }
+    var notifyNewCenterUrlHashIfNeeded = function(scope, center, urlHashCenterPresent) {
+        if (!isDefined(urlHashCenterPresent)) {
+            return;
+        }
+        var centerUrlHash = center.lat + ":" + center.lng + ":" + center.zoom;
+        var search = $location.search();
+        if (!isDefined(search.c) || search.c !== centerUrlHash) {
+            scope.$emit("centerUrlHash", centerUrlHash);
         }
     };
 
@@ -74,7 +75,6 @@ angular.module("leaflet-directive").directive('center',
                                 var urlCenter = { lat: parseFloat(urlParams[0]), lng: parseFloat(urlParams[1]), zoom: parseInt(urlParams[2], 10) };
                                 var actualCenter = { lat: leafletScope.center.lat, lng: leafletScope.center.lng, zoom: leafletScope.center.zoom };
                                 if (urlCenter && !equals(urlCenter, actualCenter)) {
-                                    console.log("updated url", urlCenter, actualCenter);
                                     leafletScope.center = { lat: urlCenter.lat, lng: urlCenter.lng, zoom: urlCenter.zoom };
                                 }
                             }
@@ -120,6 +120,7 @@ angular.module("leaflet-directive").directive('center',
                     }
 
                     map.setView([center.lat, center.lng], center.zoom);
+                    notifyNewCenterUrlHashIfNeeded(leafletScope, center, attrs.urlHashCenter);
                     changingCenterFromModel = false;
                 }, true);
 
@@ -142,10 +143,7 @@ angular.module("leaflet-directive").directive('center',
                             centerModel.lng = map.getCenter().lng;
                             centerModel.zoom = map.getZoom();
                             centerModel.autoDiscover = false;
-                            if (attrs.urlHashCenter) {
-                                console.log("moveend", centerModel);
-                                updateCenterUrlParams(scope, centerModel);
-                            }
+                            notifyNewCenterUrlHashIfNeeded(scope, centerModel, attrs.urlHashCenter);
                             scope.$broadcast('centerChanged', centerModel);
                         }
                     });
@@ -156,14 +154,10 @@ angular.module("leaflet-directive").directive('center',
                         $log.warn("[AngularJS - Leaflet] The Geolocation API is unauthorized on this page.");
                         if (isValidCenter(centerModel)) {
                             map.setView([centerModel.lat, centerModel.lng], centerModel.zoom);
-                            if (attrs.urlHashCenter) {
-                                updateCenterUrlParams(leafletScope, centerModel);
-                            }
+                            notifyNewCenterUrlHashIfNeeded(leafletScope, centerModel, attrs.urlHashCenter);
                         } else {
                             map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
-                            if (attrs.urlHashCenter) {
-                                updateCenterUrlParams(leafletScope, centerModel);
-                            }
+                            notifyNewCenterUrlHashIfNeeded(leafletScope, centerModel, attrs.urlHashCenter);
                         }
                     });
                 }
