@@ -13,7 +13,7 @@ angular.module("leaflet-directive").directive('bounds', function ($log, leafletH
                 centerController = controller[1];
 
             mapController.getMap().then(function(map) {
-                leafletScope.$on("newCenter", function() {
+                leafletScope.$on("centerChanged", function() {
                     var mapBounds = map.getBounds();
                     var newScopeBounds = {
                         northEast: {

@@ -63,7 +63,7 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
         isObject: function(value) {
             return angular.isObject(value);
         },
-        
+
 		// Determine if a reference is a function.
 		isFunction: function(value) {
 			return angular.isFunction(value);
@@ -82,6 +82,17 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
         isValidPoint: function(point) {
             return angular.isDefined(point) && angular.isNumber(point.lat) &&
                    angular.isNumber(point.lng);
+        },
+
+        isSameCenterOnMap: function(centerModel, map) {
+            var mapCenter = map.getCenter();
+            var zoom = map.getZoom();
+            if (mapCenter.lat === centerModel.lat && mapCenter.lng === centerModel.lng && zoom === centerModel.zoom) {
+                return true;
+            }
+            console.log("comparing false", mapCenter.lat, mapCenter.lng, zoom, centerModel);
+
+            return false;
         },
 
         safeApply: function($scope, fn) {

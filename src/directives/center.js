@@ -5,6 +5,7 @@ angular.module("leaflet-directive").directive('center',
         isNumber      = leafletHelpers.isNumber,
         equals        = leafletHelpers.equals,
         safeApply     = leafletHelpers.safeApply,
+        isSameCenterOnMap = leafletHelpers.isSameCenterOnMap,
         isValidCenter = leafletHelpers.isValidCenter;
 
     var updateCenterUrlParams = function(scope, center) {
@@ -48,6 +49,7 @@ angular.module("leaflet-directive").directive('center',
                 var changingCenterFromModel = false;
                 var changingCenterFromUrl = false;
                 var initialCenterParamsFromURL;
+                var mapInitialized = false;
 
                 if (attrs.urlHashCenter === "yes") {
                     var extractCenter = function(params) {
@@ -72,6 +74,7 @@ angular.module("leaflet-directive").directive('center',
                                 var urlCenter = { lat: parseFloat(urlParams[0]), lng: parseFloat(urlParams[1]), zoom: parseInt(urlParams[2], 10) };
                                 var actualCenter = { lat: leafletScope.center.lat, lng: leafletScope.center.lng, zoom: leafletScope.center.zoom };
                                 if (urlCenter && !equals(urlCenter, actualCenter)) {
+                                    console.log("updated url", urlCenter, actualCenter);
                                     leafletScope.center = { lat: urlCenter.lat, lng: urlCenter.lng, zoom: urlCenter.zoom };
                                 }
                             }
@@ -82,6 +85,10 @@ angular.module("leaflet-directive").directive('center',
 
                 leafletScope.$watch("center", function(center) {
                     if (changingCenterFromUrl) {
+                        return;
+                    }
+
+                    if (mapInitialized && isSameCenterOnMap(center, map)) {
                         return;
                     }
 
@@ -113,14 +120,19 @@ angular.module("leaflet-directive").directive('center',
                     }
 
                     map.setView([center.lat, center.lng], center.zoom);
-                    if (attrs.urlHashCenter) {
-                        updateCenterUrlParams(leafletScope, center);
-                    }
                     changingCenterFromModel = false;
                 }, true);
 
+                map.on("load", function() {
+                    mapInitialized = true;
+                });
+
                 map.on("moveend", function(/* event */) {
                     if (changingCenterFromModel || changingCenterFromUrl) {
+                        return;
+                    }
+
+                    if (mapInitialized && isSameCenterOnMap(centerModel, map)) {
                         return;
                     }
 
@@ -131,9 +143,10 @@ angular.module("leaflet-directive").directive('center',
                             centerModel.zoom = map.getZoom();
                             centerModel.autoDiscover = false;
                             if (attrs.urlHashCenter) {
+                                console.log("moveend", centerModel);
                                 updateCenterUrlParams(scope, centerModel);
                             }
-                            scope.$broadcast("newCenter", centerModel);
+                            scope.$broadcast('centerChanged', centerModel);
                         }
                     });
                 });
