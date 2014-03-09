@@ -221,11 +221,14 @@
               notifyNewCenter(leafletScope, attrs);
             }, true);
             map.on('moveend', function () {
+              if (semaphore.url) {
+                return;
+              }
               if (semaphore.model) {
                 semaphore.model = false;
                 return;
               }
-              semaphore.leaflet = semaphore.leaflet + 1;
+              semaphore.leaflet = true;
               safeApply(leafletScope, function () {
                 centerModel.lat = map.getCenter().lat;
                 centerModel.lng = map.getCenter().lng;
