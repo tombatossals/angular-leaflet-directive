@@ -20,7 +20,6 @@ angular.module("leaflet-directive").directive('center',
         var centerUrlHash = center.lat + ":" + center.lng + ":" + center.zoom;
         var search = $location.search();
         if (!isDefined(search.c) || search.c !== centerUrlHash) {
-            console.log("update hash", centerUrlHash);
             scope.$emit("centerUrlHash", centerUrlHash);
         }
     };
@@ -53,13 +52,7 @@ angular.module("leaflet-directive").directive('center',
                     angular.copy(defaults.center, centerModel);
                 }
 
-                var semaphore = {
-                    model: false,
-                    leaflet: false,
-                    url: undefined
-                };
-
-                var mapReady;
+                var urlCenterHash, mapReady;
 
                 if (attrs.urlHashCenter === "yes") {
                     var extractCenterFromUrl = function() {
@@ -73,16 +66,28 @@ angular.module("leaflet-directive").directive('center',
                         }
                         return centerParam;
                     };
-                    semaphore.url = extractCenterFromUrl();
+                    urlCenterHash = extractCenterFromUrl();
+
+                    /*
+                    leafletScope.$on('$locationChangeSuccess', function() {
+                        var urlCenter = extractCenterFromUrl();
+                        console.log(urlCenter);
+                        if (isDefined(urlCenter) && !isSameCenterOnMap(urlCenter, map)) {
+                            console.log("ye");
+                            safeApply(leafletScope, function(scope) {
+                                scope.center = { lat: urlCenter.lat, lng: urlCenter.lng, zoom: urlCenter.zoom };
+                            });
+                        }
+                    });
+                    */
                 }
 
                 leafletScope.$watch("center", function(center) {
 
-                    console.log("intro model...");
                     // The center from the URL has priority
-                    if (isDefined(semaphore.url)) {
-                        angular.copy(semaphore.url, center);
-                        delete semaphore.url;
+                    if (isDefined(urlCenterHash)) {
+                        angular.copy(urlCenterHash, center);
+                        urlCenterHash = undefined;
                     }
 
                     if (!isValidCenter(center) && center.autoDiscover !== true) {
@@ -105,10 +110,9 @@ angular.module("leaflet-directive").directive('center',
                         return;
                     }
 
-                    if (mapReady && isSameCenterOnMap(centerModel, map)) {
+                    if (mapReady && isSameCenterOnMap(center, map)) {
                         return;
                     }
-                    console.log("changed from model", center);
                     map.setView([center.lat, center.lng], center.zoom);
                     notifyNewCenter(leafletScope, attrs);
                 }, true);
@@ -117,16 +121,7 @@ angular.module("leaflet-directive").directive('center',
                     mapReady = true;
                 });
 
-                var interactingMap = false;
-                map.on("dragstart zoomstart", function() {
-                    interactingMap = true;
-                });
-
                 map.on("moveend", function(/* event */) {
-                    if (!interactingMap) {
-                        return;
-                    }
-                    interactingMap = false;
                     if (isSameCenterOnMap(centerModel, map)) {
                         return;
                     }
@@ -136,7 +131,6 @@ angular.module("leaflet-directive").directive('center',
                         centerModel.zoom = map.getZoom();
                         centerModel.autoDiscover = false;
                         notifyNewCenter(leafletScope, attrs, true);
-                        console.log("changed from moveend", centerModel);
                     });
                 });
 
