@@ -106,7 +106,7 @@
     'leafletMapDefaults',
     'leafletHelpers',
     function ($log, $q, $location, leafletMapDefaults, leafletHelpers) {
-      var isDefined = leafletHelpers.isDefined, isNumber = leafletHelpers.isNumber, safeApply = leafletHelpers.safeApply, isValidCenter = leafletHelpers.isValidCenter;
+      var isDefined = leafletHelpers.isDefined, isNumber = leafletHelpers.isNumber, isSameCenterOnMap = leafletHelpers.isSameCenterOnMap, safeApply = leafletHelpers.safeApply, isValidCenter = leafletHelpers.isValidCenter;
       var notifyNewCenter = function (scope, attrs, moveend) {
         // Notify the bounds if the center has finished moving
         if (isDefined(moveend)) {
@@ -119,7 +119,6 @@
         var centerUrlHash = center.lat + ':' + center.lng + ':' + center.zoom;
         var search = $location.search();
         if (!isDefined(search.c) || search.c !== centerUrlHash) {
-          console.log('update hash', centerUrlHash);
           scope.$emit('centerUrlHash', centerUrlHash);
         }
       };
@@ -149,11 +148,7 @@
             } else if (!(isDefined(centerModel.lat) && isDefined(centerModel.lng))) {
               angular.copy(defaults.center, centerModel);
             }
-            var semaphore = {
-                model: false,
-                leaflet: false,
-                url: undefined
-              };
+            var urlCenterHash, mapReady;
             if (attrs.urlHashCenter === 'yes') {
               var extractCenterFromUrl = function () {
                 var search = $location.search();
@@ -170,17 +165,24 @@
                 }
                 return centerParam;
               };
-              semaphore.url = extractCenterFromUrl();
+              urlCenterHash = extractCenterFromUrl();  /*
+                    leafletScope.$on('$locationChangeSuccess', function() {
+                        var urlCenter = extractCenterFromUrl();
+                        console.log(urlCenter);
+                        if (isDefined(urlCenter) && !isSameCenterOnMap(urlCenter, map)) {
+                            console.log("ye");
+                            safeApply(leafletScope, function(scope) {
+                                scope.center = { lat: urlCenter.lat, lng: urlCenter.lng, zoom: urlCenter.zoom };
+                            });
+                        }
+                    });
+                    */
             }
             leafletScope.$watch('center', function (center) {
               // The center from the URL has priority
-              if (isDefined(semaphore.url)) {
-                angular.copy(semaphore.url, center);
-                delete semaphore.url;
-              }
-              if (semaphore.leaflet) {
-                semaphore.leaflet = false;
-                return;
+              if (isDefined(urlCenterHash)) {
+                angular.copy(urlCenterHash, center);
+                urlCenterHash = undefined;
               }
               if (!isValidCenter(center) && center.autoDiscover !== true) {
                 $log.warn('[AngularJS - Leaflet] invalid \'center\'');
@@ -190,7 +192,6 @@
                 ], defaults.center.zoom);
                 return;
               }
-              semaphore.model = semaphore.model + 1;
               if (center.autoDiscover === true) {
                 if (!isNumber(center.zoom)) {
                   map.setView([
@@ -213,26 +214,28 @@
                 }
                 return;
               }
-              console.log('changed from model', center);
+              if (mapReady && isSameCenterOnMap(center, map)) {
+                return;
+              }
               map.setView([
                 center.lat,
                 center.lng
               ], center.zoom);
               notifyNewCenter(leafletScope, attrs);
             }, true);
+            map.whenReady(function () {
+              mapReady = true;
+            });
             map.on('moveend', function () {
-              if (semaphore.model) {
-                semaphore.model = false;
+              if (isSameCenterOnMap(centerModel, map)) {
                 return;
               }
-              semaphore.leaflet = semaphore.leaflet + 1;
               safeApply(leafletScope, function () {
                 centerModel.lat = map.getCenter().lat;
                 centerModel.lng = map.getCenter().lng;
                 centerModel.zoom = map.getZoom();
                 centerModel.autoDiscover = false;
                 notifyNewCenter(leafletScope, attrs, true);
-                console.log('changed from moveend', centerModel);
               });
             });
             if (centerModel.autoDiscover === true) {
