@@ -106,7 +106,7 @@
     'leafletMapDefaults',
     'leafletHelpers',
     function ($log, $q, $location, leafletMapDefaults, leafletHelpers) {
-      var isDefined = leafletHelpers.isDefined, isNumber = leafletHelpers.isNumber, safeApply = leafletHelpers.safeApply, isValidCenter = leafletHelpers.isValidCenter;
+      var isDefined = leafletHelpers.isDefined, isNumber = leafletHelpers.isNumber, isSameCenterOnMap = leafletHelpers.isSameCenterOnMap, safeApply = leafletHelpers.safeApply, isValidCenter = leafletHelpers.isValidCenter;
       var notifyNewCenter = function (scope, attrs, moveend) {
         // Notify the bounds if the center has finished moving
         if (isDefined(moveend)) {
@@ -154,6 +154,7 @@
                 leaflet: false,
                 url: undefined
               };
+            var mapReady;
             if (attrs.urlHashCenter === 'yes') {
               var extractCenterFromUrl = function () {
                 var search = $location.search();
@@ -173,14 +174,11 @@
               semaphore.url = extractCenterFromUrl();
             }
             leafletScope.$watch('center', function (center) {
+              console.log('intro model...');
               // The center from the URL has priority
               if (isDefined(semaphore.url)) {
                 angular.copy(semaphore.url, center);
                 delete semaphore.url;
-              }
-              if (semaphore.leaflet) {
-                semaphore.leaflet = false;
-                return;
               }
               if (!isValidCenter(center) && center.autoDiscover !== true) {
                 $log.warn('[AngularJS - Leaflet] invalid \'center\'');
@@ -190,7 +188,6 @@
                 ], defaults.center.zoom);
                 return;
               }
-              semaphore.model = semaphore.model + 1;
               if (center.autoDiscover === true) {
                 if (!isNumber(center.zoom)) {
                   map.setView([
@@ -213,6 +210,9 @@
                 }
                 return;
               }
+              if (mapReady && isSameCenterOnMap(centerModel, map)) {
+                return;
+              }
               console.log('changed from model', center);
               map.setView([
                 center.lat,
@@ -220,15 +220,13 @@
               ], center.zoom);
               notifyNewCenter(leafletScope, attrs);
             }, true);
+            map.whenReady(function () {
+              mapReady = true;
+            });
             map.on('moveend', function () {
-              if (semaphore.url) {
+              if (isSameCenterOnMap(centerModel, map)) {
                 return;
               }
-              if (semaphore.model) {
-                semaphore.model = false;
-                return;
-              }
-              semaphore.leaflet = true;
               safeApply(leafletScope, function () {
                 centerModel.lat = map.getCenter().lat;
                 centerModel.lng = map.getCenter().lng;
