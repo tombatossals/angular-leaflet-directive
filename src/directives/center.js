@@ -117,7 +117,16 @@ angular.module("leaflet-directive").directive('center',
                     mapReady = true;
                 });
 
+                var interactingMap = false;
+                map.on("dragstart zoomstart", function() {
+                    interactingMap = true;
+                });
+
                 map.on("moveend", function(/* event */) {
+                    if (!interactingMap) {
+                        return;
+                    }
+                    interactingMap = false;
                     if (isSameCenterOnMap(centerModel, map)) {
                         return;
                     }
