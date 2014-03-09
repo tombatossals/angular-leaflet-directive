@@ -106,7 +106,7 @@
     'leafletMapDefaults',
     'leafletHelpers',
     function ($log, $q, $location, leafletMapDefaults, leafletHelpers) {
-      var isDefined = leafletHelpers.isDefined, isNumber = leafletHelpers.isNumber, equals = leafletHelpers.equals, safeApply = leafletHelpers.safeApply, isValidCenter = leafletHelpers.isValidCenter;
+      var isDefined = leafletHelpers.isDefined, isNumber = leafletHelpers.isNumber, equals = leafletHelpers.equals, safeApply = leafletHelpers.safeApply, isSameCenterOnMap = leafletHelpers.isSameCenterOnMap, isValidCenter = leafletHelpers.isValidCenter;
       var updateCenterUrlParams = function (scope, center) {
         if (isNumber(center.lat) && isNumber(center.lng) && isNumber(center.zoom)) {
           var centerUrlHash = center.lat + ':' + center.lng + ':' + center.zoom;
@@ -145,6 +145,7 @@
             var changingCenterFromModel = false;
             var changingCenterFromUrl = false;
             var initialCenterParamsFromURL;
+            var mapInitialized = false;
             if (attrs.urlHashCenter === 'yes') {
               var extractCenter = function (params) {
                 var centerParam;
@@ -179,6 +180,7 @@
                         zoom: leafletScope.center.zoom
                       };
                     if (urlCenter && !equals(urlCenter, actualCenter)) {
+                      console.log('updated url', urlCenter, actualCenter);
                       leafletScope.center = {
                         lat: urlCenter.lat,
                         lng: urlCenter.lng,
@@ -192,6 +194,9 @@
             }
             leafletScope.$watch('center', function (center) {
               if (changingCenterFromUrl) {
+                return;
+              }
+              if (mapInitialized && isSameCenterOnMap(center, map)) {
                 return;
               }
               // The center from the URL has priority
@@ -234,13 +239,16 @@
                 center.lat,
                 center.lng
               ], center.zoom);
-              if (attrs.urlHashCenter) {
-                updateCenterUrlParams(leafletScope, center);
-              }
               changingCenterFromModel = false;
             }, true);
+            map.on('load', function () {
+              mapInitialized = true;
+            });
             map.on('moveend', function () {
               if (changingCenterFromModel || changingCenterFromUrl) {
+                return;
+              }
+              if (mapInitialized && isSameCenterOnMap(centerModel, map)) {
                 return;
               }
               safeApply(leafletScope, function (scope) {
@@ -250,9 +258,10 @@
                   centerModel.zoom = map.getZoom();
                   centerModel.autoDiscover = false;
                   if (attrs.urlHashCenter) {
+                    console.log('moveend', centerModel);
                     updateCenterUrlParams(scope, centerModel);
                   }
-                  scope.$broadcast('newCenter', centerModel);
+                  scope.$broadcast('centerChanged', centerModel);
                 }
               });
             });
@@ -630,7 +639,7 @@
         link: function (scope, element, attrs, controller) {
           var isDefined = leafletHelpers.isDefined, createLeafletBounds = leafletBoundsHelpers.createLeafletBounds, leafletScope = controller[0].getLeafletScope(), mapController = controller[0], centerController = controller[1];
           mapController.getMap().then(function (map) {
-            leafletScope.$on('newCenter', function () {
+            leafletScope.$on('centerChanged', function () {
               var mapBounds = map.getBounds();
               var newScopeBounds = {
                   northEast: {
@@ -2556,6 +2565,15 @@
         },
         isValidPoint: function (point) {
           return angular.isDefined(point) && angular.isNumber(point.lat) && angular.isNumber(point.lng);
+        },
+        isSameCenterOnMap: function (centerModel, map) {
+          var mapCenter = map.getCenter();
+          var zoom = map.getZoom();
+          if (mapCenter.lat === centerModel.lat && mapCenter.lng === centerModel.lng && zoom === centerModel.zoom) {
+            return true;
+          }
+          console.log('comparing false', mapCenter.lat, mapCenter.lng, zoom, centerModel);
+          return false;
         },
         safeApply: function ($scope, fn) {
           var phase = $scope.$root.$$phase;
