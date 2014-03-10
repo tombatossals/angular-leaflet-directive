@@ -14,9 +14,16 @@ describe('Loading url-hash-center-example.html', function() {
 
     it('should update the url if the center value is changed from the form', function() {
         element(by.xpath('//input[1]')).clear();
+        element(by.xpath('//input[1]')).sendKeys("9");
+        ptor.sleep(500);
         element(by.xpath('//input[2]')).clear();
+        element(by.xpath('//input[2]')).sendKeys("7");
+        ptor.sleep(500);
+        element(by.xpath('//input[3]')).clear();
+        element(by.xpath('//input[3]')).sendKeys("4");
         // Wait for zoom animation
-        expect(browser.getCurrentUrl()).toMatch(/c=0:0:1$/);
+        ptor.sleep(500);
+        expect(browser.getCurrentUrl()).toMatch(/c=9.015302333420598:7.03125:4$/);
     });
 
     it('should update the url if the zoom is changed from the map', function() {
