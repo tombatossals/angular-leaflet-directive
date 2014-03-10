@@ -120,7 +120,6 @@ angular.module("leaflet-directive").directive('center',
 
                     //$log.debug("updating map center...", center);
                     map.setView([center.lat, center.lng], center.zoom);
-                    notifyNewCenter(leafletScope, attrs);
                 }, true);
 
                 map.whenReady(function() {
@@ -150,11 +149,9 @@ angular.module("leaflet-directive").directive('center',
                         $log.warn("[AngularJS - Leaflet] The Geolocation API is unauthorized on this page.");
                         if (isValidCenter(centerModel)) {
                             map.setView([centerModel.lat, centerModel.lng], centerModel.zoom);
-                            notifyNewCenter(leafletScope, attrs);
                             leafletScope.$broadcast('centerChanged', centerModel);
                         } else {
                             map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
-                            notifyNewCenter(leafletScope, attrs);
                             leafletScope.$broadcast('centerChanged', centerModel);
                         }
                     });

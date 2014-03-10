@@ -225,7 +225,6 @@
                 center.lat,
                 center.lng
               ], center.zoom);
-              notifyNewCenter(leafletScope, attrs);
             }, true);
             map.whenReady(function () {
               mapReady = true;
@@ -255,14 +254,12 @@
                     centerModel.lat,
                     centerModel.lng
                   ], centerModel.zoom);
-                  notifyNewCenter(leafletScope, attrs);
                   leafletScope.$broadcast('centerChanged', centerModel);
                 } else {
                   map.setView([
                     defaults.center.lat,
                     defaults.center.lng
                   ], defaults.center.zoom);
-                  notifyNewCenter(leafletScope, attrs);
                   leafletScope.$broadcast('centerChanged', centerModel);
                 }
               });
