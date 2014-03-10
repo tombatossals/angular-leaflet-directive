@@ -25,7 +25,8 @@
           controls: '=controls',
           eventBroadcast: '=eventBroadcast'
         },
-        template: '<div class="angular-leaflet-map"></div>',
+        transclude: true,
+        template: '<div><div class="angular-leaflet-map"></div><div ng-transclude></div></div>',
         controller: [
           '$scope',
           function ($scope) {
@@ -56,7 +57,7 @@
             }
           }
           // Create the Leaflet Map Object with the options
-          var map = new L.Map(element[0], leafletMapDefaults.getMapCreationDefaults(attrs.id));
+          var map = new L.Map(element.children()[0], leafletMapDefaults.getMapCreationDefaults(attrs.id));
           _leafletMap.resolve(map);
           if (!isDefined(attrs.center)) {
             map.setView([
@@ -127,7 +128,7 @@
         restrict: 'A',
         scope: false,
         replace: false,
-        require: 'leaflet',
+        require: '^leaflet',
         controller: function () {
           _leafletCenter = $q.defer();
           this.getCenter = function () {
@@ -274,7 +275,7 @@
         restrict: 'A',
         scope: false,
         replace: false,
-        require: 'leaflet',
+        require: '^leaflet',
         link: function (scope, element, attrs, controller) {
           var isDefined = leafletHelpers.isDefined, leafletScope = controller.getLeafletScope(), tiles = leafletScope.tiles;
           if (!isDefined(tiles) && !isDefined(tiles.url)) {
@@ -336,7 +337,7 @@
         restrict: 'A',
         scope: false,
         replace: false,
-        require: 'leaflet',
+        require: '^leaflet',
         link: function (scope, element, attrs, controller) {
           var isArray = leafletHelpers.isArray, isDefined = leafletHelpers.isDefined, isFunction = leafletHelpers.isFunction, leafletScope = controller.getLeafletScope(), legend = leafletScope.legend;
           var legendClass = legend.legendClass ? legend.legendClass : 'legend';
@@ -387,7 +388,7 @@
         restrict: 'A',
         scope: false,
         replace: false,
-        require: 'leaflet',
+        require: '^leaflet',
         link: function (scope, element, attrs, controller) {
           var safeApply = leafletHelpers.safeApply, isDefined = leafletHelpers.isDefined, leafletScope = controller.getLeafletScope(), leafletGeoJSON = {};
           controller.getMap().then(function (map) {
@@ -455,7 +456,7 @@
         restrict: 'A',
         scope: false,
         replace: false,
-        require: 'leaflet',
+        require: '^leaflet',
         controller: function () {
           _leafletLayers = $q.defer();
           this.getLayers = function () {
@@ -604,7 +605,7 @@
         scope: false,
         replace: false,
         require: [
-          'leaflet',
+          '^leaflet',
           'center'
         ],
         link: function (scope, element, attrs, controller) {
@@ -660,7 +661,7 @@
         scope: false,
         replace: false,
         require: [
-          'leaflet',
+          '^leaflet',
           '?layers'
         ],
         link: function (scope, element, attrs, controller) {
@@ -776,7 +777,7 @@
         restrict: 'A',
         scope: false,
         replace: false,
-        require: 'leaflet',
+        require: '^leaflet',
         link: function (scope, element, attrs, controller) {
           var isDefined = leafletHelpers.isDefined, leafletScope = controller.getLeafletScope(), paths = leafletScope.paths, createPath = leafletPathsHelpers.createPath, bindPathEvents = leafletEvents.bindPathEvents, setPathOptions = leafletPathsHelpers.setPathOptions;
           controller.getMap().then(function (map) {
@@ -976,7 +977,7 @@
         restrict: 'A',
         scope: false,
         replace: false,
-        require: 'leaflet',
+        require: '^leaflet',
         link: function (scope, element, attrs, controller) {
           var leafletScope = controller.getLeafletScope(), isValidBounds = leafletBoundsHelpers.isValidBounds;
           controller.getMap().then(function (map) {

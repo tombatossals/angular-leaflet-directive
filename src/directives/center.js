@@ -30,7 +30,7 @@ angular.module("leaflet-directive").directive('center',
         restrict: "A",
         scope: false,
         replace: false,
-        require: 'leaflet',
+        require: '^leaflet',
         controller: function () {
             _leafletCenter = $q.defer();
             this.getCenter = function() {

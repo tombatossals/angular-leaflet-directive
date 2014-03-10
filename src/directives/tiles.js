@@ -3,7 +3,7 @@ angular.module("leaflet-directive").directive('tiles', function ($log, leafletDa
         restrict: "A",
         scope: false,
         replace: false,
-        require: 'leaflet',
+        require: '^leaflet',
 
         link: function(scope, element, attrs, controller) {
             var isDefined = leafletHelpers.isDefined,

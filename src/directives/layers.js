@@ -5,7 +5,7 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
         restrict: "A",
         scope: false,
         replace: false,
-        require: 'leaflet',
+        require: '^leaflet',
         controller: function () {
             _leafletLayers = $q.defer();
             this.getLayers = function() {

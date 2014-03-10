@@ -17,7 +17,8 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($q, leafl
             controls: '=controls',
             eventBroadcast: '=eventBroadcast'
         },
-        template: '<div class="angular-leaflet-map"></div>',
+        transclude: true,
+        template: '<div><div class="angular-leaflet-map"></div><div ng-transclude></div></div>',
         controller: function ($scope) {
             _leafletMap = $q.defer();
             this.getMap = function () {
@@ -52,7 +53,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($q, leafl
             }
 
             // Create the Leaflet Map Object with the options
-            var map = new L.Map(element[0], leafletMapDefaults.getMapCreationDefaults(attrs.id));
+            var map = new L.Map(element.children()[0], leafletMapDefaults.getMapCreationDefaults(attrs.id));
             _leafletMap.resolve(map);
 
             if (!isDefined(attrs.center)) {

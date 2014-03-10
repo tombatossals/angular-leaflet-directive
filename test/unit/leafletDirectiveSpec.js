@@ -164,4 +164,20 @@ describe('Directive: leaflet', function() {
         $rootScope.$digest();
         expect(shouldNotBeMap).toBe(undefined);
     });
+
+    it('should have transclude', function () {
+        var element = angular.element('<leaflet><div markers="markers"></div></leaflet>');
+        var $scope = $rootScope.$new();
+        $scope.markers = [];
+
+        element = $compile(element)($scope);
+
+        $scope.$digest();
+
+        var map = element.children()[0];
+        var markers = element.children()[1].children[0];
+
+        expect(markers.classList.contains('ng-scope')).toBe(true);
+        expect(map.classList.contains('angular-leaflet-map')).toEqual(true);
+    });
 });

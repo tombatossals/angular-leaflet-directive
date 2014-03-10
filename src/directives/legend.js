@@ -3,7 +3,7 @@ angular.module("leaflet-directive").directive('legend', function ($log, $http, l
         restrict: "A",
         scope: false,
         replace: false,
-        require: 'leaflet',
+        require: '^leaflet',
 
         link: function(scope, element, attrs, controller) {
             var isArray      = leafletHelpers.isArray,
@@ -15,7 +15,7 @@ angular.module("leaflet-directive").directive('legend', function ($log, $http, l
             var legendClass = legend.legendClass ? legend.legendClass : "legend";
             var position = legend.position || 'bottomright';
             var leafletLegend;
-            
+
             controller.getMap().then(function(map) {
 				if (!isDefined(legend.url) && (!isArray(legend.colors) || !isArray(legend.labels) || legend.colors.length !== legend.labels.length)) {
                     $log.warn("[AngularJS - Leaflet] legend.colors and legend.labels must be set.");
@@ -27,7 +27,7 @@ angular.module("leaflet-directive").directive('legend', function ($log, $http, l
                     leafletLegend.onAdd = leafletLegendHelpers.getOnAddArrayLegend(legend, legendClass);
                     leafletLegend.addTo(map);
                 }
-                
+
                 leafletScope.$watch('legend.url', function(newURL) {
 					if(!isDefined(newURL)) {
 						return;

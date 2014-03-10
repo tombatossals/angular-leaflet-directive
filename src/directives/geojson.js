@@ -3,7 +3,7 @@ angular.module("leaflet-directive").directive('geojson', function ($log, $rootSc
         restrict: "A",
         scope: false,
         replace: false,
-        require: 'leaflet',
+        require: '^leaflet',
 
         link: function(scope, element, attrs, controller) {
             var safeApply = leafletHelpers.safeApply,

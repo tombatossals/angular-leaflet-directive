@@ -3,7 +3,7 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
         restrict: "A",
         scope: false,
         replace: false,
-        require: ['leaflet', '?layers'],
+        require: ['^leaflet', '?layers'],
 
         link: function(scope, element, attrs, controller) {
             var mapController = controller[0],
