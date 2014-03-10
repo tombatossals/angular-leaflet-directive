@@ -28,6 +28,10 @@ describe('Directive: bounds', function() {
         };
     });
 
+    afterEach(inject(function($rootScope) {
+        $rootScope.$apply();
+    }));
+
     it('updates the map bounds if bounds are provided', function() {
         angular.extend(scope, {
             bounds: bounds,
@@ -51,7 +55,7 @@ describe('Directive: bounds', function() {
 
     it('allows empty bounds initialization', function(){
         angular.extend(scope, {
-            bound: {},
+            bounds: {},
             center: {}
         });
         var element = angular.element('<leaflet bounds="bounds" center="center"></leaflet>');
@@ -66,30 +70,32 @@ describe('Directive: bounds', function() {
         var mapBounds = map.getBounds();
         expect(mapBounds.getSouthWest().lat).toBeCloseTo(0);
         expect(mapBounds.getSouthWest().lng).toBeCloseTo(0);
-        expect(mapBounds.getNorthEast().lat).toBeCloseTo(0);
         expect(mapBounds.getNorthEast().lng).toBeCloseTo(0);
     });
 
     it('should update map bounds when map initializes', function() {
         angular.extend(scope, {
-            bound: {},
-            center: {}
+            bounds: {},
+            center: { lat: 5 , lng: -3, zoom: 4 }
         });
         var element = angular.element('<leaflet bounds="bounds" center="center"></leaflet>');
         element = $compile(element)(scope);
+
+        var map;
+        leafletData.getMap().then(function(leafletMap) {
+            map = leafletMap;
+        });
         scope.$digest();
 
-        leafletData.getMap().then(function(map) {
-            var bounds = scope.bounds;
-            var mapBounds = map.getBounds();
+        var bounds = scope.bounds;
+        var mapBounds = map.getBounds();
 
-            expect(bounds.northEast).toBeNull();
-            expect(bounds.southWest).toBeDefined();
+        expect(bounds.northEast).toBeDefined();
+        expect(bounds.southWest).toBeDefined();
 
-            expect(bounds.northEast.lat).toBe(mapBounds.getNorthEast().lat);
-            expect(bounds.northEast.lng).toBe(mapBounds.getNorthEast().lng);
-            expect(bounds.southWest.lat).toBe(mapBounds.getSouthWest().lat);
-            expect(bounds.southWest.lng).toBe();
-        });
+        expect(bounds.northEast.lat).toBe(mapBounds._northEast.lat);
+        expect(bounds.northEast.lng).toBe(mapBounds._northEast.lng);
+        expect(bounds.southWest.lat).toBe(mapBounds._southWest.lat);
+        expect(bounds.southWest.lng).toBe(mapBounds._southWest.lng);
     });
 });

@@ -7,12 +7,11 @@ angular.module("leaflet-directive").directive('center',
         safeApply     = leafletHelpers.safeApply,
         isValidCenter = leafletHelpers.isValidCenter;
 
-    var notifyNewCenter = function(scope, attrs, moveend) {
-        // Notify the bounds if the center has finished moving
-        if (isDefined(moveend)) {
-            scope.$broadcast("centerChanged", scope.center);
-        }
+    var notifyCenterChangedToBounds = function(scope, map) {
+        scope.$broadcast("boundsChanged", map.getBounds());
+    };
 
+    var notifyCenterUrlHashChanged = function(scope, attrs) {
         if (!isDefined(attrs.urlHashCenter)) {
             return;
         }
@@ -120,6 +119,7 @@ angular.module("leaflet-directive").directive('center',
 
                     //$log.debug("updating map center...", center);
                     map.setView([center.lat, center.lng], center.zoom);
+                    notifyCenterChangedToBounds(leafletScope, map);
                 }, true);
 
                 map.whenReady(function() {
@@ -127,6 +127,7 @@ angular.module("leaflet-directive").directive('center',
                 });
 
                 map.on("moveend", function(/* event */) {
+                    notifyCenterUrlHashChanged(leafletScope, attrs);
                     //$log.debug("updated center on map...");
                     if (isSameCenterOnMap(centerModel, map)) {
                         //$log.debug("same center in model, no need to update again.");
@@ -140,7 +141,6 @@ angular.module("leaflet-directive").directive('center',
                             zoom: map.getZoom(),
                             autoDiscover: false
                         };
-                        notifyNewCenter(leafletScope, attrs, true);
                     });
                 });
 

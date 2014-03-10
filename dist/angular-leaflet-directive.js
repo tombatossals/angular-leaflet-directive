@@ -107,11 +107,10 @@
     'leafletHelpers',
     function ($log, $q, $location, leafletMapDefaults, leafletHelpers) {
       var isDefined = leafletHelpers.isDefined, isNumber = leafletHelpers.isNumber, isSameCenterOnMap = leafletHelpers.isSameCenterOnMap, safeApply = leafletHelpers.safeApply, isValidCenter = leafletHelpers.isValidCenter;
-      var notifyNewCenter = function (scope, attrs, moveend) {
-        // Notify the bounds if the center has finished moving
-        if (isDefined(moveend)) {
-          scope.$broadcast('centerChanged', scope.center);
-        }
+      var notifyCenterChangedToBounds = function (scope, map) {
+        scope.$broadcast('boundsChanged', map.getBounds());
+      };
+      var notifyCenterUrlHashChanged = function (scope, attrs) {
         if (!isDefined(attrs.urlHashCenter)) {
           return;
         }
@@ -225,11 +224,13 @@
                 center.lat,
                 center.lng
               ], center.zoom);
+              notifyCenterChangedToBounds(leafletScope, map);
             }, true);
             map.whenReady(function () {
               mapReady = true;
             });
             map.on('moveend', function () {
+              notifyCenterUrlHashChanged(leafletScope, attrs);
               //$log.debug("updated center on map...");
               if (isSameCenterOnMap(centerModel, map)) {
                 //$log.debug("same center in model, no need to update again.");
@@ -243,7 +244,6 @@
                   zoom: map.getZoom(),
                   autoDiscover: false
                 };
-                notifyNewCenter(leafletScope, attrs, true);
               });
             });
             if (centerModel.autoDiscover === true) {
@@ -615,32 +615,45 @@
         ],
         link: function (scope, element, attrs, controller) {
           var isDefined = leafletHelpers.isDefined, createLeafletBounds = leafletBoundsHelpers.createLeafletBounds, leafletScope = controller[0].getLeafletScope(), mapController = controller[0], centerController = controller[1];
+          var emptyBounds = function (bounds) {
+            if (bounds._southWest.lat === 0 && bounds._southWest.lng === 0 && bounds._northEast.lat === 0 && bounds._northEast.lng === 0) {
+              return true;
+            }
+            return false;
+          };
           mapController.getMap().then(function (map) {
-            leafletScope.$on('centerChanged', function () {
-              var mapBounds = map.getBounds();
-              var newScopeBounds = {
-                  northEast: {
-                    lat: mapBounds.getNorthEast().lat,
-                    lng: mapBounds.getNorthEast().lng
-                  },
-                  southWest: {
-                    lat: mapBounds.getSouthWest().lat,
-                    lng: mapBounds.getSouthWest().lng
-                  }
-                };
-              if (!angular.equals(leafletScope.bounds, newScopeBounds)) {
-                leafletScope.bounds = newScopeBounds;
-              }
-            });
             centerController.getCenter().then(function () {
+              leafletScope.$on('boundsChanged', function (event, bounds) {
+                //$log.debug("updated map bounds...");
+                if (emptyBounds(bounds)) {
+                  return;
+                }
+                var scope = event.currentScope;
+                var newScopeBounds = {
+                    northEast: {
+                      lat: bounds._northEast.lat,
+                      lng: bounds._northEast.lng
+                    },
+                    southWest: {
+                      lat: bounds._southWest.lat,
+                      lng: bounds._southWest.lng
+                    }
+                  };
+                if (!angular.equals(scope.bounds, newScopeBounds)) {
+                  //$log.debug("Need to update scope bounds.");
+                  scope.bounds = newScopeBounds;
+                }
+              });
               map.whenReady(function () {
-                leafletScope.$watch('bounds', function (newBounds) {
-                  if (!isDefined(newBounds)) {
+                leafletScope.$watch('bounds', function (bounds) {
+                  //$log.debug("updated bounds...");
+                  if (!isDefined(bounds)) {
                     $log.error('[AngularJS - Leaflet] Invalid bounds');
                     return;
                   }
-                  var leafletBounds = createLeafletBounds(newBounds);
+                  var leafletBounds = createLeafletBounds(bounds);
                   if (leafletBounds && !map.getBounds().equals(leafletBounds)) {
+                    //$log.debug("Need to update map bounds.");
                     map.fitBounds(leafletBounds);
                   }
                 }, true);
