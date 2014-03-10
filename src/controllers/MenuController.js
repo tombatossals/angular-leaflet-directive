@@ -10,6 +10,10 @@ app.controller("MenuController", [ '$scope', '$location', function($scope, $loca
             description: 'Center'
         },
         {
+            key: 'center-url-hash',
+            description: 'Center Url Hash'
+        },
+        {
             key: 'custom-parameters',
             description: 'Custom Parameters'
         },

@@ -1,9 +1,9 @@
 {
   "name": "bootstrap",
-  "version": "3.0.3",
+  "version": "3.1.1",
   "main": [
-    "./dist/js/bootstrap.js",
     "./dist/css/bootstrap.css",
+    "./dist/js/bootstrap.js",
     "./dist/fonts/glyphicons-halflings-regular.eot",
     "./dist/fonts/glyphicons-halflings-regular.svg",
     "./dist/fonts/glyphicons-halflings-regular.ttf",
@@ -11,30 +11,24 @@
   ],
   "ignore": [
     "**/.*",
-    "_*",
-    "docs-assets",
-    "examples",
-    "/fonts",
-    "js/tests",
+    "_config.yml",
     "CNAME",
-    "CONTRIBUTING.md",
-    "Gruntfile.js",
-    "browserstack.json",
     "composer.json",
-    "package.json",
-    "*.html"
+    "CONTRIBUTING.md",
+    "docs",
+    "js/tests"
   ],
   "dependencies": {
     "jquery": ">= 1.9.0"
   },
   "homepage": "https://github.com/twbs/bootstrap",
-  "_release": "3.0.3",
+  "_release": "3.1.1",
   "_resolution": {
     "type": "version",
-    "tag": "v3.0.3",
-    "commit": "6d03173a1aad98e75f7d33e65b411c519176c59a"
+    "tag": "v3.1.1",
+    "commit": "a365d8689c3f3cee7f1acf86b61270ecca8e106d"
   },
   "_source": "git://github.com/twbs/bootstrap.git",
-  "_target": "3.0.x",
+  "_target": "3.1.x",
   "_originalSource": "bootstrap"
 }

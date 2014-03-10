@@ -22,6 +22,6 @@
     "commit": "60f5b260c3ae12578f7241e15e8102e9b65c4d3b"
   },
   "_source": "git://github.com/components/highlightjs.git",
-  "_target": "7.3.x",
+  "_target": "~7.3.0",
   "_originalSource": "highlightjs"
 }

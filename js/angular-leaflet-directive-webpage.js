@@ -23,6 +23,7 @@ app.controller("BoundsController", [ '$scope', 'leafletBoundsHelpers', function(
 
     angular.extend($scope, {
         bounds: bounds,
+        center: { lat: 1, lng: 1, zoom: 1 },
         defaults: {
             scrollWheelZoom: false
         }
@@ -40,6 +41,24 @@ app.controller("CenterController", [ '$scope', function($scope) {
         defaults: {
             scrollWheelZoom: false
         }
+    });
+}]);
+
+app.controller("CenterUrlHashController", [ '$scope', '$location', function($scope, $location) {
+
+    angular.extend($scope, {
+        center: {
+            lat: 40.095,
+            lng: -3.823,
+            zoom: 4
+        },
+        defaults: {
+            scrollWheelZoom: false
+        }
+    });
+
+    $scope.$on("centerUrlHash", function(event, centerHash) {
+        $location.search({ c: centerHash });
     });
 }]);
 
@@ -458,6 +477,10 @@ app.controller("MenuController", [ '$scope', '$location', function($scope, $loca
         {
             key: 'center',
             description: 'Center'
+        },
+        {
+            key: 'center-url-hash',
+            description: 'Center Url Hash'
         },
         {
             key: 'custom-parameters',

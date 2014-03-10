@@ -4,10 +4,10 @@
   -->
 <head>
     <title>Leaflet</title>
-    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" />
+	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7/leaflet.css" />
     <link rel="stylesheet" href="../css/distance.css" />
     <link rel="stylesheet" href="http://leaflet.github.io/Leaflet.draw/leaflet.draw.css" />
-    <script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
+	<script src="http://cdn.leafletjs.com/leaflet-0.7/leaflet.js"></script>
     <script src="http://leaflet.github.io/Leaflet.draw/leaflet.draw.js"></script>
     <script src="../layer/vector/GPX.js"></script>
     <script src="../control/Scale.js"></script>
@@ -27,7 +27,6 @@ var map = new L.Map('map', {center: new L.LatLng(58.4, 43.0), zoom: 11});
 var osm = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
 
 map.addLayer(osm);
-map.addControl(new L.Control.Layers({}, {}));
 var d = new L.Control.Distance(); map.addControl(d);
 map.addControl(new L.Control.Scale());
 map.addControl(new L.Control.Permalink({line: d.getLine(), useLocation: true}));
