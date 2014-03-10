@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="../bower_components/leaflet-dist/leaflet.css" />
     <script>
         var app = angular.module('demoapp', ['leaflet-directive']);
-        app.controller('DemoController', [ '$scope', function($scope) {
+        app.controller('DemoController', [ '$scope', '$location', function($scope, $location) {
             angular.extend($scope, {
                 london: {
                     lat: 51.505,
@@ -15,7 +15,10 @@
                     zoom: 4
                 }
             });
-       }]);
+            $scope.$on("centerUrlHash", function(event, centerHash) {
+                $location.search({ c: centerHash });
+            });
+        }]);
     </script>
     <style>
         input {
