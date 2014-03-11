@@ -16,6 +16,7 @@
                 }
             });
             $scope.$on("centerUrlHash", function(event, centerHash) {
+                console.log("url", centerHash);
                 $location.search({ c: centerHash });
             });
         }]);
