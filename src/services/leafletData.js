@@ -6,7 +6,7 @@ angular.module("leaflet-directive").service('leafletData', function ($log, $q, l
     var maps = {};
     var tiles = {};
     var layers = {};
-    var center;
+    var center = {};
     var paths = {};
     var markers = {};
     var geoJSON = {};

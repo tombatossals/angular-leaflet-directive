@@ -136,7 +136,7 @@
           };
         },
         link: function (scope, element, attrs, controller) {
-          var leafletScope = controller.getLeafletScope(), centerModel = leafletScope.center;
+          var leafletScope = controller.getLeafletScope(), centerModel = leafletScope.center, center = {};
           controller.getMap().then(function (map) {
             var defaults = leafletMapDefaults.getDefaults(attrs.id);
             if (!isDefined(centerModel)) {
@@ -149,7 +149,7 @@
             } else if (!(isDefined(centerModel.lat) && isDefined(centerModel.lng))) {
               angular.copy(defaults.center, centerModel);
             }
-            _leafletCenter.resolve(centerModel);
+            _leafletCenter.resolve(center);
             leafletData.setCenter(centerModel, attrs.id);
             var urlCenterHash, mapReady;
             if (attrs.urlHashCenter === 'yes') {
@@ -1038,7 +1038,7 @@
       var maps = {};
       var tiles = {};
       var layers = {};
-      var center;
+      var center = {};
       var paths = {};
       var markers = {};
       var geoJSON = {};

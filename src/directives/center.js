@@ -38,7 +38,8 @@ angular.module("leaflet-directive").directive('center',
         },
         link: function(scope, element, attrs, controller) {
             var leafletScope  = controller.getLeafletScope(),
-                centerModel   = leafletScope.center;
+                centerModel   = leafletScope.center,
+                center        = {};
 
             controller.getMap().then(function(map) {
                 var defaults = leafletMapDefaults.getDefaults(attrs.id);
@@ -51,7 +52,7 @@ angular.module("leaflet-directive").directive('center',
                     angular.copy(defaults.center, centerModel);
                 }
 
-                _leafletCenter.resolve(centerModel);
+                _leafletCenter.resolve(center);
                 leafletData.setCenter(centerModel, attrs.id);
 
                 var urlCenterHash, mapReady;
