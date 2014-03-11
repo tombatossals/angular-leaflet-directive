@@ -1,5 +1,5 @@
 angular.module("leaflet-directive").directive('center',
-    function ($log, $q, $location, leafletMapDefaults, leafletHelpers, leafletData) {
+    function ($log, $q, $location, leafletMapDefaults, leafletHelpers) {
 
     var isDefined     = leafletHelpers.isDefined,
         isNumber      = leafletHelpers.isNumber,
@@ -11,12 +11,12 @@ angular.module("leaflet-directive").directive('center',
         scope.$broadcast("boundsChanged");
     };
 
-    var notifyCenterUrlHashChanged = function(scope, attrs) {
+    var notifyCenterUrlHashChanged = function(scope, map, attrs) {
         if (!isDefined(attrs.urlHashCenter)) {
             return;
         }
-        var center = scope.center;
-        var centerUrlHash = center.lat + ":" + center.lng + ":" + center.zoom;
+        var center = map.getCenter();
+        var centerUrlHash = center.lat + ":" + center.lng + ":" + map.getZoom();
         var search = $location.search();
         if (!isDefined(search.c) || search.c !== centerUrlHash) {
             //$log.debug("notified new center...");
@@ -38,8 +38,7 @@ angular.module("leaflet-directive").directive('center',
         },
         link: function(scope, element, attrs, controller) {
             var leafletScope  = controller.getLeafletScope(),
-                centerModel   = leafletScope.center,
-                center        = {};
+                centerModel   = leafletScope.center;
 
             controller.getMap().then(function(map) {
                 var defaults = leafletMapDefaults.getDefaults(attrs.id);
@@ -52,11 +51,7 @@ angular.module("leaflet-directive").directive('center',
                     angular.copy(defaults.center, centerModel);
                 }
 
-                _leafletCenter.resolve(center);
-                leafletData.setCenter(centerModel, attrs.id);
-
                 var urlCenterHash, mapReady;
-
                 if (attrs.urlHashCenter === "yes") {
                     var extractCenterFromUrl = function() {
                         var search = $location.search();
@@ -131,7 +126,9 @@ angular.module("leaflet-directive").directive('center',
                 });
 
                 map.on("moveend", function(/* event */) {
-                    notifyCenterUrlHashChanged(leafletScope, attrs);
+                    // Resolve the center after the first map position
+                    _leafletCenter.resolve();
+                    notifyCenterUrlHashChanged(leafletScope, map, attrs);
                     //$log.debug("updated center on map...");
                     if (isSameCenterOnMap(centerModel, map)) {
                         //$log.debug("same center in model, no need to update again.");
@@ -145,7 +142,6 @@ angular.module("leaflet-directive").directive('center',
                             zoom: map.getZoom(),
                             autoDiscover: false
                         };
-                        console.log("notify bueno a los bounds");
                         notifyCenterChangedToBounds(leafletScope, map);
                     });
                 });

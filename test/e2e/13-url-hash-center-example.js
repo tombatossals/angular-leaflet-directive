@@ -22,7 +22,7 @@ describe('Loading url-hash-center-example.html', function() {
         element(by.xpath('//input[3]')).clear();
         element(by.xpath('//input[3]')).sendKeys("4");
         // Wait for zoom animation
-        ptor.sleep(500);
+        ptor.sleep(1500);
         expect(browser.getCurrentUrl()).toMatch(/c=9.015302333420598:7.03125:4$/);
     });
 

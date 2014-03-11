@@ -105,18 +105,17 @@
     '$location',
     'leafletMapDefaults',
     'leafletHelpers',
-    'leafletData',
-    function ($log, $q, $location, leafletMapDefaults, leafletHelpers, leafletData) {
+    function ($log, $q, $location, leafletMapDefaults, leafletHelpers) {
       var isDefined = leafletHelpers.isDefined, isNumber = leafletHelpers.isNumber, isSameCenterOnMap = leafletHelpers.isSameCenterOnMap, safeApply = leafletHelpers.safeApply, isValidCenter = leafletHelpers.isValidCenter;
       var notifyCenterChangedToBounds = function (scope) {
         scope.$broadcast('boundsChanged');
       };
-      var notifyCenterUrlHashChanged = function (scope, attrs) {
+      var notifyCenterUrlHashChanged = function (scope, map, attrs) {
         if (!isDefined(attrs.urlHashCenter)) {
           return;
         }
-        var center = scope.center;
-        var centerUrlHash = center.lat + ':' + center.lng + ':' + center.zoom;
+        var center = map.getCenter();
+        var centerUrlHash = center.lat + ':' + center.lng + ':' + map.getZoom();
         var search = $location.search();
         if (!isDefined(search.c) || search.c !== centerUrlHash) {
           //$log.debug("notified new center...");
@@ -136,7 +135,7 @@
           };
         },
         link: function (scope, element, attrs, controller) {
-          var leafletScope = controller.getLeafletScope(), centerModel = leafletScope.center, center = {};
+          var leafletScope = controller.getLeafletScope(), centerModel = leafletScope.center;
           controller.getMap().then(function (map) {
             var defaults = leafletMapDefaults.getDefaults(attrs.id);
             if (!isDefined(centerModel)) {
@@ -149,8 +148,6 @@
             } else if (!(isDefined(centerModel.lat) && isDefined(centerModel.lng))) {
               angular.copy(defaults.center, centerModel);
             }
-            _leafletCenter.resolve(center);
-            leafletData.setCenter(centerModel, attrs.id);
             var urlCenterHash, mapReady;
             if (attrs.urlHashCenter === 'yes') {
               var extractCenterFromUrl = function () {
@@ -233,7 +230,9 @@
               mapReady = true;
             });
             map.on('moveend', function () {
-              notifyCenterUrlHashChanged(leafletScope, attrs);
+              // Resolve the center after the first map position
+              _leafletCenter.resolve();
+              notifyCenterUrlHashChanged(leafletScope, map, attrs);
               //$log.debug("updated center on map...");
               if (isSameCenterOnMap(centerModel, map)) {
                 //$log.debug("same center in model, no need to update again.");
@@ -247,7 +246,6 @@
                   zoom: map.getZoom(),
                   autoDiscover: false
                 };
-                console.log('notify bueno a los bounds');
                 notifyCenterChangedToBounds(leafletScope, map);
               });
             });
@@ -1038,7 +1036,6 @@
       var maps = {};
       var tiles = {};
       var layers = {};
-      var center = {};
       var paths = {};
       var markers = {};
       var geoJSON = {};
@@ -1050,15 +1047,6 @@
       this.getMap = function (scopeId) {
         var defer = getDefer(maps, scopeId);
         return defer.promise;
-      };
-      this.getCenter = function (scopeId) {
-        var defer = getDefer(center, scopeId);
-        return defer.promise;
-      };
-      this.setCenter = function (leafletCenter, scopeId) {
-        var defer = getUnresolvedDefer(center, scopeId);
-        defer.resolve(leafletCenter);
-        setResolvedDefer(center, scopeId);
       };
       this.unresolveMap = function (scopeId) {
         var id = leafletHelpers.obtainEffectiveMapId(maps, scopeId);
