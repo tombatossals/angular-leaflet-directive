@@ -503,9 +503,9 @@ describe('Directive: leaflet', function() {
         expect(true).toBe(true);
     });
 
-    // 
+    //
     // ***************************************************************************
-    // 
+    //
 
     it('should broadcast path events (backward compatibility) from the rootscope if the event-broadcast does not have a path attribute',function() {
         //TODO: pending until problems resolved, see issue #137 in
@@ -710,14 +710,16 @@ describe('Directive: leaflet', function() {
         };
         expect(true).toBe(true);
     });
-   
-    // 
+
+    //
     // ***************************************************************************
-    // 
+    //
 
     it('should broadcast label events',function() {
+        console.log("hola");
         spyOn($rootScope, '$broadcast');
-        spyOn(leafletHelpers.LabelPlugin, 'isLoaded').andReturn(true);
+        console.log("hola", leafletHelpers.LabelPlugin);
+        spyOn(leafletHelpers.LabelPlugin, 'isLoaded').and.returnValue(true);
         L.Label = L.Class.extend({
             includes: L.Mixin.Events,
         });
@@ -758,6 +760,6 @@ describe('Directive: leaflet', function() {
 
         $rootScope.$digest();
 
-        expect($rootScope.$broadcast.mostRecentCall.args[0]).toEqual('leafletDirectiveLabel.mouseover');
+        expect($rootScope.$broadcast.calls.mostRecent().args[0]).toEqual('leafletDirectiveLabel.mouseover');
     });
 });
