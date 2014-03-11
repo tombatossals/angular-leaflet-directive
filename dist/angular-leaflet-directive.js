@@ -439,7 +439,8 @@
               }
               geojson.options = {
                 style: geojson.style,
-                onEachFeature: onEachFeature
+                onEachFeature: onEachFeature,
+                pointToLayer: geojson.pointToLayer
               };
               leafletGeoJSON = L.geoJson(geojson.data, geojson.options);
               leafletData.setGeoJSON(leafletGeoJSON);
