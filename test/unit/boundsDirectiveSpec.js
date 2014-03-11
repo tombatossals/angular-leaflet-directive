@@ -90,12 +90,17 @@ describe('Directive: bounds', function() {
         var bounds = scope.bounds;
         var mapBounds = map.getBounds();
 
+        console.log(mapBounds);
         expect(bounds.northEast).toBeDefined();
         expect(bounds.southWest).toBeDefined();
 
-        expect(bounds.northEast.lat).toBe(mapBounds._northEast.lat);
-        expect(bounds.northEast.lng).toBe(mapBounds._northEast.lng);
-        expect(bounds.southWest.lat).toBe(mapBounds._southWest.lat);
-        expect(bounds.southWest.lng).toBe(mapBounds._southWest.lng);
+        scope.$digest();
+        leafletData.getCenter().then(function(center) {
+            console.log(center);
+            expect(bounds.northEast.lat).toBe(mapBounds._northEast.lat);
+            expect(bounds.northEast.lng).toBe(mapBounds._northEast.lng);
+            expect(bounds.southWest.lat).toBe(mapBounds._southWest.lat);
+            expect(bounds.southWest.lng).toBe(mapBounds._southWest.lng);
+        });
     });
 });

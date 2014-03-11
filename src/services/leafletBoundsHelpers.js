@@ -15,8 +15,6 @@ angular.module("leaflet-directive").factory('leafletBoundsHelpers', function ($l
             if (_isValidBounds(bounds)) {
                 return L.latLngBounds([bounds.southWest.lat, bounds.southWest.lng],
                                       [bounds.northEast.lat, bounds.northEast.lng ]);
-            } else {
-                return false;
             }
         },
 

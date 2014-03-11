@@ -1,5 +1,5 @@
 angular.module("leaflet-directive").directive('center',
-    function ($log, $q, $location, leafletMapDefaults, leafletHelpers) {
+    function ($log, $q, $location, leafletMapDefaults, leafletHelpers, leafletData) {
 
     var isDefined     = leafletHelpers.isDefined,
         isNumber      = leafletHelpers.isNumber,
@@ -7,8 +7,8 @@ angular.module("leaflet-directive").directive('center',
         safeApply     = leafletHelpers.safeApply,
         isValidCenter = leafletHelpers.isValidCenter;
 
-    var notifyCenterChangedToBounds = function(scope, map) {
-        scope.$broadcast("boundsChanged", map.getBounds());
+    var notifyCenterChangedToBounds = function(scope) {
+        scope.$broadcast("boundsChanged");
     };
 
     var notifyCenterUrlHashChanged = function(scope, attrs) {
@@ -50,6 +50,9 @@ angular.module("leaflet-directive").directive('center',
                 } else if (!(isDefined(centerModel.lat) && isDefined(centerModel.lng))) {
                     angular.copy(defaults.center, centerModel);
                 }
+
+                _leafletCenter.resolve(centerModel);
+                leafletData.setCenter(centerModel, attrs.id);
 
                 var urlCenterHash, mapReady;
 
@@ -141,6 +144,8 @@ angular.module("leaflet-directive").directive('center',
                             zoom: map.getZoom(),
                             autoDiscover: false
                         };
+                        console.log("notify bueno a los bounds");
+                        notifyCenterChangedToBounds(leafletScope, map);
                     });
                 });
 
@@ -149,14 +154,13 @@ angular.module("leaflet-directive").directive('center',
                         $log.warn("[AngularJS - Leaflet] The Geolocation API is unauthorized on this page.");
                         if (isValidCenter(centerModel)) {
                             map.setView([centerModel.lat, centerModel.lng], centerModel.zoom);
-                            leafletScope.$broadcast('centerChanged', centerModel);
+                            notifyCenterChangedToBounds(leafletScope, map);
                         } else {
                             map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
-                            leafletScope.$broadcast('centerChanged', centerModel);
+                            notifyCenterChangedToBounds(leafletScope, map);
                         }
                     });
                 }
-                _leafletCenter.resolve(centerModel);
             });
         }
     };
