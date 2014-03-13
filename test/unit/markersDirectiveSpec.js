@@ -101,7 +101,7 @@ describe('Directive: leaflet', function() {
     });
 
     it('should bind label to main marker if message is given', function() {
-        spyOn(leafletHelpers.LabelPlugin, 'isLoaded').andReturn(true);
+        spyOn(leafletHelpers.LabelPlugin, 'isLoaded').and.returnValue(true);
         L.Label = L.Class.extend({
             includes: L.Mixin.Events,
         });

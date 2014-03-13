@@ -16,7 +16,8 @@
             ]);
 
             angular.extend($scope, {
-                bounds: bounds
+                bounds: bounds,
+                center: {}
             });
 
         }]);
@@ -41,6 +42,6 @@
         Lat : <input type="number" step="any" ng-model="bounds.northEast.lat" />
         Lng : <input type="number" step="any" ng-model="bounds.northEast.lng" />
     </form>
-    <leaflet bounds="bounds" width="640" height="400"></leaflet>
+    <leaflet bounds="bounds" center="center" width="640" height="400"></leaflet>
   </body>
 </html>
