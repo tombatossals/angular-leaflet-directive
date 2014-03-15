@@ -158,7 +158,7 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
                     }
                 }
 
-                if (isString(markerData.layer) && (isDefined(oldMarkerData.layer) || oldMarkerData.layer !== markerData.layer)) {
+                if (isString(markerData.layer) && (isDefined(oldMarkerData.layer) && (oldMarkerData.layer !== markerData.layer))) {
                     // If it was on a layer group we have to remove it
                     if (isString(oldMarkerData.layer) && isDefined(layers.overlays[oldMarkerData.layer]) && layers.overlays[oldMarkerData.layer].hasLayer(marker)) {
                         layers.overlays[oldMarkerData.layer].removeLayer(marker);
