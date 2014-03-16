@@ -32,6 +32,10 @@ We can define these types of paths:
 * circle.
 * circleMarker.
 
+Properties of paths
+-------------------
+We can change some of the properties of the paths (color, weight, opacity, stroke, etc.) the same way that we can change them on a Leaflet Path Object, take a look at [its documentation](http://leafletjs.com/reference.html#path) for reference.
+
 Examples
 --------
 These three demos show the use of this functionality:
