@@ -47,7 +47,7 @@ angular.module("leaflet-directive").directive('center',
                     $log.error('The "center" property is not defined in the main scope');
                     map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
                     return;
-                } else if (!(isDefined(centerModel.lat) && isDefined(centerModel.lng))) {
+                } else if (!(isDefined(centerModel.lat) && isDefined(centerModel.lng)) && !isDefined(centerModel.autoDiscover)) {
                     angular.copy(defaults.center, centerModel);
                 }
 
@@ -97,11 +97,6 @@ angular.module("leaflet-directive").directive('center',
                         return;
                     }
 
-                    if (mapReady && isSameCenterOnMap(center, map)) {
-                        //$log.debug("no need to update map again.");
-                        return;
-                    }
-
                     if (center.autoDiscover === true) {
                         if (!isNumber(center.zoom)) {
                             map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
@@ -113,6 +108,11 @@ angular.module("leaflet-directive").directive('center',
                         } else {
                             map.locate({ setView: true });
                         }
+                        return;
+                    }
+
+                    if (mapReady && isSameCenterOnMap(center, map)) {
+                        //$log.debug("no need to update map again.");
                         return;
                     }
 

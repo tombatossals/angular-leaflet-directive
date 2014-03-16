@@ -145,7 +145,7 @@
                 defaults.center.lng
               ], defaults.center.zoom);
               return;
-            } else if (!(isDefined(centerModel.lat) && isDefined(centerModel.lng))) {
+            } else if (!(isDefined(centerModel.lat) && isDefined(centerModel.lng)) && !isDefined(centerModel.autoDiscover)) {
               angular.copy(defaults.center, centerModel);
             }
             var urlCenterHash, mapReady;
@@ -193,10 +193,6 @@
                 //map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
                 return;
               }
-              if (mapReady && isSameCenterOnMap(center, map)) {
-                //$log.debug("no need to update map again.");
-                return;
-              }
               if (center.autoDiscover === true) {
                 if (!isNumber(center.zoom)) {
                   map.setView([
@@ -217,6 +213,10 @@
                 } else {
                   map.locate({ setView: true });
                 }
+                return;
+              }
+              if (mapReady && isSameCenterOnMap(center, map)) {
+                //$log.debug("no need to update map again.");
                 return;
               }
               //$log.debug("updating map center...", center);
