@@ -18,6 +18,30 @@ describe('Directive: leaflet', function() {
         $rootScope.$apply();
     }));
 
+    // Error management
+    it('should not allow a bad name object', function() {
+        var latlngs1 = [
+            { lat: 0.966, lng: 2.02 },
+            { lat: 2.02, lng: 4.04 }
+        ];
+        angular.extend($rootScope, {
+            paths : {
+                "p1-p2": {
+                    latlngs : latlngs1
+                }
+            }
+        });
+
+        var element = angular.element('<leaflet paths="paths"></leaflet>');
+        element = $compile(element)($rootScope);
+        $rootScope.$digest();
+
+        leafletData.getPaths().then(function(paths) {
+            expect(paths).toEqual({});
+        });
+
+    });
+
     // Polyline
     it('should create polyline on the map', function() {
         var latlngs1 = [
