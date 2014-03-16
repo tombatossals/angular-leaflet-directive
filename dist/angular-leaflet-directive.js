@@ -145,7 +145,7 @@
                 defaults.center.lng
               ], defaults.center.zoom);
               return;
-            } else if (!(isDefined(centerModel.lat) && isDefined(centerModel.lng))) {
+            } else if (!(isDefined(centerModel.lat) && isDefined(centerModel.lng)) && !isDefined(centerModel.autoDiscover)) {
               angular.copy(defaults.center, centerModel);
             }
             var urlCenterHash, mapReady;
@@ -193,10 +193,6 @@
                 //map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
                 return;
               }
-              if (mapReady && isSameCenterOnMap(center, map)) {
-                //$log.debug("no need to update map again.");
-                return;
-              }
               if (center.autoDiscover === true) {
                 if (!isNumber(center.zoom)) {
                   map.setView([
@@ -217,6 +213,10 @@
                 } else {
                   map.locate({ setView: true });
                 }
+                return;
+              }
+              if (mapReady && isSameCenterOnMap(center, map)) {
+                //$log.debug("no need to update map again.");
                 return;
               }
               //$log.debug("updating map center...", center);
@@ -823,9 +823,17 @@
             leafletScope.$watch('paths', function (newPaths) {
               // Create the new paths
               for (var newName in newPaths) {
+                if (newName.search('-') !== -1) {
+                  $log.error('[AngularJS - Leaflet] The path name "' + newName + '" is not valid. It must not include "-" and a number.');
+                  continue;
+                }
                 if (!isDefined(leafletPaths[newName])) {
                   var pathData = newPaths[newName];
                   var newPath = createPath(newName, newPaths[newName], defaults);
+                  // bind popup if defined
+                  if (isDefined(newPath) && isDefined(pathData.message)) {
+                    newPath.bindPopup(pathData.message);
+                  }
                   // Show label if defined
                   if (leafletHelpers.LabelPlugin.isLoaded() && isDefined(pathData.label) && isDefined(pathData.label.message)) {
                     newPath.bindLabel(pathData.label.message, pathData.label.options);
