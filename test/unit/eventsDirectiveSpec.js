@@ -716,9 +716,7 @@ describe('Directive: leaflet', function() {
     //
 
     it('should broadcast label events',function() {
-        console.log("hola");
         spyOn($rootScope, '$broadcast');
-        console.log("hola", leafletHelpers.LabelPlugin);
         spyOn(leafletHelpers.LabelPlugin, 'isLoaded').and.returnValue(true);
         L.Label = L.Class.extend({
             includes: L.Mixin.Events,
