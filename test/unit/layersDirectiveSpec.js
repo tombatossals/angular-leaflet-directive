@@ -947,7 +947,7 @@ describe('Directive: leaflet', function() {
         expect(map.hasLayer(markers.m1)).toBe(true);
         expect(layers.overlays.cars.hasLayer(markers.m1)).toBe(false);
         expect(layers.overlays.trucks.hasLayer(markers.m1)).toBe(false);
-        // Then add to a not visivle layer
+        // Then add to a not visible layer
         $rootScope.markers.m1 = {
             lat: 1.2,
             lng: 0.3,

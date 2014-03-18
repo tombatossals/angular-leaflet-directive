@@ -5,13 +5,14 @@
 /* jasmine specs for directives go here */
 
 describe('Directive: leaflet', function() {
-    var $compile = null, $rootScope = null, leafletData = null;
+    var $compile, $rootScope, leafletData, scope;
 
     beforeEach(module('leaflet-directive'));
     beforeEach(inject(function(_$compile_, _$rootScope_, _leafletData_){
         $compile = _$compile_;
         $rootScope = _$rootScope_;
         leafletData = _leafletData_;
+        scope = $rootScope.$new();
     }));
 
     afterEach(inject(function($rootScope) {
@@ -24,7 +25,7 @@ describe('Directive: leaflet', function() {
             { lat: 0.966, lng: 2.02 },
             { lat: 2.02, lng: 4.04 }
         ];
-        angular.extend($rootScope, {
+        angular.extend(scope, {
             paths : {
                 "p1-p2": {
                     latlngs : latlngs1
@@ -33,8 +34,8 @@ describe('Directive: leaflet', function() {
         });
 
         var element = angular.element('<leaflet paths="paths"></leaflet>');
-        element = $compile(element)($rootScope);
-        $rootScope.$digest();
+        element = $compile(element)(scope);
+        scope.$digest();
 
         leafletData.getPaths().then(function(paths) {
             expect(paths).toEqual({});
@@ -52,10 +53,15 @@ describe('Directive: leaflet', function() {
             { lat: 0.466, lng: 1.02 },
             { lat: 1.02, lng: 3.04 }
         ];
-        angular.extend($rootScope, { paths : { p1: { latlngs : latlngs1 }, p2: { latlngs : latlngs2 }}});
+        angular.extend(scope, {
+            paths : {
+                p1: { latlngs : latlngs1 },
+                p2: { latlngs : latlngs2 }
+            }
+        });
         var element = angular.element('<leaflet paths="paths"></leaflet>');
-        element = $compile(element)($rootScope);
-        $rootScope.$digest();
+        element = $compile(element)(scope);
+        scope.$digest();
         leafletData.getPaths().then(function(paths) {
             var polyline1 = paths.p1;
             var polyline2 = paths.p2;
@@ -75,7 +81,7 @@ describe('Directive: leaflet', function() {
 
     // MultiPolyline
     it('should create multiPolyline on the map', function() {
-        angular.extend($rootScope, {
+        angular.extend(scope, {
             paths : {
                 p1: {
                     latlngs : [
@@ -93,8 +99,8 @@ describe('Directive: leaflet', function() {
             }
         });
         var element = angular.element('<leaflet paths="paths"></leaflet>');
-        element = $compile(element)($rootScope);
-        $rootScope.$digest();
+        element = $compile(element)(scope);
+        scope.$digest();
         leafletData.getPaths().then(function(paths) {
             var polylines = paths.p1;
             var latlngs = polylines.getLatLngs();
@@ -117,11 +123,11 @@ describe('Directive: leaflet', function() {
             { lat: 0.466, lng: 1.02 },
             { lat: 1.02, lng: 3.04 }
         ];
-        angular.extend($rootScope, { paths : { p1: { latlngs : latlngs, type: 'polygon' }}});
+        angular.extend(scope, { paths : { p1: { latlngs : latlngs, type: 'polygon' }}});
         var element = angular.element('<leaflet paths="paths"></leaflet>');
-        element = $compile(element)($rootScope);
+        element = $compile(element)(scope);
 
-        $rootScope.$digest();
+        scope.$digest();
         leafletData.getPaths().then(function(paths) {
             var polygon = paths.p1;
             latlngs = polygon.getLatLngs();
@@ -150,10 +156,10 @@ describe('Directive: leaflet', function() {
             { lat: 1.466, lng: 2.02 },
             { lat: 2.02, lng: 4.04 }
         ];
-        angular.extend($rootScope, { paths : { p1: { latlngs : [ latlngs1, latlngs2 ], type: 'multiPolygon' }}});
+        angular.extend(scope, { paths : { p1: { latlngs : [ latlngs1, latlngs2 ], type: 'multiPolygon' }}});
         var element = angular.element('<leaflet paths="paths"></leaflet>');
-        element = $compile(element)($rootScope);
-        $rootScope.$digest();
+        element = $compile(element)(scope);
+        scope.$digest();
         leafletData.getPaths().then(function(paths) {
             var multiPolygon = paths.p1;
 
@@ -187,10 +193,10 @@ describe('Directive: leaflet', function() {
             { lat: 0.466, lng: 1.02 },
             { lat: 1.02, lng: 3.04 }
         ];
-        angular.extend($rootScope, { paths : { p1: { latlngs : latlngs1, type: 'rectangle' }, p2: { latlngs : latlngs2, type: 'rectangle' }}});
+        angular.extend(scope, { paths : { p1: { latlngs : latlngs1, type: 'rectangle' }, p2: { latlngs : latlngs2, type: 'rectangle' }}});
         var element = angular.element('<leaflet paths="paths"></leaflet>');
-        element = $compile(element)($rootScope);
-        $rootScope.$digest();
+        element = $compile(element)(scope);
+        scope.$digest();
         leafletData.getPaths().then(function(paths) {
             var rectangle1 = paths.p1;
             var rectangle2 = paths.p2;
@@ -224,10 +230,10 @@ describe('Directive: leaflet', function() {
 			radius: 20,
 			type: 'circle'
 		};
-        angular.extend($rootScope, { paths : { p1: c1, p2: c2 }});
+        angular.extend(scope, { paths : { p1: c1, p2: c2 }});
         var element = angular.element('<leaflet paths="paths"></leaflet>');
-        element = $compile(element)($rootScope);
-        $rootScope.$digest();
+        element = $compile(element)(scope);
+        scope.$digest();
 
         leafletData.getPaths().then(function(paths) {
             var circle1 = paths.p1;
@@ -258,10 +264,10 @@ describe('Directive: leaflet', function() {
 			radius: 20,
 			type: 'circleMarker'
 		};
-        angular.extend($rootScope, { paths : { p1: c1, p2: c2 }});
+        angular.extend(scope, { paths : { p1: c1, p2: c2 }});
         var element = angular.element('<leaflet paths="paths"></leaflet>');
-        element = $compile(element)($rootScope);
-        $rootScope.$digest();
+        element = $compile(element)(scope);
+        scope.$digest();
         leafletData.getPaths().then(function(paths) {
             var circle1 = paths.p1;
             var circle2 = paths.p2;
