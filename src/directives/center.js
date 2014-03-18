@@ -43,7 +43,11 @@ angular.module("leaflet-directive").directive('center',
             controller.getMap().then(function(map) {
                 var defaults = leafletMapDefaults.getDefaults(attrs.id);
 
-                if (!isDefined(centerModel)) {
+                if (attrs.center.search("-") !== -1) {
+                    $log.error('The "center" variable can\'t use a "-" on his key name: "' + attrs.center + '".');
+                    map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
+                    return;
+                } else if (!isDefined(centerModel)) {
                     $log.error('The "center" property is not defined in the main scope');
                     map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
                     return;
