@@ -115,7 +115,7 @@
           return;
         }
         var center = map.getCenter();
-        var centerUrlHash = center.lat + ':' + center.lng + ':' + map.getZoom();
+        var centerUrlHash = center.lat.toFixed(4) + ':' + center.lng.toFixed(4) + ':' + map.getZoom();
         var search = $location.search();
         if (!isDefined(search.c) || search.c !== centerUrlHash) {
           //$log.debug("notified new center...");
@@ -138,7 +138,14 @@
           var leafletScope = controller.getLeafletScope(), centerModel = leafletScope.center;
           controller.getMap().then(function (map) {
             var defaults = leafletMapDefaults.getDefaults(attrs.id);
-            if (!isDefined(centerModel)) {
+            if (attrs.center.search('-') !== -1) {
+              $log.error('The "center" variable can\'t use a "-" on his key name: "' + attrs.center + '".');
+              map.setView([
+                defaults.center.lat,
+                defaults.center.lng
+              ], defaults.center.zoom);
+              return;
+            } else if (!isDefined(centerModel)) {
               $log.error('The "center" property is not defined in the main scope');
               map.setView([
                 defaults.center.lat,
@@ -165,21 +172,20 @@
                 }
                 return centerParam;
               };
-              urlCenterHash = extractCenterFromUrl();  /*
-                    leafletScope.$on('$locationChangeSuccess', function(event) {
-                        var scope = event.currentScope;
-                        //$log.debug("updated location...");
-                        var urlCenter = extractCenterFromUrl();
-                        if (isDefined(urlCenter) && !isSameCenterOnMap(urlCenter, map)) {
-                            //$log.debug("updating center model...", urlCenter);
-                            scope.center = {
-                                lat: urlCenter.lat,
-                                lng: urlCenter.lng,
-                                zoom: urlCenter.zoom
-                            };
-                        }
-                    });
-                    */
+              urlCenterHash = extractCenterFromUrl();
+              leafletScope.$on('$locationChangeSuccess', function (event) {
+                var scope = event.currentScope;
+                //$log.debug("updated location...");
+                var urlCenter = extractCenterFromUrl();
+                if (isDefined(urlCenter) && !isSameCenterOnMap(urlCenter, map)) {
+                  //$log.debug("updating center model...", urlCenter);
+                  scope.center = {
+                    lat: urlCenter.lat,
+                    lng: urlCenter.lng,
+                    zoom: urlCenter.zoom
+                  };
+                }
+              });
             }
             leafletScope.$watch('center', function (center) {
               //$log.debug("updated center model...");
@@ -715,6 +721,10 @@
                 }
                 // add new markers
                 for (var newName in newMarkers) {
+                  if (newName.search('-') !== -1) {
+                    $log.error('The marker can\'t use a "-" on his key name: "' + newName + '".');
+                    continue;
+                  }
                   if (!isDefined(leafletMarkers[newName])) {
                     var markerData = newMarkers[newName];
                     var marker = createMarker(markerData);
@@ -1802,7 +1812,8 @@
               layer: layerDefinition.layer,
               type: layerDefinition.layerType,
               bounds: layerDefinition.bounds,
-              key: layerDefinition.key
+              key: layerDefinition.key,
+              pluginOptions: layerDefinition.pluginOptions
             };
           //TODO Add $watch to the layer properties
           return layerTypes[layerDefinition.type].createLayer(params);
@@ -2246,7 +2257,7 @@
     'leafletHelpers',
     '$log',
     function ($rootScope, leafletHelpers, $log) {
-      var isDefined = leafletHelpers.isDefined, MarkerClusterPlugin = leafletHelpers.MarkerClusterPlugin, AwesomeMarkersPlugin = leafletHelpers.AwesomeMarkersPlugin, safeApply = leafletHelpers.safeApply, Helpers = leafletHelpers, isString = leafletHelpers.isString, isNumber = leafletHelpers.isNumber, isObject = leafletHelpers.isObject, groups = {};
+      var isDefined = leafletHelpers.isDefined, MarkerClusterPlugin = leafletHelpers.MarkerClusterPlugin, AwesomeMarkersPlugin = leafletHelpers.AwesomeMarkersPlugin, safeApply = leafletHelpers.safeApply, Helpers = leafletHelpers, isString = leafletHelpers.isString, isNumber = leafletHelpers.isNumber, isObject = leafletHelpers.isObject, isDefinedAndNotNull = leafletHelpers.isDefinedAndNotNull, groups = {};
       var createLeafletIcon = function (iconData) {
         if (isDefined(iconData) && isDefined(iconData.type) && iconData.type === 'awesomeMarker') {
           if (!AwesomeMarkersPlugin.isLoaded()) {
@@ -2357,7 +2368,7 @@
                 _deleteMarker(marker, map, layers);
                 return;
               }
-              // It is possible the the layer has been removed or the layer marker does not exist
+              // It is possible that the layer has been removed or the layer marker does not exist
               // Update the layer group if present or move it to the map if not
               if (!isString(markerData.layer)) {
                 // There is no layer information, we move the marker to the map if it was in a layer group
@@ -2373,7 +2384,7 @@
                   }
                 }
               }
-              if (isString(markerData.layer) && (isDefined(oldMarkerData.layer) || oldMarkerData.layer !== markerData.layer)) {
+              if (isString(markerData.layer) && oldMarkerData.layer !== markerData.layer) {
                 // If it was on a layer group we have to remove it
                 if (isString(oldMarkerData.layer) && isDefined(layers.overlays[oldMarkerData.layer]) && layers.overlays[oldMarkerData.layer].hasLayer(marker)) {
                   layers.overlays[oldMarkerData.layer].removeLayer(marker);
@@ -2403,7 +2414,7 @@
                 }
               }
               // Update the draggable property
-              if (markerData.draggable !== true && oldMarkerData.draggable === true && (marker.dragging !== undefined && marker.dragging !== null)) {
+              if (markerData.draggable !== true && oldMarkerData.draggable === true && isDefinedAndNotNull(marker.dragging)) {
                 marker.dragging.disable();
               }
               if (markerData.draggable === true && oldMarkerData.draggable !== true) {
@@ -2469,33 +2480,65 @@
                 marker.setPopupContent(markerData.message);
               }
               // Update the focus property
+              var updatedFocus = false;
               if (markerData.focus !== true && oldMarkerData.focus === true) {
                 // If there was a focus property and was true we turn it off
                 marker.closePopup();
+                updatedFocus = true;
               }
               // The markerData.focus property must be true so we update if there wasn't a previous value or it wasn't true
               if (markerData.focus === true && oldMarkerData.focus !== true) {
                 marker.openPopup();
+                updatedFocus = true;
               }
               if (oldMarkerData.focus === true && markerData.focus === true) {
                 // Reopen the popup when focus is still true
                 marker.openPopup();
+                updatedFocus = true;
               }
               var markerLatLng = marker.getLatLng();
-              if (markerLatLng.lat !== markerData.lat || markerLatLng.lng !== markerData.lng) {
-                // if the marker is in a clustermarker layer it has to be removed and added again to the layer
-                var isCluster = false;
-                if (isString(markerData.layer) && Helpers.MarkerClusterPlugin.is(layers.overlays[markerData.layer])) {
-                  layers.overlays[markerData.layer].removeLayer(marker);
-                  isCluster = true;
+              var isCluster = isString(markerData.layer) && Helpers.MarkerClusterPlugin.is(layers.overlays[markerData.layer]);
+              // If the marker is in a cluster it has to be removed and added to the layer when the location is changed
+              if (isCluster) {
+                // The focus has changed even by a user click or programatically
+                if (updatedFocus) {
+                  // We only have to update the location if it was changed programatically, because it was
+                  // changed by a user drag the marker data has already been updated by the internal event
+                  // listened by the directive
+                  if (markerData.lat !== oldMarkerData.lat || markerData.lng !== oldMarkerData.lng) {
+                    layers.overlays[markerData.layer].removeLayer(marker);
+                    marker.setLatLng([
+                      markerData.lat,
+                      markerData.lng
+                    ]);
+                    layers.overlays[markerData.layer].addLayer(marker);
+                  }
+                } else {
+                  // The marker has possibly moved. It can be moved by a user drag (marker location and data are equal but old
+                  // data is diferent) or programatically (marker location and data are diferent)
+                  if (markerLatLng.lat !== markerData.lat || markerLatLng.lng !== markerData.lng) {
+                    // The marker was moved by a user drag
+                    layers.overlays[markerData.layer].removeLayer(marker);
+                    marker.setLatLng([
+                      markerData.lat,
+                      markerData.lng
+                    ]);
+                    layers.overlays[markerData.layer].addLayer(marker);
+                  } else if (markerData.lat !== oldMarkerData.lat || markerData.lng !== oldMarkerData.lng) {
+                    // The marker was moved programatically
+                    layers.overlays[markerData.layer].removeLayer(marker);
+                    marker.setLatLng([
+                      markerData.lat,
+                      markerData.lng
+                    ]);
+                    layers.overlays[markerData.layer].addLayer(marker);
+                  }
                 }
+              } else if (markerLatLng.lat !== markerData.lat || markerLatLng.lng !== markerData.lng) {
                 marker.setLatLng([
                   markerData.lat,
                   markerData.lng
                 ]);
-                if (isCluster) {
-                  layers.overlays[markerData.layer].addLayer(marker);
-                }
               }
             }, true);
         }
