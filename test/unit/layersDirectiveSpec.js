@@ -921,7 +921,6 @@ describe('Directive: leaflet', function() {
             layer: 'cars'
         };
         scope.$digest();
-        console.log(scope.markers.m1);
         expect(map.hasLayer(markers.m1)).toBe(true); //Fail
         expect(layers.overlays.cars.hasLayer(markers.m1)).toBe(true);
 

@@ -16,7 +16,7 @@ angular.module("leaflet-directive").directive('center',
             return;
         }
         var center = map.getCenter();
-        var centerUrlHash = center.lat + ":" + center.lng + ":" + map.getZoom();
+        var centerUrlHash = (center.lat).toFixed(4) + ":" + (center.lng).toFixed(4) + ":" + map.getZoom();
         var search = $location.search();
         if (!isDefined(search.c) || search.c !== centerUrlHash) {
             //$log.debug("notified new center...");
