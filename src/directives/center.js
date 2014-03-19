@@ -70,7 +70,6 @@ angular.module("leaflet-directive").directive('center',
                     };
                     urlCenterHash = extractCenterFromUrl();
 
-                    /*
                     leafletScope.$on('$locationChangeSuccess', function(event) {
                         var scope = event.currentScope;
                         //$log.debug("updated location...");
@@ -84,7 +83,6 @@ angular.module("leaflet-directive").directive('center',
                             };
                         }
                     });
-                    */
                 }
 
                 leafletScope.$watch("center", function(center) {

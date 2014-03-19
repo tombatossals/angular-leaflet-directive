@@ -172,21 +172,20 @@
                 }
                 return centerParam;
               };
-              urlCenterHash = extractCenterFromUrl();  /*
-                    leafletScope.$on('$locationChangeSuccess', function(event) {
-                        var scope = event.currentScope;
-                        //$log.debug("updated location...");
-                        var urlCenter = extractCenterFromUrl();
-                        if (isDefined(urlCenter) && !isSameCenterOnMap(urlCenter, map)) {
-                            //$log.debug("updating center model...", urlCenter);
-                            scope.center = {
-                                lat: urlCenter.lat,
-                                lng: urlCenter.lng,
-                                zoom: urlCenter.zoom
-                            };
-                        }
-                    });
-                    */
+              urlCenterHash = extractCenterFromUrl();
+              leafletScope.$on('$locationChangeSuccess', function (event) {
+                var scope = event.currentScope;
+                //$log.debug("updated location...");
+                var urlCenter = extractCenterFromUrl();
+                if (isDefined(urlCenter) && !isSameCenterOnMap(urlCenter, map)) {
+                  //$log.debug("updating center model...", urlCenter);
+                  scope.center = {
+                    lat: urlCenter.lat,
+                    lng: urlCenter.lng,
+                    zoom: urlCenter.zoom
+                  };
+                }
+              });
             }
             leafletScope.$watch('center', function (center) {
               //$log.debug("updated center model...");
