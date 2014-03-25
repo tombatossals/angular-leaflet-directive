@@ -445,6 +445,7 @@
               }
               geojson.options = {
                 style: geojson.style,
+                filter: geojson.filter,
                 onEachFeature: onEachFeature,
                 pointToLayer: geojson.pointToLayer
               };
