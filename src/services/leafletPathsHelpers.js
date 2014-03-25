@@ -93,7 +93,7 @@ angular.module("leaflet-directive").factory('leafletPathsHelpers', function ($ro
         multiPolyline: {
             isValid: function(pathData) {
                 var latlngs = pathData.latlngs;
-                if (!isArray(latlngs) || latlngs.length !== 2) {
+                if (!isArray(latlngs)) {
                     return false;
                 }
 
@@ -133,7 +133,7 @@ angular.module("leaflet-directive").factory('leafletPathsHelpers', function ($ro
             isValid: function(pathData) {
                 var latlngs = pathData.latlngs;
 
-                if (!isArray(latlngs) || latlngs.length !== 2) {
+                if (!isArray(latlngs)) {
                     return false;
                 }
 
