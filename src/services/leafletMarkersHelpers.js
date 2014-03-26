@@ -8,7 +8,6 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
         isString = leafletHelpers.isString,
         isNumber  = leafletHelpers.isNumber,
         isObject = leafletHelpers.isObject,
-        isDefinedAndNotNull = leafletHelpers.isDefinedAndNotNull,
         groups = {};
 
     var createLeafletIcon = function(iconData) {
@@ -192,7 +191,7 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
                 }
 
                 // Update the draggable property
-                if (markerData.draggable !== true && oldMarkerData.draggable === true && (isDefinedAndNotNull(marker.dragging))) {
+                if (markerData.draggable !== true && oldMarkerData.draggable === true && (isDefined(marker.dragging))) {
                     marker.dragging.disable();
                 }
 
