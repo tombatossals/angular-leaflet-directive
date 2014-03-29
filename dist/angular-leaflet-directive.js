@@ -445,6 +445,7 @@
               }
               geojson.options = {
                 style: geojson.style,
+                filter: geojson.filter,
                 onEachFeature: onEachFeature,
                 pointToLayer: geojson.pointToLayer
               };
@@ -2032,7 +2033,7 @@
           multiPolyline: {
             isValid: function (pathData) {
               var latlngs = pathData.latlngs;
-              if (!isArray(latlngs) || latlngs.length !== 2) {
+              if (!isArray(latlngs)) {
                 return false;
               }
               for (var i in latlngs) {
@@ -2078,7 +2079,7 @@
           multiPolygon: {
             isValid: function (pathData) {
               var latlngs = pathData.latlngs;
-              if (!isArray(latlngs) || latlngs.length !== 2) {
+              if (!isArray(latlngs)) {
                 return false;
               }
               for (var i in latlngs) {
