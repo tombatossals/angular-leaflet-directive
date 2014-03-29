@@ -2258,7 +2258,7 @@
     'leafletHelpers',
     '$log',
     function ($rootScope, leafletHelpers, $log) {
-      var isDefined = leafletHelpers.isDefined, MarkerClusterPlugin = leafletHelpers.MarkerClusterPlugin, AwesomeMarkersPlugin = leafletHelpers.AwesomeMarkersPlugin, safeApply = leafletHelpers.safeApply, Helpers = leafletHelpers, isString = leafletHelpers.isString, isNumber = leafletHelpers.isNumber, isObject = leafletHelpers.isObject, isDefinedAndNotNull = leafletHelpers.isDefinedAndNotNull, groups = {};
+      var isDefined = leafletHelpers.isDefined, MarkerClusterPlugin = leafletHelpers.MarkerClusterPlugin, AwesomeMarkersPlugin = leafletHelpers.AwesomeMarkersPlugin, safeApply = leafletHelpers.safeApply, Helpers = leafletHelpers, isString = leafletHelpers.isString, isNumber = leafletHelpers.isNumber, isObject = leafletHelpers.isObject, groups = {};
       var createLeafletIcon = function (iconData) {
         if (isDefined(iconData) && isDefined(iconData.type) && iconData.type === 'awesomeMarker') {
           if (!AwesomeMarkersPlugin.isLoaded()) {
@@ -2415,7 +2415,7 @@
                 }
               }
               // Update the draggable property
-              if (markerData.draggable !== true && oldMarkerData.draggable === true && isDefinedAndNotNull(marker.dragging)) {
+              if (markerData.draggable !== true && oldMarkerData.draggable === true && isDefined(marker.dragging)) {
                 marker.dragging.disable();
               }
               if (markerData.draggable === true && oldMarkerData.draggable !== true) {
