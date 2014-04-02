@@ -99,8 +99,12 @@
     '$location',
     'leafletMapDefaults',
     'leafletHelpers',
-    function ($log, $q, $location, leafletMapDefaults, leafletHelpers) {
-      var isDefined = leafletHelpers.isDefined, isNumber = leafletHelpers.isNumber, isSameCenterOnMap = leafletHelpers.isSameCenterOnMap, safeApply = leafletHelpers.safeApply, isValidCenter = leafletHelpers.isValidCenter;
+    'leafletBoundsHelpers',
+    function ($log, $q, $location, leafletMapDefaults, leafletHelpers, leafletBoundsHelpers) {
+      var isDefined = leafletHelpers.isDefined, isNumber = leafletHelpers.isNumber, isSameCenterOnMap = leafletHelpers.isSameCenterOnMap, safeApply = leafletHelpers.safeApply, isValidCenter = leafletHelpers.isValidCenter, isEmpty = leafletHelpers.isEmpty, isUndefinedOrEmpty = leafletHelpers.isUndefinedOrEmpty;
+      var shouldInitializeMapWithBounds = function (bounds, center) {
+        return isDefined(bounds) && !isEmpty(bounds) && isUndefinedOrEmpty(center);
+      };
       var notifyCenterChangedToBounds = function (scope) {
         scope.$broadcast('boundsChanged');
       };
@@ -138,6 +142,17 @@
                 defaults.center.lng
               ], defaults.center.zoom);
               return;
+            } else if (shouldInitializeMapWithBounds(leafletScope.bounds, centerModel)) {
+              map.fitBounds(leafletBoundsHelpers.createLeafletBounds(leafletScope.bounds));
+              centerModel = map.getCenter();
+              safeApply(leafletScope, function (scope) {
+                scope.center = {
+                  lat: map.getCenter().lat,
+                  lng: map.getCenter().lng,
+                  zoom: map.getZoom(),
+                  autoDiscover: false
+                };
+              });
             } else if (!isDefined(centerModel)) {
               $log.error('The "center" property is not defined in the main scope');
               map.setView([
@@ -2400,6 +2415,12 @@
         return defer;
       }
       return {
+        isEmpty: function (value) {
+          return Object.keys(value).length === 0;
+        },
+        isUndefinedOrEmpty: function (value) {
+          return angular.isUndefined(value) || value === null || Object.keys(value).length === 0;
+        },
         isDefined: function (value) {
           return angular.isDefined(value) && value !== null;
         },

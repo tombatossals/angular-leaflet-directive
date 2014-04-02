@@ -1,11 +1,17 @@
 angular.module("leaflet-directive").directive('center',
-    function ($log, $q, $location, leafletMapDefaults, leafletHelpers) {
+    function ($log, $q, $location, leafletMapDefaults, leafletHelpers, leafletBoundsHelpers) {
 
     var isDefined     = leafletHelpers.isDefined,
         isNumber      = leafletHelpers.isNumber,
         isSameCenterOnMap = leafletHelpers.isSameCenterOnMap,
         safeApply     = leafletHelpers.safeApply,
-        isValidCenter = leafletHelpers.isValidCenter;
+        isValidCenter = leafletHelpers.isValidCenter,
+        isEmpty       = leafletHelpers.isEmpty,
+        isUndefinedOrEmpty = leafletHelpers.isUndefinedOrEmpty;
+
+    var shouldInitializeMapWithBounds = function(bounds, center) {
+        return (isDefined(bounds) && !isEmpty(bounds)) && isUndefinedOrEmpty(center);
+    };
 
     var notifyCenterChangedToBounds = function(scope) {
         scope.$broadcast("boundsChanged");
@@ -47,6 +53,17 @@ angular.module("leaflet-directive").directive('center',
                     $log.error('The "center" variable can\'t use a "-" on his key name: "' + attrs.center + '".');
                     map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
                     return;
+                } else if (shouldInitializeMapWithBounds(leafletScope.bounds, centerModel)) {
+                    map.fitBounds(leafletBoundsHelpers.createLeafletBounds(leafletScope.bounds));
+                    centerModel = map.getCenter();
+                    safeApply(leafletScope, function (scope) {
+                        scope.center = {
+                            lat: map.getCenter().lat,
+                            lng: map.getCenter().lng,
+                            zoom: map.getZoom(),
+                            autoDiscover: false
+                        };
+                    });
                 } else if (!isDefined(centerModel)) {
                     $log.error('The "center" property is not defined in the main scope');
                     map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);

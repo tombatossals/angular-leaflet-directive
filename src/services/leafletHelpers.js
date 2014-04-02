@@ -39,6 +39,16 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
     }
 
     return {
+        //Determine if a reference is {}
+        isEmpty: function(value) {
+            return Object.keys(value).length === 0;
+        },
+
+        //Determine if a reference is undefined or {}
+        isUndefinedOrEmpty: function (value) {
+            return (angular.isUndefined(value) || value === null) || Object.keys(value).length === 0;
+        },
+
         // Determine if a reference is defined
         isDefined: function(value) {
             return angular.isDefined(value) && value !== null;
