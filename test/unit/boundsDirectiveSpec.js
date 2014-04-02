@@ -73,7 +73,7 @@ describe('Directive: bounds', function() {
         expect(mapBounds.getNorthEast().lng).toBeCloseTo(0);
     });
 
-    xit('should update map bounds when map initializes', function() {
+    it('should update map bounds when map initializes', function() {
         angular.extend(scope, {
             bounds: {},
             center: { lat: 5 , lng: -3, zoom: 4 }
