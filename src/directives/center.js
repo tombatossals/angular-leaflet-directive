@@ -64,6 +64,20 @@ angular.module("leaflet-directive").directive('center',
                             autoDiscover: false
                         };
                     });
+                    safeApply(leafletScope, function (scope) {
+                        var mapBounds = map.getBounds();
+                        var newScopeBounds = {
+                            northEast: {
+                                lat: mapBounds._northEast.lat,
+                                lng: mapBounds._northEast.lng
+                            },
+                            southWest: {
+                                lat: mapBounds._southWest.lat,
+                                lng: mapBounds._southWest.lng
+                            }
+                        };
+                        scope.bounds = newScopeBounds;
+                    });
                 } else if (!isDefined(centerModel)) {
                     $log.error('The "center" property is not defined in the main scope');
                     map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);

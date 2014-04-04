@@ -14,10 +14,10 @@ describe('Loading bounds-example.html', function() {
             return ptor.isElementPresent(by.css('img.leaflet-tile-loaded'));
         });
 
-        expect(element(by.model("bounds.southWest.lat")).getAttribute("value")).toBe("51.508742458803326");
-        expect(element(by.model("bounds.southWest.lng")).getAttribute("value")).toBe("-0.087890625");
-        expect(element(by.model("bounds.northEast.lat")).getAttribute("value")).toBe("51.508742458803326");
-        expect(element(by.model("bounds.northEast.lng")).getAttribute("value")).toBe("-0.087890625");
+        expect(element(by.model("bounds.southWest.lat")).getAttribute("value")).toBe("51.508074696286876");
+        expect(element(by.model("bounds.southWest.lng")).getAttribute("value")).toBe("-0.08960723876953125");
+        expect(element(by.model("bounds.northEast.lat")).getAttribute("value")).toBe("51.509410211532874");
+        expect(element(by.model("bounds.northEast.lng")).getAttribute("value")).toBe("-0.08617401123046874");
 
         element(by.xpath('.//*[@title="Zoom out"]')).click().then(function() {
             ptor.sleep(400);
