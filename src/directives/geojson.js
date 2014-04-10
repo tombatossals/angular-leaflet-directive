@@ -58,7 +58,9 @@ angular.module("leaflet-directive").directive('geojson', function ($log, $rootSc
 
                     geojson.options = {
                         style: geojson.style,
-                        onEachFeature: onEachFeature
+                        filter: geojson.filter,
+                        onEachFeature: onEachFeature,
+                        pointToLayer: geojson.pointToLayer
                     };
 
                     leafletGeoJSON = L.geoJson(geojson.data, geojson.options);

@@ -16,7 +16,7 @@ angular.module("leaflet-directive").directive('center',
             return;
         }
         var center = map.getCenter();
-        var centerUrlHash = center.lat + ":" + center.lng + ":" + map.getZoom();
+        var centerUrlHash = (center.lat).toFixed(4) + ":" + (center.lng).toFixed(4) + ":" + map.getZoom();
         var search = $location.search();
         if (!isDefined(search.c) || search.c !== centerUrlHash) {
             //$log.debug("notified new center...");
@@ -43,11 +43,15 @@ angular.module("leaflet-directive").directive('center',
             controller.getMap().then(function(map) {
                 var defaults = leafletMapDefaults.getDefaults(attrs.id);
 
-                if (!isDefined(centerModel)) {
+                if (attrs.center.search("-") !== -1) {
+                    $log.error('The "center" variable can\'t use a "-" on his key name: "' + attrs.center + '".');
+                    map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
+                    return;
+                } else if (!isDefined(centerModel)) {
                     $log.error('The "center" property is not defined in the main scope');
                     map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
                     return;
-                } else if (!(isDefined(centerModel.lat) && isDefined(centerModel.lng))) {
+                } else if (!(isDefined(centerModel.lat) && isDefined(centerModel.lng)) && !isDefined(centerModel.autoDiscover)) {
                     angular.copy(defaults.center, centerModel);
                 }
 
@@ -66,7 +70,6 @@ angular.module("leaflet-directive").directive('center',
                     };
                     urlCenterHash = extractCenterFromUrl();
 
-                    /*
                     leafletScope.$on('$locationChangeSuccess', function(event) {
                         var scope = event.currentScope;
                         //$log.debug("updated location...");
@@ -80,7 +83,6 @@ angular.module("leaflet-directive").directive('center',
                             };
                         }
                     });
-                    */
                 }
 
                 leafletScope.$watch("center", function(center) {
@@ -97,11 +99,6 @@ angular.module("leaflet-directive").directive('center',
                         return;
                     }
 
-                    if (mapReady && isSameCenterOnMap(center, map)) {
-                        //$log.debug("no need to update map again.");
-                        return;
-                    }
-
                     if (center.autoDiscover === true) {
                         if (!isNumber(center.zoom)) {
                             map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
@@ -113,6 +110,11 @@ angular.module("leaflet-directive").directive('center',
                         } else {
                             map.locate({ setView: true });
                         }
+                        return;
+                    }
+
+                    if (mapReady && isSameCenterOnMap(center, map)) {
+                        //$log.debug("no need to update map again.");
                         return;
                     }
 

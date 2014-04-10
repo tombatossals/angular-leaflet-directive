@@ -51,6 +51,11 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
 
                         // add new markers
                         for (var newName in newMarkers) {
+                            if (newName.search("-") !== -1) {
+                                $log.error('The marker can\'t use a "-" on his key name: "' + newName + '".');
+                                continue;
+                            }
+
                             if (!isDefined(leafletMarkers[newName])) {
                                 var markerData = newMarkers[newName];
                                 var marker = createMarker(markerData);

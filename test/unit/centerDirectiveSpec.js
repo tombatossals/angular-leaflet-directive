@@ -14,13 +14,7 @@ describe('Directive: leaflet center', function() {
         $timeout = _$timeout_;
         $location = _$location_;
         leafletData = _leafletData_;
-    }));
 
-    afterEach(inject(function($rootScope) {
-        $rootScope.$apply();
-    }));
-
-    beforeEach(function(){
         center = {
             lat: 0.966,
             lng: 2.02,
@@ -29,7 +23,11 @@ describe('Directive: leaflet center', function() {
 
         scope = $rootScope.$new();
         scope.center = center;
-    });
+    }));
+
+    afterEach(inject(function($rootScope) {
+        $rootScope.$apply();
+    }));
 
     it('should have default {[0, 0], 1} parameters on the map if not correctly defined', function() {
         scope.center = {};
@@ -72,7 +70,7 @@ describe('Directive: leaflet center', function() {
         center.lat = 2.02;
         center.lng = 4.04;
         center.zoom = 8;
-        $rootScope.$digest();
+        scope.$digest();
 
         expect(map.getCenter().lat).toBeCloseTo(2.02);
         expect(map.getCenter().lng).toBeCloseTo(4.04);
@@ -93,7 +91,7 @@ describe('Directive: leaflet center', function() {
             };
 
             $location.search(centerParams);
-            $rootScope.$digest();
+            scope.$digest();
 
             expect(map.getCenter().lat).toBeCloseTo(30.1);
             expect(map.getCenter().lng).toBeCloseTo(-9.2);
@@ -109,7 +107,7 @@ describe('Directive: leaflet center', function() {
                 centerUrlHash = u;
             });
             scope.$digest();
-            expect(centerUrlHash).toBe('9.5:-1.8:8');
+            expect(centerUrlHash).toBe('9.5000:-1.8000:8');
         });
     });
 });

@@ -19,7 +19,7 @@ See some basic examples:
 * [MaxBounds example](http://tombatossals.github.io/angular-leaflet-directive/examples/maxbounds-example.html)
 * [Tiles example](http://tombatossals.github.io/angular-leaflet-directive/examples/tiles-example.html)
 * [Tile zoom changer example](http://tombatossals.github.io/angular-leaflet-directive/examples/tiles-zoom-changer-example.html)
-* [Layers simple example](http://tombatossals.github.io/angular-leaflet-directive/examples/tiles-simple-example.html)
+* [Layers simple example](http://tombatossals.github.io/angular-leaflet-directive/examples/layers-simple-example.html)
 * [Overlays simple example](http://tombatossals.github.io/angular-leaflet-directive/examples/overlays-simple-example.html)
 * [ImageOverlay simple example](http://tombatossals.github.io/angular-leaflet-directive/examples/layers-imageoverlay-example.html)
 * [Dynamic add/remove layers/overlays example](http://tombatossals.github.io/angular-leaflet-directive/examples/layers-add-remove.html)

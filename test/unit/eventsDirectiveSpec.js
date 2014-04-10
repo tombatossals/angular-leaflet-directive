@@ -716,10 +716,8 @@ describe('Directive: leaflet', function() {
     //
 
     it('should broadcast label events',function() {
-        console.log("hola");
         spyOn($rootScope, '$broadcast');
-        console.log("hola", leafletHelpers.LabelPlugin);
-        spyOn(leafletHelpers.LabelPlugin, 'isLoaded').and.returnValue(true);
+        spyOn(leafletHelpers.LabelPlugin, 'isLoaded').andReturn(true);
         L.Label = L.Class.extend({
             includes: L.Mixin.Events,
         });
@@ -760,6 +758,6 @@ describe('Directive: leaflet', function() {
 
         $rootScope.$digest();
 
-        expect($rootScope.$broadcast.calls.mostRecent().args[0]).toEqual('leafletDirectiveLabel.mouseover');
+        expect($rootScope.$broadcast.mostRecentCall.args[0]).toEqual('leafletDirectiveLabel.mouseover');
     });
 });

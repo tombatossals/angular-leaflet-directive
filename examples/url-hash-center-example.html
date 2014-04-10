@@ -30,12 +30,20 @@
   </head>
   <body ng-controller="DemoController">
     <h1>Center map with URL synchronization example</h1>
-    <p>This demo syncs the map center position with the URL, and viceversa, using the <strong>center-url-params</strong> property.</p>
-    <form>
-        Latitude : <input type="number" step="any" ng-model="london.lat" />
-        Longitude : <input type="number" step="any" ng-model="london.lng" />
-        Zoom : <input type="number" step="any" ng-model="london.zoom" />
-    </form>
-    <leaflet center="london" url-hash-center="yes" width="640" height="400"></leaflet>
+    <div style="float: left;">
+        <p>This demo syncs the map center position with the URL, and viceversa, using the <strong>center-url-params</strong> property.</p>
+        <form>
+            Latitude : <input type="number" step="any" ng-model="london.lat" />
+            Longitude : <input type="number" step="any" ng-model="london.lng" />
+            Zoom : <input type="number" step="any" ng-model="london.zoom" />
+        </form>
+        <leaflet center="london" url-hash-center="yes" width="640" height="400"></leaflet>
+    </div>
+    <ul style="float: left;">
+        <li><a href="#/?c=36.8899:-121.8008:12">Watsonville</a>
+        <li><a href="#/?c=34.0078:-118.8060:14">Malibu</a>
+        <li><a href="#/?c=33.7717:-117.9458:12">Garden Grove</a>
+        <li><a href="#/?c=32.5290:-117.0442:13">Tijuana</a>
+    </ul>
   </body>
 </html>
