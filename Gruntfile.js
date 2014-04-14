@@ -75,6 +75,9 @@ module.exports = function(grunt) {
             options: {
                 keepAlive: false,
                 configFile: 'test/protractor.conf.js',
+                args: {
+                    specs: [ 'test/e2e/*.js' ],
+                }
             },
             run: {},
             saucelabs: {
@@ -295,5 +298,6 @@ module.exports = function(grunt) {
     grunt.registerTask('serve', ['connect:webserver']);
 
     //travis
-    grunt.registerTask('travis', ['bower:install', 'test:unit', 'karma:unit_coverage', 'coveralls', 'shell:protractor_update', 'protractor:saucelabs']);
+    grunt.registerTask('travis', ['bower:install', 'test:unit']);
+    //grunt.registerTask('travis', ['bower:install', 'test:unit', 'karma:unit_coverage', 'coveralls', 'shell:protractor_update', 'protractor:saucelabs']);
 };

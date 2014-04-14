@@ -12,4 +12,4 @@ env:
 before_script:
   - npm install -g grunt-cli
   - npm install -g bower
-  - bower install
+  - bower install --config.interactive=false

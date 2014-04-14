@@ -38,9 +38,24 @@ angular.module("leaflet-directive").directive('paths', function ($log, leafletDa
                 leafletScope.$watch("paths", function (newPaths) {
                     // Create the new paths
                     for (var newName in newPaths) {
+                        if (newName.search("-") !== -1) {
+                            $log.error('[AngularJS - Leaflet] The path name "' + newName + '" is not valid. It must not include "-" and a number.');
+                            continue;
+                        }
+
                         if (!isDefined(leafletPaths[newName])) {
                             var pathData = newPaths[newName];
                             var newPath = createPath(newName, newPaths[newName], defaults);
+
+                            // bind popup if defined
+							if (isDefined(newPath) && isDefined(pathData.message)) {
+                                newPath.bindPopup(pathData.message);
+                            }
+
+                            // Show label if defined
+                            if (leafletHelpers.LabelPlugin.isLoaded() && isDefined(pathData.label) && isDefined(pathData.label.message)) {
+                                newPath.bindLabel(pathData.label.message, pathData.label.options);
+                            }
 
                             // Listen for changes on the new path
                             if (isDefined(newPath)) {

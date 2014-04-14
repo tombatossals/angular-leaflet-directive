@@ -1,5 +1,6 @@
-# angular-leaflet-directive 
-[![Build Status](https://travis-ci.org/tombatossals/angular-leaflet-directive.png)](https://travis-ci.org/tombatossals/angular-leaflet-directive) [![Dependency Status](https://gemnasium.com/tombatossals/angular-leaflet-directive.png)](https://gemnasium.com/tombatossals/angular-leaflet-directive) [![Coverage Status](https://coveralls.io/repos/tombatossals/angular-leaflet-directive/badge.png?branch=master)](http://tombatossals.github.io/angular-leaflet-directive/coverage/PhantomJS%201.9.2%20\(Linux\)/dist/angular-leaflet-directive.js.html)
+# angular-leaflet-directive
+[![Build Status](https://travis-ci.org/tombatossals/angular-leaflet-directive.png)](https://travis-ci.org/tombatossals/angular-leaflet-directive) [![Dependency Status](https://gemnasium.com/tombatossals/angular-leaflet-directive.png)](https://gemnasium.com/tombatossals/angular-leaflet-directive) [![Coverage
+Status](https://coveralls.io/repos/tombatossals/angular-leaflet-directive/badge.png?branch=master)](http://tombatossals.github.io/angular-leaflet-directive/coverage/PhantomJS%201.9.7%20%28Linux%29/lcov-report/dist/angular-leaflet-directive.js.html)
 
 
 
@@ -12,16 +13,20 @@ See some basic examples:
 * [Basic example](http://tombatossals.github.io/angular-leaflet-directive/examples/simple-example.html)
 * [Center example](http://tombatossals.github.io/angular-leaflet-directive/examples/center-example.html)
 * [Center autodiscover example](http://tombatossals.github.io/angular-leaflet-directive/examples/center-autodiscover-example.html)
+* [Center with url hash example](http://tombatossals.github.io/angular-leaflet-directive/examples/url-hash-center-example.html)
 * [Custom parameters example](http://tombatossals.github.io/angular-leaflet-directive/examples/custom-parameters-example.html)
 * [Bounds example](http://tombatossals.github.io/angular-leaflet-directive/examples/bounds-example.html)
 * [MaxBounds example](http://tombatossals.github.io/angular-leaflet-directive/examples/maxbounds-example.html)
 * [Tiles example](http://tombatossals.github.io/angular-leaflet-directive/examples/tiles-example.html)
 * [Tile zoom changer example](http://tombatossals.github.io/angular-leaflet-directive/examples/tiles-zoom-changer-example.html)
-* [Layers simple example](http://tombatossals.github.io/angular-leaflet-directive/examples/tiles-simple-example.html)
+* [Layers simple example](http://tombatossals.github.io/angular-leaflet-directive/examples/layers-simple-example.html)
 * [Overlays simple example](http://tombatossals.github.io/angular-leaflet-directive/examples/overlays-simple-example.html)
 * [ImageOverlay simple example](http://tombatossals.github.io/angular-leaflet-directive/examples/layers-imageoverlay-example.html)
 * [Dynamic add/remove layers/overlays example](http://tombatossals.github.io/angular-leaflet-directive/examples/layers-add-remove.html)
 * [Google Maps example](http://tombatossals.github.io/angular-leaflet-directive/examples/googlemaps-example.html)
+* [ESRI Dynamic Layer example](http://tombatossals.github.io/angular-leaflet-directive/examples/esri-dynamiclayer-example.html)
+* [ESRI Legend example](http://tombatossals.github.io/angular-leaflet-directive/examples/esri-legend-example.html)
+* [Yandex Maps example](http://tombatossals.github.io/angular-leaflet-directive/examples/yandexmaps-example.html)
 * [Paths Simple example](http://tombatossals.github.io/angular-leaflet-directive/examples/paths-simple-example.html)
 * [Paths Types example](http://tombatossals.github.io/angular-leaflet-directive/examples/paths-types-example.html)
 * [Paths example](http://tombatossals.github.io/angular-leaflet-directive/examples/paths-example.html)

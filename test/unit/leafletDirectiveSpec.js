@@ -5,7 +5,7 @@
 /* jasmine specs for directives go here */
 
 describe('Directive: leaflet', function() {
-    var $compile = null, $rootScope = null, $timeout, leafletData = null, leafletMapDefaults = null;
+    var $compile, $rootScope, $timeout, leafletData, leafletMapDefaults, scope;
 
     beforeEach(module('leaflet-directive'));
     beforeEach(inject(function(_$compile_, _$rootScope_, _$timeout_, _leafletData_, _leafletMapDefaults_) {
@@ -14,6 +14,7 @@ describe('Directive: leaflet', function() {
         $timeout = _$timeout_;
         leafletData = _leafletData_;
         leafletMapDefaults = _leafletMapDefaults_;
+        scope = $rootScope.$new();
     }));
 
     afterEach(inject(function($rootScope) {
@@ -22,19 +23,19 @@ describe('Directive: leaflet', function() {
 
     it('should have loaded leaflet library inside the directive', function() {
         var element = angular.element('<leaflet></leaflet>');
-        element = $compile(element)($rootScope);
-        $rootScope.$digest();
+        element = $compile(element)(scope);
+        scope.$digest();
         expect(element.text()).toEqual('+-Leaflet | © OpenStreetMap contributors');
     });
 
     it('should set default center if not center is provided', function() {
         var element = angular.element('<leaflet></leaflet>');
-        element = $compile(element)($rootScope);
+        element = $compile(element)(scope);
         var leafletMap;
         leafletData.getMap().then(function(map) {
             leafletMap = map;
         });
-        $rootScope.$digest();
+        scope.$digest();
         expect(leafletMap.getZoom()).toEqual(1);
         expect(leafletMap.getCenter().lat).toEqual(0);
         expect(leafletMap.getCenter().lng).toEqual(0);
@@ -42,43 +43,43 @@ describe('Directive: leaflet', function() {
 
     it('should set default tile if not tiles nor layers are provided', function() {
         var element = angular.element('<leaflet></leaflet>');
-        element = $compile(element)($rootScope);
+        element = $compile(element)(scope);
         var leafletTiles;
         leafletData.getTiles().then(function(tiles) {
             leafletTiles = tiles;
         });
-        $rootScope.$digest();
+        scope.$digest();
         var defaults = leafletMapDefaults.getDefaults();
         expect(leafletTiles._url).toEqual(defaults.tileLayer);
     });
 
     it('should set the max zoom if specified', function() {
-        angular.extend($rootScope, { defaults: { maxZoom: 15 } });
+        angular.extend(scope, { defaults: { maxZoom: 15 } });
         var element = angular.element('<leaflet defaults="defaults"></leaflet>');
-        element = $compile(element)($rootScope);
+        element = $compile(element)(scope);
         var leafletMap;
         leafletData.getMap().then(function(map) {
             leafletMap = map;
         });
-        $rootScope.$digest();
+        scope.$digest();
         expect(leafletMap.getMaxZoom()).toEqual(15);
     });
 
     it('should set the min zoom if specified', function() {
-        angular.extend($rootScope, { defaults: { minZoom: 4 } });
+        angular.extend(scope, { defaults: { minZoom: 4 } });
         var element = angular.element('<leaflet defaults="defaults"></leaflet>');
-        element = $compile(element)($rootScope);
+        element = $compile(element)(scope);
         var leafletMap;
         leafletData.getMap().then(function(map) {
             leafletMap = map;
         });
-        $rootScope.$digest();
+        scope.$digest();
         expect(leafletMap.getMinZoom()).toEqual(4);
     });
 
     it('should set the CSS width and height if they are passed as string attributes', function() {
         var element = angular.element('<leaflet defaults="defaults" width="640px" height="480px"></leaflet>');
-        element = $compile(element)($rootScope);
+        element = $compile(element)(scope);
 
         expect(element.css("width")).toBe("640px");
         expect(element.css("height")).toBe("480px");
@@ -86,14 +87,14 @@ describe('Directive: leaflet', function() {
 
     it('should set the CSS width and height if they are passed as number attributes', function() {
         var element = angular.element('<leaflet defaults="defaults" width=640 height=480></leaflet>');
-        element = $compile(element)($rootScope);
+        element = $compile(element)(scope);
 
         expect(element.css("width")).toBe("640px");
         expect(element.css("height")).toBe("480px");
     });
 
     it('should set tileLayer and tileLayer options if specified', function() {
-        angular.extend($rootScope, {
+        angular.extend(scope, {
             defaults: {
                 tileLayer: "http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png",
                 tileLayerOptions: {
@@ -103,12 +104,12 @@ describe('Directive: leaflet', function() {
             }
         });
         var element = angular.element('<leaflet defaults="defaults"></leaflet>');
-        element = $compile(element)($rootScope);
+        element = $compile(element)(scope);
         var leafletTiles;
         leafletData.getTiles().then(function(tiles) {
             leafletTiles = tiles;
         });
-        $rootScope.$digest();
+        scope.$digest();
         var defaults = leafletMapDefaults.getDefaults();
         expect(leafletTiles.options.detectRetina).toEqual(true);
         expect(leafletTiles.options.opacity).toEqual(0.8);
@@ -117,34 +118,51 @@ describe('Directive: leaflet', function() {
     });
 
     it('should set zoom control button properly if zoomControlPosition option is set', function() {
-        angular.extend($rootScope, {
+        angular.extend(scope, {
             defaults: {
                 zoomControlPosition: 'topright'
             }
         });
         var element = angular.element('<leaflet defaults="defaults"></leaflet>');
-        element = $compile(element)($rootScope);
+        element = $compile(element)(scope);
         var leafletMap;
         leafletData.getMap().then(function(map) {
             leafletMap = map;
         });
-        $rootScope.$digest();
+        scope.$digest();
         expect(leafletMap.zoomControl.getPosition()).toEqual('topright');
     });
 
     it('should remove zoom control button if unset on defaults', function() {
-        angular.extend($rootScope, {
+        angular.extend(scope, {
             defaults: {
                 zoomControl: false
             }
         });
         var element = angular.element('<leaflet defaults="defaults"></leaflet>');
-        element = $compile(element)($rootScope);
+        element = $compile(element)(scope);
         var leafletMap;
         leafletData.getMap().then(function(map) {
             leafletMap = map;
         });
-        $rootScope.$digest();
+        scope.$digest();
         expect(leafletMap.zoomControl).toBe(undefined);
+    });
+
+    it('should unset from leafletData after scope destroy', function () {
+        var element = angular.element('<leaflet></leaflet>');
+        var $scope = scope.$new();
+
+        element = $compile(element)($scope);
+
+        $scope.$destroy();
+        scope.$digest();
+
+        var shouldNotBeMap;
+        leafletData.getMap().then(function (map) {
+            shouldNotBeMap = map;
+        });
+        scope.$digest();
+        expect(shouldNotBeMap).toBe(undefined);
     });
 });

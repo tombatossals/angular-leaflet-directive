@@ -5,21 +5,16 @@
 /* jasmine specs for directives go here */
 
 describe('Directive: leaflet center', function() {
-    var $compile, $rootScope, $timeout, leafletData, center, scope;
+    var $compile, $rootScope, $timeout, $location, leafletData, center, scope;
 
     beforeEach(module('leaflet-directive'));
-    beforeEach(inject(function(_$compile_, _$rootScope_, _$timeout_, _leafletData_){
+    beforeEach(inject(function(_$compile_, _$rootScope_, _$timeout_, _$location_, _leafletData_){
         $compile = _$compile_;
         $rootScope = _$rootScope_;
         $timeout = _$timeout_;
+        $location = _$location_;
         leafletData = _leafletData_;
-    }));
 
-    afterEach(inject(function($rootScope) {
-        $rootScope.$apply();
-    }));
-
-    beforeEach(function(){
         center = {
             lat: 0.966,
             lng: 2.02,
@@ -28,7 +23,11 @@ describe('Directive: leaflet center', function() {
 
         scope = $rootScope.$new();
         scope.center = center;
-    });
+    }));
+
+    afterEach(inject(function($rootScope) {
+        $rootScope.$apply();
+    }));
 
     it('should have default {[0, 0], 1} parameters on the map if not correctly defined', function() {
         scope.center = {};
@@ -71,11 +70,44 @@ describe('Directive: leaflet center', function() {
         center.lat = 2.02;
         center.lng = 4.04;
         center.zoom = 8;
-        $rootScope.$digest();
+        scope.$digest();
 
         expect(map.getCenter().lat).toBeCloseTo(2.02);
         expect(map.getCenter().lng).toBeCloseTo(4.04);
         expect(map.getZoom()).toEqual(8);
     });
 
+    describe('Using url-hash functionality', function() {
+        it('should update the center of the map if changes the url', function() {
+            var element = angular.element('<leaflet center="center" url-hash-center="yes"></leaflet>');
+            element = $compile(element)(scope);
+            var map;
+            leafletData.getMap().then(function(leafletMap) {
+                map = leafletMap;
+            });
+
+            var centerParams = {
+                c: "30.1" + ":" + "-9.2" + ":" + "4"
+            };
+
+            $location.search(centerParams);
+            scope.$digest();
+
+            expect(map.getCenter().lat).toBeCloseTo(30.1);
+            expect(map.getCenter().lng).toBeCloseTo(-9.2);
+            expect(map.getZoom()).toEqual(4);
+        });
+
+        it('should update the url hash if changes the center', function() {
+            var element = angular.element('<leaflet center="center" url-hash-center="yes"></leaflet>');
+            element = $compile(element)(scope);
+            scope.center = { lat: 9.5, lng: -1.8, zoom: 8 };
+            var centerUrlHash;
+            scope.$on("centerUrlHash", function(event, u) {
+                centerUrlHash = u;
+            });
+            scope.$digest();
+            expect(centerUrlHash).toBe('9.5000:-1.8000:8');
+        });
+    });
 });

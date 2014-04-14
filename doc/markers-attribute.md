@@ -36,6 +36,39 @@ Every marker can have these properties:
 * **message**. String. Message to show on the popup.
 * **draggable**. true/false. Make the marker draggable.
 * **popupOptions**. Options object passsed to the leaflet popup. You can see [here](http://leafletjs.com/reference.html#popup-options) its properties.
+* **enable**. Array of Strings. Only events listed in this property will be watched and converted to angular events. Format for the angular event name: `leafletDirectiveMarker.event_name`.
+* **disable**. Array of Strings. All leaflet marker events, except the one listed in this property, will be watched and converted to angular events. This will overwrite **enable** property.
+* **icon**. We can set the type of icon to be shown on our marker with this property. We can define the same properties of this property on leaflet ([documented here](http://leafletjs.com/reference.html#icon)), and furthermore we can define a special type of icon _awesomeMarker_, which makes use of the [Awesome Markers project](https://github.com/lvoogdt/Leaflet.awesome-markers) to customize the icon based on the _icon_ and _markerColor_ properties. Let's see some examples:
+
+```
+marker: {
+    lat: 51.505,
+    lng: -0.09,
+    icon: {
+        iconUrl: 'img/leaf-orange.png',
+        shadowUrl: 'img/leaf-shadow.png',
+        iconSize:     [38, 95],
+        shadowSize:   [50, 64],
+        iconAnchor:   [22, 94],
+        shadowAnchor: [4, 62]
+    }
+}
+```
+
+```
+marker: {
+    lat: 51.505,
+    lng: -0.09,
+    icon: {
+        type: 'awesomeMarker',
+        icon: 'tag',
+        markerColor: 'red'
+    }
+}
+```
+
+We can see an example using all this [here](http://tombatossals.github.io/angular-leaflet-directive/examples/markers-update-example.html).
+
 
 There are a special type of property called _label_ which uses the [Leaflet.label plugin ](https://github.com/Leaflet/Leaflet.label) to show a fixed special label on the marker, or on hovering it. This is the marker property we need to define to use it:
 

@@ -503,9 +503,9 @@ describe('Directive: leaflet', function() {
         expect(true).toBe(true);
     });
 
-    // 
+    //
     // ***************************************************************************
-    // 
+    //
 
     it('should broadcast path events (backward compatibility) from the rootscope if the event-broadcast does not have a path attribute',function() {
         //TODO: pending until problems resolved, see issue #137 in
@@ -710,10 +710,10 @@ describe('Directive: leaflet', function() {
         };
         expect(true).toBe(true);
     });
-   
-    // 
+
+    //
     // ***************************************************************************
-    // 
+    //
 
     it('should broadcast label events',function() {
         spyOn($rootScope, '$broadcast');

@@ -199,7 +199,8 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
                 layer: layerDefinition.layer,
                 type: layerDefinition.layerType,
                 bounds: layerDefinition.bounds,
-                key: layerDefinition.key
+                key: layerDefinition.key,
+                pluginOptions: layerDefinition.pluginOptions
             };
 
             //TODO Add $watch to the layer properties

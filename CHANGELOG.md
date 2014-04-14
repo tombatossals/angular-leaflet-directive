@@ -1,3 +1,27 @@
+<a name="0.7.6"></a>
+### 0.7.6 (2014-03-20)
+
+
+#### Bug Fixes
+
+* **center:** solved a bug with the autoDiscover property. ([823934db](https://github.com/tombatossals/angular-leaflet-directive/commit/823934db787c7b372142cf8bcf3204d11139cf2c))
+* **markers:** Bug solved which prevents to create a markers group without overlay ([2017f1a0](https://github.com/tombatossals/angular-leaflet-directive/commit/2017f1a06778502e4145a6dbc6756a133b1827c8))
+* **tiles:** Fixed a bug related with multiple maps on screen and tiles. Thanks to @gabrielha ([3a774523](https://github.com/tombatossals/angular-leaflet-directive/commit/3a7745233ffe7e95269073be6640fc7ef3777cdc))
+* **url-center:** round the latlng to 4 digits as suggested by @fbuchinger here: ([4a6d755e](https://github.com/tombatossals/angular-leaflet-directive/commit/4a6d755eda22d29feb0b1149b6458a3600170b61))
+
+
+#### Features
+
+* **build:**
+  * Added a special property "url-hash-center" which allows to sync the center with  ([e361dad6](https://github.com/tombatossals/angular-leaflet-directive/commit/e361dad66596be4875864d522ea5599deb83ca72))
+  * Dinamically add and remove the layers control. ([ac0ce4be](https://github.com/tombatossals/angular-leaflet-directive/commit/ac0ce4bebffda65e6a834a72019a9bd82e37cae2))
+  * Added a new GeoJSON layer. Thanks to @cktong: ([e9c391d2](https://github.com/tombatossals/angular-leaflet-directive/commit/e9c391d2813a08deb57dd9dfc07459e25eb00ccf))
+* **documentation:** Added more "markers" attribute documentation. ([4dacd3d0](https://github.com/tombatossals/angular-leaflet-directive/commit/4dacd3d022a090ab83189e0bccdf71754df6543e))
+* **example:** Added a new example of marker clustering without overlays ([8a65587d](https://github.com/tombatossals/angular-leaflet-directive/commit/8a65587d3f6d6c0ec17be1ab7fc3beacf3e23449))
+* **test:** Added unitary tests and protractor tests for the new url-hash-center property ([d43ff384](https://github.com/tombatossals/angular-leaflet-directive/commit/d43ff38459df9495774af8fea899f8aa06349f66))
+* **url-center-hash:** Listen for URL changes to update the center. ([ebad6267](https://github.com/tombatossals/angular-leaflet-directive/commit/ebad62678ac23ed2ae9e6a1353cac09e25a2a010))
+
+
 <a name="v0.7.4"></a>
 ### v0.7.4 (2014-02-09)
 

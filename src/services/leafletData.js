@@ -21,6 +21,11 @@ angular.module("leaflet-directive").service('leafletData', function ($log, $q, l
         return defer.promise;
     };
 
+    this.unresolveMap = function (scopeId) {
+        var id = leafletHelpers.obtainEffectiveMapId(maps, scopeId);
+        maps[id] = undefined;
+    };
+
     this.getPaths = function(scopeId) {
         var defer = getDefer(paths, scopeId);
         return defer.promise;

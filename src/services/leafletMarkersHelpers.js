@@ -85,7 +85,8 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
                 draggable: isDefined(markerData.draggable) ? markerData.draggable : false,
                 clickable: isDefined(markerData.clickable) ? markerData.clickable : true,
                 riseOnHover: isDefined(markerData.riseOnHover) ? markerData.riseOnHover : false,
-                zIndexOffset: isDefined(markerData.zIndexOffset) ? markerData.zIndexOffset : 0
+                zIndexOffset: isDefined(markerData.zIndexOffset) ? markerData.zIndexOffset : 0,
+                iconAngle: isDefined(markerData.iconAngle) ? markerData.iconAngle : 0
             };
 
             return new L.marker(markerData, markerOptions);
@@ -140,7 +141,7 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
                     return;
                 }
 
-                // It is possible the the layer has been removed or the layer marker does not exist
+                // It is possible that the layer has been removed or the layer marker does not exist
                 // Update the layer group if present or move it to the map if not
                 if (!isString(markerData.layer)) {
                     // There is no layer information, we move the marker to the map if it was in a layer group
@@ -157,7 +158,7 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
                     }
                 }
 
-                if (isString(markerData.layer) && (isDefined(oldMarkerData.layer) || oldMarkerData.layer !== markerData.layer)) {
+                if (isString(markerData.layer) && oldMarkerData.layer !== markerData.layer) {
                     // If it was on a layer group we have to remove it
                     if (isString(oldMarkerData.layer) && isDefined(layers.overlays[oldMarkerData.layer]) && layers.overlays[oldMarkerData.layer].hasLayer(marker)) {
                         layers.overlays[oldMarkerData.layer].removeLayer(marker);
@@ -190,9 +191,10 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
                 }
 
                 // Update the draggable property
-                if (markerData.draggable !== true && oldMarkerData.draggable === true && (marker.dragging !== undefined && marker.dragging !== null)) {
+                if (markerData.draggable !== true && oldMarkerData.draggable === true && (isDefined(marker.dragging))) {
                     marker.dragging.disable();
                 }
+
                 if (markerData.draggable === true && oldMarkerData.draggable !== true) {
                     // The markerData.draggable property must be true so we update if there wasn't a previous value or it wasn't true
                     if (marker.dragging) {
@@ -263,33 +265,56 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
                 }
 
                 // Update the focus property
+                var updatedFocus = false;
                 if (markerData.focus !== true && oldMarkerData.focus === true) {
                     // If there was a focus property and was true we turn it off
                     marker.closePopup();
+                    updatedFocus = true;
                 }
 
                 // The markerData.focus property must be true so we update if there wasn't a previous value or it wasn't true
                 if (markerData.focus === true && oldMarkerData.focus !== true) {
                     marker.openPopup();
+                    updatedFocus = true;
                 }
 
                 if(oldMarkerData.focus === true && markerData.focus === true){
                     // Reopen the popup when focus is still true
                     marker.openPopup();
+                    updatedFocus = true;
                 }
 
                 var markerLatLng = marker.getLatLng();
-                if (markerLatLng.lat !== markerData.lat || markerLatLng.lng !== markerData.lng) {
-                    // if the marker is in a clustermarker layer it has to be removed and added again to the layer
-                    var isCluster = false;
-                    if (isString(markerData.layer) && Helpers.MarkerClusterPlugin.is(layers.overlays[markerData.layer])) {
-                        layers.overlays[markerData.layer].removeLayer(marker);
-                        isCluster = true;
+                var isCluster = (isString(markerData.layer) && Helpers.MarkerClusterPlugin.is(layers.overlays[markerData.layer]));
+                // If the marker is in a cluster it has to be removed and added to the layer when the location is changed
+                if (isCluster) {
+                    // The focus has changed even by a user click or programatically
+                    if (updatedFocus) {
+                        // We only have to update the location if it was changed programatically, because it was
+                        // changed by a user drag the marker data has already been updated by the internal event
+                        // listened by the directive
+                        if ((markerData.lat !== oldMarkerData.lat) || (markerData.lng !== oldMarkerData.lng)) {
+                            layers.overlays[markerData.layer].removeLayer(marker);
+                            marker.setLatLng([markerData.lat, markerData.lng]);
+                            layers.overlays[markerData.layer].addLayer(marker);
+                        }
+                    } else {
+                        // The marker has possibly moved. It can be moved by a user drag (marker location and data are equal but old
+                        // data is diferent) or programatically (marker location and data are diferent)
+                        if ((markerLatLng.lat !== markerData.lat) || (markerLatLng.lng !== markerData.lng)) {
+                            // The marker was moved by a user drag
+                            layers.overlays[markerData.layer].removeLayer(marker);
+                            marker.setLatLng([markerData.lat, markerData.lng]);
+                            layers.overlays[markerData.layer].addLayer(marker);
+                        } else if ((markerData.lat !== oldMarkerData.lat) || (markerData.lng !== oldMarkerData.lng)) {
+                            // The marker was moved programatically
+                            layers.overlays[markerData.layer].removeLayer(marker);
+                            marker.setLatLng([markerData.lat, markerData.lng]);
+                            layers.overlays[markerData.layer].addLayer(marker);
+                        }
                     }
+                } else if (markerLatLng.lat !== markerData.lat || markerLatLng.lng !== markerData.lng) {
                     marker.setLatLng([markerData.lat, markerData.lng]);
-                    if (isCluster) {
-                        layers.overlays[markerData.layer].addLayer(marker);
-                    }
                 }
             }, true);
         }
