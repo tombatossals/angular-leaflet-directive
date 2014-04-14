@@ -1439,7 +1439,7 @@
               }
               // Enable / Disable
               var pathEventsEnable = false, pathEventsDisable = false;
-              if (leafletScope.eventBroadcast.pats.enable !== undefined && leafletScope.eventBroadcast.path.enable !== null) {
+              if (leafletScope.eventBroadcast.path.enable !== undefined && leafletScope.eventBroadcast.path.enable !== null) {
                 if (typeof leafletScope.eventBroadcast.path.enable === 'object') {
                   pathEventsEnable = true;
                 }
