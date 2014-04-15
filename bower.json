@@ -25,6 +25,7 @@
     "Leaflet.label": "0.2.1",
     "leaflet-tilelayer-geojson": "*",
     "Leaflet.awesome-markers": "*",
+    "webgl-heatmap": "*",
     "leaflet-plugins": "1.0.1",
     "esri-leaflet": "0.0.1-beta.4"
   },

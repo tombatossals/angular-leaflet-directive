@@ -122,6 +122,15 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
                 return new L.BingLayer(params.key, params.options);
             }
         },
+        heatmap: {
+            mustHaveUrl: false,
+            createLayer: function(params) {
+                if (!Helpers.HeatMapLayerPlugin.isLoaded()) {
+                    return;
+                }
+                return new L.TileLayer.WebGLHeatMap(params.options);
+            }
+        },
         yandex: {
             mustHaveUrl: false,
             createLayer: function(params) {

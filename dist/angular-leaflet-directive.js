@@ -1771,6 +1771,15 @@
               return new L.BingLayer(params.key, params.options);
             }
           },
+          heatmap: {
+            mustHaveUrl: false,
+            createLayer: function (params) {
+              if (!Helpers.HeatMapLayerPlugin.isLoaded()) {
+                return;
+              }
+              return new L.TileLayer.WebGLHeatMap(params.options);
+            }
+          },
           yandex: {
             mustHaveUrl: false,
             createLayer: function (params) {
@@ -2738,6 +2747,11 @@
         ChinaLayerPlugin: {
           isLoaded: function () {
             return angular.isDefined(L.tileLayer.chinaProvider);
+          }
+        },
+        HeatMapLayerPlugin: {
+          isLoaded: function () {
+            return angular.isDefined(L.tileLayer.WebGLHeatMap);
           }
         },
         BingLayerPlugin: {
