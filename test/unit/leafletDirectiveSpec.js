@@ -165,4 +165,22 @@ describe('Directive: leaflet', function() {
         scope.$digest();
         expect(shouldNotBeMap).toBe(undefined);
     });
+
+    it('should remove zoom control button if unset on map defaults', function() {
+        angular.extend(scope, {
+            defaults: {
+                map: {
+                    zoomControl: false
+                }
+            }
+        });
+        var element = angular.element('<leaflet defaults="defaults"></leaflet>');
+        element = $compile(element)(scope);
+        var leafletMap;
+        leafletData.getMap().then(function(map) {
+            leafletMap = map;
+        });
+        scope.$digest();
+        expect(leafletMap.zoomControl).toBe(undefined);
+    });
 });
