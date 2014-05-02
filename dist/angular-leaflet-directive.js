@@ -1771,6 +1771,20 @@
               return new L.BingLayer(params.key, params.options);
             }
           },
+          heatmap: {
+            mustHaveUrl: false,
+            mustHaveData: true,
+            createLayer: function (params) {
+              if (!Helpers.HeatMapLayerPlugin.isLoaded()) {
+                return;
+              }
+              var layer = new L.TileLayer.WebGLHeatMap(params.options);
+              if (isDefined(params.data)) {
+                layer.setData(params.data);
+              }
+              return layer;
+            }
+          },
           yandex: {
             mustHaveUrl: false,
             createLayer: function (params) {
@@ -1801,6 +1815,10 @@
         // Check if the layer must have an URL
         if (layerTypes[layerDefinition.type].mustHaveUrl && !isString(layerDefinition.url)) {
           $log.error('[AngularJS - Leaflet] A base layer must have an url');
+          return false;
+        }
+        if (layerTypes[layerDefinition.type].mustHaveData && !isDefined(layerDefinition.data)) {
+          $log.error('[AngularJS - Leaflet] The base layer must have a "data" array attribute');
           return false;
         }
         if (layerTypes[layerDefinition.type].mustHaveLayer && !isDefined(layerDefinition.layer)) {
@@ -1835,6 +1853,7 @@
           }
           var params = {
               url: layerDefinition.url,
+              data: layerDefinition.data,
               options: layerDefinition.layerOptions,
               layer: layerDefinition.layer,
               type: layerDefinition.layerType,
@@ -2738,6 +2757,11 @@
         ChinaLayerPlugin: {
           isLoaded: function () {
             return angular.isDefined(L.tileLayer.chinaProvider);
+          }
+        },
+        HeatMapLayerPlugin: {
+          isLoaded: function () {
+            return angular.isDefined(L.TileLayer.WebGLHeatMap);
           }
         },
         BingLayerPlugin: {
