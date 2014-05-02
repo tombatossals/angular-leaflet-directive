@@ -201,7 +201,7 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
         },
         HeatMapLayerPlugin: {
             isLoaded: function() {
-                return angular.isDefined(L.tileLayer.WebGLHeatMap);
+                return angular.isDefined(L.TileLayer.WebGLHeatMap);
             }
         },
         BingLayerPlugin: {

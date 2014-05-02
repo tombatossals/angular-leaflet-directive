@@ -1773,11 +1773,16 @@
           },
           heatmap: {
             mustHaveUrl: false,
+            mustHaveData: true,
             createLayer: function (params) {
               if (!Helpers.HeatMapLayerPlugin.isLoaded()) {
                 return;
               }
-              return new L.TileLayer.WebGLHeatMap(params.options);
+              var layer = new L.TileLayer.WebGLHeatMap(params.options);
+              if (isDefined(params.data)) {
+                layer.setData(params.data);
+              }
+              return layer;
             }
           },
           yandex: {
@@ -1812,6 +1817,10 @@
           $log.error('[AngularJS - Leaflet] A base layer must have an url');
           return false;
         }
+        if (layerTypes[layerDefinition.type].mustHaveData && !isDefined(layerDefinition.data)) {
+          $log.error('[AngularJS - Leaflet] The base layer must have a "data" array attribute');
+          return false;
+        }
         if (layerTypes[layerDefinition.type].mustHaveLayer && !isDefined(layerDefinition.layer)) {
           $log.error('[AngularJS - Leaflet] The type of layer ' + layerDefinition.type + ' must have an layer defined');
           return false;
@@ -1844,6 +1853,7 @@
           }
           var params = {
               url: layerDefinition.url,
+              data: layerDefinition.data,
               options: layerDefinition.layerOptions,
               layer: layerDefinition.layer,
               type: layerDefinition.layerType,
@@ -2751,7 +2761,7 @@
         },
         HeatMapLayerPlugin: {
           isLoaded: function () {
-            return angular.isDefined(L.tileLayer.WebGLHeatMap);
+            return angular.isDefined(L.TileLayer.WebGLHeatMap);
           }
         },
         BingLayerPlugin: {

@@ -5,15 +5,21 @@
     <script src="../bower_components/leaflet-dist/leaflet.js"></script>
     <script src="../dist/angular-leaflet-directive.min.js"></script>
     <script src="../bower_components/webgl-heatmap/webgl-heatmap.js"></script>
+    <script src="../bower_components/webgl-heatmap-leaflet/js/webgl-heatmap.js"></script>
+    <script src="../bower_components/webgl-heatmap-leaflet/js/webgl-heatmap-leaflet.js"></script>
     <link rel="stylesheet" href="../bower_components/leaflet-dist/leaflet.css" />
     <script>
         var app = angular.module("demoapp", ["leaflet-directive"]);
         app.controller("DemoController", [ "$scope", function($scope) {
+            var dataPoints = [
+                [44.651144316,-63.586260171, 0.5],
+                [44.75, -63.5, 0.8] ];
+
             angular.extend($scope, {
                 center: {
-                    lat: 18.4,
-                    lng: -65.8,
-                    zoom: 7
+                    lat: 44.8091,
+                    lng: -63.3636,
+                    zoom: 9
                 },
                 layers: {
                     baselayers: {
@@ -26,7 +32,9 @@
                     overlays: {
                         heatmap: {
                             name: 'Heat Map',
-                            type: 'heatmap'
+                            type: 'heatmap',
+                            data: dataPoints,
+                            visible: true
                         }
                     }
                 }
