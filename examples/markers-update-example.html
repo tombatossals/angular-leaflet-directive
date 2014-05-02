@@ -115,7 +115,7 @@
                     <h3 ng-show="markers.m1.icon == iconC">AwesomeIcon color</h3>
                     <div class="btn-group" data-toggle="buttons" ng-show="markers.m1.icon == iconC">
                         <label class="btn btn-primary" ng-class="{ active: iconC.markerColor == 'red' }">
-                            <input type="radio" ng-click="iconC.markerColor" ng-value="'red'" class="btn btn-default">Red</button>
+                            <input type="radio" ng-model="iconC.markerColor" ng-value="'red'" class="btn btn-default">Red</button>
                         </label>
                         <label class="btn btn-primary" ng-class="{ active: iconC.markerColor == 'blue' }">
                             <input type="radio" ng-model="iconC.markerColor" ng-value="'blue'" class="btn btn-default">Blue</button>
@@ -127,7 +127,7 @@
                     <h3 ng-show="markers.m1.icon == iconC">AwesomeIcon icon</h3>
                     <div class="btn-group" data-toggle="buttons" ng-show="markers.m1.icon == iconC">
                         <label class="btn btn-primary" ng-class="{ active: iconC.icon == 'tag' }">
-                            <input type="radio" ng-click="iconC.icon" ng-value="'tag'" class="btn btn-default">Tag</button>
+                            <input type="radio" ng-model="iconC.icon" ng-value="'tag'" class="btn btn-default">Tag</button>
                         </label>
                         <label class="btn btn-primary" ng-class="{ active: iconC.icon == 'usd' }">
                             <input type="radio" ng-model="iconC.icon" ng-value="'usd'" class="btn btn-default">USD</button>

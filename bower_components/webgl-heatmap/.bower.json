@@ -1,0 +1,30 @@
+{
+  "name": "webgl-heatmap",
+  "main": "webgl-heatmap.js",
+  "homepage": "https://github.com/pyalot/webgl-heatmap",
+  "description": "webgl-heatmap.js is a JavaScript library for high performance heatmap display.",
+  "keywords": [
+    "webgl",
+    "heatmap"
+  ],
+  "authors": [
+    "Florian Bösch"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "_release": "557a1feb77",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "557a1feb77ec5df37ffe67b76869cfa201a4a313"
+  },
+  "_source": "git://github.com/pyalot/webgl-heatmap.git",
+  "_target": "*",
+  "_originalSource": "webgl-heatmap"
+}

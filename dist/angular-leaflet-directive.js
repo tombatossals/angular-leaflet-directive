@@ -105,22 +105,12 @@
     '$location',
     'leafletMapDefaults',
     'leafletHelpers',
-    function ($log, $q, $location, leafletMapDefaults, leafletHelpers) {
-      var isDefined = leafletHelpers.isDefined, isNumber = leafletHelpers.isNumber, isSameCenterOnMap = leafletHelpers.isSameCenterOnMap, safeApply = leafletHelpers.safeApply, isValidCenter = leafletHelpers.isValidCenter;
-      var notifyCenterChangedToBounds = function (scope) {
-        scope.$broadcast('boundsChanged');
-      };
-      var notifyCenterUrlHashChanged = function (scope, map, attrs) {
-        if (!isDefined(attrs.urlHashCenter)) {
-          return;
-        }
-        var center = map.getCenter();
-        var centerUrlHash = center.lat.toFixed(4) + ':' + center.lng.toFixed(4) + ':' + map.getZoom();
-        var search = $location.search();
-        if (!isDefined(search.c) || search.c !== centerUrlHash) {
-          //$log.debug("notified new center...");
-          scope.$emit('centerUrlHash', centerUrlHash);
-        }
+    'leafletBoundsHelpers',
+    'leafletEvents',
+    function ($log, $q, $location, leafletMapDefaults, leafletHelpers, leafletBoundsHelpers, leafletEvents) {
+      var isDefined = leafletHelpers.isDefined, isNumber = leafletHelpers.isNumber, isSameCenterOnMap = leafletHelpers.isSameCenterOnMap, safeApply = leafletHelpers.safeApply, isValidCenter = leafletHelpers.isValidCenter, isEmpty = leafletHelpers.isEmpty, isUndefinedOrEmpty = leafletHelpers.isUndefinedOrEmpty;
+      var shouldInitializeMapWithBounds = function (bounds, center) {
+        return isDefined(bounds) && !isEmpty(bounds) && isUndefinedOrEmpty(center);
       };
       var _leafletCenter;
       return {
@@ -145,6 +135,31 @@
                 defaults.center.lng
               ], defaults.center.zoom);
               return;
+            } else if (shouldInitializeMapWithBounds(leafletScope.bounds, centerModel)) {
+              map.fitBounds(leafletBoundsHelpers.createLeafletBounds(leafletScope.bounds));
+              centerModel = map.getCenter();
+              safeApply(leafletScope, function (scope) {
+                scope.center = {
+                  lat: map.getCenter().lat,
+                  lng: map.getCenter().lng,
+                  zoom: map.getZoom(),
+                  autoDiscover: false
+                };
+              });
+              safeApply(leafletScope, function (scope) {
+                var mapBounds = map.getBounds();
+                var newScopeBounds = {
+                    northEast: {
+                      lat: mapBounds._northEast.lat,
+                      lng: mapBounds._northEast.lng
+                    },
+                    southWest: {
+                      lat: mapBounds._southWest.lat,
+                      lng: mapBounds._southWest.lng
+                    }
+                  };
+                scope.bounds = newScopeBounds;
+              });
             } else if (!isDefined(centerModel)) {
               $log.error('The "center" property is not defined in the main scope');
               map.setView([
@@ -230,7 +245,7 @@
                 center.lat,
                 center.lng
               ], center.zoom);
-              notifyCenterChangedToBounds(leafletScope, map);
+              leafletEvents.notifyCenterChangedToBounds(leafletScope, map);
             }, true);
             map.whenReady(function () {
               mapReady = true;
@@ -238,7 +253,7 @@
             map.on('moveend', function () {
               // Resolve the center after the first map position
               _leafletCenter.resolve();
-              notifyCenterUrlHashChanged(leafletScope, map, attrs);
+              leafletEvents.notifyCenterUrlHashChanged(leafletScope, map, attrs, $location.search());
               //$log.debug("updated center on map...");
               if (isSameCenterOnMap(centerModel, map)) {
                 //$log.debug("same center in model, no need to update again.");
@@ -252,7 +267,7 @@
                   zoom: map.getZoom(),
                   autoDiscover: false
                 };
-                notifyCenterChangedToBounds(leafletScope, map);
+                leafletEvents.notifyCenterChangedToBounds(leafletScope, map);
               });
             });
             if (centerModel.autoDiscover === true) {
@@ -263,13 +278,13 @@
                     centerModel.lat,
                     centerModel.lng
                   ], centerModel.zoom);
-                  notifyCenterChangedToBounds(leafletScope, map);
+                  leafletEvents.notifyCenterChangedToBounds(leafletScope, map);
                 } else {
                   map.setView([
                     defaults.center.lat,
                     defaults.center.lng
                   ], defaults.center.zoom);
-                  notifyCenterChangedToBounds(leafletScope, map);
+                  leafletEvents.notifyCenterChangedToBounds(leafletScope, map);
                 }
               });
             }
@@ -445,7 +460,9 @@
               }
               geojson.options = {
                 style: geojson.style,
-                onEachFeature: onEachFeature
+                filter: geojson.filter,
+                onEachFeature: onEachFeature,
+                pointToLayer: geojson.pointToLayer
               };
               leafletGeoJSON = L.geoJson(geojson.data, geojson.options);
               leafletData.setGeoJSON(leafletGeoJSON);
@@ -623,7 +640,7 @@
           'center'
         ],
         link: function (scope, element, attrs, controller) {
-          var isDefined = leafletHelpers.isDefined, createLeafletBounds = leafletBoundsHelpers.createLeafletBounds, leafletScope = controller[0].getLeafletScope(), mapController = controller[0], centerController = controller[1];
+          var isDefined = leafletHelpers.isDefined, createLeafletBounds = leafletBoundsHelpers.createLeafletBounds, leafletScope = controller[0].getLeafletScope(), mapController = controller[0];
           var emptyBounds = function (bounds) {
             if (bounds._southWest.lat === 0 && bounds._southWest.lng === 0 && bounds._northEast.lat === 0 && bounds._northEast.lng === 0) {
               return true;
@@ -631,44 +648,40 @@
             return false;
           };
           mapController.getMap().then(function (map) {
-            map.whenReady(function () {
-              centerController.getCenter().then(function () {
-                leafletScope.$on('boundsChanged', function (event) {
-                  var scope = event.currentScope;
-                  var bounds = map.getBounds();
-                  $log.debug('updated map bounds...', bounds);
-                  if (emptyBounds(bounds)) {
-                    return;
+            leafletScope.$on('boundsChanged', function (event) {
+              var scope = event.currentScope;
+              var bounds = map.getBounds();
+              //$log.debug('updated map bounds...', bounds);
+              if (emptyBounds(bounds)) {
+                return;
+              }
+              var newScopeBounds = {
+                  northEast: {
+                    lat: bounds._northEast.lat,
+                    lng: bounds._northEast.lng
+                  },
+                  southWest: {
+                    lat: bounds._southWest.lat,
+                    lng: bounds._southWest.lng
                   }
-                  var newScopeBounds = {
-                      northEast: {
-                        lat: bounds._northEast.lat,
-                        lng: bounds._northEast.lng
-                      },
-                      southWest: {
-                        lat: bounds._southWest.lat,
-                        lng: bounds._southWest.lng
-                      }
-                    };
-                  if (!angular.equals(scope.bounds, newScopeBounds)) {
-                    $log.debug('Need to update scope bounds.');
-                    scope.bounds = newScopeBounds;
-                  }
-                });
-                leafletScope.$watch('bounds', function (bounds) {
-                  $log.debug('updated bounds...', bounds);
-                  if (!isDefined(bounds)) {
-                    $log.error('[AngularJS - Leaflet] Invalid bounds');
-                    return;
-                  }
-                  var leafletBounds = createLeafletBounds(bounds);
-                  if (leafletBounds && !map.getBounds().equals(leafletBounds)) {
-                    $log.debug('Need to update map bounds.');
-                    map.fitBounds(leafletBounds);
-                  }
-                }, true);
-              });
+                };
+              if (!angular.equals(scope.bounds, newScopeBounds)) {
+                //$log.debug('Need to update scope bounds.');
+                scope.bounds = newScopeBounds;
+              }
             });
+            leafletScope.$watch('bounds', function (bounds) {
+              //$log.debug('updated bounds...', bounds);
+              if (!isDefined(bounds)) {
+                $log.error('[AngularJS - Leaflet] Invalid bounds');
+                return;
+              }
+              var leafletBounds = createLeafletBounds(bounds);
+              if (leafletBounds && !map.getBounds().equals(leafletBounds)) {
+                //$log.debug('Need to update map bounds.');
+                map.fitBounds(leafletBounds);
+              }
+            }, true);
           });
         }
       };
@@ -1429,6 +1442,20 @@
         },
         getAvailableMarkerEvents: _getAvailableMarkerEvents,
         getAvailablePathEvents: _getAvailablePathEvents,
+        notifyCenterChangedToBounds: function (scope) {
+          scope.$broadcast('boundsChanged');
+        },
+        notifyCenterUrlHashChanged: function (scope, map, attrs, search) {
+          if (!isDefined(attrs.urlHashCenter)) {
+            return;
+          }
+          var center = map.getCenter();
+          var centerUrlHash = center.lat.toFixed(4) + ':' + center.lng.toFixed(4) + ':' + map.getZoom();
+          if (!isDefined(search.c) || search.c !== centerUrlHash) {
+            //$log.debug("notified new center...");
+            scope.$emit('centerUrlHash', centerUrlHash);
+          }
+        },
         bindMarkerEvents: function (marker, name, markerData, leafletScope) {
           var markerEvents = [];
           var i;
@@ -1558,7 +1585,7 @@
               }
               // Enable / Disable
               var pathEventsEnable = false, pathEventsDisable = false;
-              if (leafletScope.eventBroadcast.pats.enable !== undefined && leafletScope.eventBroadcast.path.enable !== null) {
+              if (leafletScope.eventBroadcast.path.enable !== undefined && leafletScope.eventBroadcast.path.enable !== null) {
                 if (typeof leafletScope.eventBroadcast.path.enable === 'object') {
                   pathEventsEnable = true;
                 }
@@ -1744,6 +1771,20 @@
               return new L.BingLayer(params.key, params.options);
             }
           },
+          heatmap: {
+            mustHaveUrl: false,
+            mustHaveData: true,
+            createLayer: function (params) {
+              if (!Helpers.HeatMapLayerPlugin.isLoaded()) {
+                return;
+              }
+              var layer = new L.TileLayer.WebGLHeatMap(params.options);
+              if (isDefined(params.data)) {
+                layer.setData(params.data);
+              }
+              return layer;
+            }
+          },
           yandex: {
             mustHaveUrl: false,
             createLayer: function (params) {
@@ -1774,6 +1815,10 @@
         // Check if the layer must have an URL
         if (layerTypes[layerDefinition.type].mustHaveUrl && !isString(layerDefinition.url)) {
           $log.error('[AngularJS - Leaflet] A base layer must have an url');
+          return false;
+        }
+        if (layerTypes[layerDefinition.type].mustHaveData && !isDefined(layerDefinition.data)) {
+          $log.error('[AngularJS - Leaflet] The base layer must have a "data" array attribute');
           return false;
         }
         if (layerTypes[layerDefinition.type].mustHaveLayer && !isDefined(layerDefinition.layer)) {
@@ -1808,6 +1853,7 @@
           }
           var params = {
               url: layerDefinition.url,
+              data: layerDefinition.data,
               options: layerDefinition.layerOptions,
               layer: layerDefinition.layer,
               type: layerDefinition.layerType,
@@ -2031,7 +2077,7 @@
           multiPolyline: {
             isValid: function (pathData) {
               var latlngs = pathData.latlngs;
-              if (!isArray(latlngs) || latlngs.length !== 2) {
+              if (!isArray(latlngs)) {
                 return false;
               }
               for (var i in latlngs) {
@@ -2077,7 +2123,7 @@
           multiPolygon: {
             isValid: function (pathData) {
               var latlngs = pathData.latlngs;
-              if (!isArray(latlngs) || latlngs.length !== 2) {
+              if (!isArray(latlngs)) {
                 return false;
               }
               for (var i in latlngs) {
@@ -2257,7 +2303,7 @@
     'leafletHelpers',
     '$log',
     function ($rootScope, leafletHelpers, $log) {
-      var isDefined = leafletHelpers.isDefined, MarkerClusterPlugin = leafletHelpers.MarkerClusterPlugin, AwesomeMarkersPlugin = leafletHelpers.AwesomeMarkersPlugin, safeApply = leafletHelpers.safeApply, Helpers = leafletHelpers, isString = leafletHelpers.isString, isNumber = leafletHelpers.isNumber, isObject = leafletHelpers.isObject, isDefinedAndNotNull = leafletHelpers.isDefinedAndNotNull, groups = {};
+      var isDefined = leafletHelpers.isDefined, MarkerClusterPlugin = leafletHelpers.MarkerClusterPlugin, AwesomeMarkersPlugin = leafletHelpers.AwesomeMarkersPlugin, safeApply = leafletHelpers.safeApply, Helpers = leafletHelpers, isString = leafletHelpers.isString, isNumber = leafletHelpers.isNumber, isObject = leafletHelpers.isObject, groups = {};
       var createLeafletIcon = function (iconData) {
         if (isDefined(iconData) && isDefined(iconData.type) && iconData.type === 'awesomeMarker') {
           if (!AwesomeMarkersPlugin.isLoaded()) {
@@ -2414,7 +2460,7 @@
                 }
               }
               // Update the draggable property
-              if (markerData.draggable !== true && oldMarkerData.draggable === true && isDefinedAndNotNull(marker.dragging)) {
+              if (markerData.draggable !== true && oldMarkerData.draggable === true && isDefined(marker.dragging)) {
                 marker.dragging.disable();
               }
               if (markerData.draggable === true && oldMarkerData.draggable !== true) {
@@ -2582,6 +2628,12 @@
         return defer;
       }
       return {
+        isEmpty: function (value) {
+          return Object.keys(value).length === 0;
+        },
+        isUndefinedOrEmpty: function (value) {
+          return angular.isUndefined(value) || value === null || Object.keys(value).length === 0;
+        },
         isDefined: function (value) {
           return angular.isDefined(value) && value !== null;
         },
@@ -2705,6 +2757,11 @@
         ChinaLayerPlugin: {
           isLoaded: function () {
             return angular.isDefined(L.tileLayer.chinaProvider);
+          }
+        },
+        HeatMapLayerPlugin: {
+          isLoaded: function () {
+            return angular.isDefined(L.TileLayer.WebGLHeatMap);
           }
         },
         BingLayerPlugin: {
