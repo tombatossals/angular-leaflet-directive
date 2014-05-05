@@ -48,7 +48,7 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
         // if there are overlays
         if (isDefined(layers) && isDefined(layers.overlays)) {
             for (var key in layers.overlays) {
-                if (layers.overlays[key] instanceof L.LayerGroup) {
+                if (layers.overlays[key] instanceof L.LayerGroup || layers.overlays[key] instanceof L.FeatureGroup) {
                     if (layers.overlays[key].hasLayer(marker)) {
                         layers.overlays[key].removeLayer(marker);
                         return;
