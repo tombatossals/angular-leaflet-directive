@@ -580,6 +580,49 @@ describe('Directive: leaflet', function() {
         });
     });
 
+    it('should check for feature group', function() {
+        // Check for layer group
+        angular.extend(scope, {
+            layers: {
+                baselayers: {
+                    osm: {
+                        name: 'OpenStreetMap',
+                        type: 'xyz',
+                        url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                        layerOptions: {
+                            subdomains: ['a', 'b', 'c'],
+                            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                            continuousWorld: true
+                        }
+                    }
+                },
+                overlays: {
+                    cars: {
+                        name: 'cars',
+                        type: 'featureGroup',
+                        visible: false
+                    }
+                }
+            }
+        });
+        var element = angular.element('<leaflet layers="layers"></leaflet>');
+        element = $compile(element)(scope);
+        var map;
+        leafletData.getMap().then(function(leafletMap) {
+            map = leafletMap;
+        });
+        scope.$digest();
+
+        leafletData.getLayers().then(function(layers) {
+            expect(layers.overlays).not.toBe(null);
+            expect(typeof layers.overlays).toBe('object');
+            expect(Object.keys(layers.overlays).length).toEqual(1);
+            expect(layers.overlays.cars instanceof L.FeatureGroup).toBe(true);
+            // As the visible is false it should not be on the map
+            expect(map.hasLayer(layers.overlays.hillshade)).toBe(false);
+        });
+    });
+
     it('should check for a marker in the layer group that is not visible', function() {
         angular.extend(scope, {
             layers: {
