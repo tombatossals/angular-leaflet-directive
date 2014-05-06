@@ -1200,6 +1200,11 @@
           if (isDefined(d.markerZoomAnimation)) {
             mapDefaults.markerZoomAnimation = d.markerZoomAnimation;
           }
+          if (d.map) {
+            for (var option in d.map) {
+              mapDefaults[option] = d.map[option];
+            }
+          }
           return mapDefaults;
         },
         setDefaults: function (userDefaults, scopeId) {
@@ -1240,6 +1245,9 @@
             }
             if (isDefined(userDefaults.worldCopyJump)) {
               newDefaults.worldCopyJump = userDefaults.worldCopyJump;
+            }
+            if (isDefined(userDefaults.map)) {
+              newDefaults.map = userDefaults.map;
             }
           }
           var mapId = obtainEffectiveMapId(defaults, scopeId);

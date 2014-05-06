@@ -78,6 +78,12 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
                 mapDefaults.markerZoomAnimation = d.markerZoomAnimation;
             }
 
+            if (d.map) {
+                for (var option in d.map){
+                    mapDefaults[option] = d.map[option];
+                }
+            }
+
             return mapDefaults;
         },
 
@@ -129,6 +135,10 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
 
                 if (isDefined(userDefaults.worldCopyJump)) {
                     newDefaults.worldCopyJump = userDefaults.worldCopyJump;
+                }
+
+                if (isDefined(userDefaults.map)) {
+                    newDefaults.map = userDefaults.map;
                 }
             }
 
