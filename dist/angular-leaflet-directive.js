@@ -2047,7 +2047,7 @@
       var _updatePathOptions = function (path, data) {
         for (var i = 0; i < availableOptions.length; i++) {
           var optionName = availableOptions[i];
-          if (isDefined(path[optionName])) {
+          if (isDefined(data[optionName])) {
             path.setStyle(data[optionName]);
           }
         }
