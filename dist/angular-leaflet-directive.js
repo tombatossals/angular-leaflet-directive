@@ -2000,6 +2000,23 @@
     'leafletHelpers',
     function ($rootScope, $log, leafletHelpers) {
       var isDefined = leafletHelpers.isDefined, isArray = leafletHelpers.isArray, isNumber = leafletHelpers.isNumber, isValidPoint = leafletHelpers.isValidPoint;
+      var availableOptions = [
+          'stroke',
+          'weight',
+          'color',
+          'opacity',
+          'fill',
+          'fillColor',
+          'fillOpacity',
+          'dashArray',
+          'lineCap',
+          'lineJoin',
+          'clickable',
+          'pointerEvents',
+          'className',
+          'smoothFactor',
+          'noClip'
+        ];
       function _convertToLeafletLatLngs(latlngs) {
         return latlngs.filter(function (latlng) {
           return isValidPoint(latlng);
@@ -2016,23 +2033,6 @@
         });
       }
       function _getOptions(path, defaults) {
-        var availableOptions = [
-            'stroke',
-            'weight',
-            'color',
-            'opacity',
-            'fill',
-            'fillColor',
-            'fillOpacity',
-            'dashArray',
-            'lineCap',
-            'lineJoin',
-            'clickable',
-            'pointerEvents',
-            'className',
-            'smoothFactor',
-            'noClip'
-          ];
         var options = {};
         for (var i = 0; i < availableOptions.length; i++) {
           var optionName = availableOptions[i];
@@ -2045,14 +2045,11 @@
         return options;
       }
       var _updatePathOptions = function (path, data) {
-        if (isDefined(data.weight)) {
-          path.setStyle({ weight: data.weight });
-        }
-        if (isDefined(data.color)) {
-          path.setStyle({ color: data.color });
-        }
-        if (isDefined(data.opacity)) {
-          path.setStyle({ opacity: data.opacity });
+        for (var i = 0; i < availableOptions.length; i++) {
+          var optionName = availableOptions[i];
+          if (isDefined(path[optionName])) {
+            path.setStyle(data[optionName]);
+          }
         }
       };
       var _isValidPolyline = function (latlngs) {
