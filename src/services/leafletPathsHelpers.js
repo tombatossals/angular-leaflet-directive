@@ -47,12 +47,14 @@ angular.module("leaflet-directive").factory('leafletPathsHelpers', function ($ro
     }
 
     var _updatePathOptions = function (path, data) {
+        var updatedStyle = {};
         for (var i = 0; i < availableOptions.length; i++) {
-          var optionName = availableOptions[i];
+            var optionName = availableOptions[i];
             if (isDefined(data[optionName])) {
-                path.setStyle(data[optionName]);
+                updatedStyle[optionName] = data[optionName];
             }
         }
+        path.setStyle(data);
     };
 
     var _isValidPolyline = function(latlngs) {

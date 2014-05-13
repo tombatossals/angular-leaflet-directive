@@ -305,7 +305,6 @@ describe('Directive: leaflet', function() {
         });
 
         angular.extend(scope, { paths : { p1: { latlngs : latlngs, type: 'polygon', color: 'green', fillColor: 'blue' }}});
-        element = $compile(element)(scope);
 
         scope.$digest();
         leafletData.getPaths().then(function(paths) {
