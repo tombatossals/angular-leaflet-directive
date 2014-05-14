@@ -1167,7 +1167,7 @@
           }
         };
       }
-      var isDefined = leafletHelpers.isDefined, obtainEffectiveMapId = leafletHelpers.obtainEffectiveMapId, defaults = {};
+      var isDefined = leafletHelpers.isDefined, isObject = leafletHelpers.isObject, obtainEffectiveMapId = leafletHelpers.obtainEffectiveMapId, defaults = {};
       // Get the _defaults dictionary, and override the properties defined by the user
       return {
         getDefaults: function (scopeId) {
@@ -1222,7 +1222,10 @@
             if (isDefined(userDefaults.controls)) {
               angular.extend(newDefaults.controls, userDefaults.controls);
             }
-            if (isDefined(userDefaults.crs) && isDefined(L.CRS[userDefaults.crs])) {
+            if (isObject(userDefaults.crs)) {
+              console.log('Object ', userDefaults.crs);
+              newDefaults.crs = userDefaults.crs;
+            } else if (isDefined(L.CRS[userDefaults.crs])) {
               newDefaults.crs = L.CRS[userDefaults.crs];
             }
             if (isDefined(userDefaults.tileLayerOptions)) {
