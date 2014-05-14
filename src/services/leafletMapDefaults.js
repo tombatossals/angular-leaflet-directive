@@ -107,7 +107,6 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
                 }
 
                 if (isObject(userDefaults.crs)) {
-                    console.log("Object ", userDefaults.crs);
                     newDefaults.crs = userDefaults.crs;
                 } else if (isDefined(L.CRS[userDefaults.crs])) {
                     newDefaults.crs = L.CRS[userDefaults.crs];
