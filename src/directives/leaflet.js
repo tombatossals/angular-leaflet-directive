@@ -17,7 +17,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($q, leafl
             controls: '=controls',
             eventBroadcast: '=eventBroadcast'
         },
-		transclude: true,
+        transclude: true,
         template: '<div><div class="angular-leaflet-map"></div><div ng-transclude></div></div>',
         controller: function ($scope) {
             _leafletMap = $q.defer();
@@ -35,7 +35,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($q, leafl
                 defaults = leafletMapDefaults.setDefaults(scope.defaults, attrs.id),
                 genDispatchMapEvent = leafletEvents.genDispatchMapEvent,
                 mapEvents = leafletEvents.getAvailableMapEvents(),
-				mapElement = angular.element(element[0].children[0]);
+                mapElement = angular.element(element[0].children[0]);
 
             // Set width and height if they are defined
             if (isDefined(attrs.width)) {
@@ -44,7 +44,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($q, leafl
                 } else {
                     element.css('width', attrs.width + 'px');
                 }
-				mapElement.css('width', element.css('width'));
+                mapElement.css('width', element.css('width'));
             }
             if (isDefined(attrs.height)) {
                 if (isNaN(attrs.height)) {
@@ -52,7 +52,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($q, leafl
                 } else {
                     element.css('height', attrs.height + 'px');
                 }
-				mapElement.css('height', element.css('height'));
+                mapElement.css('height', element.css('height'));
             }
 
             // Create the Leaflet Map Object with the options
