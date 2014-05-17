@@ -18,7 +18,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($q, leafl
             eventBroadcast: '=eventBroadcast'
         },
         transclude: true,
-        template: '<div><div class="angular-leaflet-map"></div><div ng-transclude></div></div>',
+        template: '<div class="angular-leaflet-map"><div ng-transclude></div></div>',
         controller: function ($scope) {
             _leafletMap = $q.defer();
             this.getMap = function () {
@@ -34,8 +34,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($q, leafl
             var isDefined = leafletHelpers.isDefined,
                 defaults = leafletMapDefaults.setDefaults(scope.defaults, attrs.id),
                 genDispatchMapEvent = leafletEvents.genDispatchMapEvent,
-                mapEvents = leafletEvents.getAvailableMapEvents(),
-                mapElement = angular.element(element[0].children[0]);
+                mapEvents = leafletEvents.getAvailableMapEvents();
 
             // Set width and height if they are defined
             if (isDefined(attrs.width)) {
@@ -44,7 +43,6 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($q, leafl
                 } else {
                     element.css('width', attrs.width + 'px');
                 }
-                mapElement.css('width', element.css('width'));
             }
             if (isDefined(attrs.height)) {
                 if (isNaN(attrs.height)) {
@@ -52,11 +50,10 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($q, leafl
                 } else {
                     element.css('height', attrs.height + 'px');
                 }
-                mapElement.css('height', element.css('height'));
             }
 
             // Create the Leaflet Map Object with the options
-            var map = new L.Map(mapElement[0], leafletMapDefaults.getMapCreationDefaults(attrs.id));
+            var map = new L.Map(element[0], leafletMapDefaults.getMapCreationDefaults(attrs.id));
             _leafletMap.resolve(map);
 
             if (!isDefined(attrs.center)) {
