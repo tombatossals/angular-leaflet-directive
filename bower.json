@@ -27,7 +27,9 @@
     "Leaflet.awesome-markers": "*",
     "webgl-heatmap-leaflet": "*",
     "leaflet-plugins": "1.0.1",
-    "esri-leaflet": "0.0.1-beta.4"
+    "esri-leaflet": "0.0.1-beta.4",
+    "proj4": "~2.1.2",
+    "proj4leaflet": "~0.7.0"
   },
   "ignore": [
     "**/.*",
