@@ -773,8 +773,8 @@
                         continue;
                       }
                       var layerGroup = layers.overlays[markerData.layer];
-                      if (!(layerGroup instanceof L.LayerGroup)) {
-                        $log.error('[AngularJS - Leaflet] Adding a marker to an overlay needs a overlay of the type "group"');
+                      if (!(layerGroup instanceof L.LayerGroup) || !(layerGroup instanceof L.FeatureGroup)) {
+                        $log.error('[AngularJS - Leaflet] Adding a marker to an overlay needs a overlay of the type "group" or "featureGroup"');
                         continue;
                       }
                       // The marker goes to a correct layer group, so first of all we add it
@@ -1713,6 +1713,12 @@
               return L.layerGroup();
             }
           },
+          featureGroup: {
+            mustHaveUrl: false,
+            createLayer: function () {
+              return L.featureGroup();
+            }
+          },
           google: {
             mustHaveUrl: false,
             createLayer: function (params) {
@@ -2455,8 +2461,8 @@
                 }
                 // Is a group layer?
                 var layerGroup = layers.overlays[markerData.layer];
-                if (!(layerGroup instanceof L.LayerGroup)) {
-                  $log.error('[AngularJS - Leaflet] A marker can only be added to a layer of type "group"');
+                if (!(layerGroup instanceof L.LayerGroup) || !(layerGroup instanceof L.FeatureGroup)) {
+                  $log.error('[AngularJS - Leaflet] A marker can only be added to a layer of type "group" or "featureGroup"');
                   return;
                 }
                 // The marker goes to a correct layer group, so first of all we add it

@@ -53,6 +53,12 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
                 return L.layerGroup();
             }
         },
+        featureGroup: {
+            mustHaveUrl: false,
+            createLayer: function () {
+                return L.featureGroup();
+            }
+        },
         google: {
             mustHaveUrl: false,
             createLayer: function(params) {
