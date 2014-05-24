@@ -285,4 +285,33 @@ describe('Directive: leaflet', function() {
         });
     });
 
+    // Polygon
+    it('should update polygon colors on the map', function() {
+        var latlngs = [
+            { lat: 0.966, lng: 2.02 },
+            { lat: 2.02, lng: 4.04 },
+            { lat: 0.466, lng: 1.02 },
+            { lat: 1.02, lng: 3.04 }
+        ];
+        angular.extend(scope, { paths : { p1: { latlngs : latlngs, type: 'polygon', color: 'white', fillColor: 'red' }}});
+        var element = angular.element('<leaflet paths="paths"></leaflet>');
+        element = $compile(element)(scope);
+
+        scope.$digest();
+        leafletData.getPaths().then(function(paths) {
+            var polygon = paths.p1;
+            expect(polygon.options.color).toBe('white');
+            expect(polygon.options.fillColor).toBe('red');
+        });
+
+        angular.extend(scope, { paths : { p1: { latlngs : latlngs, type: 'polygon', color: 'green', fillColor: 'blue' }}});
+
+        scope.$digest();
+        leafletData.getPaths().then(function(paths) {
+            var polygon = paths.p1;
+            expect(polygon.options.color).toBe('green');
+            expect(polygon.options.fillColor).toBe('blue');
+        });
+    });
+
 });

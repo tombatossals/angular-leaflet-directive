@@ -773,7 +773,7 @@
                         continue;
                       }
                       var layerGroup = layers.overlays[markerData.layer];
-                      if (!(layerGroup instanceof L.LayerGroup) || !(layerGroup instanceof L.FeatureGroup)) {
+                      if (!(layerGroup instanceof L.LayerGroup || layerGroup instanceof L.FeatureGroup)) {
                         $log.error('[AngularJS - Leaflet] Adding a marker to an overlay needs a overlay of the type "group" or "featureGroup"');
                         continue;
                       }
@@ -1223,7 +1223,6 @@
               angular.extend(newDefaults.controls, userDefaults.controls);
             }
             if (isObject(userDefaults.crs)) {
-              console.log('Object ', userDefaults.crs);
               newDefaults.crs = userDefaults.crs;
             } else if (isDefined(L.CRS[userDefaults.crs])) {
               newDefaults.crs = L.CRS[userDefaults.crs];
@@ -2009,6 +2008,23 @@
     'leafletHelpers',
     function ($rootScope, $log, leafletHelpers) {
       var isDefined = leafletHelpers.isDefined, isArray = leafletHelpers.isArray, isNumber = leafletHelpers.isNumber, isValidPoint = leafletHelpers.isValidPoint;
+      var availableOptions = [
+          'stroke',
+          'weight',
+          'color',
+          'opacity',
+          'fill',
+          'fillColor',
+          'fillOpacity',
+          'dashArray',
+          'lineCap',
+          'lineJoin',
+          'clickable',
+          'pointerEvents',
+          'className',
+          'smoothFactor',
+          'noClip'
+        ];
       function _convertToLeafletLatLngs(latlngs) {
         return latlngs.filter(function (latlng) {
           return isValidPoint(latlng);
@@ -2025,23 +2041,6 @@
         });
       }
       function _getOptions(path, defaults) {
-        var availableOptions = [
-            'stroke',
-            'weight',
-            'color',
-            'opacity',
-            'fill',
-            'fillColor',
-            'fillOpacity',
-            'dashArray',
-            'lineCap',
-            'lineJoin',
-            'clickable',
-            'pointerEvents',
-            'className',
-            'smoothFactor',
-            'noClip'
-          ];
         var options = {};
         for (var i = 0; i < availableOptions.length; i++) {
           var optionName = availableOptions[i];
@@ -2054,15 +2053,14 @@
         return options;
       }
       var _updatePathOptions = function (path, data) {
-        if (isDefined(data.weight)) {
-          path.setStyle({ weight: data.weight });
+        var updatedStyle = {};
+        for (var i = 0; i < availableOptions.length; i++) {
+          var optionName = availableOptions[i];
+          if (isDefined(data[optionName])) {
+            updatedStyle[optionName] = data[optionName];
+          }
         }
-        if (isDefined(data.color)) {
-          path.setStyle({ color: data.color });
-        }
-        if (isDefined(data.opacity)) {
-          path.setStyle({ opacity: data.opacity });
-        }
+        path.setStyle(data);
       };
       var _isValidPolyline = function (latlngs) {
         if (!isArray(latlngs)) {
@@ -2351,7 +2349,7 @@
         // if there are overlays
         if (isDefined(layers) && isDefined(layers.overlays)) {
           for (var key in layers.overlays) {
-            if (layers.overlays[key] instanceof L.LayerGroup) {
+            if (layers.overlays[key] instanceof L.LayerGroup || layers.overlays[key] instanceof L.FeatureGroup) {
               if (layers.overlays[key].hasLayer(marker)) {
                 layers.overlays[key].removeLayer(marker);
                 return;
@@ -2464,7 +2462,7 @@
                 }
                 // Is a group layer?
                 var layerGroup = layers.overlays[markerData.layer];
-                if (!(layerGroup instanceof L.LayerGroup) || !(layerGroup instanceof L.FeatureGroup)) {
+                if (!(layerGroup instanceof L.LayerGroup || layerGroup instanceof L.FeatureGroup)) {
                   $log.error('[AngularJS - Leaflet] A marker can only be added to a layer of type "group" or "featureGroup"');
                   return;
                 }
