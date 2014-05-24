@@ -177,7 +177,7 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
                     }
                     // Is a group layer?
                     var layerGroup = layers.overlays[markerData.layer];
-                    if (!(layerGroup instanceof L.LayerGroup) || !(layerGroup instanceof L.FeatureGroup)) {
+                    if (!(layerGroup instanceof L.LayerGroup || layerGroup instanceof L.FeatureGroup)) {
                         $log.error('[AngularJS - Leaflet] A marker can only be added to a layer of type "group" or "featureGroup"');
                         return;
                     }
