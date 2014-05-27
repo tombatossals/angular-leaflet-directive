@@ -25,7 +25,8 @@
           controls: '=controls',
           eventBroadcast: '=eventBroadcast'
         },
-        template: '<div class="angular-leaflet-map"></div>',
+        transclude: true,
+        template: '<div class="angular-leaflet-map"><div ng-transclude></div></div>',
         controller: [
           '$scope',
           function ($scope) {
@@ -812,70 +813,110 @@
   ]);
   angular.module('leaflet-directive').directive('paths', [
     '$log',
+    '$q',
     'leafletData',
     'leafletMapDefaults',
     'leafletHelpers',
     'leafletPathsHelpers',
     'leafletEvents',
-    function ($log, leafletData, leafletMapDefaults, leafletHelpers, leafletPathsHelpers, leafletEvents) {
+    function ($log, $q, leafletData, leafletMapDefaults, leafletHelpers, leafletPathsHelpers, leafletEvents) {
       return {
         restrict: 'A',
         scope: false,
         replace: false,
-        require: 'leaflet',
+        require: [
+          'leaflet',
+          '?layers'
+        ],
         link: function (scope, element, attrs, controller) {
-          var isDefined = leafletHelpers.isDefined, leafletScope = controller.getLeafletScope(), paths = leafletScope.paths, createPath = leafletPathsHelpers.createPath, bindPathEvents = leafletEvents.bindPathEvents, setPathOptions = leafletPathsHelpers.setPathOptions;
-          controller.getMap().then(function (map) {
-            var defaults = leafletMapDefaults.getDefaults(attrs.id);
+          var mapController = controller[0], isDefined = leafletHelpers.isDefined, isString = leafletHelpers.isString, leafletScope = mapController.getLeafletScope(), paths = leafletScope.paths, createPath = leafletPathsHelpers.createPath, bindPathEvents = leafletEvents.bindPathEvents, setPathOptions = leafletPathsHelpers.setPathOptions;
+          mapController.getMap().then(function (map) {
+            var defaults = leafletMapDefaults.getDefaults(attrs.id), getLayers;
+            // If the layers attribute is used, we must wait until the layers are created
+            if (isDefined(controller[1])) {
+              getLayers = controller[1].getLayers;
+            } else {
+              getLayers = function () {
+                var deferred = $q.defer();
+                deferred.resolve();
+                return deferred.promise;
+              };
+            }
             if (!isDefined(paths)) {
               return;
             }
-            var leafletPaths = {};
-            leafletData.setPaths(leafletPaths, attrs.id);
-            // Function for listening every single path once created
-            var watchPathFn = function (leafletPath, name) {
-              var clearWatch = leafletScope.$watch('paths.' + name, function (pathData) {
-                  if (!isDefined(pathData)) {
-                    map.removeLayer(leafletPath);
-                    clearWatch();
-                    return;
+            getLayers().then(function (layers) {
+              var leafletPaths = {};
+              leafletData.setPaths(leafletPaths, attrs.id);
+              // Function for listening every single path once created
+              var watchPathFn = function (leafletPath, name) {
+                var clearWatch = leafletScope.$watch('paths.' + name, function (pathData) {
+                    if (!isDefined(pathData)) {
+                      map.removeLayer(leafletPath);
+                      clearWatch();
+                      return;
+                    }
+                    setPathOptions(leafletPath, pathData.type, pathData);
+                  }, true);
+              };
+              leafletScope.$watch('paths', function (newPaths) {
+                // Create the new paths
+                for (var newName in newPaths) {
+                  if (newName.search('-') !== -1) {
+                    $log.error('[AngularJS - Leaflet] The path name "' + newName + '" is not valid. It must not include "-" and a number.');
+                    continue;
                   }
-                  setPathOptions(leafletPath, pathData.type, pathData);
-                }, true);
-            };
-            leafletScope.$watch('paths', function (newPaths) {
-              // Create the new paths
-              for (var newName in newPaths) {
-                if (newName.search('-') !== -1) {
-                  $log.error('[AngularJS - Leaflet] The path name "' + newName + '" is not valid. It must not include "-" and a number.');
-                  continue;
+                  if (!isDefined(leafletPaths[newName])) {
+                    var pathData = newPaths[newName];
+                    var newPath = createPath(newName, newPaths[newName], defaults);
+                    // bind popup if defined
+                    if (isDefined(newPath) && isDefined(pathData.message)) {
+                      newPath.bindPopup(pathData.message);
+                    }
+                    // Show label if defined
+                    if (leafletHelpers.LabelPlugin.isLoaded() && isDefined(pathData.label) && isDefined(pathData.label.message)) {
+                      newPath.bindLabel(pathData.label.message, pathData.label.options);
+                    }
+                    // Check if the marker should be added to a layer
+                    if (isDefined(pathData) && isDefined(pathData.layer)) {
+                      if (!isString(pathData.layer)) {
+                        $log.error('[AngularJS - Leaflet] A layername must be a string');
+                        continue;
+                      }
+                      if (!isDefined(layers)) {
+                        $log.error('[AngularJS - Leaflet] You must add layers to the directive if the markers are going to use this functionality.');
+                        continue;
+                      }
+                      if (!isDefined(layers.overlays) || !isDefined(layers.overlays[pathData.layer])) {
+                        $log.error('[AngularJS - Leaflet] A marker can only be added to a layer of type "group"');
+                        continue;
+                      }
+                      var layerGroup = layers.overlays[pathData.layer];
+                      if (!(layerGroup instanceof L.LayerGroup || layerGroup instanceof L.FeatureGroup)) {
+                        $log.error('[AngularJS - Leaflet] Adding a marker to an overlay needs a overlay of the type "group" or "featureGroup"');
+                        continue;
+                      }
+                      // Listen for changes on the new path
+                      leafletPaths[newName] = newPath;
+                      // The path goes to a correct layer group, so first of all we add it
+                      layerGroup.addLayer(newPath);
+                      watchPathFn(newPath, newName);
+                    } else if (isDefined(newPath)) {
+                      // Listen for changes on the new path
+                      leafletPaths[newName] = newPath;
+                      map.addLayer(newPath);
+                      watchPathFn(newPath, newName);
+                    }
+                    bindPathEvents(newPath, newName, pathData, leafletScope);
+                  }
                 }
-                if (!isDefined(leafletPaths[newName])) {
-                  var pathData = newPaths[newName];
-                  var newPath = createPath(newName, newPaths[newName], defaults);
-                  // bind popup if defined
-                  if (isDefined(newPath) && isDefined(pathData.message)) {
-                    newPath.bindPopup(pathData.message);
+                // Delete paths (by name) from the array
+                for (var name in leafletPaths) {
+                  if (!isDefined(newPaths[name])) {
+                    delete leafletPaths[name];
                   }
-                  // Show label if defined
-                  if (leafletHelpers.LabelPlugin.isLoaded() && isDefined(pathData.label) && isDefined(pathData.label.message)) {
-                    newPath.bindLabel(pathData.label.message, pathData.label.options);
-                  }
-                  // Listen for changes on the new path
-                  if (isDefined(newPath)) {
-                    leafletPaths[newName] = newPath;
-                    map.addLayer(newPath);
-                    watchPathFn(newPath, newName);
-                  }
-                  bindPathEvents(newPath, newName, pathData, leafletScope);
                 }
-              }
-              // Delete paths (by name) from the array
-              for (var name in leafletPaths) {
-                if (!isDefined(newPaths[name])) {
-                  delete leafletPaths[name];
-                }
-              }
+              });
             }, true);
           });
         }
