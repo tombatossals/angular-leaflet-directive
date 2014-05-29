@@ -10,6 +10,10 @@
     <script>
         var app = angular.module("demoapp", ["leaflet-directive"]);
         app.controller("DemoController", [ "$scope", "leafletData", function($scope, leafletData) {
+          var drawnItems = new L.FeatureGroup(),
+              options = { edit: { featureGroup: drawnItems } },
+              drawControl = new L.Control.Draw(options);
+
            angular.extend($scope, {
                 london: {
                     lat: 51.505,
@@ -17,15 +21,17 @@
                     zoom: 4
                 },
                 controls: {
-                    draw: {
-                    }
+                    custom: [ drawControl ]
                 }
            });
            leafletData.getMap().then(function(map) {
-               map.on('draw:created', function (e) {
-                   var layer = e.layer;
-                   console.log(JSON.stringify(layer.toGeoJSON()));
-               });
+              map.addLayer(drawnItems)
+
+              map.on('draw:created', function (e) {
+                var layer = e.layer;
+                drawnItems.addLayer(layer);
+                console.log(JSON.stringify(layer.toGeoJSON()));
+              });
            });
        }]);
     </script>
