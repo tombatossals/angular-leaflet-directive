@@ -98,8 +98,8 @@ Running "karma:unit" (karma) task
 INFO [karma]: Karma v0.10.8 server started at http://localhost:9018/
 INFO [launcher]: Starting browser PhantomJS
 INFO [PhantomJS 1.9.2 (Linux)]: Connected on socket WUeY410y1MZhG5OYnoyc
-WARN [web-server]: 404: /base/bower_components/leaflet-dist/images/marker-icon.png
-WARN [web-server]: 404: /base/bower_components/leaflet-dist/images/marker-shadow.png
+WARN [web-server]: 404: /base/bower_components/leaflet/dist/images/marker-icon.png
+WARN [web-server]: 404: /base/bower_components/leaflet/dist/images/marker-shadow.png
 WARN [web-server]: 404: /url
 PhantomJS 1.9.2 (Linux): Executed 108 of 108 SUCCESS (0.875 secs / 0.625 secs)
 
