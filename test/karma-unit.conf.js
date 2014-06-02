@@ -7,7 +7,7 @@ module.exports = function(karma) {
         files: [
             'bower_components/leaflet/dist/leaflet-src.js',
             'bower_components/angular/angular.js',
-            'bower_components/leaflet.markerclusterer/dist/leaflet.markercluster.js',
+            'bower_components/leaflet.markercluster/dist/leaflet.markercluster.js',
             'bower_components/angular-mocks/angular-mocks.js',
             'dist/angular-leaflet-directive.js',
             //'src/**/*.js',
