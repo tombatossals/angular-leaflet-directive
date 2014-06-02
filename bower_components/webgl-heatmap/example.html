@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- script src="https://www.khronos.org/registry/webgl/sdk/debug/webgl-debug.js"></script -->
+        <script src="webgl-heatmap.js"></script>
+        <script type="text/javascript">
+            window.onload = function(){
+                var canvas = document.getElementsByTagName('canvas')[0];
+                var heatmap = createWebGLHeatmap({canvas: canvas, intensityToAlpha:true});
+                //var heatmap = createWebGLHeatmap({canvas: canvas, intensityToAlpha:true, alphaRange: [1, 0]}); // inverse transparency
+                //var heatmap = createWebGLHeatmap({canvas: canvas, intensityToAlpha:true, alphaRange: [0, 0.05]}); // steep transparency
+                //var heatmap = createWebGLHeatmap({canvas: canvas, intensityToAlpha:true, gradientTexture:'deep-sea-gradient.png'});
+                //var heatmap = createWebGLHeatmap({canvas: canvas, intensityToAlpha:false, gradientTexture:'skyline-gradient.png'});
+                //var heatmap = createWebGLHeatmap({width: 500, height: 500}); // statically sized heatmap
+
+                document.body.appendChild(heatmap.canvas);
+
+                var paintAtCoord = function(x, y){
+                    var count = 0;
+                    while(count < 200){
+                        var xoff = Math.random()*2-1;
+                        var yoff = Math.random()*2-1;
+                        var l = xoff*xoff + yoff*yoff;
+                        if(l > 1){
+                            continue;
+                        }
+                        var ls = Math.sqrt(l);
+                        xoff/=ls; yoff/=ls;
+                        xoff*=1-l; yoff*=1-l;
+                        count += 1;
+                        heatmap.addPoint(x+xoff*50, y+yoff*50, 30, 2/300);
+                    }
+                }
+
+                // event handling
+                var onTouchMove = function(evt){
+                    evt.preventDefault();
+                    var touches = evt.changedTouches;
+                    for(var i=0; i<touches.length; i++){
+                        var touch = touches[i];
+                        paintAtCoord(touch.pageX, touch.pageY);
+                    }
+                };
+                canvas.addEventListener("touchmove", onTouchMove, false);
+
+                canvas.onmousemove = function(event){
+                    var x = event.offsetX || event.clientX;
+                    var y = event.offsetY || event.clientY;
+
+                    paintAtCoord(x, y);
+                        
+                }
+                canvas.onclick = function(){
+                    heatmap.clear();
+                }
+
+                var raf = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
+                                         window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+
+                var update = function(){
+                    //heatmap.addPoint(100, 100, 100, 10/255);
+                    heatmap.adjustSize(); // can be commented out for statically sized heatmaps, resize clears the map
+                    heatmap.update(); // adds the buffered points
+                    heatmap.display(); // adds the buffered points
+                    //heatmap.multiply(0.9995);
+                    //heatmap.blur();
+                    //heatmap.clamp(0.0, 1.0); // depending on usecase you might want to clamp it
+                    raf(update);
+                }
+                raf(update);
+            }
+        </script>
+        <style type="text/css">
+            body,html,canvas{
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+                font-family: sans-serif;
+                color: black;
+                overflow: hidden;
+            }
+            div.controls{
+                font-weight: bold;
+                position: absolute;
+                top: 10px;
+                left: 10px;
+            }
+        </style>
+    </head>
+    <body>
+        <canvas></canvas>
+    </body>
+</html>

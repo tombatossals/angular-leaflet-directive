@@ -8,7 +8,11 @@ function printTitle ($title) {
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<<<<<<< HEAD
 <meta name="author" content="Ursudio" />
+=======
+<meta name="author" content="Benjamin J DeLong" />
+>>>>>>> 99264ae6125691a3e8d756eb72ebc0e7967b8e68
 <meta name="robots" content="noindex, nofollow, noarchive" />
 <meta name="viewport" content="width=820" />
 <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css"></link>
@@ -305,4 +309,8 @@ Web GL Heatmap Leaflet Plugin
 	</script>
 	
 	</body>
+<<<<<<< HEAD
 </html>
+=======
+</html>
+>>>>>>> 99264ae6125691a3e8d756eb72ebc0e7967b8e68

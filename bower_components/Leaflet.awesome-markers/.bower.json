@@ -1,6 +1,6 @@
 {
   "name": "Leaflet.awesome-markers",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "homepage": "https://github.com/lvoogdt/Leaflet.awesome-markers",
   "authors": [
     "Lennard Voogdt <lvoogdt@gmail.com>"
@@ -18,11 +18,11 @@
     "test",
     "tests"
   ],
-  "_release": "2.0.1",
+  "_release": "2.0.2",
   "_resolution": {
     "type": "version",
-    "tag": "v2.0.1",
-    "commit": "0a3db2ee3283ff763c84b877bce7ef83f3909fc7"
+    "tag": "v2.0.2",
+    "commit": "bfac1eb6f7896072d690bde57c1fb5002961a99a"
   },
   "_source": "git://github.com/lvoogdt/Leaflet.awesome-markers.git",
   "_target": "*",
