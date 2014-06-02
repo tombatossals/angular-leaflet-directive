@@ -29,7 +29,8 @@
     "leaflet-plugins": "1.0.1",
     "esri-leaflet": "0.0.1-beta.4",
     "proj4": "~2.1.2",
-    "proj4leaflet": "~0.7.0"
+    "proj4leaflet": "~0.7.0",
+    "Leaflet.MakiMarkers": "~1.0.1"
   },
   "ignore": [
     "**/.*",
