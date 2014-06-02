@@ -1,0 +1,14 @@
+{
+  "name": "proj4leaflet",
+  "homepage": "https://github.com/kartena/Proj4Leaflet",
+  "version": "0.7.0",
+  "_release": "0.7.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.7.0",
+    "commit": "b1090eb50c6165ea3bbd6a6d6096f3c5316e7a7a"
+  },
+  "_source": "git://github.com/kartena/Proj4Leaflet.git",
+  "_target": "~0.7.0",
+  "_originalSource": "proj4leaflet"
+}

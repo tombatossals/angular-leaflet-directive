@@ -1,0 +1,76 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Leaflet.MakiMarkers Example</title>
+    <meta charset="utf-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.1/leaflet.css" />
+    <script src="http://cdn.leafletjs.com/leaflet-0.7.1/leaflet.js?2"></script>
+    <script src="Leaflet.MakiMarkers.js"></script>
+</head>
+<body>
+    <div id="map" style="width: 600px; height: 400px"></div>
+
+    <script>
+        var map = L.map('map').setView([30.289, -97.74], 12);
+
+        L.tileLayer('http://{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+            subdomains: ['otile1', 'otile2', 'otile3', 'otile4'],
+            attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Tiles Courtesy of <a href="http://www.mapquest.com/" target="_blank">MapQuest</a> <img src="http://developer.mapquest.com/content/osm/mq_logo.png">'
+        }).addTo(map);
+
+        var rocketIcon = L.MakiMarkers.icon({
+            icon: "rocket",
+            color: "#b0b",
+            size: "m"
+        });
+
+        L.marker([30.287, -97.72], {icon: rocketIcon}).addTo(map)
+            .bindPopup("<strong>Medium Rocket!</strong>");
+
+        var beerIcon = L.MakiMarkers.icon({
+            icon: "beer",
+            color: "#12a",
+            size: "l"
+        });
+
+        L.marker([30.31096, -97.74277], {icon: beerIcon}).addTo(map)
+            .bindPopup("<strong>Large Beer!</strong>");
+
+        var warehouseIcon = L.MakiMarkers.icon({
+            icon: "warehouse",
+            color: "#0a0",
+            size: "s"
+        });
+
+        L.marker([30.26672, -97.74541], {icon: warehouseIcon}).addTo(map)
+            .bindPopup("<strong>Small Warehouse!</strong>");
+
+        var noIconMarker = L.MakiMarkers.icon({
+            icon: null,
+            color: "#b00"
+        });
+
+        L.marker([30.308064585977814, -97.79387256712653], {
+            icon: noIconMarker})
+                .addTo(map)
+                .bindPopup("<strong>No Icon!</strong>");
+
+
+        var noColorMarker = L.MakiMarkers.icon({
+            icon: null,
+            color: null
+        });
+
+        L.marker([30.25173261265964, -97.69636890501715], {
+            icon: noColorMarker})
+                .addTo(map)
+                .bindPopup("<strong>No Color!</strong>");
+
+    </script>
+</body>
+</html>

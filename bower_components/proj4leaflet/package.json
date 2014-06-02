@@ -1,0 +1,42 @@
+{
+  "name": "proj4leaflet",
+  "version": "0.7.0",
+  "description": "Smooth Proj4js integration with Leaflet",
+  "main": "src/proj4leaflet.js",
+  "directories": {
+    "test": "test",
+    "example": "examples"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/kartena/Proj4Leaflet.git"
+  },
+  "keywords": [
+    "maps",
+    "proj4",
+    "projection",
+    "leaflet"
+  ],
+  "author": "Per Liedman <per.liedman@kartena.se> (https://github.com/perliedman/)",
+  "contributors": [
+    "Mattias Bengtsson (https://github.com/moonlite/)",
+    "Christopher Fredén (https://github.com/icetan/)",
+    "Peter Thorin (https://github.com/pthorin/)",
+    "S. Andrew Sheppard (https://github.com/sheppard)",
+    "Leigh Hunt (https://github.com/leighghunt/)",
+    "Vladimir Agafonkin (https://github.com/mourner)",
+    "Mathieu Leplatre (https://github.com/leplatrem)",
+    "fnicollet (https://github.com/fnicollet)"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kartena/Proj4Leaflet/issues"
+  },
+  "dependencies": {
+    "leaflet": "~0.6.4",
+    "proj4": "~1.4.0"
+  }
+}

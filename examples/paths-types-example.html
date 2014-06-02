@@ -2,9 +2,9 @@
 <html ng-app="demoapp">
   <head>
     <script src="../bower_components/angular/angular.min.js"></script>
-    <script src="../bower_components/leaflet-dist/leaflet.js"></script>
+    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
     <script src="../dist/angular-leaflet-directive.min.js"></script>
-    <link rel="stylesheet" href="../bower_components/leaflet-dist/leaflet.css" />
+    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
     <script>
         angular.module("demoapp", ["leaflet-directive"]);
@@ -37,7 +37,7 @@
                 Brussels: {
                     lat: 50.8333,
                     lng: 4
-                },
+                }
 
             };
 
@@ -48,7 +48,11 @@
                 },
                 multiPolyline: {
                     type: "multiPolyline",
-                    latlngs: [ [ europeCapitals.London, europeCapitals.Lisbon ], [ europeCapitals.Paris, europeCapitals.Madrid ] ]
+                    latlngs: [
+                        [ europeCapitals.London, europeCapitals.Lisbon ],
+                        [ europeCapitals.Paris, europeCapitals.Madrid ],
+                        [ europeCapitals.Rome, europeCapitals.Berlin ]
+                    ]
                 },
                 polygon: {
                    type: "polygon",
@@ -58,7 +62,8 @@
                     type: "multiPolygon",
                     latlngs: [
                                 [ europeCapitals.London, europeCapitals.Lisbon , europeCapitals.Madrid, europeCapitals.Paris ],
-                                [ europeCapitals.Berlin, europeCapitals.Rome, europeCapitals.Brussels ]
+                                [ europeCapitals.Berlin, europeCapitals.Rome, europeCapitals.Brussels ],
+                                [ europeCapitals.London, europeCapitals.Rome, europeCapitals.Paris ]
                             ]
 
                 },
