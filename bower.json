@@ -12,7 +12,7 @@
   ],
   "dependencies": {
     "angular": "1.2.x",
-    "leaflet-dist": "0.7.x"
+    "leaflet": "0.7.x"
   },
   "devDependencies": {
     "jquery": "2.1.x",
