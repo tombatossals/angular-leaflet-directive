@@ -2,10 +2,11 @@
 <html ng-app="demoapp">
   <head>
     <script src="../bower_components/angular/angular.min.js"></script>
-    <script src="../bower_components/leaflet-dist/leaflet.js"></script>
+    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
     <script src="../dist/angular-leaflet-directive.min.js"></script>
     <script src="../bower_components/Leaflet.awesome-markers/dist/leaflet.awesome-markers.js"></script>
-    <link rel="stylesheet" href="../bower_components/leaflet-dist/leaflet.css" />
+    <script src="../bower_components/Leaflet.MakiMarkers/Leaflet.MakiMarkers.js"></script>
+    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="../bower_components/Leaflet.awesome-markers/dist/leaflet.awesome-markers.css">
     <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap-theme.min.css">
@@ -41,6 +42,12 @@
                     type: 'awesomeMarker',
                     icon: 'tag',
                     markerColor: 'red'
+                },
+                iconD: {
+                    type: 'makiMarker',
+                    icon: 'beer',
+                    color: '#f00',
+                    size: "l"
                 }
             });
             $scope.$on('leafletDirectiveMarker.click', function(e, args) {
@@ -102,7 +109,7 @@
                     </div>
                     <h3>Icon</h3>
                     <div class="btn-group" data-toggle="buttons">
-                        <label class="btn btn-primary" ng-class="{ active: markers.m1.icon != iconB && markers.m1.icon != iconC }">
+                        <label class="btn btn-primary" ng-class="{ active: markers.m1.icon != iconB && markers.m1.icon != iconC && markers.m1.icon != iconD }">
                             <input type="radio" ng-model="markers.m1.icon" ng-value="iconA" class="btn btn-default">Default</button>
                         </label>
                         <label class="btn btn-primary" ng-class="{ active: markers.m1.icon == iconB }">
@@ -110,6 +117,9 @@
                         </label>
                         <label class="btn btn-primary" ng-class="{ active: markers.m1.icon == iconC }">
                             <input type="radio" ng-model="markers.m1.icon" ng-value="iconC" class="btn btn-default">AwesomeMarker Icon</button>
+                        </label>
+                        <label class="btn btn-primary" ng-class="{ active: markers.m1.icon == iconD }">
+                            <input type="radio" ng-model="markers.m1.icon" ng-value="iconD" class="btn btn-default">MakiMarker Icon</button>
                         </label>
                     </div>
                     <h3 ng-show="markers.m1.icon == iconC">AwesomeIcon color</h3>
@@ -137,6 +147,42 @@
                         </label>
                         <label class="btn btn-primary" ng-class="{ active: iconC.color == 'home' }">
                             <input type="radio" ng-model="iconC.icon" ng-value="'home'" class="btn btn-default">Home</button>
+                        </label>
+                    </div>
+                    <h3 ng-show="markers.m1.icon == iconD">MakiMarker color</h3>
+                    <div class="btn-group" data-toggle="buttons" ng-show="markers.m1.icon == iconD">
+                        <label class="btn btn-primary" ng-class="{ active: iconD.color == '#f00' }">
+                            <input type="radio" ng-model="iconD.color" ng-value="'#f00'" class="btn btn-default">#ff0000</button>
+                        </label>
+                        <label class="btn btn-primary" ng-class="{ active: iconD.color == '#0f0' }">
+                            <input type="radio" ng-model="iconD.color" ng-value="'#0f0'" class="btn btn-default">#00ff00</button>
+                        </label>
+                        <label class="btn btn-primary" ng-class="{ active: iconD.color == '#00f' }">
+                            <input type="radio" ng-model="iconD.color" ng-value="'#00f'" class="btn btn-default">#0000ff</button>
+                        </label>
+                    </div>
+                    <h3 ng-show="markers.m1.icon == iconD">MakiMarker icon</h3>
+                    <div class="btn-group" data-toggle="buttons" ng-show="markers.m1.icon == iconD">
+                        <label class="btn btn-primary" ng-class="{ active: iconD.icon == 'beer' }">
+                            <input type="radio" ng-model="iconD.icon" ng-value="'beer'" class="btn btn-default">Beer</button>
+                        </label>
+                        <label class="btn btn-primary" ng-class="{ active: iconD.icon == 'rocket' }">
+                            <input type="radio" ng-model="iconD.icon" ng-value="'rocket'" class="btn btn-default">Rocket</button>
+                        </label>
+                        <label class="btn btn-primary" ng-class="{ active: iconD.icon == 'warehouse' }">
+                            <input type="radio" ng-model="iconD.icon" ng-value="'warehouse'" class="btn btn-default">Warehouse</button>
+                        </label>
+                    </div>
+                    <h3 ng-show="markers.m1.icon == iconD">MakiMarker size</h3>
+                    <div class="btn-group" data-toggle="buttons" ng-show="markers.m1.icon == iconD">
+                        <label class="btn btn-primary" ng-class="{ active: iconD.size == 's' }">
+                            <input type="radio" ng-model="iconD.size" ng-value="'s'" class="btn btn-default">Small</button>
+                        </label>
+                        <label class="btn btn-primary" ng-class="{ active: iconD.size == 'm' }">
+                            <input type="radio" ng-model="iconD.size" ng-value="'m'" class="btn btn-default">Medium</button>
+                        </label>
+                        <label class="btn btn-primary" ng-class="{ active: iconD.size == 'l' }">
+                            <input type="radio" ng-model="iconD.size" ng-value="'l'" class="btn btn-default">Large</button>
                         </label>
                     </div>
                 </form>

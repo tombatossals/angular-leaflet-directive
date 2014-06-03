@@ -3,6 +3,7 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
     var isDefined = leafletHelpers.isDefined,
         MarkerClusterPlugin = leafletHelpers.MarkerClusterPlugin,
         AwesomeMarkersPlugin = leafletHelpers.AwesomeMarkersPlugin,
+        MakiMarkersPlugin = leafletHelpers.MakiMarkersPlugin,
         safeApply     = leafletHelpers.safeApply,
         Helpers = leafletHelpers,
         isString = leafletHelpers.isString,
@@ -17,6 +18,14 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
             }
 
             return new L.AwesomeMarkers.icon(iconData);
+        }
+        
+        if (isDefined(iconData) && isDefined(iconData.type) && iconData.type === 'makiMarker') {
+            if (!MakiMarkersPlugin.isLoaded()) {
+                $log.error('[AngularJS - Leaflet] The MakiMarkers Plugin is not loaded.');
+            }
+            
+            return new L.MakiMarkers.icon(iconData);
         }
 
         if (isDefined(iconData) && isDefined(iconData.type) && iconData.type === 'div') {
