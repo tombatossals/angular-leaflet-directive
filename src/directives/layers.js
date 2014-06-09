@@ -149,14 +149,14 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                         }
                         // layer already exists, update options if appropriate
                         else {
-                            if (newOverlayLayers[newName].layerOptions) {
+                            if (newOverlayLayers[newName].layerOptions && newOverlayLayers[newName].layerOptions.opacity) {
                                 if (leafletLayers.overlays[newName].options.opacity != newOverlayLayers[newName].layerOptions.opacity) {
                                     leafletLayers.overlays[newName].setOpacity(newOverlayLayers[newName].layerOptions.opacity);
                                 }
                             }
 
-                            if (newOverlayLayers[newName].layerOptions) {
-                                if (leafletLayers.overlays.options.zIndex != newOverlayLayers[newName].layerOptions.zIndex) {
+                            if (newOverlayLayers[newName].layerOptions && newOverlayLayers[newName].layerOptions.zIndex) {
+                                if (leafletLayers.overlays.options.zIndex != newOverlayLayers[newName].layerOptions.zIndex ) {
                                     leafletLayers.overlays.setZIndex(newOverlayLayers[newName].layerOptions.zIndex);
                                 }
                             }
