@@ -17,7 +17,8 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($q, leafl
             controls: '=controls',
             eventBroadcast: '=eventBroadcast'
         },
-        template: '<div class="angular-leaflet-map"></div>',
+        transclude: true,
+        template: '<div class="angular-leaflet-map"><div ng-transclude></div></div>',
         controller: function ($scope) {
             _leafletMap = $q.defer();
             this.getMap = function () {

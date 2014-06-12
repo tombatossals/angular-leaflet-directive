@@ -3,6 +3,7 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
     var isDefined = leafletHelpers.isDefined,
         MarkerClusterPlugin = leafletHelpers.MarkerClusterPlugin,
         AwesomeMarkersPlugin = leafletHelpers.AwesomeMarkersPlugin,
+        MakiMarkersPlugin = leafletHelpers.MakiMarkersPlugin,
         safeApply     = leafletHelpers.safeApply,
         Helpers = leafletHelpers,
         isString = leafletHelpers.isString,
@@ -17,6 +18,14 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
             }
 
             return new L.AwesomeMarkers.icon(iconData);
+        }
+        
+        if (isDefined(iconData) && isDefined(iconData.type) && iconData.type === 'makiMarker') {
+            if (!MakiMarkersPlugin.isLoaded()) {
+                $log.error('[AngularJS - Leaflet] The MakiMarkers Plugin is not loaded.');
+            }
+            
+            return new L.MakiMarkers.icon(iconData);
         }
 
         if (isDefined(iconData) && isDefined(iconData.type) && iconData.type === 'div') {
@@ -48,7 +57,7 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
         // if there are overlays
         if (isDefined(layers) && isDefined(layers.overlays)) {
             for (var key in layers.overlays) {
-                if (layers.overlays[key] instanceof L.LayerGroup) {
+                if (layers.overlays[key] instanceof L.LayerGroup || layers.overlays[key] instanceof L.FeatureGroup) {
                     if (layers.overlays[key].hasLayer(marker)) {
                         layers.overlays[key].removeLayer(marker);
                         return;
@@ -177,8 +186,8 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
                     }
                     // Is a group layer?
                     var layerGroup = layers.overlays[markerData.layer];
-                    if (!(layerGroup instanceof L.LayerGroup)) {
-                        $log.error('[AngularJS - Leaflet] A marker can only be added to a layer of type "group"');
+                    if (!(layerGroup instanceof L.LayerGroup || layerGroup instanceof L.FeatureGroup)) {
+                        $log.error('[AngularJS - Leaflet] A marker can only be added to a layer of type "group" or "featureGroup"');
                         return;
                     }
                     // The marker goes to a correct layer group, so first of all we add it

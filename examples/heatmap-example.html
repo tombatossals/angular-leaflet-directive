@@ -4,34 +4,37 @@
     <script src="../bower_components/angular/angular.min.js"></script>
     <script src="../bower_components/leaflet/dist/leaflet.js"></script>
     <script src="../dist/angular-leaflet-directive.min.js"></script>
+    <script src="../bower_components/webgl-heatmap/webgl-heatmap.js"></script>
+    <script src="../bower_components/webgl-heatmap-leaflet/js/webgl-heatmap.js"></script>
+    <script src="../bower_components/webgl-heatmap-leaflet/js/webgl-heatmap-leaflet.js"></script>
     <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
     <script>
         var app = angular.module("demoapp", ["leaflet-directive"]);
         app.controller("DemoController", [ "$scope", function($scope) {
+            var dataPoints = [
+                [44.651144316,-63.586260171, 0.5],
+                [44.75, -63.5, 0.8] ];
+
             angular.extend($scope, {
                 center: {
-                    lat: 39,
-                    lng: -100,
-                    zoom: 4
+                    lat: 44.8091,
+                    lng: -63.3636,
+                    zoom: 9
                 },
                 layers: {
                     baselayers: {
-                        xyz: {
-                            name: 'OpenStreetMap (XYZ)',
+                        osm: {
+                            name: 'OpenStreetMap',
                             url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
                             type: 'xyz'
                         }
                     },
                     overlays: {
-                        wms: {
-                            name: 'EEUU States (WMS)',
-                            type: 'wms',
-                            url: 'http://suite.opengeo.org/geoserver/usa/wms',
-                            layerParams: {
-                                layers: 'usa:states',
-                                format: 'image/png',
-                                transparent: true
-                            }
+                        heatmap: {
+                            name: 'Heat Map',
+                            type: 'heatmap',
+                            data: dataPoints,
+                            visible: true
                         }
                     }
                 }
@@ -58,8 +61,8 @@
         <leaflet center="center" layers="layers"></leaflet>
     </div>
     <div class="right">
-        <h1>Baselayer with overlay definition</h1>
-        <p>You can add overlays to a baselayer, which will show a layer selector on the top right corner, defining <strong>layers</strong> like this.</p>
+        <h1>HeatMap overlay example</h1>
+        <p>You can use the <a href="https://github.com/ursudio/webgl-heatmap-leaflet">WebGL HeatMap overlay plugin</a>, like this. Please read the heatmap plugin documentation to use it.</p>
         <pre ng-bind="layers | json"></pre>
     </div>
 </body>

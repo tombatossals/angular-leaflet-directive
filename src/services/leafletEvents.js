@@ -209,6 +209,22 @@ angular.module("leaflet-directive").factory('leafletEvents', function ($rootScop
 
         getAvailablePathEvents: _getAvailablePathEvents,
 
+        notifyCenterChangedToBounds: function(scope) {
+            scope.$broadcast("boundsChanged");
+        },
+
+        notifyCenterUrlHashChanged: function(scope, map, attrs, search) {
+            if (!isDefined(attrs.urlHashCenter)) {
+                return;
+            }
+            var center = map.getCenter();
+            var centerUrlHash = (center.lat).toFixed(4) + ":" + (center.lng).toFixed(4) + ":" + map.getZoom();
+            if (!isDefined(search.c) || search.c !== centerUrlHash) {
+                //$log.debug("notified new center...");
+                scope.$emit("centerUrlHash", centerUrlHash);
+            }
+        },
+
         bindMarkerEvents: function(marker, name, markerData, leafletScope) {
             var markerEvents = [];
             var i;

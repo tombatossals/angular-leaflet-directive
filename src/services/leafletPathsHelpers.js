@@ -3,7 +3,16 @@ angular.module("leaflet-directive").factory('leafletPathsHelpers', function ($ro
         isArray = leafletHelpers.isArray,
         isNumber = leafletHelpers.isNumber,
         isValidPoint = leafletHelpers.isValidPoint;
+    var availableOptions = [
+        // Path options
+        'stroke', 'weight', 'color', 'opacity',
+        'fill', 'fillColor', 'fillOpacity',
+        'dashArray', 'lineCap', 'lineJoin', 'clickable',
+        'pointerEvents', 'className',
 
+        // Polyline options
+        'smoothFactor', 'noClip'
+    ];
     function _convertToLeafletLatLngs(latlngs) {
         return latlngs.filter(function(latlng) {
             return isValidPoint(latlng);
@@ -23,17 +32,6 @@ angular.module("leaflet-directive").factory('leafletPathsHelpers', function ($ro
     }
 
     function _getOptions(path, defaults) {
-        var availableOptions = [
-            // Path options
-            'stroke', 'weight', 'color', 'opacity',
-            'fill', 'fillColor', 'fillOpacity',
-            'dashArray', 'lineCap', 'lineJoin', 'clickable',
-            'pointerEvents', 'className',
-
-            // Polyline options
-            'smoothFactor', 'noClip'
-        ];
-
         var options = {};
         for (var i = 0; i < availableOptions.length; i++) {
             var optionName = availableOptions[i];
@@ -48,18 +46,15 @@ angular.module("leaflet-directive").factory('leafletPathsHelpers', function ($ro
         return options;
     }
 
-    var _updatePathOptions = function(path, data) {
-        if (isDefined(data.weight)) {
-            path.setStyle({ weight: data.weight });
+    var _updatePathOptions = function (path, data) {
+        var updatedStyle = {};
+        for (var i = 0; i < availableOptions.length; i++) {
+            var optionName = availableOptions[i];
+            if (isDefined(data[optionName])) {
+                updatedStyle[optionName] = data[optionName];
+            }
         }
-
-        if (isDefined(data.color)) {
-            path.setStyle({ color: data.color });
-        }
-
-        if (isDefined(data.opacity)) {
-            path.setStyle({ opacity: data.opacity });
-        }
+        path.setStyle(data);
     };
 
     var _isValidPolyline = function(latlngs) {

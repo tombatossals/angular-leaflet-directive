@@ -96,8 +96,8 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                                         continue;
                                     }
                                     var layerGroup = layers.overlays[markerData.layer];
-                                    if (!(layerGroup instanceof L.LayerGroup)) {
-                                        $log.error('[AngularJS - Leaflet] Adding a marker to an overlay needs a overlay of the type "group"');
+                                    if (!(layerGroup instanceof L.LayerGroup || layerGroup instanceof L.FeatureGroup)) {
+                                        $log.error('[AngularJS - Leaflet] Adding a marker to an overlay needs a overlay of the type "group" or "featureGroup"');
                                         continue;
                                     }
 

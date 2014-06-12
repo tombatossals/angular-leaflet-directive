@@ -39,6 +39,16 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
     }
 
     return {
+        //Determine if a reference is {}
+        isEmpty: function(value) {
+            return Object.keys(value).length === 0;
+        },
+
+        //Determine if a reference is undefined or {}
+        isUndefinedOrEmpty: function (value) {
+            return (angular.isUndefined(value) || value === null) || Object.keys(value).length === 0;
+        },
+
         // Determine if a reference is defined
         isDefined: function(value) {
             return angular.isDefined(value) && value !== null;
@@ -148,6 +158,32 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
                 }
             }
         },
+        MakiMarkersPlugin: {
+            isLoaded: function() {
+                if (angular.isDefined(L.MakiMarkers) && angular.isDefined(L.MakiMarkers.Icon)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            },
+            is: function(icon) {
+                if (this.isLoaded()) {
+                    return icon instanceof L.MakiMarkers.Icon;
+                } else {
+                    return false;
+                }
+            },
+            equal: function (iconA, iconB) {
+                if (!this.isLoaded()) {
+                    return false;
+                }
+                if (this.is(iconA)) {
+                    return angular.equals(iconA, iconB);
+                } else {
+                    return false;
+                }
+            }
+        },
         LabelPlugin: {
             isLoaded: function() {
                 return angular.isDefined(L.Label);
@@ -187,6 +223,11 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
         ChinaLayerPlugin: {
             isLoaded: function() {
                 return angular.isDefined(L.tileLayer.chinaProvider);
+            }
+        },
+        HeatMapLayerPlugin: {
+            isLoaded: function() {
+                return angular.isDefined(L.TileLayer.WebGLHeatMap);
             }
         },
         BingLayerPlugin: {

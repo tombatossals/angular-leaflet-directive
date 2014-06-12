@@ -13,7 +13,7 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
             controls: {
                 layers: {
                     visible: true,
-                    position:'topright',
+                    position: 'topright',
                     collapsed: true
                 }
             },
@@ -36,6 +36,7 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
     }
 
     var isDefined = leafletHelpers.isDefined,
+        isObject = leafletHelpers.isObject,
         obtainEffectiveMapId = leafletHelpers.obtainEffectiveMapId,
         defaults = {};
 
@@ -78,28 +79,36 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
                 mapDefaults.markerZoomAnimation = d.markerZoomAnimation;
             }
 
+            if (d.map) {
+                for (var option in d.map) {
+                    mapDefaults[option] = d.map[option];
+                }
+            }
+
             return mapDefaults;
         },
 
-        setDefaults: function(userDefaults, scopeId) {
+        setDefaults: function (userDefaults, scopeId) {
             var newDefaults = _getDefaults();
 
             if (isDefined(userDefaults)) {
-                newDefaults.doubleClickZoom = isDefined(userDefaults.doubleClickZoom) ?  userDefaults.doubleClickZoom : newDefaults.doubleClickZoom;
-                newDefaults.scrollWheelZoom = isDefined(userDefaults.scrollWheelZoom) ?  userDefaults.scrollWheelZoom : newDefaults.doubleClickZoom;
-                newDefaults.zoomControl = isDefined(userDefaults.zoomControl) ?  userDefaults.zoomControl : newDefaults.zoomControl;
-                newDefaults.zoomsliderControl = isDefined(userDefaults.zoomsliderControl) ?  userDefaults.zoomsliderControl : newDefaults.zoomsliderControl;
-                newDefaults.attributionControl = isDefined(userDefaults.attributionControl) ?  userDefaults.attributionControl : newDefaults.attributionControl;
+                newDefaults.doubleClickZoom = isDefined(userDefaults.doubleClickZoom) ? userDefaults.doubleClickZoom : newDefaults.doubleClickZoom;
+                newDefaults.scrollWheelZoom = isDefined(userDefaults.scrollWheelZoom) ? userDefaults.scrollWheelZoom : newDefaults.doubleClickZoom;
+                newDefaults.zoomControl = isDefined(userDefaults.zoomControl) ? userDefaults.zoomControl : newDefaults.zoomControl;
+                newDefaults.zoomsliderControl = isDefined(userDefaults.zoomsliderControl) ? userDefaults.zoomsliderControl : newDefaults.zoomsliderControl;
+                newDefaults.attributionControl = isDefined(userDefaults.attributionControl) ? userDefaults.attributionControl : newDefaults.attributionControl;
                 newDefaults.tileLayer = isDefined(userDefaults.tileLayer) ? userDefaults.tileLayer : newDefaults.tileLayer;
                 newDefaults.zoomControlPosition = isDefined(userDefaults.zoomControlPosition) ? userDefaults.zoomControlPosition : newDefaults.zoomControlPosition;
                 newDefaults.keyboard = isDefined(userDefaults.keyboard) ? userDefaults.keyboard : newDefaults.keyboard;
                 newDefaults.dragging = isDefined(userDefaults.dragging) ? userDefaults.dragging : newDefaults.dragging;
 
-                if(isDefined(userDefaults.controls)) {
+                if (isDefined(userDefaults.controls)) {
                     angular.extend(newDefaults.controls, userDefaults.controls);
                 }
 
-                if (isDefined(userDefaults.crs) && isDefined(L.CRS[userDefaults.crs])) {
+                if (isObject(userDefaults.crs)) {
+                    newDefaults.crs = userDefaults.crs;
+                } else if (isDefined(L.CRS[userDefaults.crs])) {
                     newDefaults.crs = L.CRS[userDefaults.crs];
                 }
 
@@ -130,6 +139,10 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
                 if (isDefined(userDefaults.worldCopyJump)) {
                     newDefaults.worldCopyJump = userDefaults.worldCopyJump;
                 }
+
+                if (isDefined(userDefaults.map)) {
+                    newDefaults.map = userDefaults.map;
+                }
             }
 
             var mapId = obtainEffectiveMapId(defaults, scopeId);
@@ -138,4 +151,3 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
         }
     };
 });
-

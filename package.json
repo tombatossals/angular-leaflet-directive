@@ -2,7 +2,7 @@
   "author": "https://github.com/tombatossals/angular-leaflet-directive/graphs/contributors",
   "name": "angular-leaflet-directive",
   "description": "angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps",
-  "version": "0.7.6",
+  "version": "0.7.7",
   "homepage": "http://tombatossals.github.io/angular-leaflet-directive/",
   "repository": {
     "type": "git",
@@ -32,7 +32,7 @@
     "karma-firefox-launcher": "*",
     "karma-chrome-launcher": "*",
     "karma-html2js-preprocessor": "*",
-    "karma-jasmine": "*",
+    "karma-jasmine": "~0.2.0",
     "karma-requirejs": "*",
     "karma-coffee-preprocessor": "*",
     "karma-phantomjs-launcher": "*",
