@@ -11,7 +11,8 @@ module.exports = function(karma) {
             'bower_components/angular-mocks/angular-mocks.js',
             'dist/angular-leaflet-directive.js',
             //'src/**/*.js',
-            'test/unit/*.js'
+            'test/unit/*.js',
+            'bower_components/Leaflet.PolylineDecorator/leaflet.polylineDecorator.js'
         ],
 
         // Frameworks

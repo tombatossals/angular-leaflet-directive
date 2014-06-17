@@ -7,34 +7,33 @@ angular.module("leaflet-directive").directive("decorations", function($log, leaf
 
 		link: function(scope, element, attrs, controller) {
 			var leafletScope = controller.getLeafletScope(),
+				PolylineDecoratorPlugin = leafletHelpers.PolylineDecoratorPlugin,
 				isDefined = leafletHelpers.isDefined,
 				leafletDecorations = {};
 
+			/* Creates an "empty" decoration with a set of coordinates, but no pattern. */
 			function createDecoration(options) {
-				var decoration = L.polylineDecorator(options.coordinates);
-				return decoration;
+				if (isDefined(options) && isDefined(options.coordinates)) {
+					if (!PolylineDecoratorPlugin.isLoaded()) {
+						$log.error('[AngularJS - Leaflet] The PolylineDecorator Plugin is not loaded.');
+					}
+				}
+
+				return L.polylineDecorator(options.coordinates);
 			}
 
+			/* Updates the path and the patterns for the provided decoration, and returns the decoration. */
 			function setDecorationOptions(decoration, options) {
-				decoration.setPaths(options.coordinates);
-				return options.setAnimatedPatterns(decoration);
+				if (isDefined(decoration) && isDefined(options)) {
+					if (isDefined(options.coordinates) && isDefined(options.patterns)) {
+						decoration.setPaths(options.coordinates);
+						decoration.setPatterns(options.patterns);
+						return decoration;
+					}
+				}
 			}
 
 			controller.getMap().then(function(map) {
-				// var watchDecoration = function(leafletDecoration, name) {
-				// 	var animationId;
-				// 	var deregisterWatch = leafletScope.$watch("decorations." + name, function(decorationData) {
-				// 		clearInterval(animationId);
-				// 		if (!isDefined(decorationData)) {
-				// 			map.removeLayer(leafletDecoration);
-				// 			deregisterWatch();
-				// 			return;
-				// 		}
-				// 		animationId = setDecorationOptions(leafletDecoration, decorationData);
-				// 	}, true);
-				// };
-
-				var animationId;
 				leafletScope.$watch("decorations", function(newDecorations) {
 					for (var name in leafletDecorations) {
 						if (!isDefined(newDecorations) || !isDefined(newDecorations[name])) {
@@ -50,9 +49,8 @@ angular.module("leaflet-directive").directive("decorations", function($log, leaf
 						if (isDefined(newDecoration)) {
 							leafletDecorations[newName] = newDecoration;
 							map.addLayer(newDecoration);
+							setDecorationOptions(newDecoration, decorationData);
 						}
-						clearInterval(animationId);						
-						animationId = setDecorationOptions(newDecoration, decorationData);
 					}
 				}, true);
 			});

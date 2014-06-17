@@ -1060,6 +1060,58 @@
       };
     }
   ]);
+  angular.module('leaflet-directive').directive('decorations', [
+    '$log',
+    'leafletHelpers',
+    function ($log, leafletHelpers) {
+      return {
+        restrict: 'A',
+        scope: false,
+        replace: false,
+        require: 'leaflet',
+        link: function (scope, element, attrs, controller) {
+          var leafletScope = controller.getLeafletScope(), PolylineDecoratorPlugin = leafletHelpers.PolylineDecoratorPlugin, isDefined = leafletHelpers.isDefined, leafletDecorations = {};
+          /* Creates an "empty" decoration with a set of coordinates, but no pattern. */
+          function createDecoration(options) {
+            if (isDefined(options) && isDefined(options.coordinates)) {
+              if (!PolylineDecoratorPlugin.isLoaded()) {
+                $log.error('[AngularJS - Leaflet] The PolylineDecorator Plugin is not loaded.');
+              }
+            }
+            return L.polylineDecorator(options.coordinates);
+          }
+          /* Updates the path and the patterns for the provided decoration, and returns the decoration. */
+          function setDecorationOptions(decoration, options) {
+            if (isDefined(decoration) && isDefined(options)) {
+              if (isDefined(options.coordinates) && isDefined(options.patterns)) {
+                decoration.setPaths(options.coordinates);
+                decoration.setPatterns(options.patterns);
+                return decoration;
+              }
+            }
+          }
+          controller.getMap().then(function (map) {
+            leafletScope.$watch('decorations', function (newDecorations) {
+              for (var name in leafletDecorations) {
+                if (!isDefined(newDecorations) || !isDefined(newDecorations[name])) {
+                  delete leafletDecorations[name];
+                }
+                map.removeLayer(leafletDecorations[name]);
+              }
+              for (var newName in newDecorations) {
+                var decorationData = newDecorations[newName], newDecoration = createDecoration(decorationData);
+                if (isDefined(newDecoration)) {
+                  leafletDecorations[newName] = newDecoration;
+                  map.addLayer(newDecoration);
+                  setDecorationOptions(newDecoration, decorationData);
+                }
+              }
+            }, true);
+          });
+        }
+      };
+    }
+  ]);
   angular.module('leaflet-directive').service('leafletData', [
     '$log',
     '$q',
@@ -1072,6 +1124,7 @@
       var paths = {};
       var markers = {};
       var geoJSON = {};
+      var decorations = {};
       this.setMap = function (leafletMap, scopeId) {
         var defer = getUnresolvedDefer(maps, scopeId);
         defer.resolve(leafletMap);
@@ -1128,6 +1181,15 @@
       };
       this.getGeoJSON = function (scopeId) {
         var defer = getDefer(geoJSON, scopeId);
+        return defer.promise;
+      };
+      this.setDecorations = function (leafletDecorations, scopeId) {
+        var defer = getUnresolvedDefer(decorations, scopeId);
+        defer.resolve(leafletDecorations);
+        setResolvedDefer(decorations, scopeId);
+      };
+      this.getDecorations = function (scopeId) {
+        var defer = getDefer(decorations, scopeId);
         return defer.promise;
       };
     }
