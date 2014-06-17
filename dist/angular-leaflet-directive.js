@@ -23,6 +23,7 @@
           tiles: '=tiles',
           layers: '=layers',
           controls: '=controls',
+          decorations: '=decorations',
           eventBroadcast: '=eventBroadcast'
         },
         transclude: true,
@@ -2735,6 +2736,32 @@
             }
             if (this.is(iconA)) {
               return angular.equals(iconA, iconB);
+            } else {
+              return false;
+            }
+          }
+        },
+        PolylineDecoratorPlugin: {
+          isLoaded: function () {
+            if (angular.isDefined(L.PolylineDecorator)) {
+              return true;
+            } else {
+              return false;
+            }
+          },
+          is: function (decoration) {
+            if (this.isLoaded()) {
+              return decoration instanceof L.PolylineDecorator;
+            } else {
+              return false;
+            }
+          },
+          equal: function (decorationA, decorationB) {
+            if (!this.isLoaded()) {
+              return false;
+            }
+            if (this.is(decorationA)) {
+              return angular.equals(decorationA, decorationB);
             } else {
               return false;
             }
