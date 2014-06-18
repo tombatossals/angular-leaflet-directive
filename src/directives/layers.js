@@ -97,6 +97,12 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                                     map.addLayer(leafletLayers.baselayers[newName]);
                                 }
                             }
+                        } else {
+                            if (newBaseLayers[newName].top === true && !map.hasLayer(leafletLayers.baselayers[newName])) {
+                                map.addLayer(leafletLayers.baselayers[newName]);
+                            } else if (newBaseLayers[newName].top === false && map.hasLayer(leafletLayers.baselayers[newName])) {
+                                map.removeLayer(leafletLayers.baselayers[newName]);
+                            }
                         }
                     }
                     if (Object.keys(leafletLayers.baselayers).length === 0) {
