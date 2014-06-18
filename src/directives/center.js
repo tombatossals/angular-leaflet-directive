@@ -74,11 +74,8 @@ angular.module("leaflet-directive").directive('center',
                     var extractCenterFromUrl = function() {
                         var search = $location.search();
                         var centerParam;
-                        if (isDefined(search.c)) {
-                            var cParam = search.c.split(":");
-                            if (cParam.length === 3) {
-                                centerParam = { lat: parseFloat(cParam[0]), lng: parseFloat(cParam[1]), zoom: parseInt(cParam[2], 10) };
-                            }
+                        if (isDefined(search.lat)) {
+                            centerParam = { lat: parseFloat(search.lat), lng: parseFloat(search.lon), zoom: parseInt(search.zoom, 10) };
                         }
                         return centerParam;
                     };
