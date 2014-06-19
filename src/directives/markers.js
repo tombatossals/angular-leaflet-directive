@@ -11,7 +11,6 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                 isDefined = leafletHelpers.isDefined,
                 isString = leafletHelpers.isString,
                 leafletScope  = mapController.getLeafletScope(),
-                markers = leafletScope.markers,
                 deleteMarker = leafletMarkersHelpers.deleteMarker,
                 addMarkerWatcher = leafletMarkersHelpers.addMarkerWatcher,
                 listenMarkerEvents = leafletMarkersHelpers.listenMarkerEvents,
@@ -32,10 +31,6 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                         deferred.resolve();
                         return deferred.promise;
                     };
-                }
-
-                if (!isDefined(markers)) {
-                    return;
                 }
 
                 getLayers().then(function(layers) {

@@ -158,6 +158,34 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
                 }
             }
         },
+
+        PolylineDecoratorPlugin: {
+            isLoaded: function() {
+                if (angular.isDefined(L.PolylineDecorator)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            },
+            is: function(decoration) {
+                if (this.isLoaded()) {
+                    return decoration instanceof L.PolylineDecorator;
+                } else {
+                    return false;
+                }
+            },
+            equal: function(decorationA, decorationB) {
+                if (!this.isLoaded()) {
+                    return false;
+                }
+                if (this.is(decorationA)) {
+                    return angular.equals(decorationA, decorationB);
+                } else {
+                    return false;
+                }
+            }
+        },
+
         MakiMarkersPlugin: {
             isLoaded: function() {
                 if (angular.isDefined(L.MakiMarkers) && angular.isDefined(L.MakiMarkers.Icon)) {
