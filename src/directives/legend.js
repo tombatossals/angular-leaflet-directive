@@ -15,19 +15,21 @@ angular.module("leaflet-directive").directive('legend', function ($log, $http, l
             var legendClass = legend.legendClass ? legend.legendClass : "legend";
             var position = legend.position || 'bottomright';
             var leafletLegend;
-            
+
             controller.getMap().then(function(map) {
-                if (!isDefined(legend.url) && (!isArray(legend.colors) || !isArray(legend.labels) || legend.colors.length !== legend.labels.length)) {
-                    $log.warn("[AngularJS - Leaflet] legend.colors and legend.labels must be set.");
-                } else if(isDefined(legend.url)){
-                    $log.info("[AngularJS - Leaflet] loading arcgis legend service.");
-                } else {
-                    // TODO: Watch array legend.
-                    leafletLegend = L.control({ position: position });
-                    leafletLegend.onAdd = leafletLegendHelpers.getOnAddArrayLegend(legend, legendClass);
-                    leafletLegend.addTo(map);
-                }
-                
+                leafletScope.$watch('legend', function (legend) {
+                    if (!isDefined(legend.url) && (!isArray(legend.colors) || !isArray(legend.labels) || legend.colors.length !== legend.labels.length)) {
+                        $log.warn("[AngularJS - Leaflet] legend.colors and legend.labels must be set.");
+                    } else if(isDefined(legend.url)){
+                        $log.info("[AngularJS - Leaflet] loading arcgis legend service.");
+                    } else {
+                        // TODO: Watch array legend.
+                        leafletLegend = L.control({ position: position });
+                        leafletLegend.onAdd = leafletLegendHelpers.getOnAddArrayLegend(legend, legendClass);
+                        leafletLegend.addTo(map);
+                    }
+                });
+
                 leafletScope.$watch('legend.url', function(newURL) {
                     if(!isDefined(newURL)) {
                         return;
