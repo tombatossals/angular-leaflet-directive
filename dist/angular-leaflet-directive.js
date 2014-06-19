@@ -708,7 +708,7 @@
           '?layers'
         ],
         link: function (scope, element, attrs, controller) {
-          var mapController = controller[0], Helpers = leafletHelpers, isDefined = leafletHelpers.isDefined, isString = leafletHelpers.isString, leafletScope = mapController.getLeafletScope(), markers = leafletScope.markers, deleteMarker = leafletMarkersHelpers.deleteMarker, addMarkerWatcher = leafletMarkersHelpers.addMarkerWatcher, listenMarkerEvents = leafletMarkersHelpers.listenMarkerEvents, addMarkerToGroup = leafletMarkersHelpers.addMarkerToGroup, bindMarkerEvents = leafletEvents.bindMarkerEvents, createMarker = leafletMarkersHelpers.createMarker;
+          var mapController = controller[0], Helpers = leafletHelpers, isDefined = leafletHelpers.isDefined, isString = leafletHelpers.isString, leafletScope = mapController.getLeafletScope(), deleteMarker = leafletMarkersHelpers.deleteMarker, addMarkerWatcher = leafletMarkersHelpers.addMarkerWatcher, listenMarkerEvents = leafletMarkersHelpers.listenMarkerEvents, addMarkerToGroup = leafletMarkersHelpers.addMarkerToGroup, bindMarkerEvents = leafletEvents.bindMarkerEvents, createMarker = leafletMarkersHelpers.createMarker;
           mapController.getMap().then(function (map) {
             var leafletMarkers = {}, getLayers;
             // If the layers attribute is used, we must wait until the layers are created
@@ -720,9 +720,6 @@
                 deferred.resolve();
                 return deferred.promise;
               };
-            }
-            if (!isDefined(markers)) {
-              return;
             }
             getLayers().then(function (layers) {
               leafletData.setMarkers(leafletMarkers, attrs.id);
