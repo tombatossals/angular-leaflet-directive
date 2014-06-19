@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html ng-app="demoapp">
+  <head>
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="../bower_components/Leaflet.PolylineDecorator/leaflet.polylineDecorator.min.js"></script>
+    <script src="../dist/angular-leaflet-directive.min.js"></script>
+    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
+    <script>
+        angular.module("demoapp", ["leaflet-directive"]);
+        function DemoController($scope) {
+            angular.extend($scope, {
+                london: {
+                    lat: 51.505,
+                    lng: -0.09,
+                    zoom: 8
+                },
+                decorations: {
+                    markers: {
+                        coordinates: [[51.9, -0.4], [51.505, -0.09], [51.0, -0.4]],
+                        patterns: [
+                            { offset: 12, repeat: 25, symbol: L.Symbol.dash({pixelSize: 10, pathOptions: {color: '#f00', weight: 2}}) },
+                            { offset: 0, repeat: 25, symbol: L.Symbol.dash({pixelSize: 0}) }
+                        ]
+                    }
+                }
+            });
+        };
+    </script>
+  </head>
+  <body ng-controller="DemoController">
+    <leaflet center="london" decorations="decorations" height="480px" width="640px"></leaflet>
+  </body>
+</html>
