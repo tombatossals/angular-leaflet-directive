@@ -43,4 +43,4 @@ serve:
 
 travis:
  - 'bower:install'
- - 'test:unit'
+ - 'test-unit'
