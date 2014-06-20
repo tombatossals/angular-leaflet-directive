@@ -18,7 +18,7 @@
   "devDependencies": {
     "matchdep": "latest",
     "grunt": "latest",
-    "grunt-config-dir": "latest",
+    "load-grunt-config": "latest",
     "grunt-contrib-connect": "latest",
     "grunt-contrib-jshint": "latest",
     "grunt-shell": "latest",
