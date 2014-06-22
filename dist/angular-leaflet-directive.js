@@ -1259,7 +1259,7 @@
             }
           },
           crs: L.CRS.EPSG3857,
-          tileLayer: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+          tileLayer: '//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
           tileLayerOptions: { attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' },
           path: {
             weight: 10,
@@ -2496,6 +2496,12 @@
               zIndexOffset: isDefined(markerData.zIndexOffset) ? markerData.zIndexOffset : 0,
               iconAngle: isDefined(markerData.iconAngle) ? markerData.iconAngle : 0
             };
+          // Add any other options not added above to markerOptions
+          for (var markerDatum in markerData) {
+            if (markerData.hasOwnProperty(markerDatum) && !markerOptions.hasOwnProperty(markerDatum)) {
+              markerOptions[markerDatum] = markerData[markerDatum];
+            }
+          }
           return new L.marker(markerData, markerOptions);
         },
         addMarkerToGroup: function (marker, groupName, map) {
