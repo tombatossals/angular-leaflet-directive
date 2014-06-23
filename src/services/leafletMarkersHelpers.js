@@ -19,12 +19,12 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
 
             return new L.AwesomeMarkers.icon(iconData);
         }
-        
+
         if (isDefined(iconData) && isDefined(iconData.type) && iconData.type === 'makiMarker') {
             if (!MakiMarkersPlugin.isLoaded()) {
                 $log.error('[AngularJS - Leaflet] The MakiMarkers Plugin is not loaded.');
             }
-            
+
             return new L.MakiMarkers.icon(iconData);
         }
 
@@ -97,6 +97,12 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
                 zIndexOffset: isDefined(markerData.zIndexOffset) ? markerData.zIndexOffset : 0,
                 iconAngle: isDefined(markerData.iconAngle) ? markerData.iconAngle : 0
             };
+            // Add any other options not added above to markerOptions
+            for (var markerDatum in markerData) {
+                if (markerData.hasOwnProperty(markerDatum) && !markerOptions.hasOwnProperty(markerDatum)) {
+                    markerOptions[markerDatum] = markerData[markerDatum];
+                }
+            }
 
             return new L.marker(markerData, markerOptions);
         },
