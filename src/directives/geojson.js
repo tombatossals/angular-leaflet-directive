@@ -64,7 +64,7 @@ angular.module("leaflet-directive").directive('geojson', function ($log, $rootSc
                     };
 
                     leafletGeoJSON = L.geoJson(geojson.data, geojson.options);
-                    leafletData.setGeoJSON(leafletGeoJSON);
+                    leafletData.setGeoJSON(leafletGeoJSON, attrs.id);
                     leafletGeoJSON.addTo(map);
                 });
             });
