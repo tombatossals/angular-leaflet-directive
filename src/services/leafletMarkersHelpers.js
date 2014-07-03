@@ -48,7 +48,7 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
             iconData.shadowUrl = base64shadow;
         }
 
-        return new L.Icon.Default(iconData);
+        return new L.Icon(iconData);
     };
 
     var _deleteMarker = function(marker, map, layers) {
