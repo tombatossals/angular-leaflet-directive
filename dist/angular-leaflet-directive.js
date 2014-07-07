@@ -19,6 +19,7 @@
           markers: '=markers',
           legend: '=legend',
           geojson: '=geojson',
+          utfgrid: '=utfgrid',
           paths: '=paths',
           tiles: '=tiles',
           layers: '=layers',
@@ -469,8 +470,57 @@
                 pointToLayer: geojson.pointToLayer
               };
               leafletGeoJSON = L.geoJson(geojson.data, geojson.options);
-              leafletData.setGeoJSON(leafletGeoJSON);
+              leafletData.setGeoJSON(leafletGeoJSON, attrs.id);
               leafletGeoJSON.addTo(map);
+            });
+          });
+        }
+      };
+    }
+  ]);
+  angular.module('leaflet-directive').directive('utfgrid', [
+    '$log',
+    '$rootScope',
+    'leafletData',
+    'leafletHelpers',
+    function ($log, $rootScope, leafletData, leafletHelpers) {
+      return {
+        restrict: 'A',
+        scope: false,
+        replace: false,
+        require: 'leaflet',
+        link: function (scope, element, attrs, controller) {
+          var safeApply = leafletHelpers.safeApply, isDefined = leafletHelpers.isDefined, leafletScope = controller.getLeafletScope(), leafletUTFGrid = {};
+          controller.getMap().then(function (map) {
+            leafletScope.$watch('utfgrid', function (utfgrid) {
+              $log.error('[AngularJS - Leaflet] IN UTFGrid directive!');
+              if (isDefined(leafletUTFGrid) && map.hasLayer(leafletUTFGrid)) {
+                map.removeLayer(leafletUTFGrid);
+              }
+              if (!isDefined(utfgrid)) {
+                $log.error('[AngularJS - Leaflet] utfgrid is not defined!');
+                return;
+              }
+              leafletUTFGrid = new L.UtfGrid(utfgrid.url, utfgrid.pluginOptions);
+              leafletData.setUTFGrid(leafletUTFGrid, attrs.id);
+              map.addLayer(leafletUTFGrid);
+              $log.error('[AngularJS - Leaflet] Added UTFGrid to map!');
+              leafletUTFGrid.on('mouseover', function (e) {
+                safeApply(leafletScope, function () {
+                  $rootScope.$broadcast('leafletDirectiveMap.utfgridMouseover', e);
+                });
+              });
+              leafletUTFGrid.on('mouseout', function (e) {
+                safeApply(leafletScope, function () {
+                  $rootScope.$broadcast('leafletDirectiveMap.utfgridMouseout', e);
+                });
+              });
+              leafletUTFGrid.on('click', function (e) {
+                safeApply(leafletScope, function () {
+                  $rootScope.$broadcast('leafletDirectiveMap.utfgridClick', e);
+                });
+              });
+              leafletUTFGrid.options = { useJsonP: false };
             });
           });
         }
@@ -1166,6 +1216,7 @@
       var paths = {};
       var markers = {};
       var geoJSON = {};
+      var utfGrid = {};
       var decorations = {};
       this.setMap = function (leafletMap, scopeId) {
         var defer = getUnresolvedDefer(maps, scopeId);
@@ -1206,6 +1257,15 @@
         var defer = getUnresolvedDefer(layers, scopeId);
         defer.resolve(leafletLayers);
         setResolvedDefer(layers, scopeId);
+      };
+      this.getUTFGrid = function (scopeId) {
+        var defer = getDefer(utfGrid, scopeId);
+        return defer.promise;
+      };
+      this.setUTFGrid = function (leafletUTFGrid, scopeId) {
+        var defer = getUnresolvedDefer(utfGrid, scopeId);
+        defer.resolve(leafletUTFGrid);
+        setResolvedDefer(utfGrid, scopeId);
       };
       this.setTiles = function (leafletTiles, scopeId) {
         var defer = getUnresolvedDefer(tiles, scopeId);
@@ -1786,6 +1846,26 @@
                 return;
               }
               return new L.TileLayer.GeoJSON(params.url, params.pluginOptions, params.options);
+            }
+          },
+          utfGrid: {
+            mustHaveUrl: true,
+            createLayer: function (params) {
+              if (!Helpers.UTFGridPlugin.isLoaded()) {
+                $log.error('[AngularJS - Leaflet] The UTFGrid plugin is not loaded.');
+                return;
+              }
+              var utfgrid = new L.UtfGrid(params.url, params.pluginOptions);
+              utfgrid.on('mouseover', function (e) {
+                $rootScope.$broadcast('leafletDirectiveMap.utfgridMouseover', e);
+              });
+              utfgrid.on('mouseout', function (e) {
+                $rootScope.$broadcast('leafletDirectiveMap.utfgridMouseout', e);
+              });
+              utfgrid.on('click', function (e) {
+                $rootScope.$broadcast('leafletDirectiveMap.utfgridClick', e);
+              });
+              return utfgrid;
             }
           },
           wms: {
@@ -2453,7 +2533,7 @@
           iconData.iconUrl = base64icon;
           iconData.shadowUrl = base64shadow;
         }
-        return new L.Icon.Default(iconData);
+        return new L.Icon(iconData);
       };
       var _deleteMarker = function (marker, map, layers) {
         marker.closePopup();
@@ -3017,6 +3097,19 @@
             if (this.isLoaded()) {
               return layer instanceof L.TileLayer.GeoJSON;
             } else {
+              return false;
+            }
+          }
+        },
+        UTFGridPlugin: {
+          isLoaded: function () {
+            return angular.isDefined(L.UtfGrid);
+          },
+          is: function (layer) {
+            if (this.isLoaded()) {
+              return layer instanceof L.UtfGrid;
+            } else {
+              $log.error('[AngularJS - Leaflet] No UtfGrid plugin found.');
               return false;
             }
           }

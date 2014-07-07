@@ -24,6 +24,7 @@
     "leaflet.draw": "~0.2.3",
     "Leaflet.label": "~0.2.1",
     "leaflet-tilelayer-geojson": "*",
+    "Leaflet.utfgrid": "danzel/Leaflet.utfgrid",
     "Leaflet.awesome-markers": "~2.0.2",
     "webgl-heatmap-leaflet": "*",
     "leaflet-plugins": "~1.1.2",
@@ -32,6 +33,11 @@
     "proj4leaflet": "~0.7.0",
     "Leaflet.MakiMarkers": "~1.0.1",
     "Leaflet.PolylineDecorator": "bbecquet/Leaflet.PolylineDecorator"
+  },
+  "overrides": {
+    "Leaflet.utfgrid": {
+      "main": "dist/leaflet.utfgrid.js"
+    }
   },
   "ignore": [
     "**/.*",

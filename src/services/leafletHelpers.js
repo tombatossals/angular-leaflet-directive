@@ -306,17 +306,17 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
                 }
             }
         },
-		DynamicMapLayerPlugin: {
-			isLoaded: function() {
-				return L.esri !== undefined && L.esri.dynamicMapLayer !== undefined;
-			},
-			is: function(layer) {
-				if (this.isLoaded()) {
-					return layer instanceof L.esri.dynamicMapLayer;
-				} else {
-					return false;
-				}
-			}
+		    DynamicMapLayerPlugin: {
+			    isLoaded: function() {
+				    return L.esri !== undefined && L.esri.dynamicMapLayer !== undefined;
+			    },
+			    is: function(layer) {
+				    if (this.isLoaded()) {
+					    return layer instanceof L.esri.dynamicMapLayer;
+				    } else {
+					    return false;
+				    }
+			    }
         },
         GeoJSONPlugin: {
             isLoaded: function(){
@@ -326,6 +326,19 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
                 if (this.isLoaded()) {
                     return layer instanceof L.TileLayer.GeoJSON;
                 } else {
+                    return false;
+                }
+            }
+        },
+        UTFGridPlugin: {
+            isLoaded: function(){
+                return angular.isDefined(L.UtfGrid);
+            },
+            is: function(layer) {
+                if (this.isLoaded()) {
+                    return layer instanceof L.UtfGrid;
+                } else {
+                    $log.error('[AngularJS - Leaflet] No UtfGrid plugin found.');
                     return false;
                 }
             }
