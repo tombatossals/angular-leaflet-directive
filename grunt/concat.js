@@ -13,7 +13,6 @@ module.exports = function (grunt, options) {
                 'src/directives/tiles.js',
                 'src/directives/legend.js',
                 'src/directives/geojson.js',
-                'src/directives/utfgrid.js',
                 'src/directives/layers.js',
                 'src/directives/bounds.js',
                 'src/directives/markers.js',
