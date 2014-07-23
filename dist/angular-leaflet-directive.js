@@ -1798,13 +1798,6 @@
               return L.tileLayer(url, params.options);
             }
           },
-          cartodbTiles: {
-            mustHaveKey: true,
-            createLayer: function (params) {
-              var url = '//' + params.user + '.cartodb.com/api/v1/map/' + params.key + '/{z}/{x}/{y}.png';
-              return L.tileLayer(url, params.options);
-            }
-          },
           geoJSON: {
             mustHaveUrl: true,
             createLayer: function (params) {
@@ -1832,6 +1825,22 @@
                 $rootScope.$broadcast('leafletDirectiveMap.utfgridClick', e);
               });
               return utfgrid;
+            }
+          },
+          cartodbTiles: {
+            mustHaveKey: true,
+            createLayer: function (params) {
+              var url = '//' + params.user + '.cartodb.com/api/v1/map/' + params.key + '/{z}/{x}/{y}.png';
+              return L.tileLayer(url, params.options);
+            }
+          },
+          cartodbUTFGrid: {
+            mustHaveKey: true,
+            mustHaveLayer: true,
+            $this: this,
+            createLayer: function (params) {
+              params.url = '//' + params.user + '.cartodb.com/api/v1/map/' + params.key + '/' + params.layer + '/{z}/{x}/{y}.json';
+              return this.$this.utfGrid.createLayer(params);
             }
           },
           wms: {
