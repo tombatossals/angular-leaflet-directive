@@ -4,6 +4,28 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
         isObject = leafletHelpers.isObject,
         isDefined = leafletHelpers.isDefined;
 
+    var utfGridCreateLayer = function(params) {
+        if (!Helpers.UTFGridPlugin.isLoaded()) {
+            $log.error('[AngularJS - Leaflet] The UTFGrid plugin is not loaded.');
+            return;
+        }
+        var utfgrid = new L.UtfGrid(params.url, params.pluginOptions);
+
+        utfgrid.on('mouseover', function(e) {
+            $rootScope.$broadcast('leafletDirectiveMap.utfgridMouseover', e);
+        });
+
+        utfgrid.on('mouseout', function(e) {
+            $rootScope.$broadcast('leafletDirectiveMap.utfgridMouseout', e);
+        });
+
+        utfgrid.on('click', function(e) {
+            $rootScope.$broadcast('leafletDirectiveMap.utfgridClick', e);
+        });
+
+        return utfgrid;
+    };
+
     var layerTypes = {
         xyz: {
             mustHaveUrl: true,
@@ -29,27 +51,7 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
         },
         utfGrid: {
             mustHaveUrl: true,
-            createLayer: function(params) {
-                if (!Helpers.UTFGridPlugin.isLoaded()) {
-                    $log.error('[AngularJS - Leaflet] The UTFGrid plugin is not loaded.');
-                    return;
-                }
-                var utfgrid = new L.UtfGrid(params.url, params.pluginOptions);
-
-                utfgrid.on('mouseover', function(e) {
-                    $rootScope.$broadcast('leafletDirectiveMap.utfgridMouseover', e);
-                });
-
-                utfgrid.on('mouseout', function(e) {
-                    $rootScope.$broadcast('leafletDirectiveMap.utfgridMouseout', e);
-                });
-
-                utfgrid.on('click', function(e) {
-                    $rootScope.$broadcast('leafletDirectiveMap.utfgridClick', e);
-                });
-
-                return utfgrid;
-            }
+            createLayer: utfGridCreateLayer
         },
         cartodbTiles: {
             mustHaveKey: true,
@@ -61,10 +63,9 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
         cartodbUTFGrid: {
             mustHaveKey: true,
             mustHaveLayer : true,
-            $this: this,
             createLayer: function(params) {
                 params.url = '//' + params.user + '.cartodb.com/api/v1/map/' + params.key + '/' + params.layer + '/{z}/{x}/{y}.json';
-                return this.$this.utfGrid.createLayer(params);
+                return utfGridCreateLayer(params);
             }
         },
         wms: {
