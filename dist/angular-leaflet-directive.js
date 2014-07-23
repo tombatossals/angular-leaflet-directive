@@ -1794,7 +1794,14 @@
           mapbox: {
             mustHaveKey: true,
             createLayer: function (params) {
-              var url = 'https://{s}.tiles.mapbox.com/v3/' + params.key + '/{z}/{x}/{y}.png';
+              var url = '//{s}.tiles.mapbox.com/v3/' + params.key + '/{z}/{x}/{y}.png';
+              return L.tileLayer(url, params.options);
+            }
+          },
+          cartodbTiles: {
+            mustHaveKey: true,
+            createLayer: function (params) {
+              var url = '//' + params.user + '.cartodb.com/api/v1/map/' + params.key + '/{z}/{x}/{y}.png';
               return L.tileLayer(url, params.options);
             }
           },
