@@ -11,6 +11,13 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
                 return L.tileLayer(params.url, params.options);
             }
         },
+        mapbox: {
+            mustHaveKey: true,
+            createLayer: function(params) {
+                var url = 'https://{s}.tiles.mapbox.com/v3/' + params.key + '/{z}/{x}/{y}.png';
+                return L.tileLayer(url, params.options);
+            }
+        },
         geoJSON: {
             mustHaveUrl: true,
             createLayer: function(params) {
@@ -32,11 +39,11 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
                 utfgrid.on('mouseover', function(e) {
                     $rootScope.$broadcast('leafletDirectiveMap.utfgridMouseover', e);
                 });
-                
+
                 utfgrid.on('mouseout', function(e) {
                     $rootScope.$broadcast('leafletDirectiveMap.utfgridMouseout', e);
                 });
-                
+
                 utfgrid.on('click', function(e) {
                     $rootScope.$broadcast('leafletDirectiveMap.utfgridClick', e);
                 });
@@ -183,6 +190,12 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
             createLayer: function(params) {
                 return L.imageOverlay(params.url, params.bounds, params.options);
             }
+        },
+        cartodb: {
+            mustHaveUrl: true,
+            createLayer: function(params) {
+                return cartodb.createLayer(params.map, params.url);
+            }
         }
     };
 
@@ -215,6 +228,11 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
 
         if (layerTypes[layerDefinition.type].mustHaveBounds && !isDefined(layerDefinition.bounds)) {
             $log.error('[AngularJS - Leaflet] The type of layer ' + layerDefinition.type + ' must have bounds defined');
+            return false ;
+        }
+
+        if (layerTypes[layerDefinition.type].mustHaveKey && !isDefined(layerDefinition.key)) {
+            $log.error('[AngularJS - Leaflet] The type of layer ' + layerDefinition.type + ' must have key defined');
             return false ;
         }
         return true;

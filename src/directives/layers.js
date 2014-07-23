@@ -62,6 +62,9 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
 
                 // Setup the Overlays
                 for (layerName in layers.overlays) {
+                    if(layers.overlays[layerName].type === 'cartodb') {
+
+                    }
                     var newOverlayLayer = createLayer(layers.overlays[layerName]);
                     if (!isDefined(newOverlayLayer)) {
                         delete layers.overlays[layerName];
