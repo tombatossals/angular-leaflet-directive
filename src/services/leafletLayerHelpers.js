@@ -68,6 +68,17 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
                 return utfGridCreateLayer(params);
             }
         },
+        cartodbInteractive: {
+            mustHaveKey: true,
+            mustHaveLayer : true,
+            createLayer: function(params) {
+                var tilesURL = '//' + params.user + '.cartodb.com/api/v1/map/' + params.key + '/{z}/{x}/{y}.png';
+                var tileLayer = L.tileLayer(tilesURL, params.options);
+                params.url = '//' + params.user + '.cartodb.com/api/v1/map/' + params.key + '/' + params.layer + '/{z}/{x}/{y}.grid.json';
+                var utfLayer = utfGridCreateLayer(params);
+                return L.layerGroup([tileLayer, utfLayer]);
+            }
+        },
         wms: {
             mustHaveUrl: true,
             createLayer: function(params) {
