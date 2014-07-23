@@ -9,6 +9,7 @@ angular.module("leaflet-directive").service('leafletData', function ($log, $q, l
     var paths = {};
     var markers = {};
     var geoJSON = {};
+    var decorations = {};
 
     this.setMap = function(leafletMap, scopeId) {
         var defer = getUnresolvedDefer(maps, scopeId);
@@ -78,6 +79,17 @@ angular.module("leaflet-directive").service('leafletData', function ($log, $q, l
 
     this.getGeoJSON = function(scopeId) {
         var defer = getDefer(geoJSON, scopeId);
+        return defer.promise;
+    };
+
+    this.setDecorations = function(leafletDecorations, scopeId) {
+        var defer = getUnresolvedDefer(decorations, scopeId);
+        defer.resolve(leafletDecorations);
+        setResolvedDefer(decorations, scopeId);
+    };
+
+    this.getDecorations = function(scopeId) {
+        var defer = getDefer(decorations, scopeId);
         return defer.promise;
     };
 });

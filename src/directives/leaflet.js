@@ -15,6 +15,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($q, leafl
             tiles: '=tiles',
             layers: '=layers',
             controls: '=controls',
+            decorations: '=decorations',
             eventBroadcast: '=eventBroadcast'
         },
         transclude: true,
