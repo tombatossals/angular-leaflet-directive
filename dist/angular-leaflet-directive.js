@@ -2037,7 +2037,8 @@
               type: layerDefinition.layerType,
               bounds: layerDefinition.bounds,
               key: layerDefinition.key,
-              pluginOptions: layerDefinition.pluginOptions
+              pluginOptions: layerDefinition.pluginOptions,
+              user: layerDefinition.user
             };
           //TODO Add $watch to the layer properties
           return layerTypes[layerDefinition.type].createLayer(params);
