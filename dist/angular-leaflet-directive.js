@@ -2093,6 +2093,7 @@
             collapsed: defaults.controls.layers.collapsed,
             position: defaults.controls.layers.position
           };
+        angular.extend(controlOptions, defaults.controls.layers.options);
         var control;
         if (defaults.controls.layers && isDefined(defaults.controls.layers.control)) {
           control = defaults.controls.layers.control.apply(this, [
