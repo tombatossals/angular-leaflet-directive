@@ -2147,10 +2147,10 @@
       } else {
         for (var i = 0; i < legendData.layers.length; i++) {
           var layer = legendData.layers[i];
-          div.innerHTML += '<div class="info-title">' + layer.layerName + '</div>';
+          div.innerHTML += '<div class="info-title" data-layerid="' + layer.layerId + '">' + layer.layerName + '</div>';
           for (var j = 0; j < layer.legend.length; j++) {
             var leg = layer.legend[j];
-            div.innerHTML += '<div class="inline"><img src="data:' + leg.contentType + ';base64,' + leg.imageData + '" /></div>' + '<div class="info-label">' + leg.label + '</div>';
+            div.innerHTML += '<div class="inline" data-layerid="' + layer.layerId + '"><img src="data:' + leg.contentType + ';base64,' + leg.imageData + '" /></div>' + '<div class="info-label" data-layerid="' + layer.layerId + '">' + leg.label + '</div>';
           }
         }
       }
