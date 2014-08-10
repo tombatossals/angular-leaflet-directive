@@ -2508,7 +2508,11 @@
               markerOptions[markerDatum] = markerData[markerDatum];
             }
           }
-          return new L.marker(markerData, markerOptions);
+          var marker = new L.marker(markerData, markerOptions);
+          if (!isString(markerData.message)) {
+            marker.unbindPopup();
+          }
+          return marker;
         },
         addMarkerToGroup: function (marker, groupName, map) {
           if (!isString(groupName)) {
