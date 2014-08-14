@@ -469,7 +469,7 @@
                 pointToLayer: geojson.pointToLayer
               };
               leafletGeoJSON = L.geoJson(geojson.data, geojson.options);
-              leafletData.setGeoJSON(leafletGeoJSON);
+              leafletData.setGeoJSON(leafletGeoJSON, attrs.id);
               leafletGeoJSON.addTo(map);
             });
           });
@@ -2424,7 +2424,7 @@
     'leafletHelpers',
     '$log',
     function ($rootScope, leafletHelpers, $log) {
-      var isDefined = leafletHelpers.isDefined, MarkerClusterPlugin = leafletHelpers.MarkerClusterPlugin, AwesomeMarkersPlugin = leafletHelpers.AwesomeMarkersPlugin, MakiMarkersPlugin = leafletHelpers.MakiMarkersPlugin, ExtraMarkersPlugin = leafletHelpers.ExtraMarkersPlugin, safeApply = leafletHelpers.safeApply, Helpers = leafletHelpers, isString = leafletHelpers.isString, isNumber = leafletHelpers.isNumber, isObject = leafletHelpers.isObject, groups = {};
+      var isDefined = leafletHelpers.isDefined, MarkerClusterPlugin = leafletHelpers.MarkerClusterPlugin, AwesomeMarkersPlugin = leafletHelpers.AwesomeMarkersPlugin, MakiMarkersPlugin = leafletHelpers.MakiMarkersPlugin, safeApply = leafletHelpers.safeApply, Helpers = leafletHelpers, isString = leafletHelpers.isString, isNumber = leafletHelpers.isNumber, isObject = leafletHelpers.isObject, groups = {};
       var createLeafletIcon = function (iconData) {
         if (isDefined(iconData) && isDefined(iconData.type) && iconData.type === 'awesomeMarker') {
           if (!AwesomeMarkersPlugin.isLoaded()) {
@@ -2437,12 +2437,6 @@
             $log.error('[AngularJS - Leaflet] The MakiMarkers Plugin is not loaded.');
           }
           return new L.MakiMarkers.icon(iconData);
-        }
-        if (isDefined(iconData) && isDefined(iconData.type) && iconData.type === 'ExtraMarker') {
-          if (!ExtraMarkersPlugin.isLoaded()) {
-            $log.error('[AngularJS - Leaflet] The ExtraMarkers Plugin is not loaded.');
-          }
-          return new L.ExtraMarkers.icon(iconData);
         }
         if (isDefined(iconData) && isDefined(iconData.type) && iconData.type === 'div') {
           return new L.divIcon(iconData);
@@ -2459,7 +2453,15 @@
           iconData.iconUrl = base64icon;
           iconData.shadowUrl = base64shadow;
         }
-        return new L.Icon.Default(iconData);
+        return new L.Icon(iconData);
+      };
+      var _resetMarkerGroup = function (groupName) {
+        if (isDefined(groups[groupName])) {
+          groups.splice(groupName, 1);
+        }
+      };
+      var _resetMarkerGroups = function () {
+        groups = {};
       };
       var _deleteMarker = function (marker, map, layers) {
         marker.closePopup();
@@ -2487,6 +2489,8 @@
         }
       };
       return {
+        resetMarkerGroup: _resetMarkerGroup,
+        resetMarkerGroups: _resetMarkerGroups,
         deleteMarker: _deleteMarker,
         createMarker: function (markerData) {
           if (!isDefined(markerData)) {
@@ -2894,32 +2898,6 @@
           is: function (icon) {
             if (this.isLoaded()) {
               return icon instanceof L.MakiMarkers.Icon;
-            } else {
-              return false;
-            }
-          },
-          equal: function (iconA, iconB) {
-            if (!this.isLoaded()) {
-              return false;
-            }
-            if (this.is(iconA)) {
-              return angular.equals(iconA, iconB);
-            } else {
-              return false;
-            }
-          }
-        },
-        ExtraMarkersPlugin: {
-          isLoaded: function () {
-            if (angular.isDefined(L.ExtraMarkers) && angular.isDefined(L.ExtraMarkers.Icon)) {
-              return true;
-            } else {
-              return false;
-            }
-          },
-          is: function (icon) {
-            if (this.isLoaded()) {
-              return icon instanceof L.ExtraMarkers.Icon;
             } else {
               return false;
             }
