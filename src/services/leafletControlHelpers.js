@@ -3,7 +3,12 @@ angular.module("leaflet-directive").factory('leafletControlHelpers', function ($
         isDefined = leafletHelpers.isDefined;
     var _layersControl;
 
-    var _controlLayersMustBeVisible = function(baselayers, overlays) {
+    var _controlLayersMustBeVisible = function(baselayers, overlays, mapId) {
+        var defaults = leafletMapDefaults.getDefaults(mapId);
+        if(!defaults.controls.layers.visible) {
+            return false;
+        }
+
         var numberOfLayers = 0;
         if (isObject(baselayers)) {
             numberOfLayers += Object.keys(baselayers).length;
@@ -39,7 +44,7 @@ angular.module("leaflet-directive").factory('leafletControlHelpers', function ($
         updateLayersControl: function(map, mapId, loaded, baselayers, overlays, leafletLayers) {
             var i;
 
-            var mustBeLoaded = _controlLayersMustBeVisible(baselayers, overlays);
+            var mustBeLoaded = _controlLayersMustBeVisible(baselayers, overlays, mapId);
             if (isDefined(_layersControl) && loaded) {
                 for (i in leafletLayers.baselayers) {
                     _layersControl.removeLayer(leafletLayers.baselayers[i]);
