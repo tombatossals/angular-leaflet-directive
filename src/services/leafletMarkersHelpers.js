@@ -299,6 +299,11 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
                     updatedFocus = true;
                 }
 
+                // zIndexOffset adjustment
+                if (oldMarkerData.zIndexOffset !== markerData.zIndexOffset) {
+                    marker.setZIndexOffset(markerData.zIndexOffset);
+                }
+
                 var markerLatLng = marker.getLatLng();
                 var isCluster = (isString(markerData.layer) && Helpers.MarkerClusterPlugin.is(layers.overlays[markerData.layer]));
                 // If the marker is in a cluster it has to be removed and added to the layer when the location is changed
