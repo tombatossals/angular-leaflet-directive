@@ -23,6 +23,7 @@ module.exports = function (grunt, options) {
                 angular: false,
                 L: false,
                 lvector: false,
+                cartodb: false,
                 // Jasmine
                 jasmine    : false,
                 isCommonJS : false,
