@@ -104,7 +104,13 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
                 }
             }
 
-            return new L.marker(markerData, markerOptions);
+            var marker = new L.marker(markerData, markerOptions);
+
+            if (!isString(markerData.message)) {
+                marker.unbindPopup();
+            }
+
+            return marker;
         },
 
         addMarkerToGroup: function(marker, groupName, map) {
