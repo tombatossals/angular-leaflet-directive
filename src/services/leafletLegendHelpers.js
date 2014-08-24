@@ -6,21 +6,21 @@ angular.module("leaflet-directive").factory('leafletLegendHelpers', function () 
 		} else {
 			for (var i = 0; i < legendData.layers.length; i++) {
 				var layer = legendData.layers[i];
-				div.innerHTML += '<div class="info-title">' + layer.layerName + '</div>';
+				div.innerHTML += '<div class="info-title" data-layerid="' + layer.layerId + '">' + layer.layerName + '</div>';
 				for(var j = 0; j < layer.legend.length; j++) {
 					var leg = layer.legend[j];
 					div.innerHTML +=
-						'<div class="inline"><img src="data:' + leg.contentType + ';base64,' + leg.imageData + '" /></div>' +
-						'<div class="info-label">' + leg.label + '</div>';
+						'<div class="inline" data-layerid="' + layer.layerId + '"><img src="data:' + leg.contentType + ';base64,' + leg.imageData + '" /></div>' +
+						'<div class="info-label" data-layerid="' + layer.layerId + '">' + leg.label + '</div>';
 				}
 			}
 		}
 	};
-	
+
 	var _getOnAddArcGISLegend = function(legendData, legendClass) {
 		return function(/*map*/) {
 			var div = L.DomUtil.create('div', legendClass);
-			
+
 			if (!L.Browser.touch) {
 				L.DomEvent.disableClickPropagation(div);
 				L.DomEvent.on(div, 'mousewheel', L.DomEvent.stopPropagation);
@@ -31,7 +31,7 @@ angular.module("leaflet-directive").factory('leafletLegendHelpers', function () 
 			return div;
 		};
 	};
-	
+
 	var _getOnAddArrayLegend = function(legend, legendClass) {
 		return function(/*map*/) {
 			var div = L.DomUtil.create('div', legendClass);
@@ -49,7 +49,7 @@ angular.module("leaflet-directive").factory('leafletLegendHelpers', function () 
             return div;
 		};
 	};
-	
+
 	return {
 		getOnAddArcGISLegend: _getOnAddArcGISLegend,
 		getOnAddArrayLegend: _getOnAddArrayLegend,

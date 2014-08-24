@@ -534,6 +534,8 @@
             }
             // Setup the Overlays
             for (layerName in layers.overlays) {
+              if (layers.overlays[layerName].type === 'cartodb') {
+              }
               var newOverlayLayer = createLayer(layers.overlays[layerName]);
               if (!isDefined(newOverlayLayer)) {
                 delete layers.overlays[layerName];
@@ -1782,11 +1784,35 @@
     'leafletHelpers',
     function ($rootScope, $log, leafletHelpers) {
       var Helpers = leafletHelpers, isString = leafletHelpers.isString, isObject = leafletHelpers.isObject, isDefined = leafletHelpers.isDefined;
+      var utfGridCreateLayer = function (params) {
+        if (!Helpers.UTFGridPlugin.isLoaded()) {
+          $log.error('[AngularJS - Leaflet] The UTFGrid plugin is not loaded.');
+          return;
+        }
+        var utfgrid = new L.UtfGrid(params.url, params.pluginOptions);
+        utfgrid.on('mouseover', function (e) {
+          $rootScope.$broadcast('leafletDirectiveMap.utfgridMouseover', e);
+        });
+        utfgrid.on('mouseout', function (e) {
+          $rootScope.$broadcast('leafletDirectiveMap.utfgridMouseout', e);
+        });
+        utfgrid.on('click', function (e) {
+          $rootScope.$broadcast('leafletDirectiveMap.utfgridClick', e);
+        });
+        return utfgrid;
+      };
       var layerTypes = {
           xyz: {
             mustHaveUrl: true,
             createLayer: function (params) {
               return L.tileLayer(params.url, params.options);
+            }
+          },
+          mapbox: {
+            mustHaveKey: true,
+            createLayer: function (params) {
+              var url = '//{s}.tiles.mapbox.com/v3/' + params.key + '/{z}/{x}/{y}.png';
+              return L.tileLayer(url, params.options);
             }
           },
           geoJSON: {
@@ -1800,22 +1826,35 @@
           },
           utfGrid: {
             mustHaveUrl: true,
+            createLayer: utfGridCreateLayer
+          },
+          cartodbTiles: {
+            mustHaveKey: true,
             createLayer: function (params) {
-              if (!Helpers.UTFGridPlugin.isLoaded()) {
-                $log.error('[AngularJS - Leaflet] The UTFGrid plugin is not loaded.');
-                return;
-              }
-              var utfgrid = new L.UtfGrid(params.url, params.pluginOptions);
-              utfgrid.on('mouseover', function (e) {
-                $rootScope.$broadcast('leafletDirectiveMap.utfgridMouseover', e);
-              });
-              utfgrid.on('mouseout', function (e) {
-                $rootScope.$broadcast('leafletDirectiveMap.utfgridMouseout', e);
-              });
-              utfgrid.on('click', function (e) {
-                $rootScope.$broadcast('leafletDirectiveMap.utfgridClick', e);
-              });
-              return utfgrid;
+              var url = '//' + params.user + '.cartodb.com/api/v1/map/' + params.key + '/{z}/{x}/{y}.png';
+              return L.tileLayer(url, params.options);
+            }
+          },
+          cartodbUTFGrid: {
+            mustHaveKey: true,
+            mustHaveLayer: true,
+            createLayer: function (params) {
+              params.url = '//' + params.user + '.cartodb.com/api/v1/map/' + params.key + '/' + params.layer + '/{z}/{x}/{y}.grid.json';
+              return utfGridCreateLayer(params);
+            }
+          },
+          cartodbInteractive: {
+            mustHaveKey: true,
+            mustHaveLayer: true,
+            createLayer: function (params) {
+              var tilesURL = '//' + params.user + '.cartodb.com/api/v1/map/' + params.key + '/{z}/{x}/{y}.png';
+              var tileLayer = L.tileLayer(tilesURL, params.options);
+              params.url = '//' + params.user + '.cartodb.com/api/v1/map/' + params.key + '/' + params.layer + '/{z}/{x}/{y}.grid.json';
+              var utfLayer = utfGridCreateLayer(params);
+              return L.layerGroup([
+                tileLayer,
+                utfLayer
+              ]);
             }
           },
           wms: {
@@ -1953,6 +1992,12 @@
             createLayer: function (params) {
               return L.imageOverlay(params.url, params.bounds, params.options);
             }
+          },
+          cartodb: {
+            mustHaveUrl: true,
+            createLayer: function (params) {
+              return cartodb.createLayer(params.map, params.url);
+            }
           }
         };
       function isValidLayerType(layerDefinition) {
@@ -1979,6 +2024,10 @@
         }
         if (layerTypes[layerDefinition.type].mustHaveBounds && !isDefined(layerDefinition.bounds)) {
           $log.error('[AngularJS - Leaflet] The type of layer ' + layerDefinition.type + ' must have bounds defined');
+          return false;
+        }
+        if (layerTypes[layerDefinition.type].mustHaveKey && !isDefined(layerDefinition.key)) {
+          $log.error('[AngularJS - Leaflet] The type of layer ' + layerDefinition.type + ' must have key defined');
           return false;
         }
         return true;
@@ -2011,7 +2060,8 @@
               type: layerDefinition.layerType,
               bounds: layerDefinition.bounds,
               key: layerDefinition.key,
-              pluginOptions: layerDefinition.pluginOptions
+              pluginOptions: layerDefinition.pluginOptions,
+              user: layerDefinition.user
             };
           //TODO Add $watch to the layer properties
           return layerTypes[layerDefinition.type].createLayer(params);
@@ -2027,7 +2077,11 @@
     function ($rootScope, $log, leafletHelpers, leafletMapDefaults) {
       var isObject = leafletHelpers.isObject, isDefined = leafletHelpers.isDefined;
       var _layersControl;
-      var _controlLayersMustBeVisible = function (baselayers, overlays) {
+      var _controlLayersMustBeVisible = function (baselayers, overlays, mapId) {
+        var defaults = leafletMapDefaults.getDefaults(mapId);
+        if (!defaults.controls.layers.visible) {
+          return false;
+        }
         var numberOfLayers = 0;
         if (isObject(baselayers)) {
           numberOfLayers += Object.keys(baselayers).length;
@@ -2043,6 +2097,7 @@
             collapsed: defaults.controls.layers.collapsed,
             position: defaults.controls.layers.position
           };
+        angular.extend(controlOptions, defaults.controls.layers.options);
         var control;
         if (defaults.controls.layers && isDefined(defaults.controls.layers.control)) {
           control = defaults.controls.layers.control.apply(this, [
@@ -2059,7 +2114,7 @@
         layersControlMustBeVisible: _controlLayersMustBeVisible,
         updateLayersControl: function (map, mapId, loaded, baselayers, overlays, leafletLayers) {
           var i;
-          var mustBeLoaded = _controlLayersMustBeVisible(baselayers, overlays);
+          var mustBeLoaded = _controlLayersMustBeVisible(baselayers, overlays, mapId);
           if (isDefined(_layersControl) && loaded) {
             for (i in leafletLayers.baselayers) {
               _layersControl.removeLayer(leafletLayers.baselayers[i]);
@@ -2096,10 +2151,10 @@
       } else {
         for (var i = 0; i < legendData.layers.length; i++) {
           var layer = legendData.layers[i];
-          div.innerHTML += '<div class="info-title">' + layer.layerName + '</div>';
+          div.innerHTML += '<div class="info-title" data-layerid="' + layer.layerId + '">' + layer.layerName + '</div>';
           for (var j = 0; j < layer.legend.length; j++) {
             var leg = layer.legend[j];
-            div.innerHTML += '<div class="inline"><img src="data:' + leg.contentType + ';base64,' + leg.imageData + '" /></div>' + '<div class="info-label">' + leg.label + '</div>';
+            div.innerHTML += '<div class="inline" data-layerid="' + layer.layerId + '"><img src="data:' + leg.contentType + ';base64,' + leg.imageData + '" /></div>' + '<div class="info-label" data-layerid="' + layer.layerId + '">' + leg.label + '</div>';
           }
         }
       }
@@ -2454,7 +2509,7 @@
     'leafletHelpers',
     '$log',
     function ($rootScope, leafletHelpers, $log) {
-      var isDefined = leafletHelpers.isDefined, MarkerClusterPlugin = leafletHelpers.MarkerClusterPlugin, AwesomeMarkersPlugin = leafletHelpers.AwesomeMarkersPlugin, MakiMarkersPlugin = leafletHelpers.MakiMarkersPlugin, ExtraMarkersPlugin = leafletHelpers.ExtraMarkersPlugin, safeApply = leafletHelpers.safeApply, Helpers = leafletHelpers, isString = leafletHelpers.isString, isNumber = leafletHelpers.isNumber, isObject = leafletHelpers.isObject, groups = {};
+      var isDefined = leafletHelpers.isDefined, MarkerClusterPlugin = leafletHelpers.MarkerClusterPlugin, AwesomeMarkersPlugin = leafletHelpers.AwesomeMarkersPlugin, MakiMarkersPlugin = leafletHelpers.MakiMarkersPlugin, safeApply = leafletHelpers.safeApply, Helpers = leafletHelpers, isString = leafletHelpers.isString, isNumber = leafletHelpers.isNumber, isObject = leafletHelpers.isObject, groups = {};
       var createLeafletIcon = function (iconData) {
         if (isDefined(iconData) && isDefined(iconData.type) && iconData.type === 'awesomeMarker') {
           if (!AwesomeMarkersPlugin.isLoaded()) {
@@ -2467,12 +2522,6 @@
             $log.error('[AngularJS - Leaflet] The MakiMarkers Plugin is not loaded.');
           }
           return new L.MakiMarkers.icon(iconData);
-        }
-        if (isDefined(iconData) && isDefined(iconData.type) && iconData.type === 'ExtraMarker') {
-          if (!ExtraMarkersPlugin.isLoaded()) {
-            $log.error('[AngularJS - Leaflet] The ExtraMarkers Plugin is not loaded.');
-          }
-          return new L.ExtraMarkers.icon(iconData);
         }
         if (isDefined(iconData) && isDefined(iconData.type) && iconData.type === 'div') {
           return new L.divIcon(iconData);
@@ -2939,32 +2988,6 @@
             }
           }
         },
-        ExtraMarkersPlugin: {
-          isLoaded: function () {
-            if (angular.isDefined(L.ExtraMarkers) && angular.isDefined(L.ExtraMarkers.Icon)) {
-              return true;
-            } else {
-              return false;
-            }
-          },
-          is: function (icon) {
-            if (this.isLoaded()) {
-              return icon instanceof L.ExtraMarkers.Icon;
-            } else {
-              return false;
-            }
-          },
-          equal: function (iconA, iconB) {
-            if (!this.isLoaded()) {
-              return false;
-            }
-            if (this.is(iconA)) {
-              return angular.equals(iconA, iconB);
-            } else {
-              return false;
-            }
-          }
-        },
         LabelPlugin: {
           isLoaded: function () {
             return angular.isDefined(L.Label);
@@ -3094,6 +3117,19 @@
               $log.error('[AngularJS - Leaflet] No UtfGrid plugin found.');
               return false;
             }
+          }
+        },
+        CartoDB: {
+          isLoaded: function () {
+            return cartodb;
+          },
+          is: function () {
+            return true;  /*
+                if (this.isLoaded()) {
+                    return layer instanceof L.TileLayer.GeoJSON;
+                } else {
+                    return false;
+                }*/
           }
         },
         Leaflet: {

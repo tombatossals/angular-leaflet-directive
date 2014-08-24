@@ -4,11 +4,40 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
         isObject = leafletHelpers.isObject,
         isDefined = leafletHelpers.isDefined;
 
+    var utfGridCreateLayer = function(params) {
+        if (!Helpers.UTFGridPlugin.isLoaded()) {
+            $log.error('[AngularJS - Leaflet] The UTFGrid plugin is not loaded.');
+            return;
+        }
+        var utfgrid = new L.UtfGrid(params.url, params.pluginOptions);
+
+        utfgrid.on('mouseover', function(e) {
+            $rootScope.$broadcast('leafletDirectiveMap.utfgridMouseover', e);
+        });
+
+        utfgrid.on('mouseout', function(e) {
+            $rootScope.$broadcast('leafletDirectiveMap.utfgridMouseout', e);
+        });
+
+        utfgrid.on('click', function(e) {
+            $rootScope.$broadcast('leafletDirectiveMap.utfgridClick', e);
+        });
+
+        return utfgrid;
+    };
+
     var layerTypes = {
         xyz: {
             mustHaveUrl: true,
             createLayer: function(params) {
                 return L.tileLayer(params.url, params.options);
+            }
+        },
+        mapbox: {
+            mustHaveKey: true,
+            createLayer: function(params) {
+                var url = '//{s}.tiles.mapbox.com/v3/' + params.key + '/{z}/{x}/{y}.png';
+                return L.tileLayer(url, params.options);
             }
         },
         geoJSON: {
@@ -22,26 +51,32 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
         },
         utfGrid: {
             mustHaveUrl: true,
+            createLayer: utfGridCreateLayer
+        },
+        cartodbTiles: {
+            mustHaveKey: true,
             createLayer: function(params) {
-                if (!Helpers.UTFGridPlugin.isLoaded()) {
-                    $log.error('[AngularJS - Leaflet] The UTFGrid plugin is not loaded.');
-                    return;
-                }
-                var utfgrid = new L.UtfGrid(params.url, params.pluginOptions);
-
-                utfgrid.on('mouseover', function(e) {
-                    $rootScope.$broadcast('leafletDirectiveMap.utfgridMouseover', e);
-                });
-                
-                utfgrid.on('mouseout', function(e) {
-                    $rootScope.$broadcast('leafletDirectiveMap.utfgridMouseout', e);
-                });
-                
-                utfgrid.on('click', function(e) {
-                    $rootScope.$broadcast('leafletDirectiveMap.utfgridClick', e);
-                });
-
-                return utfgrid;
+                var url = '//' + params.user + '.cartodb.com/api/v1/map/' + params.key + '/{z}/{x}/{y}.png';
+                return L.tileLayer(url, params.options);
+            }
+        },
+        cartodbUTFGrid: {
+            mustHaveKey: true,
+            mustHaveLayer : true,
+            createLayer: function(params) {
+                params.url = '//' + params.user + '.cartodb.com/api/v1/map/' + params.key + '/' + params.layer + '/{z}/{x}/{y}.grid.json';
+                return utfGridCreateLayer(params);
+            }
+        },
+        cartodbInteractive: {
+            mustHaveKey: true,
+            mustHaveLayer : true,
+            createLayer: function(params) {
+                var tilesURL = '//' + params.user + '.cartodb.com/api/v1/map/' + params.key + '/{z}/{x}/{y}.png';
+                var tileLayer = L.tileLayer(tilesURL, params.options);
+                params.url = '//' + params.user + '.cartodb.com/api/v1/map/' + params.key + '/' + params.layer + '/{z}/{x}/{y}.grid.json';
+                var utfLayer = utfGridCreateLayer(params);
+                return L.layerGroup([tileLayer, utfLayer]);
             }
         },
         wms: {
@@ -184,6 +219,7 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
                 return L.imageOverlay(params.url, params.bounds, params.options);
             }
         },
+
         // This "custom" type is used to accept every layer that user want to define himself.
         // We can wrap these custom layers like heatmap or yandex, but it means a lot of work/code to wrap the world,
         // so we let user to define their own layer outside the directive,
@@ -196,6 +232,11 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
                 else {
                     $log.error('[AngularJS - Leaflet] A custom layer must be a leaflet Class');
                 }
+        },
+        cartodb: {
+            mustHaveUrl: true,
+            createLayer: function(params) {
+                return cartodb.createLayer(params.map, params.url);
             }
         }
     };
@@ -229,6 +270,11 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
 
         if (layerTypes[layerDefinition.type].mustHaveBounds && !isDefined(layerDefinition.bounds)) {
             $log.error('[AngularJS - Leaflet] The type of layer ' + layerDefinition.type + ' must have bounds defined');
+            return false ;
+        }
+
+        if (layerTypes[layerDefinition.type].mustHaveKey && !isDefined(layerDefinition.key)) {
+            $log.error('[AngularJS - Leaflet] The type of layer ' + layerDefinition.type + ' must have key defined');
             return false ;
         }
         return true;
@@ -265,7 +311,8 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
                 type: layerDefinition.layerType,
                 bounds: layerDefinition.bounds,
                 key: layerDefinition.key,
-                pluginOptions: layerDefinition.pluginOptions
+                pluginOptions: layerDefinition.pluginOptions,
+                user: layerDefinition.user
             };
 
             //TODO Add $watch to the layer properties
