@@ -11,13 +11,37 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
                 return L.tileLayer(params.url, params.options);
             }
         },
-        geoJSON:{
+        geoJSON: {
             mustHaveUrl: true,
             createLayer: function(params) {
                 if (!Helpers.GeoJSONPlugin.isLoaded()) {
                     return;
                 }
                 return new L.TileLayer.GeoJSON(params.url, params.pluginOptions, params.options);
+            }
+        },
+        utfGrid: {
+            mustHaveUrl: true,
+            createLayer: function(params) {
+                if (!Helpers.UTFGridPlugin.isLoaded()) {
+                    $log.error('[AngularJS - Leaflet] The UTFGrid plugin is not loaded.');
+                    return;
+                }
+                var utfgrid = new L.UtfGrid(params.url, params.pluginOptions);
+
+                utfgrid.on('mouseover', function(e) {
+                    $rootScope.$broadcast('leafletDirectiveMap.utfgridMouseover', e);
+                });
+                
+                utfgrid.on('mouseout', function(e) {
+                    $rootScope.$broadcast('leafletDirectiveMap.utfgridMouseout', e);
+                });
+                
+                utfgrid.on('click', function(e) {
+                    $rootScope.$broadcast('leafletDirectiveMap.utfgridClick', e);
+                });
+
+                return utfgrid;
             }
         },
         wms: {

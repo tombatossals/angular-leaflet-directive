@@ -9,6 +9,7 @@ angular.module("leaflet-directive").service('leafletData', function ($log, $q, l
     var paths = {};
     var markers = {};
     var geoJSON = {};
+    var utfGrid = {};
     var decorations = {};
 
     this.setMap = function(leafletMap, scopeId) {
@@ -58,6 +59,17 @@ angular.module("leaflet-directive").service('leafletData', function ($log, $q, l
         var defer = getUnresolvedDefer(layers, scopeId);
         defer.resolve(leafletLayers);
         setResolvedDefer(layers, scopeId);
+    };
+    
+    this.getUTFGrid = function(scopeId) {
+        var defer = getDefer(utfGrid, scopeId);
+        return defer.promise;
+    };
+    
+    this.setUTFGrid = function(leafletUTFGrid, scopeId) {
+        var defer = getUnresolvedDefer(utfGrid, scopeId);
+        defer.resolve(leafletUTFGrid);
+        setResolvedDefer(utfGrid, scopeId);
     };
 
     this.setTiles = function(leafletTiles, scopeId) {
