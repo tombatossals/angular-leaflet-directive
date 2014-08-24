@@ -232,6 +232,7 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
                 else {
                     $log.error('[AngularJS - Leaflet] A custom layer must be a leaflet Class');
                 }
+            }
         },
         cartodb: {
             mustHaveUrl: true,
