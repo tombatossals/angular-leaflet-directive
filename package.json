@@ -48,5 +48,6 @@
   },
   "scripts": {
     "test": "grunt travis --verbose"
-  }
+  },
+  "main": "dist/angular-leaflet-directive"
 }
