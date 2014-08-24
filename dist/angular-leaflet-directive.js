@@ -1684,7 +1684,6 @@
           var i;
           var eventName;
           var logic = 'broadcast';
-          window.lls = leafletScope;
           if (!isDefined(leafletScope.eventBroadcast)) {
             // Backward compatibility, if no event-broadcast attribute, all events are broadcasted
             pathEvents = _getAvailablePathEvents();
@@ -1991,6 +1990,15 @@
             mustHaveBounds: true,
             createLayer: function (params) {
               return L.imageOverlay(params.url, params.bounds, params.options);
+            }
+          },
+          custom: {
+            createLayer: function (params) {
+              if (params.layer instanceof L.Class) {
+                return angular.copy(params.layer);
+              } else {
+                $log.error('[AngularJS - Leaflet] A custom layer must be a leaflet Class');
+              }
             }
           },
           cartodb: {
@@ -2587,7 +2595,11 @@
               markerOptions[markerDatum] = markerData[markerDatum];
             }
           }
-          return new L.marker(markerData, markerOptions);
+          var marker = new L.marker(markerData, markerOptions);
+          if (!isString(markerData.message)) {
+            marker.unbindPopup();
+          }
+          return marker;
         },
         addMarkerToGroup: function (marker, groupName, map) {
           if (!isString(groupName)) {
@@ -2760,6 +2772,10 @@
                 marker.openPopup();
                 updatedFocus = true;
               }
+              // zIndexOffset adjustment
+              if (oldMarkerData.zIndexOffset !== markerData.zIndexOffset) {
+                marker.setZIndexOffset(markerData.zIndexOffset);
+              }
               var markerLatLng = marker.getLatLng();
               var isCluster = isString(markerData.layer) && Helpers.MarkerClusterPlugin.is(layers.overlays[markerData.layer]);
               // If the marker is in a cluster it has to be removed and added to the layer when the location is changed
@@ -2882,7 +2898,7 @@
         isSameCenterOnMap: function (centerModel, map) {
           var mapCenter = map.getCenter();
           var zoom = map.getZoom();
-          if (mapCenter.lat === centerModel.lat && mapCenter.lng === centerModel.lng && zoom === centerModel.zoom) {
+          if (mapCenter.lat.toFixed(4) === centerModel.lat.toFixed(4) && mapCenter.lng.toFixed(4) === centerModel.lng.toFixed(4) && zoom === centerModel.zoom) {
             return true;
           }
           return false;
