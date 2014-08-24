@@ -331,8 +331,6 @@ angular.module("leaflet-directive").factory('leafletEvents', function ($rootScop
             var eventName;
             var logic = "broadcast";
 
-            window.lls = leafletScope;
-
             if (!isDefined(leafletScope.eventBroadcast)) {
                 // Backward compatibility, if no event-broadcast attribute, all events are broadcasted
                 pathEvents = _getAvailablePathEvents();
