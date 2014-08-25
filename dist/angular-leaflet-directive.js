@@ -105,11 +105,12 @@
     '$log',
     '$q',
     '$location',
+    '$timeout',
     'leafletMapDefaults',
     'leafletHelpers',
     'leafletBoundsHelpers',
     'leafletEvents',
-    function ($log, $q, $location, leafletMapDefaults, leafletHelpers, leafletBoundsHelpers, leafletEvents) {
+    function ($log, $q, $location, $timeout, leafletMapDefaults, leafletHelpers, leafletBoundsHelpers, leafletEvents) {
       var isDefined = leafletHelpers.isDefined, isNumber = leafletHelpers.isNumber, isSameCenterOnMap = leafletHelpers.isSameCenterOnMap, safeApply = leafletHelpers.safeApply, isValidCenter = leafletHelpers.isValidCenter, isEmpty = leafletHelpers.isEmpty, isUndefinedOrEmpty = leafletHelpers.isUndefinedOrEmpty;
       var shouldInitializeMapWithBounds = function (bounds, center) {
         return isDefined(bounds) && !isEmpty(bounds) && isUndefinedOrEmpty(center);
@@ -243,11 +244,16 @@
                 return;
               }
               //$log.debug("updating map center...", center);
+              leafletScope.settingCenterFromScope = true;
               map.setView([
                 center.lat,
                 center.lng
               ], center.zoom);
               leafletEvents.notifyCenterChangedToBounds(leafletScope, map);
+              $timeout(function () {
+                leafletScope.settingCenterFromScope = false;
+                $log.debug('allow center scope updates');
+              });
             }, true);
             map.whenReady(function () {
               mapReady = true;
@@ -257,18 +263,20 @@
               _leafletCenter.resolve();
               leafletEvents.notifyCenterUrlHashChanged(leafletScope, map, attrs, $location.search());
               //$log.debug("updated center on map...");
-              if (isSameCenterOnMap(centerModel, map)) {
+              if (isSameCenterOnMap(centerModel, map) || scope.settingCenterFromScope) {
                 //$log.debug("same center in model, no need to update again.");
                 return;
               }
               safeApply(leafletScope, function (scope) {
-                //$log.debug("updating center model...", map.getCenter(), map.getZoom());
-                scope.center = {
-                  lat: map.getCenter().lat,
-                  lng: map.getCenter().lng,
-                  zoom: map.getZoom(),
-                  autoDiscover: false
-                };
+                if (!leafletScope.settingCenterFromScope) {
+                  //$log.debug("updating center model...", map.getCenter(), map.getZoom());
+                  scope.center = {
+                    lat: map.getCenter().lat,
+                    lng: map.getCenter().lng,
+                    zoom: map.getZoom(),
+                    autoDiscover: false
+                  };
+                }
                 leafletEvents.notifyCenterChangedToBounds(leafletScope, map);
               });
             });
@@ -658,7 +666,7 @@
               var scope = event.currentScope;
               var bounds = map.getBounds();
               //$log.debug('updated map bounds...', bounds);
-              if (emptyBounds(bounds)) {
+              if (emptyBounds(bounds) || scope.settingBoundsFromScope) {
                 return;
               }
               var newScopeBounds = {
@@ -685,7 +693,12 @@
               var leafletBounds = createLeafletBounds(bounds);
               if (leafletBounds && !map.getBounds().equals(leafletBounds)) {
                 //$log.debug('Need to update map bounds.');
+                scope.settingBoundsFromScope = true;
                 map.fitBounds(leafletBounds);
+                $timeout(function () {
+                  //$log.debug('Allow bound updates.');
+                  scope.settingBoundsFromScope = false;
+                });
               }
             }, true);
           });
@@ -1259,6 +1272,7 @@
           worldCopyJump: false,
           doubleClickZoom: true,
           scrollWheelZoom: true,
+          touchZoom: true,
           zoomControl: true,
           zoomsliderControl: false,
           zoomControlPosition: 'topleft',
@@ -1302,6 +1316,7 @@
               zoomControl: d.zoomControl,
               doubleClickZoom: d.doubleClickZoom,
               scrollWheelZoom: d.scrollWheelZoom,
+              touchZoom: d.touchZoom,
               attributionControl: d.attributionControl,
               worldCopyJump: d.worldCopyJump,
               crs: d.crs
@@ -1330,6 +1345,7 @@
           if (isDefined(userDefaults)) {
             newDefaults.doubleClickZoom = isDefined(userDefaults.doubleClickZoom) ? userDefaults.doubleClickZoom : newDefaults.doubleClickZoom;
             newDefaults.scrollWheelZoom = isDefined(userDefaults.scrollWheelZoom) ? userDefaults.scrollWheelZoom : newDefaults.doubleClickZoom;
+            newDefaults.touchZoom = isDefined(userDefaults.touchZoom) ? userDefaults.touchZoom : newDefaults.doubleClickZoom;
             newDefaults.zoomControl = isDefined(userDefaults.zoomControl) ? userDefaults.zoomControl : newDefaults.zoomControl;
             newDefaults.zoomsliderControl = isDefined(userDefaults.zoomsliderControl) ? userDefaults.zoomsliderControl : newDefaults.zoomsliderControl;
             newDefaults.attributionControl = isDefined(userDefaults.attributionControl) ? userDefaults.attributionControl : newDefaults.attributionControl;

@@ -1,5 +1,5 @@
 angular.module("leaflet-directive").directive('center',
-    function ($log, $q, $location, leafletMapDefaults, leafletHelpers, leafletBoundsHelpers, leafletEvents) {
+    function ($log, $q, $location, $timeout, leafletMapDefaults, leafletHelpers, leafletBoundsHelpers, leafletEvents) {
 
     var isDefined     = leafletHelpers.isDefined,
         isNumber      = leafletHelpers.isNumber,
@@ -133,8 +133,13 @@ angular.module("leaflet-directive").directive('center',
                     }
 
                     //$log.debug("updating map center...", center);
+                    leafletScope.settingCenterFromScope = true;
                     map.setView([center.lat, center.lng], center.zoom);
                     leafletEvents.notifyCenterChangedToBounds(leafletScope, map);
+                    $timeout(function() {
+                        leafletScope.settingCenterFromScope = false;
+                        $log.debug("allow center scope updates");
+                    });
                 }, true);
 
                 map.whenReady(function() {
@@ -146,18 +151,20 @@ angular.module("leaflet-directive").directive('center',
                     _leafletCenter.resolve();
                     leafletEvents.notifyCenterUrlHashChanged(leafletScope, map, attrs, $location.search());
                     //$log.debug("updated center on map...");
-                    if (isSameCenterOnMap(centerModel, map)) {
+                    if (isSameCenterOnMap(centerModel, map) || scope.settingCenterFromScope) {
                         //$log.debug("same center in model, no need to update again.");
                         return;
                     }
                     safeApply(leafletScope, function(scope) {
-                        //$log.debug("updating center model...", map.getCenter(), map.getZoom());
-                        scope.center = {
-                            lat: map.getCenter().lat,
-                            lng: map.getCenter().lng,
-                            zoom: map.getZoom(),
-                            autoDiscover: false
-                        };
+                        if (!leafletScope.settingCenterFromScope) {
+                            //$log.debug("updating center model...", map.getCenter(), map.getZoom());
+                            scope.center = {
+                                lat: map.getCenter().lat,
+                                lng: map.getCenter().lng,
+                                zoom: map.getZoom(),
+                                autoDiscover: false
+                            };
+                        }
                         leafletEvents.notifyCenterChangedToBounds(leafletScope, map);
                     });
                 });
