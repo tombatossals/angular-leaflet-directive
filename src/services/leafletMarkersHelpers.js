@@ -104,7 +104,13 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
                 }
             }
 
-            return new L.marker(markerData, markerOptions);
+            var marker = new L.marker(markerData, markerOptions);
+
+            if (!isString(markerData.message)) {
+                marker.unbindPopup();
+            }
+
+            return marker;
         },
 
         addMarkerToGroup: function(marker, groupName, map) {
@@ -297,6 +303,11 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
                     // Reopen the popup when focus is still true
                     marker.openPopup();
                     updatedFocus = true;
+                }
+
+                // zIndexOffset adjustment
+                if (oldMarkerData.zIndexOffset !== markerData.zIndexOffset) {
+                    marker.setZIndexOffset(markerData.zIndexOffset);
                 }
 
                 var markerLatLng = marker.getLatLng();

@@ -219,6 +219,21 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
                 return L.imageOverlay(params.url, params.bounds, params.options);
             }
         },
+
+        // This "custom" type is used to accept every layer that user want to define himself.
+        // We can wrap these custom layers like heatmap or yandex, but it means a lot of work/code to wrap the world,
+        // so we let user to define their own layer outside the directive,
+        // and pass it on "createLayer" result for next processes
+        custom: {
+            createLayer: function (params) {
+                if (params.layer instanceof L.Class) {
+                    return angular.copy(params.layer);
+                }
+                else {
+                    $log.error('[AngularJS - Leaflet] A custom layer must be a leaflet Class');
+                }
+            }
+        },
         cartodb: {
             mustHaveUrl: true,
             createLayer: function(params) {

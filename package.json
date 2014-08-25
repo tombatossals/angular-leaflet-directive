@@ -33,7 +33,7 @@
     "karma-firefox-launcher": "latest",
     "karma-chrome-launcher": "latest",
     "karma-html2js-preprocessor": "latest",
-    "karma-jasmine": "~0.2.0",
+    "karma-jasmine": "~0.2.2",
     "karma-requirejs": "latest",
     "karma-coffee-preprocessor": "latest",
     "karma-phantomjs-launcher": "latest",
@@ -48,5 +48,6 @@
   },
   "scripts": {
     "test": "grunt travis --verbose"
-  }
+  },
+  "main": "dist/angular-leaflet-directive"
 }

@@ -6,6 +6,7 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
             worldCopyJump: false,
             doubleClickZoom: true,
             scrollWheelZoom: true,
+            touchZoom: true,
             zoomControl: true,
             zoomsliderControl: false,
             zoomControlPosition: 'topleft',
@@ -58,6 +59,7 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
                 zoomControl: d.zoomControl,
                 doubleClickZoom: d.doubleClickZoom,
                 scrollWheelZoom: d.scrollWheelZoom,
+                touchZoom: d.touchZoom,
                 attributionControl: d.attributionControl,
                 worldCopyJump: d.worldCopyJump,
                 crs: d.crs
@@ -94,6 +96,7 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
             if (isDefined(userDefaults)) {
                 newDefaults.doubleClickZoom = isDefined(userDefaults.doubleClickZoom) ? userDefaults.doubleClickZoom : newDefaults.doubleClickZoom;
                 newDefaults.scrollWheelZoom = isDefined(userDefaults.scrollWheelZoom) ? userDefaults.scrollWheelZoom : newDefaults.doubleClickZoom;
+                newDefaults.touchZoom = isDefined(userDefaults.touchZoom) ? userDefaults.touchZoom : newDefaults.doubleClickZoom;
                 newDefaults.zoomControl = isDefined(userDefaults.zoomControl) ? userDefaults.zoomControl : newDefaults.zoomControl;
                 newDefaults.zoomsliderControl = isDefined(userDefaults.zoomsliderControl) ? userDefaults.zoomsliderControl : newDefaults.zoomsliderControl;
                 newDefaults.attributionControl = isDefined(userDefaults.attributionControl) ? userDefaults.attributionControl : newDefaults.attributionControl;

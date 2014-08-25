@@ -16,7 +16,7 @@ describe('Directive: leaflet center', function() {
         leafletData = _leafletData_;
 
         center = {
-            lat: 0.966,
+            lat: 0.96658,
             lng: 2.02,
             zoom: 4
         };
@@ -49,8 +49,8 @@ describe('Directive: leaflet center', function() {
 
         leafletData.getMap().then(function(map) {
             expect(map.getZoom()).toEqual(center.zoom);
-            expect(map.getCenter().lat).toBeCloseTo(0.966);
-            expect(map.getCenter().lng).toBeCloseTo(2.02);
+            expect(map.getCenter().lat).toBeCloseTo(0.96658, 4);
+            expect(map.getCenter().lng).toBeCloseTo(2.02, 4);
         });
     });
 
@@ -63,17 +63,17 @@ describe('Directive: leaflet center', function() {
         });
         scope.$apply();
 
-        expect(map.getCenter().lat).toBeCloseTo(0.966);
-        expect(map.getCenter().lng).toBeCloseTo(2.02);
+        expect(map.getCenter().lat).toBeCloseTo(0.96658, 4);
+        expect(map.getCenter().lng).toBeCloseTo(2.02, 4);
         expect(map.getZoom()).toEqual(4);
 
-        center.lat = 2.02;
+        center.lat = 2.02999;
         center.lng = 4.04;
         center.zoom = 8;
         scope.$digest();
 
-        expect(map.getCenter().lat).toBeCloseTo(2.02);
-        expect(map.getCenter().lng).toBeCloseTo(4.04);
+        expect(map.getCenter().lat).toBeCloseTo(2.02999, 4);
+        expect(map.getCenter().lng).toBeCloseTo(4.04, 4);
         expect(map.getZoom()).toEqual(8);
     });
 
@@ -93,21 +93,21 @@ describe('Directive: leaflet center', function() {
             $location.search(centerParams);
             scope.$digest();
 
-            expect(map.getCenter().lat).toBeCloseTo(30.1);
-            expect(map.getCenter().lng).toBeCloseTo(-9.2);
+            expect(map.getCenter().lat).toBeCloseTo(30.1, 4);
+            expect(map.getCenter().lng).toBeCloseTo(-9.2, 4);
             expect(map.getZoom()).toEqual(4);
         });
 
         it('should update the url hash if changes the center', function() {
             var element = angular.element('<leaflet center="center" url-hash-center="yes"></leaflet>');
             element = $compile(element)(scope);
-            scope.center = { lat: 9.5, lng: -1.8, zoom: 8 };
+            scope.center = { lat: 9.52478, lng: -1.8, zoom: 8 };
             var centerUrlHash;
             scope.$on("centerUrlHash", function(event, u) {
                 centerUrlHash = u;
             });
             scope.$digest();
-            expect(centerUrlHash).toBe('9.5000:-1.8000:8');
+            expect(centerUrlHash).toBe('9.5248:-1.8000:8');
         });
     });
 });
