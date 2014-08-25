@@ -138,7 +138,7 @@ angular.module("leaflet-directive").directive('center',
                     leafletEvents.notifyCenterChangedToBounds(leafletScope, map);
                     $timeout(function() {
                         leafletScope.settingCenterFromScope = false;
-                        $log.debug("allow center scope updates");
+                        //$log.debug("allow center scope updates");
                     });
                 }, true);
 

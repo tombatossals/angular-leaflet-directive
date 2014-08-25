@@ -251,8 +251,7 @@
               ], center.zoom);
               leafletEvents.notifyCenterChangedToBounds(leafletScope, map);
               $timeout(function () {
-                leafletScope.settingCenterFromScope = false;
-                $log.debug('allow center scope updates');
+                leafletScope.settingCenterFromScope = false;  //$log.debug("allow center scope updates");
               });
             }, true);
             map.whenReady(function () {
