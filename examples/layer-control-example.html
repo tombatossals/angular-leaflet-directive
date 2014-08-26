@@ -1,11 +1,15 @@
 <!DOCTYPE html>
 <html ng-app="demoapp">
 <head>
+    <script src="../bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="../bower_components/ionrangeslider/js/ion.rangeSlider.min.js"></script>
     <script src="../bower_components/angular/angular.min.js"></script>
     <script src="../bower_components/leaflet/dist/leaflet.js"></script>
-    <script src="../dist/angular-leaflet-directive.min.js"></script>
+    <script src="../dist/angular-leaflet-directive.js"></script>
     <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../bower_components/ionrangeslider/css/ion.rangeSlider.css">
+    <link rel="stylesheet" href="../bower_components/ionrangeslider/css/ion.rangeSlider.skinNice.css">
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script>
@@ -122,6 +126,19 @@
         width: 200px;
         box-shadow: 1px 1px 5px #333;
         padding: 5px;
+      }
+
+      .angular-leaflet-control-layers .lf-row label {
+        cursor: pointer;
+        width: 100%;
+      }
+
+      .angular-leaflet-control-layers .lf-row label .lf-icons {
+        float: right;
+      }
+
+      .angular-leaflet-control-layers .lf-row label .lf-icon {
+        cursor: pointer;
       }
     </style>
 </head>
