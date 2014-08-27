@@ -23,7 +23,7 @@ angular.module("leaflet-directive").directive('bounds', function ($log, $timeout
                     var scope = event.currentScope;
                     var bounds = map.getBounds();
                     //$log.debug('updated map bounds...', bounds);
-                    if (emptyBounds(bounds)) {
+                    if (emptyBounds(bounds) || scope.settingBoundsFromScope) {
                         return;
                     }
                     var newScopeBounds = {
@@ -50,7 +50,12 @@ angular.module("leaflet-directive").directive('bounds', function ($log, $timeout
                     var leafletBounds = createLeafletBounds(bounds);
                     if (leafletBounds && !map.getBounds().equals(leafletBounds)) {
                         //$log.debug('Need to update map bounds.');
+                        scope.settingBoundsFromScope = true;
                         map.fitBounds(leafletBounds);
+                        $timeout( function() {
+                            //$log.debug('Allow bound updates.');
+                            scope.settingBoundsFromScope = false;
+                        });
                     }
                 }, true);
             });
