@@ -30,7 +30,7 @@ install:
  - 'shell:protractor_update'
 
 default:
- - 'watch'
+ - 'build'
 
 dev:
  - 'connect:devserver'
@@ -40,6 +40,13 @@ dev:
 serve:
  - 'connect:webserver'
 
+build:
+ - 'jshint'
+ - 'concat:dist'
+ - 'ngmin'
+ - 'uglify'
+ - 'test-unit'
+ - 'concat:license'
 
 travis:
  - 'bower:install'
