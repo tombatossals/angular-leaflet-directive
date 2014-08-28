@@ -84,6 +84,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-ngmin');
 
-    grunt.registerTask('default', ['watch']);
+    grunt.registerTask('build', ['jshint', 'concat', 'ngmin', 'uglify']);
+    grunt.registerTask('default', ['build']);
 
 };

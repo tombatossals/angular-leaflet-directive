@@ -32,7 +32,9 @@
     "proj4": "~2.1.2",
     "proj4leaflet": "~0.7.0",
     "Leaflet.MakiMarkers": "~1.0.1",
-    "Leaflet.PolylineDecorator": "bbecquet/Leaflet.PolylineDecorator"
+    "Leaflet.PolylineDecorator": "bbecquet/Leaflet.PolylineDecorator",
+    "angular-highlightjs": "*",
+    "highlightjs": "*"
   },
   "overrides": {
     "Leaflet.utfgrid": {
