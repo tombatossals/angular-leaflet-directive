@@ -1,9 +1,10 @@
+/* global alert: true */
 L.OpenStreetBugs = L.FeatureGroup.extend({
 	options : {
-		serverURL : "http://openstreetbugs.schokokeks.org/api/0.1/",
+		serverURL : 'http://openstreetbugs.schokokeks.org/api/0.1/',
 		readonly : false,
 		setCookie : true,
-		username : "NoName",
+		username : 'NoName',
 		cookieLifetime : 1000,
 		cookiePath : null,
 		permalinkZoom : 14,
@@ -11,8 +12,8 @@ L.OpenStreetBugs = L.FeatureGroup.extend({
 		opacity : 0.7,
 		showOpen: true,
 		showClosed: true,
-		iconOpen: "http://openstreetbugs.schokokeks.org/client/open_bug_marker.png",
-		iconClosed:"http://openstreetbugs.schokokeks.org/client/closed_bug_marker.png",
+		iconOpen: 'http://openstreetbugs.schokokeks.org/client/open_bug_marker.png',
+		iconClosed:'http://openstreetbugs.schokokeks.org/client/closed_bug_marker.png',
 		iconActive: undefined,
 		editArea: 0.01,
 		popupOptions: {autoPan: false},
@@ -21,8 +22,8 @@ L.OpenStreetBugs = L.FeatureGroup.extend({
 
 	initialize : function(options)
 	{
-		var tmp = L.Util.extend({}, this.options.popupOptions, (options || {}).popupOptions)
-		L.Util.setOptions(this, options)
+		var tmp = L.Util.extend({}, this.options.popupOptions, (options || {}).popupOptions);
+		L.Util.setOptions(this, options);
 		this.options.popupOptions = tmp;
 
 		putAJAXMarker.layers.push(this);
@@ -30,7 +31,7 @@ L.OpenStreetBugs = L.FeatureGroup.extend({
 		this.bugs = {};
 		this._layers = {};
 
-		var username = this.get_cookie("osbUsername");
+		var username = this.get_cookie('osbUsername');
 		if (username)
 			this.options.username = username;
 
@@ -41,7 +42,7 @@ L.OpenStreetBugs = L.FeatureGroup.extend({
 	{
 		L.FeatureGroup.prototype.onAdd.apply(this, [map]);
 
-		this._map.on("moveend", this.loadBugs, this);
+		this._map.on('moveend', this.loadBugs, this);
 		this.loadBugs();
 		if (!this.options.readonly) {
 		  if (this.options.dblClick) {
@@ -57,7 +58,7 @@ L.OpenStreetBugs = L.FeatureGroup.extend({
 
 	onRemove : function(map)
 	{
-		this._map.off("moveend", this.loadBugs, this);
+		this._map.off('moveend', this.loadBugs, this);
 		this._iterateLayers(map.removeLayer, map);
 		delete this._map;
 		if (!this.options.readonly) {
@@ -75,7 +76,7 @@ L.OpenStreetBugs = L.FeatureGroup.extend({
 	set_cookie : function(name, value)
 	{
 		var expires = (new Date((new Date()).getTime() + 604800000)).toGMTString(); // one week from now
-		document.cookie = name+"="+escape(value)+";";
+		document.cookie = name+'='+encodeURIComponent(value)+';';
 	},
 
 	get_cookie : function(name)
@@ -83,9 +84,9 @@ L.OpenStreetBugs = L.FeatureGroup.extend({
 		var cookies = (document.cookie || '').split(/;\s*/);
 		for(var i=0; i<cookies.length; i++)
 		{
-			var cookie = cookies[i].split("=");
-			if(cookie[0] == name)
-				return unescape(cookie[1]);
+			var cookie = cookies[i].split('=');
+			if(cookie[0] === name)
+				return decodeURIComponent(cookie[1]);
 		}
 		return null;
 	},
@@ -104,18 +105,18 @@ L.OpenStreetBugs = L.FeatureGroup.extend({
 			return Math.round(number*factor)/factor;
 		}
 
-		this.apiRequest("getBugs"
-			+ "?t="+round(ne.lat, 5)
-			+ "&r="+round(ne.lng, 5)
-			+ "&b="+round(sw.lat, 5)
-			+ "&l="+round(sw.lng, 5));
+		this.apiRequest('getBugs'
+			+ '?t='+round(ne.lat, 5)
+			+ '&r='+round(ne.lng, 5)
+			+ '&b='+round(sw.lat, 5)
+			+ '&l='+round(sw.lng, 5));
 	},
 
 	apiRequest : function(url, reload)
 	{
-		var script = document.createElement("script");
-		script.type = "text/javascript";
-		script.src = this.options.serverURL + url + "&nocache="+(new Date()).getTime();
+		var script = document.createElement('script');
+		script.type = 'text/javascript';
+		script.src = this.options.serverURL + url + '&nocache='+(new Date()).getTime();
 		var _this = this;
 		script.onload = function(e) {
 			document.body.removeChild(this);
@@ -129,7 +130,7 @@ L.OpenStreetBugs = L.FeatureGroup.extend({
 		var bug = putAJAXMarker.bugs[id];
 		if(this.bugs[id])
 		{
-			if (force || this.bugs[id].osb.closed != bug[2])
+			if (force || this.bugs[id].osb.closed !== bug[2])
 				this.removeLayer(this.bugs[id]);
 			else
 				return;
@@ -146,7 +147,7 @@ L.OpenStreetBugs = L.FeatureGroup.extend({
 			icon_url = this.options.iconClosed;
 			class_popup += ' osbClosed';
 		}
-		else if (bug[1].length == 1) {
+		else if (bug[1].length === 1) {
 			icon_url = this.options.iconOpen;
 			class_popup += ' osbOpen';
 		}
@@ -167,10 +168,10 @@ L.OpenStreetBugs = L.FeatureGroup.extend({
 		this.setPopupContent(id);
 		feature._popup.options.className += class_popup;
 
-		if (this.options.bugid && (parseInt(this.options.bugid) == id))
+		if (this.options.bugid && (parseInt(this.options.bugid) === id))
 			feature.openPopup();
 
-		//this.events.triggerEvent("markerAdded");
+		//this.events.triggerEvent('markerAdded');
 	},
 
 	osbIcon :  L.Icon.extend({
@@ -196,26 +197,26 @@ L.OpenStreetBugs = L.FeatureGroup.extend({
 		var newContent = L.DomUtil.create('div', 'osb-popup');
 		var h1 = L.DomUtil.create('h1', null, newContent);
 		if (rawbug[2]) 
-			h1.textContent = L.i18n("Fixed Error");
-		else if (rawbug[1].length == 1)
-			h1.textContent = L.i18n("Unresolved Error");
+			h1.textContent = L.i18n('Fixed Error');
+		else if (rawbug[1].length === 1)
+			h1.textContent = L.i18n('Unresolved Error');
 		else
-			h1.textContent = L.i18n("Active Error");
+			h1.textContent = L.i18n('Active Error');
 
 		var divinfo = L.DomUtil.create('div', 'osb-info', newContent);
 		var table = L.DomUtil.create('table', 'osb-table', divinfo);
 		for(var i=0; i<rawbug[1].length; i++)
 		{
-			var tr = L.DomUtil.create('tr', "osb-tr-info", table);
-			tr.setAttribute("valign","top")
-			var td = L.DomUtil.create('td', "osb-td-nickname", tr);
-			td.textContent = rawbug[5][i] + ':';
-			var td = L.DomUtil.create('td', "osb-td-datetime", tr);
-			td.textContent = rawbug[6][i];
-			var td = L.DomUtil.create('td', "osb-td-comment", L.DomUtil.create('tr', "osb-tr-comment", table));
-			td.setAttribute("colspan","2");
-			td.setAttribute("charoff","2");
-			td.textContent = rawbug[4][i];
+			var tr = L.DomUtil.create('tr', 'osb-tr-info', table);
+			tr.setAttribute('valign','top');
+			var td_nickname = L.DomUtil.create('td', 'osb-td-nickname', tr);
+			td_nickname.textContent = rawbug[5][i] + ':';
+			var td_datetime = L.DomUtil.create('td', 'osb-td-datetime', tr);
+			td_datetime.textContent = rawbug[6][i];
+			var td_comment = L.DomUtil.create('td', 'osb-td-comment', L.DomUtil.create('tr', 'osb-tr-comment', table));
+			td_comment.setAttribute('colspan','2');
+			td_comment.setAttribute('charoff','2');
+			td_comment.textContent = rawbug[4][i];
 		}
 
 		function create_link(ul, text) {
@@ -224,7 +225,7 @@ L.OpenStreetBugs = L.FeatureGroup.extend({
 			a.href = '#';
 			a.textContent = L.i18n(text);
 			return a;
-		};
+		}
 
 		var ul = L.DomUtil.create('ul', null, newContent);
 		var _this = this;
@@ -239,7 +240,7 @@ L.OpenStreetBugs = L.FeatureGroup.extend({
 				h1.textContent = h1.textContent_old;
 				newContent.removeChild(form);
 				newContent.appendChild(ul);
-			}
+			};
 			form.ok.onclick = function(e) {
 				bug.closePopup();
 				if (!add_comment)
@@ -251,26 +252,26 @@ L.OpenStreetBugs = L.FeatureGroup.extend({
 			newContent.appendChild(form);
 			newContent.removeChild(ul);
 			return false;
-		};
+		}
 
 		if (!isclosed && !this.options.readonly) {
 			var a;
-			a = create_link(ul, "Add comment");
-			a.onclick = function(e) { return showComment("Add comment", true); }
+			a = create_link(ul, 'Add comment');
+			a.onclick = function(e) { return showComment('Add comment', true); };
 
-			a = create_link(ul, "Mark as Fixed");
-			a.onclick = function(e) { return showComment("Close bug", false); }
+			a = create_link(ul, 'Mark as Fixed');
+			a.onclick = function(e) { return showComment('Close bug', false); };
 		}
-		var a = create_link(ul, "JOSM");
-		a.onclick = function() { _this.remoteEdit(rawbug[0]); };
+		var a_josm = create_link(ul, 'JOSM');
+		a_josm.onclick = function() { _this.remoteEdit(rawbug[0]); };
 
-		var a = create_link(ul, "Link");
-		var vars = {lat:rawbug[0].lat, lon:rawbug[0].lng, zoom:this.options.permalinkZoom, bugid:id}
+		var a_link = create_link(ul, 'Link');
+		var vars = {lat:rawbug[0].lat, lon:rawbug[0].lng, zoom:this.options.permalinkZoom, bugid:id};
 		if (this.options.permalinkUrl)
-			a.href = L.Util.template(this.options.permalinkUrl, vars)
+			a_link.href = L.Util.template(this.options.permalinkUrl, vars);
 		else
-			a.href = location.protocol + '//' + location.host + location.pathname +
-				L.Util.getParamString(vars)
+			a_link.href = location.protocol + '//' + location.host + location.pathname +
+				L.Util.getParamString(vars);
 
 
 		bug._popup_content = newContent;
@@ -283,26 +284,26 @@ L.OpenStreetBugs = L.FeatureGroup.extend({
 	submitComment: function(form) {
 		if (!form.osbcomment.value) return;
 		var nickname = form.osbnickname.value || this.options.username;
-		this.apiRequest("editPOIexec"
-			+ "?id="+encodeURIComponent(form.osbid.value)
-			+ "&text="+encodeURIComponent(form.osbcomment.value + " [" + nickname + "]")
-			+ "&format=js", true
+		this.apiRequest('editPOIexec'
+			+ '?id='+encodeURIComponent(form.osbid.value)
+			+ '&text='+encodeURIComponent(form.osbcomment.value + ' [' + nickname + ']')
+			+ '&format=js', true
 		);
-		this.set_cookie("osbUsername",nickname);
+		this.set_cookie('osbUsername',nickname);
 		this.options.username=nickname;
 	},
 
 	closeBug: function(form) {
 		var id = form.osbid.value;
 		this.submitComment(form);
-		this.apiRequest("closePOIexec"
-			+ "?id="+encodeURIComponent(id)
-			+ "&format=js", true
+		this.apiRequest('closePOIexec'
+			+ '?id='+encodeURIComponent(id)
+			+ '&format=js', true
 		);
 	},
 
 	createCommentForm: function(elt) {
-		var form = L.DomUtil.create("form", 'osb-add-comment', elt);
+		var form = L.DomUtil.create('form', 'osb-add-comment', elt);
 		var content = '';
 		content += '<input name="osbid" type="hidden"/>';
 		content += '<input name="osblat" type="hidden"/>';
@@ -320,27 +321,27 @@ L.OpenStreetBugs = L.FeatureGroup.extend({
 	addBug: function(e) {
 		var newContent = L.DomUtil.create('div', 'osb-popup');
 
-		newContent.innerHTML += '<h1>'+L.i18n("New bug")+'</h1>';
-		newContent.innerHTML += '<div class="osbCreateInfo">'+L.i18n("Find your bug?")+'<br />'+L.i18n("Contact details and someone will fix it.")+'</div>';
+		newContent.innerHTML += '<h1>'+L.i18n('New bug')+'</h1>';
+		newContent.innerHTML += '<div class="osbCreateInfo">'+L.i18n('Find your bug?')+'<br />'+L.i18n('Contact details and someone will fix it.')+'</div>';
 
 		var popup = new L.Popup();
 		var _this = this;
 		var form = this.createCommentForm(newContent);
 		form.osblat.value = e.latlng.lat;
 		form.osblon.value = e.latlng.lng;
-		form.ok.value = L.i18n("Add comment");
+		form.ok.value = L.i18n('Add comment');
 		form.onsubmit = function(e) {
 			_this._map.closePopup(popup);
 			_this.createBug(form);
 			return false;
 		};
-		form.cancel.onclick = function(e) { _this._map.closePopup(popup); }
+		form.cancel.onclick = function(e) { _this._map.closePopup(popup); };
 
 		popup.setLatLng(e.latlng);
 		popup.setContent(newContent);
 		popup.options.maxWidth=410;
 		popup.options.minWidth=410;
-		popup.options.className += ' osb osbCreate'
+		popup.options.className += ' osb osbCreate';
 
 		this._map.openPopup(popup);
 	},
@@ -348,21 +349,20 @@ L.OpenStreetBugs = L.FeatureGroup.extend({
 	createBug: function(form) {
 		if (!form.osbcomment.value) return;
 		var nickname = form.osbnickname.value || this.options.username;
-		this.apiRequest("addPOIexec"
-			+ "?lat="+encodeURIComponent(form.osblat.value)
-			+ "&lon="+encodeURIComponent(form.osblon.value)
-			+ "&text="+encodeURIComponent(form.osbcomment.value + " [" + nickname + "]")
-			+ "&format=js", true
+		this.apiRequest('addPOIexec'
+			+ '?lat='+encodeURIComponent(form.osblat.value)
+			+ '&lon='+encodeURIComponent(form.osblon.value)
+			+ '&text='+encodeURIComponent(form.osbcomment.value + ' [' + nickname + ']')
+			+ '&format=js', true
 		);
-		this.set_cookie("osbUsername",nickname);
+		this.set_cookie('osbUsername',nickname);
 		this.options.username=nickname;
 	},
 
 	remoteEdit: function(x) {
 		var ydelta = this.options.editArea || 0.01;
 		var xdelta = ydelta * 2;
-		var p = [ 'left='  + (x.lng - xdelta), 'bottom=' + (x.lat - ydelta)
-			, 'right=' + (x.lng + xdelta), 'top='    + (x.lat + ydelta)];
+		var p = [ 'left='  + (x.lng - xdelta), 'bottom=' + (x.lat - ydelta), 'right=' + (x.lng + xdelta), 'top='    + (x.lat + ydelta)];
 		var url = 'http://localhost:8111/load_and_zoom?' + p.join('&');
 		var frame = L.DomUtil.create('iframe', null);
 		frame.style.display = 'none';
@@ -371,7 +371,7 @@ L.OpenStreetBugs = L.FeatureGroup.extend({
 		frame.onload = function(e) { document.body.removeChild(frame); };
 		return false;
 	}
-})
+});
 
 L.OpenStreetBugs.setCSS = function() {
 	if(L.OpenStreetBugs.setCSS.done)
@@ -387,40 +387,41 @@ L.OpenStreetBugs.setCSS = function() {
 		if(s.addRule) // M$IE
 			rule = s.addRule(selector, rules, idx);
 		else
-			rule = s.insertRule(selector + " { " + rules + " }", idx);
+			rule = s.insertRule(selector + ' { ' + rules + ' }', idx);
 		s.style = L.Util.extend(s.style || {}, rules);
 		idx++;
 	};
 
-	addRule(".osb-popup dl", 'margin:0; padding:0;');
-	addRule(".osb-popup dt", 'margin:0; padding:0; font-weight:bold; float:left; clear:left;');
-	addRule(".osb-popup dt:after", 'content: ": ";');
-	addRule("* html .osb-popup dt", 'margin-right:1ex;');
-	addRule(".osb-popup dd", 'margin:0; padding:0;');
-	addRule(".osb-popup ul.buttons", 'list-style-type:none; padding:0; margin:0;');
-	addRule(".osb-popup ul.buttons li", 'display:inline; margin:0; padding:0;');
-	addRule(".osb-popup h3", 'font-size:1.2em; margin:.2em 0 .7em 0;');
+	addRule('.osb-popup dl', 'margin:0; padding:0;');
+	addRule('.osb-popup dt', 'margin:0; padding:0; font-weight:bold; float:left; clear:left;');
+	addRule('.osb-popup dt:after', 'content: ": ";');
+	addRule('* html .osb-popup dt', 'margin-right:1ex;');
+	addRule('.osb-popup dd', 'margin:0; padding:0;');
+	addRule('.osb-popup ul.buttons', 'list-style-type:none; padding:0; margin:0;');
+	addRule('.osb-popup ul.buttons li', 'display:inline; margin:0; padding:0;');
+	addRule('.osb-popup h3', 'font-size:1.2em; margin:.2em 0 .7em 0;');
 };
 
 function putAJAXMarker(id, lon, lat, text, closed)
 {
 	var comments = text.split(/<hr \/>/);
-	var comments_only = []
+	var comments_only = [];
 	var nickname = [];
 	var datetime = [];
 	var info = null;
 	var isplit = 0;
-	for(var i=0; i<comments.length; i++) {
+	var i;
+	for(i=0; i<comments.length; i++) {
 		info = null;
 		isplit = 0;
-		comments[i] = comments[i].replace(/&quot;/g, "\"").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&");
-		isplit = comments[i].lastIndexOf("[");
+		comments[i] = comments[i].replace(/&quot;/g, '"').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
+		isplit = comments[i].lastIndexOf('[');
 		if (isplit > 0) {
 		  comments_only[i] = comments[i].substr(0,isplit-1);
 		  info = comments[i].substr(isplit+1);
-		  nickname[i] = info.substr(0,info.lastIndexOf(","));
-		  datetime[i] = info.substr(info.lastIndexOf(",")+2);
-		  datetime[i] = datetime[i].substr(0,datetime[i].lastIndexOf("]"));
+		  nickname[i] = info.substr(0,info.lastIndexOf(','));
+		  datetime[i] = info.substr(info.lastIndexOf(',')+2);
+		  datetime[i] = datetime[i].substr(0,datetime[i].lastIndexOf(']'));
 		}
 		else {
 		  comments_only[i] = comments[i];
@@ -436,19 +437,17 @@ function putAJAXMarker(id, lon, lat, text, closed)
 		nickname,
 		datetime
 	];
-	var force = (old && old[3]) != text;
-	for(var i=0; i<putAJAXMarker.layers.length; i++)
+	var force = (old && old[3]) !== text;
+	for(i=0; i<putAJAXMarker.layers.length; i++)
 		putAJAXMarker.layers[i].createMarker(id, force);
 }
 
 function osbResponse(error)
 {
 	if(error)
-		alert("Error: "+error);
+		alert('Error: '+error);
 
 	return;
-	for(var i=0; i<putAJAXMarker.layers.length; i++)
-		putAJAXMarker.layers[i].loadBugs();
 }
 
 putAJAXMarker.layers = [ ];
@@ -462,36 +461,36 @@ L.Marker.include({
 		function onclick() {
 			this.off('mouseout', onout, this);
 			this.off('click', onclick, this);
-			this.on('click', this.openPopup, this)
+			this.on('click', this.openPopup, this);
 		}
 
 		function onout() {
 			onclick.call(this);
 			this.closePopup();
-		};
-		this.on("mouseout", onout, this);
-		this.on("click", onclick, this);
+		}
+		this.on('mouseout', onout, this);
+		this.on('click', onclick, this);
 	}
 });
 
-L.i18n = function(s) { return (L.i18n.lang[L.i18n.current] || {})[s] || s; }
+L.i18n = function(s) { return (L.i18n.lang[L.i18n.current] || {})[s] || s; };
 L.i18n.current = 'ru';
 L.i18n.lang = {};
 L.i18n.extend = function(lang, args) {
-	L.i18n.lang[lang] = L.Util.extend(L.i18n.lang[lang] || {}, args)
+	L.i18n.lang[lang] = L.Util.extend(L.i18n.lang[lang] || {}, args);
 };
 
 L.i18n.extend('ru', {
-	"Fixed Error":"Ошибка исправлена",
-	"Unresolved Error":"Неисправленная ошибка",
-	"Active Error":"Ошибка уточняется",
-	"Description":"Описание",
-	"Comment":"Описание",
-	"Add comment":"Дополнить",
-	"Mark as Fixed":"Исправлено",
-	"Link":"Ссылка",
-	"Cancel":"Отмена",
-	"New bug":"Я нашел ошибку",
-	"Find your bug?":"Нашли ошибку?",
-	"Contact details and someone will fix it.":"Напишите подробнее и кто-нибудь её исправит."
+	'Fixed Error':'Ошибка исправлена',
+	'Unresolved Error':'Неисправленная ошибка',
+	'Active Error':'Ошибка уточняется',
+	'Description':'Описание',
+	'Comment':'Описание',
+	'Add comment':'Дополнить',
+	'Mark as Fixed':'Исправлено',
+	'Link':'Ссылка',
+	'Cancel':'Отмена',
+	'New bug':'Я нашел ошибку',
+	'Find your bug?':'Нашли ошибку?',
+	'Contact details and someone will fix it.':'Напишите подробнее и кто-нибудь её исправит.'
 });

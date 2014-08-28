@@ -1,11 +1,17 @@
 {
   "author": "Pavel Shramov",
   "name": "leaflet-plugins",
-  "version": "1.0.1",
+  "version": "1.1.2",
   "description": "Miscellaneous plugins for Leaflet library for services that need to display route information and need satellite imagery from different providers",
   "repository": {
     "type": "git",
     "url": "git@github.com:shramov/leaflet-plugins.git"
+  },
+  "scripts": {
+    "test": "jshint control/* layer/*"
+  },
+  "devDependencies": {
+    "jshint": "2.5.0"
   },
   "contributors": [
     "Bruno Bergot <bruno@eliaz.fr>",

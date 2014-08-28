@@ -22,7 +22,7 @@ Also there are some useful control plugins (`control/`):
 
  * Permalink - OpenLayers compatible permanent link with support for storing
    location data in hash part (#lat=...);
- * Scale - scale ruler which looks like one on paper maps.
+ * Distance - simple tool to measure distances on maps
 
 == How to get?
 

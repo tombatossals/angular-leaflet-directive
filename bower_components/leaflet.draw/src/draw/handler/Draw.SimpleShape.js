@@ -14,7 +14,12 @@ L.Draw.SimpleShape = L.Draw.Feature.extend({
 	addHooks: function () {
 		L.Draw.Feature.prototype.addHooks.call(this);
 		if (this._map) {
-			this._map.dragging.disable();
+			this._mapDraggable = this._map.dragging.enabled();
+
+			if (this._mapDraggable) {
+				this._map.dragging.disable();
+			}
+
 			//TODO refactor: move cursor to styles
 			this._container.style.cursor = 'crosshair';
 
@@ -29,7 +34,10 @@ L.Draw.SimpleShape = L.Draw.Feature.extend({
 	removeHooks: function () {
 		L.Draw.Feature.prototype.removeHooks.call(this);
 		if (this._map) {
-			this._map.dragging.enable();
+			if (this._mapDraggable) {
+				this._map.dragging.enable();
+			}
+
 			//TODO refactor: move cursor to styles
 			this._container.style.cursor = '';
 
@@ -37,7 +45,7 @@ L.Draw.SimpleShape = L.Draw.Feature.extend({
 				.off('mousedown', this._onMouseDown, this)
 				.off('mousemove', this._onMouseMove, this);
 
-			L.DomEvent.off(document, 'mouseup', this._onMouseUp);
+			L.DomEvent.off(document, 'mouseup', this._onMouseUp, this);
 
 			// If the box element doesn't exist they must not have moved the mouse, so don't need to destroy/return
 			if (this._shape) {

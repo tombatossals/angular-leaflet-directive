@@ -1,0 +1,13 @@
+{
+  "name": "Leaflet.PolylineDecorator",
+  "homepage": "https://github.com/bbecquet/Leaflet.PolylineDecorator",
+  "_release": "ae9dcb37b4",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "ae9dcb37b4c5b4717c3992a6afd73b80021663b0"
+  },
+  "_source": "git://github.com/bbecquet/Leaflet.PolylineDecorator.git",
+  "_target": "*",
+  "_originalSource": "bbecquet/Leaflet.PolylineDecorator"
+}

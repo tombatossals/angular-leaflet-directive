@@ -2,7 +2,7 @@
  * Leaflet.draw assumes that you have already included the Leaflet library.
  */
 
-L.drawVersion = '0.2.2';
+L.drawVersion = '0.2.3';
 
 L.drawLocal = {
 	draw: {
@@ -10,6 +10,10 @@ L.drawLocal = {
 			actions: {
 				title: 'Cancel drawing',
 				text: 'Cancel'
+			},
+			undo: {
+				title: 'Delete last point drawn',
+				text: 'Delete last point'
 			},
 			buttons: {
 				polyline: 'Draw a polyline',

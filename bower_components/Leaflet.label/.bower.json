@@ -9,6 +9,6 @@
     "commit": "90ed880773bd64723621a666e74a4f6730aea41c"
   },
   "_source": "git://github.com/Leaflet/Leaflet.label.git",
-  "_target": "0.2.1",
+  "_target": "~0.2.1",
   "_originalSource": "Leaflet.label"
 }

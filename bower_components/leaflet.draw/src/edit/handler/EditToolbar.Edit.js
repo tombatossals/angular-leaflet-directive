@@ -28,32 +28,34 @@ L.EditToolbar.Edit = L.Handler.extend({
 		if (this._enabled || !this._hasAvailableLayers()) {
 			return;
 		}
+		this.fire('enabled', {handler: this.type});
+			//this disable other handlers
+
+		this._map.fire('draw:editstart', { handler: this.type });
+			//allow drawLayer to be updated before beginning edition.
 
 		L.Handler.prototype.enable.call(this);
-
 		this._featureGroup
 			.on('layeradd', this._enableLayerEdit, this)
 			.on('layerremove', this._disableLayerEdit, this);
-
-		this.fire('enabled', {handler: this.type});
-		this._map.fire('draw:editstart', { handler: this.type });
 	},
 
 	disable: function () {
 		if (!this._enabled) { return; }
-
-		this.fire('disabled', {handler: this.type});
-		this._map.fire('draw:editstop', { handler: this.type });
-
 		this._featureGroup
 			.off('layeradd', this._enableLayerEdit, this)
 			.off('layerremove', this._disableLayerEdit, this);
-
 		L.Handler.prototype.disable.call(this);
+		this._map.fire('draw:editstop', { handler: this.type });
+		this.fire('disabled', {handler: this.type});
 	},
 
 	addHooks: function () {
-		if (this._map) {
+		var map = this._map;
+
+		if (map) {
+			map.getContainer().focus();
+
 			this._featureGroup.eachLayer(this._enableLayerEdit, this);
 
 			this._tooltip = new L.Tooltip(this._map);
@@ -112,7 +114,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 					latlng: L.LatLngUtil.cloneLatLng(layer.getLatLng()),
 					radius: layer.getRadius()
 				};
-			} else { // Marker
+			} else if (layer instanceof L.Marker) { // Marker
 				this._uneditedLayerProps[id] = {
 					latlng: L.LatLngUtil.cloneLatLng(layer.getLatLng())
 				};
@@ -130,7 +132,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 			} else if (layer instanceof L.Circle) {
 				layer.setLatLng(this._uneditedLayerProps[id].latlng);
 				layer.setRadius(this._uneditedLayerProps[id].radius);
-			} else { // Marker
+			} else if (layer instanceof L.Marker) { // Marker
 				layer.setLatLng(this._uneditedLayerProps[id].latlng);
 			}
 		}
@@ -189,7 +191,7 @@ L.EditToolbar.Edit = L.Handler.extend({
 			if (isMarker) {
 				this._toggleMarkerHighlight(layer);
 			} else {
-				layer.options.previousOptions = layer.options;
+				layer.options.previousOptions = L.Util.extend({ dashArray: null }, layer.options);
 
 				// Make sure that Polylines are not filled
 				if (!(layer instanceof L.Circle) && !(layer instanceof L.Polygon) && !(layer instanceof L.Rectangle)) {

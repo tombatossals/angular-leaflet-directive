@@ -1,0 +1,11 @@
+{
+	"browser": true,
+	"eqeqeq": true,
+	"undef": true,
+	"quotmark": "single",
+	"trailing": true,
+	"laxbreak": true,
+	"globals": {
+		"L": true
+	}
+}

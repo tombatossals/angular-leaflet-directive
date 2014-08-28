@@ -1,5 +1,3 @@
-/*global L: true */
-
 L.KML = L.FeatureGroup.extend({
 	options: {
 		async: true
@@ -16,8 +14,8 @@ L.KML = L.FeatureGroup.extend({
 	},
 
 	loadXML: function(url, cb, options, async) {
-		if (async == undefined) async = this.options.async;
-		if (options == undefined) options = this.options;
+		if (async === undefined) async = this.options.async;
+		if (options === undefined) options = this.options;
 
 		var req = new window.XMLHttpRequest();
 		req.open('GET', url, async);
@@ -25,30 +23,29 @@ L.KML = L.FeatureGroup.extend({
 			req.overrideMimeType('text/xml'); // unsupported by IE
 		} catch(e) {}
 		req.onreadystatechange = function() {
-			if (req.readyState != 4) return;
-			if(req.status == 200) cb(req.responseXML, options);
+			if (req.readyState !== 4) return;
+			if (req.status === 200) cb(req.responseXML, options);
 		};
 		req.send(null);
 	},
 
 	addKML: function(url, options, async) {
 		var _this = this;
-		var cb = function(gpx, options) { _this._addKML(gpx, options) };
+		var cb = function(gpx, options) { _this._addKML(gpx, options); };
 		this.loadXML(url, cb, options, async);
 	},
 
 	_addKML: function(xml, options) {
 		var layers = L.KML.parseKML(xml);
 		if (!layers || !layers.length) return;
-		for (var i = 0; i < layers.length; i++)
-		{
+		for (var i = 0; i < layers.length; i++) {
 			this.fire('addlayer', {
 				layer: layers[i]
 			});
 			this.addLayer(layers[i]);
 		}
 		this.latLngs = L.KML.getLatLngs(xml);
-		this.fire("loaded");
+		this.fire('loaded');
 	},
 
 	latLngs: []
@@ -59,7 +56,7 @@ L.Util.extend(L.KML, {
 	parseKML: function (xml) {
 		var style = this.parseStyle(xml);
 		this.parseStyleMap(xml, style);
-		var el = xml.getElementsByTagName("Folder");
+		var el = xml.getElementsByTagName('Folder');
 		var layers = [], l;
 		for (var i = 0; i < el.length; i++) {
 			if (!this._check_folder(el[i])) { continue; }
@@ -79,7 +76,7 @@ L.Util.extend(L.KML, {
 	// - returns true if no parent Folders
 	_check_folder: function (e, folder) {
 		e = e.parentElement;
-		while (e && e.tagName !== "Folder")
+		while (e && e.tagName !== 'Folder')
 		{
 			e = e.parentElement;
 		}
@@ -88,7 +85,7 @@ L.Util.extend(L.KML, {
 
 	parseStyle: function (xml) {
 		var style = {};
-		var sl = xml.getElementsByTagName("Style");
+		var sl = xml.getElementsByTagName('Style');
 
 		//for (var i = 0; i < sl.length; i++) {
 		var attributes = {color: true, width: true, Icon: true, href: true,
@@ -109,7 +106,7 @@ L.Util.extend(L.KML, {
 					var value = e.childNodes[0].nodeValue;
 					if (key === 'color') {
 						options.opacity = parseInt(value.substring(0, 2), 16) / 255.0;
-						options.color = "#" + value.substring(6, 8) + value.substring(4, 6) + value.substring(2, 4);
+						options.color = '#' + value.substring(6, 8) + value.substring(4, 6) + value.substring(2, 4);
 					} else if (key === 'width') {
 						options.weight = value;
 					} else if (key === 'Icon') {
@@ -126,13 +123,13 @@ L.Util.extend(L.KML, {
 		for (var i = 0; i < sl.length; i++) {
 			var e = sl[i], el;
 			var options = {}, poptions = {}, ioptions = {};
-			el = e.getElementsByTagName("LineStyle");
+			el = e.getElementsByTagName('LineStyle');
 			if (el && el[0]) { options = _parse(el[0]); }
-			el = e.getElementsByTagName("PolyStyle");
+			el = e.getElementsByTagName('PolyStyle');
 			if (el && el[0]) { poptions = _parse(el[0]); }
 			if (poptions.color) { options.fillColor = poptions.color; }
 			if (poptions.opacity) { options.fillOpacity = poptions.opacity; }
-			el = e.getElementsByTagName("IconStyle");
+			el = e.getElementsByTagName('IconStyle');
 			if (el && el[0]) { ioptions = _parse(el[0]); }
 			if (ioptions.href) {
 				// save anchor info until the image is loaded
@@ -149,18 +146,18 @@ L.Util.extend(L.KML, {
 	},
 	
 	parseStyleMap: function (xml, existingStyles) {
-		var sl = xml.getElementsByTagName("StyleMap");
+		var sl = xml.getElementsByTagName('StyleMap');
 		
 		for (var i = 0; i < sl.length; i++) {
 			var e = sl[i], el;
 			var smKey, smStyleUrl;
 			
-			el = e.getElementsByTagName("key");
+			el = e.getElementsByTagName('key');
 			if (el && el[0]) { smKey = el[0].textContent; }
-			el = e.getElementsByTagName("styleUrl");
+			el = e.getElementsByTagName('styleUrl');
 			if (el && el[0]) { smStyleUrl = el[0].textContent; }
 			
-			if (smKey=='normal')
+			if (smKey === 'normal')
 			{
 				existingStyles['#' + e.getAttribute('id')] = existingStyles[smStyleUrl];
 			}
@@ -212,7 +209,7 @@ L.Util.extend(L.KML, {
 				var tag = parse[j];
 				el = place.getElementsByTagName(tag);
 				for (i = 0; i < el.length; i++) {
-					var l = this["parse" + tag](el[i], xml, options);
+					var l = this['parse' + tag](el[i], xml, options);
 					if (l) { layers.push(l); }
 				}
 			}
@@ -226,7 +223,7 @@ L.Util.extend(L.KML, {
 			layer = new L.FeatureGroup(layers);
 		}
 
-		var name, descr = "";
+		var name, descr = '';
 		el = place.getElementsByTagName('name');
 		if (el.length && el[0].childNodes.length) {
 			name = el[0].childNodes[0].nodeValue;
@@ -239,7 +236,7 @@ L.Util.extend(L.KML, {
 		}
 
 		if (name) {
-			layer.bindPopup("<h2>" + name + "</h2>" + descr);
+			layer.bindPopup('<h2>' + name + '</h2>' + descr);
 		}
 
 		return layer;
@@ -304,7 +301,7 @@ L.Util.extend(L.KML, {
 	},
 
 	_read_coords: function (el) {
-		var text = "", coords = [], i;
+		var text = '', coords = [], i;
 		for (i = 0; i < el.childNodes.length; i++) {
 			text = text + el.childNodes[i].nodeValue;
 		}
@@ -326,8 +323,7 @@ L.KMLIcon = L.Icon.extend({
 	createIcon: function () {
 		var img = this._createIcon('icon');
 		img.onload = function () {
-			var i = new Image();
-			i.src = this.src;
+			var i = img;
 			this.style.width = i.width + 'px';
 			this.style.height = i.height + 'px';
 
@@ -337,13 +333,13 @@ L.KMLIcon = L.Icon.extend({
 			if (this.anchorType.y === 'UNITS_FRACTION' || this.anchorType.x === 'fraction') {
 				img.style.marginTop  = (-(1 - this.anchor.y) * i.height) + 'px';
 			}
-			this.style.display = "";
+			this.style.display = '';
 		};
 		return img;
 	},
 
 	_setIconStyles: function (img, name) {
-		L.Icon.prototype._setIconStyles.apply(this, [img, name])
+		L.Icon.prototype._setIconStyles.apply(this, [img, name]);
 		// save anchor information to the image
 		img.anchor = this.options.iconAnchorRef;
 		img.anchorType = this.options.iconAnchorType;

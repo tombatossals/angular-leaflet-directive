@@ -8,27 +8,36 @@
     "leaflet"
   ],
   "main": [
-    "dist/angular-leaflet-directive.js",
-    "dist/angular-leaflet-directive.min.js"
+    "dist/angular-leaflet-directive.js"
   ],
   "dependencies": {
     "angular": "1.2.x",
-    "leaflet-dist": "0.7.x"
+    "leaflet": "0.7.x"
   },
   "devDependencies": {
-    "jquery": "2.1.x",
-    "bootstrap": "3.1.x",
-    "angular-route": "1.2.x",
-    "angular-animate": "1.2.x",
-    "angular-mocks": "1.2.x",
-    "leaflet.markerclusterer": "0.4",
-    "leaflet.draw": "0.2.2",
-    "Leaflet.label": "0.2.1",
+    "jquery": "~2.1.1",
+    "bootstrap": "~3.1.1",
+    "angular-route": "~1.2.18",
+    "angular-animate": "~1.2.18",
+    "angular-mocks": "~1.2.18",
+    "leaflet.markercluster": "~0.4",
+    "leaflet.draw": "~0.2.3",
+    "Leaflet.label": "~0.2.1",
     "leaflet-tilelayer-geojson": "*",
-    "Leaflet.awesome-markers": "*",
-    "leaflet-plugins": "1.0.1",
+    "Leaflet.utfgrid": "danzel/Leaflet.utfgrid",
+    "Leaflet.awesome-markers": "~2.0.2",
     "webgl-heatmap-leaflet": "*",
-    "esri-leaflet": "0.0.1-beta.4"
+    "leaflet-plugins": "~1.1.2",
+    "esri-leaflet": "~0.0.1-beta.5",
+    "proj4": "~2.1.2",
+    "proj4leaflet": "~0.7.0",
+    "Leaflet.MakiMarkers": "~1.0.1",
+    "Leaflet.PolylineDecorator": "bbecquet/Leaflet.PolylineDecorator"
+  },
+  "overrides": {
+    "Leaflet.utfgrid": {
+      "main": "dist/leaflet.utfgrid.js"
+    }
   },
   "ignore": [
     "**/.*",

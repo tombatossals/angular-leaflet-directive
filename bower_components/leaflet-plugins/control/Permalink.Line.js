@@ -16,7 +16,7 @@ L.Control.Permalink.include({
 		//console.info("onAdd::line", e);
 		if (!this.options.line) return;
 		this.options.line.on('edit', this._update_line, this);
-		this._update_line()
+		this._update_line();
 	},
 
 	_update_line: function() {
@@ -27,7 +27,7 @@ L.Control.Permalink.include({
 		if (!coords.length)
 			return this._update({line: null});
 		for (var i in coords)
-			text.push(coords[i].lat.toFixed(4) + "," + coords[i].lng.toFixed(4))
+			text.push(coords[i].lat.toFixed(4) + ',' + coords[i].lng.toFixed(4));
 		this._update({line: text.join(';')});
 	},
 
@@ -38,7 +38,7 @@ L.Control.Permalink.include({
 		var coords = [], text = p.line.split(';');
 		for (var i in text) {
 			var ll = text[i].split(',');
-			if (ll.length != 2) continue;
+			if (ll.length !== 2) continue;
 			coords.push(new L.LatLng(ll[0], ll[1]));
 		}
 		if (!coords.length) return;

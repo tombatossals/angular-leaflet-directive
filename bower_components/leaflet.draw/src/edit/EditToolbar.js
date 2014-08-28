@@ -32,51 +32,35 @@ L.EditToolbar = L.Toolbar.extend({
 			options.remove = L.extend({}, this.options.remove, options.remove);
 		}
 
+		this._toolbarClass = 'leaflet-draw-edit';
 		L.Toolbar.prototype.initialize.call(this, options);
 
 		this._selectedFeatureCount = 0;
 	},
 
-	addToolbar: function (map) {
-		var container = L.DomUtil.create('div', 'leaflet-draw-section'),
-			buttonIndex = 0,
-			buttonClassPrefix = 'leaflet-draw-edit',
-			featureGroup = this.options.featureGroup;
-
-		this._toolbarContainer = L.DomUtil.create('div', 'leaflet-draw-toolbar leaflet-bar');
-
-		this._map = map;
-
-		if (this.options.edit) {
-			this._initModeHandler(
-				new L.EditToolbar.Edit(map, {
+	getModeHandlers: function (map) {
+		var featureGroup = this.options.featureGroup;
+		return [
+			{
+				enabled: this.options.edit,
+				handler: new L.EditToolbar.Edit(map, {
 					featureGroup: featureGroup,
 					selectedPathOptions: this.options.edit.selectedPathOptions
 				}),
-				this._toolbarContainer,
-				buttonIndex++,
-				buttonClassPrefix,
-				L.drawLocal.edit.toolbar.buttons.edit
-			);
-		}
-
-		if (this.options.remove) {
-			this._initModeHandler(
-				new L.EditToolbar.Delete(map, {
+				title: L.drawLocal.edit.toolbar.buttons.edit
+			},
+			{
+				enabled: this.options.remove,
+				handler: new L.EditToolbar.Delete(map, {
 					featureGroup: featureGroup
 				}),
-				this._toolbarContainer,
-				buttonIndex++,
-				buttonClassPrefix,
-				L.drawLocal.edit.toolbar.buttons.remove
-			);
-		}
+				title: L.drawLocal.edit.toolbar.buttons.remove
+			}
+		];
+	},
 
-		// Save button index of the last button, -1 as we would have ++ after the last button
-		this._lastButtonIndex = --buttonIndex;
-
-		// Create the actions part of the toolbar
-		this._actionsContainer = this._createActions([
+	getActions: function () {
+		return [
 			{
 				title: L.drawLocal.edit.toolbar.actions.save.title,
 				text: L.drawLocal.edit.toolbar.actions.save.text,
@@ -89,23 +73,23 @@ L.EditToolbar = L.Toolbar.extend({
 				callback: this.disable,
 				context: this
 			}
-		]);
+		];
+	},
 
-		// Add draw and cancel containers to the control container
-		container.appendChild(this._toolbarContainer);
-		container.appendChild(this._actionsContainer);
+	addToolbar: function (map) {
+		var container = L.Toolbar.prototype.addToolbar.call(this, map);
 
 		this._checkDisabled();
 
-		featureGroup.on('layeradd layerremove', this._checkDisabled, this);
+		this.options.featureGroup.on('layeradd layerremove', this._checkDisabled, this);
 
 		return container;
 	},
 
 	removeToolbar: function () {
-		L.Toolbar.prototype.removeToolbar.call(this);
-
 		this.options.featureGroup.off('layeradd layerremove', this._checkDisabled, this);
+
+		L.Toolbar.prototype.removeToolbar.call(this);
 	},
 
 	disable: function () {
@@ -123,13 +107,17 @@ L.EditToolbar = L.Toolbar.extend({
 
 	_checkDisabled: function () {
 		var featureGroup = this.options.featureGroup,
-			hasLayers = featureGroup.getLayers().length === 0,
+			hasLayers = featureGroup.getLayers().length !== 0,
 			button;
 
 		if (this.options.edit) {
 			button = this._modes[L.EditToolbar.Edit.TYPE].button;
 
-			L.DomUtil.toggleClass(button, 'leaflet-disabled');
+			if (hasLayers) {
+				L.DomUtil.removeClass(button, 'leaflet-disabled');
+			} else {
+				L.DomUtil.addClass(button, 'leaflet-disabled');
+			}
 
 			button.setAttribute(
 				'title',
@@ -142,7 +130,11 @@ L.EditToolbar = L.Toolbar.extend({
 		if (this.options.remove) {
 			button = this._modes[L.EditToolbar.Delete.TYPE].button;
 
-			L.DomUtil.toggleClass(button, 'leaflet-disabled');
+			if (hasLayers) {
+				L.DomUtil.removeClass(button, 'leaflet-disabled');
+			} else {
+				L.DomUtil.addClass(button, 'leaflet-disabled');
+			}
 
 			button.setAttribute(
 				'title',
@@ -153,15 +145,3 @@ L.EditToolbar = L.Toolbar.extend({
 		}
 	}
 });
-
-if (!L.DomUtil.toggleClass) {
-	L.Util.extend(L.DomUtil, {
-		toggleClass: function (el, name) {
-			if (this.hasClass(el, name)) {
-				this.removeClass(el, name);
-			} else {
-				this.addClass(el, name);
-			}
-		}
-	});
-}

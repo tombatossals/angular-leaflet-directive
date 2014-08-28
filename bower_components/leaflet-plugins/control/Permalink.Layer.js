@@ -44,20 +44,20 @@ L.Control.Layers.include({
 			if (!this._layers.hasOwnProperty(i))
 				continue;
 			obj = this._layers[i];
-			if (!obj.overlay && obj.name == name)
+			if (!obj.overlay && obj.name === name)
 				layer = obj.layer;
 		}
 		if (!layer || this._map.hasLayer(layer))
 			return;
 
-		for (var i in this._layers) {
-			if (!this._layers.hasOwnProperty(i))
+		for (var j in this._layers) {
+			if (!this._layers.hasOwnProperty(j))
 				continue;
-			obj = this._layers[i];
+			obj = this._layers[j];
 			if (!obj.overlay && this._map.hasLayer(obj.layer))
-				this._map.removeLayer(obj.layer)
+				this._map.removeLayer(obj.layer);
 		}
-		this._map.addLayer(layer)
+		this._map.addLayer(layer);
 		this._update();
 	},
 

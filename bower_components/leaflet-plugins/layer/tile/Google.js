@@ -1,7 +1,8 @@
 /*
  * Google layer using Google Maps API
  */
-//(function (google, L) {
+
+/* global google: true */
 
 L.Google = L.Class.extend({
 	includes: L.Mixin.Events,
@@ -25,7 +26,7 @@ L.Google = L.Class.extend({
 	initialize: function(type, options) {
 		L.Util.setOptions(this, options);
 
-		this._ready = google.maps.Map != undefined;
+		this._ready = google.maps.Map !== undefined;
 		if (!this._ready) L.Google.asyncWait.push(this);
 
 		this._type = type || 'SATELLITE';
@@ -48,7 +49,7 @@ L.Google = L.Class.extend({
 		map.on('zoomanim', this._handleZoomAnim, this);
 
 		//20px instead of 1em to avoid a slight overlap with google's attribution
-		map._controlCorners['bottomright'].style.marginBottom = "20px";
+		map._controlCorners.bottomright.style.marginBottom = '20px';
 
 		this._reset();
 		this._update();
@@ -64,7 +65,7 @@ L.Google = L.Class.extend({
 
 		this._map.off('zoomanim', this._handleZoomAnim, this);
 
-		map._controlCorners['bottomright'].style.marginBottom = "0em";
+		map._controlCorners.bottomright.style.marginBottom = '0em';
 		//this._map.off('moveend', this._update, this);
 	},
 
@@ -80,8 +81,8 @@ L.Google = L.Class.extend({
 	},
 
 	setElementSize: function(e, size) {
-		e.style.width = size.x + "px";
-		e.style.height = size.y + "px";
+		e.style.width = size.x + 'px';
+		e.style.height = size.y + 'px';
 	},
 
 	_initContainer: function() {
@@ -90,16 +91,14 @@ L.Google = L.Class.extend({
 
 		if (!this._container) {
 			this._container = L.DomUtil.create('div', 'leaflet-google-layer leaflet-top leaflet-left');
-			this._container.id = "_GMapContainer_" + L.Util.stamp(this);
-			this._container.style.zIndex = "auto";
+			this._container.id = '_GMapContainer_' + L.Util.stamp(this);
+			this._container.style.zIndex = 'auto';
 		}
 
-		if (true) {
-			tilePane.insertBefore(this._container, first);
+		tilePane.insertBefore(this._container, first);
 
-			this.setOpacity(this.options.opacity);
-			this.setElementSize(this._container, this._map.getSize());
-		}
+		this.setOpacity(this.options.opacity);
+		this.setElementSize(this._container, this._map.getSize());
 	},
 
 	_initMapObject: function() {
@@ -121,11 +120,11 @@ L.Google = L.Class.extend({
 		});
 
 		var _this = this;
-		this._reposition = google.maps.event.addListenerOnce(map, "center_changed",
+		this._reposition = google.maps.event.addListenerOnce(map, 'center_changed',
 			function() { _this.onReposition(); });
 		this._google = map;
 
-		google.maps.event.addListenerOnce(map, "idle",
+		google.maps.event.addListenerOnce(map, 'idle',
 			function() { _this._checkZoomLevels(); });
 	},
 
@@ -163,8 +162,8 @@ L.Google = L.Class.extend({
 
 	_resize: function() {
 		var size = this._map.getSize();
-		if (this._container.style.width == size.x &&
-		    this._container.style.height == size.y)
+		if (this._container.style.width === size.x &&
+		    this._container.style.height === size.y)
 			return;
 		this.setElementSize(this._container, size);
 		this.onReposition();
@@ -182,7 +181,7 @@ L.Google = L.Class.extend({
 
 	onReposition: function() {
 		if (!this._google) return;
-		google.maps.event.trigger(this._google, "resize");
+		google.maps.event.trigger(this._google, 'resize');
 	}
 });
 
@@ -199,4 +198,3 @@ L.Google.asyncInitialize = function() {
 	}
 	L.Google.asyncWait = [];
 };
-//})(window.google, L)

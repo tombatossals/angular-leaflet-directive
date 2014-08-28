@@ -25,6 +25,6 @@
     "commit": "bfac1eb6f7896072d690bde57c1fb5002961a99a"
   },
   "_source": "git://github.com/lvoogdt/Leaflet.awesome-markers.git",
-  "_target": "*",
+  "_target": "~2.0.2",
   "_originalSource": "Leaflet.awesome-markers"
 }

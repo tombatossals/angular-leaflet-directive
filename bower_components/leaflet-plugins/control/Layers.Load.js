@@ -3,7 +3,7 @@
  */
 L.Control.Layers.include({
 	_loadScripts: function(scripts, cb, args) {
-		if (!scripts || scripts.length == 0)
+		if (!scripts || scripts.length === 0)
 			return cb(args);
 		var _this = this, s = scripts.pop(), c;
 		c = L.Control.Layers._script_cache[s];
@@ -17,13 +17,13 @@ L.Control.Layers.include({
 				var i = 0;
 				for (i = 0; i < c.wait.length; i++)
 					c.wait[i]();
-			}
+			};
 			c.e = script;
 			document.getElementsByTagName('head')[0].appendChild(script);
 		}
 		function _cb() { _this._loadScripts(scripts, cb, args); }
 		c.wait.push(_cb);
-		if (c.e.readyState == "completed")
+		if (c.e.readyState === 'completed')
 			_cb();
 		L.Control.Layers._script_cache[s] = c;
 	},
@@ -43,7 +43,7 @@ L.Control.Layers.include({
 	loadLayer: function(name, deflt) {
 		var _this = this, l = this._layer_defs[name];
 		l['default'] = deflt;
-		this._loadScripts(l.js.reverse(), function(l) {_this._loadLayer(l)}, l);
+		this._loadScripts(l.js.reverse(), function(l) {_this._loadLayer(l);}, l);
 	},
 
 	_loadLayer: function(l) {

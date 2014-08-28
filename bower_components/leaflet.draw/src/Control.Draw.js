@@ -7,8 +7,8 @@ L.Control.Draw = L.Control.extend({
 	},
 
 	initialize: function (options) {
-		if (L.version <= "0.5.1") {
-			throw new Error('Leaflet.draw 0.2.0+ requires Leaflet 0.6.0+. Download latest from https://github.com/Leaflet/Leaflet/');
+		if (L.version < '0.7') {
+			throw new Error('Leaflet.draw 0.2.3+ requires Leaflet 0.7.0+. Download latest from https://github.com/Leaflet/Leaflet/');
 		}
 
 		L.Control.prototype.initialize.call(this, options);
@@ -47,15 +47,17 @@ L.Control.Draw = L.Control.extend({
 			if (this._toolbars.hasOwnProperty(toolbarId)) {
 				toolbarContainer = this._toolbars[toolbarId].addToolbar(map);
 
-				// Add class to the first toolbar to remove the margin
-				if (!addedTopClass) {
-					if (!L.DomUtil.hasClass(toolbarContainer, topClassName)) {
-						L.DomUtil.addClass(toolbarContainer.childNodes[0], topClassName);
+				if (toolbarContainer) {
+					// Add class to the first toolbar to remove the margin
+					if (!addedTopClass) {
+						if (!L.DomUtil.hasClass(toolbarContainer, topClassName)) {
+							L.DomUtil.addClass(toolbarContainer.childNodes[0], topClassName);
+						}
+						addedTopClass = true;
 					}
-					addedTopClass = true;
-				}
 
-				container.appendChild(toolbarContainer);
+					container.appendChild(toolbarContainer);
+				}
 			}
 		}
 

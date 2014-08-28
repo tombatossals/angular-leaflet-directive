@@ -8,7 +8,7 @@ L.Icon.Text = L.Icon.extend({
 		var el = document.createElement('div');
 		el.appendChild(document.createTextNode(this._text));
 		this._setIconStyles(el, 'icon');
-		el.style.textShadow = "2px 2px 2px #fff";
+		el.style.textShadow = '2px 2px 2px #fff';
 		return el;
 	},
 
@@ -25,7 +25,7 @@ L.Marker.Text = L.Marker.extend({
 	_initIcon: function() {
         	L.Marker.prototype._initIcon.apply(this);
 
-		var i = this._icon, s = this._shadow, obj = this.options.icon
+		var i = this._icon, s = this._shadow, obj = this.options.icon;
 		this._icon = this._shadow = null;
 
 		this.options.icon = this._fakeicon;
@@ -41,7 +41,7 @@ L.Marker.Text = L.Marker.extend({
 		this._icon.appendChild(i);
 
 		var w = this._icon.clientWidth, h = this._icon.clientHeight;
-		this._icon.style.marginLeft = -w / 2 + "px";
+		this._icon.style.marginLeft = -w / 2 + 'px';
 		//this._icon.style.backgroundColor = "red";
 		var off = new L.Point(w/2, 0);
 		if (L.Browser.webkit) off.y = -h;

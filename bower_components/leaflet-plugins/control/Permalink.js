@@ -2,19 +2,19 @@ L.Control.Permalink = L.Control.extend({
 	includes: L.Mixin.Events, 
 
 	options: {
-		position: "bottomleft",
+		position: 'bottomleft',
 		useAnchor: true,
 		useLocation: false,
-		text: "Permalink"
+		text: 'Permalink'
 	},
 
 	initialize: function(options) {
 		L.Util.setOptions(this, options);
 		this._params = {};
 		this._set_urlvars();
-		this.on("update", this._set_center, this);
+		this.on('update', this._set_center, this);
 		for (var i in this) {
-			if (typeof(i) === "string" && i.indexOf('initialize_') == 0)
+			if (typeof(i) === 'string' && i.indexOf('initialize_') === 0)
 				this[i]();
 		}
 	},
@@ -24,10 +24,10 @@ L.Control.Permalink = L.Control.extend({
 		L.DomEvent.disableClickPropagation(this._container);
 		this._map = map;
 		this._href = L.DomUtil.create('a', null, this._container);
-		this._href.innerHTML = this.options.text
+		this._href.innerHTML = this.options.text;
 
 		map.on('moveend', this._update_center, this);
-		this.fire("update", {params: this._params})
+		this.fire('update', {params: this._params});
 		this._update_center();
 
 		if (this.options.useAnchor && 'onhashchange' in window) {
@@ -35,7 +35,7 @@ L.Control.Permalink = L.Control.extend({
 			window.onhashchange = function() {
 				_this._set_urlvars();
 				if (fn) return fn();
-			}
+			};
 		}
 
 		this.fire('add', {map: map});
@@ -66,26 +66,26 @@ L.Control.Permalink = L.Control.extend({
 		var ne = bounds.getNorthEast(), sw = bounds.getSouthWest();
 
 		var round = function (x, p) {
-			if (p == 0) return x;
-			shift = 1;
+			if (p === 0) return x;
+			var shift = 1;
 			while (p < 1 && p > -1) {
 				x *= 10;
 				p *= 10;
 				shift *= 10;
 			}
 			return Math.floor(x)/shift;
-		}
+		};
 		point.lat = round(point.lat, (ne.lat - sw.lat) / size.y);
 		point.lng = round(point.lng, (ne.lng - sw.lng) / size.x);
 		return point;
 	},
 
 	_update: function(obj, source) {
-		//console.info("Update", obj, this._params);
+		//console.info('Update', obj, this._params);
 		for(var i in obj) {
 			if (!obj.hasOwnProperty(i)) continue;
-			if (obj[i] != null && obj[i] != undefined)
-				this._params[i] = obj[i]
+			if (obj[i] !== null && obj[i] !== undefined)
+				this._params[i] = obj[i];
 			else
 				delete this._params[i];
 		}
@@ -105,7 +105,7 @@ L.Control.Permalink = L.Control.extend({
 		
 		function eq(x, y) {
 			for(var i in x)
-				if (x.hasOwnProperty(i) && x[i] != y[i])
+				if (x.hasOwnProperty(i) && x[i] !== y[i])
 					return false;
 			return true;
 		}
@@ -114,16 +114,16 @@ L.Control.Permalink = L.Control.extend({
 			return;
 		this._params = p;
 		this._update_href();
-		this.fire("update", {params: this._params})
+		this.fire('update', {params: this._params});
 	},
 
 	_set_center: function(e)
 	{
-		//console.info("Update center", e);
+		//console.info('Update center', e);
 		var params = e.params;
-		if (params.zoom == undefined ||
-		    params.lat == undefined ||
-		    params.lon == undefined) return;
+		if (params.zoom === undefined ||
+		    params.lat === undefined ||
+		    params.lon === undefined) return;
 		this._map.setView(new L.LatLng(params.lat, params.lon), params.zoom);
 	}
 });
@@ -131,13 +131,13 @@ L.Control.Permalink = L.Control.extend({
 L.UrlUtil = {
 	queryParse: function(s) {
 		var p = {};
-		var sep = "&";
-		if (s.search("&amp;") != -1)
-			sep = "&amp;";
+		var sep = '&';
+		if (s.search('&amp;') !== -1)
+			sep = '&amp;';
 		var params = s.split(sep);
 		for(var i = 0; i < params.length; i++) {
 			var tmp = params[i].split('=');
-			if (tmp.length != 2) continue;
+			if (tmp.length !== 2) continue;
 			p[tmp[0]] = decodeURI(tmp[1]);
 		}
 		return p;
@@ -150,7 +150,7 @@ L.UrlUtil = {
 		return href.slice(idx+1);
 	},
 
-	hash: function() { return window.location.hash.slice(1) },
+	hash: function() { return window.location.hash.slice(1); },
 
 	updateParamString: function (q, obj) {
 		var p = L.UrlUtil.queryParse(q);

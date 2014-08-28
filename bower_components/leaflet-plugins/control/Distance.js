@@ -1,3 +1,4 @@
+/* global console: true */
 L.Control.Distance = L.Control.extend({
 	options: {
 		position: 'topleft',
@@ -95,15 +96,15 @@ L.Control.Distance = L.Control.extend({
 	},
 
 	_update: function(e) {
-		console.info("Update");
+		console.info('Update');
 		this._text.textContent = this._d2txt(this._distance_calc());
 	},
 
 	_d2txt: function(d) {
 		if (d < 2000)
-			return d.toFixed(0) + " m";
+			return d.toFixed(0) + ' m';
 		else
-			return (d/1000).toFixed(1) + " km";
+			return (d/1000).toFixed(1) + ' km';
 	},
 
 	_distance_calc: function(e) {

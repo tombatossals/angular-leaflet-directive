@@ -12,7 +12,7 @@ L.Icon.Canvas = L.Icon.extend({
 		var e = document.createElement('canvas');
 		this._setIconStyles(e, 'icon');
 		var s = this.options.iconSize;
-		e.width = s.x
+		e.width = s.x;
 		e.height = s.y;
 		this.draw(e.getContext('2d'), s.x, s.y);
 		return e;

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Leaflet debug page</title>
+
+	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css" />
+	<script src="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js"></script>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<script src="../src/leaflet.utfgrid.js"></script>
+</head>
+<body>
+
+	<div id="map" style="width: 512px; height: 256px"></div>
+	<div id="click"></div>
+	<div id="hover"></div>
+
+	<script type="text/javascript">
+
+		var tiles = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+			maxZoom: 18,
+			attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+		});
+
+		var utfGrid = new L.UtfGrid('http://{s}.tiles.mapbox.com/v3/mapbox.geography-class/{z}/{x}/{y}.grid.json?callback={cb}');
+
+		utfGrid.on('click', function (e) {
+			if (e.data) {
+				document.getElementById('click').innerHTML = 'click: ' + e.data.admin;
+			} else {
+				document.getElementById('click').innerHTML = 'click: nothing';
+			}
+		}); 
+		utfGrid.on('mouseover', function (e) {
+			if (e.data) {
+				document.getElementById('hover').innerHTML = 'hover: ' + e.data.admin;
+			} else {
+				document.getElementById('hover').innerHTML = 'hover: nothing';
+			}
+			//console.log('mouseover: ' + e.data);
+		});
+		utfGrid.on('mouseout', function (e) {
+			//console.log('mouseout: ' + e.data);
+		});
+
+		var map = L.map('map')
+				.setView([0, 0], 1)
+				.addLayer(tiles)
+				.addLayer(utfGrid);
+	</script>
+</body>
+</html>

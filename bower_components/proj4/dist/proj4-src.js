@@ -5351,7 +5351,7 @@ function getMinNorthing(zoneLetter) {
 },{}],67:[function(_dereq_,module,exports){
 module.exports={
   "name": "proj4",
-  "version": "2.1.2",
+  "version": "2.1.4",
   "description": "Proj4js is a JavaScript library to transform point coordinates from one coordinate system to another, including datum transformations.",
   "main": "lib/index.js",
   "directories": {
