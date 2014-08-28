@@ -43,7 +43,7 @@ serve:
 build:
  - 'jshint'
  - 'concat:dist'
- - 'ngmin'
+ - 'ngAnnotate'
  - 'uglify'
  - 'test-unit'
  - 'concat:license'
