@@ -27,9 +27,8 @@
                         demosutfgrid: {
                             name: 'UTFGrid Interactivity',
                             type: 'utfGrid',
-                            url: 'http://{s}.tiles.mapbox.com/v3/mapbox.geography-class/{z}/{x}/{y}.grid.json',
-                            visible: true,
-                            pluginOptions: { 'useJsonP': false }
+                            url: 'http://{s}.tiles.mapbox.com/v3/mapbox.geography-class/{z}/{x}/{y}.grid.json?callback={cb}',
+                            visible: true
                         }
                     }
                 }
@@ -55,7 +54,7 @@
             height: 98%;
         }
         .angular-leaflet-map {
-            height: 50%;
+            height: 60%;
         }
         .left, .right {
             float: left;
@@ -68,7 +67,7 @@
 <body ng-controller="DemoController">
     <div class="left">
         <leaflet center="center" layers="layers"></leaflet>
-        <span><img src="{{flag}}"><h1>{{interactivity}}</h1></span>
+        <span><img ng-src="{{flag}}"><h1>{{interactivity}}</h1></span>
     </div>
     <div class="right">
         <h1>Baselayer with UTFGrid interactivity in Overlay</h1>
