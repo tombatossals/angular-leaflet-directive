@@ -23,7 +23,9 @@ angular.module("leaflet-directive").directive('legend', function ($log, $http, l
                     } else if(isDefined(legend.url)){
                         $log.info("[AngularJS - Leaflet] loading arcgis legend service.");
                     } else {
-                        // TODO: Watch array legend.
+                        if (isDefined(leafletLegend)) {
+						    leafletLegend.removeFrom(map);
+						}
                         leafletLegend = L.control({ position: position });
                         leafletLegend.onAdd = leafletLegendHelpers.getOnAddArrayLegend(legend, legendClass);
                         leafletLegend.addTo(map);
