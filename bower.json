@@ -27,6 +27,7 @@
     "leaflet-tilelayer-geojson": "*",
     "Leaflet.awesome-markers": "*",
     "leaflet-plugins": "1.0.1",
+    "webgl-heatmap-leaflet": "*",
     "esri-leaflet": "0.0.1-beta.4"
   },
   "ignore": [
