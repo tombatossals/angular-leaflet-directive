@@ -179,10 +179,19 @@ angular.module("leaflet-directive").directive('layercontrol', function ($log, le
                                                     break;
                                                 }
                                             }
-                                            if(map.hasLayer(ly) && ly.setOpacity) {
+                                            if(map.hasLayer(ly)) {
                                                 layer.layerOptions = isDefined(layer.layerOptions)? layer.layerOptions:{};
                                                 layer.layerOptions.opacity = val.input.val()/100;
-                                                ly.setOpacity(val.input.val()/100);
+                                                if(ly.setOpacity) {
+                                                    ly.setOpacity(val.input.val()/100);
+                                                }
+                                                if(ly.getLayers && ly.eachLayer) {
+                                                    ly.eachLayer(function(lay) {
+                                                        if(lay.setOpacity) {
+                                                            lay.setOpacity(val.input.val()/100);
+                                                        }
+                                                    });
+                                                }
                                             }
                                         });
                                     }
