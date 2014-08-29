@@ -1185,9 +1185,6 @@
                 open: 'fa fa-angle-double-down',
                 close: 'fa fa-angle-double-up'
               },
-              mainClick: function (e) {
-                e.stopPropagation();
-              },
               changeBaseLayer: function (key, e) {
                 leafletHelpers.safeApply($scope, function (scp) {
                   scp.baselayer = key;
@@ -1232,11 +1229,33 @@
               initIndex: function (layer, idx) {
                 var delta = Object.keys($scope.layers.baselayers).length;
                 layer.index = isDefined(layer.index) ? layer.index : idx + delta + 1;
+              },
+              toggleOpacity: function (e, layer) {
+                $log.debug('Event', e);
+                if (layer.visible) {
+                  var el = angular.element(e.currentTarget);
+                  el.toggleClass($scope.icons.close + ' ' + $scope.icons.open);
+                  el = el.parents('.lf-row').find('.lf-opacity');
+                  el.toggle('fast', function () {
+                    safeApply($scope, function () {
+                      layer.opacityControl = !layer.opacityControl;
+                    });
+                  });
+                }
+                e.stopPropagation();
+                e.preventDefault();
               }
             });
+            var div = $element.get(0);
+            if (!L.Browser.touch) {
+              L.DomEvent.disableClickPropagation(div);
+              L.DomEvent.on(div, 'mousewheel', L.DomEvent.stopPropagation);
+            } else {
+              L.DomEvent.on(div, 'click', L.DomEvent.stopPropagation);
+            }
           }
         ],
-        template: '<div class="angular-leaflet-control-layers" ng-click="mainClick($event)" ng-dblclick="mainClick($event)">' + '<div class="lf-baselayers">' + '<div class="lf-row" ng-repeat="(key, layer) in layers.baselayers">' + '<label class="lf-icon-bl" ng-click="changeBaseLayer(key, $event)">' + '<i class="lf-icon" ng-class="layer.icon"></i>' + '<input class="leaflet-control-layers-selector" type="radio" name="lf-radio" ' + 'ng-show="false" ng-checked="baselayer === key" ng-value="key" /> ' + '{{layer.name}}' + '</label>' + '</div>' + '</div>' + '<div class="lf-overlays">' + '<div class="lf-row" ng-repeat="layer in overlaysArray | orderBy:\'index\'" ng-init="initIndex(layer, $index)">' + '<label class="lf-icon-ol">' + '<i ng-class="layer.icon"></i>' + '<input class="lf-control-layers-selector" type="checkbox" ng-show="false" ng-model="layer.visible"/> ' + '{{layer.name}} ' + '<div class="lf-icons">' + '<i class="lf-icon lf-up" ng-class="icons.up" ng-click="moveLayer(layer, layer.index - 1, $event)"></i> ' + '<i class="lf-icon lf-down" ng-class="icons.down" ng-click="moveLayer(layer, layer.index + 1, $event)"></i> ' + '<i class="lf-icon lf-open" ng-class="icons.open"></i>' + '</div>' + '</label>' + '<div class="lf-opacity">' + '<input type="text" class="lf-opacity-control" name="lf-opacity-control" data-key="{{layer.index}}" />' + '</div>' + '</div>' + '</div>' + '</div>',
+        template: '<div class="angular-leaflet-control-layers" ng-show="overlaysArray.length">' + '<div class="lf-baselayers">' + '<div class="lf-row" ng-repeat="(key, layer) in layers.baselayers">' + '<label class="lf-icon-bl" ng-click="changeBaseLayer(key, $event)">' + '<input class="leaflet-control-layers-selector" type="radio" name="lf-radio" ' + 'ng-show="false" ng-checked="baselayer === key" ng-value="key" /> ' + '<i class="lf-icon lf-icon-radio" ng-class="layer.icon"></i>' + '<div class="lf-text">{{layer.name}}</div>' + '</label>' + '</div>' + '</div>' + '<div class="lf-overlays">' + '<div class="lf-row" ng-repeat="layer in overlaysArray | orderBy:\'index\'" ng-init="initIndex(layer, $index)">' + '<label class="lf-icon-ol">' + '<input class="lf-control-layers-selector" type="checkbox" ng-show="false" ng-model="layer.visible"/> ' + '<i class="lf-icon lf-icon-check" ng-class="layer.icon"></i>' + '<div class="lf-text">{{layer.name}}</div>' + '<div class="lf-icons">' + '<i class="lf-icon lf-up" ng-class="icons.up" ng-click="moveLayer(layer, layer.index - 1, $event)"></i> ' + '<i class="lf-icon lf-down" ng-class="icons.down" ng-click="moveLayer(layer, layer.index + 1, $event)"></i> ' + '<i class="lf-icon lf-open" ng-class="layer.opacityControl? icons.close:icons.open" ng-click="toggleOpacity($event, layer)"></i>' + '</div>' + '</label>' + '<div class="lf-opacity" ng-show="layer.visible &amp;&amp; layer.opacityControl">' + '<input type="text" class="lf-opacity-control" name="lf-opacity-control" data-key="{{layer.index}}" />' + '</div>' + '</div>' + '</div>' + '</div>',
         link: function (scope, element, attrs, controller) {
           var isDefined = leafletHelpers.isDefined, leafletScope = controller.getLeafletScope(), layers = leafletScope.layers;
           scope.layers = layers;
