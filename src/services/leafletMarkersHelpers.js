@@ -51,6 +51,16 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
         return new L.Icon(iconData);
     };
 
+    var _resetMarkerGroup = function(groupName) {
+      if (isDefined(groups[groupName])) {
+        groups.splice(groupName, 1);
+      }
+    };
+
+    var _resetMarkerGroups = function() {
+      groups = {};
+    };
+
     var _deleteMarker = function(marker, map, layers) {
         marker.closePopup();
         // There is no easy way to know if a marker is added to a layer, so we search for it
@@ -80,6 +90,10 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
     };
 
     return {
+        resetMarkerGroup: _resetMarkerGroup,
+
+        resetMarkerGroups: _resetMarkerGroups,
+
         deleteMarker: _deleteMarker,
 
         createMarker: function(markerData) {
@@ -113,7 +127,7 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
             return marker;
         },
 
-        addMarkerToGroup: function(marker, groupName, map) {
+        addMarkerToGroup: function(marker, groupName, groupOptions, map) {
             if (!isString(groupName)) {
                 $log.error('[AngularJS - Leaflet] The marker group you have specified is invalid.');
                 return;
@@ -124,7 +138,7 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
                 return;
             }
             if (!isDefined(groups[groupName])) {
-                groups[groupName] = new L.MarkerClusterGroup();
+                groups[groupName] = new L.MarkerClusterGroup(groupOptions);
                 map.addLayer(groups[groupName]);
             }
             groups[groupName].addLayer(marker);

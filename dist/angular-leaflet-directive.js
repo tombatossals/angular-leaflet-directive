@@ -802,7 +802,8 @@ angular.module("leaflet-directive").directive('markers', ["$log", "$rootScope", 
 
                                 // Add the marker to a cluster group if needed
                                 if (isDefined(markerData.group)) {
-                                    addMarkerToGroup(marker, markerData.group, map);
+                                    var groupOptions = isDefined(markerData.groupOption) ? markerData.groupOption : null;
+                                    addMarkerToGroup(marker, markerData.group, groupOptions, map);
                                 }
 
                                 // Show label if defined
@@ -2750,6 +2751,16 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', ["$rootScop
         return new L.Icon(iconData);
     };
 
+    var _resetMarkerGroup = function(groupName) {
+      if (isDefined(groups[groupName])) {
+        groups.splice(groupName, 1);
+      }
+    };
+
+    var _resetMarkerGroups = function() {
+      groups = {};
+    };
+
     var _deleteMarker = function(marker, map, layers) {
         marker.closePopup();
         // There is no easy way to know if a marker is added to a layer, so we search for it
@@ -2779,6 +2790,10 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', ["$rootScop
     };
 
     return {
+        resetMarkerGroup: _resetMarkerGroup,
+
+        resetMarkerGroups: _resetMarkerGroups,
+
         deleteMarker: _deleteMarker,
 
         createMarker: function(markerData) {
@@ -2812,7 +2827,7 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', ["$rootScop
             return marker;
         },
 
-        addMarkerToGroup: function(marker, groupName, map) {
+        addMarkerToGroup: function(marker, groupName, groupOptions, map) {
             if (!isString(groupName)) {
                 $log.error('[AngularJS - Leaflet] The marker group you have specified is invalid.');
                 return;
@@ -2823,7 +2838,7 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', ["$rootScop
                 return;
             }
             if (!isDefined(groups[groupName])) {
-                groups[groupName] = new L.MarkerClusterGroup();
+                groups[groupName] = new L.MarkerClusterGroup(groupOptions);
                 map.addLayer(groups[groupName]);
             }
             groups[groupName].addLayer(marker);
