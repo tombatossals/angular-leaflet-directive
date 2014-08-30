@@ -252,7 +252,7 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
                         marker.closePopup();
                         marker.unbindPopup();
                         if (isString(markerData.message)) {
-                            marker.bindPopup(markerData.message);
+                            marker.bindPopup(markerData.message, markerData.popupOptions);
                         }
                     }
                 }
@@ -269,7 +269,7 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
                     marker.closePopup();
                     marker.unbindPopup();
                     if (isString(markerData.message)) {
-                        marker.bindPopup(markerData.message);
+                        marker.bindPopup(markerData.message, markerData.popupOptions);
                     }
                 }
 
@@ -287,7 +287,7 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
                 // There is some text in the popup, so we must show the text or update existing
                 if (isString(markerData.message) && !isString(oldMarkerData.message)) {
                     // There was no message before so we create it
-                    marker.bindPopup(markerData.message);
+                    marker.bindPopup(markerData.message, markerData.popupOptions);
                     if (markerData.focus === true) {
                         // If the focus is set, we must open the popup, because we do not know if it was opened before
                         marker.openPopup();
