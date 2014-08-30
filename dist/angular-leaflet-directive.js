@@ -753,7 +753,8 @@
                     }
                     // Add the marker to a cluster group if needed
                     if (isDefined(markerData.group)) {
-                      addMarkerToGroup(marker, markerData.group, map);
+                      var groupOptions = isDefined(markerData.groupOption) ? markerData.groupOption : null;
+                      addMarkerToGroup(marker, markerData.group, groupOptions, map);
                     }
                     // Show label if defined
                     if (Helpers.LabelPlugin.isLoaded() && isDefined(markerData.label) && isDefined(markerData.label.message)) {
@@ -2514,7 +2515,7 @@
           }
           return new L.marker(markerData, markerOptions);
         },
-        addMarkerToGroup: function (marker, groupName, map) {
+        addMarkerToGroup: function (marker, groupName, groupOptions, map) {
           if (!isString(groupName)) {
             $log.error('[AngularJS - Leaflet] The marker group you have specified is invalid.');
             return;
@@ -2524,7 +2525,7 @@
             return;
           }
           if (!isDefined(groups[groupName])) {
-            groups[groupName] = new L.MarkerClusterGroup();
+            groups[groupName] = new L.MarkerClusterGroup(groupOptions);
             map.addLayer(groups[groupName]);
           }
           groups[groupName].addLayer(marker);
