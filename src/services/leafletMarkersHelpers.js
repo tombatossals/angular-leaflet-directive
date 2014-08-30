@@ -121,7 +121,7 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
             return new L.marker(markerData, markerOptions);
         },
 
-        addMarkerToGroup: function(marker, groupName, map) {
+        addMarkerToGroup: function(marker, groupName, groupOptions, map) {
             if (!isString(groupName)) {
                 $log.error('[AngularJS - Leaflet] The marker group you have specified is invalid.');
                 return;
@@ -132,7 +132,7 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
                 return;
             }
             if (!isDefined(groups[groupName])) {
-                groups[groupName] = new L.MarkerClusterGroup();
+                groups[groupName] = new L.MarkerClusterGroup(groupOptions);
                 map.addLayer(groups[groupName]);
             }
             groups[groupName].addLayer(marker);
