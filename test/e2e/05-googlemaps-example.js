@@ -17,7 +17,7 @@ describe('Loading googlemaps-example.html', function() {
         });
 
         expect(ptor.isElementPresent(by.xpath('//img[contains(@src, "http://mt1.googleapis.com")]'))).toBe(true);
-        ptor.actions().mouseMove(element(by.xpath('//a[contains(@class, "leaflet-control-layers-toggle")][1]')).find()).perform();
+        ptor.actions().mouseMove(element(by.xpath('//a[contains(@class, "leaflet-control-layers-toggle")][1]'))).perform();
 
         ptor.findElements(by.css("input.leaflet-control-layers-selector")).then(function(inputs) {
             var input = inputs[1];

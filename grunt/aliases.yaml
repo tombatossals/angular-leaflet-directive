@@ -1,7 +1,7 @@
 test:
  - 'jshint'
- - 'test:unit'
- - 'test:e2e'
+ - 'test-unit'
+ - 'test-e2e'
 
 test-unit:
  - 'karma:unit'
