@@ -6,7 +6,7 @@ angular.module("leaflet-directive").directive('layercontrol', function ($log, le
     replace: true,
     transclude: false,
     require: '^leaflet',
-    controller: function ($scope, $element) {
+    controller: function ($scope, $element, $sce) {
       $log.debug('[Angular Directive - Layers] layers', $scope, $element);
       var safeApply = leafletHelpers.safeApply,
         isDefined = leafletHelpers.isDefined;
@@ -81,6 +81,9 @@ angular.module("leaflet-directive").directive('layercontrol', function ($log, le
             }
             e.stopPropagation();
             e.preventDefault();
+        },
+        unsafeHTML: function(html) {
+          return $sce.trustAsHtml(html);
         }
       });
 
@@ -105,19 +108,22 @@ angular.module("leaflet-directive").directive('layercontrol', function ($log, le
             '</div>' +
         '</div>' +
         '<div class="lf-overlays">' +
-            '<div class="lf-row" ng-repeat="layer in overlaysArray | orderBy:\'index\'" ng-init="initIndex(layer, $index)">' +
-                '<label class="lf-icon-ol">' +
-                    '<input class="lf-control-layers-selector" type="checkbox" ng-show="false" ng-model="layer.visible"/> ' +
-                    '<i class="lf-icon lf-icon-check" ng-class="layer.icon"></i>' +
-                    '<div class="lf-text">{{layer.name}}</div>' +
-                    '<div class="lf-icons">' +
-                        '<i class="lf-icon lf-up" ng-class="icons.up" ng-click="moveLayer(layer, layer.index - 1, $event)"></i> ' +
-                        '<i class="lf-icon lf-down" ng-class="icons.down" ng-click="moveLayer(layer, layer.index + 1, $event)"></i> ' +
-                        '<i class="lf-icon lf-open" ng-class="layer.opacityControl? icons.close:icons.open" ng-click="toggleOpacity($event, layer)"></i>' +
+            '<div class="lf-container">' +
+                '<div class="lf-row" ng-repeat="layer in overlaysArray | orderBy:\'index\'" ng-init="initIndex(layer, $index)">' +
+                    '<label class="lf-icon-ol">' +
+                        '<input class="lf-control-layers-selector" type="checkbox" ng-show="false" ng-model="layer.visible"/> ' +
+                        '<i class="lf-icon lf-icon-check" ng-class="layer.icon"></i>' +
+                        '<div class="lf-text">{{layer.name}}</div>' +
+                        '<div class="lf-icons">' +
+                            '<i class="lf-icon lf-up" ng-class="icons.up" ng-click="moveLayer(layer, layer.index - 1, $event)"></i> ' +
+                            '<i class="lf-icon lf-down" ng-class="icons.down" ng-click="moveLayer(layer, layer.index + 1, $event)"></i> ' +
+                            '<i class="lf-icon lf-open" ng-class="layer.opacityControl? icons.close:icons.open" ng-click="toggleOpacity($event, layer)"></i>' +
+                        '</div>' +
+                    '</label>'+
+                    '<div class="lf-legend" ng-if="layer.legend" ng-bind-html="unsafeHTML(layer.legend)"></div>' +
+                    '<div class="lf-opacity" ng-show="layer.visible &amp;&amp; layer.opacityControl">' +
+                        '<input type="text" class="lf-opacity-control" name="lf-opacity-control" data-key="{{layer.index}}" />' +
                     '</div>' +
-                '</label>'+
-                '<div class="lf-opacity" ng-show="layer.visible &amp;&amp; layer.opacityControl">' +
-                    '<input type="text" class="lf-opacity-control" name="lf-opacity-control" data-key="{{layer.index}}" />' +
                 '</div>' +
             '</div>' +
         '</div>' +
@@ -163,6 +169,7 @@ angular.module("leaflet-directive").directive('layercontrol', function ($log, le
 
                 var unreg = scope.$watch(function() {
                     if(element.children().size() > 1) {
+                        element.find('.lf-overlays').trigger('resize');
                         return element.find('.lf-opacity').size() === Object.keys(layers.overlays).length;
                     }
                 }, function(el) {
