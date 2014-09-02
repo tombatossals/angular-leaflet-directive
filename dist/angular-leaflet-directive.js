@@ -1359,14 +1359,14 @@ angular.module("leaflet-directive").directive('layercontrol', ["$log", "leafletD
         '</div>' +
         '<div class="lf-overlays">' +
             '<div class="lf-container">' +
-                '<div class="lf-row" ng-repeat="layer in overlaysArray | orderBy:\'index\'" ng-init="initIndex(layer, $index)">' +
+                '<div class="lf-row" ng-repeat="layer in overlaysArray | orderBy:\'index\':order" ng-init="initIndex(layer, $index)">' +
                     '<label class="lf-icon-ol">' +
                         '<input class="lf-control-layers-selector" type="checkbox" ng-show="false" ng-model="layer.visible"/> ' +
                         '<i class="lf-icon lf-icon-check" ng-class="layer.icon"></i>' +
                         '<div class="lf-text">{{layer.name}}</div>' +
                         '<div class="lf-icons">' +
-                            '<i class="lf-icon lf-up" ng-class="icons.up" ng-click="moveLayer(layer, layer.index - 1, $event)"></i> ' +
-                            '<i class="lf-icon lf-down" ng-class="icons.down" ng-click="moveLayer(layer, layer.index + 1, $event)"></i> ' +
+                            '<i class="lf-icon lf-up" ng-class="icons.up" ng-click="moveLayer(layer, layer.index - orderNumber, $event)"></i> ' +
+                            '<i class="lf-icon lf-down" ng-class="icons.down" ng-click="moveLayer(layer, layer.index + orderNumber, $event)"></i> ' +
                             '<i class="lf-icon lf-open" ng-class="layer.opacityControl? icons.close:icons.open" ng-click="toggleOpacity($event, layer)"></i>' +
                         '</div>' +
                     '</label>'+
@@ -1383,8 +1383,10 @@ angular.module("leaflet-directive").directive('layercontrol', ["$log", "leafletD
         leafletScope = controller.getLeafletScope(),
         layers = leafletScope.layers;
 
-
-        scope.order = isDefined(attrs.order) && (attrs.order === -1 || attrs.order === 1)? attrs.order:1;
+        // Setting layer stack order.
+        attrs.order = (isDefined(attrs.order) && (attrs.order === 'normal' || attrs.order === 'reverse'))? attrs.order:'normal';
+        scope.order = attrs.order === 'normal';
+        scope.orderNumber = attrs.order === 'normal'? -1:1;
 
         scope.layers = layers;
         controller.getMap().then(function(map) {
