@@ -10,7 +10,7 @@ module.exports = function (grunt, options) {
             tasks: [
                 'jshint',
                 'concat:dist',
-                'ngmin',
+                'ngAnnotate',
                 'uglify',
                 'test-unit',
                 'concat:license'

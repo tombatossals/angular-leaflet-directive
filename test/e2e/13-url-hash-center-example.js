@@ -32,7 +32,7 @@ describe('Loading url-hash-center-example.html', function() {
     });
 
     it('should update the map center model if the url changes', function() {
-        browser.get("url-hash-center-example.html#?c=9.102096738726456:7.03125:4");
+        browser.get("url-hash-center-example.html#?c=9.1021:7.0313:4");
         expect(element(by.xpath('//input[1]')).getAttribute("value")).toBe("9.1021");
         expect(element(by.xpath('//input[2]')).getAttribute("value")).toBe("7.0313");
         expect(element(by.xpath('//input[3]')).getAttribute("value")).toBe("4");

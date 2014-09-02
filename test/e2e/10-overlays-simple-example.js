@@ -15,7 +15,7 @@ describe('Loading overlays-simple-example.html', function() {
         });
 
         expect(ptor.isElementPresent(by.xpath('//img[contains(@src, "http://c.tile.openstreetmap.org/")]'))).toBe(true);
-        ptor.actions().mouseMove(element(by.xpath('//a[contains(@class, "leaflet-control-layers-toggle")][1]')).find()).perform();
+        ptor.actions().mouseMove(element(by.xpath('//a[contains(@class, "leaflet-control-layers-toggle")][1]'))).perform();
 
         var overlayButton = element(by.xpath("//input[@type='checkbox'][1]"));
         overlayButton.click().then(function() {

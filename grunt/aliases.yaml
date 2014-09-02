@@ -1,7 +1,7 @@
 test:
  - 'jshint'
- - 'test:unit'
- - 'test:e2e'
+ - 'test-unit'
+ - 'test-e2e'
 
 test-unit:
  - 'karma:unit'
@@ -30,7 +30,7 @@ install:
  - 'shell:protractor_update'
 
 default:
- - 'watch'
+ - 'build'
 
 dev:
  - 'connect:devserver'
@@ -40,6 +40,13 @@ dev:
 serve:
  - 'connect:webserver'
 
+build:
+ - 'jshint'
+ - 'concat:dist'
+ - 'ngAnnotate'
+ - 'uglify'
+ - 'test-unit'
+ - 'concat:license'
 
 travis:
  - 'bower:install'

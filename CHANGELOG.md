@@ -1,3 +1,13 @@
+<a name="0.7.8"></a>
+### 0.7.8 (2014-08-27)
+
+
+#### Features
+
+Lot of new features and bugfixes added by the community: https://github.com/tombatossals/angular-leaflet-directive/pulls?q=is%3Apr+is%3Aclosed
+* **build:** Used load-grunt-config to modularize the build process ([56440881](https://github.com/tombatossals/angular-leaflet-directive/commit/564408815b55ec5922e8dacf3f78e6f3930fd78a))
+
+
 <a name="0.7.6"></a>
 ### 0.7.6 (2014-03-20)
 

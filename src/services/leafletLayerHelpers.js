@@ -245,6 +245,7 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
     function isValidLayerType(layerDefinition) {
         // Check if the baselayer has a valid type
         if (!isString(layerDefinition.type)) {
+            $log.error('[AngularJS - Leaflet] A layer must have a valid type defined.');
             return false;
         }
 

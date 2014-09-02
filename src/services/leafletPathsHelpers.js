@@ -61,7 +61,7 @@ angular.module("leaflet-directive").factory('leafletPathsHelpers', function ($ro
         if (!isArray(latlngs)) {
             return false;
         }
-        for (var i in latlngs) {
+        for (var i = 0; i < latlngs.length; i++) {
             var point = latlngs[i];
             if (!isValidPoint(point)) {
                 return false;
