@@ -15,6 +15,7 @@ See some basic examples:
 * [Center autodiscover example](http://tombatossals.github.io/angular-leaflet-directive/examples/center-autodiscover-example.html)
 * [Center with url hash example](http://tombatossals.github.io/angular-leaflet-directive/examples/url-hash-center-example.html)
 * [Custom parameters example](http://tombatossals.github.io/angular-leaflet-directive/examples/custom-parameters-example.html)
+* [Draw controls example](http://tombatossals.github.io/angular-leaflet-directive/examples/control-draw-example.html)
 * [Bounds example](http://tombatossals.github.io/angular-leaflet-directive/examples/bounds-example.html)
 * [MaxBounds example](http://tombatossals.github.io/angular-leaflet-directive/examples/maxbounds-example.html)
 * [Tiles example](http://tombatossals.github.io/angular-leaflet-directive/examples/tiles-example.html)

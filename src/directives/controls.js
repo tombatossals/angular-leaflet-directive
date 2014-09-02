@@ -22,8 +22,8 @@ angular.module("leaflet-directive").directive('controls', function ($log, leafle
                             featureGroup: drawnItems
                         }
                     };
-                    angular.extend(options, controls.draw.options);
-                    controls.draw.options = options;
+                    angular.extend(options, controls.draw);
+                    controls.draw = options;
                     map.addLayer(options.edit.featureGroup);
 
                     var drawControl = new L.Control.Draw(options);

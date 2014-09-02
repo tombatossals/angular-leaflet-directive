@@ -946,8 +946,8 @@
             if (isDefined(L.Control.Draw) && isDefined(controls.draw)) {
               var drawnItems = new L.FeatureGroup();
               var options = { edit: { featureGroup: drawnItems } };
-              angular.extend(options, controls.draw.options);
-              controls.draw.options = options;
+              angular.extend(options, controls.draw);
+              controls.draw = options;
               map.addLayer(options.edit.featureGroup);
               var drawControl = new L.Control.Draw(options);
               map.addControl(drawControl);
