@@ -133,6 +133,9 @@ angular.module("leaflet-directive").directive('layercontrol', function ($log, le
         leafletScope = controller.getLeafletScope(),
         layers = leafletScope.layers;
 
+
+        scope.order = isDefined(attrs.order) && (attrs.order === -1 || attrs.order === 1)? attrs.order:1;
+
         scope.layers = layers;
         controller.getMap().then(function(map) {
             // Do we have a baselayers property?

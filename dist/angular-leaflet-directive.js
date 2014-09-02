@@ -945,9 +945,10 @@
           controller.getMap().then(function (map) {
             if (isDefined(L.Control.Draw) && isDefined(controls.draw)) {
               var drawnItems = new L.FeatureGroup();
-              map.addLayer(drawnItems);
               var options = { edit: { featureGroup: drawnItems } };
               angular.extend(options, controls.draw.options);
+              controls.draw.options = options;
+              map.addLayer(options.edit.featureGroup);
               var drawControl = new L.Control.Draw(options);
               map.addControl(drawControl);
             }
@@ -1262,6 +1263,7 @@
         template: '<div class="angular-leaflet-control-layers" ng-show="overlaysArray.length">' + '<div class="lf-baselayers">' + '<div class="lf-row" ng-repeat="(key, layer) in layers.baselayers">' + '<label class="lf-icon-bl" ng-click="changeBaseLayer(key, $event)">' + '<input class="leaflet-control-layers-selector" type="radio" name="lf-radio" ' + 'ng-show="false" ng-checked="baselayer === key" ng-value="key" /> ' + '<i class="lf-icon lf-icon-radio" ng-class="layer.icon"></i>' + '<div class="lf-text">{{layer.name}}</div>' + '</label>' + '</div>' + '</div>' + '<div class="lf-overlays">' + '<div class="lf-container">' + '<div class="lf-row" ng-repeat="layer in overlaysArray | orderBy:\'index\'" ng-init="initIndex(layer, $index)">' + '<label class="lf-icon-ol">' + '<input class="lf-control-layers-selector" type="checkbox" ng-show="false" ng-model="layer.visible"/> ' + '<i class="lf-icon lf-icon-check" ng-class="layer.icon"></i>' + '<div class="lf-text">{{layer.name}}</div>' + '<div class="lf-icons">' + '<i class="lf-icon lf-up" ng-class="icons.up" ng-click="moveLayer(layer, layer.index - 1, $event)"></i> ' + '<i class="lf-icon lf-down" ng-class="icons.down" ng-click="moveLayer(layer, layer.index + 1, $event)"></i> ' + '<i class="lf-icon lf-open" ng-class="layer.opacityControl? icons.close:icons.open" ng-click="toggleOpacity($event, layer)"></i>' + '</div>' + '</label>' + '<div class="lf-legend" ng-if="layer.legend" ng-bind-html="unsafeHTML(layer.legend)"></div>' + '<div class="lf-opacity" ng-show="layer.visible &amp;&amp; layer.opacityControl">' + '<input type="text" class="lf-opacity-control" name="lf-opacity-control" data-key="{{layer.index}}" />' + '</div>' + '</div>' + '</div>' + '</div>' + '</div>',
         link: function (scope, element, attrs, controller) {
           var isDefined = leafletHelpers.isDefined, leafletScope = controller.getLeafletScope(), layers = leafletScope.layers;
+          scope.order = isDefined(attrs.order) && (attrs.order === -1 || attrs.order === 1) ? attrs.order : 1;
           scope.layers = layers;
           controller.getMap().then(function (map) {
             // Do we have a baselayers property?
