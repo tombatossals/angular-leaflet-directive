@@ -123,9 +123,9 @@ angular.module("leaflet-directive").directive('paths', function ($log, $q, leafl
                             }
                         }
 
-                    });
+                    }, true);
 
-                }, true);
+                });
             });
         }
     };
