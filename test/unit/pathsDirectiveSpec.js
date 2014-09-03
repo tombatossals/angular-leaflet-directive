@@ -314,4 +314,35 @@ describe('Directive: leaflet', function() {
         });
     });
 
+    it('should update the path if the path object is changed', function() {
+        var latlngs = [
+            { lat: 0.966, lng: 2.02 },
+            { lat: 2.02, lng: 4.04 },
+            { lat: 0.466, lng: 1.02 },
+            { lat: 1.02, lng: 3.04 }
+        ];
+        angular.extend(scope, { paths : { p1: { latlngs : latlngs, type: 'polygon', color: 'white', fillColor: 'red' }}});
+        var element = angular.element('<leaflet paths="paths"></leaflet>');
+        element = $compile(element)(scope);
+
+        scope.$digest();
+        leafletData.getPaths().then(function(paths) {
+            var polygon = paths.p1;
+            expect(polygon.options.color).toBe('white');
+            expect(polygon.options.fillColor).toBe('red');
+        });
+
+        scope.paths.p1.latlngs[0] = {
+            lat: 0.97,
+            lng: 2.00
+        };
+
+        scope.$digest();
+        leafletData.getPaths().then(function(paths) {
+            var latlngs = paths.p1.getLatLngs();
+            expect(latlngs[0].lat).toBeCloseTo(0.97);
+            expect(latlngs[0].lng).toBeCloseTo(2.00);
+        });
+    });
+
 });
