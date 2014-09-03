@@ -10,23 +10,18 @@
     <script>
         var app = angular.module("demoapp", ["leaflet-directive"]);
         app.controller("DemoController", [ "$scope", "leafletData", function($scope, leafletData) {
-          var drawnItems = new L.FeatureGroup(),
-              options = { edit: { featureGroup: drawnItems } },
-              drawControl = new L.Control.Draw(options);
-
-           angular.extend($scope, {
+            angular.extend($scope, {
                 london: {
                     lat: 51.505,
                     lng: -0.09,
                     zoom: 4
                 },
                 controls: {
-                    custom: [ drawControl ]
+                    draw: {}
                 }
            });
            leafletData.getMap().then(function(map) {
-              map.addLayer(drawnItems)
-
+              var drawnItems = $scope.controls.draw.edit.featureGroup;
               map.on('draw:created', function (e) {
                 var layer = e.layer;
                 drawnItems.addLayer(layer);
