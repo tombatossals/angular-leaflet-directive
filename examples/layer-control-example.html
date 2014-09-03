@@ -10,12 +10,16 @@
     <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="../bower_components/ionrangeslider/css/ion.rangeSlider.css">
     <link rel="stylesheet" href="../bower_components/ionrangeslider/css/ion.rangeSlider.skinNice.css">
-    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script>
         angular.module("demoapp", ["leaflet-directive"]);
         function DynamicOverlaysController($scope) {
             angular.extend($scope, {
+                icons: {
+                  uncheck: 'fa fa-toggle-off',
+                  check: 'fa fa-toggle-on'
+                },
                 ripoll: {
                     lat: 42.20133,
                     lng: 2.19110,
@@ -171,7 +175,7 @@
           <div class="row">
               <p>
               <leaflet center="ripoll" layers="layers" height="480px" width="640px">
-                  <layercontrol order="normal"></layercontrol>
+                  <layercontrol order="normal" set-icons="icons"></layercontrol>
               </leaflet>
               </p>
           </div>

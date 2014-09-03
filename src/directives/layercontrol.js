@@ -1,4 +1,4 @@
-angular.module("leaflet-directive").directive('onlayer', function($log, leafletData, leafletHelpers) {
+angular.module("leaflet-directive").directive('opacityControl', function($log, leafletData, leafletHelpers) {
     return {
         scope: false,
         restrict: 'A',
@@ -10,7 +10,7 @@ angular.module("leaflet-directive").directive('onlayer', function($log, leafletD
                 op;
 
             scope.$watch(function() {
-                return scope.layerProperties[scope.layer.$$hashKey];
+                return scope.layerProperties[scope.layer.name];
             }, function(layerProperties) {
                 if(!isDefined(layerProperties)) {
                     return;
@@ -28,13 +28,10 @@ angular.module("leaflet-directive").directive('onlayer', function($log, leafletD
                         max: 100,
                         prettify: false,
                         hasGrid: false,
-                        hideMinMax: false,
-                        onLoad: function(obj) {
-                            $log.debug('val', obj.input.val());
-                        }
+                        hideMinMax: false
                     });
                     scope.$watch(function() {
-                        return scope.layerProperties[scope.layer.$$hashKey].opacityControl;
+                        return scope.layerProperties[scope.layer.name].opacityControl;
                     }, function() {
                         if(scope.layer.visible && layerProperties.opacityControl) {
                             element.show();
@@ -82,6 +79,7 @@ angular.module("leaflet-directive").directive('onlayer', function($log, leafletD
   return {
     restrict: "E",
     scope: {
+        setIcons: '='
     },
     replace: true,
     transclude: false,
@@ -94,8 +92,8 @@ angular.module("leaflet-directive").directive('onlayer', function($log, leafletD
         baselayer: '',
         layerProperties: {},
         icons: {
-          uncheck: 'fa fa-check-square-o',
-          check: 'fa fa-square-o',
+          uncheck: 'fa fa-square-o',
+          check: 'fa fa-check-square-o',
           radio: 'fa fa-dot-circle-o',
           unradio: 'fa fa-circle-o',
           up: 'fa fa-angle-up',
@@ -154,7 +152,7 @@ angular.module("leaflet-directive").directive('onlayer', function($log, leafletD
                 el.toggleClass($scope.icons.close + ' ' + $scope.icons.open);
                 el = el.parents('.lf-row').find('.lf-opacity');
                 //el.toggle();
-                $scope.layerProperties[layer.$$hashKey].opacityControl = !$scope.layerProperties[layer.$$hashKey].opacityControl;
+                $scope.layerProperties[layer.name].opacityControl = !$scope.layerProperties[layer.name].opacityControl;
             }
             e.stopPropagation();
             e.preventDefault();
@@ -198,7 +196,7 @@ angular.module("leaflet-directive").directive('onlayer', function($log, leafletD
                         '<i class="lf-icon lf-open" ng-class="layer.opacityControl? icons.close:icons.open" ng-click="toggleOpacity($event, layer)"></i>' +
                     '</div>' +
                     '<div class="lf-legend" ng-if="layer.legend" ng-bind-html="unsafeHTML(layer.legend)"></div>' +
-                    '<div class="lf-opacity" onlayer>' +
+                    '<div class="lf-opacity" opacity-control>' +
                     '</div>' +
                 '</div>' +
             '</div>' +
@@ -240,10 +238,10 @@ angular.module("leaflet-directive").directive('onlayer', function($log, leafletD
                 var overlaysArray = [];
                 leafletData.getLayers().then(function(leafletLayers) {
                     for(var key in newOverlayLayers) {
-                        newOverlayLayers[key].icon = scope.icons[(newOverlayLayers[key].visible? 'uncheck':'check')];
+                        newOverlayLayers[key].icon = scope.icons[(newOverlayLayers[key].visible? 'check':'uncheck')];
                         overlaysArray.push(newOverlayLayers[key]);
-                        if(!isDefined(scope.layerProperties[newOverlayLayers[key].$$hashKey])) {
-                            scope.layerProperties[newOverlayLayers[key].$$hashKey] = {
+                        if(!isDefined(scope.layerProperties[newOverlayLayers[key].name])) {
+                            scope.layerProperties[newOverlayLayers[key].name] = {
                                 opacity: isDefined(newOverlayLayers[key].layerOptions.opacity)? newOverlayLayers[key].layerOptions.opacity*100:100,
                                 opacityControl: false
                             };
@@ -255,6 +253,10 @@ angular.module("leaflet-directive").directive('onlayer', function($log, leafletD
                 });
                 scope.overlaysArray = overlaysArray;
             }, true);
+        });
+
+        scope.$watch('setIcons', function(newIcons) {
+            angular.extend(scope.icons, newIcons);
         });
     }
   };
