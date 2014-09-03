@@ -99,7 +99,8 @@ angular.module("leaflet-directive").directive('opacityControl', function($log, l
           up: 'fa fa-angle-up',
           down: 'fa fa-angle-down',
           open: 'fa fa-angle-double-down',
-          close: 'fa fa-angle-double-up'
+          close: 'fa fa-angle-double-up',
+          toggleLegend: 'fa fa-pencil-square-o'
         },
         changeBaseLayer: function(key, e) {
           leafletHelpers.safeApply($scope, function(scp) {
@@ -157,6 +158,12 @@ angular.module("leaflet-directive").directive('opacityControl', function($log, l
             e.stopPropagation();
             e.preventDefault();
         },
+        toggleLegend: function(layer) {
+            $scope.layerProperties[layer.name].showLegend = !$scope.layerProperties[layer.name].showLegend;
+        },
+        showLegend: function(layer) {
+            return layer.legend && $scope.layerProperties[layer.name].showLegend;
+        },
         unsafeHTML: function(html) {
           return $sce.trustAsHtml(html);
         }
@@ -193,9 +200,10 @@ angular.module("leaflet-directive").directive('opacityControl', function($log, l
                     '<div class="lf-icons">' +
                         '<i class="lf-icon lf-up" ng-class="icons.up" ng-click="moveLayer(layer, layer.index - orderNumber, $event)"></i> ' +
                         '<i class="lf-icon lf-down" ng-class="icons.down" ng-click="moveLayer(layer, layer.index + orderNumber, $event)"></i> ' +
+                        '<i class="lf-icon lf-toggle-legend" ng-class="icons.toggleLegend" ng-if="layer.legend" ng-click="toggleLegend(layer)"></i> ' +
                         '<i class="lf-icon lf-open" ng-class="layer.opacityControl? icons.close:icons.open" ng-click="toggleOpacity($event, layer)"></i>' +
                     '</div>' +
-                    '<div class="lf-legend" ng-if="layer.legend" ng-bind-html="unsafeHTML(layer.legend)"></div>' +
+                    '<div class="lf-legend" ng-if="showLegend(layer)" ng-bind-html="unsafeHTML(layer.legend)"></div>' +
                     '<div class="lf-opacity" opacity-control>' +
                     '</div>' +
                 '</div>' +
@@ -243,7 +251,8 @@ angular.module("leaflet-directive").directive('opacityControl', function($log, l
                         if(!isDefined(scope.layerProperties[newOverlayLayers[key].name])) {
                             scope.layerProperties[newOverlayLayers[key].name] = {
                                 opacity: isDefined(newOverlayLayers[key].layerOptions.opacity)? newOverlayLayers[key].layerOptions.opacity*100:100,
-                                opacityControl: false
+                                opacityControl: false,
+                                showLegend: true
                             };
                         }
                         if(isDefined(newOverlayLayers[key].index) && leafletLayers.overlays[key].setZIndex) {
