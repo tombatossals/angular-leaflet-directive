@@ -2,7 +2,7 @@
 <html ng-app="demoapp">
 <head>
     <script src="../bower_components/jquery/dist/jquery.min.js"></script>
-    <script src="../bower_components/ionrangeslider/js/ion.rangeSlider.min.js"></script>
+    <script src="../bower_components/ionrangeslider/js/ion.rangeSlider.js"></script>
     <script src="../bower_components/angular/angular.min.js"></script>
     <script src="../bower_components/leaflet/dist/leaflet.js"></script>
     <script src="../dist/angular-leaflet-directive.js"></script>
@@ -72,6 +72,15 @@
                                 attribution: '&copy; <a href="http://www.openfiremap.org">OpenFireMap</a> contributors - &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
                                 continuousWorld: true
                             }
+                        },
+                        em: {
+                            name: 'Emergency Rooms',
+                            type: 'xyz',
+                            url: 'http://openfiremap.org/eytiles/{z}/{x}/{y}.png',
+                            layerOptions: {
+                                attribution: '&copy; <a href="http://www.openfiremap.org">OpenFireMap</a> contributors - &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                                continuousWorld: true
+                            }
                         }
                     }
                 },
@@ -130,10 +139,10 @@
 
       .angular-leaflet-control-layers .lf-row label {
         cursor: pointer;
-        width: 100%;
+        width: 84%;
       }
 
-      .angular-leaflet-control-layers .lf-row label .lf-icons {
+      .angular-leaflet-control-layers .lf-row .lf-icons {
         float: right;
       }
 
@@ -146,6 +155,10 @@
 
       .angular-leaflet-control-layers .lf-row label .lf-text {
         float: left;
+      }
+
+      .angular-leaflet-control-layers .lf-opacity {
+          clear:both;
       }
     </style>
 </head>
