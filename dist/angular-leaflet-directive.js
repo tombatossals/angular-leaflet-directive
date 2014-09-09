@@ -8,19 +8,19 @@ angular.module("leaflet-directive", []).directive('leaflet', ["$q", "leafletData
         restrict: "EA",
         replace: true,
         scope: {
-            center: '=center',
-            defaults: '=defaults',
-            maxbounds: '=maxbounds',
-            bounds: '=bounds',
-            markers: '=markers',
-            legend: '=legend',
-            geojson: '=geojson',
-            paths: '=paths',
-            tiles: '=tiles',
-            layers: '=layers',
-            controls: '=controls',
-            decorations: '=decorations',
-            eventBroadcast: '=eventBroadcast'
+            center         : '=center',
+            defaults       : '=defaults',
+            maxbounds      : '=maxbounds',
+            bounds         : '=bounds',
+            markers        : '=markers',
+            legend         : '=legend',
+            geojson        : '=geojson',
+            paths          : '=paths',
+            tiles          : '=tiles',
+            layers         : '=layers',
+            controls       : '=controls',
+            decorations    : '=decorations',
+            eventBroadcast : '=eventBroadcast'
         },
         transclude: true,
         template: '<div class="angular-leaflet-map"><div ng-transclude></div></div>',
@@ -73,15 +73,19 @@ angular.module("leaflet-directive", []).directive('leaflet', ["$q", "leafletData
             }
 
             // Set zoom control configuration
-            if (isDefined(map.zoomControl) && isDefined(defaults.zoomControlPosition)) {
+            if (isDefined(map.zoomControl) &&
+                isDefined(defaults.zoomControlPosition)) {
                 map.zoomControl.setPosition(defaults.zoomControlPosition);
             }
 
-            if(isDefined(map.zoomControl) && defaults.zoomControl===false) {
+            if (isDefined(map.zoomControl) &&
+                defaults.zoomControl===false) {
                 map.zoomControl.removeFrom(map);
             }
 
-            if(isDefined(map.zoomsliderControl) && isDefined(defaults.zoomsliderControl) && defaults.zoomsliderControl===false) {
+            if (isDefined(map.zoomsliderControl) &&
+                isDefined(defaults.zoomsliderControl) &&
+                defaults.zoomsliderControl===false) {
                 map.zoomsliderControl.removeFrom(map);
             }
 
@@ -103,6 +107,9 @@ angular.module("leaflet-directive", []).directive('leaflet', ["$q", "leafletData
             });
 
             scope.$on('$destroy', function () {
+                leafletData.getMap().then(function(map) {
+                    map.remove();
+                });
                 leafletData.unresolveMap(attrs.id);
             });
         }
@@ -995,9 +1002,9 @@ angular.module("leaflet-directive").directive('paths', ["$log", "$q", "leafletDa
                             }
                         }
 
-                    });
+                    }, true);
 
-                }, true);
+                });
             });
         }
     };
@@ -3406,8 +3413,11 @@ angular.module("leaflet-directive").factory('leafletHelpers', ["$q", "$log", fun
         isSameCenterOnMap: function(centerModel, map) {
             var mapCenter = map.getCenter();
             var zoom = map.getZoom();
-            if (mapCenter.lat.toFixed(4) === centerModel.lat.toFixed(4) && mapCenter.lng.toFixed(4) === centerModel.lng.toFixed(4) && zoom === centerModel.zoom) {
-                return true;
+            if (centerModel.lat && centerModel.lng &&
+                mapCenter.lat.toFixed(4) === centerModel.lat.toFixed(4) &&
+                mapCenter.lng.toFixed(4) === centerModel.lng.toFixed(4) &&
+                zoom === centerModel.zoom) {
+                    return true;
             }
             return false;
         },
