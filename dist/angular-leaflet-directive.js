@@ -107,9 +107,7 @@ angular.module("leaflet-directive", []).directive('leaflet', ["$q", "leafletData
             });
 
             scope.$on('$destroy', function () {
-                leafletData.getMap().then(function(map) {
-                    map.remove();
-                });
+                map.remove();
                 leafletData.unresolveMap(attrs.id);
             });
         }
