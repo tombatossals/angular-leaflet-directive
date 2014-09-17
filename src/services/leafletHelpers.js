@@ -3,15 +3,17 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
     function _obtainEffectiveMapId(d, mapId) {
         var id, i;
         if (!angular.isDefined(mapId)) {
-            if (Object.keys(d).length === 1) {
-                for (i in d) {
-                    if (d.hasOwnProperty(i)) {
-                        id = i;
-                    }
+        if (Object.keys(d).length === 0) {
+            id = "main";
+        } else if (Object.keys(d).length >= 1) {
+            for (i in d) {
+                if (d.hasOwnProperty(i)) {
+                    id = i;
                 }
-            } else if (Object.keys(d).length === 0) {
-                id = "main";
-            } else {
+            }
+        } else if (Object.keys(d).length === 0) {
+            id = "main";
+        } else {
                 $log.error("[AngularJS - Leaflet] - You have more than 1 map on the DOM, you must provide the map ID to the leafletData.getXXX call");
             }
         } else {
@@ -97,8 +99,11 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
         isSameCenterOnMap: function(centerModel, map) {
             var mapCenter = map.getCenter();
             var zoom = map.getZoom();
-            if (mapCenter.lat.toFixed(4) === centerModel.lat.toFixed(4) && mapCenter.lng.toFixed(4) === centerModel.lng.toFixed(4) && zoom === centerModel.zoom) {
-                return true;
+            if (centerModel.lat && centerModel.lng &&
+                mapCenter.lat.toFixed(4) === centerModel.lat.toFixed(4) &&
+                mapCenter.lng.toFixed(4) === centerModel.lng.toFixed(4) &&
+                zoom === centerModel.zoom) {
+                    return true;
             }
             return false;
         },

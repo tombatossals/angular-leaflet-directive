@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html ng-app="demoapp">
+  <head>
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="../dist/angular-leaflet-directive.js"></script>
+    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
+    <style>
+        .map {
+            float: left;
+            margin-right: 1em;
+        }
+    </style>
+    <script>
+        var app = angular.module("demoapp", ["leaflet-directive"]);
+        app.controller("map1", [ "$scope", "$log", "leafletData", function($scope, $log, leafletData) {
+            angular.extend($scope, {
+                center: {
+                    lat: 51.505,
+                    lng: -0.09,
+                    zoom: 5
+                },
+                paths: {
+                    p1: {
+                        color: 'blue',
+                        weight: 8,
+                        latlngs: [{
+                            lat: 51.50,
+                            lng: -0.082
+                        }, {
+                            lat: 48.83,
+                            lng: 2.37
+                        }, {
+                            lat: 41.91,
+                            lng: 12.48
+                        }]
+                    }
+                },
+            });
+        }]);
+
+        app.controller("map2", [ "$scope", "$log", "leafletData", function($scope, $log, leafletData) {
+            angular.extend($scope, {
+                center: {
+                    lat: 51.505,
+                    lng: -0.09,
+                    zoom: 5
+                },
+                paths: {
+                    p1: {
+                        color: 'red',
+                        weight: 8,
+                        latlngs: [{
+                            lat: 51.50,
+                            lng: -0.082
+                        }, {
+                            lat: 48.83,
+                            lng: 2.37
+                        }, {
+                            lat: 41.91,
+                            lng: 12.48
+                        }]
+                    }
+                },
+            });
+        }]);
+
+    </script>
+  </head>
+  <body>
+    <h1>Toggle between two maps on screen</h1>
+    <p>View javascript console while toggling map</p>
+    <button ng-click="togglemap = !togglemap">Toggle Map</button>
+    <div ng-if="!togglemap" ng-controller="map1">
+        <h2>Map1</h2>
+        <leaflet id="map1" center="center" paths="paths" width="400px" height="320px"></leaflet>
+    </div>
+    <div ng-if="togglemap" ng-controller="map2">
+        <h2>Map2</h2>
+        <leaflet id="map2" center="center" paths="paths" width="400px" height="320px"></leaflet>
+    </div>
+  </body>
+</html>

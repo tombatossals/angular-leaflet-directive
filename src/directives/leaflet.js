@@ -4,19 +4,19 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($q, leafl
         restrict: "EA",
         replace: true,
         scope: {
-            center: '=center',
-            defaults: '=defaults',
-            maxbounds: '=maxbounds',
-            bounds: '=bounds',
-            markers: '=markers',
-            legend: '=legend',
-            geojson: '=geojson',
-            paths: '=paths',
-            tiles: '=tiles',
-            layers: '=layers',
-            controls: '=controls',
-            decorations: '=decorations',
-            eventBroadcast: '=eventBroadcast'
+            center         : '=center',
+            defaults       : '=defaults',
+            maxbounds      : '=maxbounds',
+            bounds         : '=bounds',
+            markers        : '=markers',
+            legend         : '=legend',
+            geojson        : '=geojson',
+            paths          : '=paths',
+            tiles          : '=tiles',
+            layers         : '=layers',
+            controls       : '=controls',
+            decorations    : '=decorations',
+            eventBroadcast : '=eventBroadcast'
         },
         transclude: true,
         template: '<div class="angular-leaflet-map"><div ng-transclude></div></div>',
@@ -69,15 +69,19 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($q, leafl
             }
 
             // Set zoom control configuration
-            if (isDefined(map.zoomControl) && isDefined(defaults.zoomControlPosition)) {
+            if (isDefined(map.zoomControl) &&
+                isDefined(defaults.zoomControlPosition)) {
                 map.zoomControl.setPosition(defaults.zoomControlPosition);
             }
 
-            if(isDefined(map.zoomControl) && defaults.zoomControl===false) {
+            if (isDefined(map.zoomControl) &&
+                defaults.zoomControl===false) {
                 map.zoomControl.removeFrom(map);
             }
 
-            if(isDefined(map.zoomsliderControl) && isDefined(defaults.zoomsliderControl) && defaults.zoomsliderControl===false) {
+            if (isDefined(map.zoomsliderControl) &&
+                isDefined(defaults.zoomsliderControl) &&
+                defaults.zoomsliderControl===false) {
                 map.zoomsliderControl.removeFrom(map);
             }
 
@@ -99,6 +103,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($q, leafl
             });
 
             scope.$on('$destroy', function () {
+                map.remove();
                 leafletData.unresolveMap(attrs.id);
             });
         }

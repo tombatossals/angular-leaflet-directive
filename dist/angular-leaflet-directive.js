@@ -8,19 +8,19 @@ angular.module("leaflet-directive", []).directive('leaflet', ["$q", "leafletData
         restrict: "EA",
         replace: true,
         scope: {
-            center: '=center',
-            defaults: '=defaults',
-            maxbounds: '=maxbounds',
-            bounds: '=bounds',
-            markers: '=markers',
-            legend: '=legend',
-            geojson: '=geojson',
-            paths: '=paths',
-            tiles: '=tiles',
-            layers: '=layers',
-            controls: '=controls',
-            decorations: '=decorations',
-            eventBroadcast: '=eventBroadcast'
+            center         : '=center',
+            defaults       : '=defaults',
+            maxbounds      : '=maxbounds',
+            bounds         : '=bounds',
+            markers        : '=markers',
+            legend         : '=legend',
+            geojson        : '=geojson',
+            paths          : '=paths',
+            tiles          : '=tiles',
+            layers         : '=layers',
+            controls       : '=controls',
+            decorations    : '=decorations',
+            eventBroadcast : '=eventBroadcast'
         },
         transclude: true,
         template: '<div class="angular-leaflet-map"><div ng-transclude></div></div>',
@@ -73,15 +73,19 @@ angular.module("leaflet-directive", []).directive('leaflet', ["$q", "leafletData
             }
 
             // Set zoom control configuration
-            if (isDefined(map.zoomControl) && isDefined(defaults.zoomControlPosition)) {
+            if (isDefined(map.zoomControl) &&
+                isDefined(defaults.zoomControlPosition)) {
                 map.zoomControl.setPosition(defaults.zoomControlPosition);
             }
 
-            if(isDefined(map.zoomControl) && defaults.zoomControl===false) {
+            if (isDefined(map.zoomControl) &&
+                defaults.zoomControl===false) {
                 map.zoomControl.removeFrom(map);
             }
 
-            if(isDefined(map.zoomsliderControl) && isDefined(defaults.zoomsliderControl) && defaults.zoomsliderControl===false) {
+            if (isDefined(map.zoomsliderControl) &&
+                isDefined(defaults.zoomsliderControl) &&
+                defaults.zoomsliderControl===false) {
                 map.zoomsliderControl.removeFrom(map);
             }
 
@@ -103,6 +107,7 @@ angular.module("leaflet-directive", []).directive('leaflet', ["$q", "leafletData
             });
 
             scope.$on('$destroy', function () {
+                map.remove();
                 leafletData.unresolveMap(attrs.id);
             });
         }
@@ -995,9 +1000,9 @@ angular.module("leaflet-directive").directive('paths', ["$log", "$q", "leafletDa
                             }
                         }
 
-                    });
+                    }, true);
 
-                }, true);
+                });
             });
         }
     };
@@ -1450,8 +1455,8 @@ angular.module("leaflet-directive").directive('opacityControl', ["$log", "leafle
                     '<div class="lf-icons">' +
                         '<i class="lf-icon lf-up" ng-class="icons.up" ng-click="moveLayer(layer, layer.index - orderNumber, $event)"></i> ' +
                         '<i class="lf-icon lf-down" ng-class="icons.down" ng-click="moveLayer(layer, layer.index + orderNumber, $event)"></i> ' +
-                        '<i class="lf-icon lf-toggle-legend" ng-class="icons.toggleLegend" ng-if="layer.legend" ng-click="toggleLegend(layer)"></i>' +
-                        '<i class="lf-icon lf-open" ng-class="layer.opacityControl? icons.close:icons.open" ng-click="toggleOpacity($event, layer)"></i> ' +
+                        '<i class="lf-icon lf-toggle-legend" ng-class="icons.toggleLegend" ng-if="layer.legend" ng-click="toggleLegend(layer)"></i> ' +
+                        '<i class="lf-icon lf-open" ng-class="layer.opacityControl? icons.close:icons.open" ng-click="toggleOpacity($event, layer)"></i>' +
                     '</div>' +
                     '<div class="lf-legend" ng-if="showLegend(layer)" ng-bind-html="unsafeHTML(layer.legend)"></div>' +
                     '<div class="lf-opacity" opacity-control>' +
@@ -3340,15 +3345,17 @@ angular.module("leaflet-directive").factory('leafletHelpers', ["$q", "$log", fun
     function _obtainEffectiveMapId(d, mapId) {
         var id, i;
         if (!angular.isDefined(mapId)) {
-            if (Object.keys(d).length === 1) {
-                for (i in d) {
-                    if (d.hasOwnProperty(i)) {
-                        id = i;
-                    }
+        if (Object.keys(d).length === 0) {
+            id = "main";
+        } else if (Object.keys(d).length >= 1) {
+            for (i in d) {
+                if (d.hasOwnProperty(i)) {
+                    id = i;
                 }
-            } else if (Object.keys(d).length === 0) {
-                id = "main";
-            } else {
+            }
+        } else if (Object.keys(d).length === 0) {
+            id = "main";
+        } else {
                 $log.error("[AngularJS - Leaflet] - You have more than 1 map on the DOM, you must provide the map ID to the leafletData.getXXX call");
             }
         } else {
@@ -3434,8 +3441,11 @@ angular.module("leaflet-directive").factory('leafletHelpers', ["$q", "$log", fun
         isSameCenterOnMap: function(centerModel, map) {
             var mapCenter = map.getCenter();
             var zoom = map.getZoom();
-            if (mapCenter.lat.toFixed(4) === centerModel.lat.toFixed(4) && mapCenter.lng.toFixed(4) === centerModel.lng.toFixed(4) && zoom === centerModel.zoom) {
-                return true;
+            if (centerModel.lat && centerModel.lng &&
+                mapCenter.lat.toFixed(4) === centerModel.lat.toFixed(4) &&
+                mapCenter.lng.toFixed(4) === centerModel.lng.toFixed(4) &&
+                zoom === centerModel.zoom) {
+                    return true;
             }
             return false;
         },
