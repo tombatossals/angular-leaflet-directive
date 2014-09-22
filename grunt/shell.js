@@ -6,14 +6,14 @@ module.exports = function (grunt, options) {
             stdout: true
         },
         selenium: {
-            command: 'node_modules/protractor/bin/webdriver-manager start',
+            command: 'node node_modules/protractor/bin/webdriver-manager start',
             options: {
                 stdout: false,
                 async: true
             }
         },
         protractor_update: {
-            command: 'node_modules/protractor/bin/webdriver-manager update'
+            command: 'node node_modules/protractor/bin/webdriver-manager update'
         },
         npm_install: {
             command: 'npm install'
