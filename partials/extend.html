@@ -3,16 +3,31 @@
         <div class="page-header">
             <h1>How to extend</h1>
         </div>
-        <p>You can extend the functionality of this library easily with a basic knowledge of the <a href="http://docs.angularjs.org/guide/directive">AngularJS directives development</a> and the <a href="http://leafletjs.com/reference.html">Leaflet library API</a>. The code is modular and easy to read so feel free to add code or modify it to fit the library to your own needs. Futhermore, if you would like to merge your changes to the main development branch send a pull request via github.</p>
-
+        <p>You can extend the functionality of this library easily with a basic knowledge of the
+            <a href="http://docs.angularjs.org/guide/directive">AngularJS directives development</a> and the
+            <a href="http://leafletjs.com/reference.html">Leaflet library API</a>.
+            The code is modular and easy to read so feel free to add code or modify it to fit the library to your own needs.
+            Futhermore, if you would like to merge your changes to the main development branch send a pull request via github.
+        </p>
         <h3>Building, testing and developing</h3>
-        <p><strong>Coding style:</strong> We use <a href="https://raw.github.com/tombatossals/angular-leaflet-directive/master/.editorconfig">this .editorconfig file</a> to define our coding style between IDE's. You can find more info about this on <a href="http://editorconfig.org/">http://editorconfig.org/</a>.</p>
-        <p><strong>Grunt:</strong> We also use <a href="http://gruntjs.com/">Grunt</a> as a tool to automate building, linting, testing and minifying the code. You can see the development utilities used on the <a href="https://github.com/tombatossals/angular-leaflet-directive/blob/master/package.json">package.json</a> file, and the grunt tasks on the <a href="https://raw.github.com/tombatossals/angular-leaflet-directive/master/Gruntfile.js">Gruntfile.js file</a>. Before we can use Grunt, we must install the required packages via npm, let's see an example of how to install the project dependencies. First,  make sure you have npm and grunt-cli installed globally. Let's install the dependencies.</p>
-         <ul class="nav nav-tabs">
-             <li class="active"><a href="">Command line example of how to install project dependencies and runt grunt</a></li>
-         </ul>
-         <div class="tab-container" ng-switch on="activeTab">
-             <div hljs>
+        <p><strong>Coding style:</strong> We use
+            <a href="https://raw.github.com/tombatossals/angular-leaflet-directive/master/.editorconfig">this .editorconfig file</a>
+            to define our coding style between IDE's. You can find more info about this on
+            <a href="http://editorconfig.org/">http://editorconfig.org/</a>.
+        </p>
+        <p><strong>Grunt:</strong> We also use <a href="http://gruntjs.com/">Grunt</a>
+            as a tool to automate building, linting, testing and minifying the code. You can see the development utilities used on the
+            <a href="https://github.com/tombatossals/angular-leaflet-directive/blob/master/package.json">package.json</a>
+            file, and the grunt tasks on the
+            <a href="https://raw.github.com/tombatossals/angular-leaflet-directive/master/Gruntfile.js">Gruntfile.js file</a>.
+            Before we can use Grunt, we must install the required packages via npm, let's see an example of how to install the project dependencies.
+            First,  make sure you have npm and grunt-cli installed globally. Let's install the dependencies.
+        </p>
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="">Command line example of how to install project dependencies and runt grunt</a></li>
+        </ul>
+        <div class="tab-container" ng-switch on="activeTab">
+            <div hljs>
 # Inside the project dir, install the dependencies
 $ npm install
 npm http GET https://registry.npmjs.org/protractor/0.14.0
@@ -32,23 +47,25 @@ npm http GET https://registry.npmjs.org/grunt-ngmin
 ├── connect@2.8.8 (methods@0.0.1, uid2@0.0.2, fresh@0.2.0, cookie@0.1.0, ..., send@0.1.4)
 └── socket.io@0.9.16 (base64id@0.1.0, policyfile@0.0.4, redis@0.7.3, socket.io-client@0.9.16)
 $
-</div>
-    </div>
-    <br />
-    <h4>Defined Grunt tasks</h4>
-    <p>Once you have the development dependencies installed, we can use our predefined grunt tasks. For example:</p>
-    <ul>
-        <li><strong>grunt test.</strong> Executes the karma unitary tests and the protractor e2e tests, reporting the actual state of the project.</li>
-        <li><strong>grunt test:unit.</strong> Executes the unitary tests the <a href="http://karma-runner.github.io/0.10/index.html">karma framework</a>.</li>
-        <li><strong>grunt test:e2e.</strong> Executes the e2e tests of the <a href="https://github.com/angular/protractor">protractor E2E framework</a>.</li>
-        <li><strong>grunt coverage.</strong> Generates a "coverage" folder with an istanbul report of wich part of the code is covered by the actual tests.</li>
-        <li><strong>grunt default.</strong> The default task watches for project files changes and when a change is detected, tries to build the library file passing the jshint filter and the tests. Let's see an example:</li>
-    </ul>
-    <ul class="nav nav-tabs">
-        <li class="active"><a href="">Running the default grunt task waiting for changes on the source code</a></li>
-    </ul>
-    <div class="tab-container" ng-switch on="activeTab">
-        <div hljs>
+            </div>
+        </div>
+        <br />
+        <h4>Defined Grunt tasks</h4>
+        <p>Once you have the development dependencies installed, we can use our predefined grunt tasks. For example:</p>
+        <ul>
+            <li><strong>grunt test.</strong> Executes the karma unitary tests and the protractor e2e tests, reporting the actual state of the project.</li>
+            <li><strong>grunt test:unit.</strong> Executes the unitary tests the <a href="http://karma-runner.github.io/0.10/index.html">karma framework</a>.</li>
+            <li><strong>grunt test:e2e.</strong> Executes the e2e tests of the <a href="https://github.com/angular/protractor">protractor E2E framework</a>.</li>
+            <li><strong>grunt coverage.</strong> Generates a "coverage" folder with an istanbul report about the percentage of the code which is covered by the existing tests.</li>
+            <li><strong>grunt default.</strong>
+                The default task watches for project files changes and when a change is detected, tries to build the library file passing the JSHint filter and the tests. Let's see an example:
+            </li>
+        </ul>
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="">Running the default grunt task waiting for changes on the source code</a></li>
+        </ul>
+        <div class="tab-container" ng-switch on="activeTab">
+            <div hljs>
 $ grunt
 Running "watch:source" (watch) task
 Waiting...OK
@@ -85,14 +102,18 @@ Running "concat:license" (concat) task
 File "dist/angular-leaflet-directive.min.js" created.
 
 Done, without errors.
-Completed in 9.714s at Sun Dec 15 2013 10:37:59 GMT+0100 (CET) - Waiting...</div>
-  </div>
-  <br />
-  <p>After a successful build, a new library distribution file will be generated inside the "dist" folder, which will be ready to use on your project:</p>
-  <ul class="nav nav-tabs">
-      <li class="active"><a href="">Ready to use library inside the dist folder</a></li>
-  </ul>
-  <pre>
+Completed in 9.714s at Sun Dec 15 2013 10:37:59 GMT+0100 (CET) - Waiting...
+            </div>
+        </div>
+        <br />
+        <p>After a successful build, a new library distribution file will be generated inside the "dist" folder,
+            which will be ready to use on your project:</p>
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="">Ready to use library inside the dist folder</a></li>
+        </ul>
+        <pre>
 $ ls -l dist/angular-leaflet-directive.min.js
--rw-r--r-- 1 dave dave 35255 dic 15 10:37 dist/angular-leaflet-directive.min.js</pre>
+-rw-r--r-- 1 dave dave 35255 dic 15 10:37 dist/angular-leaflet-directive.min.js
+        </pre>
+    </div>
 </div>
