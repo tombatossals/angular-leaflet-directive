@@ -351,6 +351,9 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
                             layers.overlays[markerData.layer].removeLayer(marker);
                             marker.setLatLng([markerData.lat, markerData.lng]);
                             layers.overlays[markerData.layer].addLayer(marker);
+                        } else if (isObject(markerData.icon) && isObject(oldMarkerData.icon) && !angular.equals(markerData.icon, oldMarkerData.icon)) {
+                            layers.overlays[markerData.layer].removeLayer(marker);
+                            layers.overlays[markerData.layer].addLayer(marker);
                         }
                     }
                 } else if (markerLatLng.lat !== markerData.lat || markerLatLng.lng !== markerData.lng) {
