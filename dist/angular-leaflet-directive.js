@@ -110,6 +110,13 @@ angular.module("leaflet-directive", []).directive('leaflet', ["$q", "leafletData
                 map.remove();
                 leafletData.unresolveMap(attrs.id);
             });
+
+            //Handle request to invalidate the map size 
+	        //Up scope using $scope.$emit('invalidateSize') 
+	        //Down scope using $scope.$broadcast('invalidateSize')
+            scope.$on('invalidateSize', function() {
+                map.invalidateSize();
+            });
         }
     };
 }]);
