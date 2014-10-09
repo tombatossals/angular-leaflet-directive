@@ -107,9 +107,7 @@ angular.module("leaflet-directive", []).directive('leaflet', ["$q", "leafletData
             });
 
             scope.$on('$destroy', function () {
-                leafletData.getMap().then(function(map) {
-                    map.remove();
-                });
+                map.remove();
                 leafletData.unresolveMap(attrs.id);
             });
         }
@@ -3319,15 +3317,17 @@ angular.module("leaflet-directive").factory('leafletHelpers', ["$q", "$log", fun
     function _obtainEffectiveMapId(d, mapId) {
         var id, i;
         if (!angular.isDefined(mapId)) {
-            if (Object.keys(d).length === 1) {
-                for (i in d) {
-                    if (d.hasOwnProperty(i)) {
-                        id = i;
-                    }
+        if (Object.keys(d).length === 0) {
+            id = "main";
+        } else if (Object.keys(d).length >= 1) {
+            for (i in d) {
+                if (d.hasOwnProperty(i)) {
+                    id = i;
                 }
-            } else if (Object.keys(d).length === 0) {
-                id = "main";
-            } else {
+            }
+        } else if (Object.keys(d).length === 0) {
+            id = "main";
+        } else {
                 $log.error("[AngularJS - Leaflet] - You have more than 1 map on the DOM, you must provide the map ID to the leafletData.getXXX call");
             }
         } else {
