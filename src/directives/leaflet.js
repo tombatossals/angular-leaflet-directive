@@ -4,19 +4,19 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($q, leafl
         restrict: "EA",
         replace: true,
         scope: {
-            center: '=center',
-            defaults: '=defaults',
-            maxbounds: '=maxbounds',
-            bounds: '=bounds',
-            markers: '=markers',
-            legend: '=legend',
-            geojson: '=geojson',
-            paths: '=paths',
-            tiles: '=tiles',
-            layers: '=layers',
-            controls: '=controls',
-            decorations: '=decorations',
-            eventBroadcast: '=eventBroadcast'
+            center         : '=center',
+            defaults       : '=defaults',
+            maxbounds      : '=maxbounds',
+            bounds         : '=bounds',
+            markers        : '=markers',
+            legend         : '=legend',
+            geojson        : '=geojson',
+            paths          : '=paths',
+            tiles          : '=tiles',
+            layers         : '=layers',
+            controls       : '=controls',
+            decorations    : '=decorations',
+            eventBroadcast : '=eventBroadcast'
         },
         transclude: true,
         template: '<div class="angular-leaflet-map"><div ng-transclude></div></div>',
@@ -26,62 +26,31 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($q, leafl
                 return _leafletMap.promise;
             };
 
-            this.getLeafletScope = function () {
+            this.getLeafletScope = function() {
                 return $scope;
             };
         },
 
-        link: function (scope, element, attrs) {
+        link: function(scope, element, attrs) {
             var isDefined = leafletHelpers.isDefined,
                 defaults = leafletMapDefaults.setDefaults(scope.defaults, attrs.id),
                 genDispatchMapEvent = leafletEvents.genDispatchMapEvent,
                 mapEvents = leafletEvents.getAvailableMapEvents();
 
             // Set width and height if they are defined
-            //Utility function to update map css width
-            function updateWidth() {
+            if (isDefined(attrs.width)) {
                 if (isNaN(attrs.width)) {
                     element.css('width', attrs.width);
                 } else {
                     element.css('width', attrs.width + 'px');
                 }
             }
-
-            //Utility function to update map css height
-            function updateHeight() {
+            if (isDefined(attrs.height)) {
                 if (isNaN(attrs.height)) {
                     element.css('height', attrs.height);
                 } else {
                     element.css('height', attrs.height + 'px');
                 }
-            }
-
-            //Set width and watch for changes
-            if (isDefined(attrs.width)) {
-                updateWidth();
-
-                scope.$watch(
-                    function () {
-                        return element[0].getAttribute('width');
-                    },
-                    function () {
-                        updateWidth();
-                        map.invalidateSize();
-                    });
-            }
-
-            //Set height and watch for changes
-            if (isDefined(attrs.height)) {
-                updateHeight();
-
-                scope.$watch(
-                    function () {
-                        return element[0].getAttribute('height');
-                    },
-                    function () {
-                        updateHeight();
-                        map.invalidateSize();
-                    });
             }
 
             // Create the Leaflet Map Object with the options
@@ -106,13 +75,13 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($q, leafl
             }
 
             if (isDefined(map.zoomControl) &&
-                defaults.zoomControl === false) {
+                defaults.zoomControl===false) {
                 map.zoomControl.removeFrom(map);
             }
 
             if (isDefined(map.zoomsliderControl) &&
                 isDefined(defaults.zoomsliderControl) &&
-                defaults.zoomsliderControl === false) {
+                defaults.zoomsliderControl===false) {
                 map.zoomsliderControl.removeFrom(map);
             }
 
@@ -129,7 +98,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($q, leafl
             }
 
             // Resolve the map object to the promises
-            map.whenReady(function () {
+            map.whenReady(function() {
                 leafletData.setMap(map, attrs.id);
             });
 
@@ -139,9 +108,9 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($q, leafl
             });
 
             //Handle request to invalidate the map size 
-            //Up scope using $scope.$emit('invalidateSize') 
-            //Down scope using $scope.$broadcast('invalidateSize')
-            scope.$on('invalidateSize', function () {
+	        //Up scope using $scope.$emit('invalidateSize') 
+	        //Down scope using $scope.$broadcast('invalidateSize')
+            scope.$on('invalidateSize', function() {
                 map.invalidateSize();
             });
         }
