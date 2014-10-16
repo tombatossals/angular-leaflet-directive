@@ -17,9 +17,9 @@
   "devDependencies": {
     "jquery": "*",
     "bootstrap": "*",
-    "angular-route": "*",
-    "angular-animate": "*",
-    "angular-mocks": "*",
+    "angular-route": "1.2.x",
+    "angular-animate": "1.2.x",
+    "angular-mocks": "1.2.x",
     "leaflet.markercluster": "*",
     "leaflet.draw": "*",
     "Leaflet.label": "*",
@@ -50,5 +50,8 @@
     "Gruntfile.js",
     "package.json",
     "bower.json"
-  ]
+  ],
+  "resolutions": {
+    "angular": "1.2.x"
+  }
 }

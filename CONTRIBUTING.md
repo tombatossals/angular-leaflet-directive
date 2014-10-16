@@ -3,19 +3,18 @@ Contributing
 
 Issues
 ------
-If you have a bug or enhancement request, please file an issue.
+If you have a bug or enhancement request, please file a Github issue.
 
-When submitting an issue, please include context from your test and
+When submitting an issue please include context from your test and
 your application. If there's an error, please include the error text.
 
-It's always easy to undestand the bug/problem visually, you can use a predefined
-jsfiddle example which loads a simple map, which you can use to document your issue:
-
-http://jsfiddle.net/tombatossals/4PhzC/
+It isn't always easy to understand the bug/problem visually, you can use this [predefined
+jsfiddle](http://jsfiddle.net/tombatossals/4PhzC/) example which loads a simple map. 
+Then you can customize it to demonstrate your issue.
 
 Code style
 ----------
-* We use a [editorconfig](http://editorconfig.org/) file to define indentation, codification and type of end of line of the archives.
+* We use a [editorconfig](http://editorconfig.org/) file to define indentation, codification, and type of end of line of the archives.
 * The style guide we try to use is the [Airbnb Javascript Style Guide](https://github.com/airbnb/javascript).
 
 
@@ -65,49 +64,45 @@ angular#1.2.10-build.2164+sha.8b395ff bower_components/angular
 Once you have the development dependencies installed, we can use our predefined grunt tasks. For example:
 
 * **grunt test**. Executes the karma unitary tests and the protractor e2e tests, reporting the actual state of the project.
-* **grunt test:unit**. Executes only the karma unitary tests.
-* **grunt test:e2e**. Executes only the protractor e2e tests.
-* **grunt coverage**. Generates a "coverage" folder with an [istanbul](https://github.com/gotwarlost/istanbul) report of wich part of the code is covered by the actual tests.
-* **grunt**. The default task watches for project files changes and when a change is detected, tries to build the library file passing the jshint filter and the tests. Let's see an example:
+* **grunt test:unit**. Executes only the [karma](http://karma-runner.github.io) unitary tests.
+* **grunt test:e2e**. Executes only the [protractor](https://github.com/angular/protractor) e2e tests.
+* **grunt coverage**. Generates a "coverage" folder with an [istanbul](https://github.com/gotwarlost/istanbul) report about the percentage of the code which is covered by the existing tests.
+* **grunt**. The default task watches for project files changes and when a change is detected, tries to build the library file passing the JSHint filter and the tests. Let's see an example:
 
 ```
 $ grunt
-Running "watch:source" (watch) task
-Waiting...OK
->> File "src/directives/leaflet.js" changed.
-
 Running "jshint:source" (jshint) task
->> 18 files lint free.
+>> 24 files lint free.
 
 Running "jshint:tests" (jshint) task
->> 14 files lint free.
+>> 25 files lint free.
 
 Running "jshint:grunt" (jshint) task
 >> 1 file lint free.
 
 Running "concat:dist" (concat) task
-File "dist/angular-leaflet-directive.js" created.
+File dist/angular-leaflet-directive.pre.js created.
 
-Running "ngmin:directives" (ngmin) task
-ngminifying dist/angular-leaflet-directive.js
+Running "ngAnnotate:dist" (ngAnnotate) task
+>> 1 file successfully generated.
 
 Running "uglify:dist" (uglify) task
-File "dist/angular-leaflet-directive.min.no-header.js" created.
+>> 1 file created.
 
 Running "karma:unit" (karma) task
-INFO [karma]: Karma v0.10.8 server started at http://localhost:9018/
+INFO [karma]: Karma v0.12.23 server started at http://localhost:9018/
 INFO [launcher]: Starting browser PhantomJS
-INFO [PhantomJS 1.9.2 (Linux)]: Connected on socket WUeY410y1MZhG5OYnoyc
-WARN [web-server]: 404: /base/bower_components/leaflet/dist/images/marker-icon.png
+connect: res.headerSent: use standard res.headersSent
+INFO [PhantomJS 1.9.7 (Windows 7)]: Connected on socket NsAl4vm9SQZj3FYZUyNF with id 811947
+PhantomJS 1.9.7 (Windows 7): Executed 55 of 140 SUCCESS (0 secs / 0.242 secs)
+PhantomJS 1.9.7 (Windows 7): Executed 73 of 140 SUCCESS (0 secs / 0.462 secs)     
 WARN [web-server]: 404: /base/bower_components/leaflet/dist/images/marker-shadow.png
-WARN [web-server]: 404: /url
-PhantomJS 1.9.2 (Linux): Executed 108 of 108 SUCCESS (0.875 secs / 0.625 secs)
+PhantomJS 1.9.7 (Windows 7): Executed 140 of 140 SUCCESS (2.693 secs / 2.844 secs)
 
 Running "concat:license" (concat) task
-File "dist/angular-leaflet-directive.min.js" created.
+File dist/angular-leaflet-directive.min.js created.
 
 Done, without errors.
-Completed in 9.714s at Sun Dec 15 2013 10:37:59 GMT+0100 (CET) - Waiting...
 ```
 
 After a successful build, a new library distribution file will be generated inside the "dist" folder, which will be ready to use on your project:
