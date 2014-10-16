@@ -67,7 +67,7 @@ Once you have the development dependencies installed, we can use our predefined 
 * **grunt test:unit**. Executes only the [karma](http://karma-runner.github.io) unitary tests.
 * **grunt test:e2e**. Executes only the [protractor](https://github.com/angular/protractor) e2e tests.
 * **grunt coverage**. Generates a "coverage" folder with an [istanbul](https://github.com/gotwarlost/istanbul) report about the percentage of the code which is covered by the existing tests.
-* **grunt**. The default task watches for project files changes and when a change is detected, tries to build the library file passing the JSHint filter and the tests. Let's see an example:
+* **grunt**. The default task tries to build the library file and then runs the JSHint filter and unit tests. Let's see an example:
 
 ```
 $ grunt
