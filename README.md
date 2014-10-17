@@ -50,6 +50,7 @@ See some basic examples:
 * [Overlays extended example](http://tombatossals.github.io/angular-leaflet-directive/examples/overlays-example.html)
 * [Accessing the leaflet map object](http://tombatossals.github.io/angular-leaflet-directive/examples/access-leaflet-object-example.html)
 * [Accessing the leaflet map object of two maps](http://tombatossals.github.io/angular-leaflet-directive/examples/double-map-example.html)
+* [Two maps sharing attributes](http://tombatossals.github.io/angular-leaflet-directive/examples/double-map-sharing-attributes.html)
 
 To see it in action, go to the main page where you can find more examples and
 some documentation:
