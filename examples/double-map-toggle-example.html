@@ -71,11 +71,11 @@
     <h1>Toggle between two maps on screen</h1>
     <p>View javascript console while toggling map</p>
     <button ng-click="togglemap = !togglemap">Toggle Map</button>
-    <div ng-if="togglemap" ng-controller="map1">
+    <div ng-if="!togglemap" ng-controller="map1">
         <h2>Map1</h2>
         <leaflet id="map1" center="center" paths="paths" width="400px" height="320px"></leaflet>
     </div>
-    <div ng-if="!togglemap" ng-controller="map2">
+    <div ng-if="togglemap" ng-controller="map2">
         <h2>Map2</h2>
         <leaflet id="map2" center="center" paths="paths" width="400px" height="320px"></leaflet>
     </div>
