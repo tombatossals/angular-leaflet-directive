@@ -11,8 +11,8 @@
         <link rel="stylesheet" href="leaflet/leaflet.ie.css" />
     <![endif]-->
     <script>
-        angular.module("demoapp", ["leaflet-directive"]);
-        function DemoController($scope) {
+        var app = angular.module("demoapp", ["leaflet-directive"]);
+        app.controller('DemoController', [ '$scope', function($scope) {
             angular.extend($scope, {
                 london: {
                     lat: 51.505,
@@ -36,7 +36,7 @@
                     }
                 }
             });
-        };
+        } ]);
     </script>
   </head>
   <body ng-controller="DemoController">

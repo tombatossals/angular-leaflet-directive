@@ -10,9 +10,9 @@
     <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap-theme.min.css">
     <script>
-        angular.module("demoapp", ["leaflet-directive"]);
+        var app = angular.module("demoapp", ["leaflet-directive"]);
 
-        function DemoController($scope) {
+        app.controller('DemoController', [ '$scope', function($scope) {
 
             var icons = {
                 blue: {
@@ -95,7 +95,7 @@
                     $scope.layers.overlays[type].visible = !$scope.layers.overlays[type].visible;
                 }
             });
-        };
+        } ]);
     </script>
     <style>
         .red {

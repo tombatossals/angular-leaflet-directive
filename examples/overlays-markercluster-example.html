@@ -11,8 +11,8 @@
     <link rel="stylesheet" href="../bower_components/leaflet.markercluster/dist/MarkerCluster.Default.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script>
-        angular.module("demoapp", ["leaflet-directive"]);
-        function OverlaysController($scope) {
+        var app = angular.module("demoapp", ["leaflet-directive"]);
+        app.controller('OverlaysController', [ '$scope', function($scope) {
             angular.extend($scope, {
                 ripoll: {
                     lat: 42.20133,
@@ -102,7 +102,7 @@
             $scope.move = function() {
                 $scope.markers.m1.lng = $scope.markers.m1.lng + 0.1;
             }
-        };
+        } ]);
     </script>
 </head>
 <body>
