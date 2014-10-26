@@ -17,12 +17,16 @@ angular.module("leaflet-directive").factory('leafletPathsHelpers', function ($ro
         return latlngs.filter(function(latlng) {
             return isValidPoint(latlng);
         }).map(function (latlng) {
-            return new L.LatLng(latlng.lat, latlng.lng);
+            return _convertToLeafletLatLng(latlng);
         });
     }
 
     function _convertToLeafletLatLng(latlng) {
-        return new L.LatLng(latlng.lat, latlng.lng);
+        if (isArray(latlng)) {
+            return new L.LatLng(latlng[0], latlng[1]);
+        } else {
+            return new L.LatLng(latlng.lat, latlng.lng);
+        }
     }
 
     function _convertToLeafletMultiLatLngs(paths) {

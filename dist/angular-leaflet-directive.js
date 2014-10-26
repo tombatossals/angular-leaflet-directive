@@ -2711,12 +2711,16 @@ angular.module("leaflet-directive").factory('leafletPathsHelpers', ["$rootScope"
         return latlngs.filter(function(latlng) {
             return isValidPoint(latlng);
         }).map(function (latlng) {
-            return new L.LatLng(latlng.lat, latlng.lng);
+            return _convertToLeafletLatLng(latlng);
         });
     }
 
     function _convertToLeafletLatLng(latlng) {
-        return new L.LatLng(latlng.lat, latlng.lng);
+        if (isArray(latlng)) {
+            return new L.LatLng(latlng[0], latlng[1]);
+        } else {
+            return new L.LatLng(latlng.lat, latlng.lng);
+        }
     }
 
     function _convertToLeafletMultiLatLngs(paths) {
@@ -3447,8 +3451,13 @@ angular.module("leaflet-directive").factory('leafletHelpers', ["$q", "$log", fun
         },
 
         isValidPoint: function(point) {
-            return angular.isDefined(point) && angular.isNumber(point.lat) &&
-                   angular.isNumber(point.lng);
+            if (!angular.isDefined(point)) {
+                return false;
+            }
+            if (angular.isArray(point)) {
+                return point.length === 2 && angular.isNumber(point[0]) && angular.isNumber(point[1]);
+            }
+            return angular.isNumber(point.lat) && angular.isNumber(point.lng);
         },
 
         isSameCenterOnMap: function(centerModel, map) {
