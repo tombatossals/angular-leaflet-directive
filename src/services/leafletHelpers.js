@@ -92,8 +92,13 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
         },
 
         isValidPoint: function(point) {
-            return angular.isDefined(point) && angular.isNumber(point.lat) &&
-                   angular.isNumber(point.lng);
+            if (!angular.isDefined(point)) {
+                return false;
+            }
+            if (angular.isArray(point)) {
+                return point.length === 2 && angular.isNumber(point[0]) && angular.isNumber(point[1]);
+            }
+            return angular.isNumber(point.lat) && angular.isNumber(point.lng);
         },
 
         isSameCenterOnMap: function(centerModel, map) {
