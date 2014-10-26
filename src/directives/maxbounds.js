@@ -23,7 +23,9 @@ angular.module("leaflet-directive").directive('maxbounds', function ($log, leafl
                     ];
 
                     map.setMaxBounds(bounds);
-                    map.fitBounds(bounds);
+                    if (!attrs.center) {
+                            map.fitBounds(bounds);
+                        }
                 });
             });
         }
