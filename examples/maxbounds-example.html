@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
     <script>
         angular.module("demoapp", ["leaflet-directive"]);
-        function DemoController($scope, leafletData) {
+          app.controller("DemoController", [ "$scope", "leafletData", function($scope, leafletData) {
             $scope.regions = {
                 london: {
                     northEast: {
