@@ -1225,7 +1225,9 @@ angular.module("leaflet-directive").directive('maxbounds', ["$log", "leafletMapD
                     ];
 
                     map.setMaxBounds(bounds);
-                    map.fitBounds(bounds);
+                    if (!attrs.center) {
+                            map.fitBounds(bounds);
+                        }
                 });
             });
         }
@@ -3151,7 +3153,7 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', ["$rootScop
         },
 
         addMarkerWatcher: function(marker, name, leafletScope, layers, map) {
-            var clearWatch = leafletScope.$watch("markers."+name, function(markerData, oldMarkerData) {
+            var clearWatch = leafletScope.$watch("markers[\""+name+"\"]", function(markerData, oldMarkerData) {
                 if (!isDefined(markerData)) {
                     _deleteMarker(marker, map, layers);
                     clearWatch();
