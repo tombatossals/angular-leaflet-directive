@@ -37,7 +37,11 @@
   function createRequest(callback, context){
     var httpRequest = new XMLHttpRequest();
 
+<<<<<<< HEAD
     httpRequest.onerror = function(e) {
+=======
+    httpRequest.onerror = function() {
+>>>>>>> d522b84d3395ffeebab22c020a51c35daec2a891
       callback.call(context, {
         error: {
           code: 500,
@@ -78,6 +82,7 @@
     request: function(url, params, callback, context){
       var paramString = serialize(params);
       var httpRequest = createRequest(callback, context);
+<<<<<<< HEAD
       var requestLength = (url + '?' + paramString).length;
 
       // request is less then 2000 characters and the browser supports CORS, make GET request with XMLHttpRequest
@@ -101,6 +106,16 @@
           console.warn('a request to ' + url + ' was longer then 2000 characters and this browser cannot make a cross-domain post request. Please use a proxy http://esri.github.io/esri-leaflet/api-reference/request.html');
           return;
         }
+=======
+
+      if((url + '?' + paramString).length < 2000){
+        httpRequest.open('GET', url + '?' + paramString);
+        httpRequest.send(null);
+      } else {
+        httpRequest.open('POST', url);
+        httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        httpRequest.send(paramString);
+>>>>>>> d522b84d3395ffeebab22c020a51c35daec2a891
       }
 
       return httpRequest;
@@ -166,9 +181,15 @@
           id: callbackId,
           url: script.src,
           abort: function(){
+<<<<<<< HEAD
             window._EsriLeafletCallbacks._callback[callbackId]({
               code: 0,
               message: 'Request aborted.'
+=======
+            EsriLeaflet._callback[callbackId]({
+              code: 500,
+              message: 'Could not parse response as JSON.'
+>>>>>>> d522b84d3395ffeebab22c020a51c35daec2a891
             });
           }
         };

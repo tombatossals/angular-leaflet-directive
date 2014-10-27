@@ -60,7 +60,9 @@ var utfGrid = new L.UtfGrid('http://myserver/amazingness/{z}/{x}/{y}.grid.json',
 
 ### Other options
 
-pointerCursor: changes the mouse cursor to a pointer when hovering over an interactive part of the grid. (Default: true)
+- pointerCursor: changes the mouse cursor to a pointer when hovering over an interactive part of the grid. (Default: true)
+- maxRequests: Maximum number of requests sent at once to the utfgrid tile server. Increasing this will get more processing done at once, however it means your utfgrid tiles will get priority over your visual tiles (as browsers tend to prioritize javascript/json requests). Increasing this will also reduce the number of requests that may get dropped early when users pan the map. There is little point to have this higher than 8.  (Default: 4)
+- requestTimeout: number of milliseconds after which a request for a tile is considered to have timed out. (Default: 60000)
 
 ### Turning interaction on and off
 

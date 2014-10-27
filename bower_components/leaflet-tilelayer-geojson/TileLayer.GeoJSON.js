@@ -105,6 +105,10 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
         // Only perform SVG clipping if the browser is using SVG
         if (!L.Path.SVG) { return; }
 
+        if (!this._map._pathRoot) {
+            this._map._pathRoot = L.Path.prototype._createElement('svg');
+            this._map._panes.overlayPane.appendChild(this._map._pathRoot);
+        }
         var svg = this._map._pathRoot;
 
         // create the defs container if it doesn't exist

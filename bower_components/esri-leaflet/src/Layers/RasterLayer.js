@@ -18,7 +18,12 @@ EsriLeaflet.Layers.RasterLayer =  L.Class.extend({
       this.options.imageSR = sr;
     }
 
+<<<<<<< HEAD
     map.on('moveend', this._update, this);
+=======
+    // @TODO remove at Leaflet 0.8
+    this._map.addEventListener(this.getEvents(), this);
+>>>>>>> d522b84d3395ffeebab22c020a51c35daec2a891
 
     this._update();
 
@@ -50,7 +55,11 @@ EsriLeaflet.Layers.RasterLayer =  L.Class.extend({
     return this;
   },
 
+<<<<<<< HEAD
   onRemove: function (map) {
+=======
+  onRemove: function () {
+>>>>>>> d522b84d3395ffeebab22c020a51c35daec2a891
     if (this._currentImage) {
       this._map.removeLayer(this._currentImage);
     }
@@ -60,8 +69,13 @@ EsriLeaflet.Layers.RasterLayer =  L.Class.extend({
       this._map.off('dblclick', this._resetPopupState, this);
     }
 
+<<<<<<< HEAD
     this._map.off('moveend', this._update, this);
     this._map = null;
+=======
+    // @TODO remove at Leaflet 0.8
+    this._map.removeEventListener(this.getEvents(), this);
+>>>>>>> d522b84d3395ffeebab22c020a51c35daec2a891
   },
 
   addTo: function(map){
@@ -74,6 +88,15 @@ EsriLeaflet.Layers.RasterLayer =  L.Class.extend({
     return this;
   },
 
+<<<<<<< HEAD
+=======
+  getEvents: function(){
+    return {
+      moveend: this._update
+    };
+  },
+
+>>>>>>> d522b84d3395ffeebab22c020a51c35daec2a891
   bringToFront: function(){
     this.options.position = 'front';
     if(this._currentImage){
@@ -126,6 +149,7 @@ EsriLeaflet.Layers.RasterLayer =  L.Class.extend({
   },
 
   _renderImage: function(url, bounds){
+<<<<<<< HEAD
     if(this._map){
       var image = new L.ImageOverlay(url, bounds, {
         opacity: 0
@@ -163,6 +187,43 @@ EsriLeaflet.Layers.RasterLayer =  L.Class.extend({
         bounds: bounds
       });
     }
+=======
+    var image = new L.ImageOverlay(url, bounds, {
+      opacity: 0
+    }).addTo(this._map);
+
+    image.once('load', function(e){
+      var newImage = e.target;
+      var oldImage = this._currentImage;
+
+      if(newImage._bounds.equals(bounds)){
+        this._currentImage = newImage;
+
+        if(this.options.position === 'front'){
+          this.bringToFront();
+        } else {
+          this.bringToBack();
+        }
+
+        this._currentImage.setOpacity(this.options.opacity);
+
+        if(oldImage){
+          this._map.removeLayer(oldImage);
+        }
+      } else {
+        this._map.removeLayer(newImage);
+      }
+
+      this.fire('load', {
+        bounds: bounds
+      });
+
+    }, this);
+
+    this.fire('loading', {
+      bounds: bounds
+    });
+>>>>>>> d522b84d3395ffeebab22c020a51c35daec2a891
   },
 
   _update: function () {
@@ -185,13 +246,19 @@ EsriLeaflet.Layers.RasterLayer =  L.Class.extend({
       return;
     }
     var params = this._buildExportParams();
+<<<<<<< HEAD
 
+=======
+>>>>>>> d522b84d3395ffeebab22c020a51c35daec2a891
     this._requestExport(params, bounds);
   },
 
   // TODO: refactor these into raster layer
   _renderPopup: function(latlng, error, results, response){
+<<<<<<< HEAD
     latlng = L.latLng(latlng);
+=======
+>>>>>>> d522b84d3395ffeebab22c020a51c35daec2a891
     if(this._shouldRenderPopup && this._lastClick.equals(latlng)){
       //add the popup to the map where the mouse was clicked at
       var content = this._popupFunction(error, results, response);

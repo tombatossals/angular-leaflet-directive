@@ -7,7 +7,7 @@
             <a href="http://docs.angularjs.org/guide/directive">AngularJS directives development</a> and the
             <a href="http://leafletjs.com/reference.html">Leaflet library API</a>.
             The code is modular and easy to read so feel free to add code or modify it to fit the library to your own needs.
-            Futhermore, if you would like to merge your changes to the main development branch send a pull request via github.
+            Furthermore, if you would like to merge your changes to the main development branch send a pull request via github.
         </p>
         <h3>Building, testing and developing</h3>
         <p><strong>Coding style:</strong>
@@ -28,17 +28,17 @@
             file, and the grunt tasks on the
             <a href="https://raw.github.com/tombatossals/angular-leaflet-directive/master/Gruntfile.js">Gruntfile.js file</a>.
             Before we can use Grunt, we must install the required packages via npm, let's see an example of how to install the project dependencies.
-            First,  make sure you have npm and grunt-cli installed globally. Let's install the dependencies.
+            First, make sure you have npm and grunt-cli installed globally. See how to install the Grunt tools below.
         </p>
         <p><strong>Bower:</strong>
             And we must install the client library dependencies with bower too.
         </p>
         <ul class="nav nav-tabs" role="tablist">
             <li ng-class="{active: !buildTab || buildTab === 'grunt'}" ng-click="buildTab = 'grunt'">
-                <a href="">Command line example of how to run grunt</a>
+                <a href="">Command line example of how to install tools</a>
             </li>
             <li ng-class="{active: buildTab === 'bower'}" ng-click="buildTab = 'bower'">
-                <a href="">Command line example of how to run bower</a>
+                <a href="">Command line example of how to install dependencies</a>
             </li>
         </ul>
         <div class="tab-container">
@@ -83,54 +83,50 @@ $           </div>
             <li><strong>grunt test.</strong> Executes the karma unitary tests and the protractor e2e tests, reporting the actual state of the project.</li>
             <li><strong>grunt test:unit.</strong> Executes the unitary tests the <a href="http://karma-runner.github.io/0.10/index.html">karma framework</a>.</li>
             <li><strong>grunt test:e2e.</strong> Executes the e2e tests of the <a href="https://github.com/angular/protractor">protractor E2E framework</a>.</li>
-            <li><strong>grunt coverage.</strong> Generates a "coverage" folder with an istanbul report about the percentage of the code which is covered by the existing tests.</li>
+            <li><strong>grunt coverage.</strong> Generates a "coverage" folder with an <a href="https://github.com/gotwarlost/istanbul">istanbul</a> report about the percentage of the code which is covered by the existing tests.</li>
             <li><strong>grunt default.</strong>
-                The default task watches for project files changes and when a change is detected, tries to build the library file passing the JSHint filter and the tests.
+                The default task tries to build the library file and then runs the JSHint filter and unit tests.
             </li>
         </ul>
         Let's see an example:
         <ul class="nav nav-tabs">
-            <li class="active"><a href="">Running the default grunt task waiting for changes on the source code</a></li>
+            <li class="active"><a href="">Running the default grunt task</a></li>
         </ul>
         <div class="tab-container" ng-switch="activeTab">
             <div hljs>
 $ grunt
-Running "watch:source" (watch) task
-Waiting...OK
-## File "src/directives/leaflet.js" changed.
-
 Running "jshint:source" (jshint) task
-## 18 files lint free.
+>> 24 files lint free.
 
 Running "jshint:tests" (jshint) task
-## 14 files lint free.
+>> 25 files lint free.
 
 Running "jshint:grunt" (jshint) task
-## 1 file lint free.
+>> 1 file lint free.
 
 Running "concat:dist" (concat) task
-File "dist/angular-leaflet-directive.js" created.
+File dist/angular-leaflet-directive.pre.js created.
 
-Running "ngmin:directives" (ngmin) task
-ngminifying dist/angular-leaflet-directive.js
+Running "ngAnnotate:dist" (ngAnnotate) task
+>> 1 file successfully generated.
 
 Running "uglify:dist" (uglify) task
-File "dist/angular-leaflet-directive.min.no-header.js" created.
+>> 1 file created.
 
 Running "karma:unit" (karma) task
-INFO [karma]: Karma v0.10.8 server started at http://localhost:9018/
+INFO [karma]: Karma v0.12.23 server started at http://localhost:9018/
 INFO [launcher]: Starting browser PhantomJS
-INFO [PhantomJS 1.9.2 (Linux)]: Connected on socket WUeY410y1MZhG5OYnoyc
-WARN [web-server]: 404: /base/bower_components/leaflet/images/marker-icon.png
-WARN [web-server]: 404: /base/bower_components/leaflet/images/marker-shadow.png
-WARN [web-server]: 404: /url
-PhantomJS 1.9.2 (Linux): Executed 108 of 108 SUCCESS (0.875 secs / 0.625 secs)
+connect: res.headerSent: use standard res.headersSent
+INFO [PhantomJS 1.9.7 (Windows 7)]: Connected on socket NsAl4vm9SQZj3FYZUyNF with id 811947
+PhantomJS 1.9.7 (Windows 7): Executed 55 of 140 SUCCESS (0 secs / 0.242 secs)
+PhantomJS 1.9.7 (Windows 7): Executed 73 of 140 SUCCESS (0 secs / 0.462 secs)
+WARN [web-server]: 404: /base/bower_components/leaflet/dist/images/marker-shadow.png
+PhantomJS 1.9.7 (Windows 7): Executed 140 of 140 SUCCESS (2.693 secs / 2.844 secs)
 
 Running "concat:license" (concat) task
-File "dist/angular-leaflet-directive.min.js" created.
+File dist/angular-leaflet-directive.min.js created.
 
 Done, without errors.
-Completed in 9.714s at Sun Dec 15 2013 10:37:59 GMT+0100 (CET) - Waiting...
             </div>
         </div>
         <br />

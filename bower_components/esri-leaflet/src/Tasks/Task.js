@@ -1,8 +1,13 @@
 EsriLeaflet.Tasks.Task = L.Class.extend({
 
   options: {
+<<<<<<< HEAD
     proxy: false,
     useCors: EsriLeaflet.Support.CORS
+=======
+    useCors: true,
+    proxy: false
+>>>>>>> d522b84d3395ffeebab22c020a51c35daec2a891
   },
 
   //Generate a method for each methodName:paramName in the setters for this task.
@@ -31,7 +36,11 @@ EsriLeaflet.Tasks.Task = L.Class.extend({
 
   initialize: function(endpoint, options){
     // endpoint can be either a url to an ArcGIS Rest Service or an instance of EsriLeaflet.Service
+<<<<<<< HEAD
     if(endpoint.url && endpoint.request){
+=======
+    if(endpoint instanceof EsriLeaflet.Services.Service){
+>>>>>>> d522b84d3395ffeebab22c020a51c35daec2a891
       this._service = endpoint;
       this.url = endpoint.url;
     } else {
@@ -77,4 +86,8 @@ EsriLeaflet.Tasks.Task = L.Class.extend({
       return EsriLeaflet[method](url, params, callback, context);
     }
   }
+<<<<<<< HEAD
 });
+=======
+});
+>>>>>>> d522b84d3395ffeebab22c020a51c35daec2a891

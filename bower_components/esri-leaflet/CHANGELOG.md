@@ -1,5 +1,6 @@
 # Changelog
 
+<<<<<<< HEAD
 ## Release Candidate 2
 
 #### Changes
@@ -13,6 +14,9 @@
 * Most methods that accept `L.LatLng` and `L.LatLngBounds` now accept the simple [lat,lng] or [[lat,lng], [lat,lng]] forms.
 
 ## Release Candidate 1
+=======
+## Beta 7
+>>>>>>> d522b84d3395ffeebab22c020a51c35daec2a891
 
 #### Changes
 * `L.esri.Task` now accepts `proxy` and `useCors` like `L.esri.Service`. https://github.com/Esri/esri-leaflet/pull/359
@@ -25,11 +29,19 @@
 * `setStyle` now permanently overrides the style in `options.style`. https://github.com/Esri/esri-leaflet/pull/349
 * `setWhere` and `setTimeRange` now take callbacks. https://github.com/Esri/esri-leaflet/pull/354
 * You can now abort JSONP requests with request.abort() just like with `XMLHttpRequest`. https://github.com/Esri/esri-leaflet/pull/354
+<<<<<<< HEAD
 * `returnGeometry` can now be set on `L.esri.Tasks.Query`. https://github.com/Esri/esri-leaflet/pull/358
 * a sample.html file was added to help jumpstart debugging local source files.  https://github.com/Esri/esri-leaflet/pull/364
 #### Breaking Changes
 
 * Task methods that accept callbacks (like `run` or `bounds`) now return an instance of `XMLHttpRequest` as opposed to the task or service.
+=======
+* `returnGeometry` can now be set on `L.esri.Tasks.Query` https://github.com/Esri/esri-leaflet/pull/358
+
+#### Breaking Changes
+
+* Task methods that accecpt callbacks (like `run` or `bounds`) now return an instance of `XMLHttpRequest` as opposed to the task or service.
+>>>>>>> d522b84d3395ffeebab22c020a51c35daec2a891
 * `bindPopup` on `L.esri.DynamicMapLayer` now identifies only visible features by default rather then all features.
 * All API requests inside of layers, tasks and services will now switch between GET and POST automatically when the request size exceeds 2000 characters. This improves IE compatibility but means that for long requests (like complex `where` clauses or long lists of IDs) you may need to setup an instance of https://github.com/Esri/resource-proxy and use the `proxy` option.
 

@@ -25,6 +25,14 @@
                 });
             };
 
+            $scope.changePaths = function changePaths() {
+                console.log($scope.europeanPaths);
+                $scope.europeanPaths.p1.latlngs[0] = {
+                    lat: 53,
+                    lng: -0.1
+                };
+            };
+
         }]);
     </script>
     <style>
@@ -38,5 +46,6 @@
     <leaflet center="london" paths="europeanPaths"></leaflet>
     <p>Click on red route (Popup) or hover over green route (Label) to get more information</p>
     <button ng-click="loadPaths()">Load Paths data!</button>
+    <button ng-click="changePaths()" ng-disabled="!europeanPaths.p1">Change Paths!</button>
   </body>
 </html>

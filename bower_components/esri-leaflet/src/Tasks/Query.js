@@ -18,6 +18,7 @@ EsriLeaflet.Tasks.Query = EsriLeaflet.Tasks.Task.extend({
     outFields: '*'
   },
 
+<<<<<<< HEAD
   within: function(geometry){
     this._setGeometry(geometry);
     this.params.spatialRel = 'esriSpatialRelContains'; // will make code read layer within geometry, to the api this will reads geometry contains layer
@@ -51,12 +52,22 @@ EsriLeaflet.Tasks.Query = EsriLeaflet.Tasks.Task.extend({
   overlaps: function(geometry){
     this._setGeometry(geometry);
     this.params.spatialRel = 'esriSpatialRelOverlaps';
+=======
+  within: function(bounds){
+    this.params.geometry = EsriLeaflet.Util.boundsToExtent(bounds);
+    this.params.geometryType = 'esriGeometryEnvelope';
+    this.params.spatialRel = 'esriSpatialRelIntersects';
+    this.params.inSr = 4326;
+>>>>>>> d522b84d3395ffeebab22c020a51c35daec2a891
     return this;
   },
 
   // only valid for Feature Services running on ArcGIS Server 10.3 or ArcGIS Online
   nearby: function(latlng, radius){
+<<<<<<< HEAD
     latlng = L.latLng(latlng);
+=======
+>>>>>>> d522b84d3395ffeebab22c020a51c35daec2a891
     this.params.geometry = ([latlng.lng,latlng.lat]).join(',');
     this.params.geometryType = 'esriGeometryPoint';
     this.params.spatialRel = 'esriSpatialRelIntersects';
@@ -67,7 +78,11 @@ EsriLeaflet.Tasks.Query = EsriLeaflet.Tasks.Task.extend({
   },
 
   where: function(string){
+<<<<<<< HEAD
     this.params.where = string.replace(/"/g, "\'"); // jshint ignore:line
+=======
+    this.params.where = string.replace(/"/g, '\'');
+>>>>>>> d522b84d3395ffeebab22c020a51c35daec2a891
     return this;
   },
 
@@ -152,6 +167,7 @@ EsriLeaflet.Tasks.Query = EsriLeaflet.Tasks.Task.extend({
     delete this.params.returnIdsOnly;
     delete this.params.returnExtentOnly;
     delete this.params.returnCountOnly;
+<<<<<<< HEAD
   },
 
   _setGeometry: function(geometry) {
@@ -212,6 +228,10 @@ EsriLeaflet.Tasks.Query = EsriLeaflet.Tasks.Task.extend({
 
     return;
   }
+=======
+  }
+
+>>>>>>> d522b84d3395ffeebab22c020a51c35daec2a891
 });
 
 EsriLeaflet.Tasks.query = function(url, params){
