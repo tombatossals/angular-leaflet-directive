@@ -8,8 +8,8 @@
     <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
     <script>
-        angular.module("demoapp", ["leaflet-directive"]);
-        function DemoController($scope) {
+        var app = angular.module("demoapp", ["leaflet-directive"]);
+        app.controller('DemoController', [ '$scope', function($scope) {
             var markers = {
                     m1: {
                         lat: 41.95,
@@ -49,7 +49,7 @@
                 },
                 markers: markers
             });
-        };
+        } ]);
     </script>
   </head>
   <body>

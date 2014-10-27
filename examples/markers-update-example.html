@@ -11,8 +11,8 @@
     <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap-theme.min.css">
     <script>
-        angular.module("demoapp", ["leaflet-directive"]);
-        function DemoController($scope) {
+        var app = angular.module("demoapp", ["leaflet-directive"]);
+        app.controller('DemoController', [ '$scope', function($scope) {
             angular.extend($scope, {
                 london: {
                     lat: 51.505,
@@ -62,7 +62,7 @@
                 // Args will contain the marker name and other relevant information
                 console.log("Leaflet Popup Close");
             });
-        };
+        } ]);
     </script>
     <style>
         html,body {

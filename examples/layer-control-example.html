@@ -13,8 +13,8 @@
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script>
-        angular.module("demoapp", ["leaflet-directive"]);
-        function DynamicOverlaysController($scope) {
+        var app = angular.module("demoapp", ["leaflet-directive"]);
+        app.controller('DynamicOverlaysController', [ '$scope', function($scope) {
             angular.extend($scope, {
                 ripoll: {
                     lat: 42.20133,
@@ -114,7 +114,7 @@
                     return ('hillshade' in this.layers.overlays);
                 }
             });
-        };
+        } ]);
     </script>
     <style>
       .angular-leaflet-control-layers {
