@@ -24,8 +24,13 @@
 
 
 <a name="0.7.8"></a>
-### 0.7.8 (2014-08-27)
+### 0.7.9 (2014-10-28)
 
+#### Features
+
+19 pull requests were merged since the previous version: https://github.com/tombatossals/angular-leaflet-directive/pulls?q=is%3Apr+merged%3A2014-08-27..2014-10-28
+
+### 0.7.8 (2014-08-27)
 
 #### Features
 
