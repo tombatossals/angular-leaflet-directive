@@ -1,3 +1,28 @@
+<a name="0.7.9"></a>
+### 0.7.9 (2014-10-28)
+
+
+#### Bug Fixes
+
+* Pass popup options in all calls to marker.bindPopup() ([6f476314](https://github.com/tombatossals/angular-leaflet-directive/commit/6f476314064fa61b8a8177c5f931f4cab045f7ed))
+* Solved bug on utfgrid example ([9f78d3af](https://github.com/tombatossals/angular-leaflet-directive/commit/9f78d3af07f31a0765f3886beffa258468101665))
+* **center:** Solved the autodiscover problem reported by @facultymatt here: https://github.co ([ba9d6ef0](https://github.com/tombatossals/angular-leaflet-directive/commit/ba9d6ef0c1cc329b5d51b77a7a8971c41aad5fd2))
+* **core:**
+  * Fixed a map destroy bug reported by @porjo here: https://github.com/tombatossals ([7255d913](https://github.com/tombatossals/angular-leaflet-directive/commit/7255d913c1fd35784552e2315896da39e1c78f55))
+  * Fixed a bug in the fuction obtainEffectiveMapId as reported by @porjo here: http ([5e6b73b7](https://github.com/tombatossals/angular-leaflet-directive/commit/5e6b73b702f89911b0914dd9703e830b320c1d7d))
+* **examples:** Fixed some mess on the path-types-example ([a40dee24](https://github.com/tombatossals/angular-leaflet-directive/commit/a40dee24345c8b1d96c86dbdb2d17efb03b3bc31))
+* **layers:** Added a log error message when no layer type is provided ([53c6bcb4](https://github.com/tombatossals/angular-leaflet-directive/commit/53c6bcb49012e44bf7903ffb04e04a59cf01251d))
+
+
+#### Features
+
+* Updated examples ([0e7d02bb](https://github.com/tombatossals/angular-leaflet-directive/commit/0e7d02bb43d83c0fecce80f5b63a162e9dbf687d))
+* **examples:**
+  * Little improvement on decorations-simple-example.html ([45731004](https://github.com/tombatossals/angular-leaflet-directive/commit/45731004add1d11994071e2e5d3935f08c081b87))
+  * new example of paths with ajax loading of data ([99ca74f3](https://github.com/tombatossals/angular-leaflet-directive/commit/99ca74f31094e171bbf7a3de13700f3fed643407))
+  * Updated simple layers example with Mapbox maps ([fabaa051](https://github.com/tombatossals/angular-leaflet-directive/commit/fabaa051c3ba94039dc8e26b172d0fb3116f43a0))
+
+
 <a name="0.7.8"></a>
 ### 0.7.8 (2014-08-27)
 
