@@ -21,7 +21,7 @@ describe('Directive: leaflet', function() {
 
     // Layers
     it('should not create layers if not specified', function() {
-        angular.extend($rootScope, {
+        angular.extend(scope, {
             layers: {}
         });
         // If we not provide layers the system will use the default
