@@ -494,6 +494,18 @@ angular.module("leaflet-directive").directive('geojson', ["$log", "$rootScope", 
                     var resetStyleOnMouseout = geojson.resetStyleOnMouseout,
                         onEachFeature = geojson.onEachFeature;
 
+
+                    geojson.options = {
+                        style: geojson.style,
+                        filter: geojson.filter,
+                        onEachFeature: onEachFeature,
+                        pointToLayer: geojson.pointToLayer
+                    };
+
+                    leafletGeoJSON = L.geoJson(geojson.data, geojson.options);
+                    leafletData.setGeoJSON(leafletGeoJSON, attrs.id);
+                    leafletGeoJSON.addTo(map);
+
                     if (!onEachFeature) {
                         onEachFeature = function(feature, layer) {
                             if (leafletHelpers.LabelPlugin.isLoaded() && isDefined(geojson.label)) {
@@ -525,18 +537,7 @@ angular.module("leaflet-directive").directive('geojson', ["$log", "$rootScope", 
                             });
                         };
                     }
-
-                    geojson.options = {
-                        style: geojson.style,
-                        filter: geojson.filter,
-                        onEachFeature: onEachFeature,
-                        pointToLayer: geojson.pointToLayer
-                    };
-
-                    leafletGeoJSON = L.geoJson(geojson.data, geojson.options);
-                    leafletData.setGeoJSON(leafletGeoJSON, attrs.id);
-                    leafletGeoJSON.addTo(map);
-                });
+                }, true);
             });
         }
     };
