@@ -96,14 +96,14 @@ angular.extend($scope, {
 });
 ```
 
-If you need to run any method on the map object, use ```leafletData``` like this:
+If you need to run any method on the map object, use ```leafletData``` as following (notice the map object is returned in a form of a promise):
 
 ```javascript
-angular.module('myModule', ['leaflet-directive']).controller('MapController', ['$scope', 'leafletData',
+angular.module('myModule').controller('MapController', ['$scope', 'leafletData',
 	function($scope, leafletData) {
-        leafletData.getMap().then(function(map) {
-            console.log(map);
-        });
+	        leafletData.getMap().then(function(map) {
+	            L.GeoIP.centerMapOnPosition(map, 15);
+	        });
 	}
 ]);
 ```
