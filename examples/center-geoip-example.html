@@ -13,22 +13,24 @@
                     lat: 0,
                     lng: 0,
                     zoom: 2
-                },
-                ip: "150.128.98.10"
+                }
             });
 
             $scope.searchIP = function(ip) {
                 var url = "http://freegeoip.net/json/" + ip;
                 $http.get(url).success(function(res) {
+                    console.log(res);
                     $scope.center = {
                         lat: res.latitude,
                         lng: res.longitude,
                         zoom: 10
                     }
+                    $scope.ip = res.ip;
                     console.log(res);
                 })
             };
 
+            $scope.searchIP("");
 
        }]);
     </script>
