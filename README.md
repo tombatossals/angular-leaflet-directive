@@ -51,6 +51,7 @@ See some basic examples:
 * [Accessing the leaflet map object](http://tombatossals.github.io/angular-leaflet-directive/examples/access-leaflet-object-example.html)
 * [Accessing the leaflet map object of two maps](http://tombatossals.github.io/angular-leaflet-directive/examples/double-map-example.html)
 * [Two maps sharing attributes](http://tombatossals.github.io/angular-leaflet-directive/examples/double-map-sharing-attributes.html)
+* [Center map with GeoIP](http://tombatossals.github.io/angular-leaflet-directive/examples/center-geoip-example.html)
 
 To see it in action, go to the main page where you can find more examples and
 some documentation:
