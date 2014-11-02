@@ -94,8 +94,20 @@ angular.extend($scope, {
         zoom: 8
     }
 });
-
 ```
+
+If you need to run any method on the map object, use ```leafletData``` like this:
+
+```javascript
+angular.module('myModule', ['leaflet-directive']).controller('MapController', ['$scope', 'leafletData',
+	function($scope, leafletData) {
+        leafletData.getMap().then(function(map) {
+            console.log(map);
+        });
+	}
+]);
+```
+
 Finally, you must include the markup directive on your HTML page, like this:
 ```html
 <leaflet defaults="defaults" center="center" height="480px" width="640px"></leaflet>
