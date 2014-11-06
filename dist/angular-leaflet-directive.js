@@ -142,8 +142,8 @@ angular.module("leaflet-directive", []).directive('leaflet', ["$q", "leafletData
                 leafletData.unresolveMap(attrs.id);
             });
 
-            //Handle request to invalidate the map size 
-	        //Up scope using $scope.$emit('invalidateSize') 
+            //Handle request to invalidate the map size
+	        //Up scope using $scope.$emit('invalidateSize')
 	        //Down scope using $scope.$broadcast('invalidateSize')
             scope.$on('invalidateSize', function() {
                 map.invalidateSize();
@@ -1762,6 +1762,10 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', ["$q", "leafle
                     newDefaults.crs = userDefaults.crs;
                 } else if (isDefined(L.CRS[userDefaults.crs])) {
                     newDefaults.crs = L.CRS[userDefaults.crs];
+                }
+
+                if (isDefined(userDefaults.center)) {
+                    angular.copy(userDefaults.center, newDefaults.center);
                 }
 
                 if (isDefined(userDefaults.tileLayerOptions)) {

@@ -115,6 +115,10 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
                     newDefaults.crs = L.CRS[userDefaults.crs];
                 }
 
+                if (isDefined(userDefaults.center)) {
+                    angular.copy(userDefaults.center, newDefaults.center);
+                }
+
                 if (isDefined(userDefaults.tileLayerOptions)) {
                     angular.copy(userDefaults.tileLayerOptions, newDefaults.tileLayerOptions);
                 }
