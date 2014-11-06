@@ -11,15 +11,15 @@
     "dist/angular-leaflet-directive.js"
   ],
   "dependencies": {
-    "angular": "1.2.x",
+    "angular": "1.3.x",
     "leaflet": "0.7.x"
   },
   "devDependencies": {
     "jquery": "*",
     "bootstrap": "*",
-    "angular-route": "*",
-    "angular-animate": "*",
-    "angular-mocks": "*",
+    "angular-route": "1.3.x",
+    "angular-animate": "1.3.x",
+    "angular-mocks": "1.3.x",
     "leaflet.markercluster": "*",
     "leaflet.draw": "*",
     "Leaflet.label": "*",

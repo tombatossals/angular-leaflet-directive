@@ -7,8 +7,8 @@
     <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
     <script>
-        angular.module("demoapp", ["leaflet-directive"]);
-        function DemoController($scope) {
+        var app = angular.module("demoapp", ["leaflet-directive"]);
+        app.controller('DemoController', [ '$scope', function($scope) {
             var local_icons = {
                 defaultIcon: {},
                 leafIcon: {
@@ -59,7 +59,7 @@
                 $scope.markers.m1.message = "I'm a static marker with " + iconType;
             };
 
-        };
+        } ]);
     </script>
   </head>
   <body>

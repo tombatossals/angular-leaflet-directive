@@ -13,7 +13,7 @@
         }
     </style>
     <script>
-        var myApp = angular.module('demoApp',['ngRoute', 'leaflet-directive'])
+        var app  = angular.module('demoApp',['ngRoute', 'leaflet-directive'])
         .config(function ($routeProvider) {
             $routeProvider
                 .when('/', {
@@ -25,15 +25,15 @@
                 })
             });
 
-        function MapCtrl($scope, leafletData) {
+        app.controller('MapCtrl', [ '$scope', 'leafletData', function($scope, leafletData) {
            $scope.makeFit = function() {
-            leafletData.getMap().then(function(map) {
-                map.fitBounds([
-                     [48.7120066603552, 9.04994057067812],
-                     [48.6120066603552, 9.14994057067812]]);
-            });
-          };
-        }
+               leafletData.getMap().then(function(map) {
+                   map.fitBounds([
+                       [48.7120066603552, 9.04994057067812],
+                       [48.6120066603552, 9.14994057067812]]);
+                   });
+            };
+        } ]);
         </script>
   </head>
   <body ng-controller="MapCtrl">

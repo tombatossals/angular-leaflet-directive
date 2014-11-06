@@ -37,20 +37,51 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($q, leafl
                 genDispatchMapEvent = leafletEvents.genDispatchMapEvent,
                 mapEvents = leafletEvents.getAvailableMapEvents();
 
-            // Set width and height if they are defined
-            if (isDefined(attrs.width)) {
+            // Set width and height utility functions
+            function updateWidth() {
                 if (isNaN(attrs.width)) {
                     element.css('width', attrs.width);
                 } else {
                     element.css('width', attrs.width + 'px');
                 }
             }
-            if (isDefined(attrs.height)) {
+
+            function updateHeight() {
                 if (isNaN(attrs.height)) {
                     element.css('height', attrs.height);
                 } else {
                     element.css('height', attrs.height + 'px');
                 }
+            }
+
+            // If the width attribute defined update css
+            // Then watch if bound property changes and update css
+            if (isDefined(attrs.width)) {
+                updateWidth();
+
+                scope.$watch(
+                    function () {
+                        return element[0].getAttribute('width');
+                    },
+                    function () {
+                        updateWidth();
+                        map.invalidateSize();
+                    });
+            }
+
+            // If the height attribute defined update css
+            // Then watch if bound property changes and update css
+            if (isDefined(attrs.height)) {
+                updateHeight();
+
+                scope.$watch(
+                    function () {
+                        return element[0].getAttribute('height');
+                    },
+                    function () {
+                        updateHeight();
+                        map.invalidateSize();
+                    });
             }
 
             // Create the Leaflet Map Object with the options
@@ -105,6 +136,13 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($q, leafl
             scope.$on('$destroy', function () {
                 map.remove();
                 leafletData.unresolveMap(attrs.id);
+            });
+
+            //Handle request to invalidate the map size 
+	        //Up scope using $scope.$emit('invalidateSize') 
+	        //Down scope using $scope.$broadcast('invalidateSize')
+            scope.$on('invalidateSize', function() {
+                map.invalidateSize();
             });
         }
     };

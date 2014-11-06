@@ -11,9 +11,9 @@
     <link rel="stylesheet" href="../bower_components/leaflet.markercluster/dist/MarkerCluster.css" />
     <link rel="stylesheet" href="../bower_components/leaflet.markercluster/dist/MarkerCluster.Default.css" />
     <script>
-        angular.module("demoapp", ["leaflet-directive"]);
+        var app = angular.module("demoapp", ["leaflet-directive"]);
 
-        function DemoController($scope) {
+        app.controller('DemoController', [ '$scope', function($scope) {
 
             angular.extend($scope, {
                 london: {
@@ -73,7 +73,7 @@
                     }
                 },
             });
-        };
+        } ]);
     </script>
 </head>
 <body ng-controller="DemoController">

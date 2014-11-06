@@ -79,6 +79,29 @@ describe('Directive: leaflet', function() {
         });
     });
 
+    it('should support polyline with coordinates as arrays', function() {
+        var latlngs = [
+            [ 0.966, 2.02 ],
+            [ 2.02, 4.04]
+        ];
+        angular.extend(scope, {
+            paths : {
+                p1: { latlngs : latlngs }
+            }
+        });
+        var element = angular.element('<leaflet paths="paths"></leaflet>');
+        element = $compile(element)(scope);
+        scope.$digest();
+        leafletData.getPaths().then(function(paths) {
+            var polyline = paths.p1;
+            latlngs = polyline.getLatLngs();
+            expect(latlngs[0].lat).toBeCloseTo(0.966);
+            expect(latlngs[0].lng).toBeCloseTo(2.02);
+            expect(latlngs[1].lat).toBeCloseTo(2.02);
+            expect(latlngs[1].lng).toBeCloseTo(4.04);
+        });
+    });
+
     // MultiPolyline
     it('should create multiPolyline on the map', function() {
         angular.extend(scope, {

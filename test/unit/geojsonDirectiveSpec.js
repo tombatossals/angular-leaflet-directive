@@ -5,7 +5,7 @@
 /* jasmine specs for directives go here */
 
 describe('Directive: geojson', function() {
-    var $compile = null, $rootScope = null, leafletData = null, leafletMapDefaults = null;
+    var scope, $compile = null, $rootScope = null, leafletData = null, leafletMapDefaults = null;
 
     beforeEach(module('leaflet-directive'));
     beforeEach(inject(function(_$compile_, _$rootScope_, _leafletData_, _leafletMapDefaults_){
@@ -13,6 +13,7 @@ describe('Directive: geojson', function() {
         $rootScope = _$rootScope_;
         leafletData = _leafletData_;
         leafletMapDefaults = _leafletMapDefaults_;
+        scope = $rootScope.$new();
     }));
 
     afterEach(inject(function($rootScope) {
@@ -20,16 +21,16 @@ describe('Directive: geojson', function() {
     }));
 
     it('should not create a geoJSON tilelayer if a bad structure is provided', function() {
-        angular.extend($rootScope, { geojson: {} });
+        angular.extend(scope, { geojson: {} });
         var element = angular.element('<leaflet geojson="geojson"></leaflet>');
-        element = $compile(element)($rootScope);
+        element = $compile(element)(scope);
         leafletData.getGeoJSON().then(function(geoJSON) {
             expect(geoJSON).not.toBeDefined();
         });
     });
 
     it('should create a geoJSON tilelayer if a good structure is provided', function() {
-        angular.extend($rootScope, {
+        angular.extend(scope, {
             geojson: {
                 data: {
                     "type": "FeatureCollection",
@@ -56,14 +57,14 @@ describe('Directive: geojson', function() {
             }
         });
         var element = angular.element('<leaflet geojson="geojson"></leaflet>');
-        element = $compile(element)($rootScope);
+        element = $compile(element)(scope);
         leafletData.getGeoJSON().then(function(geoJSON) {
             expect(geoJSON).toBeDefined();
         });
     });
 
     it('should remove the geoJSON layer from the map if geojson object removed from scope', function() {
-        angular.extend($rootScope, {
+        angular.extend(scope, {
             geojson: {
                 data: {
                     "type": "FeatureCollection",
@@ -91,22 +92,23 @@ describe('Directive: geojson', function() {
         });
 
         var element = angular.element('<leaflet geojson="geojson"></leaflet>');
-        element = $compile(element)($rootScope);
+        element = $compile(element)(scope);
 
-        var leafletGeoJSON = {},
-            leafletMap = {};
+        var leafletGeoJSON, leafletMap;
 
         leafletData.getMap().then(function(map) {
             leafletMap = map;
         });
+
+        scope.$digest();
         leafletData.getGeoJSON().then(function(geoJSON) {
             leafletGeoJSON = geoJSON;
         });
 
-        $rootScope.$digest();
+        scope.$digest();
         expect(leafletMap.hasLayer(leafletGeoJSON)).toBe(true);
-        $rootScope.geojson = {};
-        $rootScope.$digest();
+        scope.geojson = {};
+        scope.$digest();
         expect(leafletMap.hasLayer(leafletGeoJSON)).toBe(false);
     });
 });

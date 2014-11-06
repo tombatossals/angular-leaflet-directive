@@ -158,7 +158,7 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
         },
 
         addMarkerWatcher: function(marker, name, leafletScope, layers, map) {
-            var clearWatch = leafletScope.$watch("markers."+name, function(markerData, oldMarkerData) {
+            var clearWatch = leafletScope.$watch("markers[\""+name+"\"]", function(markerData, oldMarkerData) {
                 if (!isDefined(markerData)) {
                     _deleteMarker(marker, map, layers);
                     clearWatch();
@@ -350,6 +350,9 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
                             // The marker was moved programatically
                             layers.overlays[markerData.layer].removeLayer(marker);
                             marker.setLatLng([markerData.lat, markerData.lng]);
+                            layers.overlays[markerData.layer].addLayer(marker);
+                        } else if (isObject(markerData.icon) && isObject(oldMarkerData.icon) && !angular.equals(markerData.icon, oldMarkerData.icon)) {
+                            layers.overlays[markerData.layer].removeLayer(marker);
                             layers.overlays[markerData.layer].addLayer(marker);
                         }
                     }

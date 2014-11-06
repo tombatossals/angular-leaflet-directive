@@ -6,8 +6,8 @@
     <script src="../dist/angular-leaflet-directive.min.js"></script>
     <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
     <script>
-        angular.module("demoapp", ["leaflet-directive"]);
-        function DemoController($scope) {
+        var app = angular.module("demoapp", ["leaflet-directive"]);
+        app.controller('DemoController', [ '$scope', function($scope) {
             angular.extend($scope, {
                 london: {
                     lat: 51.505,
@@ -41,7 +41,7 @@
             }
 
             $scope.addMarkers();
-        };
+        } ]);
     </script>
   </head>
   <body ng-controller="DemoController">

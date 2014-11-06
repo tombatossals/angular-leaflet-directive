@@ -7,8 +7,8 @@
     <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
     <script>
-        angular.module("demoapp", ["leaflet-directive"]);
-        function DemoController($scope) {
+        var app = angular.module("demoapp", ["leaflet-directive"]);
+        app.controller('DemoController', [ '$scope', function($scope) {
             var tilesDict = {
                 openstreetmap: {
                     url: "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
@@ -54,7 +54,7 @@
             $scope.changeTiles = function(tiles) {
                 $scope.tiles = tilesDict[tiles];
             };
-        };
+        } ]);
     </script>
     <style>
         .angular-leaflet-map {

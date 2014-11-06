@@ -8,8 +8,8 @@
     <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script>
-        angular.module("demoapp", ["leaflet-directive"]);
-        function DefaultController($scope) {
+        var app = angular.module("demoapp", ["leaflet-directive"]);
+        app.controller('DefaultController', [ '$scope', function($scope) {
             angular.extend($scope, {
                 mapDefault: {
                     london: {
@@ -25,8 +25,9 @@
                     }
                 }
             });
-        };
-        function BaseLayersController($scope) {
+        } ]);
+
+        app.controller('BaseLayersController', [ '$scope', function($scope) {
             angular.extend($scope, {
                 london: {
                     lat: 51.505,
@@ -90,8 +91,9 @@
                     }
                 }
             });
-        };
-        function DynamicLayersController($scope) {
+        } ]);
+
+        app.controller('DynamicLayersController', [ '$scope', function($scope) {
             angular.extend($scope, {
                 mapDynamicLayers: {
                     london: {
@@ -236,8 +238,9 @@
                 },
 
             });
-        };
-        function CombineTypeLayersController($scope) {
+        } ]);
+
+        app.controller('CombineTypeLayersController', [ '$scope', function($scope) {
             angular.extend($scope, {
                 berlin: {
                     lat: 52.51739,
@@ -287,7 +290,7 @@
                     }
                 }
             });
-        };
+        } ]);
     </script>
 </head>
 <body>

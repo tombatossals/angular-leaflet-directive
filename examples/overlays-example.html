@@ -8,8 +8,8 @@
     <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script>
-        angular.module("demoapp", ["leaflet-directive"]);
-        function OverlaysController($scope) {
+        var app = angular.module("demoapp", ["leaflet-directive"]);
+        app.controller('OverlaysController', [ '$scope', function($scope) {
             angular.extend($scope, {
                 ripoll: {
                     lat: 42.20133,
@@ -71,8 +71,8 @@
                     }
                 }
             });
-        };
-        function DynamicOverlaysController($scope) {
+        } ]);
+        app.controller('DynamicOverlaysController', [ '$scope', function($scope) {
             angular.extend($scope, {
                 ripoll: {
                     lat: 42.20133,
@@ -172,8 +172,9 @@
                     return ('hillshade' in this.layers.overlays);
                 }
             });
-        };
-        function DefaultController($scope) {
+        } ]);
+
+        app.controller('DefaultController', [ '$scope', function($scope) {
             angular.extend($scope, {
                 mapDefault: {
                     london: {
@@ -189,7 +190,7 @@
                     }
                 }
             });
-        };
+        } ]);
     </script>
 </head>
 <body>

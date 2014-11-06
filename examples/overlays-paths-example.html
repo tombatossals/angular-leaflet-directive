@@ -8,8 +8,8 @@
     <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script>
-        angular.module("demoapp", ["leaflet-directive"]);
-        function OverlaysController($scope) {
+        var app = angular.module("demoapp", ["leaflet-directive"]);
+        app.controller('OverlaysController', [ '$scope', function($scope) {
             var markers = {
                 London : {
                     lat: 51.50,
@@ -165,7 +165,7 @@
                     }
                 }
             });
-        };
+        } ]);
     </script>
 </head>
 <body>
