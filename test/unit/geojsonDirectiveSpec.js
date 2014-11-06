@@ -63,7 +63,7 @@ describe('Directive: geojson', function() {
         });
     });
 
-    iit('should remove the geoJSON layer from the map if geojson object removed from scope', function() {
+    it('should remove the geoJSON layer from the map if geojson object removed from scope', function() {
         angular.extend(scope, {
             geojson: {
                 data: {
