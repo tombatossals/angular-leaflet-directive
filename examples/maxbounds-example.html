@@ -6,7 +6,7 @@
     <script src="../dist/angular-leaflet-directive.min.js"></script>
     <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
     <script>
-        angular.module("demoapp", ["leaflet-directive"]);
+          var app = angular.module("demoapp", ["leaflet-directive"]);
           app.controller("DemoController", [ "$scope", "leafletData", function($scope, leafletData) {
             $scope.regions = {
                 london: {
@@ -45,7 +45,7 @@
                 maxbounds: {}
             });
 
-        };
+        } ]);
     </script>
     <style>
         .angular-leaflet-map {

@@ -142,8 +142,8 @@ angular.module("leaflet-directive", []).directive('leaflet', ["$q", "leafletData
                 leafletData.unresolveMap(attrs.id);
             });
 
-            //Handle request to invalidate the map size 
-	        //Up scope using $scope.$emit('invalidateSize') 
+            //Handle request to invalidate the map size
+	        //Up scope using $scope.$emit('invalidateSize')
 	        //Down scope using $scope.$broadcast('invalidateSize')
             scope.$on('invalidateSize', function() {
                 map.invalidateSize();
@@ -1764,6 +1764,10 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', ["$q", "leafle
                     newDefaults.crs = L.CRS[userDefaults.crs];
                 }
 
+                if (isDefined(userDefaults.center)) {
+                    angular.copy(userDefaults.center, newDefaults.center);
+                }
+
                 if (isDefined(userDefaults.tileLayerOptions)) {
                     angular.copy(userDefaults.tileLayerOptions, newDefaults.tileLayerOptions);
                 }
@@ -2994,7 +2998,7 @@ angular.module("leaflet-directive").factory('leafletBoundsHelpers', ["$log", "le
     };
 }]);
 
-angular.module("leaflet-directive").factory('leafletMarkersHelpers', ["$rootScope", "leafletHelpers", "$log", function ($rootScope, leafletHelpers, $log) {
+angular.module("leaflet-directive").factory('leafletMarkersHelpers', ["$rootScope", "leafletHelpers", "$log", "$compile", function ($rootScope, leafletHelpers, $log, $compile) {
 
     var isDefined = leafletHelpers.isDefined,
         MarkerClusterPlugin = leafletHelpers.MarkerClusterPlugin,
@@ -3142,6 +3146,8 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', ["$rootScop
 
         listenMarkerEvents: function(marker, markerData, leafletScope) {
             marker.on("popupopen", function(/* event */) {
+                //the marker may have angular templates to compile
+                $compile(marker.getPopup()._contentNode)($rootScope);
                 safeApply(leafletScope, function() {
                     markerData.focus = true;
                 });
