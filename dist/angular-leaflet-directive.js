@@ -2998,7 +2998,7 @@ angular.module("leaflet-directive").factory('leafletBoundsHelpers', ["$log", "le
     };
 }]);
 
-angular.module("leaflet-directive").factory('leafletMarkersHelpers', ["$rootScope", "leafletHelpers", "$log", function ($rootScope, leafletHelpers, $log) {
+angular.module("leaflet-directive").factory('leafletMarkersHelpers', ["$rootScope", "leafletHelpers", "$log", "$compile", function ($rootScope, leafletHelpers, $log, $compile) {
 
     var isDefined = leafletHelpers.isDefined,
         MarkerClusterPlugin = leafletHelpers.MarkerClusterPlugin,
@@ -3146,6 +3146,8 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', ["$rootScop
 
         listenMarkerEvents: function(marker, markerData, leafletScope) {
             marker.on("popupopen", function(/* event */) {
+                //the marker may have angular templates to compile
+                $compile(marker.getPopup()._contentNode)($rootScope);
                 safeApply(leafletScope, function() {
                     markerData.focus = true;
                 });
