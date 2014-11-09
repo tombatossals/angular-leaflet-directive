@@ -1,4 +1,4 @@
-angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($rootScope, leafletHelpers, $log) {
+angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($rootScope, leafletHelpers, $log, $compile) {
 
     var isDefined = leafletHelpers.isDefined,
         MarkerClusterPlugin = leafletHelpers.MarkerClusterPlugin,
@@ -146,6 +146,8 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
 
         listenMarkerEvents: function(marker, markerData, leafletScope) {
             marker.on("popupopen", function(/* event */) {
+                //the marker may have angular templates to compile
+                $compile(marker.getPopup()._contentNode)($rootScope);
                 safeApply(leafletScope, function() {
                     markerData.focus = true;
                 });
