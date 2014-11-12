@@ -544,20 +544,18 @@ angular.module("leaflet-directive").directive('geojson', ["$log", "$rootScope", 
 }]);
 
 angular.module("leaflet-directive").directive('layers', ["$log", "$q", "leafletData", "leafletHelpers", "leafletLayerHelpers", "leafletControlHelpers", function ($log, $q, leafletData, leafletHelpers, leafletLayerHelpers, leafletControlHelpers) {
-    var _leafletLayers;
-
     return {
         restrict: "A",
         scope: false,
         replace: false,
         require: 'leaflet',
-        controller: function () {
-            _leafletLayers = $q.defer();
-            this.getLayers = function() {
-                return _leafletLayers.promise;
+        controller: ["$scope", function ($scope) {
+            $scope._leafletLayers = $q.defer();
+            this.getLayers = function () {
+                return $scope._leafletLayers.promise;
             };
-        },
-        link: function(scope, element, attrs, controller) {
+        }],
+        link: function(scope, element, attrs, controller){
             var isDefined = leafletHelpers.isDefined,
                 leafletLayers = {},
                 leafletScope  = controller.getLeafletScope(),
@@ -575,7 +573,7 @@ angular.module("leaflet-directive").directive('layers', ["$log", "$q", "leafletD
                 }
 
                 // We have baselayers to add to the map
-                _leafletLayers.resolve(leafletLayers);
+                scope._leafletLayers.resolve(leafletLayers);
                 leafletData.setLayers(leafletLayers, attrs.id);
 
                 leafletLayers.baselayers = {};
