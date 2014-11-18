@@ -134,8 +134,11 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($q, leafl
             });
 
             scope.$on('$destroy', function () {
-                map.remove();
-                leafletData.unresolveMap(attrs.id);
+                try {
+                    map.remove();
+                    leafletData.unresolveMap(attrs.id);
+                } catch (e) {
+                }
             });
 
             //Handle request to invalidate the map size
