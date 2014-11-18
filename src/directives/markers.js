@@ -51,6 +51,9 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                                 continue;
                             }
 
+                            // Should we watch for every specific marker on the map?
+                            var shouldWatch = (!isDefined(attrs.watchMarkers) || attrs.watchMarkers === 'true');
+
                             if (!isDefined(leafletMarkers[newName])) {
                                 var markerData = newMarkers[newName];
                                 var marker = createMarker(markerData);
@@ -102,24 +105,19 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
 
                                     // The marker is automatically added to the map depending on the visibility
                                     // of the layer, so we only have to open the popup if the marker is in the map
-                                    if (map.hasLayer(marker) && markerData.focus === true) {
-                                        marker.openPopup();
+                                    if (!shouldWatch && map.hasLayer(marker) && markerData.focus === true) {
+                                       leafletMarkersHelpers.manageOpenPopup(marker, markerData);
                                     }
 
                                 // Add the marker to the map if it hasn't been added to a layer or to a group
                                 } else if (!isDefined(markerData.group)) {
                                     // We do not have a layer attr, so the marker goes to the map layer
                                     map.addLayer(marker);
-                                    if (markerData.focus === true) {
-                                        marker.openPopup();
-                                    }
-                                    if (Helpers.LabelPlugin.isLoaded() && isDefined(markerData.label) && isDefined(markerData.label.options) && markerData.label.options.noHide === true) {
-                                        marker.showLabel();
+                                    if (!shouldWatch && markerData.focus === true) {
+                                       leafletMarkersHelpers.manageOpenPopup(marker, markerData);
                                     }
                                 }
 
-                                // Should we watch for every specific marker on the map?
-                                var shouldWatch = (!isDefined(attrs.watchMarkers) || attrs.watchMarkers === 'true');
 
                                 if (shouldWatch) {
                                     addMarkerWatcher(marker, newName, leafletScope, layers, map);
