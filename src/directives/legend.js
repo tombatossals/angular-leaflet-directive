@@ -17,19 +17,18 @@ angular.module("leaflet-directive").directive('legend', function ($log, $http, l
             var position;
             var leafletLegend;
 
+            leafletScope.$watch('legend', function (newLegend) {
+
+                if (isDefined(newLegend)) {
+
+                    legendClass = newLegend.legendClass ? newLegend.legendClass : "legend";
+
+                    position = newLegend.position || 'bottomright';
+                }
+
+            }, true);
+
             controller.getMap().then(function (map) {
-
-                leafletScope.$watch('legend', function (newLegend) {
-
-                    if (isDefined(newLegend)) {
-
-                        legendClass = newLegend.legendClass ? newLegend.legendClass : "legend";
-
-                        position = newLegend.position || 'bottomright';
-                    }
-
-                }, true);
-
 
                 leafletScope.$watch('legend', function (newLegend) {
 
@@ -41,7 +40,6 @@ angular.module("leaflet-directive").directive('legend', function ($log, $http, l
 
                         return;
                     }
-
 
                     if (!isDefined(newLegend.url) && (!isArray(newLegend.colors) || !isArray(newLegend.labels) || newLegend.colors.length !== newLegend.labels.length)) {
 
@@ -61,7 +59,9 @@ angular.module("leaflet-directive").directive('legend', function ($log, $http, l
                         leafletLegend.removeFrom(map);
                     }
 
-                    leafletLegend = L.control({position: position});
+                    leafletLegend = L.control({
+                        position: position
+                    });
                     leafletLegend.onAdd = leafletLegendHelpers.getOnAddArrayLegend(newLegend, legendClass);
                     leafletLegend.addTo(map);
 
@@ -76,24 +76,26 @@ angular.module("leaflet-directive").directive('legend', function ($log, $http, l
                     $http.get(newURL)
                         .success(function (legendData) {
 
-                            if (isDefined(leafletLegend)) {
+                        if (isDefined(leafletLegend)) {
 
-                                leafletLegendHelpers.updateArcGISLegend(leafletLegend.getContainer(), legendData);
+                            leafletLegendHelpers.updateArcGISLegend(leafletLegend.getContainer(), legendData);
 
-                            } else {
+                        } else {
 
-                                leafletLegend = L.control({position: position});
-                                leafletLegend.onAdd = leafletLegendHelpers.getOnAddArcGISLegend(legendData, legendClass);
-                                leafletLegend.addTo(map);
-                            }
+                            leafletLegend = L.control({
+                                position: position
+                            });
+                            leafletLegend.onAdd = leafletLegendHelpers.getOnAddArcGISLegend(legendData, legendClass);
+                            leafletLegend.addTo(map);
+                        }
 
-                            if (isDefined(legend.loadedData) && isFunction(legend.loadedData)) {
-                                legend.loadedData();
-                            }
-                        })
+                        if (isDefined(legend.loadedData) && isFunction(legend.loadedData)) {
+                            legend.loadedData();
+                        }
+                    })
                         .error(function () {
-                            $log.warn('[AngularJS - Leaflet] legend.url not loaded.');
-                        });
+                        $log.warn('[AngularJS - Leaflet] legend.url not loaded.');
+                    });
                 });
 
             });
