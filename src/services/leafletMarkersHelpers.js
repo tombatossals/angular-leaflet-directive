@@ -89,12 +89,44 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
         }
     };
 
+    var _manageOpenPopup = function(marker, markerData) {
+        marker.openPopup();
+
+        //the marker may have angular templates to compile
+        var popup = marker.getPopup();
+        if (isDefined(popup)) {
+            var updatePopup = function(popup) {
+                popup._updateLayout();
+                popup._updatePosition();
+            };
+
+            $compile(popup._contentNode)($rootScope);
+            //in case of an ng-include, we need to update the content after template load 
+            if (popup._contentNode.innerHTML.indexOf("ngInclude") > -1) {
+                $rootScope.$on('$includeContentLoaded', function(event, src) {
+                    if (popup.getContent().indexOf(src) > -1) {
+                        updatePopup(popup);
+                    }
+                });
+            }
+            else {
+                updatePopup(popup);
+            }
+        }
+        if (Helpers.LabelPlugin.isLoaded() && isDefined(markerData.label) && isDefined(markerData.label.options) && markerData.label.options.noHide === true) {
+            $compile(marker.label._container)($rootScope);
+            marker.showLabel();
+        }
+    };
+
     return {
         resetMarkerGroup: _resetMarkerGroup,
 
         resetMarkerGroups: _resetMarkerGroups,
 
         deleteMarker: _deleteMarker,
+
+        manageOpenPopup: _manageOpenPopup,
 
         createMarker: function(markerData) {
             if (!isDefined(markerData)) {
@@ -146,8 +178,6 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
 
         listenMarkerEvents: function(marker, markerData, leafletScope) {
             marker.on("popupopen", function(/* event */) {
-                //the marker may have angular templates to compile
-                $compile(marker.getPopup()._contentNode)($rootScope);
                 safeApply(leafletScope, function() {
                     markerData.focus = true;
                 });
@@ -223,7 +253,7 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
                     // The marker is automatically added to the map depending on the visibility
                     // of the layer, so we only have to open the popup if the marker is in the map
                     if (map.hasLayer(marker) && markerData.focus === true) {
-                        marker.openPopup();
+                        _manageOpenPopup(marker, markerData);
                     }
                 }
 
@@ -290,10 +320,6 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
                 if (isString(markerData.message) && !isString(oldMarkerData.message)) {
                     // There was no message before so we create it
                     marker.bindPopup(markerData.message, markerData.popupOptions);
-                    if (markerData.focus === true) {
-                        // If the focus is set, we must open the popup, because we do not know if it was opened before
-                        marker.openPopup();
-                    }
                 }
 
                 if (isString(markerData.message) && isString(oldMarkerData.message) && markerData.message !== oldMarkerData.message) {
@@ -310,14 +336,9 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
                 }
 
                 // The markerData.focus property must be true so we update if there wasn't a previous value or it wasn't true
-                if (markerData.focus === true && oldMarkerData.focus !== true) {
-                    marker.openPopup();
-                    updatedFocus = true;
-                }
-
-                if(oldMarkerData.focus === true && markerData.focus === true){
+                if (markerData.focus === true && oldMarkerData.focus === false || markerData === oldMarkerData){
                     // Reopen the popup when focus is still true
-                    marker.openPopup();
+                    _manageOpenPopup(marker, markerData);
                     updatedFocus = true;
                 }
 

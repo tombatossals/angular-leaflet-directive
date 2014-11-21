@@ -409,64 +409,111 @@ angular.module("leaflet-directive").directive('tiles', ["$log", "leafletData", "
 }]);
 
 angular.module("leaflet-directive").directive('legend', ["$log", "$http", "leafletHelpers", "leafletLegendHelpers", function ($log, $http, leafletHelpers, leafletLegendHelpers) {
-    return {
-        restrict: "A",
-        scope: false,
-        replace: false,
-        require: 'leaflet',
+        return {
+            restrict: "A",
+            scope: false,
+            replace: false,
+            require: 'leaflet',
 
-        link: function(scope, element, attrs, controller) {
-            var isArray      = leafletHelpers.isArray,
-                isDefined = leafletHelpers.isDefined,
-                isFunction = leafletHelpers.isFunction,
-                leafletScope = controller.getLeafletScope(),
-                legend       = leafletScope.legend;
+            link: function (scope, element, attrs, controller) {
 
-            var legendClass = legend.legendClass ? legend.legendClass : "legend";
-            var position = legend.position || 'bottomright';
-            var leafletLegend;
+                var isArray = leafletHelpers.isArray,
+                    isDefined = leafletHelpers.isDefined,
+                    isFunction = leafletHelpers.isFunction,
+                    leafletScope = controller.getLeafletScope(),
+                    legend = leafletScope.legend;
 
-            controller.getMap().then(function(map) {
-                leafletScope.$watch('legend', function (legend) {
-                    if (!isDefined(legend.url) && (!isArray(legend.colors) || !isArray(legend.labels) || legend.colors.length !== legend.labels.length)) {
-                        $log.warn("[AngularJS - Leaflet] legend.colors and legend.labels must be set.");
-                    } else if(isDefined(legend.url)){
-                        $log.info("[AngularJS - Leaflet] loading arcgis legend service.");
-                    } else {
+                var legendClass;
+                var position;
+                var leafletLegend;
+
+                leafletScope.$watch('legend', function (newLegend) {
+
+                    if (isDefined(newLegend)) {
+
+                        legendClass = newLegend.legendClass ? newLegend.legendClass : "legend";
+
+                        position = newLegend.position || 'bottomright';
+                    }
+
+                }, true);
+
+                controller.getMap().then(function (map) {
+
+                    leafletScope.$watch('legend', function (newLegend) {
+
+                        if (!isDefined(newLegend)) {
+
+                            if (isDefined(leafletLegend)) {
+                                leafletLegend.removeFrom(map);
+                                leafletLegend= null;
+                            }
+
+                            return;
+                        }
+
+                        if (!isDefined(newLegend.url) && (!isArray(newLegend.colors) || !isArray(newLegend.labels) || newLegend.colors.length !== newLegend.labels.length)) {
+
+                            $log.warn("[AngularJS - Leaflet] legend.colors and legend.labels must be set.");
+
+                            return;
+                        }
+
+                        if (isDefined(newLegend.url)) {
+
+                            $log.info("[AngularJS - Leaflet] loading arcgis legend service.");
+
+                            return;
+                        }
+
                         if (isDefined(leafletLegend)) {
-						    leafletLegend.removeFrom(map);
-						}
-                        leafletLegend = L.control({ position: position });
-                        leafletLegend.onAdd = leafletLegendHelpers.getOnAddArrayLegend(legend, legendClass);
-                        leafletLegend.addTo(map);
-                    }
-                });
+                            leafletLegend.removeFrom(map);
+                            leafletLegend= null;
+                        }
 
-                leafletScope.$watch('legend.url', function(newURL) {
-                    if(!isDefined(newURL)) {
-                        return;
-                    }
-                    $http.get(newURL)
-                        .success(function(legendData) {
-                            if(isDefined(leafletLegend)) {
-                                leafletLegendHelpers.updateArcGISLegend(leafletLegend.getContainer(),legendData);
-                            } else {
-                                leafletLegend = L.control({ position: position });
-                                leafletLegend.onAdd = leafletLegendHelpers.getOnAddArcGISLegend(legendData, legendClass);
-                                leafletLegend.addTo(map);
-                            }
-                            if(isDefined(legend.loadedData) && isFunction(legend.loadedData)) {
-                                legend.loadedData();
-                            }
-                        })
-                        .error(function() {
-                            $log.warn('[AngularJS - Leaflet] legend.url not loaded.');
+                        leafletLegend = L.control({
+                            position: position
                         });
+                        leafletLegend.onAdd = leafletLegendHelpers.getOnAddArrayLegend(newLegend, legendClass);
+                        leafletLegend.addTo(map);
+
+                    });
+
+                    leafletScope.$watch('legend.url', function (newURL) {
+
+                        if (!isDefined(newURL)) {
+                            return;
+                        }
+
+                        $http.get(newURL)
+                            .success(function (legendData) {
+
+                                if (isDefined(leafletLegend)) {
+
+                                    leafletLegendHelpers.updateArcGISLegend(leafletLegend.getContainer(), legendData);
+
+                                } else {
+
+                                    leafletLegend = L.control({
+                                        position: position
+                                    });
+                                    leafletLegend.onAdd = leafletLegendHelpers.getOnAddArcGISLegend(legendData, legendClass);
+                                    leafletLegend.addTo(map);
+                                }
+
+                                if (isDefined(legend.loadedData) && isFunction(legend.loadedData)) {
+                                    legend.loadedData();
+                                }
+                            })
+                            .error(function () {
+                                $log.warn('[AngularJS - Leaflet] legend.url not loaded.');
+                            });
+                    });
+
                 });
-            });
-        }
-    };
-}]);
+            }
+        };
+    }]);
 
 angular.module("leaflet-directive").directive('geojson', ["$log", "$rootScope", "leafletData", "leafletHelpers", function ($log, $rootScope, leafletData, leafletHelpers) {
     return {
@@ -483,6 +530,7 @@ angular.module("leaflet-directive").directive('geojson', ["$log", "$rootScope", 
 
             controller.getMap().then(function(map) {
                 leafletScope.$watch("geojson", function(geojson) {
+
                     if (isDefined(leafletGeoJSON) && map.hasLayer(leafletGeoJSON)) {
                         map.removeLayer(leafletGeoJSON);
                     }
@@ -491,9 +539,39 @@ angular.module("leaflet-directive").directive('geojson', ["$log", "$rootScope", 
                         return;
                     }
 
-                    var resetStyleOnMouseout = geojson.resetStyleOnMouseout,
-                        onEachFeature = geojson.onEachFeature;
+                    var resetStyleOnMouseout = geojson.resetStyleOnMouseout;
+                    var onEachFeature;
 
+                    if (geojson.onEachFeature) {
+                        onEachFeature = geojson.onEachFeature;
+                    } else {
+                        onEachFeature = function(feature, layer) {
+                            if (leafletHelpers.LabelPlugin.isLoaded() && isDefined(geojson.label)) {
+                                layer.bindLabel(feature.properties.description);
+                            }
+
+                            layer.on({
+                                mouseover: function(e) {
+                                    safeApply(leafletScope, function() {
+                                        $rootScope.$broadcast('leafletDirectiveMap.geojsonMouseover', feature, e);
+                                    });
+                                },
+                                mouseout: function(e) {
+                                    if (resetStyleOnMouseout) {
+                                        leafletGeoJSON.resetStyle(e.target);
+                                    }
+                                    safeApply(leafletScope, function() {
+                                        $rootScope.$broadcast('leafletDirectiveMap.geojsonMouseout', e);
+                                    });
+                                },
+                                click: function(e) {
+                                    safeApply(leafletScope, function() {
+                                        $rootScope.$broadcast('leafletDirectiveMap.geojsonClick', feature, e);
+                                    });
+                                }
+                            });
+                        };
+                    }
 
                     geojson.options = {
                         style: geojson.style,
@@ -506,37 +584,6 @@ angular.module("leaflet-directive").directive('geojson', ["$log", "$rootScope", 
                     leafletData.setGeoJSON(leafletGeoJSON, attrs.id);
                     leafletGeoJSON.addTo(map);
 
-                    if (!onEachFeature) {
-                        onEachFeature = function(feature, layer) {
-                            if (leafletHelpers.LabelPlugin.isLoaded() && isDefined(geojson.label)) {
-                                layer.bindLabel(feature.properties.description);
-                            }
-
-                            layer.on({
-                                mouseover: function(e) {
-                                    safeApply(leafletScope, function() {
-                                        geojson.selected = feature;
-                                        $rootScope.$broadcast('leafletDirectiveMap.geojsonMouseover', e);
-                                    });
-                                },
-                                mouseout: function(e) {
-                                    if (resetStyleOnMouseout) {
-                                        leafletGeoJSON.resetStyle(e.target);
-                                    }
-                                    safeApply(leafletScope, function() {
-                                        geojson.selected = undefined;
-                                        $rootScope.$broadcast('leafletDirectiveMap.geojsonMouseout', e);
-                                    });
-                                },
-                                click: function(e) {
-                                    safeApply(leafletScope, function() {
-                                        geojson.selected = feature;
-                                        $rootScope.$broadcast('leafletDirectiveMap.geojsonClick', geojson.selected, e);
-                                    });
-                                }
-                            });
-                        };
-                    }
                 }, true);
             });
         }
@@ -828,6 +875,9 @@ angular.module("leaflet-directive").directive('markers', ["$log", "$rootScope", 
                                 continue;
                             }
 
+                            // Should we watch for every specific marker on the map?
+                            var shouldWatch = (!isDefined(attrs.watchMarkers) || attrs.watchMarkers === 'true');
+
                             if (!isDefined(leafletMarkers[newName])) {
                                 var markerData = newMarkers[newName];
                                 var marker = createMarker(markerData);
@@ -879,24 +929,19 @@ angular.module("leaflet-directive").directive('markers', ["$log", "$rootScope", 
 
                                     // The marker is automatically added to the map depending on the visibility
                                     // of the layer, so we only have to open the popup if the marker is in the map
-                                    if (map.hasLayer(marker) && markerData.focus === true) {
-                                        marker.openPopup();
+                                    if (!shouldWatch && map.hasLayer(marker) && markerData.focus === true) {
+                                       leafletMarkersHelpers.manageOpenPopup(marker, markerData);
                                     }
 
                                 // Add the marker to the map if it hasn't been added to a layer or to a group
                                 } else if (!isDefined(markerData.group)) {
                                     // We do not have a layer attr, so the marker goes to the map layer
                                     map.addLayer(marker);
-                                    if (markerData.focus === true) {
-                                        marker.openPopup();
-                                    }
-                                    if (Helpers.LabelPlugin.isLoaded() && isDefined(markerData.label) && isDefined(markerData.label.options) && markerData.label.options.noHide === true) {
-                                        marker.showLabel();
+                                    if (!shouldWatch && markerData.focus === true) {
+                                       leafletMarkersHelpers.manageOpenPopup(marker, markerData);
                                     }
                                 }
 
-                                // Should we watch for every specific marker on the map?
-                                var shouldWatch = (!isDefined(attrs.watchMarkers) || attrs.watchMarkers === 'true');
 
                                 if (shouldWatch) {
                                     addMarkerWatcher(marker, newName, leafletScope, layers, map);
@@ -3087,12 +3132,44 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', ["$rootScop
         }
     };
 
+    var _manageOpenPopup = function(marker, markerData) {
+        marker.openPopup();
+
+        //the marker may have angular templates to compile
+        var popup = marker.getPopup();
+        if (isDefined(popup)) {
+            var updatePopup = function(popup) {
+                popup._updateLayout();
+                popup._updatePosition();
+            };
+
+            $compile(popup._contentNode)($rootScope);
+            //in case of an ng-include, we need to update the content after template load 
+            if (popup._contentNode.innerHTML.indexOf("ngInclude") > -1) {
+                $rootScope.$on('$includeContentLoaded', function(event, src) {
+                    if (popup.getContent().indexOf(src) > -1) {
+                        updatePopup(popup);
+                    }
+                });
+            }
+            else {
+                updatePopup(popup);
+            }
+        }
+        if (Helpers.LabelPlugin.isLoaded() && isDefined(markerData.label) && isDefined(markerData.label.options) && markerData.label.options.noHide === true) {
+            $compile(marker.label._container)($rootScope);
+            marker.showLabel();
+        }
+    };
+
     return {
         resetMarkerGroup: _resetMarkerGroup,
 
         resetMarkerGroups: _resetMarkerGroups,
 
         deleteMarker: _deleteMarker,
+
+        manageOpenPopup: _manageOpenPopup,
 
         createMarker: function(markerData) {
             if (!isDefined(markerData)) {
@@ -3144,8 +3221,6 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', ["$rootScop
 
         listenMarkerEvents: function(marker, markerData, leafletScope) {
             marker.on("popupopen", function(/* event */) {
-                //the marker may have angular templates to compile
-                $compile(marker.getPopup()._contentNode)($rootScope);
                 safeApply(leafletScope, function() {
                     markerData.focus = true;
                 });
@@ -3221,7 +3296,7 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', ["$rootScop
                     // The marker is automatically added to the map depending on the visibility
                     // of the layer, so we only have to open the popup if the marker is in the map
                     if (map.hasLayer(marker) && markerData.focus === true) {
-                        marker.openPopup();
+                        _manageOpenPopup(marker, markerData);
                     }
                 }
 
@@ -3288,10 +3363,6 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', ["$rootScop
                 if (isString(markerData.message) && !isString(oldMarkerData.message)) {
                     // There was no message before so we create it
                     marker.bindPopup(markerData.message, markerData.popupOptions);
-                    if (markerData.focus === true) {
-                        // If the focus is set, we must open the popup, because we do not know if it was opened before
-                        marker.openPopup();
-                    }
                 }
 
                 if (isString(markerData.message) && isString(oldMarkerData.message) && markerData.message !== oldMarkerData.message) {
@@ -3308,14 +3379,9 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', ["$rootScop
                 }
 
                 // The markerData.focus property must be true so we update if there wasn't a previous value or it wasn't true
-                if (markerData.focus === true && oldMarkerData.focus !== true) {
-                    marker.openPopup();
-                    updatedFocus = true;
-                }
-
-                if(oldMarkerData.focus === true && markerData.focus === true){
+                if (markerData.focus === true && oldMarkerData.focus === false || markerData === oldMarkerData){
                     // Reopen the popup when focus is still true
-                    marker.openPopup();
+                    _manageOpenPopup(marker, markerData);
                     updatedFocus = true;
                 }
 
