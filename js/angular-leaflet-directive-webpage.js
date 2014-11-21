@@ -768,12 +768,12 @@ app.controller("TilesZoomChangerController", [ '$scope', function($scope) {
 
 app.controller("WorldMapController", [ '$scope', '$http', '$log', function($scope, $http, $log) {
 
-    $scope.$on("leafletDirectiveMap.geojsonMouseover", function(ev, leafletEvent) {
-        countryMouseover(leafletEvent);
+    $scope.$on("leafletDirectiveMap.geojsonMouseover", function(ev, feature, leafletEvent) {
+        countryMouseover(feature, leafletEvent);
     });
 
-    $scope.$on("leafletDirectiveMap.geojsonClick", function(ev, featureSelected, leafletEvent) {
-        countryClick(featureSelected, leafletEvent);
+    $scope.$on("leafletDirectiveMap.geojsonClick", function(ev, feature, leafletEvent) {
+        countryClick(feature, leafletEvent);
     });
 
     var continentProperties= {
@@ -811,7 +811,8 @@ app.controller("WorldMapController", [ '$scope', '$http', '$log', function($scop
         legend: {
             colors: [ '#CC0066', '#006699', '#FF0000', '#00CC00', '#FFCC00' ],
             labels: [ 'Oceania', 'America', 'Europe', 'Africa', 'Asia' ]
-        }
+        },
+        selectedCountry: {}
     });
 
     function countryClick(country, event) {
@@ -841,7 +842,7 @@ app.controller("WorldMapController", [ '$scope', '$http', '$log', function($scop
     }
 
     // Mouse over function, called from the Leaflet Map Events
-    function countryMouseover(leafletEvent) {
+    function countryMouseover(feature, leafletEvent) {
         var layer = leafletEvent.target;
         layer.setStyle({
             weight: 2,
@@ -849,6 +850,7 @@ app.controller("WorldMapController", [ '$scope', '$http', '$log', function($scop
             fillColor: 'white'
         });
         layer.bringToFront();
+        $scope.selectedCountry = feature;
     }
 
     // Get the countries data from a JSON
