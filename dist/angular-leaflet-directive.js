@@ -1323,9 +1323,9 @@ angular.module("leaflet-directive").directive("decorations", ["$log", "leafletHe
 				leafletScope.$watch("decorations", function(newDecorations) {
 					for (var name in leafletDecorations) {
 						if (!isDefined(newDecorations) || !isDefined(newDecorations[name])) {
+							map.removeLayer(leafletDecorations[name]);
 							delete leafletDecorations[name];
 						}
-						map.removeLayer(leafletDecorations[name]);
 					}
 					
 					for (var newName in newDecorations) {
