@@ -663,7 +663,17 @@ angular.module("leaflet-directive").directive('layers', ["$log", "$q", "leafletD
                     leafletLayers.overlays[layerName] = newOverlayLayer;
                     // Only add the visible overlays to the map
                     if (layers.overlays[layerName].visible === true) {
-                        map.addLayer(leafletLayers.overlays[layerName]);
+                        // check if we must use leaflet 'hack' to force this overlay to render on top of all others
+                        // use for label overlays above other overlays
+                        if(layers.overlays[layerName].forcetotop){
+                            var topPane = map._createPane('leaflet-top-pane', map.getPanes().mapPane);
+                            var topLayer = leafletLayers.overlays[layerName].addTo(map);
+                            topPane.appendChild(topLayer.getContainer());
+                            topLayer.setZIndex(9);
+                        }
+                        else{
+                            map.addLayer(leafletLayers.overlays[layerName]);
+                        }
                     }
                 }
 
@@ -746,6 +756,12 @@ angular.module("leaflet-directive").directive('layers', ["$log", "$q", "leafletD
                             map.addLayer(leafletLayers.overlays[newName]);
                         } else if (newOverlayLayers[newName].visible === false && map.hasLayer(leafletLayers.overlays[newName])) {
                             map.removeLayer(leafletLayers.overlays[newName]);
+                        }
+
+                        //refresh heatmap data if present
+                        if (newOverlayLayers[newName].visible && map._loaded && newOverlayLayers[newName].data && newOverlayLayers[newName].type === "heatmap") {
+                            leafletLayers.overlays[newName].setData(newOverlayLayers[newName].data);
+                            leafletLayers.overlays[newName].update();
                         }
                     }
 
