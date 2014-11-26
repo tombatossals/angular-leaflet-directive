@@ -747,6 +747,12 @@ angular.module("leaflet-directive").directive('layers', ["$log", "$q", "leafletD
                         } else if (newOverlayLayers[newName].visible === false && map.hasLayer(leafletLayers.overlays[newName])) {
                             map.removeLayer(leafletLayers.overlays[newName]);
                         }
+
+                        //refresh heatmap data if present
+                        if (newOverlayLayers[newName].visible && map._loaded && newOverlayLayers[newName].data && newOverlayLayers[newName].type === "heatmap") {
+                            leafletLayers.overlays[newName].setData(newOverlayLayers[newName].data);
+                            leafletLayers.overlays[newName].update();
+                        }
                     }
 
                     // Only add the layers switch selector control if we have more than one baselayer + overlay
@@ -1317,9 +1323,9 @@ angular.module("leaflet-directive").directive("decorations", ["$log", "leafletHe
 				leafletScope.$watch("decorations", function(newDecorations) {
 					for (var name in leafletDecorations) {
 						if (!isDefined(newDecorations) || !isDefined(newDecorations[name])) {
+							map.removeLayer(leafletDecorations[name]);
 							delete leafletDecorations[name];
 						}
-						map.removeLayer(leafletDecorations[name]);
 					}
 					
 					for (var newName in newDecorations) {
