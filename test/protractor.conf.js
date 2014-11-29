@@ -15,7 +15,7 @@ exports.config = {
   // chromeDriver)
 
   // The location of the selenium standalone server .jar file.
-  seleniumServerJar: '../node_modules/protractor/selenium/selenium-server-standalone-2.42.2.jar',
+  seleniumServerJar: '../node_modules/protractor/selenium/selenium-server-standalone-2.44.0.jar',
   // The port to start the selenium server on, or null if the server should
   // find its own unused port.
   seleniumPort: null,
