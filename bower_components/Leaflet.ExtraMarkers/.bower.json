@@ -1,0 +1,36 @@
+{
+  "name": "Leafet.extra-markers",
+  "homepage": "https://github.com/coryasilva/Leaflet.ExtraMarkers",
+  "authors": [
+    "Cory Silva"
+  ],
+  "description": "Custom Markers for Leaflet JS based on Awesome Markers",
+  "main": [
+    "src/leaflet.awesome-markers.css",
+    "src/leaflet.awesome-markers.less",
+    "src/leaflet.awesome-markers.js"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "gh-pages",
+    ".bowerrc",
+    ".gitignore",
+    ".jshintignore",
+    ".jshintrc",
+    "bower.json",
+    "gruntfile.js",
+    "package.json",
+    "README.md"
+  ],
+  "dependencies": {},
+  "devDependencies": {},
+  "_release": "e73747fedd",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "e73747fedd2550d5ee352aec6eee61d34441e7dd"
+  },
+  "_source": "git://github.com/coryasilva/Leaflet.ExtraMarkers.git",
+  "_target": "master",
+  "_originalSource": "git://github.com/coryasilva/Leaflet.ExtraMarkers"
+}

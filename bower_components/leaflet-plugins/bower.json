@@ -1,0 +1,46 @@
+{
+  "name": "leaflet-plugins",
+  "version": "1.2.1",
+  "homepage": "https://github.com/shramov/leaflet-plugins/",
+  "authors": [
+    "brunob <brunobergot@gmail.com>",
+    "Pavel Shramov"
+  ],
+  "description": "Miscellaneous plugins for Leaflet library",
+  "main": [
+    "control/Distance.js",
+    "control/Layers.Load.js",
+    "control/Permalink.js",
+    "control/Permalink.Layer.js",
+    "control/Permalink.Line.js",
+    "control/Permalink.Marker.js",
+    "layer/Icon.Canvas.js",
+    "layer/Layer.Deferred.js",
+    "layer/Marker.Rotate.js",
+    "layer/Marker.Text.js",
+    "layer/OpenStreetBugs.js",
+    "layer/vector/GPX.js",
+    "layer/vector/GPX.Speed.js",
+    "layer/vector/KML.js",
+    "layer/vector/OSM.js",
+    "layer/tile/Bing.js",
+    "layer/tile/Google.js",
+    "layer/tile/Yandex.js"
+  ],
+  "devDependencies": {
+    "jshint": "2.5.0"
+  },
+  "keywords": [
+    "leaflet",
+    "plugins",
+    "map",
+    "google",
+    "bing",
+    "yandex",
+    "kml",
+    "gpx"
+  ],
+  "ignore": [
+    "build"
+  ]
+}
