@@ -222,6 +222,32 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
                 }
             }
         },
+        ExtraMarkersPlugin: {
+            isLoaded: function () {
+                if (angular.isDefined(L.ExtraMarkers) && angular.isDefined(L.ExtraMarkers.Icon)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            },
+            is: function (icon) {
+                if (this.isLoaded()) {
+                    return icon instanceof L.ExtraMarkers.Icon;
+                } else {
+                    return false;
+                }
+            },
+            equal: function (iconA, iconB) {
+                if (!this.isLoaded()) {
+                    return false;
+                }
+                if (this.is(iconA)) {
+                    return angular.equals(iconA, iconB);
+                } else {
+                    return false;
+                }
+            }
+        },
         LabelPlugin: {
             isLoaded: function() {
                 return angular.isDefined(L.Label);

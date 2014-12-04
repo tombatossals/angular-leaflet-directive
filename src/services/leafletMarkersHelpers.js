@@ -4,6 +4,7 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
         MarkerClusterPlugin = leafletHelpers.MarkerClusterPlugin,
         AwesomeMarkersPlugin = leafletHelpers.AwesomeMarkersPlugin,
         MakiMarkersPlugin = leafletHelpers.MakiMarkersPlugin,
+        ExtraMarkersPlugin = leafletHelpers.ExtraMarkersPlugin,
         safeApply     = leafletHelpers.safeApply,
         Helpers = leafletHelpers,
         isString = leafletHelpers.isString,
@@ -26,6 +27,13 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
             }
 
             return new L.MakiMarkers.icon(iconData);
+        }
+
+        if (isDefined(iconData) && isDefined(iconData.type) && iconData.type === 'extraMarker') {
+            if (!ExtraMarkersPlugin.isLoaded()) {
+                $log.error('[AngularJS - Leaflet] The ExtraMarkers Plugin is not loaded.');
+            }
+            return new L.ExtraMarkers.icon(iconData);
         }
 
         if (isDefined(iconData) && isDefined(iconData.type) && iconData.type === 'div') {
@@ -101,7 +109,7 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
             };
 
             $compile(popup._contentNode)($rootScope);
-            //in case of an ng-include, we need to update the content after template load 
+            //in case of an ng-include, we need to update the content after template load
             if (popup._contentNode.innerHTML.indexOf("ngInclude") > -1) {
                 $rootScope.$on('$includeContentLoaded', function(event, src) {
                     if (popup.getContent().indexOf(src) > -1) {
