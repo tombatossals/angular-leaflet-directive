@@ -21,7 +21,7 @@
                 }
            });
            leafletData.getMap().then(function(map) {
-              var drawnItems = $scope.controls.draw.edit.featureGroup;
+              var drawnItems = $scope.controls.edit.featureGroup;
               map.on('draw:created', function (e) {
                 var layer = e.layer;
                 drawnItems.addLayer(layer);

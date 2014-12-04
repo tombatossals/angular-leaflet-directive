@@ -6,10 +6,13 @@
     <script src="../dist/angular-leaflet-directive.min.js"></script>
     <script src="../bower_components/Leaflet.awesome-markers/dist/leaflet.awesome-markers.js"></script>
     <script src="../bower_components/Leaflet.MakiMarkers/Leaflet.MakiMarkers.js"></script>
+    <script src="../bower_components/Leaflet.ExtraMarkers/src/leaflet.extra-markers.js"></script>
     <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="../bower_components/Leaflet.awesome-markers/dist/leaflet.awesome-markers.css">
+    <link rel="stylesheet" href="../bower_components/Leaflet.ExtraMarkers/src/leaflet.extra-markers.css">
     <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="../bower_components/font-awesome/css/font-awesome.min.css">
     <script>
         var app = angular.module("demoapp", ["leaflet-directive"]);
         app.controller('DemoController', [ '$scope', function($scope) {
@@ -48,7 +51,15 @@
                     icon: 'beer',
                     color: '#f00',
                     size: "l"
+                },
+                iconE: {
+                    type: 'extraMarker',
+                    icon: 'fa-star',
+                    color: '#f00',
+                    prefix: 'fa',
+                    shape: 'circle'
                 }
+
             });
             $scope.$on('leafletDirectiveMarker.click', function(e, args) {
                 // Args will contain the marker name and other relevant information
@@ -118,8 +129,13 @@
                         <label class="btn btn-primary" ng-class="{ active: markers.m1.icon == iconC }">
                             <input type="radio" ng-model="markers.m1.icon" ng-value="iconC" class="btn btn-default">AwesomeMarker Icon</button>
                         </label>
+                    </div>
+                    <div class="btn-group" data-toggle="buttons" style="margin-top: 1em;">
                         <label class="btn btn-primary" ng-class="{ active: markers.m1.icon == iconD }">
                             <input type="radio" ng-model="markers.m1.icon" ng-value="iconD" class="btn btn-default">MakiMarker Icon</button>
+                        </label>
+                        <label class="btn btn-primary" ng-class="{ active: markers.m1.icon == iconE }">
+                            <input type="radio" ng-model="markers.m1.icon" ng-value="iconE" class="btn btn-default">ExtraMarker Icon</button>
                         </label>
                     </div>
                     <h3 ng-show="markers.m1.icon == iconC">AwesomeIcon color</h3>
@@ -185,6 +201,32 @@
                             <input type="radio" ng-model="iconD.size" ng-value="'l'" class="btn btn-default">Large</button>
                         </label>
                     </div>
+
+                    <h3 ng-show="markers.m1.icon == iconE">ExtraMarker icon</h3>
+                    <div class="btn-group" data-toggle="buttons" ng-show="markers.m1.icon == iconE">
+                        <label class="btn btn-primary" ng-class="{ active: iconE.icon == 'fa-star' }">
+                            <input type="radio" ng-model="iconE.icon" ng-value="'fa-star'" class="btn btn-default">Star</button>
+                        </label>
+                        <label class="btn btn-primary" ng-class="{ active: iconE.icon == 'fa-coffee' }">
+                            <input type="radio" ng-model="iconE.icon" ng-value="'fa-coffee'" class="btn btn-default">Coffee</button>
+                        </label>
+                        <label class="btn btn-primary" ng-class="{ active: iconE.icon == 'fa-cog' }">
+                            <input type="radio" ng-model="iconE.icon" ng-value="'fa-cog'" class="btn btn-default">Cog</button>
+                        </label>
+                    </div>
+                    <h3 ng-show="markers.m1.icon == iconE">ExtraMarker shape</h3>
+                    <div class="btn-group" data-toggle="buttons" ng-show="markers.m1.icon == iconE">
+                        <label class="btn btn-primary" ng-class="{ active: iconE.shape == 'circle' }">
+                            <input type="radio" ng-model="iconE.shape" ng-value="'s'" class="btn btn-default">Circle</button>
+                        </label>
+                        <label class="btn btn-primary" ng-class="{ active: iconE.shape == 'star' }">
+                            <input type="radio" ng-model="iconE.shape" ng-value="'star'" class="btn btn-default">Star</button>
+                        </label>
+                        <label class="btn btn-primary" ng-class="{ active: iconE.shape == 'square' }">
+                            <input type="radio" ng-model="iconE.shape" ng-value="'square'" class="btn btn-default">Square</button>
+                        </label>
+                    </div>
+
                 </form>
             </div>
             <div class="col-md-4">
