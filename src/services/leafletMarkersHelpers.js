@@ -216,6 +216,11 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
                     return;
                 }
 
+                // Update marker rotation
+                if (isDefined(markerData.iconAngle) && oldMarkerData.iconAngle !== markerData.iconAngle) {
+                    marker.setIconAngle(markerData.iconAngle);
+                }
+
                 // It is possible that the layer has been removed or the layer marker does not exist
                 // Update the layer group if present or move it to the map if not
                 if (!isString(markerData.layer)) {
