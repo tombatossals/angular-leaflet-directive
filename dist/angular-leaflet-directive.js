@@ -3155,7 +3155,7 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', ["$rootScop
 
             $compile(popup._contentNode)($rootScope);
             //in case of an ng-include, we need to update the content after template load
-            if (popup._contentNode.innerHTML.indexOf("ngInclude") > -1) {
+            if (isDefined(popup._contentNode) && popup._contentNode.innerHTML.indexOf("ngInclude") > -1) {
                 $rootScope.$on('$includeContentLoaded', function(event, src) {
                     if (popup.getContent().indexOf(src) > -1) {
                         updatePopup(popup);
@@ -3259,6 +3259,14 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', ["$rootScop
                     $log.warn('There are problems with lat-lng data, please verify your marker model');
                     _deleteMarker(marker, map, layers);
                     return;
+                }
+
+                // watch is being initialized if old and new object is the same
+                var isInitializing = markerData === oldMarkerData;
+
+                // Update marker rotation
+                if (isDefined(markerData.iconAngle) && oldMarkerData.iconAngle !== markerData.iconAngle) {
+                    marker.setIconAngle(markerData.iconAngle);
                 }
 
                 // It is possible that the layer has been removed or the layer marker does not exist
@@ -3389,7 +3397,7 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', ["$rootScop
                 }
 
                 // The markerData.focus property must be true so we update if there wasn't a previous value or it wasn't true
-                if (markerData.focus === true && oldMarkerData.focus === false || markerData === oldMarkerData){
+                if (markerData.focus === true && oldMarkerData.focus === false || (isInitializing && markerData.focus === true)) {
                     // Reopen the popup when focus is still true
                     _manageOpenPopup(marker, markerData);
                     updatedFocus = true;
