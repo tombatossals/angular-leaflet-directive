@@ -105,7 +105,7 @@ describe('Directive: leaflet', function() {
             lat: 0.966,
             lng: 2.02,
             message: '<p>{{model.color}}</p>',
-
+            focus: true
         };
         angular.extend($rootScope, {
             markers: {
