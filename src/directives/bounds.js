@@ -12,10 +12,8 @@ angular.module("leaflet-directive").directive('bounds', function ($log, $timeout
                 mapController = controller[0];
 
             var emptyBounds = function(bounds) {
-                if (bounds._southWest.lat === 0 && bounds._southWest.lng === 0 && bounds._northEast.lat === 0 && bounds._northEast.lng === 0) {
-                    return true;
-                }
-                return false;
+                return (bounds._southWest.lat === 0 && bounds._southWest.lng === 0 &&
+                        bounds._northEast.lat === 0 && bounds._northEast.lng === 0);
             };
 
             mapController.getMap().then(function (map) {
