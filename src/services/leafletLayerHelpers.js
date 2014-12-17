@@ -108,12 +108,8 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
         },
         group: {
             mustHaveUrl: false,
-            createLayer: function (params) {
-                var lyrs = [];
-				angular.forEach(params.options.layers, function(l){
-				  lyrs.push(createLayer(l));
-				});
-				return L.layerGroup(lyrs);
+            createLayer: function () {
+                return L.layerGroup();
             }
         },
         featureGroup: {
@@ -285,46 +281,44 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
         }
         return true;
     }
-	
-	function createLayer(layerDefinition) {
-		if (!isValidLayerType(layerDefinition)) {
-			return;
-		}
-
-		if (!isString(layerDefinition.name)) {
-			$log.error('[AngularJS - Leaflet] A base layer must have a name');
-			return;
-		}
-		if (!isObject(layerDefinition.layerParams)) {
-			layerDefinition.layerParams = {};
-		}
-		if (!isObject(layerDefinition.layerOptions)) {
-			layerDefinition.layerOptions = {};
-		}
-
-		// Mix the layer specific parameters with the general Leaflet options. Although this is an overhead
-		// the definition of a base layers is more 'clean' if the two types of parameters are differentiated
-		for (var attrname in layerDefinition.layerParams) {
-			layerDefinition.layerOptions[attrname] = layerDefinition.layerParams[attrname];
-		}
-
-		var params = {
-			url: layerDefinition.url,
-			data: layerDefinition.data,
-			options: layerDefinition.layerOptions,
-			layer: layerDefinition.layer,
-			type: layerDefinition.layerType,
-			bounds: layerDefinition.bounds,
-			key: layerDefinition.key,
-			pluginOptions: layerDefinition.pluginOptions,
-			user: layerDefinition.user
-		};
-
-		//TODO Add $watch to the layer properties
-		return layerTypes[layerDefinition.type].createLayer(params);
-	};
 
     return {
-        createLayer: createLayer
+        createLayer: function(layerDefinition) {
+            if (!isValidLayerType(layerDefinition)) {
+                return;
+            }
+
+            if (!isString(layerDefinition.name)) {
+                $log.error('[AngularJS - Leaflet] A base layer must have a name');
+                return;
+            }
+            if (!isObject(layerDefinition.layerParams)) {
+                layerDefinition.layerParams = {};
+            }
+            if (!isObject(layerDefinition.layerOptions)) {
+                layerDefinition.layerOptions = {};
+            }
+
+            // Mix the layer specific parameters with the general Leaflet options. Although this is an overhead
+            // the definition of a base layers is more 'clean' if the two types of parameters are differentiated
+            for (var attrname in layerDefinition.layerParams) {
+                layerDefinition.layerOptions[attrname] = layerDefinition.layerParams[attrname];
+            }
+
+            var params = {
+                url: layerDefinition.url,
+                data: layerDefinition.data,
+                options: layerDefinition.layerOptions,
+                layer: layerDefinition.layer,
+                type: layerDefinition.layerType,
+                bounds: layerDefinition.bounds,
+                key: layerDefinition.key,
+                pluginOptions: layerDefinition.pluginOptions,
+                user: layerDefinition.user
+            };
+
+            //TODO Add $watch to the layer properties
+            return layerTypes[layerDefinition.type].createLayer(params);
+        }
     };
 });
