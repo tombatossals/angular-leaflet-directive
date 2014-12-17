@@ -46,7 +46,7 @@ angular.module("leaflet-directive").directive('legend', function ($log, $http, l
                             return;
                         }
 
-                        if (!isDefined(newLegend.url) && (!isArray(newLegend.colors) && (type === 'arcgis') || !isArray(newLegend.labels) || newLegend.colors.length !== newLegend.labels.length)) {
+                        if (!isDefined(newLegend.url) && (type === 'arcgis') && (!isArray(newLegend.colors) || !isArray(newLegend.labels) || newLegend.colors.length !== newLegend.labels.length)) {
 
                             $log.warn("[AngularJS - Leaflet] legend.colors and legend.labels must be set.");
 
