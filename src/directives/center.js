@@ -7,7 +7,6 @@ angular.module("leaflet-directive").directive('center',
         safeApply     = leafletHelpers.safeApply,
         isValidCenter = leafletHelpers.isValidCenter,
         isValidBounds = leafletBoundsHelpers.isValidBounds,
-        isEmpty       = leafletHelpers.isEmpty,
         isUndefinedOrEmpty = leafletHelpers.isUndefinedOrEmpty;
 
     var shouldInitializeMapWithBounds = function(bounds, center) {
