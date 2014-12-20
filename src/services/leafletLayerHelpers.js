@@ -285,7 +285,7 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
         }
         return true;
     }
-    
+
     function createLayer(layerDefinition) {
         if (!isValidLayerType(layerDefinition)) {
             return;
@@ -322,7 +322,7 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
 
         //TODO Add $watch to the layer properties
         return layerTypes[layerDefinition.type].createLayer(params);
-    };
+    }
 
     return {
         createLayer: createLayer
