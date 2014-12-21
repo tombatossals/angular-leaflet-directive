@@ -26,6 +26,13 @@ angular.module("leaflet-directive").service('leafletData', function ($log, $q, l
     this.unresolveMap = function (scopeId) {
         var id = leafletHelpers.obtainEffectiveMapId(maps, scopeId);
         maps[id] = undefined;
+        tiles[id] = undefined;
+        layers[id] = undefined;
+        paths[id] = undefined;
+        markers[id] = undefined;
+        geoJSON[id] = undefined;
+        utfGrid[id] = undefined;
+        decorations[id] = undefined;
     };
 
     this.getPaths = function(scopeId) {
@@ -60,12 +67,12 @@ angular.module("leaflet-directive").service('leafletData', function ($log, $q, l
         defer.resolve(leafletLayers);
         setResolvedDefer(layers, scopeId);
     };
-    
+
     this.getUTFGrid = function(scopeId) {
         var defer = getDefer(utfGrid, scopeId);
         return defer.promise;
     };
-    
+
     this.setUTFGrid = function(leafletUTFGrid, scopeId) {
         var defer = getUnresolvedDefer(utfGrid, scopeId);
         defer.resolve(leafletUTFGrid);
