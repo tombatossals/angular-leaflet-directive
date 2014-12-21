@@ -28,25 +28,26 @@ describe('Directive: leaflet', function() {
         var element = angular.element('<leaflet></leaflet>');
         element = $compile(element)(scope);
         scope.$digest();
-        leafletData.getLayers().then(function() {
-            expect(layers).toBe(undefined);
+        leafletData.getLayers().then(function(layers) {
+            expect(layers).toBe({});
         });
     });
 
-    it('should not create layers if they are miss-configured', function() {
+    it('miss-configured layers persist', function() {
+        var nolayers = {
+            baselayers: {},
+            overlays: {}
+        };
         angular.extend(scope, {
-            layers: {
-                baselayers: {},
-                overlays: {}
-            }
+            layers: nolayers
         });
 
         // If we not provide layers the system will use the default
         var element = angular.element('<leaflet layers="layers"></leaflet>');
         element = $compile(element)(scope);
         scope.$digest();
-        leafletData.getLayers().then(function() {
-            expect(layers).toBe(undefined);
+        leafletData.getLayers().then(function(layers) {
+            expect(layers).toEqual(nolayers);
         });
     });
 
