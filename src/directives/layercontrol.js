@@ -140,12 +140,6 @@ angular.module("leaflet-directive").directive('layercontrol', function ($log, le
 
         scope.layers = layers;
         controller.getMap().then(function(map) {
-            // Do we have a baselayers property?
-            if (!isDefined(layers) || !isDefined(layers.baselayers) || Object.keys(layers.baselayers).length === 0) {
-                // No baselayers property
-                $log.error('[AngularJS - Leaflet] At least one baselayer has to be defined');
-                return;
-            }
 
             leafletScope.$watch('layers.baselayers', function(newBaseLayers) {
                 leafletData.getLayers().then(function(leafletLayers) {

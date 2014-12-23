@@ -20,12 +20,6 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                 isLayersControlVisible = false;
 
             controller.getMap().then(function(map) {
-                // Do we have a baselayers property?
-                if (!isDefined(layers) || !isDefined(layers.baselayers) || Object.keys(layers.baselayers).length === 0) {
-                    // No baselayers property
-                    $log.error('[AngularJS - Leaflet] At least one baselayer has to be defined');
-                    return;
-                }
 
                 // We have baselayers to add to the map
                 scope._leafletLayers.resolve(leafletLayers);
@@ -98,11 +92,13 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                                     map.addLayer(leafletLayers.baselayers[newName]);
                                 }
                             }
+                        } else {
+                            if (newBaseLayers[newName].top === true && !map.hasLayer(leafletLayers.baselayers[newName])) {
+                                map.addLayer(leafletLayers.baselayers[newName]);
+                            } else if (newBaseLayers[newName].top === false && map.hasLayer(leafletLayers.baselayers[newName])) {
+                                map.removeLayer(leafletLayers.baselayers[newName]);
+                            }
                         }
-                    }
-                    if (Object.keys(leafletLayers.baselayers).length === 0) {
-                        $log.error('[AngularJS - Leaflet] At least one baselayer has to be defined');
-                        return;
                     }
 
                     //we have layers, so we need to make, at least, one active
@@ -115,7 +111,7 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                         }
                     }
                     // If there is no active layer make one active
-                    if (!found) {
+                    if (!found && Object.keys(layers.baselayers).length > 0) {
                         map.addLayer(leafletLayers.baselayers[Object.keys(layers.baselayers)[0]]);
                     }
 
