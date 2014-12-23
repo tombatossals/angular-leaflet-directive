@@ -22,22 +22,22 @@
                         attribution: 'All maps &copy; <a href="http://www.opencyclemap.org">OpenCycleMap</a>, map data &copy; <a href="http://www.openstreetmap.org">OpenStreetMap</a> (<a href="http://www.openstreetmap.org/copyright">ODbL</a>'
                     }
                 },
-                mapbox_streets: {
-                    name: 'Mapbox Streets',
-                    url: 'http://api.tiles.mapbox.com/v4/{mapid}/{z}/{x}/{y}.png?access_token={apikey}',
-                    type: 'xyz',
-                    options: {
-                        apikey: 'pk.eyJ1IjoidG9tYmF0b3NzYWxzIiwiYSI6Imo3MWxyTHMifQ.TjXg_IV7ZYMHX6tqjMikPg',
-                        mapid: 'tombatossals.map-fmyyujjl'
-                    }
-                },
                 mapbox_terrain: {
                     name: 'Mapbox Terrain',
                     url: 'http://api.tiles.mapbox.com/v4/{mapid}/{z}/{x}/{y}.png?access_token={apikey}',
                     type: 'xyz',
                     options: {
                         apikey: 'pk.eyJ1IjoidG9tYmF0b3NzYWxzIiwiYSI6Imo3MWxyTHMifQ.TjXg_IV7ZYMHX6tqjMikPg',
-                        mapid: 'tombatossals.jbn2nnon'
+                        mapid: 'examples.map-i86nkdio'
+                    }
+                },
+                mapbox_night: {
+                    name: 'Mapbox Night',
+                    url: 'http://api.tiles.mapbox.com/v4/{mapid}/{z}/{x}/{y}.png?access_token={apikey}',
+                    type: 'xyz',
+                    options: {
+                        apikey: 'pk.eyJ1IjoidG9tYmF0b3NzYWxzIiwiYSI6Imo3MWxyTHMifQ.TjXg_IV7ZYMHX6tqjMikPg',
+                        mapid: 'examples.map-0l53fhk2'
                     }
                 }
             };
@@ -75,8 +75,8 @@
               <p>
               <button ng-click="changeTiles('opencyclemap')" class="btn btn-default">OpenCycleMaps</button>
               <button ng-click="changeTiles('openstreetmap')" class="btn btn-default">OpenStreetMaps</button>
-              <button ng-click="changeTiles('mapbox_streets')" class="btn btn-default">Mapbox Streets</button>
               <button ng-click="changeTiles('mapbox_terrain')" class="btn btn-default">Mapbox Terrain</button>
+              <button ng-click="changeTiles('mapbox_night')" class="btn btn-default">Mapbox Night</button>
               </p>
           </div>
 
