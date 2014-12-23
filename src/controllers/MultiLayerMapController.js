@@ -7,18 +7,18 @@ app.controller("MultiLayerMapController", [ '$scope', '$http', function($scope, 
         cycle: {
             url: 'http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png'
         },
-        mapbox_streets: {
-            url: 'http://api.tiles.mapbox.com/v4/{mapid}/{z}/{x}/{y}.png?access_token={apikey}',
-            options: {
-                apikey: 'pk.eyJ1IjoidG9tYmF0b3NzYWxzIiwiYSI6Imo3MWxyTHMifQ.TjXg_IV7ZYMHX6tqjMikPg',
-                mapid: 'tombatossals.map-fmyyujjl'
-            }
-        },
         mapbox_terrain: {
             url: 'http://api.tiles.mapbox.com/v4/{mapid}/{z}/{x}/{y}.png?access_token={apikey}',
             options: {
                 apikey: 'pk.eyJ1IjoidG9tYmF0b3NzYWxzIiwiYSI6Imo3MWxyTHMifQ.TjXg_IV7ZYMHX6tqjMikPg',
-                mapid: 'tombatossals.jbn2nnon'
+                mapid: 'examples.map-i86nkdio'
+            }
+        },
+        mapbox_night: {
+            url: 'http://api.tiles.mapbox.com/v4/{mapid}/{z}/{x}/{y}.png?access_token={apikey}',
+            options: {
+                apikey: 'pk.eyJ1IjoidG9tYmF0b3NzYWxzIiwiYSI6Imo3MWxyTHMifQ.TjXg_IV7ZYMHX6tqjMikPg',
+                mapid: 'examples.map-0l53fhk2'
             }
         }
     };
