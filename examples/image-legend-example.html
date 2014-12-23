@@ -10,7 +10,7 @@
     <script src="../dist/angular-leaflet-directive.min.js"></script>
     <link href='http://fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
-    
+
     <script>
         var app = angular.module("demoapp", ["leaflet-directive"]);
         app.controller("ImageLegendServiceController", [ "$scope", function($scope) {
@@ -68,21 +68,20 @@
                         }
                     }
                 },
-                
+
                 legend: {
                 	url: "http://nowcoast.noaa.gov/LayerInfo?layer=NCEP_RAS_ANAL_RTG_SST&data=legend",
                 	legendClass: "info legend",
 					position: "bottomleft",
                     type: "image"
                 },
-                
+
                 legendURL1: "http://nowcoast.noaa.gov/LayerInfo?layer=NCEP_RAS_ANAL_RTG_SST&data=legend",
                 legendURL2: "http://nowcoast.noaa.gov/LayerInfo?layer=NDFD_RAS_WAVEH_3_00&data=legend",
                 switchLegend: function() {
 
                         $scope.layers.overlays.sst.visible = !$scope.layers.overlays.sst.visible;
                         $scope.layers.overlays.wave.visible = !$scope.layers.overlays.wave.visible;
-                        $scope.legend.url = 
                         $scope.legend.url == $scope.legendURL1? $scope.legendURL2:$scope.legendURL1;
                 }
             });
@@ -92,7 +91,7 @@
 <body ng-controller="ImageLegendServiceController">
     <h1>Image Legend Service</h1>
     <p>Use the button to switch another Layer with different legend.</p>
-    <leaflet center="usa" layers="layers" markers="markers" height="480px" width="640px" 
+    <leaflet center="usa" layers="layers" markers="markers" height="480px" width="640px"
     	legend="legend" defaults="options"></leaflet>
     <br/>
     <button ng-click="switchLegend()">Switch Legend</button>
