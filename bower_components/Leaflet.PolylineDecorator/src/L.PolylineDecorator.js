@@ -15,12 +15,17 @@ L.PolylineDecorator = L.LayerGroup.extend({
     /**
     * Deals with all the different cases. p can be one of these types:
     * array of LatLng, array of 2-number arrays, Polyline, Polygon,
-    * array of one of the previous. 
+    * array of one of the previous, MultiPolyline, MultiPolygon. 
     */
     _initPaths: function(p) {
         this._paths = [];
         var isPolygon = false;
-        if(p instanceof L.Polyline) {
+        if(p instanceof L.MultiPolyline || (isPolygon = (p instanceof L.MultiPolygon))) {
+            var lines = p.getLatLngs();
+            for(var i=0; i<lines.length; i++) {
+                this._initPath(lines[i], isPolygon);
+            }   
+        } else if(p instanceof L.Polyline) {
             this._initPath(p.getLatLngs(), (p instanceof L.Polygon));
         } else if(L.Util.isArray(p) && p.length > 0) {
             if(p[0] instanceof L.Polyline) {

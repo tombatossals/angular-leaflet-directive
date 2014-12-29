@@ -23,8 +23,7 @@ L.Symbol.Dash = L.Class.extend({
     },
 
     buildSymbol: function(dirPoint, latLngs, map, index, total) {
-        var opts = this.options,
-            d2r = Math.PI / 180;
+        var opts = this.options;
         
         // for a dot, nothing more to compute
         if(opts.pixelSize <= 1) {
@@ -32,7 +31,7 @@ L.Symbol.Dash = L.Class.extend({
         }
         
         var midPoint = map.project(dirPoint.latLng);
-        var angle = (-(dirPoint.heading - 90)) * d2r;
+        var angle = (-(dirPoint.heading - 90)) * L.LatLng.DEG_TO_RAD;
         var a = new L.Point(
                 midPoint.x + opts.pixelSize * Math.cos(angle + Math.PI) / 2,
                 midPoint.y + opts.pixelSize * Math.sin(angle) / 2
@@ -77,10 +76,9 @@ L.Symbol.ArrowHead = L.Class.extend({
     },
     
     _buildArrowPath: function (dirPoint, map) {
-        var d2r = Math.PI / 180;
         var tipPoint = map.project(dirPoint.latLng);
-        var direction = (-(dirPoint.heading - 90)) * d2r;
-        var radianArrowAngle = this.options.headAngle / 2 * d2r;
+        var direction = (-(dirPoint.heading - 90)) * L.LatLng.DEG_TO_RAD;
+        var radianArrowAngle = this.options.headAngle / 2 * L.LatLng.DEG_TO_RAD; 
         
         var headAngle1 = direction + radianArrowAngle,
             headAngle2 = direction - radianArrowAngle;

@@ -163,7 +163,6 @@ L.RotatedMarker = L.Marker.extend({
     options: {
         angle: 0
     },
-
     _setPos: function (pos) {
         L.Marker.prototype._setPos.call(this, pos);
         
@@ -172,7 +171,7 @@ L.RotatedMarker = L.Marker.extend({
             this._icon.style[L.DomUtil.TRANSFORM] += ' rotate(' + this.options.angle + 'deg)';
         } else if(L.Browser.ie) {
             // fallback for IE6, IE7, IE8
-            var rad = this.options.angle * (Math.PI / 180),
+            var rad = this.options.angle * L.LatLng.DEG_TO_RAD,
                 costheta = Math.cos(rad),
                 sintheta = Math.sin(rad);
             this._icon.style.filter += ' progid:DXImageTransform.Microsoft.Matrix(sizingMethod=\'auto expand\', M11=' + 
@@ -208,8 +207,7 @@ L.Symbol.Dash = L.Class.extend({
     },
 
     buildSymbol: function(dirPoint, latLngs, map, index, total) {
-        var opts = this.options,
-            d2r = Math.PI / 180;
+        var opts = this.options;
         
         // for a dot, nothing more to compute
         if(opts.pixelSize <= 1) {
@@ -217,7 +215,7 @@ L.Symbol.Dash = L.Class.extend({
         }
         
         var midPoint = map.project(dirPoint.latLng);
-        var angle = (-(dirPoint.heading - 90)) * d2r;
+        var angle = (-(dirPoint.heading - 90)) * L.LatLng.DEG_TO_RAD;
         var a = new L.Point(
                 midPoint.x + opts.pixelSize * Math.cos(angle + Math.PI) / 2,
                 midPoint.y + opts.pixelSize * Math.sin(angle) / 2
@@ -262,10 +260,9 @@ L.Symbol.ArrowHead = L.Class.extend({
     },
     
     _buildArrowPath: function (dirPoint, map) {
-        var d2r = Math.PI / 180;
         var tipPoint = map.project(dirPoint.latLng);
-        var direction = (-(dirPoint.heading - 90)) * d2r;
-        var radianArrowAngle = this.options.headAngle / 2 * d2r;
+        var direction = (-(dirPoint.heading - 90)) * L.LatLng.DEG_TO_RAD;
+        var radianArrowAngle = this.options.headAngle / 2 * L.LatLng.DEG_TO_RAD; 
         
         var headAngle1 = direction + radianArrowAngle,
             headAngle2 = direction - radianArrowAngle;
@@ -336,12 +333,17 @@ L.PolylineDecorator = L.LayerGroup.extend({
     /**
     * Deals with all the different cases. p can be one of these types:
     * array of LatLng, array of 2-number arrays, Polyline, Polygon,
-    * array of one of the previous. 
+    * array of one of the previous, MultiPolyline, MultiPolygon. 
     */
     _initPaths: function(p) {
         this._paths = [];
         var isPolygon = false;
-        if(p instanceof L.Polyline) {
+        if(p instanceof L.MultiPolyline || (isPolygon = (p instanceof L.MultiPolygon))) {
+            var lines = p.getLatLngs();
+            for(var i=0; i<lines.length; i++) {
+                this._initPath(lines[i], isPolygon);
+            }   
+        } else if(p instanceof L.Polyline) {
             this._initPath(p.getLatLngs(), (p instanceof L.Polygon));
         } else if(L.Util.isArray(p) && p.length > 0) {
             if(p[0] instanceof L.Polyline) {

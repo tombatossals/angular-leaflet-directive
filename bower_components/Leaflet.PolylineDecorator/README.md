@@ -2,12 +2,6 @@
 
 A Leaflet plug-in to define and draw patterns on existing Polylines or along coordinate paths.
 
-## Compatibility with Leaflet versions
-
-The development version of the plugin (on the `master` branch) is now targeted at the dev version of Leaflet (0.8), which includes some API breaking changes.
-
-For a version of the plugin compatible with the latest stable Leaflet release, use the `leaflet-0.7.2` branch.
-
 ## Features
 
 * Dashed or dotted lines, arrow heads, markers following line
