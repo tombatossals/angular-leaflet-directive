@@ -616,12 +616,6 @@ angular.module("leaflet-directive").directive('layers', ["$log", "$q", "leafletD
                 isLayersControlVisible = false;
 
             controller.getMap().then(function(map) {
-                // Do we have a baselayers property?
-                if (!isDefined(layers) || !isDefined(layers.baselayers) || Object.keys(layers.baselayers).length === 0) {
-                    // No baselayers property
-                    $log.error('[AngularJS - Leaflet] At least one baselayer has to be defined');
-                    return;
-                }
 
                 // We have baselayers to add to the map
                 scope._leafletLayers.resolve(leafletLayers);
@@ -694,11 +688,13 @@ angular.module("leaflet-directive").directive('layers', ["$log", "$q", "leafletD
                                     map.addLayer(leafletLayers.baselayers[newName]);
                                 }
                             }
+                        } else {
+                            if (newBaseLayers[newName].top === true && !map.hasLayer(leafletLayers.baselayers[newName])) {
+                                map.addLayer(leafletLayers.baselayers[newName]);
+                            } else if (newBaseLayers[newName].top === false && map.hasLayer(leafletLayers.baselayers[newName])) {
+                                map.removeLayer(leafletLayers.baselayers[newName]);
+                            }
                         }
-                    }
-                    if (Object.keys(leafletLayers.baselayers).length === 0) {
-                        $log.error('[AngularJS - Leaflet] At least one baselayer has to be defined');
-                        return;
                     }
 
                     //we have layers, so we need to make, at least, one active
@@ -711,7 +707,7 @@ angular.module("leaflet-directive").directive('layers', ["$log", "$q", "leafletD
                         }
                     }
                     // If there is no active layer make one active
-                    if (!found) {
+                    if (!found && Object.keys(layers.baselayers).length > 0) {
                         map.addLayer(leafletLayers.baselayers[Object.keys(layers.baselayers)[0]]);
                     }
 
@@ -1008,8 +1004,14 @@ angular.module("leaflet-directive").directive('paths', ["$log", "$q", "leafletDa
 
                     // Function for listening every single path once created
                     var watchPathFn = function(leafletPath, name) {
-                        var clearWatch = leafletScope.$watch('paths.' + name, function(pathData) {
+                        var clearWatch = leafletScope.$watch('paths.' + name, function(pathData, old) {
                             if (!isDefined(pathData)) {
+                                if (isDefined(old.layer)) {
+                                    for (var i in layers.overlays) {
+                                        var overlay = layers.overlays[i];
+                                        overlay.removeLayer(leafletPath);
+                                    }
+                                }
                                 map.removeLayer(leafletPath);
                                 clearWatch();
                                 return;
@@ -1019,6 +1021,13 @@ angular.module("leaflet-directive").directive('paths', ["$log", "$q", "leafletDa
                     };
 
                     leafletScope.$watch("paths", function (newPaths) {
+
+                        // Delete paths (by name) from the array
+                        for (var name in leafletPaths) {
+                            if (!isDefined(newPaths[name])) {
+                                delete leafletPaths[name];
+                            }
+                        }
 
                         // Create the new paths
                         for (var newName in newPaths) {
@@ -1080,13 +1089,6 @@ angular.module("leaflet-directive").directive('paths', ["$log", "$q", "leafletDa
                                 }
 
                                 bindPathEvents(newPath, newName, pathData, leafletScope);
-                            }
-                        }
-
-                        // Delete paths (by name) from the array
-                        for (var name in leafletPaths) {
-                            if (!isDefined(newPaths[name])) {
-                                delete leafletPaths[name];
                             }
                         }
 
@@ -1483,12 +1485,6 @@ angular.module("leaflet-directive").directive('layercontrol', ["$log", "leafletD
 
         scope.layers = layers;
         controller.getMap().then(function(map) {
-            // Do we have a baselayers property?
-            if (!isDefined(layers) || !isDefined(layers.baselayers) || Object.keys(layers.baselayers).length === 0) {
-                // No baselayers property
-                $log.error('[AngularJS - Leaflet] At least one baselayer has to be defined');
-                return;
-            }
 
             leafletScope.$watch('layers.baselayers', function(newBaseLayers) {
                 leafletData.getLayers().then(function(leafletLayers) {
@@ -1614,6 +1610,13 @@ angular.module("leaflet-directive").service('leafletData', ["$log", "$q", "leafl
     this.unresolveMap = function (scopeId) {
         var id = leafletHelpers.obtainEffectiveMapId(maps, scopeId);
         maps[id] = undefined;
+        tiles[id] = undefined;
+        layers[id] = undefined;
+        paths[id] = undefined;
+        markers[id] = undefined;
+        geoJSON[id] = undefined;
+        utfGrid[id] = undefined;
+        decorations[id] = undefined;
     };
 
     this.getPaths = function(scopeId) {
@@ -1648,12 +1651,12 @@ angular.module("leaflet-directive").service('leafletData', ["$log", "$q", "leafl
         defer.resolve(leafletLayers);
         setResolvedDefer(layers, scopeId);
     };
-    
+
     this.getUTFGrid = function(scopeId) {
         var defer = getDefer(utfGrid, scopeId);
         return defer.promise;
     };
-    
+
     this.setUTFGrid = function(leafletUTFGrid, scopeId) {
         var defer = getUnresolvedDefer(utfGrid, scopeId);
         defer.resolve(leafletUTFGrid);
@@ -2396,8 +2399,12 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', ["$rootScope"
         },
         group: {
             mustHaveUrl: false,
-            createLayer: function () {
-                return L.layerGroup();
+            createLayer: function (params) {
+                var lyrs = [];
+                angular.forEach(params.options.layers, function(l){
+                  lyrs.push(createLayer(l));
+                });
+                return L.layerGroup(lyrs);
             }
         },
         featureGroup: {
@@ -2570,44 +2577,46 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', ["$rootScope"
         return true;
     }
 
-    return {
-        createLayer: function(layerDefinition) {
-            if (!isValidLayerType(layerDefinition)) {
-                return;
-            }
-
-            if (!isString(layerDefinition.name)) {
-                $log.error('[AngularJS - Leaflet] A base layer must have a name');
-                return;
-            }
-            if (!isObject(layerDefinition.layerParams)) {
-                layerDefinition.layerParams = {};
-            }
-            if (!isObject(layerDefinition.layerOptions)) {
-                layerDefinition.layerOptions = {};
-            }
-
-            // Mix the layer specific parameters with the general Leaflet options. Although this is an overhead
-            // the definition of a base layers is more 'clean' if the two types of parameters are differentiated
-            for (var attrname in layerDefinition.layerParams) {
-                layerDefinition.layerOptions[attrname] = layerDefinition.layerParams[attrname];
-            }
-
-            var params = {
-                url: layerDefinition.url,
-                data: layerDefinition.data,
-                options: layerDefinition.layerOptions,
-                layer: layerDefinition.layer,
-                type: layerDefinition.layerType,
-                bounds: layerDefinition.bounds,
-                key: layerDefinition.key,
-                pluginOptions: layerDefinition.pluginOptions,
-                user: layerDefinition.user
-            };
-
-            //TODO Add $watch to the layer properties
-            return layerTypes[layerDefinition.type].createLayer(params);
+    function createLayer(layerDefinition) {
+        if (!isValidLayerType(layerDefinition)) {
+            return;
         }
+
+        if (!isString(layerDefinition.name)) {
+            $log.error('[AngularJS - Leaflet] A base layer must have a name');
+            return;
+        }
+        if (!isObject(layerDefinition.layerParams)) {
+            layerDefinition.layerParams = {};
+        }
+        if (!isObject(layerDefinition.layerOptions)) {
+            layerDefinition.layerOptions = {};
+        }
+
+        // Mix the layer specific parameters with the general Leaflet options. Although this is an overhead
+        // the definition of a base layers is more 'clean' if the two types of parameters are differentiated
+        for (var attrname in layerDefinition.layerParams) {
+            layerDefinition.layerOptions[attrname] = layerDefinition.layerParams[attrname];
+        }
+
+        var params = {
+            url: layerDefinition.url,
+            data: layerDefinition.data,
+            options: layerDefinition.layerOptions,
+            layer: layerDefinition.layer,
+            type: layerDefinition.layerType,
+            bounds: layerDefinition.bounds,
+            key: layerDefinition.key,
+            pluginOptions: layerDefinition.pluginOptions,
+            user: layerDefinition.user
+        };
+
+        //TODO Add $watch to the layer properties
+        return layerTypes[layerDefinition.type].createLayer(params);
+    }
+
+    return {
+        createLayer: createLayer
     };
 }]);
 
