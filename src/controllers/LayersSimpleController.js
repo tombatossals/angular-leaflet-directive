@@ -13,13 +13,13 @@ app.controller("LayersSimpleController", [ '$scope', function($scope) {
                     url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
                     type: 'xyz'
                 },
-                cloudmade2: {
-                    name: 'Cloudmade Tourist',
+                mapbox_terrain: {
+                    name: 'Mapbox Terrain',
+                    url: 'http://api.tiles.mapbox.com/v4/{mapid}/{z}/{x}/{y}.png?access_token={apikey}',
                     type: 'xyz',
-                    url: 'http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png',
-                    layerParams: {
-                        key: '007b9471b4c74da4a6ec7ff43552b16f',
-                        styleId: 7
+                    layerOptions: {
+                        apikey: 'pk.eyJ1IjoidG9tYmF0b3NzYWxzIiwiYSI6Imo3MWxyTHMifQ.TjXg_IV7ZYMHX6tqjMikPg',
+                        mapid: 'examples.map-i86nkdio'
                     }
                 }
             }
