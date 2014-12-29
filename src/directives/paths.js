@@ -41,8 +41,14 @@ angular.module("leaflet-directive").directive('paths', function ($log, $q, leafl
 
                     // Function for listening every single path once created
                     var watchPathFn = function(leafletPath, name) {
-                        var clearWatch = leafletScope.$watch('paths.' + name, function(pathData) {
+                        var clearWatch = leafletScope.$watch('paths.' + name, function(pathData, old) {
                             if (!isDefined(pathData)) {
+                                if (isDefined(old.layer)) {
+                                    for (var i in layers.overlays) {
+                                        var overlay = layers.overlays[i];
+                                        overlay.removeLayer(leafletPath);
+                                    }
+                                }
                                 map.removeLayer(leafletPath);
                                 clearWatch();
                                 return;
@@ -52,6 +58,13 @@ angular.module("leaflet-directive").directive('paths', function ($log, $q, leafl
                     };
 
                     leafletScope.$watch("paths", function (newPaths) {
+
+                        // Delete paths (by name) from the array
+                        for (var name in leafletPaths) {
+                            if (!isDefined(newPaths[name])) {
+                                delete leafletPaths[name];
+                            }
+                        }
 
                         // Create the new paths
                         for (var newName in newPaths) {
@@ -113,13 +126,6 @@ angular.module("leaflet-directive").directive('paths', function ($log, $q, leafl
                                 }
 
                                 bindPathEvents(newPath, newName, pathData, leafletScope);
-                            }
-                        }
-
-                        // Delete paths (by name) from the array
-                        for (var name in leafletPaths) {
-                            if (!isDefined(newPaths[name])) {
-                                delete leafletPaths[name];
                             }
                         }
 
