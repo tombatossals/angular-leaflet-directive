@@ -39,6 +39,9 @@ angular.module("leaflet-directive").directive('paths', function ($log, $q, leafl
                     var leafletPaths = {};
                     leafletData.setPaths(leafletPaths, attrs.id);
 
+                    // Should we watch for every specific marker on the map?
+                    var shouldWatch = (!isDefined(attrs.watchPaths) || attrs.watchPaths === 'true');
+
                     // Function for listening every single path once created
                     var watchPathFn = function(leafletPath, name) {
                         var clearWatch = leafletScope.$watch('paths.' + name, function(pathData, old) {
@@ -57,11 +60,12 @@ angular.module("leaflet-directive").directive('paths', function ($log, $q, leafl
                         }, true);
                     };
 
-                    leafletScope.$watch("paths", function (newPaths) {
+                    leafletScope.$watchCollection("paths", function (newPaths) {
 
                         // Delete paths (by name) from the array
                         for (var name in leafletPaths) {
                             if (!isDefined(newPaths[name])) {
+                                map.removeLayer(leafletPaths[name]);
                                 delete leafletPaths[name];
                             }
                         }
@@ -117,20 +121,27 @@ angular.module("leaflet-directive").directive('paths', function ($log, $q, leafl
                                     // The path goes to a correct layer group, so first of all we add it
                                     layerGroup.addLayer(newPath);
 
-                                    watchPathFn(newPath, newName);
+                                    if (shouldWatch) {
+                                        watchPathFn(newPath, newName);
+                                    } else {
+                                        setPathOptions(newPath, pathData.type, pathData);
+                                    }
                                 } else if (isDefined(newPath)) {
                                     // Listen for changes on the new path
                                     leafletPaths[newName] = newPath;
                                     map.addLayer(newPath);
-                                    watchPathFn(newPath, newName);
+
+                                    if (shouldWatch) {
+                                        watchPathFn(newPath, newName);
+                                    } else {
+                                        setPathOptions(newPath, pathData.type, pathData);
+                                    }
                                 }
 
                                 bindPathEvents(newPath, newName, pathData, leafletScope);
                             }
                         }
-
-                    }, true);
-
+                    });
                 });
             });
         }
