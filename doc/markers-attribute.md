@@ -33,7 +33,9 @@ Every marker can have these properties:
 * **lat**. Number. Latitude.
 * **lng**. Number. Longitude.
 * **focus**. true/false. Shows/hide the popup of the marker (only one can be active).
-* **message**. String. Message to show on the popup.
+* **message**. String. Message to show on the popup. Can be an Angular template.
+* **getMessageScope**. Function. A function that returns the scope on which the message will be compiled. Defaults to $rootScope if not specified.
+* **compileMessage**. true/false. Deactivate the Angular compilation of the message. Defaults to true if unspecified.
 * **draggable**. true/false. Make the marker draggable.
 * **popupOptions**. Options object passsed to the leaflet popup. You can see [here](http://leafletjs.com/reference.html#popup-options) its properties.
 * **enable**. Array of Strings. Only events listed in this property will be watched and converted to angular events. Format for the angular event name: `leafletDirectiveMarker.event_name`.
@@ -82,6 +84,11 @@ label: {
 ```
 
 You can see an example of this special label [here](http://tombatossals.github.io/angular-leaflet-directive/examples/markers-label-example.html).
+
+
+The **message** property of a marker can contain an Angular template. This is supported for labels also. You can control the scope used to compile this message with the **getMessageScope** property. When defined, it must be a function that returns the wanted scope. You can disable the angular compilation process by specifying compileMessage: false. By default compilation is activated, including if not specified.
+
+You can see an example of Angular content in messages [here](http://tombatossals.github.io/angular-leaflet-directive/examples/markers-angular-template-example.html).
 
 
 Markers watches
