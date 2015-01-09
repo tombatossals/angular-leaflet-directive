@@ -33,6 +33,7 @@ See some basic examples:
 * [Paths example](http://tombatossals.github.io/angular-leaflet-directive/examples/paths-example.html)
 * [Single marker example](http://tombatossals.github.io/angular-leaflet-directive/examples/markers-simple-example.html)
 * [Marker with label example](http://tombatossals.github.io/angular-leaflet-directive/examples/markers-label-example.html)
+* [Marker with Angular templates example](http://tombatossals.github.io/angular-leaflet-directive/examples/markers-angular-template-example.html)
 * [Marker with group clustering example](http://tombatossals.github.io/angular-leaflet-directive/examples/markers-clustering-example.html)
 * [Marker with group clustering example (10000 markers)](http://tombatossals.github.io/angular-leaflet-directive/examples/markers-clustering-10000.html)
 * [Marker with group clustering example without overlays](http://tombatossals.github.io/angular-leaflet-directive/examples/markers-clustering-without-overlays-example.html)

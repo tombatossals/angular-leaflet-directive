@@ -19,15 +19,18 @@
                     lng: -0.09,
                     zoom: 8
                 },
-                markers: {}
+                data: {markers: {}}
             });
 
             $scope.addMarkers = function() {
-                angular.extend($scope, {
+                $scope.data.markers = {};
+                angular.extend($scope.data, { angularInterpolatedMessage : "Angular interpolated message!"});
+                angular.extend($scope.data, {
                     markers: {
                         m1: {
                             lat: 51.505,
                             lng: -0.09,
+                            compileMessage: false,
                             message: "I'm a static marker",
                         },
                         m2: {
@@ -36,13 +39,19 @@
                             focus: true,
                             message: "<div ng-include src=\"'views/template.html'\"></div>",
                             draggable: true,
+                        },
+                        m3: {
+                            lat: 51,
+                            lng: -1,
+                            getMessageScope: function () { return $scope; },
+                            message: "<p>{{angularInterpolatedMessage}}</p>",
                         }
                     }
                 });
             };
 
             $scope.removeMarkers = function() {
-                $scope.markers = {};
+                $scope.data.markers = {};
             }
 
             $scope.addMarkers();
@@ -58,6 +67,6 @@
   <body ng-controller="DemoController">
       <a href="#" ng-click="removeMarkers()">Remove markers</a> #
       <a href="#" ng-click="addMarkers()">Add markers</a>
-      <leaflet center="london" markers="markers" height="480px" width="640px"></leaflet>
+      <leaflet center="london" markers="data.markers" height="480px" width="640px"></leaflet>
   </body>
 </html>

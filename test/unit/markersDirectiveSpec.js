@@ -129,6 +129,38 @@ describe('Directive: leaflet', function() {
         expect(leafletMainMarker._popup._contentNode.innerHTML).toEqual('<p class="ng-binding">blue</p>');
     });
 
+    it('message should be compiled in specified scope', function() {
+        
+        var arbitraryIsolateScope = $rootScope.$new(true);
+        angular.extend(arbitraryIsolateScope, { model: { color: 'angular'}});
+
+        var marker = {
+            lat: 0.966,
+            lng: 2.02,
+            getMessageScope: function() {return arbitraryIsolateScope;},
+            message: '<p>{{model.color}}</p>',
+            focus: true
+        };
+
+        angular.extend($rootScope, {
+            markers: {
+                marker: marker
+            }
+        });
+
+        var element = angular.element('<leaflet markers="markers"></leaflet>');
+        element = $compile(element)($rootScope);
+        $rootScope.$digest();
+        var leafletMainMarker;
+        leafletData.getMarkers().then(function(leafletMarkers) {
+            leafletMainMarker = leafletMarkers.marker;
+        });
+        $rootScope.$digest();
+        leafletMainMarker.openPopup();
+        $rootScope.$digest();
+        expect(leafletMainMarker._popup._contentNode.innerHTML).toEqual('<p class="ng-binding">angular</p>');
+    });
+
     it('should bind label to main marker if message is given', function() {
         spyOn(leafletHelpers.LabelPlugin, 'isLoaded').and.returnValue(true);
         L.Label = L.Class.extend({
