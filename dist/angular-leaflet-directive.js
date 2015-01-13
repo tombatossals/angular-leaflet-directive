@@ -533,8 +533,7 @@ angular.module("leaflet-directive").directive('geojson', ["$log", "$rootScope", 
                 leafletGeoJSON = {};
 
             controller.getMap().then(function(map) {
-                leafletScope.$watch("geojson", function(geojson) {
-
+                leafletScope.$watchCollection("geojson", function(geojson) {
                     if (isDefined(leafletGeoJSON) && map.hasLayer(leafletGeoJSON)) {
                         map.removeLayer(leafletGeoJSON);
                     }
@@ -546,7 +545,7 @@ angular.module("leaflet-directive").directive('geojson', ["$log", "$rootScope", 
                     var resetStyleOnMouseout = geojson.resetStyleOnMouseout;
                     var onEachFeature;
 
-                    if (geojson.onEachFeature) {
+                    if (angular.isFunction(geojson.onEachFeature)) {
                         onEachFeature = geojson.onEachFeature;
                     } else {
                         onEachFeature = function(feature, layer) {
@@ -577,18 +576,20 @@ angular.module("leaflet-directive").directive('geojson', ["$log", "$rootScope", 
                         };
                     }
 
-                    geojson.options = {
-                        style: geojson.style,
-                        filter: geojson.filter,
-                        onEachFeature: onEachFeature,
-                        pointToLayer: geojson.pointToLayer
-                    };
+                    if (!isDefined(geojson.options)) {
+                        geojson.options = {
+                            style: geojson.style,
+                            filter: geojson.filter,
+                            onEachFeature: onEachFeature,
+                            pointToLayer: geojson.pointToLayer
+                        };
+                    }
 
                     leafletGeoJSON = L.geoJson(geojson.data, geojson.options);
                     leafletData.setGeoJSON(leafletGeoJSON, attrs.id);
                     leafletGeoJSON.addTo(map);
 
-                }, true);
+                });
             });
         }
     };
