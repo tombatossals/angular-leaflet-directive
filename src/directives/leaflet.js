@@ -4,19 +4,19 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($q, leafl
         restrict: "EA",
         replace: true,
         scope: {
-            center         : '=center',
-            defaults       : '=defaults',
-            maxbounds      : '=maxbounds',
-            bounds         : '=bounds',
-            markers        : '=markers',
-            legend         : '=legend',
-            geojson        : '=geojson',
-            paths          : '=paths',
-            tiles          : '=tiles',
-            layers         : '=layers',
-            controls       : '=controls',
-            decorations    : '=decorations',
-            eventBroadcast : '=eventBroadcast'
+            center         : '=',
+            defaults       : '=',
+            maxbounds      : '=',
+            bounds         : '=',
+            markers        : '=',
+            legend         : '=',
+            geojson        : '=',
+            paths          : '=',
+            tiles          : '=',
+            layers         : '=',
+            controls       : '=',
+            decorations    : '=',
+            eventBroadcast : '='
         },
         transclude: true,
         template: '<div class="angular-leaflet-map"><div ng-transclude></div></div>',
@@ -138,8 +138,8 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($q, leafl
                 leafletData.unresolveMap(attrs.id);
             });
 
-            //Handle request to invalidate the map size 
-	        //Up scope using $scope.$emit('invalidateSize') 
+            //Handle request to invalidate the map size
+	        //Up scope using $scope.$emit('invalidateSize')
 	        //Down scope using $scope.$broadcast('invalidateSize')
             scope.$on('invalidateSize', function() {
                 map.invalidateSize();

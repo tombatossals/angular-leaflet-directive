@@ -12,7 +12,7 @@ angular.module("leaflet-directive").directive('geojson', function ($log, $rootSc
                 leafletGeoJSON = {};
 
             controller.getMap().then(function(map) {
-                leafletScope.$watch("geojson", function(geojson) {
+                leafletScope.$watchCollection("geojson", function(geojson) {
                     if (isDefined(leafletGeoJSON) && map.hasLayer(leafletGeoJSON)) {
                         map.removeLayer(leafletGeoJSON);
                     }
@@ -21,22 +21,12 @@ angular.module("leaflet-directive").directive('geojson', function ($log, $rootSc
                         return;
                     }
 
-                    var resetStyleOnMouseout = geojson.resetStyleOnMouseout,
+                    var resetStyleOnMouseout = geojson.resetStyleOnMouseout;
+                    var onEachFeature;
+
+                    if (angular.isFunction(geojson.onEachFeature)) {
                         onEachFeature = geojson.onEachFeature;
-
-
-                    geojson.options = {
-                        style: geojson.style,
-                        filter: geojson.filter,
-                        onEachFeature: onEachFeature,
-                        pointToLayer: geojson.pointToLayer
-                    };
-
-                    leafletGeoJSON = L.geoJson(geojson.data, geojson.options);
-                    leafletData.setGeoJSON(leafletGeoJSON, attrs.id);
-                    leafletGeoJSON.addTo(map);
-
-                    if (!onEachFeature) {
+                    } else {
                         onEachFeature = function(feature, layer) {
                             if (leafletHelpers.LabelPlugin.isLoaded() && isDefined(geojson.label)) {
                                 layer.bindLabel(feature.properties.description);
@@ -45,8 +35,7 @@ angular.module("leaflet-directive").directive('geojson', function ($log, $rootSc
                             layer.on({
                                 mouseover: function(e) {
                                     safeApply(leafletScope, function() {
-                                        geojson.selected = feature;
-                                        $rootScope.$broadcast('leafletDirectiveMap.geojsonMouseover', e);
+                                        $rootScope.$broadcast('leafletDirectiveMap.geojsonMouseover', feature, e);
                                     });
                                 },
                                 mouseout: function(e) {
@@ -54,20 +43,32 @@ angular.module("leaflet-directive").directive('geojson', function ($log, $rootSc
                                         leafletGeoJSON.resetStyle(e.target);
                                     }
                                     safeApply(leafletScope, function() {
-                                        geojson.selected = undefined;
                                         $rootScope.$broadcast('leafletDirectiveMap.geojsonMouseout', e);
                                     });
                                 },
                                 click: function(e) {
                                     safeApply(leafletScope, function() {
-                                        geojson.selected = feature;
-                                        $rootScope.$broadcast('leafletDirectiveMap.geojsonClick', geojson.selected, e);
+                                        $rootScope.$broadcast('leafletDirectiveMap.geojsonClick', feature, e);
                                     });
                                 }
                             });
                         };
                     }
-                }, true);
+
+                    if (!isDefined(geojson.options)) {
+                        geojson.options = {
+                            style: geojson.style,
+                            filter: geojson.filter,
+                            onEachFeature: onEachFeature,
+                            pointToLayer: geojson.pointToLayer
+                        };
+                    }
+
+                    leafletGeoJSON = L.geoJson(geojson.data, geojson.options);
+                    leafletData.setGeoJSON(leafletGeoJSON, attrs.id);
+                    leafletGeoJSON.addTo(map);
+
+                });
             });
         }
     };

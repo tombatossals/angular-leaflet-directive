@@ -1,23 +1,28 @@
 angular.module("leaflet-directive").factory('leafletLegendHelpers', function () {
-	var _updateArcGISLegend = function(div, legendData) {
+	var _updateLegend = function(div, legendData, type, url) {
 		div.innerHTML = '';
 		if(legendData.error) {
 			div.innerHTML += '<div class="info-title alert alert-danger">' + legendData.error.message + '</div>';
 		} else {
-			for (var i = 0; i < legendData.layers.length; i++) {
-				var layer = legendData.layers[i];
-				div.innerHTML += '<div class="info-title" data-layerid="' + layer.layerId + '">' + layer.layerName + '</div>';
-				for(var j = 0; j < layer.legend.length; j++) {
-					var leg = layer.legend[j];
-					div.innerHTML +=
-						'<div class="inline" data-layerid="' + layer.layerId + '"><img src="data:' + leg.contentType + ';base64,' + leg.imageData + '" /></div>' +
-						'<div class="info-label" data-layerid="' + layer.layerId + '">' + leg.label + '</div>';
+			if (type === 'arcgis') {
+				for (var i = 0; i < legendData.layers.length; i++) {
+					var layer = legendData.layers[i];
+					div.innerHTML += '<div class="info-title" data-layerid="' + layer.layerId + '">' + layer.layerName + '</div>';
+					for(var j = 0; j < layer.legend.length; j++) {
+						var leg = layer.legend[j];
+						div.innerHTML +=
+							'<div class="inline" data-layerid="' + layer.layerId + '"><img src="data:' + leg.contentType + ';base64,' + leg.imageData + '" /></div>' +
+							'<div class="info-label" data-layerid="' + layer.layerId + '">' + leg.label + '</div>';
+					}
 				}
+			}
+			else if (type === 'image') {
+				div.innerHTML = '<img src="' + url + '"/>';
 			}
 		}
 	};
 
-	var _getOnAddArcGISLegend = function(legendData, legendClass) {
+	var _getOnAddLegend = function(legendData, legendClass, type, url) {
 		return function(/*map*/) {
 			var div = L.DomUtil.create('div', legendClass);
 
@@ -27,7 +32,7 @@ angular.module("leaflet-directive").factory('leafletLegendHelpers', function () 
 			} else {
 				L.DomEvent.on(div, 'click', L.DomEvent.stopPropagation);
 			}
-			_updateArcGISLegend(div, legendData);
+			_updateLegend(div, legendData, type, url);
 			return div;
 		};
 	};
@@ -51,8 +56,8 @@ angular.module("leaflet-directive").factory('leafletLegendHelpers', function () 
 	};
 
 	return {
-		getOnAddArcGISLegend: _getOnAddArcGISLegend,
+		getOnAddLegend: _getOnAddLegend,
 		getOnAddArrayLegend: _getOnAddArrayLegend,
-		updateArcGISLegend: _updateArcGISLegend,
+		updateLegend: _updateLegend,
 	};
 });

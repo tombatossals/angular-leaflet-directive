@@ -1,18 +1,16 @@
 angular.module("leaflet-directive").directive('layers', function ($log, $q, leafletData, leafletHelpers, leafletLayerHelpers, leafletControlHelpers) {
-    var _leafletLayers;
-
     return {
         restrict: "A",
         scope: false,
         replace: false,
         require: 'leaflet',
-        controller: function () {
-            _leafletLayers = $q.defer();
-            this.getLayers = function() {
-                return _leafletLayers.promise;
+        controller: function ($scope) {
+            $scope._leafletLayers = $q.defer();
+            this.getLayers = function () {
+                return $scope._leafletLayers.promise;
             };
         },
-        link: function(scope, element, attrs, controller) {
+        link: function(scope, element, attrs, controller){
             var isDefined = leafletHelpers.isDefined,
                 leafletLayers = {},
                 leafletScope  = controller.getLeafletScope(),
@@ -22,15 +20,9 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                 isLayersControlVisible = false;
 
             controller.getMap().then(function(map) {
-                // Do we have a baselayers property?
-                if (!isDefined(layers) || !isDefined(layers.baselayers) || Object.keys(layers.baselayers).length === 0) {
-                    // No baselayers property
-                    $log.error('[AngularJS - Leaflet] At least one baselayer has to be defined');
-                    return;
-                }
 
                 // We have baselayers to add to the map
-                _leafletLayers.resolve(leafletLayers);
+                scope._leafletLayers.resolve(leafletLayers);
                 leafletData.setLayers(leafletLayers, attrs.id);
 
                 leafletLayers.baselayers = {};
@@ -100,11 +92,13 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                                     map.addLayer(leafletLayers.baselayers[newName]);
                                 }
                             }
+                        } else {
+                            if (newBaseLayers[newName].top === true && !map.hasLayer(leafletLayers.baselayers[newName])) {
+                                map.addLayer(leafletLayers.baselayers[newName]);
+                            } else if (newBaseLayers[newName].top === false && map.hasLayer(leafletLayers.baselayers[newName])) {
+                                map.removeLayer(leafletLayers.baselayers[newName]);
+                            }
                         }
-                    }
-                    if (Object.keys(leafletLayers.baselayers).length === 0) {
-                        $log.error('[AngularJS - Leaflet] At least one baselayer has to be defined');
-                        return;
                     }
 
                     //we have layers, so we need to make, at least, one active
@@ -117,7 +111,7 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                         }
                     }
                     // If there is no active layer make one active
-                    if (!found) {
+                    if (!found && Object.keys(layers.baselayers).length > 0) {
                         map.addLayer(leafletLayers.baselayers[Object.keys(layers.baselayers)[0]]);
                     }
 
@@ -156,6 +150,12 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                             map.addLayer(leafletLayers.overlays[newName]);
                         } else if (newOverlayLayers[newName].visible === false && map.hasLayer(leafletLayers.overlays[newName])) {
                             map.removeLayer(leafletLayers.overlays[newName]);
+                        }
+
+                        //refresh heatmap data if present
+                        if (newOverlayLayers[newName].visible && map._loaded && newOverlayLayers[newName].data && newOverlayLayers[newName].type === "heatmap") {
+                            leafletLayers.overlays[newName].setData(newOverlayLayers[newName].data);
+                            leafletLayers.overlays[newName].update();
                         }
                     }
 

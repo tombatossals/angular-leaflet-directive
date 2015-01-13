@@ -6,11 +6,11 @@ angular.module("leaflet-directive").directive('center',
         isSameCenterOnMap = leafletHelpers.isSameCenterOnMap,
         safeApply     = leafletHelpers.safeApply,
         isValidCenter = leafletHelpers.isValidCenter,
-        isEmpty       = leafletHelpers.isEmpty,
+        isValidBounds = leafletBoundsHelpers.isValidBounds,
         isUndefinedOrEmpty = leafletHelpers.isUndefinedOrEmpty;
 
     var shouldInitializeMapWithBounds = function(bounds, center) {
-        return (isDefined(bounds) && !isEmpty(bounds)) && isUndefinedOrEmpty(center);
+        return isDefined(bounds) && isValidBounds(bounds) && isUndefinedOrEmpty(center);
     };
 
     var _leafletCenter;
@@ -49,7 +49,7 @@ angular.module("leaflet-directive").directive('center',
                     });
                     safeApply(leafletScope, function (scope) {
                         var mapBounds = map.getBounds();
-                        var newScopeBounds = {
+                        scope.bounds = {
                             northEast: {
                                 lat: mapBounds._northEast.lat,
                                 lng: mapBounds._northEast.lng
@@ -59,7 +59,6 @@ angular.module("leaflet-directive").directive('center',
                                 lng: mapBounds._southWest.lng
                             }
                         };
-                        scope.bounds = newScopeBounds;
                     });
                 } else if (!isDefined(centerModel)) {
                     $log.error('The "center" property is not defined in the main scope');

@@ -1,9 +1,10 @@
-angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($rootScope, leafletHelpers, $log) {
+angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($rootScope, leafletHelpers, $log, $compile) {
 
     var isDefined = leafletHelpers.isDefined,
         MarkerClusterPlugin = leafletHelpers.MarkerClusterPlugin,
         AwesomeMarkersPlugin = leafletHelpers.AwesomeMarkersPlugin,
         MakiMarkersPlugin = leafletHelpers.MakiMarkersPlugin,
+        ExtraMarkersPlugin = leafletHelpers.ExtraMarkersPlugin,
         safeApply     = leafletHelpers.safeApply,
         Helpers = leafletHelpers,
         isString = leafletHelpers.isString,
@@ -26,6 +27,13 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
             }
 
             return new L.MakiMarkers.icon(iconData);
+        }
+
+        if (isDefined(iconData) && isDefined(iconData.type) && iconData.type === 'extraMarker') {
+            if (!ExtraMarkersPlugin.isLoaded()) {
+                $log.error('[AngularJS - Leaflet] The ExtraMarkers Plugin is not loaded.');
+            }
+            return new L.ExtraMarkers.icon(iconData);
         }
 
         if (isDefined(iconData) && isDefined(iconData.type) && iconData.type === 'div') {
@@ -89,12 +97,54 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
         }
     };
 
+    var _manageOpenPopup = function(marker, markerData) {
+        marker.openPopup();
+
+        //the marker may have angular templates to compile
+        var popup = marker.getPopup(),
+            //the marker may provide a scope returning function used to compile the message
+            //default to $rootScope otherwise
+            markerScope = angular.isFunction(markerData.getMessageScope) ? markerData.getMessageScope() : $rootScope,
+            compileMessage = isDefined(markerData.compileMessage) ? markerData.compileMessage : true;
+
+        if (isDefined(popup)) {
+            var updatePopup = function(popup) {
+                popup._updateLayout();
+                popup._updatePosition();
+            };
+
+            if (compileMessage) {
+                $compile(popup._contentNode)(markerScope);
+                //in case of an ng-include, we need to update the content after template load
+                if (isDefined(popup._contentNode) && popup._contentNode.innerHTML.indexOf("ngInclude") > -1) {
+                    var unregister = $rootScope.$on('$includeContentLoaded', function(event, src) {
+                        if (popup.getContent().indexOf(src) > -1) {
+                            updatePopup(popup);
+                            unregister();
+                        }
+                    });
+                }
+                else {
+                    updatePopup(popup);
+                }
+            }
+        }
+        if (Helpers.LabelPlugin.isLoaded() && isDefined(markerData.label) && isDefined(markerData.label.options) && markerData.label.options.noHide === true) {
+            if (compileMessage) {
+                $compile(marker.label._container)(markerScope);
+            }
+            marker.showLabel();
+        }
+    };
+
     return {
         resetMarkerGroup: _resetMarkerGroup,
 
         resetMarkerGroups: _resetMarkerGroups,
 
         deleteMarker: _deleteMarker,
+
+        manageOpenPopup: _manageOpenPopup,
 
         createMarker: function(markerData) {
             if (!isDefined(markerData)) {
@@ -176,6 +226,14 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
                     return;
                 }
 
+                // watch is being initialized if old and new object is the same
+                var isInitializing = markerData === oldMarkerData;
+
+                // Update marker rotation
+                if (isDefined(markerData.iconAngle) && oldMarkerData.iconAngle !== markerData.iconAngle) {
+                    marker.setIconAngle(markerData.iconAngle);
+                }
+
                 // It is possible that the layer has been removed or the layer marker does not exist
                 // Update the layer group if present or move it to the map if not
                 if (!isString(markerData.layer)) {
@@ -221,7 +279,7 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
                     // The marker is automatically added to the map depending on the visibility
                     // of the layer, so we only have to open the popup if the marker is in the map
                     if (map.hasLayer(marker) && markerData.focus === true) {
-                        marker.openPopup();
+                        _manageOpenPopup(marker, markerData);
                     }
                 }
 
@@ -288,10 +346,6 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
                 if (isString(markerData.message) && !isString(oldMarkerData.message)) {
                     // There was no message before so we create it
                     marker.bindPopup(markerData.message, markerData.popupOptions);
-                    if (markerData.focus === true) {
-                        // If the focus is set, we must open the popup, because we do not know if it was opened before
-                        marker.openPopup();
-                    }
                 }
 
                 if (isString(markerData.message) && isString(oldMarkerData.message) && markerData.message !== oldMarkerData.message) {
@@ -308,14 +362,9 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
                 }
 
                 // The markerData.focus property must be true so we update if there wasn't a previous value or it wasn't true
-                if (markerData.focus === true && oldMarkerData.focus !== true) {
-                    marker.openPopup();
-                    updatedFocus = true;
-                }
-
-                if(oldMarkerData.focus === true && markerData.focus === true){
+                if (markerData.focus === true && ( !isDefined(oldMarkerData.focus) || oldMarkerData.focus === false) || (isInitializing && markerData.focus === true)) {
                     // Reopen the popup when focus is still true
-                    marker.openPopup();
+                    _manageOpenPopup(marker, markerData);
                     updatedFocus = true;
                 }
 

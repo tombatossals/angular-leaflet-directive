@@ -27,6 +27,7 @@
             font-weight: bold;
             line-height: 18px;
             color: #555;
+            width: 100px;
         }
 
         .legend i {
@@ -63,8 +64,8 @@
         var app = angular.module("demoapp", ["leaflet-directive"]);
         app.controller('DemoController', [ "$scope", "$http", function($scope, $http) {
 
-            $scope.$on("leafletDirectiveMap.geojsonMouseover", function(ev, leafletEvent) {
-                countryMouseover(leafletEvent);
+            $scope.$on("leafletDirectiveMap.geojsonMouseover", function(ev, feature, leafletEvent) {
+                countryMouseover(feature, leafletEvent);
             });
 
             $scope.$on("leafletDirectiveMap.geojsonClick", function(ev, featureSelected, leafletEvent) {
@@ -133,7 +134,7 @@
             }
 
             // Mouse over function, called from the Leaflet Map Events
-            function countryMouseover(leafletEvent) {
+            function countryMouseover(feature, leafletEvent) {
                 var layer = leafletEvent.target;
                 layer.setStyle({
                     weight: 2,
@@ -141,6 +142,8 @@
                     fillColor: 'white'
                 });
                 layer.bringToFront();
+                $scope.selectedCountry = feature;
+                console.log(feature);
             }
 
             // Get the countries data from a JSON
@@ -160,7 +163,8 @@
                             data: data,
                             style: style,
                             resetStyleOnMouseout: true
-                        }
+                        },
+                        selectedCountry: {}
                     });
                 });
             });
@@ -174,8 +178,8 @@
   </head>
   <body ng-controller="DemoController">
     <div class="info country f32">
-        <div ng-show="geojson.selected" class="flag" ng-class="countries[geojson.selected.id]['alpha-2']|lowercase"></div>
-        {{ geojson.selected.properties.name || 'No country'}}
+        <div ng-show="selectedCountry" class="flag" ng-class="countries[selectedCountry.id]['alpha-2']|lowercase"></div>
+        {{ selectedCountry.properties.name || 'No country'}}
     </div>
     <div class="info box">Map center: [ lat: {{ center.lat | number:4 }}, lng: {{ center.lng | number:4 }} ]</div>
     <leaflet center="center" events="events" legend="legend" geojson="geojson"></leaflet>

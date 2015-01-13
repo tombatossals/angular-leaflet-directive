@@ -27,6 +27,16 @@
                     lng: 175.5604435167,
                     zoom: 11
                 },
+                events: {
+                    map: {
+                        enable: ['moveend', 'popupopen'],
+                        logic: 'emit'
+                    },
+                    marker: {
+                        enable: [],
+                        logic: 'emit'
+                    }
+                },
                 markers: addressPointsToMarkers(addressPoints),
                 layers: {
                     baselayers: {
@@ -45,7 +55,12 @@
                         realworld: {
                             name: "Real world data",
                             type: "markercluster",
-                            visible: true
+                            visible: true,
+                            "layerOptions": {
+                                "chunkedLoading": true,
+                                "showCoverageOnHover": false,
+                                "removeOutsideVisibleBounds": true
+                            }
                         },
                     }
                 }
@@ -69,7 +84,7 @@
     </style>
 </head>
 <body ng-controller="DemoController">
-    <leaflet center="center" markers="markers" layers="layers"></leaflet>
+    <leaflet center="center" markers="markers" layers="layers" watch-markers="no" event-broadcast="events"></leaflet>
     <h1>Marker clustering example (10000 markers)</h1>
     <div class="left">
         <p>You can create a marker-clustering group on the map, defining <strong>layers</strong> like this.</p>

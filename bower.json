@@ -12,7 +12,8 @@
   ],
   "dependencies": {
     "angular": "1.3.x",
-    "leaflet": "0.7.x"
+    "leaflet": "0.7.x",
+    "font-awesome": "~4.2.0"
   },
   "devDependencies": {
     "jquery": "*",
@@ -32,6 +33,7 @@
     "proj4": "*",
     "proj4leaflet": "*",
     "Leaflet.MakiMarkers": "*",
+    "Leaflet.ExtraMarkers": "git://github.com/coryasilva/Leaflet.ExtraMarkers#master",
     "Leaflet.PolylineDecorator": "bbecquet/Leaflet.PolylineDecorator",
     "ionrangeslider": "~1.9.3"
   },

@@ -33,6 +33,7 @@ See some basic examples:
 * [Paths example](http://tombatossals.github.io/angular-leaflet-directive/examples/paths-example.html)
 * [Single marker example](http://tombatossals.github.io/angular-leaflet-directive/examples/markers-simple-example.html)
 * [Marker with label example](http://tombatossals.github.io/angular-leaflet-directive/examples/markers-label-example.html)
+* [Marker with Angular templates example](http://tombatossals.github.io/angular-leaflet-directive/examples/markers-angular-template-example.html)
 * [Marker with group clustering example](http://tombatossals.github.io/angular-leaflet-directive/examples/markers-clustering-example.html)
 * [Marker with group clustering example (10000 markers)](http://tombatossals.github.io/angular-leaflet-directive/examples/markers-clustering-10000.html)
 * [Marker with group clustering example without overlays](http://tombatossals.github.io/angular-leaflet-directive/examples/markers-clustering-without-overlays-example.html)
@@ -95,9 +96,39 @@ angular.extend($scope, {
         zoom: 8
     }
 });
-
 ```
+
+If you need to run any method on the map object, use ```leafletData``` as following (notice the map object is returned in a form of a promise):
+
+```javascript
+angular.module('myModule').controller('MapController', ['$scope', 'leafletData',
+	function($scope, leafletData) {
+	        leafletData.getMap().then(function(map) {
+	            L.GeoIP.centerMapOnPosition(map, 15);
+	        });
+	}
+]);
+```
+
 Finally, you must include the markup directive on your HTML page, like this:
 ```html
 <leaflet defaults="defaults" center="center" height="480px" width="640px"></leaflet>
+```
+
+If you want to have more than one map on the page and access their respective map objects, add an *id* attribute to your leaflet directive in HTML, like this:
+
+```html
+<leaflet id="mymap" defaults="defaults" center="center" height="480px" width="640px"></leaflet>
+```
+
+And then you can use this id in ```getMap()``` like this:
+
+```javascript
+angular.module('myModule').controller('MapController', ['$scope', 'leafletData',
+	function($scope, leafletData) {
+	        leafletData.getMap('mymap').then(function(map) {
+	            L.GeoIP.centerMapOnPosition(map, 15);
+	        });
+	}
+]);
 ```

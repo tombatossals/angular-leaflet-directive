@@ -25,7 +25,7 @@ describe('Loading layers-simple-example.html', function() {
                         return elementLoaded;
                     });
                 });
-                expect(ptor.isElementPresent(by.xpath('//img[contains(@src, "http://api.tiles.mapbox.com/v4/tombatossals.jbn2nnon/6/53/27.png?access_token=pk.eyJ1IjoidG9tYmF0b3NzYWxzIiwiYSI6Imo3MWxyTHMifQ.TjXg_IV7ZYMHX6tqjMikPg")]'))).toBe(true);
+                expect(ptor.isElementPresent(by.xpath('//img[contains(@src, "http://api.tiles.mapbox.com/v4/examples.map-i86nkdio/6/53/27.png?access_token=pk.eyJ1IjoidG9tYmF0b3NzYWxzIiwiYSI6Imo3MWxyTHMifQ.TjXg_IV7ZYMHX6tqjMikPg")]'))).toBe(true);
             });
         });
     });
