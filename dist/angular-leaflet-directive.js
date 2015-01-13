@@ -3177,7 +3177,7 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', ["$rootScop
         var popup = marker.getPopup(),
             //the marker may provide a scope returning function used to compile the message
             //default to $rootScope otherwise
-            markerScope = markerData.getMessageScope ? markerData.getMessageScope() : $rootScope,
+            markerScope = angular.isFunction(markerData.getMessageScope) ? markerData.getMessageScope() : $rootScope,
             compileMessage = isDefined(markerData.compileMessage) ? markerData.compileMessage : true;
 
         if (isDefined(popup)) {

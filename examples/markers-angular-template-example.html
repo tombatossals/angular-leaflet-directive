@@ -44,7 +44,8 @@
                             lat: 51,
                             lng: -1,
                             getMessageScope: function () { return $scope; },
-                            message: "<p>{{angularInterpolatedMessage}}</p>",
+                            message: "<p>{{data.angularInterpolatedMessage}}</p>",
+                            compileMessage: true
                         }
                     }
                 });
