@@ -3174,28 +3174,38 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', ["$rootScop
         marker.openPopup();
 
         //the marker may have angular templates to compile
-        var popup = marker.getPopup();
+        var popup = marker.getPopup(),
+            //the marker may provide a scope returning function used to compile the message
+            //default to $rootScope otherwise
+            markerScope = angular.isFunction(markerData.getMessageScope) ? markerData.getMessageScope() : $rootScope,
+            compileMessage = isDefined(markerData.compileMessage) ? markerData.compileMessage : true;
+
         if (isDefined(popup)) {
             var updatePopup = function(popup) {
                 popup._updateLayout();
                 popup._updatePosition();
             };
 
-            $compile(popup._contentNode)($rootScope);
-            //in case of an ng-include, we need to update the content after template load
-            if (isDefined(popup._contentNode) && popup._contentNode.innerHTML.indexOf("ngInclude") > -1) {
-                $rootScope.$on('$includeContentLoaded', function(event, src) {
-                    if (popup.getContent().indexOf(src) > -1) {
-                        updatePopup(popup);
-                    }
-                });
-            }
-            else {
-                updatePopup(popup);
+            if (compileMessage) {
+                $compile(popup._contentNode)(markerScope);
+                //in case of an ng-include, we need to update the content after template load
+                if (isDefined(popup._contentNode) && popup._contentNode.innerHTML.indexOf("ngInclude") > -1) {
+                    var unregister = $rootScope.$on('$includeContentLoaded', function(event, src) {
+                        if (popup.getContent().indexOf(src) > -1) {
+                            updatePopup(popup);
+                            unregister();
+                        }
+                    });
+                }
+                else {
+                    updatePopup(popup);
+                }
             }
         }
         if (Helpers.LabelPlugin.isLoaded() && isDefined(markerData.label) && isDefined(markerData.label.options) && markerData.label.options.noHide === true) {
-            $compile(marker.label._container)($rootScope);
+            if (compileMessage) {
+                $compile(marker.label._container)(markerScope);
+            }
             marker.showLabel();
         }
     };
@@ -3425,7 +3435,7 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', ["$rootScop
                 }
 
                 // The markerData.focus property must be true so we update if there wasn't a previous value or it wasn't true
-                if (markerData.focus === true && oldMarkerData.focus === false || (isInitializing && markerData.focus === true)) {
+                if (markerData.focus === true && ( !isDefined(oldMarkerData.focus) || oldMarkerData.focus === false) || (isInitializing && markerData.focus === true)) {
                     // Reopen the popup when focus is still true
                     _manageOpenPopup(marker, markerData);
                     updatedFocus = true;
