@@ -117,11 +117,9 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
                 $compile(popup._contentNode)(markerScope);
                 //in case of an ng-include, we need to update the content after template load
                 if (isDefined(popup._contentNode) && popup._contentNode.innerHTML.indexOf("ngInclude") > -1) {
-                    var unregister = $rootScope.$on('$includeContentLoaded', function(event, src) {
-                        if (popup.getContent().indexOf(src) > -1) {
-                            updatePopup(popup);
-                            unregister();
-                        }
+                    var unregister = markerScope.$on('$includeContentLoaded', function() {
+                        updatePopup(popup);
+                        unregister();
                     });
                 }
                 else {
