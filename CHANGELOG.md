@@ -1,3 +1,17 @@
+<a name="0.7.11"></a>
+### 0.7.11 (2015-01-17)
+
+#### Features
+
+* Added a new property to the layers to be able to hide the layer to the layer switcher. Example here: http://tombatossals.github.io/angular-leaflet-directive/examples/layers-hide-baselayer-on-selector-example.html
+
+#### Bug Fixes
+
+* **geojson:** Shallow watch of the geojson object to accomplish better performance, as stated  ([c893a1a8](https://github.com/tombatossals/angular-leaflet-directive/commit/c893a1a8e23d445a47ed5ea5d627cfe7955c667a))
+* **markerCompilation:** use specified scope to listen to includeContentLoaded ([2d937949](https://github.com/tombatossals/angular-leaflet-directive/commit/2d937949b52d62ca938986fd91c6adaa3266e775))
+* **paths:** Solved a bug with paths and layerGroup management. Reported by @ValentinH here:  ([10ac4e82](https://github.com/tombatossals/angular-leaflet-directive/commit/10ac4e82ebfa1a99f2f2c6d5bf30e403f52d0622))
+
+
 <a name="0.7.9"></a>
 ### 0.7.9 (2014-10-28)
 
