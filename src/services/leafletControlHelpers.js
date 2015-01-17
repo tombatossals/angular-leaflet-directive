@@ -58,7 +58,6 @@ angular.module("leaflet-directive").factory('leafletControlHelpers', function ($
             if (mustBeLoaded) {
                 _layersControl = _createLayersControl(mapId);
                 for (i in baselayers) {
-                    console.log(baselayers[i]);
                     var hideOnSelector = isDefined(baselayers[i].layerOptions) &&
                                          baselayers[i].layerOptions.showOnSelector === false;
                     if (!hideOnSelector && isDefined(leafletLayers.baselayers[i])) {

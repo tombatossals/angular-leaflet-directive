@@ -2697,7 +2697,6 @@ angular.module("leaflet-directive").factory('leafletControlHelpers', ["$rootScop
                     var hideOnSelector = isDefined(baselayers[i].layerOptions) &&
                                          baselayers[i].layerOptions.showOnSelector === false;
                     if (!hideOnSelector && isDefined(leafletLayers.baselayers[i])) {
-                        console.log(leafletLayers.baselayers[i]);
                         _layersControl.addBaseLayer(leafletLayers.baselayers[i], baselayers[i].name);
                     }
                 }
@@ -3195,11 +3194,9 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', ["$rootScop
                 $compile(popup._contentNode)(markerScope);
                 //in case of an ng-include, we need to update the content after template load
                 if (isDefined(popup._contentNode) && popup._contentNode.innerHTML.indexOf("ngInclude") > -1) {
-                    var unregister = $rootScope.$on('$includeContentLoaded', function(event, src) {
-                        if (popup.getContent().indexOf(src) > -1) {
-                            updatePopup(popup);
-                            unregister();
-                        }
+                    var unregister = markerScope.$on('$includeContentLoaded', function() {
+                        updatePopup(popup);
+                        unregister();
                     });
                 }
                 else {
