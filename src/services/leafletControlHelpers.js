@@ -58,11 +58,11 @@ angular.module("leaflet-directive").factory('leafletControlHelpers', function ($
             if (mustBeLoaded) {
                 _layersControl = _createLayersControl(mapId);
                 for (i in baselayers) {
-                    if (isDefined(leafletLayers.baselayers[i])) {
-                        var doNotInclude = leafletLayers.baselayers[i].options && isDefined(leafletLayers.baselayers[i].options.layerSelector) && !leafletLayers.baselayers[i].options.layerSelector;
-                        if(!doNotInclude) {
-                          _layersControl.addBaseLayer(leafletLayers.baselayers[i], baselayers[i].name);
-                        }
+                    console.log(baselayers[i]);
+                    var hideOnSelector = isDefined(baselayers[i].layerOptions) &&
+                                         baselayers[i].layerOptions.showOnSelector === false;
+                    if (!hideOnSelector && isDefined(leafletLayers.baselayers[i])) {
+                        _layersControl.addBaseLayer(leafletLayers.baselayers[i], baselayers[i].name);
                     }
                 }
                 for (i in overlays) {

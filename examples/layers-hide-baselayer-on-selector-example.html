@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html ng-app="demoapp">
+<head>
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="../dist/angular-leaflet-directive.min.js"></script>
+    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
+    <script>
+        var app = angular.module("demoapp", ["leaflet-directive"]);
+        app.controller("DemoController", [ "$scope", function($scope) {
+            angular.extend($scope, {
+                center: {
+                    lat: 39,
+                    lng: -100,
+                    zoom: 4
+                },
+                layers: {
+                    baselayers: {
+                        xyz: {
+                            name: 'OpenStreetMap (XYZ)',
+                            url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                            type: 'xyz',
+                            layerOptions: {
+                                showOnSelector: false
+                            }
+                        }
+                    },
+                    overlays: {
+                        wms: {
+                            name: 'EEUU States (WMS)',
+                            type: 'wms',
+                            url: 'http://suite.opengeo.org/geoserver/usa/wms',
+                            layerParams: {
+                                layers: 'usa:states',
+                                format: 'image/png',
+                                transparent: true
+                            }
+                        }
+                    }
+                }
+            });
+        }]);
+    </script>
+    <style>
+        html,body {
+            height: 98%;
+        }
+        .angular-leaflet-map {
+            height: 100%;
+        }
+        .left, .right {
+            float: left;
+            width: 48%;
+            height: 100%;
+            padding-right: 1em;
+        }
+    </style>
+</head>
+<body ng-controller="DemoController">
+    <div class="left">
+        <leaflet center="center" layers="layers"></leaflet>
+    </div>
+    <div class="right">
+        <h1>Baselayer with overlay definition</h1>
+        <p>You can add overlays to a baselayer, which will show a layer selector on the top right corner, defining <strong>layers</strong> like this.</p>
+        <pre ng-bind="layers | json"></pre>
+    </div>
+</body>
+</html>

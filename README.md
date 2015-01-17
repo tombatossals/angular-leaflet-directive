@@ -25,6 +25,7 @@ See some basic examples:
 * [ImageOverlay simple example](http://tombatossals.github.io/angular-leaflet-directive/examples/layers-imageoverlay-example.html)
 * [Dynamic add/remove layers/overlays example](http://tombatossals.github.io/angular-leaflet-directive/examples/layers-add-remove.html)
 * [Google Maps example](http://tombatossals.github.io/angular-leaflet-directive/examples/googlemaps-example.html)
+* [Hide a layer in the layer selector example](http://tombatossals.github.io/angular-leaflet-directive/examples/layers-hide-baselayer-on-selector-example.html)
 * [ESRI Dynamic Layer example](http://tombatossals.github.io/angular-leaflet-directive/examples/esri-dynamiclayer-example.html)
 * [ESRI Legend example](http://tombatossals.github.io/angular-leaflet-directive/examples/esri-legend-example.html)
 * [Yandex Maps example](http://tombatossals.github.io/angular-leaflet-directive/examples/yandexmaps-example.html)
