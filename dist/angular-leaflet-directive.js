@@ -875,7 +875,7 @@ angular.module("leaflet-directive").directive('markers', ["$log", "$rootScope", 
 
                         // Should we watch for every specific marker on the map?
                         var shouldWatch = (!isDefined(attrs.watchMarkers) || attrs.watchMarkers === 'true');
-                        
+
                         // add new markers
                         for (var newName in newMarkers) {
                             if (newName.search("-") !== -1) {
@@ -953,6 +953,7 @@ angular.module("leaflet-directive").directive('markers', ["$log", "$rootScope", 
                                     addMarkerWatcher(marker, newName, leafletScope, layers, map);
                                     listenMarkerEvents(marker, markerData, leafletScope);
                                 }
+                                
                                 bindMarkerEvents(marker, newName, markerData, leafletScope);
                             }
                         }
@@ -2693,7 +2694,6 @@ angular.module("leaflet-directive").factory('leafletControlHelpers', ["$rootScop
             if (mustBeLoaded) {
                 _layersControl = _createLayersControl(mapId);
                 for (i in baselayers) {
-                    console.log(baselayers[i]);
                     var hideOnSelector = isDefined(baselayers[i].layerOptions) &&
                                          baselayers[i].layerOptions.showOnSelector === false;
                     if (!hideOnSelector && isDefined(leafletLayers.baselayers[i])) {
@@ -3324,6 +3324,11 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', ["$rootScop
                             map.addLayer(marker);
                         }
                     }
+                }
+
+                if ((isNumber(markerData.opacity) || isNumber(parseFloat(markerData.opacity))) && markerData.opacity !== oldMarkerData.opacity) {
+                    // There was a different opacity so we update it
+                    marker.setOpacity(markerData.opacity);
                 }
 
                 if (isString(markerData.layer) && oldMarkerData.layer !== markerData.layer) {

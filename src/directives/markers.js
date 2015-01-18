@@ -46,7 +46,7 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
 
                         // Should we watch for every specific marker on the map?
                         var shouldWatch = (!isDefined(attrs.watchMarkers) || attrs.watchMarkers === 'true');
-                        
+
                         // add new markers
                         for (var newName in newMarkers) {
                             if (newName.search("-") !== -1) {
@@ -124,6 +124,7 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
                                     addMarkerWatcher(marker, newName, leafletScope, layers, map);
                                     listenMarkerEvents(marker, markerData, leafletScope);
                                 }
+                                
                                 bindMarkerEvents(marker, newName, markerData, leafletScope);
                             }
                         }
