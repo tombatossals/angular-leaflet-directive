@@ -18,6 +18,7 @@ We can define some specific parameters that apply to the Leaflet map creation. O
 * [zoomControl](http://leafletjs.com/reference.html#map-zoomcontrol). *Boolean*. Put the zoom control on the map or not.
 * [doubleClickZoom](http://leafletjs.com/reference.html#map-doubleclickzoom). *Boolean*. Allows to zoom with the double-click mouse action.
 * [scrollWheelZoom](http://leafletjs.com/reference.html#map-scrollwheelzoom). *Boolean*. Allows to zoom with the mouse wheel.
+* [tap](http://leafletjs.com/reference.html#map-tap). *Boolean*. Enables mobile hacks for supporting instant taps (fixing 200ms click delay on iOS/Android) and touch holds (fired as contextmenu events).
 * [attributionControl](http://leafletjs.com/reference.html#map-attributioncontrol). *Boolean*. Shows or hides the attribution text control.
 * [zoomAnimation](http://leafletjs.com/reference.html#map-zoomanimation). *Boolean*. Animate the zoom action or not.
 * [fadeAnimation](http://leafletjs.com/reference.html#map-fadeanimation). *Boolean*. Enable/disable the tile fade animation.
