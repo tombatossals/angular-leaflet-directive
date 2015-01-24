@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html ng-app="demoapp">
+<head>
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="../dist/angular-leaflet-directive.min.js"></script>
+    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
+    <script>
+        var app = angular.module("demoapp", ["leaflet-directive"]);
+        app.controller("DemoController", [ "$scope", function($scope) {
+            angular.extend($scope, {
+                center: {
+                    lat: 39,
+                    lng: -100,
+                    zoom: 4
+                },
+                layers: {
+                    baselayers: {
+                        xyz: {
+                            name: 'Mapbox Terrain',
+                            url: 'http://a.tiles.mapbox.com/v3/examples.map-i86nkdio/{z}/{x}/{y}.png',
+                            type: 'xyz'
+                        }
+                    },
+                    overlays: {
+                        wms: {
+                            name: 'EEUU States (WMS)',
+                            type: 'wms',
+                            visible: true,
+                            url: 'http://suite.opengeo.org/geoserver/usa/wms',
+                            layerParams: {
+                                showOnSelector: false,
+                                layers: 'usa:states',
+                                format: 'image/png',
+                                transparent: true
+                            }
+                        }
+                    }
+                }
+            });
+        }]);
+    </script>
+    <style>
+        html,body {
+            height: 98%;
+        }
+        .angular-leaflet-map {
+            height: 100%;
+        }
+        .left, .right {
+            float: left;
+            width: 48%;
+            height: 100%;
+            padding-right: 1em;
+        }
+    </style>
+</head>
+<body ng-controller="DemoController">
+    <div class="left">
+        <leaflet center="center" layers="layers"></leaflet>
+    </div>
+    <div class="right">
+        <h1>Overlay not shown in selector</h1>
+        <p>You can hide the enable/disable functionality of the overlay in the selector, using this attribute in the layerOptions object:</p>
+        <pre>layerOptions: {
+    showOnSelector: false
+}</pre>
+    </div>
+</body>
+</html>
