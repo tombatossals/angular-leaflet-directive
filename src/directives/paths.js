@@ -44,7 +44,7 @@ angular.module("leaflet-directive").directive('paths', function ($log, $q, leafl
 
                     // Function for listening every single path once created
                     var watchPathFn = function(leafletPath, name) {
-                        var clearWatch = leafletScope.$watch('paths.' + name, function(pathData, old) {
+                        var clearWatch = leafletScope.$watch("paths[\""+name+"\"]", function(pathData, old) {
                             if (!isDefined(pathData)) {
                                 if (isDefined(old.layer)) {
                                     for (var i in layers.overlays) {

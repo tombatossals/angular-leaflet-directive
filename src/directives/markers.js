@@ -122,9 +122,9 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
 
                                 if (shouldWatch) {
                                     addMarkerWatcher(marker, newName, leafletScope, layers, map);
-                                    listenMarkerEvents(marker, markerData, leafletScope);
                                 }
                                 
+                                listenMarkerEvents(marker, markerData, leafletScope, shouldWatch);
                                 bindMarkerEvents(marker, newName, markerData, leafletScope);
                             }
                         }

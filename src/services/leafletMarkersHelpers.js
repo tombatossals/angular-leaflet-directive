@@ -192,16 +192,22 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
             groups[groupName].addLayer(marker);
         },
 
-        listenMarkerEvents: function(marker, markerData, leafletScope) {
+        listenMarkerEvents: function(marker, markerData, leafletScope, watching) {
             marker.on("popupopen", function(/* event */) {
-                safeApply(leafletScope, function() {
-                    markerData.focus = true;
-                });
+                if (watching) {
+                    safeApply(leafletScope, function() {
+                        markerData.focus = true;
+                    });
+                } else {
+                    _manageOpenPopup(marker, markerData);
+                }
             });
             marker.on("popupclose", function(/* event */) {
-                safeApply(leafletScope, function() {
-                    markerData.focus = false;
-                });
+                if (watching) {
+                    safeApply(leafletScope, function() {
+                        markerData.focus = false;
+                    });
+                }
             });
         },
 
