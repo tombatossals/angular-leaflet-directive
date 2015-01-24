@@ -2701,7 +2701,9 @@ angular.module("leaflet-directive").factory('leafletControlHelpers', ["$rootScop
                     }
                 }
                 for (i in overlays) {
-                    if (isDefined(leafletLayers.overlays[i])) {
+                	var hideOverlayOnSelector = isDefined(overlays[i].layerOptions) &&
+                            overlays[i].layerOptions.showOnSelector === false;
+                    if (!hideOverlayOnSelector && isDefined(leafletLayers.overlays[i])) {
                         _layersControl.addOverlay(leafletLayers.overlays[i], overlays[i].name);
                     }
                 }

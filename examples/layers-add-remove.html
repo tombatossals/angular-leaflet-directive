@@ -13,14 +13,10 @@
         var app = angular.module("demoapp", ["leaflet-directive"]);
         app.controller("DemoController", [ "$scope", function($scope) {
             $scope.definedLayers = {
-                cloudmade: {
-                    name: 'Cloudmade Tourist',
-                    type: 'xyz',
-                    url: 'http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png',
-                    layerParams: {
-                        key: '007b9471b4c74da4a6ec7ff43552b16f',
-                        styleId: 7
-                    }
+                mapbox_terrain: {
+                    name: 'Mapbox Terrain',
+                    url: 'http://a.tiles.mapbox.com/v3/examples.map-i86nkdio/{z}/{x}/{y}.png',
+                    type: 'xyz'
                 },
                 osm: {
                     name: 'OpenStreetMap',
@@ -28,6 +24,7 @@
                     type: 'xyz'
                 }
             };
+
             $scope.definedOverlays = {
                 hillshade: {
                     name: 'Hillshade Europa',
@@ -43,6 +40,7 @@
                     }
                 }
             };
+
             angular.extend($scope, {
                 bern: {
                     lat: 46.916,
@@ -51,7 +49,7 @@
                 },
                 layers: {
                     baselayers: {
-                        cloudmade: $scope.definedLayers.cloudmade,
+                        mapbox_terrain: $scope.definedLayers.mapbox_terrain,
                         osm: $scope.definedLayers.osm
                     },
                     overlays: {
