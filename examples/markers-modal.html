@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html ng-app="leafletMarkersApp">
+  <head>
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="../dist/angular-leaflet-directive.min.js"></script>
+    <script src="../bower_components/Leaflet.awesome-markers/dist/leaflet.awesome-markers.js"></script>
+    <script src="../bower_components/Leaflet.MakiMarkers/Leaflet.MakiMarkers.js"></script>
+    <script src="../bower_components/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.8/angular-animate.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.12.0/ui-bootstrap.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.12.0/ui-bootstrap-tpls.js"></script>
+    <script src="../bower_components/Leaflet.ExtraMarkers/src/leaflet.extra-markers.js"></script>
+    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="../bower_components/Leaflet.awesome-markers/dist/leaflet.awesome-markers.css">
+    <link rel="stylesheet" href="../bower_components/Leaflet.ExtraMarkers/src/leaflet.extra-markers.css">
+    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="../bower_components/leaflet.markercluster/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="../bower_components/leaflet.markercluster/dist/MarkerCluster.Default.css" />
+    <script>
+        var app = angular.module('leafletMarkersApp', ['ui.bootstrap', 'ngAnimate', 'leaflet-directive']);
+
+        app.controller("leafletMarkerController", ['$scope', '$filter', '$modal', function ($scope, $filter, $modal) {
+            $scope.openMap = function () {
+                var modalInstance = $modal.open({
+                    templateUrl: 'modalmap.html',
+                    controller: 'modalMapController',
+                    windowClass: 'modal-map'
+                });
+            };
+        }]);
+
+        app.controller("modalMapController", ['$scope', '$modalInstance', 'leafletData', function ($scope, $modalInstance, leafletData) {
+            $scope.oneAtATime = false;
+            $scope.cancel = function () {
+                $modalInstance.dismiss('cancel');
+            };
+
+            var markers = [];
+            markers.push({
+                lat: 52.229676,
+                lng: 21.012229,
+                draggable: false,
+                group: 'markers'
+            });
+            markers.push({
+                lat: 52.219081,
+                lng: 21.025386,
+                draggable: false,
+                group: 'markers'
+            });
+
+
+            angular.extend($scope, {
+                defaults: {
+                    maxZoom: 18,
+                    minZoom: 0
+                },
+                layers: {
+                    baselayers: {
+                        osm: {
+                            name: 'OpenStreetMap',
+                            type: 'xyz',
+                            url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                            layerOptions: {
+                                subdomains: ['a', 'b', 'c'],
+                                attribution: '© OpenStreetMap contributors',
+                                continuousWorld: true
+                            }
+                        }
+                    }
+                },
+                center: {
+                    zoom: 10,
+                    lat: 52.229676,
+                    lng: 21.012229
+                },
+                markers: markers
+            });
+
+        }]);
+    </script>
+    <style>
+        body {
+            margin: 10px;
+        }
+
+        .global-map{
+            height: 300px;
+        }
+
+        .global-map > div:first-child{
+            height: 100%;
+        }
+
+        ol{
+            list-style:decimal;
+            margin-left:50px;
+        }
+    </style>
+  </head>
+  <body>
+      <div class="container" ng-app="leafletMarkersApp">
+          <div class="jumbotron" ng-controller="leafletMarkerController">
+              <p>Open the modal twice:
+                  <ol>
+                      <li>Markers are present</li>
+                      <li>Markers are absent</li>
+                  </ol>
+              </p>
+              <p><a class="btn btn-lg btn-primary" href="#fork" ng-click="openMap()">Open the map</a>
+
+              </p>
+          </div>
+          <script type="text/ng-template" id="modalmap.html">
+          <div class="modal-header">
+          <button type="button" class="close" ng-click="cancel()">
+          x
+          </button>
+          </div>
+          <div class="modal-body global-map">
+          <leaflet defaults="defaults" center="center" markers="markers" layers="layers" id="global-map"></leaflet > </div>
+          </script>
+      </div>
+  </body>
+</html>
