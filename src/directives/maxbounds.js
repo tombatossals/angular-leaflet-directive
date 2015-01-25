@@ -1,4 +1,4 @@
-angular.module("leaflet-directive").directive('maxbounds', function ($log, leafletMapDefaults, leafletBoundsHelpers) {
+angular.module("leaflet-directive").directive('maxbounds', function ($log, leafletMapDefaults, leafletBoundsHelpers, leafletHelpers) {
     return {
         restrict: "A",
         scope: false,
@@ -7,7 +7,8 @@ angular.module("leaflet-directive").directive('maxbounds', function ($log, leafl
 
         link: function(scope, element, attrs, controller) {
             var leafletScope  = controller.getLeafletScope(),
-                isValidBounds = leafletBoundsHelpers.isValidBounds;
+                isValidBounds = leafletBoundsHelpers.isValidBounds,
+                isNumber = leafletHelpers.isNumber;
 
 
             controller.getMap().then(function(map) {
@@ -17,14 +18,15 @@ angular.module("leaflet-directive").directive('maxbounds', function ($log, leafl
                         map.setMaxBounds();
                         return;
                     }
-                    var bounds = [
-                        [ maxbounds.southWest.lat, maxbounds.southWest.lng ],
-                        [ maxbounds.northEast.lat, maxbounds.northEast.lng ]
-                    ];
+                    
+                    var leafletBounds = leafletBoundsHelpers.createLeafletBounds(maxbounds);
+                    if(isNumber(maxbounds.pad)) {
+                      leafletBounds = leafletBounds.pad(maxbounds.pad);
+                    }
 
-                    map.setMaxBounds(bounds);
+                    map.setMaxBounds(leafletBounds);
                     if (!attrs.center) {
-                        map.fitBounds(bounds);
+                        map.fitBounds(leafletBounds);
                     }
                 });
             });
