@@ -53,6 +53,8 @@ See some basic examples:
 * [Overlays extended example](http://tombatossals.github.io/angular-leaflet-directive/examples/overlays-example.html)
 * [Accessing the leaflet map object](http://tombatossals.github.io/angular-leaflet-directive/examples/access-leaflet-object-example.html)
 * [Accessing the leaflet map object of two maps](http://tombatossals.github.io/angular-leaflet-directive/examples/double-map-example.html)
+* [Two maps events](http://tombatossals.github.io/angular-leaflet-directive/examples/double-map-events-example.html)
+* [Two maps with markers and events](http://tombatossals.github.io/angular-leaflet-directive/examples/markers-two-maps-events-example.html)
 * [Two maps sharing attributes](http://tombatossals.github.io/angular-leaflet-directive/examples/double-map-sharing-attributes.html)
 * [Center map with GeoIP](http://tombatossals.github.io/angular-leaflet-directive/examples/center-geoip-example.html)
 

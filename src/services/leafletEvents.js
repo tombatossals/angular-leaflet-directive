@@ -229,7 +229,7 @@ angular.module("leaflet-directive").factory('leafletEvents', function ($rootScop
             var markerEvents = [];
             var i;
             var eventName;
-            var logic = "broadcast";
+            var logic = "emit";
 
             if (!isDefined(leafletScope.eventBroadcast)) {
                 // Backward compatibility, if no event-broadcast attribute, all events are broadcasted
@@ -427,4 +427,3 @@ angular.module("leaflet-directive").factory('leafletEvents', function ($rootScop
 
     };
 });
-
