@@ -153,6 +153,10 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
                 if (isDefined(userDefaults.map)) {
                     newDefaults.map = userDefaults.map;
                 }
+                
+                if (isDefined(userDefaults.path)) {
+                    newDefaults.path = userDefaults.path;
+                }
             }
 
             var mapId = obtainEffectiveMapId(defaults, scopeId);
