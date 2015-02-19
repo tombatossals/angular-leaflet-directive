@@ -200,6 +200,12 @@ angular.module("leaflet-directive").directive('center',
                             zoom: map.getZoom(),
                             autoDiscover: false
                         };
+                        angular.extend(scope.center,{
+                           lat: map.getCenter().lat,
+                           lng: map.getCenter().lng,
+                           zoom: map.getZoom(),
+                           autoDiscover: false
+                        });
                     });
                     safeApply(leafletScope, function (scope) {
                         var mapBounds = map.getBounds();
@@ -311,12 +317,13 @@ angular.module("leaflet-directive").directive('center',
                     safeApply(leafletScope, function(scope) {
                         if (!leafletScope.settingCenterFromScope) {
                             //$log.debug("updating center model...", map.getCenter(), map.getZoom());
-                            scope.center = {
-                                lat: map.getCenter().lat,
-                                lng: map.getCenter().lng,
-                                zoom: map.getZoom(),
-                                autoDiscover: false
-                            };
+                            
+                            angular.extend(scope.center,{
+                               lat: map.getCenter().lat,
+                               lng: map.getCenter().lng,
+                               zoom: map.getZoom(),
+                               autoDiscover: false
+                            });
                         }
                         leafletEvents.notifyCenterChangedToBounds(leafletScope, map);
                     });
@@ -1222,7 +1229,7 @@ angular.module("leaflet-directive").directive('eventBroadcast', ["$log", "$rootS
     };
 }]);
 
-angular.module("leaflet-directive").directive('maxbounds', ["$log", "leafletMapDefaults", "leafletBoundsHelpers", function ($log, leafletMapDefaults, leafletBoundsHelpers) {
+angular.module("leaflet-directive").directive('maxbounds', ["$log", "leafletMapDefaults", "leafletBoundsHelpers", "leafletHelpers", function ($log, leafletMapDefaults, leafletBoundsHelpers, leafletHelpers) {
     return {
         restrict: "A",
         scope: false,
@@ -1231,7 +1238,8 @@ angular.module("leaflet-directive").directive('maxbounds', ["$log", "leafletMapD
 
         link: function(scope, element, attrs, controller) {
             var leafletScope  = controller.getLeafletScope(),
-                isValidBounds = leafletBoundsHelpers.isValidBounds;
+                isValidBounds = leafletBoundsHelpers.isValidBounds,
+                isNumber = leafletHelpers.isNumber;
 
 
             controller.getMap().then(function(map) {
@@ -1241,14 +1249,15 @@ angular.module("leaflet-directive").directive('maxbounds', ["$log", "leafletMapD
                         map.setMaxBounds();
                         return;
                     }
-                    var bounds = [
-                        [ maxbounds.southWest.lat, maxbounds.southWest.lng ],
-                        [ maxbounds.northEast.lat, maxbounds.northEast.lng ]
-                    ];
+                    
+                    var leafletBounds = leafletBoundsHelpers.createLeafletBounds(maxbounds);
+                    if(isNumber(maxbounds.pad)) {
+                      leafletBounds = leafletBounds.pad(maxbounds.pad);
+                    }
 
-                    map.setMaxBounds(bounds);
+                    map.setMaxBounds(leafletBounds);
                     if (!attrs.center) {
-                        map.fitBounds(bounds);
+                        map.fitBounds(leafletBounds);
                     }
                 });
             });
@@ -1823,6 +1832,10 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', ["$q", "leafle
 
                 if (isDefined(userDefaults.map)) {
                     newDefaults.map = userDefaults.map;
+                }
+                
+                if (isDefined(userDefaults.path)) {
+                    newDefaults.path = userDefaults.path;
                 }
             }
 
