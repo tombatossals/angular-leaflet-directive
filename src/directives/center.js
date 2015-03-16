@@ -46,6 +46,12 @@ angular.module("leaflet-directive").directive('center',
                             zoom: map.getZoom(),
                             autoDiscover: false
                         };
+                        angular.extend(scope.center,{
+                           lat: map.getCenter().lat,
+                           lng: map.getCenter().lng,
+                           zoom: map.getZoom(),
+                           autoDiscover: false
+                        });
                     });
                     safeApply(leafletScope, function (scope) {
                         var mapBounds = map.getBounds();
@@ -157,12 +163,13 @@ angular.module("leaflet-directive").directive('center',
                     safeApply(leafletScope, function(scope) {
                         if (!leafletScope.settingCenterFromScope) {
                             //$log.debug("updating center model...", map.getCenter(), map.getZoom());
-                            scope.center = {
-                                lat: map.getCenter().lat,
-                                lng: map.getCenter().lng,
-                                zoom: map.getZoom(),
-                                autoDiscover: false
-                            };
+                            
+                            angular.extend(scope.center,{
+                               lat: map.getCenter().lat,
+                               lng: map.getCenter().lng,
+                               zoom: map.getZoom(),
+                               autoDiscover: false
+                            });
                         }
                         leafletEvents.notifyCenterChangedToBounds(leafletScope, map);
                     });
