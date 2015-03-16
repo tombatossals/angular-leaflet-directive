@@ -27,7 +27,7 @@ angular.module("leaflet-directive").directive('controls', function ($log, leafle
                 }
 
                 if (isDefined(controls.scale)) {
-                    var scaleControl = new L.control.scale();
+                    var scaleControl = new L.control.scale(controls.scale);
                     map.addControl(scaleControl);
                 }
 
