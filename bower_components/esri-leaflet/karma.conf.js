@@ -7,10 +7,11 @@ module.exports = function(config) {
 
     files: [
       'node_modules/expect.js/expect.js',
-      'http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js',
-      'src/EsriLeaflet.js',
-      'src/Util.js',
-      'src/RBush.js',
+      'vendor/leaflet/dist/leaflet-src.js',
+      'vendor/terraformer/dist/browser/terraformer.js',
+      'vendor/terraformer/dist/browser/rtree.js',
+      'vendor/terraformer/dist/browser/arcgis.js',
+      'src/esri-leaflet.js',
       'src/Layers/*.js',
       'spec/**/*.js'
     ],

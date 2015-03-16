@@ -6,8 +6,8 @@ L.esri.TiledMapLayer = L.TileLayer.extend({
     options = options || {};
 
     // set the urls
-    this.url = L.esri.Util.cleanUrl(url);
-    this.tileUrl = L.esri.Util.cleanUrl(url) + "tile/{z}/{y}/{x}";
+    this.serviceUrl = L.esri.Util.cleanUrl(url);
+    this.tileUrl = this.serviceUrl + "tile/{z}/{y}/{x}";
 
     //if this is looking at the AGO tiles subdomain insert the subdomain placeholder
     if(this.tileUrl.match("://tiles.arcgis.com")){
@@ -15,16 +15,14 @@ L.esri.TiledMapLayer = L.TileLayer.extend({
       options.subdomains = ["1", "2", "3", "4"];
     }
 
-    L.Util.setOptions(this, options);
-
-    this._getMetadata();
+    L.esri.get(this.serviceUrl, {}, function(response){
+      this.fire("metadata", { metadata: response });
+    }, this);
 
     // init layer by calling TileLayers initialize method
     L.TileLayer.prototype.initialize.call(this, this.tileUrl, options);
   }
 });
-
-L.esri.TiledMapLayer.include(L.esri.Mixins.metadata);
 
 L.esri.tiledMapLayer = function(key, options){
   return new L.esri.TiledMapLayer(key, options);

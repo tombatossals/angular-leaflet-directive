@@ -1,4 +1,4 @@
-/* globals L */
+/* globals Terraformer, L */
 (function(L, Terraformer){
   L.esri.ClusteredFeatureLayer = L.Class.extend({
     includes: L.esri.Mixins.featureGrid,
@@ -6,19 +6,18 @@
       cellSize: 512,
       debounce: 100,
       deduplicate: true,
-      where: "1=1",
-      fields: ["*"],
       createMarker: function (geojson, latlng) {
         return new L.marker(latlng);
       },
       onEachMarker: undefined
     },
     initialize: function(url, options){
+      L.Util.setOptions(this, options);
       this.url = L.esri.Util.cleanUrl(url);
 
-      L.Util.setOptions(this, options);
-
-      this._getMetadata();
+      L.esri.get(this.url, {}, function(response){
+        this.fire("metadata", { metadata: response });
+      }, this);
 
       this._loaded = [];
       this.cluster = this.options.cluster || new L.MarkerClusterGroup();
@@ -35,51 +34,14 @@
       map.addLayer(this);
       return this;
     },
-    getWhere: function(){
-      return this.options.where;
-    },
-    setWhere: function(where){
-      this.options.where = where;
-      this.refresh();
-      return this;
-    },
-    getFields: function(){
-      return this.options.fields;
-    },
-    setFields: function(fields){
-      this.options.fields = fields;
-      this.refresh();
-      return this;
-    },
-    refresh: function(){
-      this.cluster.clearLayers();
-      this._loaded = [];
-      this._previousCells = [];
-      this._requestFeatures(this._map.getBounds());
-    },
-    _setObjectIdField: function(response){
-      if(response.objectIdFieldName){
-        this._objectIdField = response.objectIdFieldName;
-      } else {
-        for (var j = 0; j <= response.fields.length - 1; j++) {
-          if(response.fields[j].type === "esriFieldTypeOID") {
-            this._objectIdField = response.fields[j].name;
-            break;
-          }
-        }
-      }
-    },
     _render: function(response){
-      if(response.features && response.features.length && !response.error){
-        if(!this._objectIdField){
-          this._setObjectIdField(response);
-        }
-        var markers = [];
+      if(response.objectIdFieldName && response.features.length && !response.error){
+        var idKey = response.objectIdFieldName;
         for (var i = response.features.length - 1; i >= 0; i--) {
           var feature = response.features[i];
-          var id = feature.attributes[this._objectIdField];
+          var id = feature.attributes[idKey];
           if(L.esri.Util.indexOf(this._loaded, id) < 0){
-            var geojson = L.esri.Util.arcgisToGeojson(feature);
+            var geojson = Terraformer.ArcGIS.parse(feature);
             geojson.id = id;
             var marker = this.options.createMarker(geojson, [geojson.geometry.coordinates[1], geojson.geometry.coordinates[0]]);
 
@@ -87,19 +49,22 @@
               this.options.onEachMarker(geojson, marker);
             }
 
-            markers.push(marker);
+            this.cluster.addLayer(marker);
             this._loaded.push(id);
+
+            this.fire("render", {
+              feature: marker,
+              geojson: geojson
+            });
           }
         }
-        this.cluster.addLayers(markers);
       }
     }
   });
 
   L.esri.ClusteredFeatureLayer.include(L.Mixin.Events);
-  L.esri.ClusteredFeatureLayer.include(L.esri.Mixins.metadata);
 
   L.esri.clusteredFeatureLayer = function(url, options){
     return new L.esri.ClusteredFeatureLayer(url, options);
   };
-})(L);
+})(L, Terraformer);

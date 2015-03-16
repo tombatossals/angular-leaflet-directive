@@ -24,11 +24,11 @@
   ],
   "dependencies": {},
   "devDependencies": {},
-  "_release": "e73747fedd",
+  "_release": "1ae08325a1",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "e73747fedd2550d5ee352aec6eee61d34441e7dd"
+    "commit": "1ae08325a13fda597fd54b7194fe6fa0b2d33a4e"
   },
   "_source": "git://github.com/coryasilva/Leaflet.ExtraMarkers.git",
   "_target": "master",

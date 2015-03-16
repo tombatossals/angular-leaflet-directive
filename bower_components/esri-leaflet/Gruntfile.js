@@ -18,17 +18,12 @@ module.exports = function(grunt) {
         browser: true,
         globals: {
           XMLHttpRequest: true,
+          ActiveXObject: true,
           module: true,
-          L: true,
-          console: true
+          L:true
         }
       },
-      all: {
-        src: [
-          'Gruntfile.js',
-          'src/**/*.js'
-        ]
-      }
+      all: ['Gruntfile.js', 'src/**/*.js']
     },
     concat: {
       options: {
@@ -40,9 +35,10 @@ module.exports = function(grunt) {
       },
       core: {
         src: [
-          'src/EsriLeaflet.js',
-          'src/Util.js',
-          'src/RBush.js',
+          'vendor/terraformer/dist/browser/terraformer.js',
+          'vendor/terraformer/dist/browser/rtree.js',
+          'vendor/terraformer/dist/browser/arcgis.js',
+          'src/esri-leaflet.js',
           'src/Layers/BasemapLayer.js',
           'src/Layers/FeatureLayer.js',
           'src/Layers/TiledMapLayer.js',
@@ -52,7 +48,7 @@ module.exports = function(grunt) {
       },
       basemaps: {
         src: [
-          'src/EsriLeaflet.js',
+          'src/esri-leaflet.js',
           'src/Layers/BasemapLayer.js'
         ],
         dest: 'dist/extras/esri-basemaps-src.js'
@@ -60,17 +56,13 @@ module.exports = function(grunt) {
       cluster: {
         src: ["src/Layers/ClusteredFeatureLayer.js"],
         dest: 'dist/extras/clustered-feature-layer-src.js'
-      },
-      heat: {
-        src: ["src/Layers/HeatMapFeatureLayer.js"],
-        dest: 'dist/extras/heatmap-feature-layer-src.js'
       }
     },
     uglify: {
       options: {
         wrap: false,
         mangle: {
-          except: ['L']
+          except: ['Terraformer']
         },
         preserveComments: 'some',
         report: 'gzip'
@@ -80,14 +72,11 @@ module.exports = function(grunt) {
           'dist/esri-leaflet.js': [
             "dist/esri-leaflet-src.js"
           ],
-          'dist/extras/esri-basemaps.js': [
-            'dist/extras/esri-basemaps-src.js'
-          ],
           'dist/extras/clustered-feature-layer.js': [
             'dist/extras/clustered-feature-layer-src.js'
           ],
-          'dist/extras/heatmap-feature-layer.js': [
-            'dist/extras/heatmap-feature-layer-src.js'
+          'dist/extras/esri-basemaps.js': [
+            'dist/extras/esri-basemaps-src.js'
           ]
         }
       }
@@ -120,13 +109,6 @@ module.exports = function(grunt) {
           keepalive: true
         }
       }
-    },
-    'gh-pages': {
-      options: {
-        base: 'examples',
-        repo: 'git@github.com:Esri/esri-leaflet.git'
-      },
-      src: ['**']
     }
   });
 
@@ -140,6 +122,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-karma');
-  grunt.loadNpmTasks('grunt-gh-pages');
+
 
 };
