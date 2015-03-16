@@ -9,7 +9,8 @@ app.config(['$routeProvider', '$locationProvider', function($routeProvider, $loc
     }).when('/howto-extend', {
         templateUrl: 'partials/extend.html'
     }).when('/examples/:example', {
-        templateUrl: 'partials/examples.html'
+        templateUrl: 'partials/examples.html',
+        reloadOnSearch: false
     });
     $locationProvider.hashPrefix('!');
 }]);
