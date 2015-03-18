@@ -1,4 +1,4 @@
-angular.module("leaflet-directive").directive('controls', function ($log, leafletHelpers) {
++angular.module("leaflet-directive").directive('controls', function ($log, leafletHelpers) {
     return {
         restrict: "A",
         scope: false,
@@ -36,6 +36,19 @@ angular.module("leaflet-directive").directive('controls', function ($log, leafle
                         map.addControl(controls.custom[i]);
                     }
                 }
+            });
+
+            leafletScope.$watch("controls.edit", function(editOpts) {
+                    // test for suitability here
+                    if ("featureGroup" in editOpts) {
+                        controller.getMap().then(function(map) {
+                        map.addLayer(editOpts.featureGroup);
+
+                        var drawControl = new L.Control.Draw({edit:
+                            {featureGroup:editOpts.featureGroup,edit:{}}});
+                        map.addControl(drawControl);
+                    });
+                    }
             });
         }
     };
