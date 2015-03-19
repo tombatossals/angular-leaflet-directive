@@ -111,8 +111,8 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                         }
                     }
                     // If there is no active layer make one active
-                    if (!found && Object.keys(layers.baselayers).length > 0) {
-                        map.addLayer(leafletLayers.baselayers[Object.keys(layers.baselayers)[0]]);
+                    if (!found && Object.keys(leafletLayers.baselayers).length > 0) {
+                        map.addLayer(leafletLayers.baselayers[Object.keys(leafletLayers.baselayers)[0]]);
                     }
 
                     // Only show the layers switch selector control if we have more than one baselayer + overlay
