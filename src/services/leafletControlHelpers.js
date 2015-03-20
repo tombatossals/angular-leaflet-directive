@@ -1,7 +1,7 @@
 angular.module("leaflet-directive").factory('leafletControlHelpers', function ($rootScope, $log, leafletHelpers, leafletMapDefaults) {
     var isObject = leafletHelpers.isObject,
         isDefined = leafletHelpers.isDefined;
-    var _layersControl;
+    var _controls = {};
 
     var _controlLayersMustBeVisible = function(baselayers, overlays, mapId) {
         var defaults = leafletMapDefaults.getDefaults(mapId);
@@ -44,6 +44,7 @@ angular.module("leaflet-directive").factory('leafletControlHelpers', function ($
         updateLayersControl: function(map, mapId, loaded, baselayers, overlays, leafletLayers) {
             var i;
 
+            var _layersControl = _controls[mapId];
             var mustBeLoaded = _controlLayersMustBeVisible(baselayers, overlays, mapId);
             if (isDefined(_layersControl) && loaded) {
                 for (i in leafletLayers.baselayers) {
@@ -53,10 +54,12 @@ angular.module("leaflet-directive").factory('leafletControlHelpers', function ($
                     _layersControl.removeLayer(leafletLayers.overlays[i]);
                 }
                 _layersControl.removeFrom(map);
+                delete _controls[mapId];
             }
 
             if (mustBeLoaded) {
                 _layersControl = _createLayersControl(mapId);
+                _controls[mapId] = _layersControl;
                 for (i in baselayers) {
                     var hideOnSelector = isDefined(baselayers[i].layerOptions) &&
                                          baselayers[i].layerOptions.showOnSelector === false;

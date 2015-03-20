@@ -715,8 +715,8 @@ angular.module("leaflet-directive").directive('layers', ["$log", "$q", "leafletD
                         }
                     }
                     // If there is no active layer make one active
-                    if (!found && Object.keys(layers.baselayers).length > 0) {
-                        map.addLayer(leafletLayers.baselayers[Object.keys(layers.baselayers)[0]]);
+                    if (!found && Object.keys(leafletLayers.baselayers).length > 0) {
+                        map.addLayer(leafletLayers.baselayers[Object.keys(leafletLayers.baselayers)[0]]);
                     }
 
                     // Only show the layers switch selector control if we have more than one baselayer + overlay
@@ -2610,7 +2610,7 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', ["$rootScope"
 angular.module("leaflet-directive").factory('leafletControlHelpers', ["$rootScope", "$log", "leafletHelpers", "leafletMapDefaults", function ($rootScope, $log, leafletHelpers, leafletMapDefaults) {
     var isObject = leafletHelpers.isObject,
         isDefined = leafletHelpers.isDefined;
-    var _layersControl;
+    var _controls = {};
 
     var _controlLayersMustBeVisible = function(baselayers, overlays, mapId) {
         var defaults = leafletMapDefaults.getDefaults(mapId);
@@ -2653,6 +2653,7 @@ angular.module("leaflet-directive").factory('leafletControlHelpers', ["$rootScop
         updateLayersControl: function(map, mapId, loaded, baselayers, overlays, leafletLayers) {
             var i;
 
+            var _layersControl = _controls[mapId];
             var mustBeLoaded = _controlLayersMustBeVisible(baselayers, overlays, mapId);
             if (isDefined(_layersControl) && loaded) {
                 for (i in leafletLayers.baselayers) {
@@ -2662,10 +2663,12 @@ angular.module("leaflet-directive").factory('leafletControlHelpers', ["$rootScop
                     _layersControl.removeLayer(leafletLayers.overlays[i]);
                 }
                 _layersControl.removeFrom(map);
+                delete _controls[mapId];
             }
 
             if (mustBeLoaded) {
                 _layersControl = _createLayersControl(mapId);
+                _controls[mapId] = _layersControl;
                 for (i in baselayers) {
                     var hideOnSelector = isDefined(baselayers[i].layerOptions) &&
                                          baselayers[i].layerOptions.showOnSelector === false;
