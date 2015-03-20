@@ -130,6 +130,8 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
                 }
             }
         }
+        
+        //deprecated in favor of manageOpenLabel
         if (Helpers.LabelPlugin.isLoaded() && isDefined(markerData.label) && isDefined(markerData.label.options) && markerData.label.options.noHide === true) {
             if (compileMessage) {
                 $compile(marker.label._container)(markerScope);
@@ -137,6 +139,19 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
             marker.showLabel();
         }
     };
+    
+    var _manageOpenLabel = function(marker, markerData) {
+        var markerScope = angular.isFunction(markerData.getMessageScope) ? markerData.getMessageScope() : $rootScope,
+            labelScope = angular.isFunction(markerData.getLabelScope) ? markerData.getLabelScope() : markerScope,
+            compileMessage = isDefined(markerData.compileMessage) ? markerData.compileMessage : true;
+
+        if (Helpers.LabelPlugin.isLoaded() && isDefined(markerData.label) && isDefined(markerData.label.options) && markerData.label.options.noHide === true) {
+            if (compileMessage) {
+                $compile(marker.label._container)(labelScope);
+            }
+            marker.showLabel();
+        }
+    }
 
     return {
         resetMarkerGroup: _resetMarkerGroup,
@@ -146,6 +161,8 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
         deleteMarker: _deleteMarker,
 
         manageOpenPopup: _manageOpenPopup,
+        
+        manageOpenLabel: _manageOpenLabel,
 
         createMarker: function(markerData) {
             if (!isDefined(markerData)) {
