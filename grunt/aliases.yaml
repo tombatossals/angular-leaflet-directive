@@ -32,6 +32,10 @@ install:
 default:
  - 'build'
 
+# cause zsh always puts me in grunt folder
+d:
+- 'default'
+
 dev:
  - 'connect:devserver'
  - 'open:devserver'
@@ -41,12 +45,15 @@ serve:
  - 'connect:webserver'
 
 build:
+ - 'clean:dist'
  - 'jshint'
  - 'concat:dist'
+ - 'concat:distMapped'
  - 'ngAnnotate'
  - 'uglify'
  - 'test-unit'
  - 'concat:license'
+ - 'clean:pre'
 
 travis:
  - 'bower:install'
