@@ -37,10 +37,8 @@ concatDist = {
 };
 
 concatDistMapped = _.clone(concatDist,true);
-concatDistMapped.options = _.extend(_.clone(concatDist.options,true), {
-    sourceMap: true,
-    sourceMapName: "dist/<%= pkg.name %>_dev_mapped.js.map"
-});
+concatDistMapped.options.sourceMap = true;
+concatDistMapped.options.sourceMapName= "dist/<%= pkg.name %>_dev_mapped.js.map";
 concatDistMapped.dest = "dist/<%= pkg.name %>_dev_mapped.js";
 
 
