@@ -1,6 +1,5 @@
 'use strict';
 
-var clone = require('./utils/clone');
 var concatDist, concatDistMapped = null;
 
 concatDist = {
@@ -36,9 +35,9 @@ concatDist = {
     ],
     dest: 'dist/angular-leaflet-directive.pre.js'
 };
-//clone most the options and tack on stuff that makes source maps happen
-concatDistMapped = clone(concatDist);
-concatDistMapped.options = _.extend(clone(concatDist.options), {
+
+concatDistMapped = _.clone(concatDist,true);
+concatDistMapped.options = _.extend(_.clone(concatDist.options,true), {
     sourceMap: true,
     sourceMapName: "dist/<%= pkg.name %>_dev_mapped.js.map"
 });
