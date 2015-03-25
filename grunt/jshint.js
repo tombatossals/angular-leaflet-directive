@@ -51,7 +51,7 @@ module.exports = function (grunt, options) {
             src: ['src/directives/*.js', 'src/services/*.js']
         },
         tests: {
-            src: ['test/unit/*.js', 'test/e2e/*.js'],
+            src: ['test/unit/*.js', 'test/e2e/*.js']
         },
         grunt: {
             src: ['Gruntfile.js']
