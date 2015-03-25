@@ -19,6 +19,7 @@
     "grunt": "latest",
     "grunt-bower-task": "latest",
     "grunt-bump": "latest",
+    "grunt-contrib-clean": "^0.6.0",
     "grunt-contrib-concat": "latest",
     "grunt-contrib-connect": "latest",
     "grunt-contrib-jshint": "latest",
@@ -44,6 +45,7 @@
     "karma-requirejs": "latest",
     "karma-script-launcher": "latest",
     "load-grunt-config": "latest",
+    "lodash": "^3.5.0",
     "matchdep": "latest",
     "protractor": "latest"
   },
