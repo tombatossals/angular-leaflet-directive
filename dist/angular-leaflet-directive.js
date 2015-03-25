@@ -3199,11 +3199,20 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', ["$rootScop
                 }
             }
         }
-        if (Helpers.LabelPlugin.isLoaded() && isDefined(markerData.label) && isDefined(markerData.label.options) && markerData.label.options.noHide === true) {
-            if (compileMessage) {
-                $compile(marker.label._container)(markerScope);
+    };
+
+    var _manageOpenLabel = function(marker, markerData) {
+        var markerScope = angular.isFunction(markerData.getMessageScope) ? markerData.getMessageScope() : $rootScope,
+            labelScope = angular.isFunction(markerData.getLabelScope) ? markerData.getLabelScope() : markerScope,
+            compileMessage = isDefined(markerData.compileMessage) ? markerData.compileMessage : true;
+
+        if (Helpers.LabelPlugin.isLoaded() && isDefined(markerData.label)) {
+            if (isDefined(markerData.label.options) && markerData.label.options.noHide === true) {
+                marker.showLabel();
             }
-            marker.showLabel();
+            if (compileMessage) {
+                $compile(marker.label._container)(labelScope);
+            }
         }
     };
 
@@ -3215,6 +3224,8 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', ["$rootScop
         deleteMarker: _deleteMarker,
 
         manageOpenPopup: _manageOpenPopup,
+
+        manageOpenLabel: _manageOpenLabel,
 
         createMarker: function(markerData) {
             if (!isDefined(markerData)) {
@@ -3418,9 +3429,22 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', ["$rootScop
                     marker.unbindPopup();
                 }
 
-                // Update the label content
-                if (Helpers.LabelPlugin.isLoaded() && isDefined(markerData.label) && isDefined(markerData.label.message) && !angular.equals(markerData.label.message, oldMarkerData.label.message)) {
-                    marker.updateLabelContent(markerData.label.message);
+                // Update the label content or bind a new label if the old one has been removed.
+                if (Helpers.LabelPlugin.isLoaded()) {
+                    if (isDefined(markerData.label) && isDefined(markerData.label.message)) {
+                        if ('label' in oldMarkerData && 'message' in oldMarkerData.label && !angular.equals(markerData.label.message, oldMarkerData.label.message)) {
+                            marker.updateLabelContent(markerData.label.message);
+                        } else if (!angular.isFunction(marker.getLabel)) {
+                            marker.bindLabel(markerData.label.message, markerData.label.options);
+                            _manageOpenLabel(marker, markerData);
+                        } else {
+                            _manageOpenLabel(marker, markerData);
+                        }
+                    } else if (!('label' in markerData && !('message' in markerData.label))) {
+                        if (angular.isFunction(marker.unbindLabel)) {
+                            marker.unbindLabel();
+                        }
+                    }
                 }
 
                 // There is some text in the popup, so we must show the text or update existing

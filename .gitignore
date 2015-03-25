@@ -10,6 +10,8 @@ libpeerconnection.log
 node_modules
 dist/angular-leaflet-directive.pre.js
 dist/angular-leaflet-directive.min.no-header.js
+dist/angular-leaflet-directive_dev_mapped.js
+dist/angular-leaflet-directive_dev_mapped.js.map
 js/angular-leaflet-directive-webpage.ngmin.js
 coverage
 bower_components
