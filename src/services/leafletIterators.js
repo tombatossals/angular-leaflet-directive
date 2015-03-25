@@ -37,7 +37,8 @@ angular.module('leaflet-directive').factory('leafletIterators', function ($log, 
         })
     };
 
-    return {
+    //lodash or underscore have preference
+    return _ ? _ : {
         each:_each
     };
 });
