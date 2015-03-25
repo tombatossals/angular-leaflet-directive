@@ -850,6 +850,7 @@ angular.module("leaflet-directive").directive('markers', ["$log", "$rootScope", 
         createMarker = leafletMarkersHelpers.createMarker,
         deleteMarker = leafletMarkersHelpers.deleteMarker;
 
+    //TODO: move to leafletMarkersHelpers??? or make a new class/function file (leafletMarkersHelpers is large already)
     var _addMarkers = function(markersToRender, map, layers, leafletMarkers, leafletScope, shouldWatch){
         shouldWatch = defaultTo(shouldWatch, false);
 
