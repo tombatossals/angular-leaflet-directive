@@ -1,5 +1,10 @@
 # angular-leaflet-directive
-[![Build Status](https://travis-ci.org/realtymapsDev/angular-leaflet-directive.png)](https://travis-ci.org/realtymapsDev/angular-leaflet-directive) [![Dependency Status](https://gemnasium.com/realtymapsDev/angular-leaflet-directive.png)](https://gemnasium.com/realtymapsDev/angular-leaflet-directive) [![Coverage
+[![Build Status](https://travis-ci.org/realtymapsDev/angular-leaflet-directive.png)](https://travis-ci.org/realtymapsDev/angular-leaflet-directive) 
+
+[![Dependencies](https://david-dm.org/realtymapsDev/angular-leaflet-directive.svg)](https://david-dm.org/realtymapsDev/angular-leaflet-directive)&nbsp; 
+[![Dependencies](https://david-dm.org/realtymapsDev/angular-leaflet-directive/dev-status.svg)](https://david-dm.org/realtymapsDev/angular-leaflet-directive)&nbsp; 
+
+[![Coverage
 Status](https://coveralls.io/repos/realtymapsDev/angular-leaflet-directive/badge.png?branch=master)](http://realtymapsDev.github.io/angular-leaflet-directive/coverage/PhantomJS%201.9.7%20%28Linux%29/lcov-report/dist/angular-leaflet-directive.js.html)
 
 
