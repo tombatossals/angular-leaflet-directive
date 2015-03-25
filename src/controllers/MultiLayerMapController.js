@@ -7,18 +7,18 @@ app.controller("MultiLayerMapController", [ '$scope', '$http', function($scope, 
         cycle: {
             url: 'http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png'
         },
-        mapbox_terrain: {
+        mapbox_light: {
             url: 'http://api.tiles.mapbox.com/v4/{mapid}/{z}/{x}/{y}.png?access_token={apikey}',
             options: {
-                apikey: 'pk.eyJ1IjoidG9tYmF0b3NzYWxzIiwiYSI6Imo3MWxyTHMifQ.TjXg_IV7ZYMHX6tqjMikPg',
-                mapid: 'examples.map-i86nkdio'
+                apikey: 'pk.eyJ1IjoiYnVmYW51dm9scyIsImEiOiJLSURpX0pnIn0.2_9NrLz1U9bpwMQBhVk97Q',
+                mapid: 'bufanuvols.lia22g09'
             }
         },
-        mapbox_night: {
+        mapbox_wheatpaste: {
             url: 'http://api.tiles.mapbox.com/v4/{mapid}/{z}/{x}/{y}.png?access_token={apikey}',
             options: {
-                apikey: 'pk.eyJ1IjoidG9tYmF0b3NzYWxzIiwiYSI6Imo3MWxyTHMifQ.TjXg_IV7ZYMHX6tqjMikPg',
-                mapid: 'examples.map-0l53fhk2'
+                apikey: 'pk.eyJ1IjoiYnVmYW51dm9scyIsImEiOiJLSURpX0pnIn0.2_9NrLz1U9bpwMQBhVk97Q',
+                mapid: 'bufanuvols.lia35jfp'
             }
         }
     };
