@@ -1,4 +1,4 @@
-angular.module('leaflet-directive').factory('leafletIterators', function ($log, leafletHelpers) {
+angular.module('leaflet-directive').service('leafletIterators', function ($log, leafletHelpers) {
 
     var $lhelp = leafletHelpers,
         errorHeader = leafletHelpers.errorHeader + 'leafletIterators: ';
@@ -34,11 +34,11 @@ angular.module('leaflet-directive').factory('leafletIterators', function ($log, 
     var _each = function(collection, cb){
         _iterate(collection, cb, function(val, key){
             cb(val, key);
-        })
+        });
     };
 
     //lodash or underscore have preference
-    return _ ? _ : {
+    return window._ ? window._ : {
         each:_each
     };
 });

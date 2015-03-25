@@ -110,7 +110,6 @@ angular.module("leaflet-directive").directive('markers',
             var mapController = controller[0],
                 leafletScope  = mapController.getLeafletScope();
 
-
             mapController.getMap().then(function(map) {
                 var leafletMarkers = {},
                     getLayers;
@@ -142,7 +141,7 @@ angular.module("leaflet-directive").directive('markers',
                         var isNested = (!isDefined(attrs.markersNested) || attrs.markersNested === 'true');
                         if(isNested)
                         {
-                            $it.each(newMarkers, function(markersToAdd, key){
+                            $it.each(newMarkers, function(markersToAdd){
                                 _addMarkers(markersToAdd, map, layers, leafletMarkers, leafletScope, shouldWatch);
                             });
                             return;
