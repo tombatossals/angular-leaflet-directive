@@ -1,0 +1,7 @@
+{
+  "commitMessage": "version %s",
+  "tagName": "%s",
+  "scripts": {
+  	"postcommit": "git push && git push --tags && npm publish"
+  }
+}
