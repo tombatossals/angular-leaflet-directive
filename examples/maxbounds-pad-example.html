@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html ng-app="demoapp">
+<head>
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="../dist/angular-leaflet-directive.js"></script>
+    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
+    <script>
+        var app = angular.module("demoapp", ["leaflet-directive"]);
+        app.controller("DemoController", [ "$scope", "leafletBoundsHelpers", function($scope, leafletBoundsHelpers) {
+            
+            var maxbounds = leafletBoundsHelpers.createBoundsFromArray([
+                [ 37.8866, -79.4877 ],
+                [ 39.7230, -74.9863 ]
+            ]);
+            
+            
+            $scope.maxBoundsPad = maxbounds.pad = 1;
+            
+            angular.extend($scope, {
+                bounds: maxbounds,
+                center: {},
+                layers: {
+                    baselayers: {
+                        xyz: {
+                            name: 'OpenStreetMap (XYZ)',
+                            url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                            type: 'xyz'
+                        }
+                    },
+                    overlays: {}
+                },
+                markers: {
+                    northeast: {
+                        lat: 39.7230, 
+                        lng: -74.9863,
+                        focus: true,
+                        title: "Northeast",
+                    },
+                    southwest: {
+                        lat: 37.8866,
+                        lng: -79.4877,
+                        title: "Southwest",
+                    }
+                },
+                maxbounds: maxbounds
+            });
+        }]);
+        
+    </script>
+    <style>
+        html,body {
+            height: 98%;
+        }
+        .angular-leaflet-map {
+            height: 100%;
+        }
+        .left, .right {
+            float: left;
+            width: 48%;
+            height: 100%;
+            padding-right: 1em;
+        }
+    </style>
+</head>
+<body ng-controller="DemoController">
+    <div class="left">
+        <leaflet center="center" layers="layers" markers="markers" maxbounds="maxbounds"></leaflet>
+    </div>
+    <div class="right">
+        <h1>Extend Maxbounds with Pad</h1>
+        <p>You can extend maxbounds with a pad property.  <a href=http://leafletjs.com/reference.html#latlngbounds-pad>Pad</a> is a percentage by which the latLngBounds will be extended.</p>
+        
+        <pre ng-bind="maxbounds | json"></pre>
+        <pre ng-bind="markers | json"></pre>
+        
+    </div>
+</body>
+</html>
