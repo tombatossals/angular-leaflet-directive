@@ -40,12 +40,14 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
         return defer;
     }
 
+    var _isDefined = function(value) {
+        return angular.isDefined(value) && value !== null;
+    };
+
     return {
+        errorHeader: '[AngularJS - Leaflet] ',
         defaultTo: function(val, _default){
-            if(val === null || val === undefined || val === void 0) {
-                return _default;
-            }
-            return val;
+            return _isDefined(val) ? val : _default;
         },
         //Determine if a reference is {}
         isEmpty: function(value) {
@@ -58,9 +60,7 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
         },
 
         // Determine if a reference is defined
-        isDefined: function(value) {
-            return angular.isDefined(value) && value !== null;
-        },
+        isDefined: _isDefined,
 
         // Determine if a reference is a number
         isNumber: function(value) {

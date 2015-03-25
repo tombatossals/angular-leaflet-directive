@@ -1,4 +1,6 @@
-angular.module("leaflet-directive").directive('markers', function ($log, $rootScope, $q, leafletData, leafletHelpers, leafletMapDefaults, leafletMarkersHelpers, leafletEvents) {
+angular.module("leaflet-directive").directive('markers',
+    function ($log, $rootScope, $q, leafletData, leafletHelpers, leafletMapDefaults, leafletMarkersHelpers,
+              leafletEvents, leafletIterators) {
     //less terse vars to helpers
     var isDefined = leafletHelpers.isDefined,
         defaultTo= leafletHelpers.defaultTo,
@@ -9,7 +11,8 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
         addMarkerToGroup = leafletMarkersHelpers.addMarkerToGroup,
         bindMarkerEvents = leafletEvents.bindMarkerEvents,
         createMarker = leafletMarkersHelpers.createMarker,
-        deleteMarker = leafletMarkersHelpers.deleteMarker;
+        deleteMarker = leafletMarkersHelpers.deleteMarker,
+        $it = leafletIterators;
 
     //TODO: move to leafletMarkersHelpers??? or make a new class/function file (leafletMarkersHelpers is large already)
     var _addMarkers = function(markersToRender, map, layers, leafletMarkers, leafletScope, shouldWatch){
@@ -136,8 +139,14 @@ angular.module("leaflet-directive").directive('markers', function ($log, $rootSc
 
                         // Should we watch for every specific marker on the map?
                         var shouldWatch = (!isDefined(attrs.watchMarkers) || attrs.watchMarkers === 'true');
-                        //var isNested = (!isDefined(attrs.markersNested) || attrs.markersNested === 'true');
-
+                        var isNested = (!isDefined(attrs.markersNested) || attrs.markersNested === 'true');
+                        if(isNested)
+                        {
+                            $it.each(newMarkers, function(markersToAdd, key){
+                                _addMarkers(markersToAdd, map, layers, leafletMarkers, leafletScope, shouldWatch);
+                            });
+                            return;
+                        }
                         _addMarkers(newMarkers, map, layers, leafletMarkers, leafletScope, shouldWatch);
                     }, true);
                 });
