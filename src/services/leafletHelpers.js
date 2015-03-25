@@ -41,6 +41,12 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
     }
 
     return {
+        defaultTo: function(val, _default){
+            if(val === null || val === undefined || val === void 0) {
+                return _default;
+            }
+            return val;
+        },
         //Determine if a reference is {}
         isEmpty: function(value) {
             return Object.keys(value).length === 0;
@@ -76,10 +82,10 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
             return angular.isObject(value);
         },
 
-		// Determine if a reference is a function.
-		isFunction: function(value) {
-			return angular.isFunction(value);
-		},
+        // Determine if a reference is a function.
+        isFunction: function(value) {
+            return angular.isFunction(value);
+        },
 
         // Determine if two objects have the same properties
         equals: function(o1, o2) {
@@ -118,7 +124,7 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
             if (phase === '$apply' || phase === '$digest') {
                 $scope.$eval(fn);
             } else {
-                $scope.$apply(fn);
+                $scope.$evalAsync(fn);
             }
         },
 
@@ -342,17 +348,17 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
                 }
             }
         },
-		DynamicMapLayerPlugin: {
-			isLoaded: function() {
-				return L.esri !== undefined && L.esri.dynamicMapLayer !== undefined;
-			},
-			is: function(layer) {
-				if (this.isLoaded()) {
-					return layer instanceof L.esri.dynamicMapLayer;
-				} else {
-					return false;
-				}
-			}
+        DynamicMapLayerPlugin: {
+            isLoaded: function () {
+                return L.esri !== undefined && L.esri.dynamicMapLayer !== undefined;
+            },
+            is: function (layer) {
+                if (this.isLoaded()) {
+                    return layer instanceof L.esri.dynamicMapLayer;
+                } else {
+                    return false;
+                }
+            }
         },
         GeoJSONPlugin: {
             isLoaded: function(){
@@ -366,7 +372,7 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
                 }
             }
         },
-		UTFGridPlugin: {
+        UTFGridPlugin: {
             isLoaded: function(){
                 return angular.isDefined(L.UtfGrid);
             },
