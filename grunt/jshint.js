@@ -7,7 +7,7 @@ module.exports = function (grunt, options) {
             browser: true,
             esnext: true,
             bitwise: true,
-            curly: true,
+            curly: false,
             eqeqeq: true,
             immed: true,
             indent: 4,

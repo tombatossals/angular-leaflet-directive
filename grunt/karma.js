@@ -2,8 +2,37 @@
 
 
 module.exports = function (grunt, options) {
-    var _default = require('./utils/spec-creator')(),
-    _chrome = require('./utils/spec-creator')('test/karma-unit-chrome.conf.js', 'chrome');
-
-    return _.merge(_default, _chrome);
+    return {
+        unit: {
+            configFile: 'test/karma-unit.conf.js',
+            autoWatch: false,
+            singleRun: true
+        },
+        'unit-chrome': {
+            configFile: 'test/karma-unit.conf.js',
+            browsers: ['Chrome'],
+            autoWatch: true,
+            singleRun: false
+        },
+        'unit-chrome-once': {
+            configFile: 'test/karma-unit.conf.js',
+            browsers: ['Chrome'],
+            autoWatch: true,
+            singleRun: true,
+        },
+        unit_coverage: {
+            configFile: 'test/karma-unit.conf.js',
+            autoWatch: false,
+            singleRun: true,
+            //logLevel: 'DEBUG',
+            reporters: ['progress', 'coverage'],
+            preprocessors: {
+                'dist/angular-leaflet-directive.js': ['coverage']
+            },
+            coverageReporter: {
+                type : 'lcov',
+                dir : 'coverage/'
+            }
+        }
+    };
 };

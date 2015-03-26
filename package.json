@@ -51,7 +51,8 @@
   },
   "scripts": {
     "test": "grunt travis --verbose",
-    "unit": "karma start test/karma-unit-chrome.conf.js"
+    "karmaChrome": "grunt test-unit-chrome",
+    "karmaChromeOnce": "grunt karma:unit-chrome-once"
   },
   "main": "dist/angular-leaflet-directive"
 }
