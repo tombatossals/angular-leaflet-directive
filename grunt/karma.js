@@ -26,11 +26,18 @@ module.exports = function (grunt, options) {
             autoWatch: true,
             singleRun: false
         },
+        'unit-chrome-mocha': {
+            configFile: 'test/karma-unit.conf.js',
+            browsers: ['Chrome'],
+            autoWatch: true,
+            singleRun: false,
+            reporters: ['mocha']
+        },
         'unit-chrome-once': {
             configFile: 'test/karma-unit.conf.js',
             browsers: ['Chrome'],
             autoWatch: true,
-            singleRun: true,
+            singleRun: true
         },
         unit_coverage: {
             configFile: 'test/karma-unit.conf.js',

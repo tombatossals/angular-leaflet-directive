@@ -14,7 +14,6 @@
     "cli"
   ],
   "license": "MIT",
-  "dependencies": {},
   "devDependencies": {
     "grunt": "latest",
     "grunt-bower-task": "latest",
@@ -25,6 +24,7 @@
     "grunt-contrib-jshint": "latest",
     "grunt-contrib-uglify": "latest",
     "grunt-contrib-watch": "latest",
+    "grunt-concurrent": "^1.0.0",
     "grunt-conventional-changelog": "latest",
     "grunt-karma": "latest",
     "grunt-karma-coveralls": "latest",
