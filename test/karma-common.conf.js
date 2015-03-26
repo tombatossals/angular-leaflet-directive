@@ -1,0 +1,71 @@
+var _ = require('lodash');
+
+module.exports = function(karma, browserName, autoWatch, singleRun) {
+    //defaults
+    browserName = browserName? browserName : 'PhantomJS';
+    autoWatch = autoWatch? autoWatch : false;
+    singleRun = singleRun? singleRun : false;
+
+    // Start these browsers, currently available:
+    // - Chrome
+    // - ChromeCanary
+    // - Firefox
+    // - Opera
+    // - Safari
+    // - PhantomJS
+    var _browsers = _.isArray(browserName)? browserName: [browserName];
+
+    return {
+        // base path, that will be used to resolve files and exclude
+        basePath: '../',
+
+        // list of files / patterns to load in the browser
+        files: [
+            'bower_components/leaflet/dist/leaflet-src.js',
+            'bower_components/angular/angular.js',
+            'bower_components/leaflet.markercluster/dist/leaflet.markercluster.js',
+            'bower_components/angular-mocks/angular-mocks.js',
+            'dist/angular-leaflet-directive_dev_mapped.js',
+            //'src/**/*.js',
+            'test/unit/*.js',
+            'bower_components/Leaflet.PolylineDecorator/leaflet.polylineDecorator.js',
+            {
+                pattern: '**/*.js.map',
+                included: false
+            }
+        ],
+
+        // Frameworks
+        frameworks: ["jasmine"],
+
+        // list of files to exclude
+        exclude: [
+        ],
+
+        browsers: _browsers,
+
+        // test results reporter to use
+        // possible values: dots || progress
+        reporters: ['progress'],
+
+        // web server port
+        port: 9018,
+
+        // cli runner port
+        runnerPort: 9100,
+
+        // enable / disable colors in the output (reporters and logs)
+        colors: true,
+
+        // level of logging
+        // possible values: LOG_DISABLE || LOG_ERROR || LOG_WARN || LOG_INFO || LOG_DEBUG
+        logLevel: karma.LOG_INFO,
+
+        // enable / disable watching file and executing tests whenever any file changes
+        autoWatch: autoWatch,
+
+        // Continuous Integration mode
+        // if true, it capture browsers, run tests and exit
+        singleRun: singleRun
+    };
+};

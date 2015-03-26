@@ -6,6 +6,9 @@ test:
 test-unit:
  - 'karma:unit'
 
+test-unit-chrome:
+ - 'karma:unit-chrome'
+
 test-e2e:
  - 'shell:protractor_update'
  - 'connect:testserver'
