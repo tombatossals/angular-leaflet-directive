@@ -137,8 +137,8 @@ angular.module("leaflet-directive").directive('markers',
                         }
 
                         // Should we watch for every specific marker on the map?
-                        var shouldWatch = (!isDefined(attrs.watchMarkers) || attrs.watchMarkers === 'true');
-                        var isNested = (!isDefined(attrs.markersNested) || attrs.markersNested === 'true');
+                        var shouldWatch = (!isDefined(attrs.watchMarkers) || Helpers.isTruthy(attrs.watchMarkers));
+                        var isNested = (isDefined(attrs.markersNested) && Helpers.isTruthy(attrs.markersNested));
                         if(isNested)
                         {
                             $it.each(newMarkers, function(markersToAdd){

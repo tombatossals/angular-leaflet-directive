@@ -49,6 +49,10 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
         defaultTo: function(val, _default){
             return _isDefined(val) ? val : _default;
         },
+        //mainly for checkking attributes of directives lets keep this minimal (on what we accept)
+        isTruthy: function(val){
+            return val === 'true' || val === true;
+        },
         //Determine if a reference is {}
         isEmpty: function(value) {
             return Object.keys(value).length === 0;

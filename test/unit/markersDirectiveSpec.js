@@ -80,6 +80,32 @@ describe('Directive: leaflet', function() {
         });
     });
 
+    describe('isNested',function(){
+        // Marker
+        it('should create main marker on the map', function() {
+            var main_marker = {
+                lat: 0.966,
+                lng: 2.02
+            };
+            angular.extend($rootScope, {
+                markers: {
+                    layer1: {
+                        main_marker: main_marker
+                    }
+                }
+            });
+
+            var element = angular.element('<leaflet markers="markers" markers-nested="true"></leaflet>');
+            element = $compile(element)($rootScope);
+            $rootScope.$digest();
+            leafletData.getMarkers().then(function(leafletMarkers) {
+                var leafletMainMarker = leafletMarkers.main_marker;
+                expect(leafletMainMarker.getLatLng().lat).toBeCloseTo(0.966);
+                expect(leafletMainMarker.getLatLng().lng).toBeCloseTo(2.02);
+            });
+        });
+    });
+
     it('should bind popup to main marker if message is given', function() {
         var marker = {
             lat: 0.966,
@@ -99,7 +125,7 @@ describe('Directive: leaflet', function() {
             expect(leafletMainMarker._popup._content).toEqual('this is paris');
         });
     });
-    
+
     it('message should be compiled if angular template is given', function() {
         var marker = {
             lat: 0.966,
@@ -111,7 +137,7 @@ describe('Directive: leaflet', function() {
             markers: {
                 marker: marker
             }
-        }, { 
+        }, {
             model: {
                 color: 'blue'
             }
@@ -130,7 +156,7 @@ describe('Directive: leaflet', function() {
     });
 
     it('message should be compiled in specified scope', function() {
-        
+
         var arbitraryIsolateScope = $rootScope.$new(true);
         angular.extend(arbitraryIsolateScope, { model: { color: 'angular'}});
 

@@ -25,10 +25,14 @@ module.exports = function(karma, browserName, autoWatch, singleRun) {
             'bower_components/angular/angular.js',
             'bower_components/leaflet.markercluster/dist/leaflet.markercluster.js',
             'bower_components/angular-mocks/angular-mocks.js',
-            'dist/angular-leaflet-directive.js',
+            'dist/angular-leaflet-directive_dev_mapped.js',
             //'src/**/*.js',
             'test/unit/*.js',
-            'bower_components/Leaflet.PolylineDecorator/leaflet.polylineDecorator.js'
+            'bower_components/Leaflet.PolylineDecorator/leaflet.polylineDecorator.js',
+            {
+                pattern: '**/*.js.map',
+                included: false
+            }
         ],
 
         // Frameworks

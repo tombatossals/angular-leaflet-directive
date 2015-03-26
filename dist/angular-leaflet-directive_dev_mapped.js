@@ -1,5 +1,5 @@
 /*!
-*  angular-leaflet-directive 0.7.11 2015-03-25
+*  angular-leaflet-directive 0.7.11 2015-03-26
 *  angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps
 *  git: https://github.com/tombatossals/angular-leaflet-directive
 */
@@ -880,6 +880,10 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
         errorHeader: '[AngularJS - Leaflet] ',
         defaultTo: function(val, _default){
             return _isDefined(val) ? val : _default;
+        },
+        //mainly for checkking attributes of directives lets keep this minimal (on what we accept)
+        isTruthy: function(val){
+            return val === 'true' || val === true;
         },
         //Determine if a reference is {}
         isEmpty: function(value) {
@@ -3730,8 +3734,8 @@ angular.module("leaflet-directive").directive('markers',
                         }
 
                         // Should we watch for every specific marker on the map?
-                        var shouldWatch = (!isDefined(attrs.watchMarkers) || attrs.watchMarkers === 'true');
-                        var isNested = (!isDefined(attrs.markersNested) || attrs.markersNested === 'true');
+                        var shouldWatch = (!isDefined(attrs.watchMarkers) || Helpers.isTruthy(attrs.watchMarkers));
+                        var isNested = (isDefined(attrs.markersNested) && Helpers.isTruthy(attrs.markersNested));
                         if(isNested)
                         {
                             $it.each(newMarkers, function(markersToAdd){
