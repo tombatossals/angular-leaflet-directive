@@ -17,16 +17,6 @@ Status](https://coveralls.io/repos/tombatossals/angular-leaflet-directive/badge.
 [![Coverage
 Status](https://coveralls.io/repos/realtymaps/angular-leaflet-directive/badge.png?branch=master)](http://realtymaps.github.io/angular-leaflet-directive/coverage/PhantomJS%201.9.7%20%28Linux%29/lcov-report/dist/angular-leaflet-directive.js.html)
 
-## [realtymapsDev](http://github.com/realtymapsDev/angular-leaflet-directive)
-[![Build Status](https://travis-ci.org/realtymapsDev/angular-leaflet-directive.png)](https://travis-ci.org/realtymapsDev/angular-leaflet-directive)
-
-[![Dependencies](https://david-dm.org/realtymapsDev/angular-leaflet-directive.svg)](https://david-dm.org/realtymapsDev/angular-leaflet-directive)&nbsp;
-[![Dependencies](https://david-dm.org/realtymapsDev/angular-leaflet-directive/dev-status.svg)](https://david-dm.org/realtymapsDev/angular-leaflet-directive)&nbsp;
-
-[![Coverage
-Status](https://coveralls.io/repos/realtymapsDev/angular-leaflet-directive/badge.png?branch=master)](http://realtymapsDev.github.io/angular-leaflet-directive/coverage/PhantomJS%201.9.7%20%28Linux%29/lcov-report/dist/angular-leaflet-directive.js.html)
-
-
 
 [AngularJS](http://angularjs.org/) directive for the Leaflet Javascript
 Library. This software aims to easily embed maps managed by leaflet on your
