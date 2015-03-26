@@ -44,8 +44,8 @@ describe('Directive: leaflet', function() {
         });
         $rootScope.$apply();
         var decimalPlaces = 13; //PhantomJS appears to be diff then chrome
-        expect(leafletMap.getCenter().lat.toFixed(decimalPlaces)).toBe(52.23242563023071.toFixed(decimalPlaces));
-        expect(leafletMap.getCenter().lng.toFixed(decimalPlaces)).toBe(21.013412475585938.toFixed(decimalPlaces));
+        expect(leafletMap.getCenter().lat.toFixed(decimalPlaces)).toBe((52.23242563023071).toFixed(decimalPlaces));
+        expect(leafletMap.getCenter().lng.toFixed(decimalPlaces)).toBe((21.013412475585938).toFixed(decimalPlaces));
     });
 
 });
