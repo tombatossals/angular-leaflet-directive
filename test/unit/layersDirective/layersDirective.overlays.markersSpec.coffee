@@ -88,6 +88,38 @@ describe 'Directive: leaflet: layers.overlays.markers', ->
                     expect(layers.overlays.cars.hasLayer(markerToCheck)).toBe true
                     done()
 
+        it 'should check for a marker in a wrong layer group', ->
+            angular.extend scope,
+                layers:
+                    baselayers: osm:
+                        name: 'OpenStreetMap'
+                        type: 'xyz'
+                        url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+                        layerOptions:
+                            subdomains: [
+                                'a'
+                                'b'
+                                'c'
+                            ]
+                            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                            continuousWorld: true
+                    overlays:
+                        cars:
+                            name: 'cars'
+                            type: 'group'
+                            visible: true
+                markers:
+                    bikes:
+                        m1:
+                            lat: 1.2
+                            lng: 0.3
+
+            element = angular.element('<leaflet layers="layers" markers="markers" markers-nested="true"></leaflet>')
+            element = $compile(element)(scope)
+            leafletData.getMarkers().then (markers) ->
+                expect(Object.keys(markers).length).toEqual 0
+
+
     describe 'marker', ->
 
         it 'should check for a marker in the layer group that is visible', ->
