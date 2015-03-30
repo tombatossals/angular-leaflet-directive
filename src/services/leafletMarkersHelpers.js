@@ -1,6 +1,8 @@
-angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($rootScope, leafletHelpers, $log, $compile) {
+angular.module("leaflet-directive")
+.service('leafletMarkersHelpers', function ($rootScope, leafletHelpers, $log, $compile) {
 
     var isDefined = leafletHelpers.isDefined,
+        defaultTo = leafletHelpers.defaultTo,
         MarkerClusterPlugin = leafletHelpers.MarkerClusterPlugin,
         AwesomeMarkersPlugin = leafletHelpers.AwesomeMarkersPlugin,
         MakiMarkersPlugin = leafletHelpers.MakiMarkersPlugin,
@@ -11,6 +13,19 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
         isNumber  = leafletHelpers.isNumber,
         isObject = leafletHelpers.isObject,
         groups = {};
+
+   var _string = function(marker){
+       //this exists since JSON.stringify barfs on cyclic
+       var retStr = '';
+       ['_icon', '_latlng', '_leaflet_id', '_map', '_shadow'].forEach(function(prop){
+           retStr += prop + ': ' + defaultTo(marker[prop], 'undefined') + ' \n';
+       });
+       return '[leafletMarker] : \n' + retStr;
+   };
+    var _log = function(marker, useConsole){
+        var logger = useConsole? console : $log;
+        logger.debug(_string(marker));
+    };
 
     var createLeafletIcon = function(iconData) {
         if (isDefined(iconData) && isDefined(iconData.type) && iconData.type === 'awesomeMarker') {
@@ -226,7 +241,8 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
         },
 
         addMarkerWatcher: function(marker, name, leafletScope, layers, map) {
-            var clearWatch = leafletScope.$watch("markers[\""+name+"\"]", function(markerData, oldMarkerData) {
+            var markerWatchPath = Helpers.getObjectArrayPath("markers." + name);
+            var clearWatch = leafletScope.$watch(markerWatchPath, function(markerData, oldMarkerData) {
                 if (!isDefined(markerData)) {
                     _deleteMarker(marker, map, layers);
                     clearWatch();
@@ -445,6 +461,8 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
                     marker.setLatLng([markerData.lat, markerData.lng]);
                 }
             }, true);
-        }
+        },
+        string: _string,
+        log: _log
     };
 });

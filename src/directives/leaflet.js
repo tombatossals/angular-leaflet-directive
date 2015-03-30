@@ -139,8 +139,8 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($q, leafl
             });
 
             //Handle request to invalidate the map size
-	        //Up scope using $scope.$emit('invalidateSize')
-	        //Down scope using $scope.$broadcast('invalidateSize')
+            //Up scope using $scope.$emit('invalidateSize')
+            //Down scope using $scope.$broadcast('invalidateSize')
             scope.$on('invalidateSize', function() {
                 map.invalidateSize();
             });

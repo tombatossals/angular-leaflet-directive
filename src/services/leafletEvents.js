@@ -17,13 +17,31 @@ angular.module("leaflet-directive").factory('leafletEvents', function ($rootScop
 
     var genLabelEvents = function(leafletScope, logic, marker, name) {
         var labelEvents = _getAvailableLabelEvents();
-        var scopeWatchName = "markers." + name;
+        var scopeWatchName = Helpers.getObjectArrayPath("markers." + name);
         for (var i = 0; i < labelEvents.length; i++) {
             var eventName = labelEvents[i];
             marker.label.on(eventName, genDispatchLabelEvent(leafletScope, eventName, logic, marker.label, scopeWatchName));
         }
     };
 
+    /*
+    argument: name: Note this can be a single string or dot notation
+    Example:
+        markerModel : {
+            m1: { lat:_, lon: _}
+        }
+        //would yield name of
+        name = "m1"
+
+        If nested:
+        markerModel : {
+            cars: {
+                m1: { lat:_, lon: _}
+            }
+        }
+        //would yield name of
+        name = "cars.m1"
+     */
     var genDispatchMarkerEvent = function(eventName, logic, leafletScope, marker, name, markerData) {
         return function(e) {
             var broadcastName = 'leafletDirectiveMarker.' + eventName;

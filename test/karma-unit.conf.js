@@ -3,16 +3,33 @@ module.exports = function(karma) {
         // base path, that will be used to resolve files and exclude
         basePath: '../',
 
+        preprocessors: {
+            'test/**/*.coffee': ['coffee']
+        },
+        coffeePreprocessor: {
+            options: {
+                bare: true,
+                sourceMap: false
+            },
+            transformPath: function(path) {
+                return path.replace(/\.js$/, '.coffee');
+            }
+        },
         // list of files / patterns to load in the browser
         files: [
             'bower_components/leaflet/dist/leaflet-src.js',
             'bower_components/angular/angular.js',
             'bower_components/leaflet.markercluster/dist/leaflet.markercluster.js',
             'bower_components/angular-mocks/angular-mocks.js',
-            'dist/angular-leaflet-directive.js',
-            //'src/**/*.js',
+            'dist/angular-leaflet-directive_dev_mapped.js',
+
             'test/unit/*.js',
-            'bower_components/Leaflet.PolylineDecorator/leaflet.polylineDecorator.js'
+            'test/unit/**/*.js',
+            'test/unit/**/*.coffee',
+            'bower_components/Leaflet.PolylineDecorator/leaflet.polylineDecorator.js',
+            //do not include those specs for jasmine html runner by karma kama_jasmine_runner.html
+            {pattern:'**/**/**/*.coffee', included: false},
+            {pattern: '**/*.js.map', included: false}
         ],
 
         // Frameworks
@@ -30,8 +47,6 @@ module.exports = function(karma) {
         // - Safari
         // - PhantomJS
         browsers: [
-            //'Firefox',
-            //'Chrome',
             'PhantomJS'
         ],
 

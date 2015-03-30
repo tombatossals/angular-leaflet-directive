@@ -1,4 +1,55 @@
 angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log) {
+    var _errorHeader = '[AngularJS - Leaflet] ';
+
+    /*
+    For parsing paths to a field in an object
+
+    Example:
+    var obj = {
+        bike:{
+         1: 'hi'
+         2: 'foo'
+        }
+    };
+    _getObjectValue(obj,"bike.1") returns 'hi'
+     */
+    var _getObjectValue = function(object, pathStr) {
+        var obj;
+        //if the key is not a sting then we already have the value
+        if ((pathStr === null) || !angular.isString(pathStr)) {
+            return pathStr;
+        }
+        obj = object;
+        pathStr.split('.').forEach(function(value) {
+            if (obj) {
+                obj = obj[value];
+            }
+        });
+        return obj;
+    };
+
+    /*
+     Object Array Notation
+     _getObjectArrayPath("bike.one.two")
+     returns:
+     'bike["one"]["two"]'
+     */
+    var _getObjectArrayPath = function(pathStr){
+        return pathStr.split('.').reduce(function(previous, current) {
+            return previous + '["'+ current + '"]';
+        });
+    };
+
+    /* Object Dot Notation
+     _getObjectPath(["bike","one","two"])
+     returns:
+     "bike.one.two"
+     */
+    var _getObjectDotPath = function(arrayOfStrings){
+        return arrayOfStrings.reduce(function(previous, current) {
+            return previous + '.' + current;
+        });
+    };
 
     function _obtainEffectiveMapId(d, mapId) {
         var id, i;
@@ -14,7 +65,7 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
         } else if (Object.keys(d).length === 0) {
             id = "main";
         } else {
-                $log.error("[AngularJS - Leaflet] - You have more than 1 map on the DOM, you must provide the map ID to the leafletData.getXXX call");
+                $log.error(_errorHeader + "- You have more than 1 map on the DOM, you must provide the map ID to the leafletData.getXXX call");
             }
         } else {
             id = mapId;
@@ -40,7 +91,25 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
         return defer;
     }
 
+    var _isDefined = function(value) {
+        return angular.isDefined(value) && value !== null;
+    };
+    var _isUndefined = function(value){
+        return !_isDefined(value);
+    };
+
     return {
+        errorHeader: _errorHeader,
+        getObjectValue: _getObjectValue,
+        getObjectArrayPath:_getObjectArrayPath,
+        getObjectDotPath: _getObjectDotPath,
+        defaultTo: function(val, _default){
+            return _isDefined(val) ? val : _default;
+        },
+        //mainly for checking attributes of directives lets keep this minimal (on what we accept)
+        isTruthy: function(val){
+            return val === 'true' || val === true;
+        },
         //Determine if a reference is {}
         isEmpty: function(value) {
             return Object.keys(value).length === 0;
@@ -52,10 +121,8 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
         },
 
         // Determine if a reference is defined
-        isDefined: function(value) {
-            return angular.isDefined(value) && value !== null;
-        },
-
+        isDefined: _isDefined,
+        isUndefined:_isUndefined,
         // Determine if a reference is a number
         isNumber: function(value) {
             return angular.isNumber(value);
@@ -76,10 +143,10 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
             return angular.isObject(value);
         },
 
-		// Determine if a reference is a function.
-		isFunction: function(value) {
-			return angular.isFunction(value);
-		},
+        // Determine if a reference is a function.
+        isFunction: function(value) {
+            return angular.isFunction(value);
+        },
 
         // Determine if two objects have the same properties
         equals: function(o1, o2) {
@@ -118,7 +185,7 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
             if (phase === '$apply' || phase === '$digest') {
                 $scope.$eval(fn);
             } else {
-                $scope.$apply(fn);
+                $scope.$evalAsync(fn);
             }
         },
 
@@ -342,17 +409,17 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
                 }
             }
         },
-		DynamicMapLayerPlugin: {
-			isLoaded: function() {
-				return L.esri !== undefined && L.esri.dynamicMapLayer !== undefined;
-			},
-			is: function(layer) {
-				if (this.isLoaded()) {
-					return layer instanceof L.esri.dynamicMapLayer;
-				} else {
-					return false;
-				}
-			}
+        DynamicMapLayerPlugin: {
+            isLoaded: function () {
+                return L.esri !== undefined && L.esri.dynamicMapLayer !== undefined;
+            },
+            is: function (layer) {
+                if (this.isLoaded()) {
+                    return layer instanceof L.esri.dynamicMapLayer;
+                } else {
+                    return false;
+                }
+            }
         },
         GeoJSONPlugin: {
             isLoaded: function(){
@@ -366,7 +433,7 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
                 }
             }
         },
-		UTFGridPlugin: {
+        UTFGridPlugin: {
             isLoaded: function(){
                 return angular.isDefined(L.UtfGrid);
             },
