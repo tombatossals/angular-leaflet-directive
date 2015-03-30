@@ -44,15 +44,35 @@ dev:
  - 'open:devserver'
  - 'watch:source'
 
-serve:
- - 'connect:webserver'
+dev-chrome:
+ - 'connect:devserver'
+ - 'open:devserver'
+ - 'watch:chrome'
 
-build:
+spec: #continuos running specs
+ - 'fast-build'
+ - 'concurrent:spec'
+
+spec-unit:
+ - 'fast-build'
+ - 'karma:unit'
+ - 'watch:unit'
+
+serve:
+ - 'concurrent:watchServe'
+
+s:
+ - 'serve'
+
+fast-build:
  - 'clean:dist'
  - 'jshint'
  - 'concat:dist'
  - 'concat:distMapped'
  - 'ngAnnotate'
+
+build:
+ - 'fast-build'
  - 'uglify'
  - 'test-unit'
  - 'concat:license'

@@ -1,5 +1,5 @@
 /*!
-*  angular-leaflet-directive 0.7.11 2015-03-26
+*  angular-leaflet-directive 0.7.11 2015-03-28
 *  angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps
 *  git: https://github.com/tombatossals/angular-leaflet-directive
 */
@@ -419,13 +419,31 @@ angular.module("leaflet-directive").factory('leafletEvents', ["$rootScope", "$q"
 
     var genLabelEvents = function(leafletScope, logic, marker, name) {
         var labelEvents = _getAvailableLabelEvents();
-        var scopeWatchName = "markers." + name;
+        var scopeWatchName = Helpers.getObjectArrayPath("markers." + name);
         for (var i = 0; i < labelEvents.length; i++) {
             var eventName = labelEvents[i];
             marker.label.on(eventName, genDispatchLabelEvent(leafletScope, eventName, logic, marker.label, scopeWatchName));
         }
     };
 
+    /*
+    argument: name: Note this can be a single string or dot notation
+    Example:
+        markerModel : {
+            m1: { lat:_, lon: _}
+        }
+        //would yield name of
+        name = "m1"
+
+        If nested:
+        markerModel : {
+            cars: {
+                m1: { lat:_, lon: _}
+            }
+        }
+        //would yield name of
+        name = "cars.m1"
+     */
     var genDispatchMarkerEvent = function(eventName, logic, leafletScope, marker, name, markerData) {
         return function(e) {
             var broadcastName = 'leafletDirectiveMarker.' + eventName;
@@ -831,6 +849,57 @@ angular.module("leaflet-directive").factory('leafletEvents', ["$rootScope", "$q"
 }]);
 
 angular.module("leaflet-directive").factory('leafletHelpers', ["$q", "$log", function ($q, $log) {
+    var _errorHeader = '[AngularJS - Leaflet] ';
+
+    /*
+    For parsing paths to a field in an object
+
+    Example:
+    var obj = {
+        bike:{
+         1: 'hi'
+         2: 'foo'
+        }
+    };
+    _getObjectValue(obj,"bike.1") returns 'hi'
+     */
+    var _getObjectValue = function(object, pathStr) {
+        var obj;
+        //if the key is not a sting then we already have the value
+        if ((pathStr === null) || !angular.isString(pathStr)) {
+            return pathStr;
+        }
+        obj = object;
+        pathStr.split('.').forEach(function(value) {
+            if (obj) {
+                obj = obj[value];
+            }
+        });
+        return obj;
+    };
+
+    /*
+     Object Array Notation
+     _getObjectArrayPath("bike.one.two")
+     returns:
+     'bike["one"]["two"]'
+     */
+    var _getObjectArrayPath = function(pathStr){
+        return pathStr.split('.').reduce(function(previous, current) {
+            return previous + '["'+ current + '"]';
+        });
+    };
+
+    /* Object Dot Notation
+     _getObjectPath(["bike","one","two"])
+     returns:
+     "bike.one.two"
+     */
+    var _getObjectDotPath = function(arrayOfStrings){
+        return arrayOfStrings.reduce(function(previous, current) {
+            return previous + '.' + current;
+        });
+    };
 
     function _obtainEffectiveMapId(d, mapId) {
         var id, i;
@@ -846,7 +915,7 @@ angular.module("leaflet-directive").factory('leafletHelpers', ["$q", "$log", fun
         } else if (Object.keys(d).length === 0) {
             id = "main";
         } else {
-                $log.error("[AngularJS - Leaflet] - You have more than 1 map on the DOM, you must provide the map ID to the leafletData.getXXX call");
+                $log.error(_errorHeader + "- You have more than 1 map on the DOM, you must provide the map ID to the leafletData.getXXX call");
             }
         } else {
             id = mapId;
@@ -875,13 +944,19 @@ angular.module("leaflet-directive").factory('leafletHelpers', ["$q", "$log", fun
     var _isDefined = function(value) {
         return angular.isDefined(value) && value !== null;
     };
+    var _isUndefined = function(value){
+        return !_isDefined(value);
+    };
 
     return {
-        errorHeader: '[AngularJS - Leaflet] ',
+        errorHeader: _errorHeader,
+        getObjectValue: _getObjectValue,
+        getObjectArrayPath:_getObjectArrayPath,
+        getObjectDotPath: _getObjectDotPath,
         defaultTo: function(val, _default){
             return _isDefined(val) ? val : _default;
         },
-        //mainly for checkking attributes of directives lets keep this minimal (on what we accept)
+        //mainly for checking attributes of directives lets keep this minimal (on what we accept)
         isTruthy: function(val){
             return val === 'true' || val === true;
         },
@@ -897,7 +972,7 @@ angular.module("leaflet-directive").factory('leafletHelpers', ["$q", "$log", fun
 
         // Determine if a reference is defined
         isDefined: _isDefined,
-
+        isUndefined:_isUndefined,
         // Determine if a reference is a number
         isNumber: function(value) {
             return angular.isNumber(value);
@@ -1872,9 +1947,11 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', ["$q", "leafle
     };
 }]);
 
-angular.module("leaflet-directive").factory('leafletMarkersHelpers', ["$rootScope", "leafletHelpers", "$log", "$compile", function ($rootScope, leafletHelpers, $log, $compile) {
+angular.module("leaflet-directive")
+.service('leafletMarkersHelpers', ["$rootScope", "leafletHelpers", "$log", "$compile", function ($rootScope, leafletHelpers, $log, $compile) {
 
     var isDefined = leafletHelpers.isDefined,
+        defaultTo = leafletHelpers.defaultTo,
         MarkerClusterPlugin = leafletHelpers.MarkerClusterPlugin,
         AwesomeMarkersPlugin = leafletHelpers.AwesomeMarkersPlugin,
         MakiMarkersPlugin = leafletHelpers.MakiMarkersPlugin,
@@ -1885,6 +1962,19 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', ["$rootScop
         isNumber  = leafletHelpers.isNumber,
         isObject = leafletHelpers.isObject,
         groups = {};
+
+   var _string = function(marker){
+       //this exists since JSON.stringify barfs on cyclic
+       var retStr = '';
+       ['_icon', '_latlng', '_leaflet_id', '_map', '_shadow'].forEach(function(prop){
+           retStr += prop + ': ' + defaultTo(marker[prop], 'undefined') + ' \n';
+       });
+       return '[leafletMarker] : \n' + retStr;
+   };
+    var _log = function(marker, useConsole){
+        var logger = useConsole? console : $log;
+        logger.debug(_string(marker));
+    };
 
     var createLeafletIcon = function(iconData) {
         if (isDefined(iconData) && isDefined(iconData.type) && iconData.type === 'awesomeMarker') {
@@ -2100,7 +2190,8 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', ["$rootScop
         },
 
         addMarkerWatcher: function(marker, name, leafletScope, layers, map) {
-            var clearWatch = leafletScope.$watch("markers[\""+name+"\"]", function(markerData, oldMarkerData) {
+            var markerWatchPath = Helpers.getObjectArrayPath("markers." + name);
+            var clearWatch = leafletScope.$watch(markerWatchPath, function(markerData, oldMarkerData) {
                 if (!isDefined(markerData)) {
                     _deleteMarker(marker, map, layers);
                     clearWatch();
@@ -2319,7 +2410,9 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', ["$rootScop
                     marker.setLatLng([markerData.lat, markerData.lng]);
                 }
             }, true);
-        }
+        },
+        string: _string,
+        log: _log
     };
 }]);
 
@@ -3600,6 +3693,7 @@ angular.module("leaflet-directive").directive('markers',
               leafletEvents, leafletIterators) {
     //less terse vars to helpers
     var isDefined = leafletHelpers.isDefined,
+        errorHeader = leafletHelpers.errorHeader,
         defaultTo= leafletHelpers.defaultTo,
         Helpers = leafletHelpers,
         isString = leafletHelpers.isString,
@@ -3611,23 +3705,53 @@ angular.module("leaflet-directive").directive('markers',
         deleteMarker = leafletMarkersHelpers.deleteMarker,
         $it = leafletIterators;
 
+    var _maybeAddMarkerToLayer = function(layerName, layers, markerData, marker, shouldWatch, map){
+
+        if (!isString(layerName)) {
+            $log.error(errorHeader + ' A layername must be a string');
+            return false;
+        }
+
+        if (!isDefined(layers)) {
+            $log.error(errorHeader + ' You must add layers to the directive if the markers are going to use this functionality.');
+            return false;
+        }
+
+        if (!isDefined(layers.overlays) || !isDefined(layers.overlays[layerName])) {
+            $log.error(errorHeader +' A marker can only be added to a layer of type "group"');
+            return false;
+        }
+        var layerGroup = layers.overlays[layerName];
+        if (!(layerGroup instanceof L.LayerGroup || layerGroup instanceof L.FeatureGroup)) {
+            $log.error(errorHeader + ' Adding a marker to an overlay needs a overlay of the type "group" or "featureGroup"');
+            return false;
+        }
+
+        // The marker goes to a correct layer group, so first of all we add it
+        layerGroup.addLayer(marker);
+
+        // The marker is automatically added to the map depending on the visibility
+        // of the layer, so we only have to open the popup if the marker is in the map
+        if (!shouldWatch && map.hasLayer(marker) && markerData.focus === true) {
+            leafletMarkersHelpers.manageOpenPopup(marker, markerData);
+        }
+        return true;
+    };
     //TODO: move to leafletMarkersHelpers??? or make a new class/function file (leafletMarkersHelpers is large already)
-    var _addMarkers = function(markersToRender, map, layers, leafletMarkers, leafletScope, shouldWatch){
+    var _addMarkers = function(markersToRender, map, layers, leafletMarkers, leafletScope, shouldWatch, maybeLayerName){
         shouldWatch = defaultTo(shouldWatch, false);
 
-        // add new markers
         for (var newName in markersToRender) {
             if (newName.search("-") !== -1) {
                 $log.error('The marker can\'t use a "-" on his key name: "' + newName + '".');
                 continue;
             }
 
-
             if (!isDefined(leafletMarkers[newName])) {
                 var markerData = markersToRender[newName];
                 var marker = createMarker(markerData);
                 if (!isDefined(marker)) {
-                    $log.error('[AngularJS - Leaflet] Received invalid data on the marker ' + newName + '.');
+                    $log.error(errorHeader + ' Received invalid data on the marker ' + newName + '.');
                     continue;
                 }
                 leafletMarkers[newName] = marker;
@@ -3649,36 +3773,15 @@ angular.module("leaflet-directive").directive('markers',
                 }
 
                 // Check if the marker should be added to a layer
-                if (isDefined(markerData) && isDefined(markerData.layer)) {
-                    if (!isString(markerData.layer)) {
-                        $log.error('[AngularJS - Leaflet] A layername must be a string');
-                        continue;
-                    }
-                    if (!isDefined(layers)) {
-                        $log.error('[AngularJS - Leaflet] You must add layers to the directive if the markers are going to use this functionality.');
-                        continue;
-                    }
+                if (isDefined(markerData) && (isDefined(markerData.layer) || isDefined(maybeLayerName))){
 
-                    if (!isDefined(layers.overlays) || !isDefined(layers.overlays[markerData.layer])) {
-                        $log.error('[AngularJS - Leaflet] A marker can only be added to a layer of type "group"');
-                        continue;
-                    }
-                    var layerGroup = layers.overlays[markerData.layer];
-                    if (!(layerGroup instanceof L.LayerGroup || layerGroup instanceof L.FeatureGroup)) {
-                        $log.error('[AngularJS - Leaflet] Adding a marker to an overlay needs a overlay of the type "group" or "featureGroup"');
-                        continue;
-                    }
-
-                    // The marker goes to a correct layer group, so first of all we add it
-                    layerGroup.addLayer(marker);
-
-                    // The marker is automatically added to the map depending on the visibility
-                    // of the layer, so we only have to open the popup if the marker is in the map
-                    if (!shouldWatch && map.hasLayer(marker) && markerData.focus === true) {
-                        leafletMarkersHelpers.manageOpenPopup(marker, markerData);
-                    }
-
-                    // Add the marker to the map if it hasn't been added to a layer or to a group
+                    var pass = _maybeAddMarkerToLayer(
+                        markerData.layer || maybeLayerName, //original way takes pref
+                        layers,
+                        markerData, marker, shouldWatch, map
+                    );
+                    if(!pass)
+                        continue; //something went wrong move on in the loop
                 } else if (!isDefined(markerData.group)) {
                     // We do not have a layer attr, so the marker goes to the map layer
                     map.addLayer(marker);
@@ -3686,17 +3789,31 @@ angular.module("leaflet-directive").directive('markers',
                         leafletMarkersHelpers.manageOpenPopup(marker, markerData);
                     }
                 }
-
-
+                var pathToMarker = Helpers.getObjectDotPath(maybeLayerName? [maybeLayerName, newName]: [newName]);
                 if (shouldWatch) {
-                    addMarkerWatcher(marker, newName, leafletScope, layers, map);
+                    addMarkerWatcher(marker, pathToMarker, leafletScope, layers, map);
                 }
 
                 listenMarkerEvents(marker, markerData, leafletScope, shouldWatch);
-                bindMarkerEvents(marker, newName, markerData, leafletScope);
+                bindMarkerEvents(marker, pathToMarker, markerData, leafletScope);
             }
         }
     };
+    var _destroy = function(markerModels, lMarkers, map, layers){
+        // Delete markers from the array
+        var hasLogged = false;
+        for (var name in lMarkers) {
+            if(!hasLogged) {
+                $log.debug(errorHeader + "[markers] destroy: ");
+                hasLogged = true;
+            }
+            if (!isDefined(markerModels) || !isDefined(markerModels[name])) {
+                deleteMarker(lMarkers[name], map, layers);
+                delete lMarkers[name];
+            }
+        }
+    };
+
     return {
         restrict: "A",
         scope: false,
@@ -3708,8 +3825,7 @@ angular.module("leaflet-directive").directive('markers',
                 leafletScope  = mapController.getLeafletScope();
 
             mapController.getMap().then(function(map) {
-                var leafletMarkers = {},
-                    getLayers;
+                var leafletMarkers = {}, getLayers;
 
                 // If the layers attribute is used, we must wait until the layers are created
                 if (isDefined(controller[1])) {
@@ -3725,21 +3841,14 @@ angular.module("leaflet-directive").directive('markers',
                 getLayers().then(function(layers) {
                     leafletData.setMarkers(leafletMarkers, attrs.id);
                     leafletScope.$watch('markers', function(newMarkers) {
-                        // Delete markers from the array
-                        for (var name in leafletMarkers) {
-                            if (!isDefined(newMarkers) || !isDefined(newMarkers[name])) {
-                                deleteMarker(leafletMarkers[name], map, layers);
-                                delete leafletMarkers[name];
-                            }
-                        }
-
+                        _destroy(newMarkers, leafletMarkers, map, layers);
                         // Should we watch for every specific marker on the map?
                         var shouldWatch = (!isDefined(attrs.watchMarkers) || Helpers.isTruthy(attrs.watchMarkers));
                         var isNested = (isDefined(attrs.markersNested) && Helpers.isTruthy(attrs.markersNested));
-                        if(isNested)
-                        {
-                            $it.each(newMarkers, function(markersToAdd){
-                                _addMarkers(markersToAdd, map, layers, leafletMarkers, leafletScope, shouldWatch);
+
+                        if(isNested) {
+                            $it.each(newMarkers, function(markersToAdd, layerName) {
+                                _addMarkers(markersToAdd, map, layers, leafletMarkers, leafletScope, shouldWatch, layerName);
                             });
                             return;
                         }
