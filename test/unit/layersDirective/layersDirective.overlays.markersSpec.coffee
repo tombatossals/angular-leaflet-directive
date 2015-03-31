@@ -20,21 +20,13 @@ describe 'Directive: leaflet: layers.overlays.markers', ->
 
         inject (_$compile_, _$rootScope_, _leafletData_, _leafletMarkersHelpers_, _$q_, _$timeout_) ->
             $timeout = _$timeout_
+            window.ngLeafLetTestGlobals.$timeout = $timeout
             $q = _$q_
             $compile = _$compile_
             $rootScope = _$rootScope_
             leafletData = _leafletData_
             leafletMarkersHelper = _leafletMarkersHelpers_
             scope = $rootScope.$new()
-
-        @digest = (scope, fn) ->
-            while $timeout.hasPendingTasks()
-                $timeout.flush()
-
-            fn() if fn?
-
-            unless scope.$$phase
-                scope.$digest()
 
     afterEach inject ($rootScope) ->
         unless scope.$$phase

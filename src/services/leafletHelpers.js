@@ -12,6 +12,7 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
         }
     };
     _getObjectValue(obj,"bike.1") returns 'hi'
+    this is getPath in ui-gmap
      */
     var _getObjectValue = function(object, pathStr) {
         var obj;
