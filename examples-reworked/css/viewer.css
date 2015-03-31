@@ -15,12 +15,6 @@ body {
     min-width: 320px;
 }
 
-iframe {
-    width: 100%;
-    height: 500px;
-    border: 0;
-}
-
 p {
     text-align: justify;
 }
@@ -112,33 +106,13 @@ input[type=range] {
     top: 50%;
 }
 
-.angular-openlayers-map:-moz-full-screen {
+.angular-leaflet-map {
+    background: black;
     width: 100%;
-    height: 100%;
-}
-.angular-openlayers-map:-webkit-full-screen {
-    width: 100%;
-    height: 100%;
-}
-.angular-openlayers-map:full-screen {
-    width: 100%;
-    height: 100%;
+    height: 480px;
 }
 
-.angular-openlayers-map:not(-moz-full-screen) {
-    width: 100%;
-    height: 400px;
-}
 
-.angular-openlayers-map:not(-webkit-full-screen) {
-    width: 100%;
-    height: 400px;
-}
-
-.angular-openlayers-map:not(full-screen) {
-    width: 100%;
-    height: 400px;
-}
 
 @media only screen and (max-width : 1250px) {
     .left.column > .menu .item {

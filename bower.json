@@ -22,6 +22,7 @@
     "prism": "*",
     "angular-route": "1.3.x",
     "angular-animate": "1.3.x",
+    "angular-sanitize": "1.3.x",
     "angular-mocks": "1.3.x",
     "leaflet.markercluster": "*",
     "leaflet.draw": "*",

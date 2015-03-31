@@ -2,15 +2,15 @@
 
 (function() {
 
-    var app = angular.module('webapp', ['ngRoute', 'leaflet-directive']).config(function($locationProvider) {
+    var getSource = function(url) {
+    };
+
+    var app = angular.module('webapp', ['ngRoute', 'ngSanitize', 'leaflet-directive']).config(function($locationProvider) {
         $locationProvider.html5Mode(false);
     });
 
-
     app.config(function($routeProvider) {
-        $routeProvider.when('/', {
-            templateUrl: 'partials/frontpage.html'
-        }).when('/:section/:example', {
+        $routeProvider.when('/:section/:example', {
             templateUrl: function(attrs) {
                 return 'partials/example.html';
             },
@@ -18,26 +18,62 @@
         });
     });
 
-    app.controller('MainController', function($scope, $http, $q, $timeout) {
+    app.controller("BasicFirstController", [ "$scope", function($scope) {
+        // Nothing here!
+    }]);
+
+    app.directive('ngExample', [ '$http', '$sce', function($http, $sce) {
+        return {
+            restrict: 'A',
+            scope: {
+                url: '='
+            },
+            template: '<div ng-bind-html="source"></div>',
+            link: function(scope, element, attrs) {
+                scope.$watch('url', function(url) {
+                    $http.get(url).success(function(data) {
+                        var $doc = new DOMParser().parseFromString(data, "text/html");
+                        var body = $doc.getElementsByTagName('body')[0];
+                        var controller = body.getAttribute('ng-controller');
+
+                        scope.source = $sce.trustAsHtml('<div ng-controller="' + controller + '">' + body.innerHTML + '</div>');
+
+                    });
+                });
+            }
+        };
+    }]);
+
+    app.directive('ngCode', [ '$http', '$timeout', function($http, $timeout) {
+        return {
+            restrict: 'A',
+            scope: {
+                url: '='
+            },
+            templateUrl: 'partials/source.html',
+            link: function(scope, element, attrs) {
+
+                scope.$watch('url', function(url) {
+                    $http.get(url).success(function(data) {
+                        scope.source = data;
+
+                        var $doc = new DOMParser().parseFromString(data, "text/html");
+
+                        $timeout(function() {
+                            Prism.highlightAll();
+                        }, 200);
+                    });
+                })
+            }
+        };
+    }]);
+
+    app.controller('MainController', [ '$scope', '$http', '$q', function($scope, $http, $q) {
 
         var examples = $q.defer();
-
         $scope.$on('$routeChangeSuccess', function(event, route) {
             var url = route.params.example;
             $scope.section = route.params.section;
-
-            var getSource = function(example) {
-                $http.get(example.extUrl).success(function(data) {
-                    example.source = data;
-
-                    var $doc = new DOMParser().parseFromString(data, "text/html");
-                    console.log($doc.getElementsByTagName('script'));
-
-                    $timeout(function() {
-                        Prism.highlightAll();
-                    }, 200);
-                });
-            };
 
             examples.promise.then(function(examples) {
                 if (!$scope.section) {
@@ -45,10 +81,9 @@
                 }
                 var sectionExamples = examples[$scope.section];
                 for (var i in sectionExamples) {
-                    var example = sectionExamples[i];
-                    if (example.url === url) {
-                        $scope.activeExample = example;
-                        getSource(example);
+                    var e = sectionExamples[i];
+                    if (e.url === url) {
+                        $scope.url = e.extUrl;
                     }
                 }
             });
@@ -62,7 +97,7 @@
             examples.resolve(data.examples);
         });
 
-    });
+    } ]);
 
 
 }());

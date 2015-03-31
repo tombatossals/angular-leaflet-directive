@@ -12,11 +12,13 @@
         <link rel="stylesheet" type="text/css" href="../bower_components/leaflet/dist/leaflet.css">
         <link rel="stylesheet" type="text/css" href="css/viewer.css">
 
+        <script src="../bower_components/leaflet/dist/leaflet.js"></script>
         <script src="../bower_components/jquery/dist/jquery.min.js"></script>
         <script src="../bower_components/prism/prism.js"></script>
         <script src="../bower_components/semantic-ui/dist/semantic.min.js"></script>
         <script src="../bower_components/angular/angular.min.js"></script>
         <script src="../bower_components/angular-route/angular-route.min.js"></script>
+        <script src="../bower_components/angular-sanitize/angular-sanitize.min.js"></script>
         <script src="../dist/angular-leaflet-directive.min.js"></script>
         <script src="js/viewer.js"></script>
     </head>
@@ -47,7 +49,7 @@
                 </div>
             </div>
             <div class="nine wide right column rightside">
-                <div ng-view></div>
+                <ng-view></ng-view>
             </div>
         </div>
     </body>
