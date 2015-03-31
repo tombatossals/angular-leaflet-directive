@@ -4,7 +4,7 @@ module.exports = function(karma) {
         basePath: '../',
 
         preprocessors: {
-            'test/**/*.coffee': ['coffee']
+            'test/**/**/*.coffee': ['coffee']
         },
         coffeePreprocessor: {
             options: {
@@ -22,7 +22,7 @@ module.exports = function(karma) {
             'bower_components/leaflet.markercluster/dist/leaflet.markercluster.js',
             'bower_components/angular-mocks/angular-mocks.js',
             'dist/angular-leaflet-directive_dev_mapped.js',
-
+            'test/unit/bootstrap.coffee',
             'test/unit/*.js',
             'test/unit/**/*.js',
             'test/unit/**/*.coffee',

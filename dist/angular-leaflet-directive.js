@@ -1,5 +1,5 @@
 /*!
-*  angular-leaflet-directive 0.7.11 2015-03-28
+*  angular-leaflet-directive 0.7.11 2015-03-31
 *  angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps
 *  git: https://github.com/tombatossals/angular-leaflet-directive
 */
@@ -848,6 +848,85 @@ angular.module("leaflet-directive").factory('leafletEvents', ["$rootScope", "$q"
     };
 }]);
 
+angular.module("leaflet-directive")
+.service('leafletGeoJsonHelpers', ["leafletHelpers", "leafletIterators", function (leafletHelpers, leafletIterators) {
+    var lHlp = leafletHelpers,
+    lIt = leafletIterators;
+    var Point = function(lat,lng){
+        this.lat = lat;
+        this.lng = lng;
+        return this;
+    };
+
+    var _getLat = function(value) {
+        if (Array.isArray(value) && value.length === 2) {
+            return value[1];
+        } else if (lHlp.isDefined(value.type) && value.type === 'Point') {
+            return +value.coordinates[1];
+        } else {
+            return +value.lat;
+        }
+    };
+
+    var _getLng = function(value) {
+        if (Array.isArray(value) && value.length === 2) {
+            return value[0];
+        } else if (lHlp.isDefined(value.type) && value.type === 'Point') {
+            return +value.coordinates[0];
+        } else {
+            return +value.lng;
+        }
+    };
+
+    var _validateCoords = function(coords) {
+        if (lHlp.isUndefined(coords)) {
+            return false;
+        }
+        if (lHlp.isArray(coords)) {
+            if (coords.length === 2 && lHlp.isNumber(coords[0]) && lHlp.isNumber(coords[1])) {
+                return true;
+            }
+        } else if (lHlp.isDefined(coords.type)) {
+            if (
+                coords.type === 'Point' && lHlp.isArray(coords.coordinates) &&
+                coords.coordinates.length === 2  &&
+                lHlp.isNumber(coords.coordinates[0]) &&
+                lHlp.isNumber(coords.coordinates[1])) {
+                    return true;
+                }
+            }
+
+            var ret = lIt.all(['lat', 'lng'], function(pos){
+                return lHlp.isDefined(coords[pos]) && lHlp.isNumber(coords[pos]);
+            });
+            return ret;
+        };
+
+        var _getCoords = function(value) {
+            if (!value || !_validateCoords(value)) {
+                return;
+            }
+            var p =  null;
+            if (Array.isArray(value) && value.length === 2) {
+                p = new Point(value[1], value[0]);
+            } else if (lHlp.isDefined(value.type) && value.type === 'Point') {
+                p = new Point(value.coordinates[1], value.coordinates[0]);
+            } else {
+                return value;
+            }
+            //note angular.merge is avail in angular 1.4.X we might want to fill it here
+            return angular.extend(value, p);//tap on lat, lng if it doesnt exist
+        };
+
+
+        return {
+            getLat: _getLat,
+            getLng: _getLng,
+            validateCoords: _validateCoords,
+            getCoords: _getCoords
+        };
+    }]);
+
 angular.module("leaflet-directive").factory('leafletHelpers', ["$q", "$log", function ($q, $log) {
     var _errorHeader = '[AngularJS - Leaflet] ';
 
@@ -862,6 +941,7 @@ angular.module("leaflet-directive").factory('leafletHelpers', ["$q", "$log", fun
         }
     };
     _getObjectValue(obj,"bike.1") returns 'hi'
+    this is getPath in ui-gmap
      */
     var _getObjectValue = function(object, pathStr) {
         var obj;
@@ -1341,47 +1421,169 @@ angular.module("leaflet-directive").factory('leafletHelpers', ["$q", "$log", fun
 
 angular.module('leaflet-directive').service('leafletIterators', ["$log", "leafletHelpers", function ($log, leafletHelpers) {
 
-    var $lhelp = leafletHelpers,
-        errorHeader = leafletHelpers.errorHeader + 'leafletIterators: ';
+  var lHlp = leafletHelpers,
+  errorHeader = leafletHelpers.errorHeader + 'leafletIterators: ';
 
-    var _hasErrors = function(collection, cb, ignoreCollection, cbName){
-        if(!ignoreCollection) {
-            if (!$lhelp.isDefined(collection) || !$lhelp.isDefined(cb)) {
-                $log.error(errorHeader + 'collection or cb undefined');
-                return true;
-            }
-        }
-        if(!$lhelp.isFunction(cb)){
-            cbName = $lhelp.defaultTo(cb,'cb');
-            $log.error(errorHeader + cbName + ' is not a function');
-            return true;
-        }
-        return false;
+  //BEGIN COPY from underscore
+  var _keys = Object.keys;
+  var _isFunction = lHlp.isFunction;
+  var _isObject = lHlp.isObject;
+
+  // Helper for collection methods to determine whether a collection
+  // should be iterated as an array or as an object
+  // Related: http://people.mozilla.org/~jorendorff/es6-draft.html#sec-tolength
+  var MAX_ARRAY_INDEX = Math.pow(2, 53) - 1;
+
+  var _isArrayLike = function(collection) {
+    var length = collection !== null && collection.length;
+    return  lHlp.isNumber(length) && length >= 0 && length <= MAX_ARRAY_INDEX;
+  };
+
+  // Keep the identity function around for default iteratees.
+  var _identity = function(value) {
+    return value;
+  };
+
+  var _property = function(key) {
+    return function(obj) {
+      return obj === null ? void 0 : obj[key];
     };
+  };
 
-    var _iterate = function(collection, externalCb, internalCb){
-        if(_hasErrors(undefined, internalCb, true, 'internalCb')){
-            return;
+  // Internal function that returns an efficient (for current engines) version
+  // of the passed-in callback, to be repeatedly applied in other Underscore
+  // functions.
+  var optimizeCb = function(func, context, argCount) {
+    if (context === void 0) return func;
+    switch (argCount === null ? 3 : argCount) {
+      case 1: return function(value) {
+        return func.call(context, value);
+      };
+      case 2: return function(value, other) {
+        return func.call(context, value, other);
+      };
+      case 3: return function(value, index, collection) {
+        return func.call(context, value, index, collection);
+      };
+      case 4: return function(accumulator, value, index, collection) {
+        return func.call(context, accumulator, value, index, collection);
+      };
+    }
+    return function() {
+      return func.apply(context, arguments);
+    };
+  };
+
+  // An internal function for creating assigner functions.
+  var createAssigner = function(keysFunc, undefinedOnly) {
+    return function(obj) {
+      var length = arguments.length;
+      if (length < 2 || obj === null) return obj;
+      for (var index = 1; index < length; index++) {
+        var source = arguments[index],
+            keys = keysFunc(source),
+            l = keys.length;
+        for (var i = 0; i < l; i++) {
+          var key = keys[i];
+          if (!undefinedOnly || obj[key] === void 0) obj[key] = source[key];
         }
-        if(!_hasErrors(collection, externalCb)){
-            for(var key in collection){
-                internalCb(collection[key], key);
-            }
-        }
+      }
+      return obj;
     };
+  };
+
+  // Assigns a given object with all the own properties in the passed-in object(s)
+  // (https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object/assign)
+  var _extendOwn, _assign = null;
+  _extendOwn = _assign = createAssigner(_keys);
+
+  // Returns whether an object has a given set of `key:value` pairs.
+  var _isMatch = function(object, attrs) {
+    var keys = _keys(attrs), length = keys.length;
+    if (object === null) return !length;
+    var obj = Object(object);
+    for (var i = 0; i < length; i++) {
+      var key = keys[i];
+      if (attrs[key] !== obj[key] || !(key in obj)) return false;
+    }
+    return true;
+  };
+
+  // Returns a predicate for checking whether an object has a given set of
+  // `key:value` pairs.
+  var _matcher, _matches = null;
+  _matcher = _matches = function(attrs) {
+    attrs = _extendOwn({}, attrs);
+    return function(obj) {
+      return _isMatch(obj, attrs);
+    };
+  };
 
 
-    //consider adding lodash or underscore but for now adding iterators as we need them
-    var _each = function(collection, cb){
-        _iterate(collection, cb, function(val, key){
-            cb(val, key);
-        });
-    };
+  // A mostly-internal function to generate callbacks that can be applied
+  // to each element in a collection, returning the desired result — either
+  // identity, an arbitrary callback, a property matcher, or a property accessor.
+  var cb = function(value, context, argCount) {
+    if (value === null) return _identity;
+    if (_isFunction(value)) return optimizeCb(value, context, argCount);
+    if (_isObject(value)) return _matcher(value);
+    return _property(value);
+  };
 
-    //lodash or underscore have preference
-    return window._ ? window._ : {
-        each:_each
-    };
+  var _every, _all = null;
+  _every = _all = function(obj, predicate, context) {
+    predicate = cb(predicate, context);
+    var keys = !_isArrayLike(obj) && _keys(obj),
+    length = (keys || obj).length;
+    for (var index = 0; index < length; index++) {
+      var currentKey = keys ? keys[index] : index;
+      if (!predicate(obj[currentKey], currentKey, obj)) return false;
+    }
+    return true;
+  };
+
+  //END COPY fron underscore
+
+  var _hasErrors = function(collection, cb, ignoreCollection, cbName){
+    if(!ignoreCollection) {
+      if (!lHlp.isDefined(collection) || !lHlp.isDefined(cb)) {
+        $log.error(errorHeader + 'collection or cb undefined');
+        return true;
+      }
+    }
+    if(!lHlp.isFunction(cb)){
+      cbName = lHlp.defaultTo(cb,'cb');
+      $log.error(errorHeader + cbName + ' is not a function');
+      return true;
+    }
+    return false;
+  };
+
+  var _iterate = function(collection, externalCb, internalCb){
+    if(_hasErrors(undefined, internalCb, true, 'internalCb')){
+      return;
+    }
+    if(!_hasErrors(collection, externalCb)){
+      for(var key in collection){
+        internalCb(collection[key], key);
+      }
+    }
+  };
+
+
+  //consider adding lodash or underscore but for now adding iterators as we need them
+  var _each = function(collection, cb){
+    _iterate(collection, cb, function(val, key){
+      cb(val, key);
+    });
+  };
+
+  //lodash or underscore have preference
+  return window._ ? window._ : {
+    each:_each,
+    every: _every,
+    all: _all
+  };
 }]);
 
 angular.module("leaflet-directive").factory('leafletLayerHelpers', ["$rootScope", "$log", "leafletHelpers", function ($rootScope, $log, leafletHelpers) {
@@ -1948,7 +2150,8 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', ["$q", "leafle
 }]);
 
 angular.module("leaflet-directive")
-.service('leafletMarkersHelpers', ["$rootScope", "leafletHelpers", "$log", "$compile", function ($rootScope, leafletHelpers, $log, $compile) {
+.service('leafletMarkersHelpers', ["$rootScope", "leafletHelpers", "$log", "$compile", "leafletGeoJsonHelpers", function ($rootScope, leafletHelpers, $log, $compile,
+  leafletGeoJsonHelpers) {
 
     var isDefined = leafletHelpers.isDefined,
         defaultTo = leafletHelpers.defaultTo,
@@ -1961,7 +2164,10 @@ angular.module("leaflet-directive")
         isString = leafletHelpers.isString,
         isNumber  = leafletHelpers.isNumber,
         isObject = leafletHelpers.isObject,
-        groups = {};
+        groups = {},
+        geoHlp = leafletGeoJsonHelpers,
+        errorHeader = leafletHelpers.errorHeader;
+
 
    var _string = function(marker){
        //this exists since JSON.stringify barfs on cyclic
@@ -1979,7 +2185,7 @@ angular.module("leaflet-directive")
     var createLeafletIcon = function(iconData) {
         if (isDefined(iconData) && isDefined(iconData.type) && iconData.type === 'awesomeMarker') {
             if (!AwesomeMarkersPlugin.isLoaded()) {
-                $log.error('[AngularJS - Leaflet] The AwesomeMarkers Plugin is not loaded.');
+                $log.error( errorHeader + ' The AwesomeMarkers Plugin is not loaded.');
             }
 
             return new L.AwesomeMarkers.icon(iconData);
@@ -1987,7 +2193,7 @@ angular.module("leaflet-directive")
 
         if (isDefined(iconData) && isDefined(iconData.type) && iconData.type === 'makiMarker') {
             if (!MakiMarkersPlugin.isLoaded()) {
-                $log.error('[AngularJS - Leaflet] The MakiMarkers Plugin is not loaded.');
+                $log.error(errorHeader + 'The MakiMarkers Plugin is not loaded.');
             }
 
             return new L.MakiMarkers.icon(iconData);
@@ -1995,7 +2201,7 @@ angular.module("leaflet-directive")
 
         if (isDefined(iconData) && isDefined(iconData.type) && iconData.type === 'extraMarker') {
             if (!ExtraMarkersPlugin.isLoaded()) {
-                $log.error('[AngularJS - Leaflet] The ExtraMarkers Plugin is not loaded.');
+                $log.error(errorHeader + 'The ExtraMarkers Plugin is not loaded.');
             }
             return new L.ExtraMarkers.icon(iconData);
         }
@@ -2123,8 +2329,14 @@ angular.module("leaflet-directive")
         manageOpenLabel: _manageOpenLabel,
 
         createMarker: function(markerData) {
-            if (!isDefined(markerData)) {
-                $log.error('[AngularJS - Leaflet] The marker definition is not valid.');
+            if (!isDefined(markerData) || !geoHlp.validateCoords(markerData)){
+                $log.error(errorHeader + 'The marker definition is not valid.');
+                return;
+            }
+            var coords = geoHlp.getCoords(markerData);
+
+            if (!isDefined(coords)){
+                $log.error(errorHeader + 'Unable to get coordinates from markerData.');
                 return;
             }
 
@@ -2144,7 +2356,7 @@ angular.module("leaflet-directive")
                 }
             }
 
-            var marker = new L.marker(markerData, markerOptions);
+            var marker = new L.marker(coords, markerOptions);
 
             if (!isString(markerData.message)) {
                 marker.unbindPopup();
@@ -2155,12 +2367,12 @@ angular.module("leaflet-directive")
 
         addMarkerToGroup: function(marker, groupName, groupOptions, map) {
             if (!isString(groupName)) {
-                $log.error('[AngularJS - Leaflet] The marker group you have specified is invalid.');
+                $log.error(errorHeader + 'The marker group you have specified is invalid.');
                 return;
             }
 
             if (!MarkerClusterPlugin.isLoaded()) {
-                $log.error("[AngularJS - Leaflet] The MarkerCluster plugin is not loaded.");
+                $log.error(errorHeader + "The MarkerCluster plugin is not loaded.");
                 return;
             }
             if (!isDefined(groups[groupName])) {
@@ -2203,7 +2415,7 @@ angular.module("leaflet-directive")
                 }
 
                 // Update the lat-lng property (always present in marker properties)
-                if (!(isNumber(markerData.lat) && isNumber(markerData.lng))) {
+                if (!geoHlp.validateCoords(markerData)) {
                     $log.warn('There are problems with lat-lng data, please verify your marker model');
                     _deleteMarker(marker, map, layers);
                     return;
@@ -2253,13 +2465,13 @@ angular.module("leaflet-directive")
 
                     // The markerData.layer is defined so we add the marker to the layer if it is different from the old data
                     if (!isDefined(layers.overlays[markerData.layer])) {
-                        $log.error('[AngularJS - Leaflet] You must use a name of an existing layer');
+                        $log.error(errorHeader + 'You must use a name of an existing layer');
                         return;
                     }
                     // Is a group layer?
                     var layerGroup = layers.overlays[markerData.layer];
                     if (!(layerGroup instanceof L.LayerGroup || layerGroup instanceof L.FeatureGroup)) {
-                        $log.error('[AngularJS - Leaflet] A marker can only be added to a layer of type "group" or "featureGroup"');
+                        $log.error(errorHeader + 'A marker can only be added to a layer of type "group" or "featureGroup"');
                         return;
                     }
                     // The marker goes to a correct layer group, so first of all we add it
