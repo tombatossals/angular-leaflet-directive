@@ -1,0 +1,13 @@
+{
+    "examples": {
+        "basic": [
+            {
+                "date": "Jan 01, 2015",
+                "url": "first-example",
+                "extUrl": "0100-basic-first-example.html",
+                "title": "Basic Example",
+                "description": "Shows you how to render a map in our HTML."
+            }
+        ]
+    }
+}
