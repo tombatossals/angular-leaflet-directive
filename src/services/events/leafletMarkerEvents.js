@@ -1,55 +1,13 @@
-angular.module("leaflet-directive").factory('leafletMarkerEvents', function ($rootScope, $q, $log, leafletHelpers) {
+angular.module("leaflet-directive")
+.factory('leafletMarkerEvents', function ($rootScope, $q, $log, leafletHelpers, leafletEventsHelpers, leafletLabelEvents) {
     var safeApply = leafletHelpers.safeApply,
         isDefined = leafletHelpers.isDefined,
         isObject = leafletHelpers.isObject,
         Helpers = leafletHelpers,
-        errorHeader = leafletHelpers.errorHeader;
+        errorHeader = leafletHelpers.errorHeader,
+        fire = leafletEventsHelpers.fire,
+        lblHelp = leafletLabelEvents;
 
-    var _getAvailableLabelEvents = function() {
-        return [
-            'click',
-            'dblclick',
-            'mousedown',
-            'mouseover',
-            'mouseout',
-            'contextmenu'
-        ];
-    };
-
-    var _genDispatchLabelEvent = function(scope, eventName, logic, label, scope_watch_name) {
-        return function(e) {
-            // Put together broadcast name
-            var broadcastName = 'leafletDirectiveLabel.' + eventName;
-            var markerName = scope_watch_name.replace('markers.', '');
-
-            // Safely broadcast the event
-            safeApply(scope, function(scope) {
-                if (logic === "emit") {
-                    scope.$emit(broadcastName, {
-                        leafletEvent : e,
-                        label: label,
-                        markerName: markerName
-                    });
-                } else if (logic === "broadcast") {
-                    $rootScope.$broadcast(broadcastName, {
-                        leafletEvent : e,
-                        label: label,
-                        markerName: markerName
-                    });
-                }
-            });
-        };
-    };
-
-
-    var _genLabelEvents = function(leafletScope, logic, marker, name) {
-        var labelEvents = _getAvailableLabelEvents();
-        var scopeWatchName = Helpers.getObjectArrayPath("markers." + name);
-        for (var i = 0; i < labelEvents.length; i++) {
-            var eventName = labelEvents[i];
-            marker.label.on(eventName, _genDispatchLabelEvent(leafletScope, eventName, logic, marker.label, scopeWatchName));
-        }
-    };
     /*
      argument: name: Note this can be a single string or dot notation
      Example:
@@ -68,43 +26,30 @@ angular.module("leaflet-directive").factory('leafletMarkerEvents', function ($ro
      //would yield name of
      name = "cars.m1"
      */
-    var _genDispatchMarkerEvent = function(eventName, logic, leafletScope, marker, name, markerData) {
-        return function(e) {
+    var _genDispatchMarkerEvent = function (eventName, logic, leafletScope, lObject, name, model, layerName) {
+        return function (e) {
             var broadcastName = 'leafletDirectiveMarker.' + eventName;
 
             // Broadcast old marker click name for backwards compatibility
             if (eventName === "click") {
-                safeApply(leafletScope, function() {
+                safeApply(leafletScope, function () {
                     $rootScope.$broadcast('leafletDirectiveMarkersClick', name);
                 });
             } else if (eventName === 'dragend') {
-                safeApply(leafletScope, function() {
-                    markerData.lat = marker.getLatLng().lat;
-                    markerData.lng = marker.getLatLng().lng;
+                safeApply(leafletScope, function () {
+                    model.lat = lObject.getLatLng().lat;
+                    model.lng = lObject.getLatLng().lng;
                 });
-                if (markerData.message && markerData.focus === true) {
-                    marker.openPopup();
+                if (model.message && model.focus === true) {
+                    lObject.openPopup();
                 }
             }
 
-            safeApply(leafletScope, function(scope){
-                if (logic === "emit") {
-                    scope.$emit(broadcastName, {
-                        markerName: name,
-                        leafletEvent: e
-                    });
-                } else {
-                    $rootScope.$broadcast(broadcastName, {
-                        markerName: name,
-                        leafletEvent: e
-                    });
-                }
-            });
+            fire(leafletScope, broadcastName, logic, e, e.target || lObject, model, name, layerName);
         };
     };
 
-
-    var _getAvailableMarkerEvents = function() {
+    var _getAvailableMarkerEvents = function () {
         return [
             'click',
             'dblclick',
@@ -125,7 +70,7 @@ angular.module("leaflet-directive").factory('leafletMarkerEvents', function ($ro
     return {
         getAvailableMarkerEvents: _getAvailableMarkerEvents,
 
-        bindMarkerEvents: function(marker, name, markerData, leafletScope, layerName) {
+        bindMarkerEvents: function (lObject, name, model, leafletScope, layerName) {
             var markerEvents = [];
             var i;
             var eventName;
@@ -217,11 +162,12 @@ angular.module("leaflet-directive").factory('leafletMarkerEvents', function ($ro
 
             for (i = 0; i < markerEvents.length; i++) {
                 eventName = markerEvents[i];
-                marker.on(eventName, _genDispatchMarkerEvent(eventName, logic, leafletScope, marker, name, markerData));
+                lObject.on(eventName,
+                    _genDispatchMarkerEvent(eventName, logic, leafletScope, lObject, name, model, layerName));
             }
 
-            if (Helpers.LabelPlugin.isLoaded() && isDefined(marker.label)) {
-                _genLabelEvents(leafletScope, logic, marker, name);
+            if (Helpers.LabelPlugin.isLoaded() && isDefined(lObject.label)) {
+                lblHelp.genLabelEvents(name, logic, leafletScope, lObject, model, layerName);
             }
         }
     };

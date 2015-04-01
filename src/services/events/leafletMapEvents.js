@@ -1,9 +1,11 @@
-angular.module("leaflet-directive").factory('leafletMapEvents', function ($rootScope, $q, $log, leafletHelpers) {
+angular.module("leaflet-directive")
+.factory('leafletMapEvents', function ($rootScope, $q, $log, leafletHelpers, leafletEventsHelpers) {
     var safeApply = leafletHelpers.safeApply,
         isDefined = leafletHelpers.isDefined,
         isObject = leafletHelpers.isObject,
         Helpers = leafletHelpers,
-        errorHeader = leafletHelpers.errorHeader;
+        errorHeader = leafletHelpers.errorHeader,
+        fire = leafletEventsHelpers.fire;
 
     var _getAvailableMapEvents = function() {
         return [
@@ -58,17 +60,7 @@ angular.module("leaflet-directive").factory('leafletMapEvents', function ($rootS
             // Put together broadcast name
             var broadcastName = 'leafletDirectiveMap.' + eventName;
             // Safely broadcast the event
-            safeApply(scope, function(scope) {
-                if (logic === "emit") {
-                    scope.$emit(broadcastName, {
-                        leafletEvent : e
-                    });
-                } else if (logic === "broadcast") {
-                    $rootScope.$broadcast(broadcastName, {
-                        leafletEvent : e
-                    });
-                }
-            });
+            fire(scope, broadcastName, logic, e, e.target, scope)
         };
     };
 
