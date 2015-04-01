@@ -1,5 +1,6 @@
 angular.module("leaflet-directive")
-.service('leafletMarkersHelpers', function ($rootScope, leafletHelpers, $log, $compile) {
+.service('leafletMarkersHelpers', function ($rootScope, leafletHelpers, $log, $compile,
+  leafletGeoJsonHelpers) {
 
     var isDefined = leafletHelpers.isDefined,
         defaultTo = leafletHelpers.defaultTo,
@@ -12,7 +13,10 @@ angular.module("leaflet-directive")
         isString = leafletHelpers.isString,
         isNumber  = leafletHelpers.isNumber,
         isObject = leafletHelpers.isObject,
-        groups = {};
+        groups = {},
+        geoHlp = leafletGeoJsonHelpers,
+        errorHeader = leafletHelpers.errorHeader;
+
 
    var _string = function(marker){
        //this exists since JSON.stringify barfs on cyclic
@@ -30,7 +34,7 @@ angular.module("leaflet-directive")
     var createLeafletIcon = function(iconData) {
         if (isDefined(iconData) && isDefined(iconData.type) && iconData.type === 'awesomeMarker') {
             if (!AwesomeMarkersPlugin.isLoaded()) {
-                $log.error('[AngularJS - Leaflet] The AwesomeMarkers Plugin is not loaded.');
+                $log.error( errorHeader + ' The AwesomeMarkers Plugin is not loaded.');
             }
 
             return new L.AwesomeMarkers.icon(iconData);
@@ -38,7 +42,7 @@ angular.module("leaflet-directive")
 
         if (isDefined(iconData) && isDefined(iconData.type) && iconData.type === 'makiMarker') {
             if (!MakiMarkersPlugin.isLoaded()) {
-                $log.error('[AngularJS - Leaflet] The MakiMarkers Plugin is not loaded.');
+                $log.error(errorHeader + 'The MakiMarkers Plugin is not loaded.');
             }
 
             return new L.MakiMarkers.icon(iconData);
@@ -46,7 +50,7 @@ angular.module("leaflet-directive")
 
         if (isDefined(iconData) && isDefined(iconData.type) && iconData.type === 'extraMarker') {
             if (!ExtraMarkersPlugin.isLoaded()) {
-                $log.error('[AngularJS - Leaflet] The ExtraMarkers Plugin is not loaded.');
+                $log.error(errorHeader + 'The ExtraMarkers Plugin is not loaded.');
             }
             return new L.ExtraMarkers.icon(iconData);
         }
@@ -174,8 +178,14 @@ angular.module("leaflet-directive")
         manageOpenLabel: _manageOpenLabel,
 
         createMarker: function(markerData) {
-            if (!isDefined(markerData)) {
-                $log.error('[AngularJS - Leaflet] The marker definition is not valid.');
+            if (!isDefined(markerData) || !geoHlp.validateCoords(markerData)){
+                $log.error(errorHeader + 'The marker definition is not valid.');
+                return;
+            }
+            var coords = geoHlp.getCoords(markerData);
+
+            if (!isDefined(coords)){
+                $log.error(errorHeader + 'Unable to get coordinates from markerData.');
                 return;
             }
 
@@ -195,7 +205,7 @@ angular.module("leaflet-directive")
                 }
             }
 
-            var marker = new L.marker(markerData, markerOptions);
+            var marker = new L.marker(coords, markerOptions);
 
             if (!isString(markerData.message)) {
                 marker.unbindPopup();
@@ -206,12 +216,12 @@ angular.module("leaflet-directive")
 
         addMarkerToGroup: function(marker, groupName, groupOptions, map) {
             if (!isString(groupName)) {
-                $log.error('[AngularJS - Leaflet] The marker group you have specified is invalid.');
+                $log.error(errorHeader + 'The marker group you have specified is invalid.');
                 return;
             }
 
             if (!MarkerClusterPlugin.isLoaded()) {
-                $log.error("[AngularJS - Leaflet] The MarkerCluster plugin is not loaded.");
+                $log.error(errorHeader + "The MarkerCluster plugin is not loaded.");
                 return;
             }
             if (!isDefined(groups[groupName])) {
@@ -254,7 +264,7 @@ angular.module("leaflet-directive")
                 }
 
                 // Update the lat-lng property (always present in marker properties)
-                if (!(isNumber(markerData.lat) && isNumber(markerData.lng))) {
+                if (!geoHlp.validateCoords(markerData)) {
                     $log.warn('There are problems with lat-lng data, please verify your marker model');
                     _deleteMarker(marker, map, layers);
                     return;
@@ -304,13 +314,13 @@ angular.module("leaflet-directive")
 
                     // The markerData.layer is defined so we add the marker to the layer if it is different from the old data
                     if (!isDefined(layers.overlays[markerData.layer])) {
-                        $log.error('[AngularJS - Leaflet] You must use a name of an existing layer');
+                        $log.error(errorHeader + 'You must use a name of an existing layer');
                         return;
                     }
                     // Is a group layer?
                     var layerGroup = layers.overlays[markerData.layer];
                     if (!(layerGroup instanceof L.LayerGroup || layerGroup instanceof L.FeatureGroup)) {
-                        $log.error('[AngularJS - Leaflet] A marker can only be added to a layer of type "group" or "featureGroup"');
+                        $log.error(errorHeader + 'A marker can only be added to a layer of type "group" or "featureGroup"');
                         return;
                     }
                     // The marker goes to a correct layer group, so first of all we add it
