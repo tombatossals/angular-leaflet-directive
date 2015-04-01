@@ -51,6 +51,7 @@ angular.module("leaflet-directive").directive('markers',
     var _addMarkers = function(markersToRender, map, layers, leafletMarkers, leafletScope, shouldWatch, maybeLayerName){
         shouldWatch = defaultTo(shouldWatch, false);
 
+
         for (var newName in markersToRender) {
             if (newName.search("-") !== -1) {
                 $log.error('The marker can\'t use a "-" on his key name: "' + newName + '".');
@@ -60,6 +61,7 @@ angular.module("leaflet-directive").directive('markers',
             if (!isDefined(leafletMarkers[newName])) {
                 var markerData = markersToRender[newName];
                 var marker = createMarker(markerData);
+                var layerName = (markerData? markerData.layer : undefined) || maybeLayerName; //original way takes pref
                 if (!isDefined(marker)) {
                     $log.error(errorHeader + ' Received invalid data on the marker ' + newName + '.');
                     continue;
@@ -85,11 +87,7 @@ angular.module("leaflet-directive").directive('markers',
                 // Check if the marker should be added to a layer
                 if (isDefined(markerData) && (isDefined(markerData.layer) || isDefined(maybeLayerName))){
 
-                    var pass = _maybeAddMarkerToLayer(
-                        markerData.layer || maybeLayerName, //original way takes pref
-                        layers,
-                        markerData, marker, shouldWatch, map
-                    );
+                    var pass = _maybeAddMarkerToLayer(layerName, layers, markerData, marker, shouldWatch, map);
                     if(!pass)
                         continue; //something went wrong move on in the loop
                 } else if (!isDefined(markerData.group)) {
@@ -105,7 +103,7 @@ angular.module("leaflet-directive").directive('markers',
                 }
 
                 listenMarkerEvents(marker, markerData, leafletScope, shouldWatch);
-                bindMarkerEvents(marker, pathToMarker, markerData, leafletScope);
+                bindMarkerEvents(marker, pathToMarker, markerData, leafletScope, layerName);
             }
         }
     };
