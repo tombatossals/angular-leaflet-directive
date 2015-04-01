@@ -20,6 +20,7 @@
         <script src="../bower_components/angular-route/angular-route.min.js"></script>
         <script src="../dist/angular-leaflet-directive.min.js"></script>
         <script src="js/viewer.js"></script>
+        <script src="js/controllers.js"></script>
     </head>
 
     <body ng-app="webapp" ng-controller="MainController">
@@ -38,11 +39,11 @@
                     <a class="item" ng-class="{ active: section === 'more' }" ng-click="section='more'">More...</a>
                 </div>
                 <div class="ui selection list">
-                    <a class="item" ng-class="{ active: activeExample.url === example.url }" ng-href="#/{{ section }}/{{ example.url }}" ng-repeat="example in examples[section]">
+                    <a class="item" ng-class="{ active: example.id === e.id }" ng-href="#/{{ section }}/{{ e.id }}" ng-repeat="e in examples[section]">
                         <i class="map marker icon"></i>
                         <div class="content">
-                            <div ng-bind="($index +1) + '.' + example.title"></div>
-                            <div ng-if="example.description" class="description" ng-bind="example.description"></div>
+                            <div ng-bind="($index +1) + '.' + e.title"></div>
+                            <div ng-if="e.description" class="description" ng-bind="e.description"></div>
                         </div>
                     </a>
                 </div>

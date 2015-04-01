@@ -3,10 +3,17 @@
         "basic": [
             {
                 "date": "Jan 01, 2015",
-                "url": "first-example",
+                "id": "first-example",
                 "extUrl": "0100-basic-first-example.html",
                 "title": "Basic Example",
                 "description": "Shows you how to render a map in our HTML."
+            },
+            {
+                "date": "Jan 01, 2015",
+                "id": "center-example",
+                "extUrl": "0101-basic-center-example.html",
+                "title": "Center Example",
+                "description": "Shows you how to center and interact with the map center."
             }
         ]
     }

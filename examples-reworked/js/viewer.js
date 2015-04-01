@@ -2,12 +2,7 @@
 
 (function() {
 
-    var getSource = function(url) {
-    };
-
-    var app = angular.module('webapp', ['ngRoute', 'leaflet-directive']).config(function($locationProvider) {
-        $locationProvider.html5Mode(false);
-    });
+    var app = angular.module('webapp', ['ngRoute', 'leaflet-directive']);
 
     app.config(function($routeProvider) {
         $routeProvider.when('/:section/:example', {
@@ -18,27 +13,22 @@
         });
     });
 
-    app.controller("BasicFirstController", [ "$scope", function($scope) {
-        // Nothing here!
-        console.log('holaaa');
-    }]);
-
-    app.directive('ngExample', [ '$http', '$compile', function($http, $compile) {
+    app.directive('ngExample', [ '$http', '$compile', function($http, $compile, $ocLazyLoad) {
         return {
             restrict: 'A',
             scope: {
                 url: '='
             },
             replace: true,
-            template: '<div class="hola"></div>',
+            template: '<div></div>',
             link: function(scope, element, attrs) {
                 scope.$watch('url', function(url) {
 
                     $http.get(url).success(function(data) {
                         var $doc = new DOMParser().parseFromString(data, "text/html");
                         var body = $doc.body;
-                        var controller = body.getAttribute('ng-controller');
-                        var compiled = $compile('<div ng-controller="' + controller + '">' + body.innerHTML + '</div>')(scope);
+                        var ctlr = $doc.body.getAttribute('ng-controller');
+                        var compiled = $compile('<div ng-controller="' + ctlr + '">' + body.innerHTML + '</div>')(scope);
                         element.append(compiled);
                     });
 
@@ -73,25 +63,39 @@
         };
     }]);
 
-    app.controller('MainController', [ '$scope', '$http', '$q', function($scope, $http, $q) {
+    app.controller('MainController', [ '$scope', '$http', '$q', '$timeout', '$location', function($scope, $http, $q, $timeout, $location) {
 
         var examples = $q.defer();
-        $scope.$on('$routeChangeSuccess', function(event, route) {
-            var url = route.params.example;
-            $scope.section = route.params.section;
 
+        var getExample = function(id, section, examples) {
+            var df = $q.defer();
             examples.promise.then(function(examples) {
-                if (!$scope.section) {
-                    $scope.section = 'basic';
-                }
-                var sectionExamples = examples[$scope.section];
+                var sectionExamples = examples[section];
                 for (var i in sectionExamples) {
                     var e = sectionExamples[i];
-                    if (e.url === url) {
-                        $scope.url = e.extUrl;
+                    if (e.id === id) {
+                        df.resolve(e);
                     }
                 }
             });
+            return df.promise;
+        };
+
+        $timeout(function() {
+            if (!$scope.example) {
+                $location.url('/basic/first-example');
+            }
+        },300);
+
+        $scope.$on('$routeChangeSuccess', function(event, route) {
+            var id = route.params.example;
+            var section = route.params.section;
+
+            getExample(id, section, examples).then(function(example) {
+                $scope.example = example;
+                $scope.section = section;
+            });
+
         });
 
         $http.get('json/examples.json').success(function(data) {
