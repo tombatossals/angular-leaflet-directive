@@ -21,7 +21,7 @@ p {
 
 .leftside {
     background-color: #f7f7f7;
-    height: 100%;
+    padding-bottom: 10em;
 }
 
 .ui.header {
@@ -105,14 +105,6 @@ input[type=range] {
     position: absolute;
     top: 50%;
 }
-
-.angular-leaflet-map {
-    background: black;
-    width: 100%;
-    height: 480px;
-}
-
-
 
 @media only screen and (max-width : 1250px) {
     .left.column > .menu .item {

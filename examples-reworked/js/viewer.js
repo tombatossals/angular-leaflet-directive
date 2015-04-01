@@ -5,7 +5,7 @@
     var getSource = function(url) {
     };
 
-    var app = angular.module('webapp', ['ngRoute', 'ngSanitize', 'leaflet-directive']).config(function($locationProvider) {
+    var app = angular.module('webapp', ['ngRoute', 'leaflet-directive']).config(function($locationProvider) {
         $locationProvider.html5Mode(false);
     });
 
@@ -20,26 +20,30 @@
 
     app.controller("BasicFirstController", [ "$scope", function($scope) {
         // Nothing here!
+        console.log('holaaa');
     }]);
 
-    app.directive('ngExample', [ '$http', '$sce', function($http, $sce) {
+    app.directive('ngExample', [ '$http', '$compile', function($http, $compile) {
         return {
             restrict: 'A',
             scope: {
                 url: '='
             },
-            template: '<div ng-bind-html="source"></div>',
+            replace: true,
+            template: '<div class="hola"></div>',
             link: function(scope, element, attrs) {
                 scope.$watch('url', function(url) {
+
                     $http.get(url).success(function(data) {
                         var $doc = new DOMParser().parseFromString(data, "text/html");
-                        var body = $doc.getElementsByTagName('body')[0];
+                        var body = $doc.body;
                         var controller = body.getAttribute('ng-controller');
-
-                        scope.source = $sce.trustAsHtml('<div ng-controller="' + controller + '">' + body.innerHTML + '</div>');
-
+                        var compiled = $compile('<div ng-controller="' + controller + '">' + body.innerHTML + '</div>')(scope);
+                        element.append(compiled);
                     });
+
                 });
+
             }
         };
     }]);
@@ -50,6 +54,7 @@
             scope: {
                 url: '='
             },
+            replace: true,
             templateUrl: 'partials/source.html',
             link: function(scope, element, attrs) {
 
