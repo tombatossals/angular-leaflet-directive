@@ -1,13 +1,19 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 angular.module("leaflet-directive")
 .factory('leafletMarkerEvents', function ($rootScope, $q, $log, leafletHelpers, leafletEventsHelpers, leafletLabelEvents) {
 =======
 angular.module("leaflet-directive").factory('leafletMarkerEvents', function ($rootScope, $q, $log, leafletHelpers) {
 >>>>>>> breaking up leafletEvents for developers sake
+=======
+angular.module("leaflet-directive")
+.factory('leafletMarkerEvents', function ($rootScope, $q, $log, leafletHelpers, leafletEventsHelpers, leafletLabelEvents) {
+>>>>>>> leafletEvents split up to keep sanity.
     var safeApply = leafletHelpers.safeApply,
         isDefined = leafletHelpers.isDefined,
         isObject = leafletHelpers.isObject,
         Helpers = leafletHelpers,
+<<<<<<< HEAD
 <<<<<<< HEAD
         errorHeader = leafletHelpers.errorHeader,
         fire = leafletEventsHelpers.fire,
@@ -62,6 +68,12 @@ angular.module("leaflet-directive").factory('leafletMarkerEvents', function ($ro
         }
     };
 >>>>>>> breaking up leafletEvents for developers sake
+=======
+        errorHeader = leafletHelpers.errorHeader,
+        fire = leafletEventsHelpers.fire,
+        lblHelp = leafletLabelEvents;
+
+>>>>>>> leafletEvents split up to keep sanity.
     /*
      argument: name: Note this can be a single string or dot notation
      Example:
@@ -81,16 +93,22 @@ angular.module("leaflet-directive").factory('leafletMarkerEvents', function ($ro
      name = "cars.m1"
      */
 <<<<<<< HEAD
+<<<<<<< HEAD
     var _genDispatchMarkerEvent = function (eventName, logic, leafletScope, lObject, name, model, layerName) {
         return function (e) {
 =======
     var _genDispatchMarkerEvent = function(eventName, logic, leafletScope, marker, name, markerData) {
         return function(e) {
 >>>>>>> breaking up leafletEvents for developers sake
+=======
+    var _genDispatchMarkerEvent = function (eventName, logic, leafletScope, lObject, name, model, layerName) {
+        return function (e) {
+>>>>>>> leafletEvents split up to keep sanity.
             var broadcastName = 'leafletDirectiveMarker.' + eventName;
 
             // Broadcast old marker click name for backwards compatibility
             if (eventName === "click") {
+<<<<<<< HEAD
 <<<<<<< HEAD
                 safeApply(leafletScope, function () {
                     $rootScope.$broadcast('leafletDirectiveMarkersClick', name);
@@ -112,37 +130,32 @@ angular.module("leaflet-directive").factory('leafletMarkerEvents', function ($ro
     var _getAvailableMarkerEvents = function () {
 =======
                 safeApply(leafletScope, function() {
+=======
+                safeApply(leafletScope, function () {
+>>>>>>> leafletEvents split up to keep sanity.
                     $rootScope.$broadcast('leafletDirectiveMarkersClick', name);
                 });
             } else if (eventName === 'dragend') {
-                safeApply(leafletScope, function() {
-                    markerData.lat = marker.getLatLng().lat;
-                    markerData.lng = marker.getLatLng().lng;
+                safeApply(leafletScope, function () {
+                    model.lat = lObject.getLatLng().lat;
+                    model.lng = lObject.getLatLng().lng;
                 });
-                if (markerData.message && markerData.focus === true) {
-                    marker.openPopup();
+                if (model.message && model.focus === true) {
+                    lObject.openPopup();
                 }
             }
 
-            safeApply(leafletScope, function(scope){
-                if (logic === "emit") {
-                    scope.$emit(broadcastName, {
-                        markerName: name,
-                        leafletEvent: e
-                    });
-                } else {
-                    $rootScope.$broadcast(broadcastName, {
-                        markerName: name,
-                        leafletEvent: e
-                    });
-                }
-            });
+            fire(leafletScope, broadcastName, logic, e, e.target || lObject, model, name, layerName);
         };
     };
 
+<<<<<<< HEAD
 
     var _getAvailableMarkerEvents = function() {
 >>>>>>> breaking up leafletEvents for developers sake
+=======
+    var _getAvailableMarkerEvents = function () {
+>>>>>>> leafletEvents split up to keep sanity.
         return [
             'click',
             'dblclick',
@@ -164,10 +177,14 @@ angular.module("leaflet-directive").factory('leafletMarkerEvents', function ($ro
         getAvailableMarkerEvents: _getAvailableMarkerEvents,
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         bindMarkerEvents: function (lObject, name, model, leafletScope, layerName) {
 =======
         bindMarkerEvents: function(marker, name, markerData, leafletScope, layerName) {
 >>>>>>> breaking up leafletEvents for developers sake
+=======
+        bindMarkerEvents: function (lObject, name, model, leafletScope, layerName) {
+>>>>>>> leafletEvents split up to keep sanity.
             var markerEvents = [];
             var i;
             var eventName;
@@ -260,6 +277,7 @@ angular.module("leaflet-directive").factory('leafletMarkerEvents', function ($ro
             for (i = 0; i < markerEvents.length; i++) {
                 eventName = markerEvents[i];
 <<<<<<< HEAD
+<<<<<<< HEAD
                 lObject.on(eventName,
                     _genDispatchMarkerEvent(eventName, logic, leafletScope, lObject, name, model, layerName));
             }
@@ -273,6 +291,14 @@ angular.module("leaflet-directive").factory('leafletMarkerEvents', function ($ro
             if (Helpers.LabelPlugin.isLoaded() && isDefined(marker.label)) {
                 _genLabelEvents(leafletScope, logic, marker, name);
 >>>>>>> breaking up leafletEvents for developers sake
+=======
+                lObject.on(eventName,
+                    _genDispatchMarkerEvent(eventName, logic, leafletScope, lObject, name, model, layerName));
+            }
+
+            if (Helpers.LabelPlugin.isLoaded() && isDefined(lObject.label)) {
+                lblHelp.genLabelEvents(name, logic, leafletScope, lObject, model, layerName);
+>>>>>>> leafletEvents split up to keep sanity.
             }
         }
     };
