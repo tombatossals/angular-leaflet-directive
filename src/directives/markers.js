@@ -54,6 +54,7 @@ angular.module("leaflet-directive").directive('markers',
     var _addMarkers = function(markersToRender, map, layers, leafletMarkers, leafletScope,
                                watchOptions, maybeLayerName){
 
+
         for (var newName in markersToRender) {
             if (newName.search("-") !== -1) {
                 $log.error('The marker can\'t use a "-" on his key name: "' + newName + '".');
@@ -61,6 +62,7 @@ angular.module("leaflet-directive").directive('markers',
             }
 
             if (!isDefined(leafletMarkers[newName])) {
+<<<<<<< HEAD
                 //(nmccready) very important to not have model changes when lObject is changed
                 //this might be desirable in some cases but it causes two-way binding to lObject which is not ideal
                 //if it is left as the reference then all changes from oldModel vs newModel are ignored
@@ -68,6 +70,11 @@ angular.module("leaflet-directive").directive('markers',
                 var model = Helpers.copy(markersToRender[newName]);
                 var marker = createMarker(model);
                 var layerName = (model? model.layer : undefined) || maybeLayerName; //original way takes pref
+=======
+                var markerData = markersToRender[newName];
+                var marker = createMarker(markerData);
+                var layerName = (markerData? markerData.layer : undefined) || maybeLayerName; //original way takes pref
+>>>>>>> breaking up leafletEvents for developers sake
                 if (!isDefined(marker)) {
                     $log.error(errorHeader + ' Received invalid data on the marker ' + newName + '.');
                     continue;
@@ -93,8 +100,12 @@ angular.module("leaflet-directive").directive('markers',
                 // Check if the marker should be added to a layer
                 if (isDefined(model) && (isDefined(model.layer) || isDefined(maybeLayerName))){
 
+<<<<<<< HEAD
                     var pass = _maybeAddMarkerToLayer(layerName, layers, model, marker,
                         watchOptions.individual.doWatch, map);
+=======
+                    var pass = _maybeAddMarkerToLayer(layerName, layers, markerData, marker, shouldWatch, map);
+>>>>>>> breaking up leafletEvents for developers sake
                     if(!pass)
                         continue; //something went wrong move on in the loop
                 } else if (!isDefined(model.group)) {
@@ -110,8 +121,13 @@ angular.module("leaflet-directive").directive('markers',
                         watchOptions.individual.doWatch);
                 }
 
+<<<<<<< HEAD
                 listenMarkerEvents(marker, model, leafletScope, watchOptions.individual.doWatch);
                 bindMarkerEvents(marker, pathToMarker, model, leafletScope, layerName);
+=======
+                listenMarkerEvents(marker, markerData, leafletScope, shouldWatch);
+                bindMarkerEvents(marker, pathToMarker, markerData, leafletScope, layerName);
+>>>>>>> breaking up leafletEvents for developers sake
             }
         }
     };
