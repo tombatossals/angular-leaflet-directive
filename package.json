@@ -55,5 +55,8 @@
     "karmaChrome": "grunt test-unit-chrome",
     "karmaChromeOnce": "grunt karma:unit-chrome-once"
   },
-  "main": "dist/angular-leaflet-directive"
+  "main": "dist/angular-leaflet-directive",
+  "dependencies": {
+    "mkdirp": "^0.5.0"
+  }
 }
