@@ -81,3 +81,7 @@ build:
 travis:
  - 'bower:install'
  - 'test-unit'
+
+examples:
+ - 'shell:examples'
+ - 'concat:examples'

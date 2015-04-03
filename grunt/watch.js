@@ -27,6 +27,12 @@ module.exports = function (grunt, options) {
                 'karma:unit'
             ]
         },
+        examples: {
+            files: ['examples-reworked/*.html'],
+            tasks: [
+                'examples'
+            ]
+        },
         chrome: {
             files: ['src/**/*.js', 'test/unit/**.js', 'test/e2e/**.js'],
             tasks: [
