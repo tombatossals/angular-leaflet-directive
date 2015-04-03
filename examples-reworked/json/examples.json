@@ -1,20 +1,28 @@
 {
-    "examples": {
-        "basic": [
-            {
-                "date": "Jan 01, 2015",
-                "id": "first-example",
-                "extUrl": "0100-basic-first-example.html",
-                "title": "Basic Example",
-                "description": "Shows you how to render a map in our HTML."
-            },
-            {
-                "date": "Jan 01, 2015",
-                "id": "center-example",
-                "extUrl": "0101-basic-center-example.html",
-                "title": "Center Example",
-                "description": "Shows you how to center and interact with the map center."
-            }
-        ]
-    }
+    "basic": [
+        {
+            "date": "2015-03-31T17:54:42.000Z",
+            "id": "first-example",
+            "extUrl": "0100-basic-first-example.html",
+            "title": "First steps, basic example"
+        },
+        {
+            "date": "2015-04-01T20:01:52.000Z",
+            "id": "center-example",
+            "extUrl": "0101-basic-center-example.html",
+            "title": "Center map example"
+        },
+        {
+            "date": "2015-04-03T14:51:00.000Z",
+            "id": "center-autodiscover-example",
+            "extUrl": "0102-basic-center-autodiscover-example.html",
+            "title": "Center autodiscover example"
+        },
+        {
+            "date": "2015-04-03T14:53:54.000Z",
+            "id": "center-url-hash-example",
+            "extUrl": "0103-basic-center-url-hash-example.html",
+            "title": "Center map with URL synchronization example"
+        }
+    ]
 }

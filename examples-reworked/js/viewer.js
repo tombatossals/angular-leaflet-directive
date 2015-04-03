@@ -102,8 +102,8 @@
             if (!$scope.section) {
                 $scope.section = 'basic';
             }
-            $scope.examples = data.examples;
-            examples.resolve(data.examples);
+            $scope.examples = data;
+            examples.resolve(data);
         });
 
     } ]);

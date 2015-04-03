@@ -1,2 +1,3 @@
-angular.module('webapp').controller('BasicFirstController', [ '$scope', function($scope) {
-});
+        app.controller("BasicFirstController", [ "$scope", function($scope) {
+            // Nothing here!
+        }]);
