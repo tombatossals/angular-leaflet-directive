@@ -23,6 +23,80 @@
             "id": "center-url-hash-example",
             "extUrl": "0103-basic-center-url-hash-example.html",
             "title": "Center map with URL synchronization example"
+        },
+        {
+            "date": "2015-04-03T15:22:34.000Z",
+            "id": "custom-parameters-example",
+            "extUrl": "0104-basic-custom-parameters-example.html",
+            "title": "Using custom default parameters"
+        },
+        {
+            "date": "2015-04-03T15:22:25.000Z",
+            "id": "bounds-example",
+            "extUrl": "0105-basic-bounds-example.html",
+            "title": "Map bounds example"
+        },
+        {
+            "date": "2015-04-03T15:23:36.000Z",
+            "id": "maxbounds-example",
+            "extUrl": "0106-basic-maxbounds-example.html",
+            "title": "Setting MaxBounds in a map"
+        },
+        {
+            "date": "2015-04-03T20:10:26.000Z",
+            "id": "tiles-example",
+            "extUrl": "0107-basic-tiles-example.html",
+            "title": "Changing tiles example"
+        },
+        {
+            "date": "2015-04-03T18:54:23.000Z",
+            "id": "tiles-zoom-changer-example",
+            "extUrl": "0108-basic-tiles-zoom-changer-example.html",
+            "title": "Dynamic tile changer based on zoom level"
+        }
+    ],
+    "layers": [
+        {
+            "date": "2015-04-03T19:52:58.000Z",
+            "id": "simple-example",
+            "extUrl": "0201-layers-simple-example.html",
+            "title": "Layers simple example"
+        },
+        {
+            "date": "2015-04-03T19:59:01.000Z",
+            "id": "overlays-simple-example",
+            "extUrl": "0202-layers-overlays-simple-example.html",
+            "title": "Baselayer with overlays"
+        },
+        {
+            "date": "2015-04-03T20:01:10.000Z",
+            "id": "imageoverlay-example",
+            "extUrl": "0203-layers-imageoverlay-example.html",
+            "title": "Layer with image overlay and maxBounds"
+        },
+        {
+            "date": "2015-04-03T20:17:09.000Z",
+            "id": "dynamic-addition-example",
+            "extUrl": "0204-layers-dynamic-addition-example.html",
+            "title": "Dynamic addition/removal of layers"
+        },
+        {
+            "date": "2015-04-03T20:36:56.000Z",
+            "id": "googlemaps-example",
+            "extUrl": "0205-layers-googlemaps-example.html",
+            "title": "Google maps example"
+        },
+        {
+            "date": "2015-04-03T20:58:15.000Z",
+            "id": "googlemaps-fullsize-example",
+            "extUrl": "0206-layers-googlemaps-fullsize-example.html",
+            "title": "Google Maps fullsize example"
+        },
+        {
+            "date": "2015-04-03T21:05:20.000Z",
+            "id": "hide-baselayer-on-selector-example",
+            "extUrl": "0207-layers-hide-baselayer-on-selector-example.html",
+            "title": "Baselayer hidden on switch selector to show only overlay"
         }
     ]
 }

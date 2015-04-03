@@ -1,13 +1,4 @@
-<!DOCTYPE html>
-<html ng-app="demoapp">
-  <head>
-    <script src="../bower_components/angular/angular.min.js"></script>
-    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
-    <script src="../dist/angular-leaflet-directive.min.js"></script>
-    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
-    <script>
-        var app = angular.module("demoapp", ["leaflet-directive"]);
-        app.controller("DemoController", [ "$scope", "$log", "leafletData", "leafletBoundsHelpers", function($scope, $log, leafletData, leafletBoundsHelpers) {
+        app.controller("LayersImageOverlayController", [ "$scope", "$log", "leafletData", "leafletBoundsHelpers", function($scope, $log, leafletData, leafletBoundsHelpers) {
             var maxBounds = leafletBoundsHelpers.createBoundsFromArray([[-540, -960], [540, 960]]);
             angular.extend($scope, {
                 defaults: {
@@ -26,7 +17,7 @@
                         sanfrancisco: {
                             name: 'Andes',
                             type: 'imageOverlay',
-                            url: 'img/andes.jpg',
+                            url: 'images/andes.jpg',
                             bounds: [[-540, -960], [540, 960]],
                             layerParams: {
                               noWrap: true,
@@ -37,10 +28,3 @@
                 }
             });
        }]);
-    </script>
-  </head>
-  <body ng-controller="DemoController">
-    <h1>Layer with image overlay and maxBounds</h1>
-    <leaflet center="center" defaults="defaults" layers="layers" maxBounds="maxBounds" height="480px" width="854px"></leaflet>
-  </body>
-</html>

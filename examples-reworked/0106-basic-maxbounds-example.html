@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
     <script>
           var app = angular.module("demoapp", ["leaflet-directive"]);
-          app.controller("DemoController", [ "$scope", "leafletData", function($scope, leafletData) {
+          app.controller("BasicMaxBoundsController", [ "$scope", "leafletData", function($scope, leafletData) {
             $scope.regions = {
                 london: {
                     northEast: {
@@ -54,7 +54,9 @@
         }
     </style>
   </head>
-  <body ng-controller="DemoController">
+  <body ng-controller="BasicMaxBoundsController">
+    <leaflet maxbounds="maxbounds" width="100%" height="480px"></leaflet>
+    <h1>Setting MaxBounds in a map</h1>
     <form>
         <button ng-click="maxbounds=regions.london">London region</button>
         <button ng-click="maxbounds=regions.lisbon">Lisbon region</button>
@@ -62,7 +64,6 @@
         <button ng-click="maxbounds={}">Unset maxbounds</button>
     </form>
 
-    <leaflet maxbounds="maxbounds"></leaflet>
     <p ng-show="maxbounds.northEast" class="result">Maxbounds: NE(lat: {{ maxbounds.northEast.lat }}, lng: {{ maxbounds.northEast.lng }}) SW(lat: {{ maxbounds.southWest.lat }}, lng: {{ maxbounds.southWest.lng }})</p>
   </body>
 </html>

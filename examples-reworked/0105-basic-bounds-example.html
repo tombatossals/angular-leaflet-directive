@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
     <script>
         var app = angular.module("demoapp", ["leaflet-directive"]);
-        app.controller("DemoController", [ "$scope", "leafletData", "leafletBoundsHelpers", function($scope, leafletData, leafletBoundsHelpers) {
+        app.controller("BasicBoundsController", [ "$scope", "leafletData", "leafletBoundsHelpers", function($scope, leafletData, leafletBoundsHelpers) {
 
             var bounds = leafletBoundsHelpers.createBoundsFromArray([
                 [ 51.508742458803326, -0.087890625 ],
@@ -22,14 +22,9 @@
 
         }]);
     </script>
-    <style>
-        input {
-            width: 120px;
-            margin-right: 10px;
-        }
-    </style>
   </head>
-  <body ng-controller="DemoController">
+  <body ng-controller="BasicBoundsController">
+    <leaflet bounds="bounds" center="center" width="100%" height="480px"></leaflet>
     <h1>Map bounds example</h1>
     <h2>South west</h2>
     <form>
@@ -42,6 +37,5 @@
         Lat : <input type="number" step="any" ng-model="bounds.northEast.lat" />
         Lng : <input type="number" step="any" ng-model="bounds.northEast.lng" />
     </form>
-    <leaflet bounds="bounds" center="center" width="640" height="400"></leaflet>
   </body>
 </html>

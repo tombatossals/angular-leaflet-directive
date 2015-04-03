@@ -12,7 +12,9 @@
         <link rel="stylesheet" type="text/css" href="../bower_components/leaflet/dist/leaflet.css">
         <link rel="stylesheet" type="text/css" href="css/viewer.css">
 
+        <script src="http://maps.google.com/maps/api/js?v=3&sensor=false"></script>
         <script src="../bower_components/leaflet/dist/leaflet.js"></script>
+        <script src="../bower_components/leaflet-plugins/layer/tile/Google.js"></script>
         <script src="../bower_components/jquery/dist/jquery.min.js"></script>
         <script src="../bower_components/prism/prism.js"></script>
         <script src="../bower_components/semantic-ui/dist/semantic.min.js"></script>
@@ -42,7 +44,7 @@
                     <a class="item" ng-class="{ active: example.id === e.id }" ng-href="#/{{ section }}/{{ e.id }}" ng-repeat="e in examples[section]">
                         <i class="map marker icon"></i>
                         <div class="content">
-                            <div ng-bind="($index +1) + '.' + e.title"></div>
+                            <div ng-bind="($index +1) + '. ' + e.title"></div>
                             <div ng-if="e.description" class="description" ng-bind="e.description"></div>
                         </div>
                     </a>

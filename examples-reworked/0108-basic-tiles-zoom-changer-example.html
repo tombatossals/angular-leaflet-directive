@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
     <script>
         var app = angular.module("demoapp", ["leaflet-directive"]);
-        app.controller('DemoZoomLevelController', [ "$scope", function($scope) {
+        app.controller('BasicTilesZoomChangerController', [ "$scope", function($scope) {
 
             angular.extend($scope, {
                 london: {
@@ -29,31 +29,14 @@
             });
         } ]);
     </script>
-    <style>
-        .angular-leaflet-map {
-            width: 640px;
-            height: 400px;
-        }
-    </style>
   </head>
-  <body>
-  <div class="container">
-      <div ng-controller="DemoZoomLevelController">
-
-          <div class="row">
-              <h2>This is a map with dynamic tile change depending on zoom level</h2>
-          </div>
-
-          <div class="row">
-              <p>Current TileLayer Url: {{ tiles.url }}</p>
-              <p>Current Zoom Level: {{ london.zoom }}</p>
-          </div>
-
-          <div class="row">
-              <leaflet center="london" tiles="tiles"></leaflet>
-          </div>
-      </div>
-  </div>
-
+  <body ng-controller="BasicTilesZoomChangerController">
+      <leaflet center="london" tiles="tiles" width="100%" height="480px"></leaflet>
+      <h1>Dynamic tile changer based on zoom level</h1>
+      <p>Zoom to level 13 to see how the tiles change:</p>
+      <ul>
+          <li>Current TileLayer Url: <strong ng-bind="tiles.url"></strong></li>
+          <li>Current Zoom Level: <strong ng-bind="london.zoom"></strong></li>
+      </ul>
   </body>
 </html>

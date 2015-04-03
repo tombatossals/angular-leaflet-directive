@@ -3,8 +3,7 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <script src="../bower_components/jquery/dist/jquery.js"></script>
-    <script src="http://maps.google.com/maps/api/js?v=3.2&sensor=false"></script>
+    <script src="http://maps.google.com/maps/api/js?v=3&sensor=false"></script>
     <script src="../bower_components/angular/angular.min.js"></script>
     <script src="../bower_components/leaflet/dist/leaflet.js"></script>
     <script src="../bower_components/leaflet-plugins/layer/tile/Google.js"></script>
@@ -12,14 +11,7 @@
     <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
     <script>
         var app = angular.module("demoapp", ["leaflet-directive"]);
-        app.controller("GoogleMapsController", [ "$scope", "$element", function($scope, $element) {
-            $element.find('.angular-leaflet-map')
-    			.height(jQuery(document.body).height());
-
-    		jQuery(window).resize(function() {
-    			$element.find('.angular-leaflet-map')
-    				.height(jQuery(document.body).height());
-    		});
+        app.controller("GoogleMapsController", [ "$scope", function($scope) {
             angular.extend($scope, {
                 berlin: {
                     lat: 52.52,
@@ -54,16 +46,10 @@
             });
         }]);
     </script>
-    <style>
-        html, body {
-            width: 100%;
-            height: 100%;
-            margin: 0;
-            padding: 0;
-        }
-    </style>
 </head>
 <body ng-controller="GoogleMapsController">
-    <leaflet center="berlin" layers="layers" markers="markers" height="100%" width="100%"></leaflet>
+    <leaflet center="berlin" layers="layers" markers="markers" height="480px" width="100%"></leaflet>
+    <h1>Google maps example</h1>
+    <p>Use the Layer Switch Control on the top rigth of the map to select another Google Maps Layer.</p>
 </body>
 </html>

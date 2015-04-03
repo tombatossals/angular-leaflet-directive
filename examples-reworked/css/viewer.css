@@ -101,13 +101,13 @@ input[type=range] {
     margin: 0;
 }
 
-.ol-full-screen {
-    position: absolute;
-    top: 50%;
-}
-
 @media only screen and (max-width : 1250px) {
     .left.column > .menu .item {
         font-size: 1rem;
     }
+}
+
+.fullscreen {
+    width: 100%;
+    height: 480px;
 }
