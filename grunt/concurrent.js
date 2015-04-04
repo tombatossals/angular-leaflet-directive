@@ -15,6 +15,7 @@ module.exports = function (grunt, options) {
             }
         },
         unit: {
+<<<<<<< HEAD
             tasks: ['karma:unit', 'watch:unit'],
             options: {
                 logConcurrentOutput: true
@@ -22,6 +23,9 @@ module.exports = function (grunt, options) {
         },
         'unit-mocha': {
             tasks: ['karma:unit-mocha', 'watch:unit-mocha'],
+=======
+            tasks: ['karma:unit-mocha', 'watch:chrome'],
+>>>>>>> ability to disable watches in markers 100%
             options: {
                 logConcurrentOutput: true
             }
