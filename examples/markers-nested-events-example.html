@@ -8,7 +8,9 @@
     <script>
         var app = angular.module("demoapp", ["leaflet-directive"]);
         app.controller("DemoController", ["$scope", "leafletEvents", function ($scope, leafletEvents) {
-
+            $scope.map = {
+                show: true
+            };
             $scope.layers = {
                 baselayers: {
                     osm: {
@@ -72,10 +74,12 @@
 <body ng-controller="DemoController">
 <h1>Marker Events example</h1>
 <ul ng-cloak>
+    <li>show map: <input type="checkbox" ng-model="map.show"></li>
     <li>eventDetected: {{eventDetected}}</li>
     <li>args: {{args}}</li>
 </ul>
 <leaflet
+    ng-if="map.show"
     event-broadcast="events"
     center="center"
     markers="markers"

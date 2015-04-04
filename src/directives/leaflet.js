@@ -1,4 +1,5 @@
-angular.module("leaflet-directive", []).directive('leaflet', function ($q, leafletData, leafletMapDefaults, leafletHelpers, leafletEvents) {
+angular.module("leaflet-directive", []).directive('leaflet',
+    function ($q, leafletData, leafletMapDefaults, leafletHelpers, leafletEvents) {
     var _leafletMap;
     return {
         restrict: "EA",
@@ -36,6 +37,8 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($q, leafl
                 defaults = leafletMapDefaults.setDefaults(scope.defaults, attrs.id),
                 genDispatchMapEvent = leafletEvents.genDispatchMapEvent,
                 mapEvents = leafletEvents.getAvailableMapEvents();
+
+            leafletData.setDirectiveControls({}, attrs.id);
 
             // Set width and height utility functions
             function updateWidth() {

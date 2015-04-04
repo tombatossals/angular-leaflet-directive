@@ -71,6 +71,10 @@ fast-build:
  - 'concat:distMapped'
  - 'ngAnnotate'
 
+d-watch:
+ - 'fast-build'
+ - 'concurrent:unit'
+
 build:
  - 'fast-build'
  - 'uglify'

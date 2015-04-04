@@ -175,7 +175,7 @@ describe("Directive: leaflet: layers.watch.markers", function () {
         expect(typeof layers.overlays.fire).toBe('object');
     });
 
-    it('should add and remove markers in overlays in watch', function () {
+    it('should add and remove markers in overlays in watch 1', function () {
         // Check for a marker remove in a layer group
         angular.extend(scope, {
             layers: {
@@ -282,7 +282,7 @@ describe("Directive: leaflet: layers.watch.markers", function () {
         expect(layers.overlays.trucks.hasLayer(markers.m1)).toBe(true);
     });
 
-    it('should add and remove markers in overlays in watch', function () {
+    it('should add and remove markers in overlays in watch 2', function () {
         // Check for a marker remove in a layer group
         angular.extend(scope, {
             layers: {

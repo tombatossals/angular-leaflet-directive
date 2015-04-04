@@ -250,8 +250,10 @@ angular.module("leaflet-directive")
             });
         },
 
-        addMarkerWatcher: function(marker, name, leafletScope, layers, map) {
+        addMarkerWatcher: function(marker, name, leafletScope, layers, map, isDeepWatch) {
             var markerWatchPath = Helpers.getObjectArrayPath("markers." + name);
+            isDeepWatch = defaultTo(isDeepWatch, true);
+            //TODO:break up this 200 line function to be readable (nmccready)
             var clearWatch = leafletScope.$watch(markerWatchPath, function(markerData, oldMarkerData) {
                 if (!isDefined(markerData)) {
                     _deleteMarker(marker, map, layers);
@@ -470,9 +472,32 @@ angular.module("leaflet-directive")
                 } else if (markerLatLng.lat !== markerData.lat || markerLatLng.lng !== markerData.lng) {
                     marker.setLatLng([markerData.lat, markerData.lng]);
                 }
-            }, true);
+            }, isDeepWatch);
         },
         string: _string,
-        log: _log
+        log: _log,
+        /*
+         attrs of note:
+         watchMarkers - deep watch of every single nested marker (old way) deprecated
+
+         markersNested - markers are a nested structure by layer
+         _markersWatchOptions - object to set deep nested watches and turn off watches all together
+         (rely on control / functional updates)
+         _markersWatchOptions - Object
+             doWatch:boolean
+             isDeep:boolean (sets $watch(function,isDeep))
+             individual
+                 doWatch:boolean
+                 isDeep:boolean
+         */
+        //legacy defaults
+        markersWatchOptions: {
+            doWatch:true,
+            isDeep: true,
+            individual:{
+                doWatch:true,
+                isDeep: true
+            }
+        }
     };
 });

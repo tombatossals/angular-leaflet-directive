@@ -16,6 +16,8 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
      */
     var _getObjectValue = function(object, pathStr) {
         var obj;
+        if(!object || !angular.isObject(object))
+            return;
         //if the key is not a sting then we already have the value
         if ((pathStr === null) || !angular.isString(pathStr)) {
             return pathStr;
