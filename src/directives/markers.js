@@ -1,10 +1,14 @@
 angular.module("leaflet-directive").directive('markers',
 <<<<<<< HEAD
+<<<<<<< HEAD
     function ($log, $rootScope, $q, leafletData, leafletHelpers, leafletMapDefaults,
       leafletMarkersHelpers, leafletEvents, leafletIterators, leafletWatchHelpers,
       leafletDirectiveControlsHelpers) {
 =======
     function ($log, $rootScope, $q, $parse, leafletData, leafletHelpers,
+=======
+    function ($log, $rootScope, $q, leafletData, leafletHelpers,
+>>>>>>>  removed
               leafletMapDefaults, leafletMarkersHelpers, leafletEvents, leafletIterators) {
 >>>>>>> ability to disable watches in markers 100%
     //less terse vars to helpers

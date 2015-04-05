@@ -4792,7 +4792,7 @@ angular.module("leaflet-directive").factory('leafletMapEvents', function ($rootS
     };
 =======
 angular.module("leaflet-directive").directive('markers',
-    function ($log, $rootScope, $q, $parse, leafletData, leafletHelpers,
+    function ($log, $rootScope, $q, leafletData, leafletHelpers,
               leafletMapDefaults, leafletMarkersHelpers, leafletEvents, leafletIterators) {
     //less terse vars to helpers
     var isDefined = leafletHelpers.isDefined,
