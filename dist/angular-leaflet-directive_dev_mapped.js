@@ -3426,7 +3426,7 @@ angular.module("leaflet-directive").directive('legend', function ($log, $http, l
     });
 
 angular.module("leaflet-directive").directive('markers',
-    function ($log, $rootScope, $q, $parse, leafletData, leafletHelpers,
+    function ($log, $rootScope, $q, leafletData, leafletHelpers,
               leafletMapDefaults, leafletMarkersHelpers, leafletEvents, leafletIterators) {
     //less terse vars to helpers
     var isDefined = leafletHelpers.isDefined,
