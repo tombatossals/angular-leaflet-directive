@@ -1,11 +1,12 @@
 /*!
-*  angular-leaflet-directive 0.7.11 2015-04-01
+*  angular-leaflet-directive 0.7.11 2015-04-05
 *  angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps
 *  git: https://github.com/tombatossals/angular-leaflet-directive
 */
 (function(angular){
 'use strict';
-angular.module("leaflet-directive", []).directive('leaflet', ["$q", "leafletData", "leafletMapDefaults", "leafletHelpers", "leafletEvents", function ($q, leafletData, leafletMapDefaults, leafletHelpers, leafletEvents) {
+angular.module("leaflet-directive", []).directive('leaflet',
+    ["$q", "leafletData", "leafletMapDefaults", "leafletHelpers", "leafletEvents", function ($q, leafletData, leafletMapDefaults, leafletHelpers, leafletEvents) {
     var _leafletMap;
     return {
         restrict: "EA",
@@ -43,6 +44,8 @@ angular.module("leaflet-directive", []).directive('leaflet', ["$q", "leafletData
                 defaults = leafletMapDefaults.setDefaults(scope.defaults, attrs.id),
                 genDispatchMapEvent = leafletEvents.genDispatchMapEvent,
                 mapEvents = leafletEvents.getAvailableMapEvents();
+
+            leafletData.setDirectiveControls({}, attrs.id);
 
             // Set width and height utility functions
             function updateWidth() {
@@ -290,114 +293,50 @@ angular.module("leaflet-directive").service('leafletData', ["$log", "$q", "leafl
         getUnresolvedDefer = leafletHelpers.getUnresolvedDefer,
         setResolvedDefer = leafletHelpers.setResolvedDefer;
 
-    var maps = {};
-    var tiles = {};
-    var layers = {};
-    var paths = {};
-    var markers = {};
-    var geoJSON = {};
-    var utfGrid = {};
-    var decorations = {};
+    var _private = {};
+    var self = this;
 
-    this.setMap = function(leafletMap, scopeId) {
-        var defer = getUnresolvedDefer(maps, scopeId);
-        defer.resolve(leafletMap);
-        setResolvedDefer(maps, scopeId);
+    var upperFirst = function (string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
     };
 
-    this.getMap = function(scopeId) {
-        var defer = getDefer(maps, scopeId);
-        return defer.promise;
-    };
+    var _privateItems = [
+        'map',
+        'tiles',
+        'layers',
+        'paths',
+        'markers',
+        'geoJSON',
+        'UTFGrid', //odd ball on naming convention keeping to not break
+        'decorations',
+        'directiveControls'];
+
+    //init
+    _privateItems.forEach(function(itemName){
+        _private[itemName] = {};
+    });
 
     this.unresolveMap = function (scopeId) {
-        var id = leafletHelpers.obtainEffectiveMapId(maps, scopeId);
-        maps[id] = undefined;
-        tiles[id] = undefined;
-        layers[id] = undefined;
-        paths[id] = undefined;
-        markers[id] = undefined;
-        geoJSON[id] = undefined;
-        utfGrid[id] = undefined;
-        decorations[id] = undefined;
+        var id = leafletHelpers.obtainEffectiveMapId(_private.map, scopeId);
+        _privateItems.forEach(function (itemName) {
+            _private[itemName][id] = undefined;
+        });
     };
 
-    this.getPaths = function(scopeId) {
-        var defer = getDefer(paths, scopeId);
-        return defer.promise;
-    };
+    //int repetitive stuff (get and sets)
+    _privateItems.forEach(function (itemName) {
+        var name = upperFirst(itemName);
+        self['set' + name] = function (lObject, scopeId) {
+            var defer = getUnresolvedDefer(_private[itemName], scopeId);
+            defer.resolve(lObject);
+            setResolvedDefer(_private[itemName], scopeId);
+        };
 
-    this.setPaths = function(leafletPaths, scopeId) {
-        var defer = getUnresolvedDefer(paths, scopeId);
-        defer.resolve(leafletPaths);
-        setResolvedDefer(paths, scopeId);
-    };
-
-    this.getMarkers = function(scopeId) {
-        var defer = getDefer(markers, scopeId);
-        return defer.promise;
-    };
-
-    this.setMarkers = function(leafletMarkers, scopeId) {
-        var defer = getUnresolvedDefer(markers, scopeId);
-        defer.resolve(leafletMarkers);
-        setResolvedDefer(markers, scopeId);
-    };
-
-    this.getLayers = function(scopeId) {
-        var defer = getDefer(layers, scopeId);
-        return defer.promise;
-    };
-
-    this.setLayers = function(leafletLayers, scopeId) {
-        var defer = getUnresolvedDefer(layers, scopeId);
-        defer.resolve(leafletLayers);
-        setResolvedDefer(layers, scopeId);
-    };
-
-    this.getUTFGrid = function(scopeId) {
-        var defer = getDefer(utfGrid, scopeId);
-        return defer.promise;
-    };
-
-    this.setUTFGrid = function(leafletUTFGrid, scopeId) {
-        var defer = getUnresolvedDefer(utfGrid, scopeId);
-        defer.resolve(leafletUTFGrid);
-        setResolvedDefer(utfGrid, scopeId);
-    };
-
-    this.setTiles = function(leafletTiles, scopeId) {
-        var defer = getUnresolvedDefer(tiles, scopeId);
-        defer.resolve(leafletTiles);
-        setResolvedDefer(tiles, scopeId);
-    };
-
-    this.getTiles = function(scopeId) {
-        var defer = getDefer(tiles, scopeId);
-        return defer.promise;
-    };
-
-    this.setGeoJSON = function(leafletGeoJSON, scopeId) {
-        var defer = getUnresolvedDefer(geoJSON, scopeId);
-        defer.resolve(leafletGeoJSON);
-        setResolvedDefer(geoJSON, scopeId);
-    };
-
-    this.getGeoJSON = function(scopeId) {
-        var defer = getDefer(geoJSON, scopeId);
-        return defer.promise;
-    };
-
-    this.setDecorations = function(leafletDecorations, scopeId) {
-        var defer = getUnresolvedDefer(decorations, scopeId);
-        defer.resolve(leafletDecorations);
-        setResolvedDefer(decorations, scopeId);
-    };
-
-    this.getDecorations = function(scopeId) {
-        var defer = getDefer(decorations, scopeId);
-        return defer.promise;
-    };
+        self['get' + name] = function (scopeId) {
+            var defer = getDefer(_private[itemName], scopeId);
+            return defer.promise;
+        };
+    });
 }]);
 
 angular.module("leaflet-directive").factory('leafletEvents',
@@ -504,6 +443,8 @@ angular.module("leaflet-directive").factory('leafletHelpers', ["$q", "$log", fun
      */
     var _getObjectValue = function(object, pathStr) {
         var obj;
+        if(!object || !angular.isObject(object))
+            return;
         //if the key is not a sting then we already have the value
         if ((pathStr === null) || !angular.isString(pathStr)) {
             return pathStr;
@@ -1960,8 +1901,10 @@ angular.module("leaflet-directive")
             });
         },
 
-        addMarkerWatcher: function(marker, name, leafletScope, layers, map) {
+        addMarkerWatcher: function(marker, name, leafletScope, layers, map, isDeepWatch) {
             var markerWatchPath = Helpers.getObjectArrayPath("markers." + name);
+            isDeepWatch = defaultTo(isDeepWatch, true);
+            //TODO:break up this 200 line function to be readable (nmccready)
             var clearWatch = leafletScope.$watch(markerWatchPath, function(markerData, oldMarkerData) {
                 if (!isDefined(markerData)) {
                     _deleteMarker(marker, map, layers);
@@ -2180,10 +2123,33 @@ angular.module("leaflet-directive")
                 } else if (markerLatLng.lat !== markerData.lat || markerLatLng.lng !== markerData.lng) {
                     marker.setLatLng([markerData.lat, markerData.lng]);
                 }
-            }, true);
+            }, isDeepWatch);
         },
         string: _string,
-        log: _log
+        log: _log,
+        /*
+         attrs of note:
+         watchMarkers - deep watch of every single nested marker (old way) deprecated
+
+         markersNested - markers are a nested structure by layer
+         _markersWatchOptions - object to set deep nested watches and turn off watches all together
+         (rely on control / functional updates)
+         _markersWatchOptions - Object
+             doWatch:boolean
+             isDeep:boolean (sets $watch(function,isDeep))
+             individual
+                 doWatch:boolean
+                 isDeep:boolean
+         */
+        //legacy defaults
+        markersWatchOptions: {
+            doWatch:true,
+            isDeep: true,
+            individual:{
+                doWatch:true,
+                isDeep: true
+            }
+        }
     };
 }]);
 
@@ -3460,12 +3426,11 @@ angular.module("leaflet-directive").directive('legend', ["$log", "$http", "leafl
     }]);
 
 angular.module("leaflet-directive").directive('markers',
-    ["$log", "$rootScope", "$q", "leafletData", "leafletHelpers", "leafletMapDefaults", "leafletMarkersHelpers", "leafletEvents", "leafletIterators", function ($log, $rootScope, $q, leafletData, leafletHelpers, leafletMapDefaults, leafletMarkersHelpers,
-              leafletEvents, leafletIterators) {
+    ["$log", "$rootScope", "$q", "leafletData", "leafletHelpers", "leafletMapDefaults", "leafletMarkersHelpers", "leafletEvents", "leafletIterators", function ($log, $rootScope, $q, leafletData, leafletHelpers,
+              leafletMapDefaults, leafletMarkersHelpers, leafletEvents, leafletIterators) {
     //less terse vars to helpers
     var isDefined = leafletHelpers.isDefined,
         errorHeader = leafletHelpers.errorHeader,
-        defaultTo= leafletHelpers.defaultTo,
         Helpers = leafletHelpers,
         isString = leafletHelpers.isString,
         addMarkerWatcher = leafletMarkersHelpers.addMarkerWatcher,
@@ -3474,9 +3439,10 @@ angular.module("leaflet-directive").directive('markers',
         bindMarkerEvents = leafletEvents.bindMarkerEvents,
         createMarker = leafletMarkersHelpers.createMarker,
         deleteMarker = leafletMarkersHelpers.deleteMarker,
-        $it = leafletIterators;
+        $it = leafletIterators,
+        _markersWatchOptions = leafletMarkersHelpers.markersWatchOptions;
 
-    var _maybeAddMarkerToLayer = function(layerName, layers, markerData, marker, shouldWatch, map){
+    var _maybeAddMarkerToLayer = function(layerName, layers, model, marker, doIndividualWatch, map){
 
         if (!isString(layerName)) {
             $log.error(errorHeader + ' A layername must be a string');
@@ -3503,15 +3469,14 @@ angular.module("leaflet-directive").directive('markers',
 
         // The marker is automatically added to the map depending on the visibility
         // of the layer, so we only have to open the popup if the marker is in the map
-        if (!shouldWatch && map.hasLayer(marker) && markerData.focus === true) {
-            leafletMarkersHelpers.manageOpenPopup(marker, markerData);
+        if (!doIndividualWatch && map.hasLayer(marker) && model.focus === true) {
+            leafletMarkersHelpers.manageOpenPopup(marker, model);
         }
         return true;
     };
     //TODO: move to leafletMarkersHelpers??? or make a new class/function file (leafletMarkersHelpers is large already)
-    var _addMarkers = function(markersToRender, map, layers, leafletMarkers, leafletScope, shouldWatch, maybeLayerName){
-        shouldWatch = defaultTo(shouldWatch, false);
-
+    var _addMarkers = function(markersToRender, map, layers, leafletMarkers, leafletScope,
+                               watchOptions, maybeLayerName){
 
         for (var newName in markersToRender) {
             if (newName.search("-") !== -1) {
@@ -3520,9 +3485,9 @@ angular.module("leaflet-directive").directive('markers',
             }
 
             if (!isDefined(leafletMarkers[newName])) {
-                var markerData = markersToRender[newName];
-                var marker = createMarker(markerData);
-                var layerName = (markerData? markerData.layer : undefined) || maybeLayerName; //original way takes pref
+                var model = markersToRender[newName];
+                var marker = createMarker(model);
+                var layerName = (model? model.layer : undefined) || maybeLayerName; //original way takes pref
                 if (!isDefined(marker)) {
                     $log.error(errorHeader + ' Received invalid data on the marker ' + newName + '.');
                     continue;
@@ -3530,41 +3495,43 @@ angular.module("leaflet-directive").directive('markers',
                 leafletMarkers[newName] = marker;
 
                 // Bind message
-                if (isDefined(markerData.message)) {
-                    marker.bindPopup(markerData.message, markerData.popupOptions);
+                if (isDefined(model.message)) {
+                    marker.bindPopup(model.message, model.popupOptions);
                 }
 
                 // Add the marker to a cluster group if needed
-                if (isDefined(markerData.group)) {
-                    var groupOptions = isDefined(markerData.groupOption) ? markerData.groupOption : null;
-                    addMarkerToGroup(marker, markerData.group, groupOptions, map);
+                if (isDefined(model.group)) {
+                    var groupOptions = isDefined(model.groupOption) ? model.groupOption : null;
+                    addMarkerToGroup(marker, model.group, groupOptions, map);
                 }
 
                 // Show label if defined
-                if (Helpers.LabelPlugin.isLoaded() && isDefined(markerData.label) && isDefined(markerData.label.message)) {
-                    marker.bindLabel(markerData.label.message, markerData.label.options);
+                if (Helpers.LabelPlugin.isLoaded() && isDefined(model.label) && isDefined(model.label.message)) {
+                    marker.bindLabel(model.label.message, model.label.options);
                 }
 
                 // Check if the marker should be added to a layer
-                if (isDefined(markerData) && (isDefined(markerData.layer) || isDefined(maybeLayerName))){
+                if (isDefined(model) && (isDefined(model.layer) || isDefined(maybeLayerName))){
 
-                    var pass = _maybeAddMarkerToLayer(layerName, layers, markerData, marker, shouldWatch, map);
+                    var pass = _maybeAddMarkerToLayer(layerName, layers, model, marker,
+                        watchOptions.individual.doWatch, map);
                     if(!pass)
                         continue; //something went wrong move on in the loop
-                } else if (!isDefined(markerData.group)) {
+                } else if (!isDefined(model.group)) {
                     // We do not have a layer attr, so the marker goes to the map layer
                     map.addLayer(marker);
-                    if (!shouldWatch && markerData.focus === true) {
-                        leafletMarkersHelpers.manageOpenPopup(marker, markerData);
+                    if (!watchOptions.individual.doWatch && model.focus === true) {
+                        leafletMarkersHelpers.manageOpenPopup(marker, model);
                     }
                 }
                 var pathToMarker = Helpers.getObjectDotPath(maybeLayerName? [maybeLayerName, newName]: [newName]);
-                if (shouldWatch) {
-                    addMarkerWatcher(marker, pathToMarker, leafletScope, layers, map);
+                if (watchOptions.individual.doWatch) {
+                    addMarkerWatcher(marker, pathToMarker, leafletScope, layers, map,
+                        watchOptions.individual.doWatch);
                 }
 
-                listenMarkerEvents(marker, markerData, leafletScope, shouldWatch);
-                bindMarkerEvents(marker, pathToMarker, markerData, leafletScope, layerName);
+                listenMarkerEvents(marker, model, leafletScope, watchOptions.individual.doWatch);
+                bindMarkerEvents(marker, pathToMarker, model, leafletScope, layerName);
             }
         }
     };
@@ -3576,11 +3543,20 @@ angular.module("leaflet-directive").directive('markers',
                 $log.debug(errorHeader + "[markers] destroy: ");
                 hasLogged = true;
             }
-            if (!isDefined(markerModels) || !isDefined(markerModels[name])) {
+            if (!isDefined(markerModels) || !Object.keys(markerModels).length ||
+                !isDefined(markerModels[name]) || !Object.keys(markerModels[name]).length) {
                 deleteMarker(lMarkers[name], map, layers);
                 delete lMarkers[name];
             }
         }
+    };
+
+    var _maybeWatch = function(scope, watchOptions, initCb){
+        var unWatch = scope.$watch('markers', function(newMarkers) {
+            initCb(newMarkers);
+            if(!watchOptions.doWatch)
+                unWatch();
+        }, watchOptions.isDeep);
     };
 
     return {
@@ -3607,27 +3583,84 @@ angular.module("leaflet-directive").directive('markers',
                     };
                 }
 
-                getLayers().then(function(layers) {
-                    leafletData.setMarkers(leafletMarkers, attrs.id);
-                    leafletScope.$watch('markers', function(newMarkers) {
-                        _destroy(newMarkers, leafletMarkers, map, layers);
-                        // Should we watch for every specific marker on the map?
-                        var shouldWatch = (!isDefined(attrs.watchMarkers) || Helpers.isTruthy(attrs.watchMarkers));
-                        var isNested = (isDefined(attrs.markersNested) && Helpers.isTruthy(attrs.markersNested));
+                var watchOptions = leafletScope.markersWatchOptions || _markersWatchOptions;
 
+                // backwards compat
+                if(isDefined(attrs.watchMarkers))
+                    watchOptions.individual.doWatch =
+                        (!isDefined(attrs.watchMarkers) || Helpers.isTruthy(attrs.watchMarkers));
+
+                var isNested = (isDefined(attrs.markersNested) && Helpers.isTruthy(attrs.markersNested));
+
+                getLayers().then(function(layers) {
+                    var _clean = function(models){
+                        _destroy(models, leafletMarkers, map, layers);
+                    };
+
+                    var _create = function(models){
+                        _clean(models);
                         if(isNested) {
-                            $it.each(newMarkers, function(markersToAdd, layerName) {
-                                _addMarkers(markersToAdd, map, layers, leafletMarkers, leafletScope, shouldWatch, layerName);
+                            $it.each(models, function(markersToAdd, layerName) {
+                                _addMarkers(markersToAdd, map, layers, leafletMarkers, leafletScope,
+                                    watchOptions, layerName);
                             });
                             return;
                         }
-                        _addMarkers(newMarkers, map, layers, leafletMarkers, leafletScope, shouldWatch);
-                    }, true);
+                        _addMarkers(models, map, layers, leafletMarkers, leafletScope,
+                            watchOptions);
+                    };
+                    //add external control to create / destroy markers without a watch
+                    leafletData.getDirectiveControls().then(function(controls){
+                        angular.extend(controls, {
+                            markers:{
+                                create: _create,
+                                clean: _clean
+                            }
+                        });
+                        leafletData.setDirectiveControls(controls, attrs.id);
+                    });
+                    leafletData.setMarkers(leafletMarkers, attrs.id);
+
+                    _maybeWatch(leafletScope, watchOptions, function(newMarkers){
+                        _create(newMarkers);
+                    });
                 });
             });
         }
     };
 }]);
+
+
+angular.module("leaflet-directive").directive('markersWatchOptions',
+    ["$log", "$rootScope", "$q", "leafletData", "leafletHelpers", "leafletMarkersHelpers", function ($log, $rootScope, $q, leafletData, leafletHelpers, leafletMarkersHelpers) {
+    //less terse vars to helpers
+    var isDefined = leafletHelpers.isDefined,
+        errorHeader = leafletHelpers.errorHeader,
+        isObject = leafletHelpers.isObject,
+        _markersWatchOptions = leafletMarkersHelpers.markersWatchOptions;
+
+    return {
+        restrict: "A",
+        scope: false,
+        replace: false,
+        require: ['leaflet'],
+
+        link: function(scope, element, attrs, controller) {
+            var mapController = controller[0],
+                leafletScope = mapController.getLeafletScope();
+
+
+                if(isDefined(scope.markerWatchOptions)) {
+                    if(isObject(scope.markerWatchOptions))
+                        angular.extend(_markersWatchOptions, scope.markerWatchOptions);
+                    else
+                        $log.error(errorHeader + ' [markers] markersWatchOptions is not an object');
+                    leafletScope.markersWatchOptions = _markersWatchOptions;
+                }
+        }
+    };
+}]);
+
 
 angular.module("leaflet-directive").directive('maxbounds', ["$log", "leafletMapDefaults", "leafletBoundsHelpers", "leafletHelpers", function ($log, leafletMapDefaults, leafletBoundsHelpers, leafletHelpers) {
     return {
