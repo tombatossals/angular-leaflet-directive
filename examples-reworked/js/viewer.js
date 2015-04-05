@@ -23,7 +23,6 @@
             template: '<div></div>',
             link: function(scope, element, attrs) {
                 scope.$watch('url', function(url) {
-
                     $http.get(url).success(function(data) {
                         var $doc = new DOMParser().parseFromString(data, "text/html");
                         var body = $doc.body;
@@ -47,7 +46,6 @@
             replace: true,
             templateUrl: 'partials/source.html',
             link: function(scope, element, attrs) {
-
                 scope.$watch('url', function(url) {
                     $http.get(url).success(function(data) {
                         scope.source = data;
@@ -64,8 +62,8 @@
     }]);
 
     app.controller('MainController', [ '$scope', '$http', '$q', '$timeout', '$location', function($scope, $http, $q, $timeout, $location) {
-
         var examples = $q.defer();
+        $scope.sections = [];
 
         var getExample = function(id, section, examples) {
             var df = $q.defer();
@@ -73,8 +71,9 @@
                 var sectionExamples = examples[section];
                 for (var i in sectionExamples) {
                     var e = sectionExamples[i];
-                    if (e.id === id) {
+                    if (e.id === '/' + section + '/' + id) {
                         df.resolve(e);
+                        break;
                     }
                 }
             });
@@ -91,19 +90,51 @@
             var id = route.params.example;
             var section = route.params.section;
 
+            $scope.setActiveSection(section);
             getExample(id, section, examples).then(function(example) {
                 $scope.example = example;
-                $scope.section = section;
             });
 
         });
 
-        $http.get('json/examples.json').success(function(data) {
-            if (!$scope.section) {
-                $scope.section = 'basic';
+        var extractSections = function(examples) {
+            return Object.keys(examples).map(function(section) {
+                return {
+                    id: section,
+                    name: section.charAt(0).toUpperCase() + section.slice(1),
+                    active: false
+                }
+            });
+        };
+
+        $scope.setActiveSection = function(id) {
+            $scope.sections.map(function(section) {
+                section.active = (id === section.id);
+            });
+        };
+
+        var getActiveSection = function(sections) {
+            var active;
+            for (var i=0; i<sections.length; i++) {
+                if (sections[i].active) {
+                    active = sections[i].id;
+                    break;
+                }
             }
+            return active;
+        }
+
+        $scope.getExamplesFromActiveSection = function() {
+            var section = getActiveSection($scope.sections);
+            if (!section) return;
+            return $scope.examples[section];
+        }
+
+        $http.get('json/examples.json').success(function(data) {
+            $scope.sections = extractSections(data);
             $scope.examples = data;
             examples.resolve(data);
+            $scope.setActiveSection('basic');
         });
 
     } ]);

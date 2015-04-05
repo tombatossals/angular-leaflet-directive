@@ -1,4 +1,4 @@
-        app.controller("LayersHideBaselayerOnSelectorController", [ "$scope", function($scope) {
+        app.controller("LayersHideOverlaysOnSelectorController", [ "$scope", function($scope) {
             angular.extend($scope, {
                 center: {
                     lat: 39,
@@ -8,11 +8,12 @@
                 layers: {
                     baselayers: {
                         xyz: {
-                            name: 'OpenStreetMap (XYZ)',
-                            url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                            name: 'Mapbox Streets',
+                            url: 'http://a.tiles.mapbox.com/v3/examples.map-i86nkdio/{z}/{x}/{y}.png',
                             type: 'xyz',
                             layerOptions: {
-                                showOnSelector: false
+                                apikey: 'pk.eyJ1IjoiYnVmYW51dm9scyIsImEiOiJLSURpX0pnIn0.2_9NrLz1U9bpwMQBhVk97Q',
+                                mapid: 'bufanuvols.ll5em372'
                             }
                         }
                     },
@@ -23,6 +24,7 @@
                             visible: true,
                             url: 'http://suite.opengeo.org/geoserver/usa/wms',
                             layerParams: {
+                                showOnSelector: false,
                                 layers: 'usa:states',
                                 format: 'image/png',
                                 transparent: true

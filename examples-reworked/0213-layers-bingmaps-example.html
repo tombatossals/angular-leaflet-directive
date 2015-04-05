@@ -3,7 +3,6 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <script src="http://maps.google.com/maps/api/js?v=3.2&sensor=false"></script>
     <script src="../bower_components/angular/angular.min.js"></script>
     <script src="../bower_components/leaflet/dist/leaflet.js"></script>
     <script src="../bower_components/leaflet-plugins/layer/tile/Bing.js"></script>
@@ -11,7 +10,7 @@
     <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
     <script>
         var app = angular.module("demoapp", ["leaflet-directive"]);
-        app.controller("BingMapsController", [ "$scope", function($scope) {
+        app.controller("LayersBingMapsController", [ "$scope", function($scope) {
             angular.extend($scope, {
                 bastia: {
                     lat: 42.7029,
@@ -57,9 +56,9 @@
         }]);
     </script>
 </head>
-<body ng-controller="BingMapsController">
+<body ng-controller="LayersBingMapsController">
+    <leaflet center="bastia" layers="layers" markers="markers" width="100%" height="480px"></leaflet>
     <h1>Bing maps</h1>
     <p>Use the Layer Switch Control on the top rigth of the map to select another Bing Maps Layer.</p>
-    <leaflet center="bastia" layers="layers" markers="markers" height="480px" width="640px"></leaflet>
 </body>
 </html>

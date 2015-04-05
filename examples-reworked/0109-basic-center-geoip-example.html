@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
     <script>
         var app = angular.module('demoapp', ['leaflet-directive']);
-        app.controller('DemoController', [ '$scope', '$http', function($scope, $http) {
+        app.controller('BasicCenterGeoIPController', [ '$scope', '$http', function($scope, $http) {
             angular.extend($scope, {
                 center: {
                     lat: 0,
@@ -19,14 +19,12 @@
             $scope.searchIP = function(ip) {
                 var url = "http://freegeoip.net/json/" + ip;
                 $http.get(url).success(function(res) {
-                    console.log(res);
                     $scope.center = {
                         lat: res.latitude,
                         lng: res.longitude,
                         zoom: 10
                     }
                     $scope.ip = res.ip;
-                    console.log(res);
                 })
             };
 
@@ -41,8 +39,8 @@
         }
     </style>
   </head>
-  <body ng-controller="DemoController">
-    <leaflet center="center" width="100%" height="480"></leaflet>
+  <body ng-controller="BasicCenterGeoIPController">
+    <leaflet center="center" width="100%" height="480px"></leaflet>
     <h1>Center map example</h1>
     <form>
         Insert the IP: <input type="input"  ng-model="ip" /> <input type="button" ng-click="searchIP(ip)" value="Search" />

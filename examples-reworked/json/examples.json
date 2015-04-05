@@ -1,102 +1,283 @@
 {
     "basic": [
         {
-            "date": "2015-03-31T17:54:42.000Z",
-            "id": "first-example",
+            "date": "2015-03-31T17:54:42.307Z",
+            "section": "basic",
+            "id": "/basic/first-example",
             "extUrl": "0100-basic-first-example.html",
             "title": "First steps, basic example"
         },
         {
-            "date": "2015-04-01T20:01:52.000Z",
-            "id": "center-example",
+            "date": "2015-04-01T20:01:52.225Z",
+            "section": "basic",
+            "id": "/basic/center-example",
             "extUrl": "0101-basic-center-example.html",
             "title": "Center map example"
         },
         {
-            "date": "2015-04-03T14:51:00.000Z",
-            "id": "center-autodiscover-example",
+            "date": "2015-04-03T14:51:00.030Z",
+            "section": "basic",
+            "id": "/basic/center-autodiscover-example",
             "extUrl": "0102-basic-center-autodiscover-example.html",
             "title": "Center autodiscover example"
         },
         {
-            "date": "2015-04-03T14:53:54.000Z",
-            "id": "center-url-hash-example",
+            "date": "2015-04-03T14:53:54.700Z",
+            "section": "basic",
+            "id": "/basic/center-url-hash-example",
             "extUrl": "0103-basic-center-url-hash-example.html",
             "title": "Center map with URL synchronization example"
         },
         {
-            "date": "2015-04-03T15:22:34.000Z",
-            "id": "custom-parameters-example",
+            "date": "2015-04-03T15:22:34.198Z",
+            "section": "basic",
+            "id": "/basic/custom-parameters-example",
             "extUrl": "0104-basic-custom-parameters-example.html",
             "title": "Using custom default parameters"
         },
         {
-            "date": "2015-04-03T15:22:25.000Z",
-            "id": "bounds-example",
+            "date": "2015-04-03T15:22:25.642Z",
+            "section": "basic",
+            "id": "/basic/bounds-example",
             "extUrl": "0105-basic-bounds-example.html",
             "title": "Map bounds example"
         },
         {
-            "date": "2015-04-03T15:23:36.000Z",
-            "id": "maxbounds-example",
+            "date": "2015-04-05T09:32:59.125Z",
+            "section": "basic",
+            "id": "/basic/maxbounds-example",
             "extUrl": "0106-basic-maxbounds-example.html",
             "title": "Setting MaxBounds in a map"
         },
         {
-            "date": "2015-04-03T20:10:26.000Z",
-            "id": "tiles-example",
+            "date": "2015-04-03T20:10:26.690Z",
+            "section": "basic",
+            "id": "/basic/tiles-example",
             "extUrl": "0107-basic-tiles-example.html",
             "title": "Changing tiles example"
         },
         {
-            "date": "2015-04-03T18:54:23.000Z",
-            "id": "tiles-zoom-changer-example",
+            "date": "2015-04-03T18:54:23.044Z",
+            "section": "basic",
+            "id": "/basic/tiles-zoom-changer-example",
             "extUrl": "0108-basic-tiles-zoom-changer-example.html",
             "title": "Dynamic tile changer based on zoom level"
+        },
+        {
+            "date": "2015-04-05T11:19:26.919Z",
+            "section": "basic",
+            "id": "/basic/center-geoip-example",
+            "extUrl": "0109-basic-center-geoip-example.html",
+            "title": "Center map example"
+        },
+        {
+            "date": "2015-04-05T11:16:24.996Z",
+            "section": "basic",
+            "id": "/basic/map-without-animations-example",
+            "extUrl": "0110-basic-map-without-animations-example.html",
+            "title": "Map with disabled animations example"
         }
     ],
     "layers": [
         {
-            "date": "2015-04-03T19:52:58.000Z",
-            "id": "simple-example",
+            "date": "2015-04-03T19:52:58.074Z",
+            "section": "layers",
+            "id": "/layers/simple-example",
             "extUrl": "0201-layers-simple-example.html",
             "title": "Layers simple example"
         },
         {
-            "date": "2015-04-03T19:59:01.000Z",
-            "id": "overlays-simple-example",
+            "date": "2015-04-03T19:59:01.672Z",
+            "section": "layers",
+            "id": "/layers/overlays-simple-example",
             "extUrl": "0202-layers-overlays-simple-example.html",
             "title": "Baselayer with overlays"
         },
         {
-            "date": "2015-04-03T20:01:10.000Z",
-            "id": "imageoverlay-example",
+            "date": "2015-04-03T20:01:10.269Z",
+            "section": "layers",
+            "id": "/layers/imageoverlay-example",
             "extUrl": "0203-layers-imageoverlay-example.html",
             "title": "Layer with image overlay and maxBounds"
         },
         {
-            "date": "2015-04-03T20:17:09.000Z",
-            "id": "dynamic-addition-example",
+            "date": "2015-04-03T20:17:09.596Z",
+            "section": "layers",
+            "id": "/layers/dynamic-addition-example",
             "extUrl": "0204-layers-dynamic-addition-example.html",
             "title": "Dynamic addition/removal of layers"
         },
         {
-            "date": "2015-04-03T20:36:56.000Z",
-            "id": "googlemaps-example",
+            "date": "2015-04-03T20:36:56.506Z",
+            "section": "layers",
+            "id": "/layers/googlemaps-example",
             "extUrl": "0205-layers-googlemaps-example.html",
             "title": "Google maps example"
         },
         {
-            "date": "2015-04-03T20:58:15.000Z",
-            "id": "googlemaps-fullsize-example",
+            "date": "2015-04-03T20:58:15.646Z",
+            "section": "layers",
+            "id": "/layers/googlemaps-fullsize-example",
             "extUrl": "0206-layers-googlemaps-fullsize-example.html",
             "title": "Google Maps fullsize example"
         },
         {
-            "date": "2015-04-03T21:05:20.000Z",
-            "id": "hide-baselayer-on-selector-example",
+            "date": "2015-04-03T21:05:25.102Z",
+            "section": "layers",
+            "id": "/layers/hide-baselayer-on-selector-example",
             "extUrl": "0207-layers-hide-baselayer-on-selector-example.html",
             "title": "Baselayer hidden on switch selector to show only overlay"
+        },
+        {
+            "date": "2015-04-04T08:06:15.798Z",
+            "section": "layers",
+            "id": "/layers/esri-dynamic-layer-example",
+            "extUrl": "0208-layers-esri-dynamic-layer-example.html",
+            "title": "Esri ArcGIS Dynamic Map Layer"
+        },
+        {
+            "date": "2015-04-04T08:11:45.614Z",
+            "section": "layers",
+            "id": "/layers/esri-legend-service-example",
+            "extUrl": "0209-layers-esri-legend-service-example.html",
+            "title": "Esri ArcGIS Legend Service"
+        },
+        {
+            "date": "2015-04-04T08:24:44.905Z",
+            "section": "layers",
+            "id": "/layers/webgl-heatmap-example",
+            "extUrl": "0210-layers-webgl-heatmap-example.html",
+            "title": "HeatMap WebGL overlay example"
+        },
+        {
+            "date": "2015-04-04T08:44:52.401Z",
+            "section": "layers",
+            "id": "/layers/layergroup-simple-example",
+            "extUrl": "0211-layers-layergroup-simple-example.html",
+            "title": "Layer Groups with nested layer definitions"
+        },
+        {
+            "date": "2015-04-04T21:46:46.706Z",
+            "section": "layers",
+            "id": "/layers/hide-overlays-on-selector-example",
+            "extUrl": "0212-layers-hide-overlays-on-selector-example.html",
+            "title": "Overlay not shown in selector"
+        },
+        {
+            "date": "2015-04-05T11:15:14.116Z",
+            "section": "layers",
+            "id": "/layers/bingmaps-example",
+            "extUrl": "0213-layers-bingmaps-example.html",
+            "title": "Bing maps"
+        },
+        {
+            "date": "2015-01-13T07:50:33.221Z",
+            "section": "layers",
+            "id": "/layers/utfgrid-example",
+            "extUrl": "0214-layers-utfgrid-example.html",
+            "title": "Baselayer with UTFGrid interactivity in Overlay"
+        }
+    ],
+    "paths": [
+        {
+            "date": "2015-04-04T21:53:12.192Z",
+            "section": "paths",
+            "id": "/paths/simple-example",
+            "extUrl": "0300-paths-simple-example.html",
+            "title": "Paths simple example"
+        },
+        {
+            "date": "2015-04-04T21:57:02.054Z",
+            "section": "paths",
+            "id": "/paths/types-example",
+            "extUrl": "0301-paths-types-example.html",
+            "title": "Types of paths"
+        },
+        {
+            "date": "2015-04-04T22:13:02.602Z",
+            "section": "paths",
+            "id": "/paths/ajax-load-example",
+            "extUrl": "0302-paths-ajax-load-example.html",
+            "title": "Load remote paths example"
+        },
+        {
+            "date": "2015-04-04T22:15:17.379Z",
+            "section": "paths",
+            "id": "/paths/3000-items-example",
+            "extUrl": "0303-paths-3000-items-example.html",
+            "title": "3000 items in a map performance"
+        },
+        {
+            "date": "2015-01-13T07:50:33.218Z",
+            "section": "paths",
+            "id": "/paths/advanced-example",
+            "extUrl": "0304-paths-advanced-example.html"
+        },
+        {
+            "date": "2015-01-13T07:50:33.218Z",
+            "section": "paths",
+            "id": "/paths/change-in-group-layer-example",
+            "extUrl": "0305-paths-change-in-group-layer-example.html"
+        }
+    ],
+    "controls": [
+        {
+            "date": "2015-04-04T08:54:20.669Z",
+            "section": "controls",
+            "id": "/controls/custom-layer-control-example",
+            "extUrl": "0400-controls-custom-layer-control-example.html"
+        }
+    ],
+    "markers": [
+        {
+            "date": "2015-01-13T07:50:33.218Z",
+            "section": "markers",
+            "id": "/markers/simple-example",
+            "extUrl": "0500-markers-simple-example.html"
+        },
+        {
+            "date": "2015-01-13T07:50:33.214Z",
+            "section": "markers",
+            "id": "/markers/add-example",
+            "extUrl": "0501-markers-add-example.html"
+        },
+        {
+            "date": "2015-01-13T07:50:33.218Z",
+            "section": "markers",
+            "id": "/markers/add-remove-example",
+            "extUrl": "0502-markers-add-remove-example.html"
+        },
+        {
+            "date": "2015-01-24T14:34:57.591Z",
+            "section": "markers",
+            "id": "/markers/icons-example",
+            "extUrl": "0503-markers-icons-example.html",
+            "title": "Dynamic update marker properties"
+        },
+        {
+            "date": "2015-01-24T14:34:57.591Z",
+            "section": "markers",
+            "id": "/markers/popup-example",
+            "extUrl": "0504-markers-popup-example.html",
+            "title": "Dynamic update marker properties"
+        },
+        {
+            "date": "2015-01-13T07:50:33.218Z",
+            "section": "markers",
+            "id": "/markers/label-example",
+            "extUrl": "0505-markers-label-example.html"
+        },
+        {
+            "date": "2015-01-13T07:50:33.218Z",
+            "section": "markers",
+            "id": "/markers/groups-example",
+            "extUrl": "0506-markers-groups-example.html"
+        },
+        {
+            "date": "2015-01-13T07:50:33.218Z",
+            "section": "markers",
+            "id": "/markers/rotation-example",
+            "extUrl": "0506-markers-rotation-example.html"
         }
     ]
 }

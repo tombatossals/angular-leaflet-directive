@@ -111,3 +111,58 @@ input[type=range] {
     width: 100%;
     height: 480px;
 }
+
+.info {
+    padding: 20px;
+    font-family: 'Lato', sans-serif;
+    font-size: 1em;
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+}
+.info h4 {
+    margin: 0 0 5px;
+    color: #3D3938;
+}
+.legend {
+    color: #555555;
+    line-height: 18px;
+    text-align: left;
+    max-height: 300px;
+    width: 260px;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    overflow: auto;
+}
+.legend .outline {
+    border: 1px solid #CCCCCC;
+    border-radius: 6px 6px 6px 6px;
+    float: left;
+    height: 12px;
+    margin: 3px 10px 3px 3px;
+    padding: 2px;
+    width: 12px;
+}
+.legend .outline i {
+    border-radius: 4px 4px 4px 4px;
+    float: left;
+    height: 6px;
+    width: 6px;
+}
+.legend .inline {
+    clear: both;
+    float: left;
+    margin-right: 10px;
+}
+.legend .info-title {
+    clear: both;
+    float: left;
+    font-size: 0.9em;
+    font-weight: bold;
+    margin: 5px 0;
+    width: 100%;
+}
+.legend .info-label {
+    float: left;
+    width: 170px;
+    font-size: 0.8em;
+}

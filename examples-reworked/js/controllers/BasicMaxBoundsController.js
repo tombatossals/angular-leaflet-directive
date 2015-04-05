@@ -32,6 +32,6 @@
                 }
             };
             angular.extend($scope, {
-                maxbounds: {}
+                maxbounds: $scope.regions.london
             });
         } ]);

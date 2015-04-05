@@ -64,7 +64,7 @@ var writeController = function(script, examplefile, controllers_directory) {
 
             file.end();
         } else {
-            console.log('The controller name is duplicated: ' + outfile)
+            console.log('The controller name is duplicated: ' + outfilename)
         }
     } else {
         console.log('Can\'t identify the controller name in the example ' + examplefile)
@@ -135,7 +135,8 @@ var generateExamplesJSONFile = function(examples_directory, json_file) {
                 }
                 examples[section].push({
                     date: date,
-                    id: id,
+                    section: section,
+                    id: '/' + section + '/' + id,
                     extUrl: extUrl,
                     title: title,
                     description: description

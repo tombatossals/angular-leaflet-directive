@@ -1,15 +1,4 @@
-<!DOCTYPE html>
-<html ng-app="demoapp">
-  <head>
-    <script src="../bower_components/angular/angular.min.js"></script>
-    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
-    <script src="../bower_components/Leaflet.label/dist/leaflet.label.js"></script>
-    <script src="../dist/angular-leaflet-directive.js"></script>
-    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
-    <link rel="stylesheet" href="../bower_components/Leaflet.label/dist/leaflet.label.css" />
-    <script>
-        var app = angular.module("demoapp", ["leaflet-directive"]);
-        app.controller("DemoController", [ "$scope", function($scope) {
+        app.controller("PathSimpleController", [ "$scope", function($scope) {
             angular.extend($scope, {
                 london: {
                     lat: 51.505,
@@ -36,20 +25,6 @@
                         ],
                         label: {message: "<h3>Route from Vienna to Paris</h3><p>Distance: 1211km</p>"}
                     }
-
                 }
             });
         }]);
-    </script>
-    <style>
-        .angular-leaflet-map {
-            width: 640px;
-            height: 400px;
-        }
-    </style>
-  </head>
-  <body ng-controller="DemoController">
-    <leaflet center="london" paths="europeanPaths"></leaflet>
-    <p>Click on red route (Popup) or hover over green route (Label) to get more information</p>
-  </body>
-</html>

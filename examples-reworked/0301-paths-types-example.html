@@ -5,10 +5,9 @@
     <script src="../bower_components/leaflet/dist/leaflet.js"></script>
     <script src="../dist/angular-leaflet-directive.min.js"></script>
     <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
-    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
     <script>
         var app = angular.module("demoapp", ["leaflet-directive"]);
-        app.controller('DemoController', [ '$scope', function($scope) {
+        app.controller('PathTypesController', [ '$scope', function($scope) {
             var europeCapitals = {
                 Madrid: {
                     lat: 40.4,
@@ -97,38 +96,18 @@
             };
         } ]);
     </script>
-    <style>
-        .angular-leaflet-map {
-            width: 640px;
-            height: 400px;
-        }
-    </style>
   </head>
-  <body>
-  <div class="container">
-      <div ng-controller="DemoController">
+  <body ng-controller="PathTypesController">
+      <leaflet center="center" paths="paths" width="100%" height="480px"></leaflet>
+      <h1>Types of paths</h1>
 
-          <div class="row">
-              <h2>Types of paths</h2>
-          </div>
-
-          <div class="row">
-              <div class="btn-group">
-                <button type="button" ng-click="addShape('polyline')" class="btn btn-default">polyline</button>
-                <button type="button" ng-click="addShape('multiPolyline')" class="btn btn-default">multiPolyline</button>
-                <button type="button" ng-click="addShape('polygon')" class="btn btn-default">polygon</button>
-                <button type="button" ng-click="addShape('multiPolygon')" class="btn btn-default">multiPolygon</button>
-                <button type="button" ng-click="addShape('rectangle')" class="btn btn-default">rectangle</button>
-                <button type="button" ng-click="addShape('circle')" class="btn btn-default">circle</button>
-                <button type="button" ng-click="addShape('circleMarker')" class="btn btn-default">circleMarker</button>
-              </div>
-          </div>
-          <br />
-          <div class="row">
-            <leaflet center="center" paths="paths"></leaflet>
-          </div>
-      </div>
-  </div>
+      <button type="button" ng-click="addShape('polyline')" class="btn btn-default">polyline</button>
+      <button type="button" ng-click="addShape('multiPolyline')" class="btn btn-default">multiPolyline</button>
+      <button type="button" ng-click="addShape('polygon')" class="btn btn-default">polygon</button>
+      <button type="button" ng-click="addShape('multiPolygon')" class="btn btn-default">multiPolygon</button>
+      <button type="button" ng-click="addShape('rectangle')" class="btn btn-default">rectangle</button>
+      <button type="button" ng-click="addShape('circle')" class="btn btn-default">circle</button>
+      <button type="button" ng-click="addShape('circleMarker')" class="btn btn-default">circleMarker</button>
 
   </body>
 </html>

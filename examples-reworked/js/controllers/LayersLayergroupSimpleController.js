@@ -1,14 +1,4 @@
-<!DOCTYPE html>
-<html ng-app="demoapp">
-<head>
-    <script src="../bower_components/angular/angular.min.js"></script>
-    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
-    <script src="../dist/angular-leaflet-directive.js"></script>
-    <script src="http://danzel.github.io/Leaflet.utfgrid/src/leaflet.utfgrid.js"></script>
-    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
-    <script>
-        var app = angular.module("demoapp", ["leaflet-directive"]);
-        app.controller("DemoController", [ "$scope", function($scope) {
+        app.controller("LayersLayergroupSimpleController", [ "$scope", function($scope) {
             angular.extend($scope, {
                 center: {
                     lat: 39,
@@ -26,7 +16,6 @@
                     overlays: {}
                 }
             });
-            
             var tileLayer = {
               name: 'Countries',
               type: 'xyz',
@@ -37,7 +26,6 @@
                 maxZoom: 5
               }
             };
-              
             var utfGrid = {
               name: 'UtfGrid',
               type: 'utfGrid',
@@ -48,7 +36,6 @@
                 resolution: 4
               }
             };
-            
             var group = {
               name: 'Group Layer',
               type: 'group',
@@ -58,39 +45,8 @@
                 maxZoom: 5
               }
             };
-            
             $scope.layers['overlays']['Group Layer'] = group;
-        
             $scope.$on('leafletDirectiveMap.utfgridMouseover', function(event, leafletEvent) {
                 $scope.country = leafletEvent.data.name;
-                
             });
         }]);
-    </script>
-    <style>
-        html,body {
-            height: 98%;
-        }
-        .angular-leaflet-map {
-            height: 100%;
-        }
-        .left, .right {
-            float: left;
-            width: 48%;
-            height: 100%;
-            padding-right: 1em;
-        }
-    </style>
-</head>
-<body ng-controller="DemoController">
-    <div class="left">
-        <leaflet center="center" layers="layers"></leaflet>
-    </div>
-    <div class="right">
-        <h1>Layer Groups with nested layer definitions</h1>
-        <p>You can add layer groups to a map.  In this case, a UTF Grid and Tile Layer are grouped.  Notice that the layers show as one in the layer selector control.</p>
-        <p ng-if=country>You hovered over: <b ng-bind=country></b></p>
-        <pre ng-bind="layers | json"></pre>
-    </div>
-</body>
-</html>

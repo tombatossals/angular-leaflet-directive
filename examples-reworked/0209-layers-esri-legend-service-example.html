@@ -3,15 +3,12 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <script src="http://maps.google.com/maps/api/js?v=3.2&sensor=false"></script>
     <script src="../bower_components/angular/angular.min.js"></script>
     <script src="../bower_components/leaflet/dist/leaflet.js"></script>
-    <script src="../bower_components/leaflet-plugins/layer/tile/Google.js"></script>
     <script src="../bower_components/esri-leaflet/dist/esri-leaflet.js"></script>
     <script src="../dist/angular-leaflet-directive.min.js"></script>
-    <link href='http://fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
-    
+
     <style>
 		.info {
 			padding: 20px;
@@ -67,7 +64,7 @@
 			font-size: 0.8em;
 		}
     </style>
-    
+
     <script>
         var app = angular.module("demoapp", ["leaflet-directive"]);
         app.controller("EsriLegendServiceController", [ "$scope", function($scope) {
@@ -92,10 +89,14 @@
                 },
                 layers: {
 					baselayers: {
-						googleTerrain: {
-						    name: 'Google Terrain',
-						    layerType: 'TERRAIN',
-						    type: 'google'
+                        mapbox_light: {
+                            name: 'Mapbox Light',
+                            url: 'http://api.tiles.mapbox.com/v4/{mapid}/{z}/{x}/{y}.png?access_token={apikey}',
+                            type: 'xyz',
+                            layerOptions: {
+                                apikey: 'pk.eyJ1IjoiYnVmYW51dm9scyIsImEiOiJLSURpX0pnIn0.2_9NrLz1U9bpwMQBhVk97Q',
+                                mapid: 'bufanuvols.lia22g09'
+                            }
 						}
                    },
                    overlays: {
@@ -103,7 +104,7 @@
 					    	name: "USA 2000-2010 Population Change",
 					        type: "dynamic",
 					        url: "http://services.arcgisonline.com/arcgis/rest/services/Demographics/USA_1990-2000_Population_Change/MapServer",
-					        visible: true,	        
+					        visible: true,
 					        layerOptions: {
 				                opacity: 0.85,
 				                attribution: "Copyright:© 2014 Esri, DeLorme, HERE, TomTom"
@@ -113,7 +114,7 @@
 					    	name: "USA Social Vulnerability Index",
 					        type: "dynamic",
 					        url: "http://services.arcgisonline.com/arcgis/rest/services/Demographics/USA_Social_Vulnerability_Index/MapServer",
-					        visible: false,	        
+					        visible: false,
 					        layerOptions: {
 				                opacity: 0.85,
 				                attribution: "Copyright:© 2014 Esri, FAO, NOAA"
@@ -121,19 +122,19 @@
 				    	},
                     },
                 },
-                
+
                 legend: {
                 	url: "http://services.arcgisonline.com/arcgis/rest/services/Demographics/USA_1990-2000_Population_Change/MapServer/legend?f=json",
                 	legendClass: "info legend",
 					position: "bottomleft",
                 },
-                
+
                 legendURL1: "http://services.arcgisonline.com/arcgis/rest/services/Demographics/USA_1990-2000_Population_Change/MapServer/legend?f=json",
                 legendURL2: "http://services.arcgisonline.com/arcgis/rest/services/Demographics/USA_Social_Vulnerability_Index/MapServer/legend?f=json",
-                
+
                 switchLegend: function() {
                 	$scope.layers.overlays.usa_social.visible = !$scope.layers.overlays.usa_social.visible;
-                	$scope.legend.url = 
+                	$scope.legend.url =
                 		$scope.legend.url == $scope.legendURL1? $scope.legendURL2:$scope.legendURL1;
                 }
             });
@@ -141,10 +142,10 @@
     </script>
 </head>
 <body ng-controller="EsriLegendServiceController">
+    <leaflet center="usa" layers="layers" markers="markers" height="480px" width="100%"
+        legend="legend" defaults="options"></leaflet>
     <h1>Esri ArcGIS Legend Service</h1>
     <p>Use the button to switch another Esri Legend.</p>
-    <leaflet center="usa" layers="layers" markers="markers" height="480px" width="640px" 
-    	legend="legend" defaults="options"></leaflet>
     <br/>
     <button ng-click="switchLegend()">Switch Legend</button>
 </body>
