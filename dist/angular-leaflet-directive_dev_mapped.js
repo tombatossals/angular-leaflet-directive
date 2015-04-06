@@ -2,6 +2,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 *  angular-leaflet-directive 0.7.11 2015-04-10
 =======
 *  angular-leaflet-directive 0.7.11 2015-03-31
@@ -12,6 +13,9 @@
 =======
 *  angular-leaflet-directive 0.7.11 2015-04-05
 >>>>>>> ability to disable watches in markers 100%
+=======
+*  angular-leaflet-directive 0.7.11 2015-04-06
+>>>>>>> typo on scope.markersWatchOptions it was markerWatchOptions
 *  angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps
 *  git: https://github.com/tombatossals/angular-leaflet-directive
 */
@@ -5152,9 +5156,9 @@ angular.module("leaflet-directive").directive('markersWatchOptions',
                 leafletScope = mapController.getLeafletScope();
 
 
-                if(isDefined(scope.markerWatchOptions)) {
-                    if(isObject(scope.markerWatchOptions))
-                        angular.extend(_markersWatchOptions, scope.markerWatchOptions);
+                if(isDefined(scope.markersWatchOptions)) {
+                    if(isObject(scope.markersWatchOptions))
+                        angular.extend(_markersWatchOptions, scope.markersWatchOptions);
                     else
                         $log.error(errorHeader + ' [markers] markersWatchOptions is not an object');
                     leafletScope.markersWatchOptions = _markersWatchOptions;
