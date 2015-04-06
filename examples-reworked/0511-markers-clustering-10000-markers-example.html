@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="../bower_components/leaflet.markercluster/dist/MarkerCluster.Default.css" />
     <script>
         var app = angular.module("demoapp", ["leaflet-directive"]);
-        app.controller("DemoController", [ "$scope", function($scope) {
+        app.controller("MarkersClustering10000MarkersController", [ "$scope", function($scope) {
             var addressPointsToMarkers = function(points) {
               return points.map(function(ap) {
                 return {
@@ -83,7 +83,7 @@
         }
     </style>
 </head>
-<body ng-controller="DemoController">
+<body ng-controller="MarkersClustering10000MarkersController">
     <leaflet center="center" markers="markers" layers="layers" watch-markers="no" event-broadcast="events"></leaflet>
     <h1>Marker clustering example (10000 markers)</h1>
     <div class="left">

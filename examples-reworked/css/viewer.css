@@ -123,17 +123,50 @@ input[type=range] {
     margin: 0 0 5px;
     color: #3D3938;
 }
+
 .legend {
-    color: #555555;
-    line-height: 18px;
     text-align: left;
-    max-height: 300px;
+    font: 14px/16px Arial, Helvetica, sans-serif;
+    background: rgba(255,255,255, 0.9);
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    border-radius: 5px;
+    padding: 6px 8px;
     width: 260px;
-    padding-bottom: 10px;
-    padding-top: 10px;
+    max-height: 300px;
     overflow: auto;
+    line-height: 18px;
+    color: #555;
 }
-.legend .outline {
+.legend i {
+    width: 16px;
+    height: 16px;
+    float: left;
+    margin-right: 8px;
+    opacity: 0.7;
+}
+
+.legend-esri {
+    text-align: left;
+    font: 14px/16px Arial, Helvetica, sans-serif;
+    background: rgba(255,255,255, 0.9);
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    border-radius: 5px;
+    padding: 6px 8px;
+    width: 260px;
+    max-height: 300px;
+    overflow: auto;
+    line-height: 18px;
+    color: #555;
+}
+.legend-esri i {
+    width: 16px;
+    height: 16px;
+    float: left;
+    margin-right: 8px;
+    opacity: 0.7;
+}
+
+.legend-esri .outline {
     border: 1px solid #CCCCCC;
     border-radius: 6px 6px 6px 6px;
     float: left;
@@ -142,18 +175,18 @@ input[type=range] {
     padding: 2px;
     width: 12px;
 }
-.legend .outline i {
+.legend-esri .outline i {
     border-radius: 4px 4px 4px 4px;
     float: left;
     height: 6px;
     width: 6px;
 }
-.legend .inline {
+.legend-esri .inline {
     clear: both;
     float: left;
     margin-right: 10px;
 }
-.legend .info-title {
+.legend-esri .info-title {
     clear: both;
     float: left;
     font-size: 0.9em;
@@ -161,8 +194,39 @@ input[type=range] {
     margin: 5px 0;
     width: 100%;
 }
-.legend .info-label {
+.legend-esri .info-label {
     float: left;
     width: 170px;
     font-size: 0.8em;
+}
+
+.angular-leaflet-control-layers {
+  position: absolute;
+  background: white;
+  z-index: 100;
+  left: 10px;
+  top: 100px;
+  width: 200px;
+  box-shadow: 1px 1px 5px #333;
+  padding: 5px;
+}
+
+.angular-leaflet-control-layers .lf-row label {
+  cursor: pointer;
+  width: 100%;
+}
+
+.angular-leaflet-control-layers .lf-row label .lf-icons {
+  float: right;
+}
+
+.angular-leaflet-control-layers .lf-row label .lf-icon {
+  cursor: pointer;
+  float: left;
+  margin-right: 5px;
+  padding-top: 2px;
+}
+
+.angular-leaflet-control-layers .lf-row label .lf-text {
+  float: left;
 }

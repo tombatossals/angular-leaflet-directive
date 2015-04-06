@@ -12,7 +12,7 @@
     <script>
         var app = angular.module("demoapp", ["leaflet-directive"]);
 
-        app.controller('DemoController', [ '$scope', function($scope) {
+        app.controller('MarkersGroupController', [ '$scope', function($scope) {
 
             var icons = {
                 blue: {
@@ -111,7 +111,7 @@
         }
     </style>
 </head>
-<body ng-controller="DemoController">
+<body ng-controller="MarkersGroupController">
 <div class="container">
     <div class="row">
         <h2>This is a map with two hidden marker groups</h2>

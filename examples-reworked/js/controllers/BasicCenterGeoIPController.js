@@ -15,7 +15,6 @@
                         zoom: 10
                     }
                     $scope.ip = res.ip;
-                    console.log(res);
                 })
             };
             $scope.searchIP("");

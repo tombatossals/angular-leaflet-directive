@@ -6,10 +6,9 @@
     <script src="../bower_components/leaflet-plugins/layer/Marker.Rotate.js"></script>
     <script src="../dist/angular-leaflet-directive.min.js"></script>
     <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
-    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
     <script>
         var app = angular.module("demoapp", ["leaflet-directive"]);
-        app.controller('DemoController', [ '$scope', function($scope) {
+        app.controller('MarkersRotationController', [ '$scope', function($scope) {
             var markers = {
                     m1: {
                         lat: 41.95,
@@ -52,17 +51,9 @@
         } ]);
     </script>
   </head>
-  <body>
-    <div class="container">
-      <div ng-controller="DemoController">
-
-        <div class="row">
-          <h2>Setting Icon Rotation</h2>
-        </div>
-
-        <div class="row">
-          <leaflet center="chicago" markers="markers" height="480px" width="640px"></leaflet>
-        </div>
+  <body ng-controller="MarkersRotationController">
+      <leaflet center="chicago" markers="markers" height="480px" width="100%"></leaflet>
+      <h1>Changing Icon Rotation</h1>
     </div>
   </body>
 </html>

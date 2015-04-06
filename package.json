@@ -48,7 +48,8 @@
     "load-grunt-config": "^0.16.0",
     "lodash": "^3.6.0",
     "matchdep": "^0.3.0",
-    "protractor": "^2.0.0"
+    "protractor": "^2.0.0",
+    "q": "^1.2.0"
   },
   "scripts": {
     "test": "grunt travis --verbose",

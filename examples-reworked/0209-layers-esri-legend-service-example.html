@@ -21,7 +21,7 @@
 			margin: 0 0 5px;
 			color: #3D3938;
 		}
-		.legend {
+		.legend-esri {
 			color: #555555;
 			line-height: 18px;
 			max-height: 250px;
@@ -30,7 +30,7 @@
 			padding-top: 10px;
 			overflow: auto;
 		}
-		.legend .outline {
+		.legend-esri .outline {
 			border: 1px solid #CCCCCC;
 			border-radius: 6px 6px 6px 6px;
 			float: left;
@@ -39,18 +39,18 @@
 			padding: 2px;
 			width: 12px;
 		}
-		.legend .outline i {
+		.legend-esri .outline i {
 			border-radius: 4px 4px 4px 4px;
 			float: left;
 			height: 6px;
 			width: 6px;
 		}
-		.legend .inline {
+		.legend-esri .inline {
 			clear: both;
 			float: left;
 			margin-right: 10px;
 		}
-		.legend .info-title {
+		.legend-esri .info-title {
 			clear: both;
 			float: left;
 			font-size: 0.9em;
@@ -58,7 +58,7 @@
 			margin: 5px 0;
 			width: 100%;
 		}
-		.legend .info-label {
+		.legend-esri .info-label {
 			float: left;
 			width: 170px;
 			font-size: 0.8em;
@@ -67,7 +67,7 @@
 
     <script>
         var app = angular.module("demoapp", ["leaflet-directive"]);
-        app.controller("EsriLegendServiceController", [ "$scope", function($scope) {
+        app.controller("LayersEsriLegendServiceController", [ "$scope", function($scope) {
             angular.extend($scope, {
             	options: {
             		controls: {
@@ -125,7 +125,7 @@
 
                 legend: {
                 	url: "http://services.arcgisonline.com/arcgis/rest/services/Demographics/USA_1990-2000_Population_Change/MapServer/legend?f=json",
-                	legendClass: "info legend",
+                	legendClass: "info legend-esri",
 					position: "bottomleft",
                 },
 
@@ -141,7 +141,7 @@
         }]);
     </script>
 </head>
-<body ng-controller="EsriLegendServiceController">
+<body ng-controller="LayersEsriLegendServiceController">
     <leaflet center="usa" layers="layers" markers="markers" height="480px" width="100%"
         legend="legend" defaults="options"></leaflet>
     <h1>Esri ArcGIS Legend Service</h1>

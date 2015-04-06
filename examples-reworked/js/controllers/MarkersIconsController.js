@@ -1,14 +1,4 @@
-<!DOCTYPE html>
-<html ng-app="demoapp">
-  <head>
-    <script src="../bower_components/angular/angular.min.js"></script>
-    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
-    <script src="../dist/angular-leaflet-directive.min.js"></script>
-    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
-    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
-    <script>
-        var app = angular.module("demoapp", ["leaflet-directive"]);
-        app.controller('DemoController', [ '$scope', function($scope) {
+        app.controller('MarkersIconsController', [ '$scope', function($scope) {
             var local_icons = {
                 defaultIcon: {},
                 leafIcon: {
@@ -36,7 +26,6 @@
                     html: 'Using <strong>Bold text as an icon</strong>:'
                 }
             }
-
             angular.extend($scope, {
                 chicago: {
                     lat: 41.85,
@@ -53,35 +42,8 @@
                     },
                 }
             });
-
             $scope.changeIcon = function(iconType) {
                 $scope.markers.m1.icon = local_icons[iconType];
                 $scope.markers.m1.message = "I'm a static marker with " + iconType;
             };
-
         } ]);
-    </script>
-  </head>
-  <body>
-    <div class="container">
-      <div ng-controller="DemoController">
-
-        <div class="row">
-          <h2>Changing the marker icons</h2>
-        </div>
-
-        <div class="row">
-          <div class="btn-group">
-            <button type="button" ng-click="changeIcon('defaultIcon')" class="btn btn-default">default</button>
-            <button type="button" ng-click="changeIcon('leafIcon')" class="btn btn-default">green leaf</button>
-            <button type="button" ng-click="changeIcon('orangeLeafIcon')" class="btn btn-default">orange leaf</button>
-            <button type="button" ng-click="changeIcon('divIcon')" class="btn btn-default">div</button>
-          </div>
-        </div>
-        <br />
-        <div class="row">
-          <leaflet center="chicago" markers="markers" height="480px" width="640px"></leaflet>
-        </div>
-    </div>
-  </body>
-</html>

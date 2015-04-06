@@ -1,20 +1,9 @@
-<!DOCTYPE html>
-<html ng-app="demoapp">
-  <head>
-    <script src="../bower_components/angular/angular.min.js"></script>
-    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
-    <script src="../dist/angular-leaflet-directive.min.js"></script>
-    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
-    <script>
-        var app = angular.module("demoapp", ["leaflet-directive"]);
-        app.controller("DemoController", [ "$scope", "leafletEvents", function($scope, leafletEvents) {
-
+        app.controller("MarkersEventsController", [ "$scope", "leafletEvents", function($scope, leafletEvents) {
             $scope.center = {
                 lat: 51.505,
                 lng: -0.09,
                 zoom: 8
             };
-
             $scope.markers = {
                 london: {
                     lat: 51.505,
@@ -24,13 +13,11 @@
                     focus: true
                 }
             }
-
             $scope.events = {
                 markers: {
                     enable: leafletEvents.getAvailableMarkerEvents(),
                 }
             };
-
             $scope.eventDetected = "No events yet...";
             var markerEvents = leafletEvents.getAvailableMarkerEvents();
             for (var k in markerEvents){
@@ -40,13 +27,3 @@
                 });
             }
         }]);
-    </script>
-  </head>
-  <body ng-controller="DemoController">
-    <h1>Marker Events example</h1>
-    <ul ng-cloak>
-        <li><strong ng-bind="eventDetected"></strong> event caught in listener.</li>
-    </ul>
-    <leaflet event-broadcast="events" center="center" markers="markers" width="640px" height="400px"></leaflet>
-  </body>
-</html>

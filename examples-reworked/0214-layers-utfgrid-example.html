@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
     <script>
         var app = angular.module("demoapp", ["leaflet-directive"]);
-        app.controller("DemoController", [ "$scope", function($scope) {
+        app.controller("LayersUTFGridController", [ "$scope", function($scope) {
             angular.extend($scope, {
                 center: {
                     lat: 0,
@@ -49,30 +49,13 @@
             });
         }]);
     </script>
-    <style>
-        html,body {
-            height: 98%;
-        }
-        .angular-leaflet-map {
-            height: 60%;
-        }
-        .left, .right {
-            float: left;
-            width: 40%;
-            height: 100%;
-            padding-right: 1em;
-        }
     </style>
 </head>
-<body ng-controller="DemoController">
-    <div class="left">
-        <leaflet center="center" layers="layers"></leaflet>
-        <span><img ng-src="{{flag}}"><h1>{{interactivity}}</h1></span>
-    </div>
-    <div class="right">
-        <h1>Baselayer with UTFGrid interactivity in Overlay</h1>
-        <p>You can add UTFGrid intactivity in overlays to a baselayer, which will show in the layer selector in the top right corner, defining <strong>layers</strong> like this.</p>
-        <pre ng-bind="layers | json"></pre>
-    </div>
+<body ng-controller="LayersUTFGridController">
+    <leaflet center="center" layers="layers" width="100%" height="480px"></leaflet>
+    <h1>Baselayer with UTFGrid interactivity in Overlay</h1>
+    <p>You can add UTFGrid intactivity in overlays to a baselayer, which will show in the layer selector in the top right corner, defining <strong>layers</strong> like this.</p>
+    <p><img ng-src="{{flag}}"> {{interactivity}}</p>
+    <pre ng-bind="layers | json"></pre>
 </body>
 </html>

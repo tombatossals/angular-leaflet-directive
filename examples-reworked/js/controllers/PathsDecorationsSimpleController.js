@@ -1,14 +1,4 @@
-<!DOCTYPE html>
-<html ng-app="demoapp">
-  <head>
-    <script src="../bower_components/angular/angular.min.js"></script>
-    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
-    <script src="../bower_components/Leaflet.PolylineDecorator/leaflet.polylineDecorator.min.js"></script>
-    <script src="../dist/angular-leaflet-directive.min.js"></script>
-    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
-    <script>
-        var app = angular.module("demoapp", ["leaflet-directive"]);
-        app.controller('DemoController', [ '$scope', function($scope) {
+        app.controller('PathsDecorationsSimpleController', [ '$scope', function($scope) {
             angular.extend($scope, {
                 london: {
                     lat: 51.505,
@@ -25,7 +15,6 @@
                     }
                 }
             });
-
             $scope.changePattern = function(type) {
                 if (type === 'dot') {
                     $scope.decorations.markers.patterns = [ {offset: 0, repeat: 10, symbol: L.Symbol.dash({pixelSize: 0})} ];
@@ -44,14 +33,3 @@
                 }
             };
         } ]);
-
-    </script>
-  </head>
-  <body ng-controller="DemoController">
-    <button ng-click="changePattern('slash')">Slash pattern</button>
-    <button ng-click="changePattern('dot')">Dot pattern</button>
-    <button ng-click="changePattern('slashdot')">Slashdot pattern</button>
-    <button ng-click="changePattern('arrow')">Arrow pattern</button>
-    <leaflet center="london" decorations="decorations" height="480px" width="640px"></leaflet>
-  </body>
-</html>

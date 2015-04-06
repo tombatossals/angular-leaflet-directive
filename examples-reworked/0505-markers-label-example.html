@@ -12,7 +12,7 @@
     <![endif]-->
     <script>
         var app = angular.module("demoapp", ["leaflet-directive"]);
-        app.controller('DemoController', [ '$scope', function($scope) {
+        app.controller('MarkersLabelController', [ '$scope', function($scope) {
             angular.extend($scope, {
                 london: {
                     lat: 51.505,
@@ -59,7 +59,7 @@
         } ]);
     </script>
   </head>
-  <body ng-controller="DemoController">
+  <body ng-controller="MarkersLabelController">
       <leaflet center="london" markers="markers" height="480px" width="640px">
       </leaflet>
   </body>

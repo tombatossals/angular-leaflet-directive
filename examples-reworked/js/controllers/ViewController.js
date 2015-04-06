@@ -1,4 +1,4 @@
-        app.controller('DemoController', [ '$scope', function($scope) {
+        app.controller('MarkersLabelController', [ '$scope', function($scope) {
             angular.extend($scope, {
                 london: {
                     lat: 51.505,

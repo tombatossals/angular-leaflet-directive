@@ -10,7 +10,6 @@ var app = angular.module('webapp');
                 center: {}
             });
         }]);
-
         app.controller('BasicCenterAutodiscoverController', [ '$scope', function($scope) {
             angular.extend($scope, {
                 center: {
@@ -18,7 +17,6 @@ var app = angular.module('webapp');
                 }
             });
        }]);
-
         app.controller('BasicCenterController', [ '$scope', function($scope) {
             angular.extend($scope, {
                 london: {
@@ -28,7 +26,6 @@ var app = angular.module('webapp');
                 }
             });
        }]);
-
         app.controller('BasicCenterGeoIPController', [ '$scope', '$http', function($scope, $http) {
             angular.extend($scope, {
                 center: {
@@ -40,19 +37,16 @@ var app = angular.module('webapp');
             $scope.searchIP = function(ip) {
                 var url = "http://freegeoip.net/json/" + ip;
                 $http.get(url).success(function(res) {
-                    console.log(res);
                     $scope.center = {
                         lat: res.latitude,
                         lng: res.longitude,
                         zoom: 10
                     }
                     $scope.ip = res.ip;
-                    console.log(res);
                 })
             };
             $scope.searchIP("");
        }]);
-
         app.controller('BasicCenterUrlHashController', [ '$scope', '$location', function($scope, $location) {
             angular.extend($scope, {
                 london: {
@@ -69,7 +63,6 @@ var app = angular.module('webapp');
                 $location.search({ c: centerHash });
             }
         }]);
-
         app.controller('BasicCustomParametersController', [ '$scope', function($scope) {
             angular.extend($scope, {
                 london: {
@@ -89,11 +82,26 @@ var app = angular.module('webapp');
                 }
             });
         }]);
-
         app.controller("BasicFirstController", [ "$scope", function($scope) {
             // Nothing here!
         }]);
-
+        app.controller('BasicLegendController', [ '$scope', function($scope) {
+            angular.extend($scope, {
+                london: {
+                    lat: 51.505,
+                    lng: -0.09,
+                    zoom: 12
+                },
+                legend: {
+                    position: 'bottomleft',
+                    colors: [ '#ff0000', '#28c9ff', '#0000ff', '#ecf386' ],
+                    labels: [ 'National Cycle Route', 'Regional Cycle Route', 'Local Cycle Network', 'Cycleway' ]
+                },
+                defaults: {
+                    tileLayer: "http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png"
+                }
+            });
+        } ]);
         app.controller('BasicMapWithoutAnimationsController', [ '$scope', function($scope) {
             angular.extend($scope, {
                 london: {
@@ -114,7 +122,6 @@ var app = angular.module('webapp');
                 }
             });
         } ]);
-
           app.controller("BasicMaxBoundsController", [ "$scope", "leafletData", function($scope, leafletData) {
             $scope.regions = {
                 london: {
@@ -152,7 +159,41 @@ var app = angular.module('webapp');
                 maxbounds: $scope.regions.london
             });
         } ]);
-
+        app.controller("BasicMaxBoundsPadController", [ "$scope", "leafletBoundsHelpers", function($scope, leafletBoundsHelpers) {
+            var maxbounds = leafletBoundsHelpers.createBoundsFromArray([
+                [ 37.8866, -79.4877 ],
+                [ 39.7230, -74.9863 ]
+            ]);
+            $scope.maxBoundsPad = maxbounds.pad = 1;
+            angular.extend($scope, {
+                bounds: maxbounds,
+                center: {},
+                layers: {
+                    baselayers: {
+                        xyz: {
+                            name: 'OpenStreetMap (XYZ)',
+                            url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                            type: 'xyz'
+                        }
+                    },
+                    overlays: {}
+                },
+                markers: {
+                    northeast: {
+                        lat: 39.7230,
+                        lng: -74.9863,
+                        focus: true,
+                        title: "Northeast",
+                    },
+                    southwest: {
+                        lat: 37.8866,
+                        lng: -79.4877,
+                        title: "Southwest",
+                    }
+                },
+                maxbounds: maxbounds
+            });
+        }]);
         app.controller('BasicTilesController', [ '$scope', function($scope) {
             var tilesDict = {
                 openstreetmap: {
@@ -198,7 +239,6 @@ var app = angular.module('webapp');
                 $scope.tiles = tilesDict[tiles];
             };
         } ]);
-
         app.controller('BasicTilesZoomChangerController', [ "$scope", function($scope) {
             angular.extend($scope, {
                 london: {
@@ -216,45 +256,38 @@ var app = angular.module('webapp');
                         : "http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
             });
         } ]);
-
-        app.controller("DemoController", [ "$scope", function($scope) {
+        app.controller("ControlsDrawController", [ "$scope", "leafletData", function($scope, leafletData) {
             angular.extend($scope, {
-                center: {
-                    lat: 0,
-                    lng: 0,
-                    zoom: 1
+                london: {
+                    lat: 51.505,
+                    lng: -0.09,
+                    zoom: 4
                 },
-                layers: {
-                    baselayers: {
-                        xyz: {
-                            name: 'OpenStreetMap',
-                            url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                            type: 'xyz'
-                        }
-                    },
-                    overlays: {
-                        demosutfgrid: {
-                            name: 'UTFGrid Interactivity',
-                            type: 'utfGrid',
-                            url: 'http://{s}.tiles.mapbox.com/v3/mapbox.geography-class/{z}/{x}/{y}.grid.json?callback={cb}',
-                            visible: true
-                        }
-                    }
+                controls: {
+                    draw: {}
                 }
-            });
-            $scope.interactivity = "";
-            $scope.flag = "";
-            $scope.$on('leafletDirectiveMap.utfgridMouseover', function(event, leafletEvent) {
-                // the UTFGrid information is on leafletEvent.data
-                $scope.interactivity = leafletEvent.data.admin;
-                $scope.flag = "data:image/png;base64," + leafletEvent.data.flag_png;
-            });
-            $scope.$on('leafletDirectiveMap.utfgridMouseout', function(event, leafletEvent) {
-                $scope.interactivity = "";
-                $scope.flag = "";
-            });
-        }]);
-
+           });
+           leafletData.getMap().then(function(map) {
+              var drawnItems = $scope.controls.edit.featureGroup;
+              map.on('draw:created', function (e) {
+                var layer = e.layer;
+                drawnItems.addLayer(layer);
+                console.log(JSON.stringify(layer.toGeoJSON()));
+              });
+           });
+       }]);
+        app.controller("ControlsScaleController", [ "$scope", function($scope) {
+            angular.extend($scope, {
+                london: {
+                    lat: 51.505,
+                    lng: -0.09,
+                    zoom: 4
+                },
+                controls: {
+                    scale: true
+                }
+           });
+       }]);
         app.controller('DynamicOverlaysController', [ '$scope', function($scope) {
             angular.extend($scope, {
                 ripoll: {
@@ -356,77 +389,77 @@ var app = angular.module('webapp');
                 }
             });
         } ]);
-
-        app.controller("EsriLegendServiceController", [ "$scope", function($scope) {
-            angular.extend($scope, {
-            	options: {
-            		controls: {
-            			layers: {
-            				visible: false
-            			}
-            		}
-            	},
-                usa: {
-	            	lat: 39.931486,
-	                lng: -101.406250,
-	                zoom: 3
-	            },
-                markers: {
-                    m1: {
-                        lat: 39.931486,
-	                	lng: -101.406250,
+      app.controller("GeoJSONCenterController", [ '$scope', '$http', 'leafletData', function($scope, $http, leafletData) {
+        angular.extend($scope, {
+            japan: {
+                lat: 27.26,
+                lng: 78.86,
+                zoom: 2
+            },
+            defaults: {
+                scrollWheelZoom: false
+            }
+        });
+        $scope.centerJSON = function() {
+            leafletData.getMap().then(function(map) {
+                var latlngs = [];
+                for (var i in $scope.geojson.data.features[0].geometry.coordinates) {
+                    var coord = $scope.geojson.data.features[0].geometry.coordinates[i];
+                    for (var j in coord) {
+                        var points = coord[j];
+                        for (var k in points) {
+                            latlngs.push(L.GeoJSON.coordsToLatLng(points[k]));
+                        }
                     }
-                },
-                layers: {
-					baselayers: {
-                        mapbox_light: {
-                            name: 'Mapbox Light',
-                            url: 'http://api.tiles.mapbox.com/v4/{mapid}/{z}/{x}/{y}.png?access_token={apikey}',
-                            type: 'xyz',
-                            layerOptions: {
-                                apikey: 'pk.eyJ1IjoiYnVmYW51dm9scyIsImEiOiJLSURpX0pnIn0.2_9NrLz1U9bpwMQBhVk97Q',
-                                mapid: 'bufanuvols.lia22g09'
-                            }
-						}
-                   },
-                   overlays: {
-				    	usa_pop: {
-					    	name: "USA 2000-2010 Population Change",
-					        type: "dynamic",
-					        url: "http://services.arcgisonline.com/arcgis/rest/services/Demographics/USA_1990-2000_Population_Change/MapServer",
-					        visible: true,
-					        layerOptions: {
-				                opacity: 0.85,
-				                attribution: "Copyright:© 2014 Esri, DeLorme, HERE, TomTom"
-					        }
-				    	},
-				    	usa_social: {
-					    	name: "USA Social Vulnerability Index",
-					        type: "dynamic",
-					        url: "http://services.arcgisonline.com/arcgis/rest/services/Demographics/USA_Social_Vulnerability_Index/MapServer",
-					        visible: false,
-					        layerOptions: {
-				                opacity: 0.85,
-				                attribution: "Copyright:© 2014 Esri, FAO, NOAA"
-					        }
-				    	},
-                    },
-                },
-                legend: {
-                	url: "http://services.arcgisonline.com/arcgis/rest/services/Demographics/USA_1990-2000_Population_Change/MapServer/legend?f=json",
-                	legendClass: "info legend",
-					position: "bottomleft",
-                },
-                legendURL1: "http://services.arcgisonline.com/arcgis/rest/services/Demographics/USA_1990-2000_Population_Change/MapServer/legend?f=json",
-                legendURL2: "http://services.arcgisonline.com/arcgis/rest/services/Demographics/USA_Social_Vulnerability_Index/MapServer/legend?f=json",
-                switchLegend: function() {
-                	$scope.layers.overlays.usa_social.visible = !$scope.layers.overlays.usa_social.visible;
-                	$scope.legend.url =
-                		$scope.legend.url == $scope.legendURL1? $scope.legendURL2:$scope.legendURL1;
+                }
+                map.fitBounds(latlngs);
+            });
+        };
+        // Get the countries geojson data from a JSON
+        $http.get("json/JPN.geo.json").success(function(data, status) {
+            angular.extend($scope, {
+                geojson: {
+                    data: data,
+                    style: {
+                        fillColor: "green",
+                        weight: 2,
+                        opacity: 1,
+                        color: 'white',
+                        dashArray: '3',
+                        fillOpacity: 0.7
+                    }
                 }
             });
-        }]);
-
+        });
+      } ]);
+      app.controller("GeoJSONController", [ '$scope', '$http', 'leafletData', function($scope, $http, leafletData) {
+        angular.extend($scope, {
+            japan: {
+                lat: 38.51,
+                lng: 139,
+                zoom: 4
+            },
+            defaults: {
+                scrollWheelZoom: false
+            }
+        });
+        // Get the countries geojson data from a JSON
+        $http.get("json/JPN.geo.json").success(function(data, status) {
+            angular.extend($scope, {
+                geojson: {
+                    data: data,
+                    style: {
+                        fillColor: "green",
+                        weight: 2,
+                        opacity: 1,
+                        color: 'white',
+                        dashArray: '3',
+                        fillOpacity: 0.7
+                    }
+                }
+            });
+        });
+      } ]);
         app.controller("GoogleMapsController", [ "$scope", function($scope) {
             angular.extend($scope, {
                 berlin: {
@@ -461,7 +494,6 @@ var app = angular.module('webapp');
                 }
             });
         }]);
-
         app.controller("GoogleMapsFullsizeController", [ "$scope", "$element", function($scope, $element) {
             angular.extend($scope, {
                 berlin: {
@@ -496,39 +528,6 @@ var app = angular.module('webapp');
                 }
             });
         }]);
-
-        app.controller("LayerOverlaysSimpleController", [ "$scope", function($scope) {
-            angular.extend($scope, {
-                center: {
-                    lat: 39,
-                    lng: -100,
-                    zoom: 4
-                },
-                layers: {
-                    baselayers: {
-                        xyz: {
-                            name: 'OpenStreetMap (XYZ)',
-                            url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                            type: 'xyz'
-                        }
-                    },
-                    overlays: {
-                        wms: {
-                            name: 'EEUU States (WMS)',
-                            type: 'wms',
-                            visible: true,
-                            url: 'http://suite.opengeo.org/geoserver/usa/wms',
-                            layerParams: {
-                                layers: 'usa:states',
-                                format: 'image/png',
-                                transparent: true
-                            }
-                        }
-                    }
-                }
-            });
-        }]);
-
         app.controller("LayersBingMapsController", [ "$scope", function($scope) {
             angular.extend($scope, {
                 bastia: {
@@ -572,7 +571,6 @@ var app = angular.module('webapp');
                 }
             });
         }]);
-
         app.controller("LayersDynamicAdditionController", [ "$scope", function($scope) {
             $scope.definedLayers = {
                 mapbox_wheat: {
@@ -638,7 +636,6 @@ var app = angular.module('webapp');
                 }
             };
         }]);
-
         app.controller("LayersEsriDynamicLayerController", [ "$scope", function($scope) {
             angular.extend($scope, {
                 bogota: {
@@ -680,7 +677,75 @@ var app = angular.module('webapp');
                 },
             });
         }]);
-
+        app.controller("LayersEsriLegendServiceController", [ "$scope", function($scope) {
+            angular.extend($scope, {
+            	options: {
+            		controls: {
+            			layers: {
+            				visible: false
+            			}
+            		}
+            	},
+                usa: {
+	            	lat: 39.931486,
+	                lng: -101.406250,
+	                zoom: 3
+	            },
+                markers: {
+                    m1: {
+                        lat: 39.931486,
+	                	lng: -101.406250,
+                    }
+                },
+                layers: {
+					baselayers: {
+                        mapbox_light: {
+                            name: 'Mapbox Light',
+                            url: 'http://api.tiles.mapbox.com/v4/{mapid}/{z}/{x}/{y}.png?access_token={apikey}',
+                            type: 'xyz',
+                            layerOptions: {
+                                apikey: 'pk.eyJ1IjoiYnVmYW51dm9scyIsImEiOiJLSURpX0pnIn0.2_9NrLz1U9bpwMQBhVk97Q',
+                                mapid: 'bufanuvols.lia22g09'
+                            }
+						}
+                   },
+                   overlays: {
+				    	usa_pop: {
+					    	name: "USA 2000-2010 Population Change",
+					        type: "dynamic",
+					        url: "http://services.arcgisonline.com/arcgis/rest/services/Demographics/USA_1990-2000_Population_Change/MapServer",
+					        visible: true,
+					        layerOptions: {
+				                opacity: 0.85,
+				                attribution: "Copyright:© 2014 Esri, DeLorme, HERE, TomTom"
+					        }
+				    	},
+				    	usa_social: {
+					    	name: "USA Social Vulnerability Index",
+					        type: "dynamic",
+					        url: "http://services.arcgisonline.com/arcgis/rest/services/Demographics/USA_Social_Vulnerability_Index/MapServer",
+					        visible: false,
+					        layerOptions: {
+				                opacity: 0.85,
+				                attribution: "Copyright:© 2014 Esri, FAO, NOAA"
+					        }
+				    	},
+                    },
+                },
+                legend: {
+                	url: "http://services.arcgisonline.com/arcgis/rest/services/Demographics/USA_1990-2000_Population_Change/MapServer/legend?f=json",
+                	legendClass: "info legend-esri",
+					position: "bottomleft",
+                },
+                legendURL1: "http://services.arcgisonline.com/arcgis/rest/services/Demographics/USA_1990-2000_Population_Change/MapServer/legend?f=json",
+                legendURL2: "http://services.arcgisonline.com/arcgis/rest/services/Demographics/USA_Social_Vulnerability_Index/MapServer/legend?f=json",
+                switchLegend: function() {
+                	$scope.layers.overlays.usa_social.visible = !$scope.layers.overlays.usa_social.visible;
+                	$scope.legend.url =
+                		$scope.legend.url == $scope.legendURL1? $scope.legendURL2:$scope.legendURL1;
+                }
+            });
+        }]);
         app.controller("LayersHideBaselayerOnSelectorController", [ "$scope", function($scope) {
             angular.extend($scope, {
                 center: {
@@ -715,7 +780,6 @@ var app = angular.module('webapp');
                 }
             });
         }]);
-
         app.controller("LayersHideOverlaysOnSelectorController", [ "$scope", function($scope) {
             angular.extend($scope, {
                 center: {
@@ -752,7 +816,6 @@ var app = angular.module('webapp');
                 }
             });
         }]);
-
         app.controller("LayersImageOverlayController", [ "$scope", "$log", "leafletData", "leafletBoundsHelpers", function($scope, $log, leafletData, leafletBoundsHelpers) {
             var maxBounds = leafletBoundsHelpers.createBoundsFromArray([[-540, -960], [540, 960]]);
             angular.extend($scope, {
@@ -783,7 +846,6 @@ var app = angular.module('webapp');
                 }
             });
        }]);
-
         app.controller("LayersLayergroupSimpleController", [ "$scope", function($scope) {
             angular.extend($scope, {
                 center: {
@@ -836,7 +898,37 @@ var app = angular.module('webapp');
                 $scope.country = leafletEvent.data.name;
             });
         }]);
-
+        app.controller("LayersOverlaysSimpleController", [ "$scope", function($scope) {
+            angular.extend($scope, {
+                center: {
+                    lat: 39,
+                    lng: -100,
+                    zoom: 4
+                },
+                layers: {
+                    baselayers: {
+                        xyz: {
+                            name: 'OpenStreetMap (XYZ)',
+                            url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                            type: 'xyz'
+                        }
+                    },
+                    overlays: {
+                        wms: {
+                            name: 'EEUU States (WMS)',
+                            type: 'wms',
+                            visible: true,
+                            url: 'http://suite.opengeo.org/geoserver/usa/wms',
+                            layerParams: {
+                                layers: 'usa:states',
+                                format: 'image/png',
+                                transparent: true
+                            }
+                        }
+                    }
+                }
+            });
+        }]);
         app.controller("LayersSimpleController", [ "$scope", function($scope) {
             angular.extend($scope, {
                 center: {
@@ -870,7 +962,43 @@ var app = angular.module('webapp');
                 }
             });
         }]);
-
+        app.controller("LayersUTFGridController", [ "$scope", function($scope) {
+            angular.extend($scope, {
+                center: {
+                    lat: 0,
+                    lng: 0,
+                    zoom: 1
+                },
+                layers: {
+                    baselayers: {
+                        xyz: {
+                            name: 'OpenStreetMap',
+                            url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                            type: 'xyz'
+                        }
+                    },
+                    overlays: {
+                        demosutfgrid: {
+                            name: 'UTFGrid Interactivity',
+                            type: 'utfGrid',
+                            url: 'http://{s}.tiles.mapbox.com/v3/mapbox.geography-class/{z}/{x}/{y}.grid.json?callback={cb}',
+                            visible: true
+                        }
+                    }
+                }
+            });
+            $scope.interactivity = "";
+            $scope.flag = "";
+            $scope.$on('leafletDirectiveMap.utfgridMouseover', function(event, leafletEvent) {
+                // the UTFGrid information is on leafletEvent.data
+                $scope.interactivity = leafletEvent.data.admin;
+                $scope.flag = "data:image/png;base64," + leafletEvent.data.flag_png;
+            });
+            $scope.$on('leafletDirectiveMap.utfgridMouseout', function(event, leafletEvent) {
+                $scope.interactivity = "";
+                $scope.flag = "";
+            });
+        }]);
         app.controller("LayersWebGLHeatmapController", [ "$scope", function($scope) {
             var dataPoints = [
                 [44.651144316,-63.586260171, 0.5],
@@ -900,7 +1028,619 @@ var app = angular.module('webapp');
                 }
             });
         }]);
-
+        app.controller('MarkersAddRemoveController', [ '$scope', function($scope) {
+            angular.extend($scope, {
+                london: {
+                    lat: 51.505,
+                    lng: -0.09,
+                    zoom: 8
+                },
+                markers: {}
+            });
+            $scope.addMarkers = function() {
+                angular.extend($scope, {
+                    markers: {
+                        m1: {
+                            lat: 51.505,
+                            lng: -0.09,
+                            message: "I'm a static marker",
+                        },
+                        m2: {
+                            lat: 51,
+                            lng: 0,
+                            focus: true,
+                            message: "Hey, drag me if you want",
+                            draggable: true
+                        }
+                    }
+                });
+            };
+            $scope.removeMarkers = function() {
+                $scope.markers = {};
+            }
+            $scope.addMarkers();
+        } ]);
+        app.controller('MarkersChangeOpacityController', [ '$scope', function($scope) {
+            angular.extend($scope, {
+                chicago: {
+                    lat: 41.85,
+                    lng: -87.65,
+                    zoom: 8
+                },
+                markers: {
+                    m1: {
+                        lat: 41.85,
+                        lng: -87.65,
+                        message: "I'm a static marker with defaultIcon",
+                        focus: false,
+                        opacity: 1
+                    },
+                }
+            });
+        } ]);
+        app.controller("MarkersClustering10000MarkersController", [ "$scope", function($scope) {
+            var addressPointsToMarkers = function(points) {
+              return points.map(function(ap) {
+                return {
+                  layer: 'realworld',
+                  lat: ap[0],
+                  lng: ap[1]
+                };
+              });
+            };
+            angular.extend($scope, {
+                center: {
+                    lat: -37.9212959167,
+                    lng: 175.5604435167,
+                    zoom: 11
+                },
+                events: {
+                    map: {
+                        enable: ['moveend', 'popupopen'],
+                        logic: 'emit'
+                    },
+                    marker: {
+                        enable: [],
+                        logic: 'emit'
+                    }
+                },
+                markers: addressPointsToMarkers(addressPoints),
+                layers: {
+                    baselayers: {
+                        osm: {
+                            name: 'OpenStreetMap',
+                            type: 'xyz',
+                            url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                            layerOptions: {
+                                subdomains: ['a', 'b', 'c'],
+                                attribution: '© OpenStreetMap contributors',
+                                continuousWorld: true
+                            }
+                        }
+                    },
+                    overlays: {
+                        realworld: {
+                            name: "Real world data",
+                            type: "markercluster",
+                            visible: true,
+                            "layerOptions": {
+                                "chunkedLoading": true,
+                                "showCoverageOnHover": false,
+                                "removeOutsideVisibleBounds": true
+                            }
+                        },
+                    }
+                }
+            });
+        }]);
+        app.controller("MarkersClusteringController", [ "$scope", function($scope) {
+            angular.extend($scope, {
+                center: {
+                    lat: 24.0391667,
+                    lng: 121.525,
+                    zoom: 6
+                },
+                markers: {
+                    taipei: {
+                        layer: "northTaiwan",
+                        lat: 25.0391667,
+                        lng: 121.525,
+                    },
+                    yangmei: {
+                        layer: "northTaiwan",
+                        lat: 24.9166667,
+                        lng: 121.1333333
+                    },
+                    hsinchu: {
+                        layer: "northTaiwan",
+                        lat: 24.8047222,
+                        lng: 120.9713889
+                    },
+                    miaoli: {
+                        layer: "northTaiwan",
+                        lat: 24.5588889,
+                        lng: 120.8219444
+                    },
+                    tainan: {
+                        layer: "southTaiwan",
+                        lat: 22.9933333,
+                        lng: 120.2036111
+                    },
+                    puzi: {
+                        layer: "southTaiwan",
+                        lat: 23.4611,
+                        lng: 120.242
+                    },
+                    kaohsiung: {
+                        layer: "southTaiwan",
+                        lat: 22.6252777778,
+                        lng: 120.3088888889
+                    },
+                    taitun: {
+                        layer: "southTaiwan",
+                        lat: 22.75,
+                        lng: 121.15
+                    }
+                },
+                layers: {
+                    baselayers: {
+                        mapbox_terrain: {
+                            name: 'Mapbox Terrain',
+                            url: 'http://api.tiles.mapbox.com/v4/{mapid}/{z}/{x}/{y}.png?access_token={apikey}',
+                            type: 'xyz',
+                            layerOptions: {
+                                apikey: 'pk.eyJ1IjoidG9tYmF0b3NzYWxzIiwiYSI6Imo3MWxyTHMifQ.TjXg_IV7ZYMHX6tqjMikPg',
+                                mapid: 'examples.map-i86nkdio'
+                            }
+                        }
+                    },
+                    overlays: {
+                        northTaiwan: {
+                            name: "North cities",
+                            type: "markercluster",
+                            visible: true
+                        },
+                        southTaiwan: {
+                            name: "South cities",
+                            type: "markercluster",
+                            visible: true
+                        }
+                    }
+                }
+            });
+        }]);
+        app.controller('MarkersClusteringWithoutOverlaysController', [ '$scope', function($scope) {
+            angular.extend($scope, {
+                london: {
+                    lat: 51.505,
+                    lng: -0.09,
+                    zoom: 8
+                },
+                markers: {
+                    stoke: {
+                        group: 'london',
+                        lat: 51.5615,
+                        lng: -0.0731,
+                        label: {
+                            message: "Stoke",
+                            options: {
+                                noHide: true
+                            }
+                        }
+                    },
+                    dalston: {
+                        group: 'london',
+                        lat: 51.545,
+                        lng: -0.070,
+                        label: {
+                            message: "Dalston",
+                            options: {
+                                noHide: true
+                            }
+                        }
+                    },
+                    wandsworth: {
+                        group: 'london',
+                        lat: 51.4644,
+                        lng:-0.1924,
+                        label: {
+                            message: "Wandsworth",
+                            options: {
+                                noHide: true
+                            }
+                        }
+                    },
+                    battersea: {
+                        group: 'london',
+                        lat: 51.4638,
+                        lng: -0.1677,
+                        label: {
+                            message: "Battersea",
+                            options: {
+                                noHide: true
+                            }
+                        }
+                    }
+                },
+            });
+        } ]);
+        app.controller("MarkersDelayedEventsController", ["$scope", "leafletEvents", function($scope, leafletEvents){
+            angular.extend($scope, {
+                london: {
+                    lat: 51.505,
+                    lng: -0.09,
+                    zoom: 8
+                },
+                markers: {}
+            });
+            $scope.addMarkers = function() {
+                angular.extend($scope, {
+                    markers: {
+                        m1: {
+                            lat: 51.505,
+                            lng: -0.09,
+                            message: "I'm a static marker",
+                        },
+                        m2: {
+                            lat: 51,
+                            lng: 0,
+                            focus: true,
+                            message: "Hey, drag me if you want",
+                            draggable: true
+                        }
+                    }
+                });
+            };
+            $scope.events = {
+                markers: {
+                    enable: leafletEvents.getAvailableMarkerEvents(),
+                }
+            };
+            $scope.eventDetected = "No events yet...";
+            var markerEvents = leafletEvents.getAvailableMarkerEvents();
+            for (var k in markerEvents){
+                var eventName = 'leafletDirectiveMarker.' + markerEvents[k];
+                $scope.$on(eventName, function(event, args){
+                    $scope.eventDetected = event.name;
+                });
+            }
+            $scope.removeMarkers = function() {
+                $scope.markers = {};
+            }
+            //$scope.addMarkers();
+        }]);
+        app.controller('MarkersEventsAddController', [ '$scope', function($scope) {
+            angular.extend($scope, {
+                london: {
+                    lat: 51.505,
+                    lng: -0.09,
+                    zoom: 8
+                },
+                events: {}
+            });
+            $scope.markers = new Array();
+            $scope.$on("leafletDirectiveMap.click", function(event, args){
+                var leafEvent = args.leafletEvent;
+                $scope.markers.push({
+                    lat: leafEvent.latlng.lat,
+                    lng: leafEvent.latlng.lng,
+                    message: "My Added Marker"
+                });
+            });
+        } ]);
+        app.controller("MarkersEventsController", [ "$scope", "leafletEvents", function($scope, leafletEvents) {
+            $scope.center = {
+                lat: 51.505,
+                lng: -0.09,
+                zoom: 8
+            };
+            $scope.markers = {
+                london: {
+                    lat: 51.505,
+                    lng: -0.09,
+                    draggable: true,
+                    message: "I'm a draggable marker",
+                    focus: true
+                }
+            }
+            $scope.events = {
+                markers: {
+                    enable: leafletEvents.getAvailableMarkerEvents(),
+                }
+            };
+            $scope.eventDetected = "No events yet...";
+            var markerEvents = leafletEvents.getAvailableMarkerEvents();
+            for (var k in markerEvents){
+                var eventName = 'leafletDirectiveMarker.' + markerEvents[k];
+                $scope.$on(eventName, function(event, args){
+                    $scope.eventDetected = event.name;
+                });
+            }
+        }]);
+        app.controller('MarkersGroupController', [ '$scope', function($scope) {
+            var icons = {
+                blue: {
+                    type: 'div',
+                    iconSize: [10, 10],
+                    className: 'blue',
+                    iconAnchor:  [5, 5]
+                },
+                red: {
+                    type: 'div',
+                    iconSize: [10, 10],
+                    className: 'red',
+                    iconAnchor:  [5, 5]
+                }
+            }
+            angular.extend($scope, {
+                london: {
+                    lat: 51.505,
+                    lng: -0.09,
+                    zoom: 11
+                },
+                layers: {
+                    baselayers: {
+                        openStreetMap: {
+                            name: 'OpenStreetMap',
+                            type: 'xyz',
+                            url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+                        }
+                    },
+                    overlays: {
+                        red: {
+                            type: 'group',
+                            name: 'red',
+                            visible: false
+                        },
+                        blue: {
+                            type: 'group',
+                            name: 'blue',
+                            visible: false
+                        }
+                    }
+                },
+                markers: {
+                    stoke: {
+                        layer: 'blue',
+                        lat: 51.5615,
+                        lng: -0.0731,
+                        icon: icons.blue
+                    },
+                    dalston: {
+                        layer: 'blue',
+                        lat: 51.545,
+                        lng: -0.070,
+                        icon: icons.blue
+                    },
+                    wandsworth: {
+                      layer: 'red',
+                        lat: 51.4644,
+                        lng:-0.1924,
+                        icon: icons.red
+                    },
+                    battersea: {
+                        layer: 'red',
+                        lat: 51.4638,
+                        lng: -0.1677,
+                        icon: icons.red
+                    }
+                },
+                toggleLayer: function(type)
+                {
+                    $scope.layers.overlays[type].visible = !$scope.layers.overlays[type].visible;
+                }
+            });
+        } ]);
+        app.controller('MarkersIconsController', [ '$scope', function($scope) {
+            var local_icons = {
+                defaultIcon: {},
+                leafIcon: {
+                    iconUrl: 'img/leaf-green.png',
+                    shadowUrl: 'img/leaf-shadow.png',
+                    iconSize:     [38, 95], // size of the icon
+                    shadowSize:   [50, 64], // size of the shadow
+                    iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+                    shadowAnchor: [4, 62],  // the same for the shadow
+                    popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+                },
+                orangeLeafIcon: {
+                    iconUrl: 'img/leaf-orange.png',
+                	shadowUrl: 'img/leaf-shadow.png',
+                	iconSize:     [38, 95],
+                    shadowSize:   [50, 64],
+                    iconAnchor:   [22, 94],
+                    shadowAnchor: [4, 62],
+                    popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+                },
+                divIcon: {
+                    type: 'div',
+                	iconSize: [200, 0],
+                	popupAnchor:  [0, 0],
+                    html: 'Using <strong>Bold text as an icon</strong>:'
+                }
+            }
+            angular.extend($scope, {
+                chicago: {
+                    lat: 41.85,
+                    lng: -87.65,
+                    zoom: 8
+                },
+                markers: {
+                    m1: {
+                        lat: 41.85,
+                        lng: -87.65,
+                        message: "I'm a static marker with defaultIcon",
+                        focus: false,
+                        icon: local_icons.defaultIcon,
+                    },
+                }
+            });
+            $scope.changeIcon = function(iconType) {
+                $scope.markers.m1.icon = local_icons[iconType];
+                $scope.markers.m1.message = "I'm a static marker with " + iconType;
+            };
+        } ]);
+        app.controller("MarkersModalMarkerClusterController", ['$scope', 'leafletData', function ($scope, leafletData) {
+            $scope.oneAtATime = false;
+            $scope.cancel = function () {
+                $modalInstance.dismiss('cancel');
+            };
+            var markers = [];
+            markers.push({
+                lat: 52.229676,
+                lng: 21.012229,
+                draggable: false,
+                group: 'markers'
+            });
+            markers.push({
+                lat: 52.219081,
+                lng: 21.025386,
+                draggable: false,
+                group: 'markers'
+            });
+            angular.extend($scope, {
+                defaults: {
+                    maxZoom: 18,
+                    minZoom: 0
+                },
+                layers: {
+                    baselayers: {
+                        osm: {
+                            name: 'OpenStreetMap',
+                            type: 'xyz',
+                            url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                            layerOptions: {
+                                subdomains: ['a', 'b', 'c'],
+                                attribution: '© OpenStreetMap contributors',
+                                continuousWorld: true
+                            }
+                        }
+                    }
+                },
+                center: {
+                    zoom: 10,
+                    lat: 52.229676,
+                    lng: 21.012229
+                },
+                markers: markers
+            });
+        }]);
+        app.controller('MarkersPopupController', [ '$scope', function($scope) {
+            angular.extend($scope, {
+                london: {
+                    lat: 51.505,
+                    lng: -0.09,
+                    zoom: 8
+                },
+                markers: {
+                    m1: {
+                        lat: 51.505,
+                        lng: -0.09,
+                        focus: true,
+                        draggable: false,
+                        message: "Hi there!",
+                        icon: {}
+                    }
+                },
+                iconA: {},
+                iconB: {
+                	iconUrl: 'img/leaf-orange.png',
+                	shadowUrl: 'img/leaf-shadow.png',
+                	iconSize:     [38, 95],
+                    shadowSize:   [50, 64],
+                    iconAnchor:   [22, 94],
+                    shadowAnchor: [4, 62]
+                },
+                iconC: {
+                    type: 'awesomeMarker',
+                    icon: 'tag',
+                    markerColor: 'red'
+                },
+                iconD: {
+                    type: 'makiMarker',
+                    icon: 'beer',
+                    color: '#f00',
+                    size: "l"
+                },
+                iconE: {
+                    type: 'extraMarker',
+                    icon: 'fa-star',
+                    color: '#f00',
+                    prefix: 'fa',
+                    shape: 'circle'
+                }
+            });
+            $scope.$on('leafletDirectiveMarker.click', function(e, args) {
+                // Args will contain the marker name and other relevant information
+                console.log("Leaflet Click");
+            });
+            $scope.$on('leafletDirectiveMarker.popupopen', function(e, args) {
+                // Args will contain the marker name and other relevant information
+                console.log("Leaflet Popup Open");
+            });
+            $scope.$on('leafletDirectiveMarker.popupclose', function(e, args) {
+                // Args will contain the marker name and other relevant information
+                console.log("Leaflet Popup Close");
+            });
+        } ]);
+        app.controller('MarkersRotationController', [ '$scope', function($scope) {
+            var markers = {
+                    m1: {
+                        lat: 41.95,
+                        lng: -87.65,
+                        message: "I'm a static marker at 0 degrees",
+                        focus: false,
+                        iconAngle: 0
+                    },
+                    m2: {
+                        lat: 41.85,
+                        lng: -87.95,
+                        message: "I'm a static marker at 270 degrees",
+                        focus: false,
+                        iconAngle: 270
+                    },
+                    m3: {
+                        lat: 41.85,
+                        lng: -87.05,
+                        message: "I'm a static marker at 90 degrees",
+                        focus: false,
+                        iconAngle: 90
+                    },
+                    m4: {
+                        lat: 41.35,
+                        lng: -87.65,
+                        message: "I'm a static marker at 180 degrees",
+                        focus: false,
+                        iconAngle: 180
+                    }
+                };
+            angular.extend($scope, {
+                chicago: {
+                    lat: 41.85,
+                    lng: -87.65,
+                    zoom: 8
+                },
+                markers: markers
+            });
+        } ]);
+        app.controller('MarkersSimpleController', [ '$scope', function($scope) {
+            angular.extend($scope, {
+                london: {
+                    lat: 51.505,
+                    lng: -0.09,
+                    zoom: 8
+                },
+                markers: {
+                    mainMarker: {
+                        lat: 51,
+                        lng: 0,
+                        focus: true,
+                        message: "Hey, drag me if you want",
+                        draggable: true
+                    }
+                }
+            });
+        } ]);
         app.controller("PathSimpleController", [ "$scope", function($scope) {
             angular.extend($scope, {
                 london: {
@@ -931,7 +1671,6 @@ var app = angular.module('webapp');
                 }
             });
         }]);
-
         app.controller('PathTypesController', [ '$scope', function($scope) {
             var europeCapitals = {
                 Madrid: {
@@ -1015,7 +1754,6 @@ var app = angular.module('webapp');
                 $scope.paths[shape] = pathsDict[shape];
             };
         } ]);
-
         app.controller('Paths3000ItemsController', ['$scope', 'leafletData', 'LocationDataService', function ($scope, leafletData, LocationDataService) {
             //map properties
             angular.extend($scope, {
@@ -1134,7 +1872,122 @@ var app = angular.module('webapp');
                 }
             };
         };
-
+            app.controller('PathsAdvancedController', [ '$scope', function($scope) {
+                $scope.addMarker = function() {
+                    var m_key = document.getElementById('new_mm_name').value;
+                    if ($scope.markers[m_key]) return;
+                    $scope.markers[m_key] = {
+                        lat: document.getElementById('new_mm_lat').value,
+                        lng: document.getElementById('new_mm_lng').value,
+                        draggable: true
+                    };
+                    $scope.paths.p1.latlngs.push($scope.markers[m_key]);
+                }
+                $scope.deleteMarker = function(m_key) {
+                    var marker = $scope.markers[m_key];
+                    for (var pkey in $scope.paths) {
+                        for (var j in $scope.paths[pkey].latlngs) {
+                            var p = $scope.paths[pkey].latlngs[j];
+                            if (p === marker) {
+                                $scope.paths[pkey].latlngs.splice(j, 1);
+                            }
+                        }
+                    }
+                    delete $scope.markers[m_key];
+                }
+                angular.extend($scope, {
+                    // set up map center
+                    cen: {
+                        lat: 53,
+                        lng: -3,
+                        zoom: 6
+                    },
+                    // set up multiple markers on map
+                    markers: {
+                        London : {
+                            lat: 51.50,
+                            lng: -0.082,
+                            draggable: false
+                        },
+                        Manchester: {
+                            lat: 53.48,
+                            lng: -2.24,
+                            draggable: true
+                        },
+                        Lincoln: {
+                            lat: 53.230495,
+                            lng: -0.53936,
+                            draggable: true
+                        },
+	                    Northhampton: {
+                            lat: 52.237892,
+                            lng: -0.90087,
+                            draggable: true
+	                    },
+	                    Worcester: {
+                            lat: 52.187404,
+                            lng: -2.20275,
+                            draggable: true
+	                    },
+	                    York: {
+		                    lat: 53.959317,
+		                    lng: -1.08215,
+		                    draggable: true
+	                    }
+                    }
+                });
+                angular.extend($scope, {
+                    paths: {
+                        p1: {
+                            color: '#008000',
+                            weight: 4,
+                            latlngs: [ $scope.markers.London, $scope.markers.Manchester ]
+                        },
+                        p2: {
+                            weight: 3,
+                            opacity: 0.5,
+                            latlngs: [
+	                            [ $scope.markers.London, $scope.markers.Lincoln ],
+                                [ $scope.markers.Manchester, $scope.markers.Worcester]
+                            ],
+	                        type: 'multiPolyline'
+                        },
+	                    c1: {
+		                    weight: 2,
+		                    color: '#ff612f',
+		                    latlngs: $scope.markers.Northhampton,
+		                    radius: 10000,
+		                    type: 'circle'
+	                    },
+	                    c2: {
+		                    weight: 2,
+		                    color: '#ff612f',
+		                    latlngs: $scope.markers.Lincoln,
+		                    radius: 50,
+		                    type: 'circleMarker'
+	                    },
+	                    pg1: {
+		                    latlngs: [ $scope.markers.London, $scope.markers.Worcester, $scope.markers.Lincoln ],
+		                    stroke: false,
+		                    fillColor: '#ff69b4',
+		                    type: 'polygon'
+	                    },
+	                    pg2: {
+                            weight: 1,
+                            color: '#2e3974',
+                            latlngs: [
+	                            [ $scope.markers.London, $scope.markers.Worcester, $scope.markers.Northhampton ],
+                                [ $scope.markers.Manchester, $scope.markers.Lincoln, $scope.markers.York ]
+                            ],
+		                    type: 'multiPolygon'
+	                    },
+	                    r1: {
+		                    latlngs: [ $scope.markers.Lincoln, $scope.markers.York ],
+		                    type: 'rectangle'
+	                    }
+                    }
+                });
+            } ]);
         app.controller("PathsAjaxLoadController", [ "$scope", "$http", function($scope, $http) {
             angular.extend($scope, {
                 london: {
@@ -1157,8 +2010,89 @@ var app = angular.module('webapp');
                 };
             };
         }]);
-
-        app.controller('DemoController', [ '$scope', function($scope) {
+        app.controller('PathsChangeInGroupLayerController', function($scope, leafletData) {
+            $scope.changePaths = function() {
+                $scope.paths = {
+                    p2: {
+                        color: '#FC0',
+                        weight: 8,
+                        latlngs: [ { lat: 52.50, lng: -0.082 }, { lat: 42.91, lng: 12.48 } ],
+                        layer: 'test'
+                    }
+                };
+            };
+            angular.extend($scope, {
+                center: {
+                    lat: 51.505,
+                    lng: -0.09,
+                    zoom: 4
+                },
+                paths : {
+                    p1: {
+                        color: '#000',
+                        weight: 8,
+                        latlngs: [{ lat: 51.50, lng: -0.082 }, { lat: 41.91, lng: 12.48 }],
+                        layer: 'test'
+                    }
+                },
+                layers: {
+                    baselayers: {
+                        osm: {
+                            name: 'OpenStreetMap',
+                            type: 'xyz',
+                            url: 'http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpeg',
+                            layerOptions: {
+                                subdomains: '1234',
+                                attribution: 'test'
+                            }
+                        }
+                    },
+                    overlays: {
+                        test: {
+                            name: 'Test',
+                            visible: true,
+                            type: 'group'
+                        }
+                    }
+                }
+            });
+        });
+        app.controller('PathsDecorationsSimpleController', [ '$scope', function($scope) {
+            angular.extend($scope, {
+                london: {
+                    lat: 51.505,
+                    lng: -0.09,
+                    zoom: 8
+                },
+                decorations: {
+                    markers: {
+                        coordinates: [[51.9, -0.4], [51.505, -0.09], [51.0, -0.4]],
+                        patterns: [
+                            { offset: 12, repeat: 25, symbol: L.Symbol.dash({pixelSize: 10, pathOptions: {color: '#f00', weight: 2}}) },
+                            { offset: 0, repeat: 25, symbol: L.Symbol.dash({pixelSize: 0}) }
+                        ]
+                    }
+                }
+            });
+            $scope.changePattern = function(type) {
+                if (type === 'dot') {
+                    $scope.decorations.markers.patterns = [ {offset: 0, repeat: 10, symbol: L.Symbol.dash({pixelSize: 0})} ];
+                } else if (type === 'slash') {
+                    $scope.decorations.markers.patterns = [ {offset: 12, repeat: 25, symbol: L.Symbol.dash({pixelSize: 10, pathOptions: {color: '#f00', weight: 2}})} ];
+                } else if (type === 'slashdot') {
+                    $scope.decorations.markers.patterns = [
+                        { offset: 12, repeat: 25, symbol: L.Symbol.dash({pixelSize: 10, pathOptions: {color: '#f00', weight: 2}}) },
+                        { offset: 0, repeat: 25, symbol: L.Symbol.dash({pixelSize: 0}) }
+                    ];
+                } else if (type === 'arrow') {
+                    $scope.decorations.markers.patterns = [
+                        {offset: 12, repeat: 25, symbol: L.Symbol.dash({pixelSize: 18, pathOptions: {color: '#f00', weight: 4}})},
+                        {offset: '10%', repeat: 25, symbol: L.Symbol.arrowHead({pixelSize: 10, polygon: false, pathOptions: {stroke: true}})}
+                    ]
+                }
+            };
+        } ]);
+        app.controller('MarkersLabelController', [ '$scope', function($scope) {
             angular.extend($scope, {
                 london: {
                     lat: 51.505,
@@ -1201,5 +2135,4 @@ var app = angular.module('webapp');
             $scope.greet = function(user) {
               alert('hello ' + user.name);
             }
-        } ]);
-}(angular));
+        } ]);}(angular));

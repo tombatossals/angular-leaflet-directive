@@ -28,7 +28,7 @@
         <script>
             var app = angular.module("demoapp", ["leaflet-directive"]);
 
-            app.controller('DemoController', [ '$scope', function($scope) {
+            app.controller('PathsAdvancedController', [ '$scope', function($scope) {
                 $scope.addMarker = function() {
                     var m_key = document.getElementById('new_mm_name').value;
                     if ($scope.markers[m_key]) return;
@@ -152,7 +152,7 @@
             } ]);
         </script>
     </head>
-    <body ng-controller="DemoController">
+    <body ng-controller="PathsAdvancedController">
         <div id="control">
             <div class="panel">
                 <h3>Center</h3>

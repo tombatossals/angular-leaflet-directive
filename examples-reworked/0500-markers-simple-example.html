@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
     <script>
         var app = angular.module("demoapp", ["leaflet-directive"]);
-        app.controller('DemoController', [ '$scope', function($scope) {
+        app.controller('MarkersSimpleController', [ '$scope', function($scope) {
             angular.extend($scope, {
                 london: {
                     lat: 51.505,
@@ -27,10 +27,11 @@
         } ]);
     </script>
   </head>
-  <body ng-controller="DemoController">
+  <body ng-controller="MarkersSimpleController">
+    <leaflet center="london" markers="markers" height="480px" width="100%"></leaflet>
+    <h1>Markers simple example</h1>
     <p>
       Marker (lat/lng): <input type="number" ng-model="markers.mainMarker.lat" /> <input type="number" ng-model="markers.mainMarker.lng" />
     </p>
-    <leaflet center="london" markers="markers" height="480px" width="640px"></leaflet>
   </body>
 </html>

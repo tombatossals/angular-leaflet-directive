@@ -1,16 +1,4 @@
-<!DOCTYPE html>
-<html ng-app="demoapp">
-<head>
-    <script src="../bower_components/angular/angular.min.js"></script>
-    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
-    <script src="../bower_components/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
-    <script src="../dist/angular-leaflet-directive.min.js"></script>
-    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
-    <link rel="stylesheet" href="../bower_components/leaflet.markercluster/dist/MarkerCluster.css" />
-    <link rel="stylesheet" href="../bower_components/leaflet.markercluster/dist/MarkerCluster.Default.css" />
-    <script>
-        var app = angular.module("demoapp", ["leaflet-directive"]);
-        app.controller("DemoController", [ "$scope", function($scope) {
+        app.controller("MarkersClusteringController", [ "$scope", function($scope) {
             angular.extend($scope, {
                 center: {
                     lat: 24.0391667,
@@ -86,33 +74,3 @@
                 }
             });
         }]);
-    </script>
-    <style>
-        .angular-leaflet-map {
-            width: 100%;
-            height: 320px;
-        }
-        .left {
-            float: left;
-            width: 58%;
-            padding-right: 1em;
-        }
-        .right {
-            float: right;
-            width: 40%;
-        }
-    </style>
-</head>
-<body ng-controller="DemoController">
-    <leaflet center="center" markers="markers" layers="layers"></leaflet>
-    <h1>Marker clustering example</h1>
-    <div class="left">
-        <p>You can create a marker-clustering group on the map, defining <strong>layers</strong> like this.</p>
-        <pre ng-bind="layers | json"></pre>
-    </div>
-    <div class="right">
-        <p>And your <strong>markers</strong> definition this way:</p>
-        <pre ng-bind="markers | json"></pre>
-    </div>
-</body>
-</html>

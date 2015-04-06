@@ -146,32 +146,14 @@
       }
     </style>
 </head>
-<body>
-    <div class="container">
-      <div ng-controller="DynamicOverlaysController">
-          <div class="row">
-              <h2>This is a map with dynamic addition and deletion of Overlays</h2>
-          </div>
-          <div class="row">
-              <p>
-              <leaflet center="ripoll" layers="layers" height="480px" width="640px">
-                  <layercontrol order="normal"></layercontrol>
-              </leaflet>
-              </p>
-          </div>
-          <div class="row">
-              <p>
-              <button type="button" class="btn btn-default" ng-click="removeHillshadeLayer()" ng-disabled="!existsHillshadeLayer()">Remove Hillshade Overlay</button>
-              <button type="button" class="btn btn-default" ng-click="removeFireLayer()" ng-disabled="!existsFireLayer()">Remove Fire Overlay</button>
-              </p>
-          </div>
-          <div class="row">
-              <p>
-              <button type="button" class="btn btn-default" ng-click="addHillshadeLayer()" ng-disabled="existsHillshadeLayer()">Add Hillshade Overlay</button>
-              <button type="button" class="btn btn-default" ng-click="addFireLayer()" ng-disabled="existsFireLayer()">Add Fire Overlay</button>
-              </p>
-          </div>
-      </div>
-    </div>
+<body ng-controller="DynamicOverlaysController">
+    <leaflet center="ripoll" layers="layers" height="480px" width="100%">
+        <layercontrol order="normal"></layercontrol>
+    </leaflet>
+    <h1>Dynamic addition and deletion of Overlays control</h1>
+    <button type="button" class="btn btn-default" ng-click="removeHillshadeLayer()" ng-disabled="!existsHillshadeLayer()">Remove Hillshade Overlay</button>
+    <button type="button" class="btn btn-default" ng-click="removeFireLayer()" ng-disabled="!existsFireLayer()">Remove Fire Overlay</button>
+    <button type="button" class="btn btn-default" ng-click="addHillshadeLayer()" ng-disabled="existsHillshadeLayer()">Add Hillshade Overlay</button>
+    <button type="button" class="btn btn-default" ng-click="addFireLayer()" ng-disabled="existsFireLayer()">Add Fire Overlay</button>
 </body>
 </html>

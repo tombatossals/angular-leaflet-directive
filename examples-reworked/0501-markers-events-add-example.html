@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
     <script>
         var app = angular.module("demoapp", ["leaflet-directive"]);
-        app.controller('DemoController', [ '$scope', function($scope) {
+        app.controller('MarkersEventsAddController', [ '$scope', function($scope) {
             angular.extend($scope, {
                 london: {
                     lat: 51.505,
@@ -31,9 +31,10 @@
         } ]);
     </script>
   </head>
-  <body ng-controller="DemoController">
-        <h3>Click on the map to add a marker</h3>
-      <leaflet center="london" markers="markers" event-broadcast="events" height="480px" width="640px">
+  <body ng-controller="MarkersEventsAddController">
+      <leaflet center="london" markers="markers" event-broadcast="events" height="480px" width="100%"></leaflet>
+      <h1>Markers with events example</h1>
+      <p>Click on the map to add a marker</p>
       </leaflet>
   </body>
 </html>

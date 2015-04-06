@@ -1,4 +1,4 @@
-        app.controller("EsriLegendServiceController", [ "$scope", function($scope) {
+        app.controller("LayersEsriLegendServiceController", [ "$scope", function($scope) {
             angular.extend($scope, {
             	options: {
             		controls: {
@@ -55,7 +55,7 @@
                 },
                 legend: {
                 	url: "http://services.arcgisonline.com/arcgis/rest/services/Demographics/USA_1990-2000_Population_Change/MapServer/legend?f=json",
-                	legendClass: "info legend",
+                	legendClass: "info legend-esri",
 					position: "bottomleft",
                 },
                 legendURL1: "http://services.arcgisonline.com/arcgis/rest/services/Demographics/USA_1990-2000_Population_Change/MapServer/legend?f=json",

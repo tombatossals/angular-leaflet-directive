@@ -64,18 +64,46 @@
             "title": "Dynamic tile changer based on zoom level"
         },
         {
-            "date": "2015-04-05T11:19:26.919Z",
+            "date": "2015-04-05T14:39:49.543Z",
             "section": "basic",
             "id": "/basic/center-geoip-example",
             "extUrl": "0109-basic-center-geoip-example.html",
-            "title": "Center map example"
+            "title": "Center by IP (GeoIP) example"
         },
         {
-            "date": "2015-04-05T11:16:24.996Z",
+            "date": "2015-04-05T11:31:42.725Z",
             "section": "basic",
             "id": "/basic/map-without-animations-example",
             "extUrl": "0110-basic-map-without-animations-example.html",
             "title": "Map with disabled animations example"
+        },
+        {
+            "date": "2015-04-05T12:16:02.105Z",
+            "section": "basic",
+            "id": "/basic/legend-example",
+            "extUrl": "0111-basic-legend-example.html",
+            "title": "Legend example"
+        },
+        {
+            "date": "2015-04-06T10:11:13.971Z",
+            "section": "basic",
+            "id": "/basic/maxbounds-pad-example",
+            "extUrl": "0112-basic-maxbounds-pad-example.html",
+            "title": "Extend Maxbounds with Pad"
+        },
+        {
+            "date": "2015-04-06T10:16:48.997Z",
+            "section": "basic",
+            "id": "/basic/geojson-simple-example",
+            "extUrl": "0113-basic-geojson-simple-example.html",
+            "title": "Simple GeoJSON example"
+        },
+        {
+            "date": "2015-04-06T17:34:30.029Z",
+            "section": "basic",
+            "id": "/basic/geojson-center-example",
+            "extUrl": "0114-basic-geojson-center-example.html",
+            "title": "Center to GeoJSON example"
         }
     ],
     "layers": [
@@ -87,7 +115,7 @@
             "title": "Layers simple example"
         },
         {
-            "date": "2015-04-03T19:59:01.672Z",
+            "date": "2015-04-05T11:36:17.995Z",
             "section": "layers",
             "id": "/layers/overlays-simple-example",
             "extUrl": "0202-layers-overlays-simple-example.html",
@@ -136,7 +164,7 @@
             "title": "Esri ArcGIS Dynamic Map Layer"
         },
         {
-            "date": "2015-04-04T08:11:45.614Z",
+            "date": "2015-04-06T17:39:45.129Z",
             "section": "layers",
             "id": "/layers/esri-legend-service-example",
             "extUrl": "0209-layers-esri-legend-service-example.html",
@@ -171,7 +199,7 @@
             "title": "Bing maps"
         },
         {
-            "date": "2015-01-13T07:50:33.221Z",
+            "date": "2015-04-05T11:41:52.104Z",
             "section": "layers",
             "id": "/layers/utfgrid-example",
             "extUrl": "0214-layers-utfgrid-example.html",
@@ -208,76 +236,147 @@
             "title": "3000 items in a map performance"
         },
         {
-            "date": "2015-01-13T07:50:33.218Z",
+            "date": "2015-04-06T17:39:19.499Z",
             "section": "paths",
             "id": "/paths/advanced-example",
             "extUrl": "0304-paths-advanced-example.html"
         },
         {
-            "date": "2015-01-13T07:50:33.218Z",
+            "date": "2015-04-06T17:39:02.798Z",
             "section": "paths",
             "id": "/paths/change-in-group-layer-example",
             "extUrl": "0305-paths-change-in-group-layer-example.html"
+        },
+        {
+            "date": "2015-04-06T17:38:46.395Z",
+            "section": "paths",
+            "id": "/paths/decorations-simple-example",
+            "extUrl": "0306-paths-decorations-simple-example.html"
         }
     ],
     "controls": [
         {
-            "date": "2015-04-04T08:54:20.669Z",
+            "date": "2015-04-05T14:45:17.996Z",
             "section": "controls",
             "id": "/controls/custom-layer-control-example",
-            "extUrl": "0400-controls-custom-layer-control-example.html"
+            "extUrl": "0400-controls-custom-layer-control-example.html",
+            "title": "Dynamic addition and deletion of Overlays control"
+        },
+        {
+            "date": "2015-04-05T14:48:20.903Z",
+            "section": "controls",
+            "id": "/controls/draw-example",
+            "extUrl": "0401-controls-draw-example.html",
+            "title": "Draw control example"
+        },
+        {
+            "date": "2015-04-05T14:47:11.943Z",
+            "section": "controls",
+            "id": "/controls/scale-example",
+            "extUrl": "0402-controls-scale-example.html",
+            "title": "Scale control example"
         }
     ],
     "markers": [
         {
-            "date": "2015-01-13T07:50:33.218Z",
+            "date": "2015-04-05T11:45:21.548Z",
             "section": "markers",
             "id": "/markers/simple-example",
-            "extUrl": "0500-markers-simple-example.html"
+            "extUrl": "0500-markers-simple-example.html",
+            "title": "Markers simple example"
         },
         {
-            "date": "2015-01-13T07:50:33.214Z",
+            "date": "2015-04-06T17:45:52.068Z",
             "section": "markers",
-            "id": "/markers/add-example",
-            "extUrl": "0501-markers-add-example.html"
+            "id": "/markers/events-add-example",
+            "extUrl": "0501-markers-events-add-example.html",
+            "title": "Markers with events example"
         },
         {
-            "date": "2015-01-13T07:50:33.218Z",
+            "date": "2015-04-05T11:50:48.451Z",
             "section": "markers",
             "id": "/markers/add-remove-example",
-            "extUrl": "0502-markers-add-remove-example.html"
+            "extUrl": "0502-markers-add-remove-example.html",
+            "title": "Add/remove markers easily example"
         },
         {
-            "date": "2015-01-24T14:34:57.591Z",
+            "date": "2015-04-06T17:38:23.044Z",
             "section": "markers",
             "id": "/markers/icons-example",
-            "extUrl": "0503-markers-icons-example.html",
-            "title": "Dynamic update marker properties"
+            "extUrl": "0503-markers-icons-example.html"
         },
         {
-            "date": "2015-01-24T14:34:57.591Z",
+            "date": "2015-04-06T17:37:29.969Z",
             "section": "markers",
             "id": "/markers/popup-example",
             "extUrl": "0504-markers-popup-example.html",
             "title": "Dynamic update marker properties"
         },
         {
-            "date": "2015-01-13T07:50:33.218Z",
+            "date": "2015-04-06T17:37:40.436Z",
             "section": "markers",
             "id": "/markers/label-example",
             "extUrl": "0505-markers-label-example.html"
         },
         {
-            "date": "2015-01-13T07:50:33.218Z",
+            "date": "2015-04-06T17:38:04.374Z",
             "section": "markers",
             "id": "/markers/groups-example",
             "extUrl": "0506-markers-groups-example.html"
         },
         {
-            "date": "2015-01-13T07:50:33.218Z",
+            "date": "2015-04-06T09:23:25.616Z",
             "section": "markers",
             "id": "/markers/rotation-example",
-            "extUrl": "0506-markers-rotation-example.html"
+            "extUrl": "0506-markers-rotation-example.html",
+            "title": "Changing Icon Rotation"
+        },
+        {
+            "date": "2015-04-06T09:22:56.336Z",
+            "section": "markers",
+            "id": "/markers/change-opacity-example",
+            "extUrl": "0507-markers-change-opacity-example.html",
+            "title": "Change icon opacity"
+        },
+        {
+            "date": "2015-04-06T17:37:01.389Z",
+            "section": "markers",
+            "id": "/markers/clustering-example",
+            "extUrl": "0508-markers-clustering-example.html",
+            "title": "Marker clustering example"
+        },
+        {
+            "date": "2015-04-06T17:36:48.702Z",
+            "section": "markers",
+            "id": "/markers/clustering-without-overlays-example",
+            "extUrl": "0509-markers-clustering-without-overlays-example.html"
+        },
+        {
+            "date": "2015-04-06T18:14:16.224Z",
+            "section": "markers",
+            "id": "/markers/modal-markercluster-example",
+            "extUrl": "0510-markers-modal-markercluster-example.html",
+            "title": "Markercluster in a SemanticUI modal"
+        },
+        {
+            "date": "2015-04-06T17:36:30.252Z",
+            "section": "markers",
+            "id": "/markers/clustering-10000-markers-example",
+            "extUrl": "0511-markers-clustering-10000-markers-example.html",
+            "title": "Marker clustering example (10000 markers)"
+        },
+        {
+            "date": "2015-04-06T17:45:33.824Z",
+            "section": "markers",
+            "id": "/markers/events-example",
+            "extUrl": "0512-markers-events-example.html",
+            "title": "Marker Events example"
+        },
+        {
+            "date": "2015-04-06T17:36:03.428Z",
+            "section": "markers",
+            "id": "/markers/delayed-events",
+            "extUrl": "0513-markers-delayed-events.html"
         }
     ]
 }

@@ -1,4 +1,4 @@
-        app.controller("LayerOverlaysSimpleController", [ "$scope", function($scope) {
+        app.controller("LayersOverlaysSimpleController", [ "$scope", function($scope) {
             angular.extend($scope, {
                 center: {
                     lat: 39,

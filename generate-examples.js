@@ -6,6 +6,7 @@ var fs = require('fs');
 var path = require('path');
 var mkdirp = require('mkdirp');
 var jsdom = require('jsdom').jsdom;
+var Q = require('q');
 
 var isAnExample = function(filename) {
     return /[0-9][0-9][0-9][0-9].*\.html/.test(filename);
@@ -16,16 +17,32 @@ var isJavascript = function(filename) {
 };
 
 var cleanJavascriptFilesFromControllersDirectory = function(dir) {
+    var df = Q.defer();
     fs.readdir(dir, function(err, list) {
+        var l = [];
         list.forEach(function(filename) {
-            if (isJavascript(filename)) {
-                fs.unlink(path.join(dir, filename));
-            }
+            l.push(function() {
+                var df = Q.defer();
+                if (isJavascript(filename)) {
+                    fs.unlink(path.join(dir, filename), function() {
+                        df.resolve();
+                    });
+                } else {
+                    df.resolve();
+                }
+
+                return df.promise;
+            });
         });
-    })
+        Q.all(l).then(function() {
+            df.resolve();
+        });
+    });
+    return df.promise;
 };
 
 var writeController = function(script, examplefile, controllers_directory) {
+    var df = Q.defer();
     var scriptLines = script.split('\n');
     var outfilename;
     var outScript = [];
@@ -58,21 +75,26 @@ var writeController = function(script, examplefile, controllers_directory) {
         outfilename = path.join(controllers_directory, outfilename);
         if (!fs.existsSync(outfilename)) {
             var file = fs.createWriteStream(outfilename);
-            outScript.forEach(function(line) {
-                file.write(line + '\n');
+            file.write(outScript.join('\n'), function() {
+                file.end();
+                df.resolve();
             });
-
-            file.end();
         } else {
             console.log('The controller name is duplicated: ' + outfilename)
+            df.reject();
         }
     } else {
         console.log('Can\'t identify the controller name in the example ' + examplefile)
+        df.reject();
     }
+
+    return df.promise;
 };
 
 var generateControllersFromExamples = function(examples_directory, controllers_directory) {
+    var df = Q.defer();
     fs.readdir(examples_directory, function(err, list) {
+        var l = [];
         list.forEach(function(filename) {
             if (isAnExample(filename)) {
                 var html = fs.readFileSync(path.join(__dirname, 'examples-reworked', filename));
@@ -81,10 +103,16 @@ var generateControllersFromExamples = function(examples_directory, controllers_d
                 var last = scripts.length -1;
                 var script = scripts[last].innerHTML;
 
-                writeController(script, filename, controllers_directory);
+                l.push(writeController(script, filename, controllers_directory));
             }
         });
+
+        Q.all(l).then(function() {
+            df.resolve();
+        });
     });
+
+    return df.promise;
 };
 
 var extractId = function(filename) {
@@ -119,6 +147,7 @@ var extractDate = function(filename) {
 };
 
 var generateExamplesJSONFile = function(examples_directory, json_file) {
+    var df = Q.defer();
     var examples = {};
     fs.readdir(examples_directory, function(err, list) {
         list.forEach(function(filename) {
@@ -145,19 +174,24 @@ var generateExamplesJSONFile = function(examples_directory, json_file) {
         });
 
         var f = fs.createWriteStream(json_file);
-        f.write(JSON.stringify(examples, null, 4));
-        f.close();
-
+        f.write(JSON.stringify(examples, null, 4), function() {
+            f.close();
+            df.resolve();
+        });
     });
+
+    return df.promise;
 };
 
 var controllers_directory = path.join(__dirname, 'examples-reworked', 'js', 'controllers');
 mkdirp(controllers_directory, function(err) {
-    cleanJavascriptFilesFromControllersDirectory(controllers_directory);
+    cleanJavascriptFilesFromControllersDirectory(controllers_directory).then(function() {
 
-    var examples_directory = path.join(__dirname, 'examples-reworked');
-    generateControllersFromExamples(examples_directory, controllers_directory);
+        var examples_directory = path.join(__dirname, 'examples-reworked');
+        generateControllersFromExamples(examples_directory, controllers_directory).then(function() {
 
-    var json_file = path.join(__dirname, 'examples-reworked', 'json', 'examples.json');
-    generateExamplesJSONFile(examples_directory, json_file);
-})
+            var json_file = path.join(__dirname, 'examples-reworked', 'json', 'examples.json');
+            generateExamplesJSONFile(examples_directory, json_file);
+        });
+    });
+});

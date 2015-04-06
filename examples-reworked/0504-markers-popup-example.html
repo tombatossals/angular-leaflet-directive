@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="../bower_components/font-awesome/css/font-awesome.min.css">
     <script>
         var app = angular.module("demoapp", ["leaflet-directive"]);
-        app.controller('DemoController', [ '$scope', function($scope) {
+        app.controller('MarkersPopupController', [ '$scope', function($scope) {
             angular.extend($scope, {
                 london: {
                     lat: 51.505,
@@ -88,7 +88,7 @@
         }
     </style>
   </head>
-  <body ng-controller="DemoController">
+  <body ng-controller="MarkersPopupController">
     <div class="container fullheight">
         <div class="row">
             <h1>Dynamic update marker properties</h1>

@@ -1,4 +1,4 @@
-        app.controller("DemoController", [ "$scope", function($scope) {
+        app.controller("LayersUTFGridController", [ "$scope", function($scope) {
             angular.extend($scope, {
                 center: {
                     lat: 0,
