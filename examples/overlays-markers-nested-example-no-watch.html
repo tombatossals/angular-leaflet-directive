@@ -32,7 +32,7 @@ app.controller('OverlaysController', function ($scope, leafletData, $timeout) {
         });
     }, 4000);
     angular.extend($scope, {
-        markerWatchOptions: {
+        markersWatchOptions: {
             doWatch: false,
             isDeep: false,
             individual: {
@@ -160,7 +160,7 @@ app.controller('OverlaysController', function ($scope, leafletData, $timeout) {
         markers="markers"
         layers="layers"
         markers-nested="true"
-        markers-watch-options="markerWatchOptions"
+        markers-watch-options="markersWatchOptions"
         height="480px" width="640px">
     </leaflet>
 </div>
