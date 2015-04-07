@@ -1,4 +1,11 @@
-angular.module("leaflet-directive").directive('geojson', function ($log, $rootScope, leafletData, leafletHelpers) {
+angular.module("leaflet-directive")
+.directive('geojson', function ($log, $rootScope, leafletData, leafletHelpers,
+    leafletWatchHelpers, leafletDirectiveControlsHelpers) {
+
+    var _maybeWatchCollection = leafletWatchHelpers.maybeWatchCollection,
+        _watchOptions = leafletHelpers.watchOptions,
+        _extendDirectiveControls = leafletDirectiveControlsHelpers.extend;
+
     return {
         restrict: "A",
         scope: false,
@@ -12,15 +19,9 @@ angular.module("leaflet-directive").directive('geojson', function ($log, $rootSc
                 leafletGeoJSON = {};
 
             controller.getMap().then(function(map) {
-                leafletScope.$watchCollection("geojson", function(geojson) {
-                    if (isDefined(leafletGeoJSON) && map.hasLayer(leafletGeoJSON)) {
-                        map.removeLayer(leafletGeoJSON);
-                    }
+                var watchOptions = leafletScope.geojsonWatchOptions || _watchOptions;
 
-                    if (!(isDefined(geojson) && isDefined(geojson.data))) {
-                        return;
-                    }
-
+                var _hookUpEvents = function(geojson){
                     var resetStyleOnMouseout = geojson.resetStyleOnMouseout;
                     var onEachFeature;
 
@@ -54,6 +55,23 @@ angular.module("leaflet-directive").directive('geojson', function ($log, $rootSc
                             });
                         };
                     }
+                    return onEachFeature;
+                };
+
+                var _clean = function(){
+                    if (isDefined(leafletGeoJSON) && map.hasLayer(leafletGeoJSON)) {
+                        map.removeLayer(leafletGeoJSON);
+                    }
+                };
+
+                var _create = function(geojson){
+                    _clean();
+                    
+                    if (!(isDefined(geojson) && isDefined(geojson.data))) {
+                        return;
+                    }
+
+                    var onEachFeature = _hookUpEvents(geojson);
 
                     if (!isDefined(geojson.options)) {
                         geojson.options = {
@@ -67,7 +85,12 @@ angular.module("leaflet-directive").directive('geojson', function ($log, $rootSc
                     leafletGeoJSON = L.geoJson(geojson.data, geojson.options);
                     leafletData.setGeoJSON(leafletGeoJSON, attrs.id);
                     leafletGeoJSON.addTo(map);
+                };
 
+                _extendDirectiveControls(attrs.id, 'geojson', _create, _clean);
+
+                _maybeWatchCollection(leafletScope,'geojson', watchOptions, function(geojson){
+                    _create(geojson);
                 });
             });
         }
