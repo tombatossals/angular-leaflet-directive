@@ -24,7 +24,8 @@ angular.module("leaflet-directive", []).directive('leaflet',
             layers         : '=',
             controls       : '=',
             decorations    : '=',
-            eventBroadcast : '='
+            eventBroadcast : '=',
+            markersWatchOptions : '='
         },
         transclude: true,
         template: '<div class="angular-leaflet-map"><div ng-transclude></div></div>',
