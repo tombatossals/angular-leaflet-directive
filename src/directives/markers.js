@@ -1,6 +1,7 @@
 angular.module("leaflet-directive").directive('markers',
-    function ($log, $rootScope, $q, leafletData, leafletHelpers,
-              leafletMapDefaults, leafletMarkersHelpers, leafletEvents, leafletIterators) {
+    function ($log, $rootScope, $q, leafletData, leafletHelpers, leafletMapDefaults,
+      leafletMarkersHelpers, leafletEvents, leafletIterators, leafletWatchHelpers,
+      leafletDirectiveControlsHelpers) {
     //less terse vars to helpers
     var isDefined = leafletHelpers.isDefined,
         errorHeader = leafletHelpers.errorHeader,
@@ -13,7 +14,9 @@ angular.module("leaflet-directive").directive('markers',
         createMarker = leafletMarkersHelpers.createMarker,
         deleteMarker = leafletMarkersHelpers.deleteMarker,
         $it = leafletIterators,
-        _markersWatchOptions = leafletMarkersHelpers.markersWatchOptions;
+        _markersWatchOptions = leafletHelpers.watchOptions,
+        maybeWatch = leafletWatchHelpers.maybeWatch,
+        extendDirectiveControls = leafletDirectiveControlsHelpers.extend;
 
     var _maybeAddMarkerToLayer = function(layerName, layers, model, marker, doIndividualWatch, map){
 
@@ -124,14 +127,6 @@ angular.module("leaflet-directive").directive('markers',
         }
     };
 
-    var _maybeWatch = function(scope, watchOptions, initCb){
-        var unWatch = scope.$watch('markers', function(newMarkers) {
-            initCb(newMarkers);
-            if(!watchOptions.doWatch)
-                unWatch();
-        }, watchOptions.isDeep);
-    };
-
     return {
         restrict: "A",
         scope: false,
@@ -182,19 +177,10 @@ angular.module("leaflet-directive").directive('markers',
                         _addMarkers(models, map, layers, leafletMarkers, leafletScope,
                             watchOptions);
                     };
-                    //add external control to create / destroy markers without a watch
-                    leafletData.getDirectiveControls().then(function(controls){
-                        angular.extend(controls, {
-                            markers:{
-                                create: _create,
-                                clean: _clean
-                            }
-                        });
-                        leafletData.setDirectiveControls(controls, attrs.id);
-                    });
+                    extendDirectiveControls(attrs.id, 'markers', _create, _clean);
                     leafletData.setMarkers(leafletMarkers, attrs.id);
 
-                    _maybeWatch(leafletScope, watchOptions, function(newMarkers){
+                    maybeWatch(leafletScope,'markers', watchOptions, function(newMarkers){
                         _create(newMarkers);
                     });
                 });
@@ -202,4 +188,3 @@ angular.module("leaflet-directive").directive('markers',
         }
     };
 });
-

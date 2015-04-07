@@ -488,6 +488,25 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
                     }
                 }
             }
+        },
+        /*
+         watchOptions - object to set deep nested watches and turn off watches all together
+         (rely on control / functional updates)
+         watchOptions - Object
+             doWatch:boolean
+             isDeep:boolean (sets $watch(function,isDeep))
+             individual
+                 doWatch:boolean
+                 isDeep:boolean
+         */
+        //legacy defaults
+        watchOptions: {
+            doWatch:true,
+            isDeep: true,
+            individual:{
+                doWatch:true,
+                isDeep: true
+            }
         }
     };
 });
