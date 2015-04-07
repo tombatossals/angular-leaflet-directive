@@ -3,6 +3,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 *  angular-leaflet-directive 0.7.11 2015-04-10
 =======
 *  angular-leaflet-directive 0.7.11 2015-03-31
@@ -16,6 +17,9 @@
 =======
 *  angular-leaflet-directive 0.7.11 2015-04-06
 >>>>>>> typo on scope.markersWatchOptions it was markerWatchOptions
+=======
+*  angular-leaflet-directive 0.7.11 2015-04-07
+>>>>>>> - leafletWatchHelpers for sharing unwatch code with other directives
 *  angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps
 *  git: https://github.com/tombatossals/angular-leaflet-directive
 */
@@ -42,11 +46,16 @@ angular.module("leaflet-directive", []).directive('leaflet',
             decorations    : '=',
             eventBroadcast : '=',
 <<<<<<< HEAD
+<<<<<<< HEAD
             markersWatchOptions : '=',
             geojsonWatchOptions : '='
 =======
             markersWatchOptions : '='
 >>>>>>> build with markersWatchOptions
+=======
+            markersWatchOptions : '=',
+            geojsonWatchOptions : '='
+>>>>>>> - leafletWatchHelpers for sharing unwatch code with other directives
         },
         transclude: true,
         template: '<div class="angular-leaflet-map"><div ng-transclude></div></div>',
@@ -403,6 +412,7 @@ angular.module("leaflet-directive")
     return {
         extend: _extend
     };
+<<<<<<< HEAD
 =======
 
     var upperFirst = function (string) {
@@ -447,6 +457,8 @@ angular.module("leaflet-directive")
         };
     });
 >>>>>>> ability to disable watches in markers 100%
+=======
+>>>>>>> - leafletWatchHelpers for sharing unwatch code with other directives
 });
 
 angular.module("leaflet-directive").factory('leafletEvents',
@@ -3340,6 +3352,49 @@ angular.module("leaflet-directive").directive('center',
                         }
                         return;
                     }
+<<<<<<< HEAD
+=======
+                } else if (markerLatLng.lat !== markerData.lat || markerLatLng.lng !== markerData.lng) {
+                    marker.setLatLng([markerData.lat, markerData.lng]);
+                }
+            }, isDeepWatch);
+        },
+        string: _string,
+        log: _log
+    };
+});
+
+angular.module("leaflet-directive").factory('leafletPathsHelpers', function ($rootScope, $log, leafletHelpers) {
+    var isDefined = leafletHelpers.isDefined,
+        isArray = leafletHelpers.isArray,
+        isNumber = leafletHelpers.isNumber,
+        isValidPoint = leafletHelpers.isValidPoint;
+    var availableOptions = [
+        // Path options
+        'stroke', 'weight', 'color', 'opacity',
+        'fill', 'fillColor', 'fillOpacity',
+        'dashArray', 'lineCap', 'lineJoin', 'clickable',
+        'pointerEvents', 'className',
+
+        // Polyline options
+        'smoothFactor', 'noClip'
+    ];
+    function _convertToLeafletLatLngs(latlngs) {
+        return latlngs.filter(function(latlng) {
+            return isValidPoint(latlng);
+        }).map(function (latlng) {
+            return _convertToLeafletLatLng(latlng);
+        });
+    }
+
+    function _convertToLeafletLatLng(latlng) {
+        if (isArray(latlng)) {
+            return new L.LatLng(latlng[0], latlng[1]);
+        } else {
+            return new L.LatLng(latlng.lat, latlng.lng);
+        }
+    }
+>>>>>>> - leafletWatchHelpers for sharing unwatch code with other directives
 
                     if (mapReady && isSameCenterOnMap(center, map)) {
                         //$log.debug("no need to update map again.");
@@ -3479,6 +3534,7 @@ angular.module("leaflet-directive").directive("decorations", function($log, leaf
 				}
 			}
 
+<<<<<<< HEAD
 			controller.getMap().then(function(map) {
 				leafletScope.$watch("decorations", function(newDecorations) {
 					for (var name in leafletDecorations) {
@@ -3504,6 +3560,51 @@ angular.module("leaflet-directive").directive("decorations", function($log, leaf
 	};
 });
 angular.module("leaflet-directive").directive('eventBroadcast', function ($log, $rootScope, leafletHelpers, leafletEvents) {
+=======
+angular.module("leaflet-directive")
+.service('leafletWatchHelpers', function (){
+
+    var _maybe = function(scope, watchFunctionName, thingToWatchStr, watchOptions, initCb){
+        //watchOptions.isDeep is/should be ignored in $watchCollection
+        var unWatch = scope[watchFunctionName](thingToWatchStr, function(newValue, oldValue) {
+            initCb(newValue, oldValue);
+            if(!watchOptions.doWatch)
+                unWatch();
+        }, watchOptions.isDeep);
+
+        return unWatch;
+    };
+
+  /*
+  @name: maybeWatch
+  @description: Utility to watch something once or forever.
+  @returns unWatch function
+  @param watchOptions - see markersWatchOptions and or derrivatives. This object is used
+  to set watching to once and its watch depth.
+  */
+  var _maybeWatch = function(scope, thingToWatchStr, watchOptions, initCb){
+      return _maybe(scope, '$watch', thingToWatchStr, watchOptions, initCb);
+  };
+
+  /*
+  @name: _maybeWatchCollection
+  @description: Utility to watch something once or forever.
+  @returns unWatch function
+  @param watchOptions - see markersWatchOptions and or derrivatives. This object is used
+  to set watching to once and its watch depth.
+  */
+  var _maybeWatchCollection = function(scope, thingToWatchStr, watchOptions, initCb){
+      return _maybe(scope, '$watchCollection', thingToWatchStr, watchOptions, initCb);
+  };
+
+  return {
+    maybeWatch: _maybeWatch,
+    maybeWatchCollection: _maybeWatchCollection
+  };
+});
+
+angular.module("leaflet-directive").directive('bounds', function ($log, $timeout, leafletHelpers, leafletBoundsHelpers) {
+>>>>>>> - leafletWatchHelpers for sharing unwatch code with other directives
     return {
         restrict: "A",
         scope: false,
@@ -4193,30 +4294,98 @@ angular.module("leaflet-directive").directive('legend', function ($log, $http, l
 
                     leafletScope.$watch('legend', function (newLegend) {
 
+<<<<<<< HEAD
                         if (!isDefined(newLegend)) {
+=======
+angular.module("leaflet-directive")
+.directive('geojson', function ($log, $rootScope, leafletData, leafletHelpers,
+    leafletWatchHelpers, leafletDirectiveControlsHelpers) {
+
+    var _maybeWatchCollection = leafletWatchHelpers.maybeWatchCollection,
+        _watchOptions = leafletHelpers.watchOptions,
+        _extendDirectiveControls = leafletDirectiveControlsHelpers.extend;
+
+    return {
+        restrict: "A",
+        scope: false,
+        replace: false,
+        require: 'leaflet',
+>>>>>>> - leafletWatchHelpers for sharing unwatch code with other directives
 
                             if (isDefined(leafletLegend)) {
                                 leafletLegend.removeFrom(map);
                                 leafletLegend= null;
                             }
 
+<<<<<<< HEAD
                             return;
                         }
 
                         if (!isDefined(newLegend.url) && (type === 'arcgis') && (!isArray(newLegend.colors) || !isArray(newLegend.labels) || newLegend.colors.length !== newLegend.labels.length)) {
 
                             $log.warn("[AngularJS - Leaflet] legend.colors and legend.labels must be set.");
+=======
+            controller.getMap().then(function(map) {
+                var watchOptions = leafletScope.geojsonWatchOptions || _watchOptions;
+
+                var _hookUpEvents = function(geojson){
+                    var resetStyleOnMouseout = geojson.resetStyleOnMouseout;
+                    var onEachFeature;
+>>>>>>> - leafletWatchHelpers for sharing unwatch code with other directives
 
                             return;
                         }
 
+<<<<<<< HEAD
                         if (isDefined(newLegend.url)) {
+=======
+                            layer.on({
+                                mouseover: function(e) {
+                                    safeApply(leafletScope, function() {
+                                        $rootScope.$broadcast('leafletDirectiveMap.geojsonMouseover', feature, e);
+                                    });
+                                },
+                                mouseout: function(e) {
+                                    if (resetStyleOnMouseout) {
+                                        leafletGeoJSON.resetStyle(e.target);
+                                    }
+                                    safeApply(leafletScope, function() {
+                                        $rootScope.$broadcast('leafletDirectiveMap.geojsonMouseout', e);
+                                    });
+                                },
+                                click: function(e) {
+                                    safeApply(leafletScope, function() {
+                                        $rootScope.$broadcast('leafletDirectiveMap.geojsonClick', feature, e);
+                                    });
+                                }
+                            });
+                        };
+                    }
+                    return onEachFeature;
+                };
+
+                var _clean = function(){
+                    if (isDefined(leafletGeoJSON) && map.hasLayer(leafletGeoJSON)) {
+                        map.removeLayer(leafletGeoJSON);
+                    }
+                };
+
+                var _create = function(geojson){
+                    _clean();
+                    
+                    if (!(isDefined(geojson) && isDefined(geojson.data))) {
+                        return;
+                    }
+
+                    var onEachFeature = _hookUpEvents(geojson);
+>>>>>>> - leafletWatchHelpers for sharing unwatch code with other directives
 
                             $log.info("[AngularJS - Leaflet] loading legend service.");
 
                             return;
                         }
 
+<<<<<<< HEAD
                         if (isDefined(leafletLegend)) {
                             leafletLegend.removeFrom(map);
                             leafletLegend= null;
@@ -4229,6 +4398,22 @@ angular.module("leaflet-directive").directive('legend', function ($log, $http, l
                             leafletLegend.onAdd = leafletLegendHelpers.getOnAddArrayLegend(newLegend, legendClass);
                         }
                         leafletLegend.addTo(map);
+=======
+                    leafletGeoJSON = L.geoJson(geojson.data, geojson.options);
+                    leafletData.setGeoJSON(leafletGeoJSON, attrs.id);
+                    leafletGeoJSON.addTo(map);
+                };
+
+                _extendDirectiveControls(attrs.id, 'geojson', _create, _clean);
+
+                _maybeWatchCollection(leafletScope,'geojson', watchOptions, function(geojson){
+                    _create(geojson);
+                });
+            });
+        }
+    };
+});
+>>>>>>> - leafletWatchHelpers for sharing unwatch code with other directives
 
                     });
 
@@ -4800,8 +4985,9 @@ angular.module("leaflet-directive").factory('leafletMapEvents', function ($rootS
     };
 =======
 angular.module("leaflet-directive").directive('markers',
-    function ($log, $rootScope, $q, leafletData, leafletHelpers,
-              leafletMapDefaults, leafletMarkersHelpers, leafletEvents, leafletIterators) {
+    function ($log, $rootScope, $q, leafletData, leafletHelpers, leafletMapDefaults,
+      leafletMarkersHelpers, leafletEvents, leafletIterators, leafletWatchHelpers,
+      leafletDirectiveControlsHelpers) {
     //less terse vars to helpers
     var isDefined = leafletHelpers.isDefined,
         errorHeader = leafletHelpers.errorHeader,
@@ -4814,7 +5000,9 @@ angular.module("leaflet-directive").directive('markers',
         createMarker = leafletMarkersHelpers.createMarker,
         deleteMarker = leafletMarkersHelpers.deleteMarker,
         $it = leafletIterators,
-        _markersWatchOptions = leafletMarkersHelpers.markersWatchOptions;
+        _markersWatchOptions = leafletHelpers.watchOptions,
+        maybeWatch = leafletWatchHelpers.maybeWatch,
+        extendDirectiveControls = leafletDirectiveControlsHelpers.extend;
 
     var _maybeAddMarkerToLayer = function(layerName, layers, model, marker, doIndividualWatch, map){
 >>>>>>> ability to disable watches in markers 100%
@@ -5009,6 +5197,7 @@ angular.module("leaflet-directive").factory('leafletMarkerEvents', function ($ro
      name = "m1"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
      If nested:
      markerModel : {
      cars: {
@@ -5030,6 +5219,8 @@ angular.module("leaflet-directive").factory('leafletMarkerEvents', function ($ro
         }, watchOptions.isDeep);
     };
 
+=======
+>>>>>>> - leafletWatchHelpers for sharing unwatch code with other directives
     return {
         restrict: "A",
         scope: false,
@@ -5117,19 +5308,10 @@ angular.module("leaflet-directive").factory('leafletMarkerEvents', function ($ro
                         _addMarkers(models, map, layers, leafletMarkers, leafletScope,
                             watchOptions);
                     };
-                    //add external control to create / destroy markers without a watch
-                    leafletData.getDirectiveControls().then(function(controls){
-                        angular.extend(controls, {
-                            markers:{
-                                create: _create,
-                                clean: _clean
-                            }
-                        });
-                        leafletData.setDirectiveControls(controls, attrs.id);
-                    });
+                    extendDirectiveControls(attrs.id, 'markers', _create, _clean);
                     leafletData.setMarkers(leafletMarkers, attrs.id);
 
-                    _maybeWatch(leafletScope, watchOptions, function(newMarkers){
+                    maybeWatch(leafletScope,'markers', watchOptions, function(newMarkers){
                         _create(newMarkers);
                     });
                 });
@@ -5138,6 +5320,7 @@ angular.module("leaflet-directive").factory('leafletMarkerEvents', function ($ro
 >>>>>>> ability to disable watches in markers 100%
     };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 
@@ -5173,6 +5356,8 @@ angular.module("leaflet-directive").directive('markersWatchOptions',
 });
 
 
+=======
+>>>>>>> - leafletWatchHelpers for sharing unwatch code with other directives
 angular.module("leaflet-directive").directive('maxbounds', function ($log, leafletMapDefaults, leafletBoundsHelpers, leafletHelpers) {
 >>>>>>> ability to disable watches in markers 100%
     return {
@@ -5537,6 +5722,43 @@ angular.module("leaflet-directive")
         genDispatchLabelEvent: _genDispatchLabelEvent,
         genLabelEvents: _genLabelEvents
     };
+});
+
+/*
+    Create multiple similar directives for watchOptions to support directiveControl
+    instead. (when watches are disabled)
+*/
+['markers', 'geojson'].forEach(function(name){
+    angular.module("leaflet-directive").directive(name + 'WatchOptions',
+        function ($log, $rootScope, $q, leafletData, leafletHelpers) {
+
+            var isDefined = leafletHelpers.isDefined,
+                errorHeader = leafletHelpers.errorHeader,
+                isObject = leafletHelpers.isObject,
+                _watchOptions = leafletHelpers.watchOptions;
+
+            return {
+                restrict: "A",
+                scope: false,
+                replace: false,
+                require: ['leaflet'],
+
+                link: function (scope, element, attrs, controller) {
+                    var mapController = controller[0],
+                        leafletScope = mapController.getLeafletScope();
+
+                    mapController.getMap().then(function () {
+                        if (isDefined(scope[name + 'WatchOptions'])) {
+                            if (isObject(scope[name + 'WatchOptions']))
+                                angular.extend(_watchOptions, scope[name + 'WatchOptions']);
+                            else
+                                $log.error(errorHeader + '[' + name + 'WatchOptions] is not an object');
+                            leafletScope[name + 'WatchOptions'] = _watchOptions;
+                        }
+                    });
+                }
+            };
+    });
 });
 
 angular.module("leaflet-directive")

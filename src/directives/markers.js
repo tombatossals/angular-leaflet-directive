@@ -1,6 +1,7 @@
 angular.module("leaflet-directive").directive('markers',
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     function ($log, $rootScope, $q, leafletData, leafletHelpers, leafletMapDefaults,
       leafletMarkersHelpers, leafletEvents, leafletIterators, leafletWatchHelpers,
       leafletDirectiveControlsHelpers) {
@@ -11,6 +12,11 @@ angular.module("leaflet-directive").directive('markers',
 >>>>>>>  removed
               leafletMapDefaults, leafletMarkersHelpers, leafletEvents, leafletIterators) {
 >>>>>>> ability to disable watches in markers 100%
+=======
+    function ($log, $rootScope, $q, leafletData, leafletHelpers, leafletMapDefaults,
+      leafletMarkersHelpers, leafletEvents, leafletIterators, leafletWatchHelpers,
+      leafletDirectiveControlsHelpers) {
+>>>>>>> - leafletWatchHelpers for sharing unwatch code with other directives
     //less terse vars to helpers
     var isDefined = leafletHelpers.isDefined,
         errorHeader = leafletHelpers.errorHeader,
@@ -24,12 +30,18 @@ angular.module("leaflet-directive").directive('markers',
         deleteMarker = leafletMarkersHelpers.deleteMarker,
         $it = leafletIterators,
 <<<<<<< HEAD
+<<<<<<< HEAD
         _markersWatchOptions = leafletHelpers.watchOptions,
         maybeWatch = leafletWatchHelpers.maybeWatch,
         extendDirectiveControls = leafletDirectiveControlsHelpers.extend;
 =======
         _markersWatchOptions = leafletMarkersHelpers.markersWatchOptions;
 >>>>>>> ability to disable watches in markers 100%
+=======
+        _markersWatchOptions = leafletHelpers.watchOptions,
+        maybeWatch = leafletWatchHelpers.maybeWatch,
+        extendDirectiveControls = leafletDirectiveControlsHelpers.extend;
+>>>>>>> - leafletWatchHelpers for sharing unwatch code with other directives
 
     var _maybeAddMarkerToLayer = function(layerName, layers, model, marker, doIndividualWatch, map){
 
@@ -195,14 +207,6 @@ angular.module("leaflet-directive").directive('markers',
         }
     };
 
-    var _maybeWatch = function(scope, watchOptions, initCb){
-        var unWatch = scope.$watch('markers', function(newMarkers) {
-            initCb(newMarkers);
-            if(!watchOptions.doWatch)
-                unWatch();
-        }, watchOptions.isDeep);
-    };
-
     return {
         restrict: "A",
         scope: false,
@@ -267,6 +271,7 @@ angular.module("leaflet-directive").directive('markers',
                             watchOptions);
                     };
 <<<<<<< HEAD
+<<<<<<< HEAD
                     extendDirectiveControls(attrs.id, 'markers', _create, _clean);
                     leafletData.setMarkers(leafletMarkers, attrs.id);
 
@@ -283,9 +288,12 @@ angular.module("leaflet-directive").directive('markers',
                         });
                         leafletData.setDirectiveControls(controls, attrs.id);
                     });
+=======
+                    extendDirectiveControls(attrs.id, 'markers', _create, _clean);
+>>>>>>> - leafletWatchHelpers for sharing unwatch code with other directives
                     leafletData.setMarkers(leafletMarkers, attrs.id);
 
-                    _maybeWatch(leafletScope, watchOptions, function(newMarkers){
+                    maybeWatch(leafletScope,'markers', watchOptions, function(newMarkers){
                         _create(newMarkers);
 >>>>>>> ability to disable watches in markers 100%
                     });
@@ -294,4 +302,3 @@ angular.module("leaflet-directive").directive('markers',
         }
     };
 });
-

@@ -19,11 +19,16 @@ angular.module("leaflet-directive", []).directive('leaflet',
             decorations    : '=',
             eventBroadcast : '=',
 <<<<<<< HEAD
+<<<<<<< HEAD
             markersWatchOptions : '=',
             geojsonWatchOptions : '='
 =======
             markersWatchOptions : '='
 >>>>>>> forgot scope markersWatchOptions for binding
+=======
+            markersWatchOptions : '=',
+            geojsonWatchOptions : '='
+>>>>>>> - leafletWatchHelpers for sharing unwatch code with other directives
         },
         transclude: true,
         template: '<div class="angular-leaflet-map"><div ng-transclude></div></div>',

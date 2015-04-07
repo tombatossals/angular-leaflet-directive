@@ -478,29 +478,6 @@ angular.module("leaflet-directive")
             }, isDeepWatch);
         },
         string: _string,
-        log: _log,
-        /*
-         attrs of note:
-         watchMarkers - deep watch of every single nested marker (old way) deprecated
-
-         markersNested - markers are a nested structure by layer
-         _markersWatchOptions - object to set deep nested watches and turn off watches all together
-         (rely on control / functional updates)
-         _markersWatchOptions - Object
-             doWatch:boolean
-             isDeep:boolean (sets $watch(function,isDeep))
-             individual
-                 doWatch:boolean
-                 isDeep:boolean
-         */
-        //legacy defaults
-        markersWatchOptions: {
-            doWatch:true,
-            isDeep: true,
-            individual:{
-                doWatch:true,
-                isDeep: true
-            }
-        }
+        log: _log
     };
 });
