@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html ng-app="demoapp">
+  <head>
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="../dist/angular-leaflet-directive.min.js"></script>
+    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
+    <style>
+        .map {
+            float: left;
+        }
+    </style>
+    <script>
+        var app = angular.module("demoapp", ["leaflet-directive"]);
+        app.controller("FirstMapController", [ "$scope", "$log", "leafletData", "leafletEvents", function($scope, $log, leafletData, leafletEvents) {
+            angular.extend($scope, {
+                london: {
+                    lat: 51.505,
+                    lng: -0.09,
+                    zoom: 4
+                },
+                markers: {
+                    london: {
+                        lat: 51.505,
+                        lng: -0.09,
+                        draggable: true
+                    }
+                },
+                defaults: {
+                     tileLayer: "http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png",
+                }
+            });
+
+            $scope.events = {
+                map: {
+                    enable: leafletEvents.getAvailableMapEvents(),
+                    logic: 'emit'
+                }
+            };
+
+            var mapEvents = leafletEvents.getAvailableMapEvents();
+            for (var k in mapEvents) {
+                var eventName = 'leafletDirectiveMap.' + mapEvents[k];
+                $scope.$on(eventName, function(event){
+                    $scope.eventDetected = event.name;
+                });
+            }
+        }]);
+
+        app.controller("SecondMapController", [ "$scope", "$log", "leafletData", "leafletEvents", function($scope, $log, leafletData, leafletEvents) {
+            angular.extend($scope, {
+                spain: {
+                    lat: 40.095,
+                    lng: -3.823,
+                    zoom: 4
+                },
+                markers: {
+                    spain: {
+                        lat: 51.505,
+                        lng: -0.09,
+                        draggable: true
+                    }
+                },
+                defaults: {
+                     tileLayer: "http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png",
+                }
+            });
+
+            $scope.events = {
+                map: {
+                    enable: ['click', 'dblclick'],
+                    logic: 'emit'
+                }
+            };
+
+            var mapEvents = $scope.events.map.enable;
+            for (var k in mapEvents) {
+                var eventName = 'leafletDirectiveMap.' + mapEvents[k];
+                $scope.$on(eventName, function(event){
+                    $scope.eventDetected = event.name;
+                });
+            }
+        }]);
+    </script>
+  </head>
+  <body>
+    <h1>Different map events broadcasting</h1>
+    <p>We can filter which leaflet events we propagate upwars using the event-broadcast directive property, let's see how it works:</p>
+    <div class="map" ng-controller="FirstMapController">
+        <h3>This map propagates all events</h3>
+        <leaflet style="float: left;" event-broadcast="events" center="london" markers="markers" width="480" height="300" defaults="defaults"></leaflet>
+        <p>Event: <strong ng-bind="eventDetected"></strong></p>
+    </div>
+    <div class="map" ng-controller="SecondMapController">
+        <h3>This map propagates the "click" and "dblclick" events</h3>
+        <leaflet center="spain" event-broadcast="events" markers="markers" width="480" height="300"></leaflet>
+        <p>Event: <strong ng-bind="eventDetected"></strong></p>
+    </div>
+    <br style="clear: both;" />
+  </body>
+</html>
