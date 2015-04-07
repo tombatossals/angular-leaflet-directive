@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
     <script>
         var app = angular.module("demoapp", ["leaflet-directive"]);
-        app.controller("DemoController", [ "$scope", "leafletEvents", function($scope, leafletEvents) {
+        app.controller("BasicEventsController", [ "$scope", "leafletEvents", function($scope, leafletEvents) {
 
             $scope.center  = {
                 lat: 51.505,
@@ -26,12 +26,12 @@
         }]);
     </script>
   </head>
-  <body ng-controller="DemoController">
+  <body ng-controller="BasicEventsController">
+    <leaflet center="center" width="100%" height="400px"></leaflet>
     <h1>Events example</h1>
     <p>All map events are propagated by default.</p>
-    <ul ng-cloak>
+    <ul>
         <li><strong ng-bind="eventDetected"></strong> event caught in listener.</li>
     </ul>
-    <leaflet center="center" width="640px" height="400px"></leaflet>
   </body>
 </html>

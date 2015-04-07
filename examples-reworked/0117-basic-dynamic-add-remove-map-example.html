@@ -13,8 +13,9 @@
         }
     </style>
     <script>
-        var app  = angular.module('demoApp',['ngRoute', 'leaflet-directive'])
-        .config(function ($routeProvider) {
+        var app  = angular.module('demoApp',['ngRoute', 'leaflet-directive']);
+        
+        app.config(function ($routeProvider) {
             $routeProvider
                 .when('/', {
                     template: '<a href="#/map">Go to Map</a>'

@@ -77,9 +77,7 @@ var writeController = function(script, examplefile, controllers_directory) {
     if (outfilename) {
         outfilename = path.join(controllers_directory, outfilename);
         if (!fs.existsSync(outfilename)) {
-            var file = fs.createWriteStream(outfilename);
-            file.write(outScript.join('\n'), function() {
-                file.end();
+            fs.writeFile(outfilename, outScript.join('\n'), function() {
                 df.resolve();
             });
         } else {
@@ -101,16 +99,19 @@ var generateControllersFromExamples = function(examples_directory, controllers_d
         list.forEach(function(filename) {
             if (isAnExample(filename)) {
                 var html = fs.readFileSync(path.join(__dirname, 'examples-reworked', filename));
-                var document = jsdom(html.toString());
-                var scripts = document.getElementsByTagName('script');
-                var last = scripts.length -1;
-                var script = scripts[last].innerHTML;
-
-                l.push(writeController(script, filename, controllers_directory));
+                jsdom.env({
+                    html: html.toString(),
+                    done: function(err, window) {
+                        var scripts = window.document.getElementsByTagName('script');
+                        var last = scripts.length -1;
+                        var script = scripts[last].innerHTML;
+                        l.push(writeController(script, filename, controllers_directory));
+                    }
+                });
             }
         });
 
-        Q.all(l).then(function() {
+        Q.allSettled(l).then(function() {
             df.resolve();
         });
     });
@@ -150,6 +151,7 @@ var extractDate = function(filename) {
 };
 
 var generateExamplesJSONFile = function(examples_directory, json_file) {
+    return;
     var df = Q.defer();
     var examples = {};
     fs.readdir(examples_directory, function(err, list) {
@@ -176,9 +178,7 @@ var generateExamplesJSONFile = function(examples_directory, json_file) {
             }
         });
 
-        var f = fs.createWriteStream(json_file);
-        f.write(JSON.stringify(examples, null, 4), function() {
-            f.close();
+        fs.writeFile(json_file, JSON.stringify(examples, null, 4), function(err) {
             df.resolve();
         });
     });
@@ -191,7 +191,6 @@ mkdirp(controllers_directory, function(err) {
     cleanJavascriptFilesFromControllersDirectory(controllers_directory).then(function() {
         var examples_directory = path.join(__dirname, 'examples-reworked');
         generateControllersFromExamples(examples_directory, controllers_directory).then(function() {
-
             var json_file = path.join(__dirname, 'examples-reworked', 'json', 'examples.json');
             generateExamplesJSONFile(examples_directory, json_file);
         });
