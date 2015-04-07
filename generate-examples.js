@@ -16,25 +16,28 @@ var isJavascript = function(filename) {
     return /.*\.js/.test(filename);
 };
 
+var deleteFileIfJavascript = function(filename) {
+    var df = Q.defer();
+    if (isJavascript(filename)) {
+        fs.unlink(filename, function() {
+            df.resolve();
+        });
+    } else {
+        df.resolve();
+    }
+
+    return df.promise;
+};
+
 var cleanJavascriptFilesFromControllersDirectory = function(dir) {
     var df = Q.defer();
     fs.readdir(dir, function(err, list) {
         var l = [];
-        list.forEach(function(filename) {
-            l.push(function() {
-                var df = Q.defer();
-                if (isJavascript(filename)) {
-                    fs.unlink(path.join(dir, filename), function() {
-                        df.resolve();
-                    });
-                } else {
-                    df.resolve();
-                }
-
-                return df.promise;
-            });
+        var files = list.map(function(file) {
+            return path.join(dir, file);
         });
-        Q.all(l).then(function() {
+        files.forEach(deleteFileIfJavascript);
+        Q.allSettled(l).then(function(result) {
             df.resolve();
         });
     });
@@ -186,7 +189,6 @@ var generateExamplesJSONFile = function(examples_directory, json_file) {
 var controllers_directory = path.join(__dirname, 'examples-reworked', 'js', 'controllers');
 mkdirp(controllers_directory, function(err) {
     cleanJavascriptFilesFromControllersDirectory(controllers_directory).then(function() {
-
         var examples_directory = path.join(__dirname, 'examples-reworked');
         generateControllersFromExamples(examples_directory, controllers_directory).then(function() {
 
