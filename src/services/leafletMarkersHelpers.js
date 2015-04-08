@@ -231,22 +231,25 @@ angular.module("leaflet-directive")
             groups[groupName].addLayer(marker);
         },
 
-        listenMarkerEvents: function(marker, markerData, leafletScope, watching) {
+        listenMarkerEvents: function(marker, markerData, leafletScope) {
+            //these should be deregistered on destroy .. possible leake
+            //handles should not be closures since they will need to be removed
             marker.on("popupopen", function(/* event */) {
-                if (watching) {
-                    safeApply(leafletScope, function() {
-                        markerData.focus = true;
-                    });
-                } else {
-                    _manageOpenPopup(marker, markerData);
-                }
+                safeApply(leafletScope, function() {
+                    markerData.focus = true;
+                    _manageOpenPopup(marker, markerData);//needed since markerData is now a copy
+                });
             });
             marker.on("popupclose", function(/* event */) {
-                if (watching) {
-                    safeApply(leafletScope, function() {
-                        markerData.focus = false;
-                    });
-                }
+                safeApply(leafletScope, function() {
+                    markerData.focus = false;
+                });
+            });
+            marker.on("add", function(/* event */) {
+                safeApply(leafletScope, function() {
+                  if('label' in markerData)
+                    _manageOpenLabel(marker, markerData);
+                });
             });
         },
 
