@@ -1,5 +1,5 @@
 /*!
-*  angular-leaflet-directive 0.7.11 2015-04-07
+*  angular-leaflet-directive 0.7.11 2015-04-08
 *  angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps
 *  git: https://github.com/tombatossals/angular-leaflet-directive
 */
@@ -472,7 +472,8 @@ angular.module("leaflet-directive")
 
 angular.module("leaflet-directive").factory('leafletHelpers', ["$q", "$log", function ($q, $log) {
     var _errorHeader = '[AngularJS - Leaflet] ';
-
+    var _copy = angular.copy;
+    var _clone = _copy;
     /*
     For parsing paths to a field in an object
 
@@ -574,6 +575,8 @@ angular.module("leaflet-directive").factory('leafletHelpers', ["$q", "$log", fun
     };
 
     return {
+        copy:_copy,
+        clone:_clone,
         errorHeader: _errorHeader,
         getObjectValue: _getObjectValue,
         getObjectArrayPath:_getObjectArrayPath,
@@ -3594,7 +3597,11 @@ angular.module("leaflet-directive").directive('markers',
             }
 
             if (!isDefined(leafletMarkers[newName])) {
-                var model = markersToRender[newName];
+                //(nmccready) very important to not have model changes when lObject is changed
+                //this might be desirable in some cases but it causes two-way binding to lObject which is not ideal
+                //if it is left as the reference then all changes from oldModel vs newModel are ignored
+                //see _destroy (where modelDiff becomes meaningless if we do not copy here)
+                var model = Helpers.copy(markersToRender[newName]);
                 var marker = createMarker(model);
                 var layerName = (model? model.layer : undefined) || maybeLayerName; //original way takes pref
                 if (!isDefined(marker)) {
@@ -3644,16 +3651,27 @@ angular.module("leaflet-directive").directive('markers',
             }
         }
     };
-    var _destroy = function(markerModels, lMarkers, map, layers){
+    var _destroy = function(markerModels, oldMarkerModels, lMarkers, map, layers){
         // Delete markers from the array
-        var hasLogged = false;
+        var hasLogged = false,
+          modelIsDiff = false;
+        var doCheckOldModel =  isDefined(oldMarkerModels);
         for (var name in lMarkers) {
             if(!hasLogged) {
                 $log.debug(errorHeader + "[markers] destroy: ");
                 hasLogged = true;
             }
-            if (!isDefined(markerModels) || !Object.keys(markerModels).length ||
-                !isDefined(markerModels[name]) || !Object.keys(markerModels[name]).length) {
+
+            if(doCheckOldModel){
+              //might want to make the option (in watch options) to disable deep checking
+              //ie the options to only check !== (reference check) instead of angular.equals (slow)
+              modelIsDiff = !angular.equals(markerModels[name],oldMarkerModels[name]);
+            }
+            if (!isDefined(markerModels) ||
+                !Object.keys(markerModels).length ||
+                !isDefined(markerModels[name]) ||
+                !Object.keys(markerModels[name]).length ||
+                modelIsDiff) {
                 deleteMarker(lMarkers[name], map, layers);
                 delete lMarkers[name];
             }
@@ -3688,18 +3706,18 @@ angular.module("leaflet-directive").directive('markers',
 
                 // backwards compat
                 if(isDefined(attrs.watchMarkers))
-                    watchOptions.individual.doWatch =
+                  watchOptions.doWatch = watchOptions.individual.doWatch =
                         (!isDefined(attrs.watchMarkers) || Helpers.isTruthy(attrs.watchMarkers));
 
                 var isNested = (isDefined(attrs.markersNested) && Helpers.isTruthy(attrs.markersNested));
 
                 getLayers().then(function(layers) {
-                    var _clean = function(models){
-                        _destroy(models, leafletMarkers, map, layers);
+                    var _clean = function(models, oldModels){
+                        _destroy(models, oldModels, leafletMarkers, map, layers);
                     };
 
-                    var _create = function(models){
-                        _clean(models);
+                    var _create = function(models, oldModels){
+                        _clean(models, oldModels);
                         if(isNested) {
                             $it.each(models, function(markersToAdd, layerName) {
                                 _addMarkers(markersToAdd, map, layers, leafletMarkers, leafletScope,
@@ -3713,8 +3731,8 @@ angular.module("leaflet-directive").directive('markers',
                     extendDirectiveControls(attrs.id, 'markers', _create, _clean);
                     leafletData.setMarkers(leafletMarkers, attrs.id);
 
-                    maybeWatch(leafletScope,'markers', watchOptions, function(newMarkers){
-                        _create(newMarkers);
+                    maybeWatch(leafletScope,'markers', watchOptions, function(newMarkers, oldMarkers){
+                        _create(newMarkers, oldMarkers);
                     });
                 });
             });

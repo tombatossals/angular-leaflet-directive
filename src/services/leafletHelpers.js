@@ -1,6 +1,7 @@
 angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log) {
     var _errorHeader = '[AngularJS - Leaflet] ';
-
+    var _copy = angular.copy;
+    var _clone = _copy;
     /*
     For parsing paths to a field in an object
 
@@ -102,6 +103,8 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
     };
 
     return {
+        copy:_copy,
+        clone:_clone,
         errorHeader: _errorHeader,
         getObjectValue: _getObjectValue,
         getObjectArrayPath:_getObjectArrayPath,
