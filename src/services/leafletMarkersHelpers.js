@@ -248,12 +248,15 @@ angular.module("leaflet-directive")
                 safeApply(leafletScope, function() {
                     markerData.focus = false;
                 });
+<<<<<<< HEAD
             });
             marker.on("add", function(/* event */) {
                 safeApply(leafletScope, function() {
                   if('label' in markerData)
                     _manageOpenLabel(marker, markerData);
                 });
+=======
+>>>>>>> keep popups working
             });
             marker.on("add", function(/* event */) {
                 if (watching) {
