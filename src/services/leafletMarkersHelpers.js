@@ -232,6 +232,8 @@ angular.module("leaflet-directive")
         },
 
         listenMarkerEvents: function(marker, markerData, leafletScope, watching) {
+            //these should be deregistered on destroy .. possible leake
+            //handles should not be closures since they will need to be removed
             marker.on("popupopen", function(/* event */) {
                 if (watching) {
                     safeApply(leafletScope, function() {
@@ -245,6 +247,16 @@ angular.module("leaflet-directive")
                 if (watching) {
                     safeApply(leafletScope, function() {
                         markerData.focus = false;
+                    });
+                }
+            });
+            marker.on("add", function(/* event */) {
+                if (watching) {
+                    safeApply(leafletScope, function() {
+                      if('label' in markerData)
+                        _manageOpenLabel(marker, markerData);
+                      if('message' in markerData)
+                        _manageOpenPopup(marker, markerData);
                     });
                 }
             });
