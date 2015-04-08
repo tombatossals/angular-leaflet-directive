@@ -231,7 +231,11 @@ angular.module("leaflet-directive")
             groups[groupName].addLayer(marker);
         },
 
+<<<<<<< HEAD
         listenMarkerEvents: function(marker, markerData, leafletScope) {
+=======
+        listenMarkerEvents: function(marker, markerData, leafletScope, watching) {
+>>>>>>> issue #657
             //these should be deregistered on destroy .. possible leake
             //handles should not be closures since they will need to be removed
             marker.on("popupopen", function(/* event */) {
@@ -250,6 +254,16 @@ angular.module("leaflet-directive")
                   if('label' in markerData)
                     _manageOpenLabel(marker, markerData);
                 });
+            });
+            marker.on("add", function(/* event */) {
+                if (watching) {
+                    safeApply(leafletScope, function() {
+                      if('label' in markerData)
+                        _manageOpenLabel(marker, markerData);
+                      if('message' in markerData)
+                        _manageOpenPopup(marker, markerData);
+                    });
+                }
             });
         },
 

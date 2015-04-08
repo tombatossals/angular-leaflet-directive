@@ -3086,6 +3086,71 @@ angular.module("leaflet-directive").factory('leafletPathsHelpers', ["$rootScope"
                 $log.error("[AngularJS - Leaflet] Invalid data passed to the " + path.type + " path");
                 return;
             }
+<<<<<<< HEAD
+=======
+            if (!isDefined(groups[groupName])) {
+                groups[groupName] = new L.MarkerClusterGroup(groupOptions);
+                map.addLayer(groups[groupName]);
+            }
+            groups[groupName].addLayer(marker);
+        },
+
+        listenMarkerEvents: function(marker, markerData, leafletScope, watching) {
+            //these should be deregistered on destroy .. possible leake
+            //handles should not be closures since they will need to be removed
+            marker.on("popupopen", function(/* event */) {
+                if (watching) {
+                    safeApply(leafletScope, function() {
+                        markerData.focus = true;
+                    });
+                } else {
+                    _manageOpenPopup(marker, markerData);
+                }
+            });
+            marker.on("popupclose", function(/* event */) {
+                if (watching) {
+                    safeApply(leafletScope, function() {
+                        markerData.focus = false;
+                    });
+                }
+            });
+            marker.on("add", function(/* event */) {
+                if (watching) {
+                    safeApply(leafletScope, function() {
+                      if('label' in markerData)
+                        _manageOpenLabel(marker, markerData);
+                      if('message' in markerData)
+                        _manageOpenPopup(marker, markerData);
+                    });
+                }
+            });
+        },
+
+        addMarkerWatcher: function(marker, name, leafletScope, layers, map, isDeepWatch) {
+            var markerWatchPath = Helpers.getObjectArrayPath("markers." + name);
+            isDeepWatch = defaultTo(isDeepWatch, true);
+            //TODO:break up this 200 line function to be readable (nmccready)
+            var clearWatch = leafletScope.$watch(markerWatchPath, function(markerData, oldMarkerData) {
+                if (!isDefined(markerData)) {
+                    _deleteMarker(marker, map, layers);
+                    clearWatch();
+                    return;
+                }
+
+                if (!isDefined(oldMarkerData)) {
+                    return;
+                }
+
+                // Update the lat-lng property (always present in marker properties)
+                if (!geoHlp.validateCoords(markerData)) {
+                    $log.warn('There are problems with lat-lng data, please verify your marker model');
+                    _deleteMarker(marker, map, layers);
+                    return;
+                }
+
+                // watch is being initialized if old and new object is the same
+                var isInitializing = markerData === oldMarkerData;
+>>>>>>> issue #657
 
             return pathTypes[path.type].createPath(options);
         }
