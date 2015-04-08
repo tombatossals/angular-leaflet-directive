@@ -232,10 +232,14 @@ angular.module("leaflet-directive")
         },
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         listenMarkerEvents: function(marker, markerData, leafletScope) {
 =======
         listenMarkerEvents: function(marker, markerData, leafletScope, watching) {
 >>>>>>> issue #657
+=======
+        listenMarkerEvents: function(marker, markerData, leafletScope) {
+>>>>>>> watching removed from listenMarkerEvents
             //these should be deregistered on destroy .. possible leake
             //handles should not be closures since they will need to be removed
             marker.on("popupopen", function(/* event */) {
@@ -259,12 +263,10 @@ angular.module("leaflet-directive")
 >>>>>>> keep popups working
             });
             marker.on("add", function(/* event */) {
-                if (watching) {
-                    safeApply(leafletScope, function() {
-                      if('label' in markerData)
-                        _manageOpenLabel(marker, markerData);
-                    });
-                }
+                safeApply(leafletScope, function() {
+                  if('label' in markerData)
+                    _manageOpenLabel(marker, markerData);
+                });
             });
         },
 
