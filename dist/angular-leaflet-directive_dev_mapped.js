@@ -3501,8 +3501,6 @@ angular.module("leaflet-directive").directive('controls', function ($log, leafle
                     safeApply(leafletScope, function() {
                       if('label' in markerData)
                         _manageOpenLabel(marker, markerData);
-                      if('message' in markerData)
-                        _manageOpenPopup(marker, markerData);
                     });
                 }
             });

@@ -3119,8 +3119,6 @@ angular.module("leaflet-directive").factory('leafletPathsHelpers', ["$rootScope"
                     safeApply(leafletScope, function() {
                       if('label' in markerData)
                         _manageOpenLabel(marker, markerData);
-                      if('message' in markerData)
-                        _manageOpenPopup(marker, markerData);
                     });
                 }
             });
