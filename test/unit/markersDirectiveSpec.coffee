@@ -27,18 +27,19 @@ describe 'Directive: leaflet', ->
                 lat: 2.02
                 lng: 4.04
         mainLayers =
-            baselayers: osm:
-                name: 'OpenStreetMap'
-                type: 'xyz'
-                url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
-                layerOptions:
-                    subdomains: [
-                        'a'
-                        'b'
-                        'c'
-                    ]
-                    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                    continuousWorld: true
+            baselayers:
+                osm:
+                    name: 'OpenStreetMap'
+                    type: 'xyz'
+                    url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+                    layerOptions:
+                        subdomains: [
+                            'a'
+                            'b'
+                            'c'
+                        ]
+                        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                        continuousWorld: true
             overlays:
                 cars:
                     name: 'cars'
@@ -56,7 +57,8 @@ describe 'Directive: leaflet', ->
         main_marker =
             lat: 0.966
             lng: 2.02
-        angular.extend $rootScope, markers: main_marker: main_marker
+        angular.extend $rootScope, markers:
+            main_marker: main_marker
         element = angular.element('<leaflet markers="markers"></leaflet>')
         element = $compile(element)($rootScope)
         $rootScope.$digest()
@@ -72,7 +74,9 @@ describe 'Directive: leaflet', ->
                 lng: 2.02
 
             @testRunner = (postRunnerCb, preRunnerCb) ->
-                angular.extend $rootScope, markers: layer1: main_marker: main_marker
+                angular.extend $rootScope, markers:
+                    layer1:
+                        main_marker: main_marker
                 if preRunnerCb
                     preRunnerRet = preRunnerCb(main_marker)
                     main_marker = if preRunnerRet then preRunnerRet else main_marker
@@ -85,7 +89,7 @@ describe 'Directive: leaflet', ->
                         postRunnerCb main_marker, leafletMainMarker
         afterEach ->
             self = this
-            [ 'testRunner' ].forEach (key) ->
+            ['testRunner'].forEach (key) ->
                 delete self[key]
 
         # Marker
@@ -106,7 +110,8 @@ describe 'Directive: leaflet', ->
             lat: 0.966
             lng: 2.02
             message: 'this is paris'
-        angular.extend $rootScope, markers: marker: marker
+        angular.extend $rootScope, markers:
+            marker: marker
         element = angular.element('<leaflet markers="markers"></leaflet>')
         element = $compile(element)($rootScope)
         $rootScope.$digest()
@@ -120,7 +125,11 @@ describe 'Directive: leaflet', ->
             lng: 2.02
             message: '<p>{{model.color}}</p>'
             focus: true
-        angular.extend $rootScope, { markers: marker: marker }, model: color: 'blue'
+        angular.extend $rootScope, {
+            markers:
+                marker: marker
+        }, model:
+            color: 'blue'
         element = angular.element('<leaflet markers="markers"></leaflet>')
         element = $compile(element)($rootScope)
         $rootScope.$digest()
@@ -135,7 +144,8 @@ describe 'Directive: leaflet', ->
 
     it 'message should be compiled in specified scope', ->
         arbitraryIsolateScope = $rootScope.$new(true)
-        angular.extend arbitraryIsolateScope, model: color: 'angular'
+        angular.extend arbitraryIsolateScope, model:
+            color: 'angular'
         marker =
             lat: 0.966
             lng: 2.02
@@ -143,7 +153,8 @@ describe 'Directive: leaflet', ->
                 arbitraryIsolateScope
             message: '<p>{{model.color}}</p>'
             focus: true
-        angular.extend $rootScope, markers: marker: marker
+        angular.extend $rootScope, markers:
+            marker: marker
         element = angular.element('<leaflet markers="markers"></leaflet>')
         element = $compile(element)($rootScope)
         $rootScope.$digest()
@@ -173,8 +184,10 @@ describe 'Directive: leaflet', ->
             message: 'this is paris'
             label:
                 message: 'original'
-                options: clickable: true
-        angular.extend $rootScope, markers: marker: marker
+                options:
+                    clickable: true
+        angular.extend $rootScope, markers:
+            marker: marker
         element = angular.element('<leaflet markers="markers"></leaflet>')
         $compile(element) $rootScope
         $rootScope.$digest()
@@ -414,7 +427,7 @@ describe 'Directive: leaflet', ->
                 mainMarkers.paris.lat = 'not a number :P'
                 $rootScope.$digest()
                 expect(map.hasLayer(markers.paris)).toBe false
-                #expect(overlays.cars.hasLayer(markers.paris)).toBe(false);
+        #expect(overlays.cars.hasLayer(markers.paris)).toBe(false);
 
         it 'updates lat-lng', ->
             angular.extend $rootScope, markers: mainMarkers
@@ -567,10 +580,11 @@ describe 'Directive: leaflet', ->
                     12
                     40
                 ]
-            mainMarkers = m1:
-                lat: 123
-                lng: 456
-                icon: leafIcon
+            mainMarkers =
+                m1:
+                    lat: 123
+                    lng: 456
+                    icon: leafIcon
             scope = $rootScope.$new()
             scope.markers = mainMarkers
 

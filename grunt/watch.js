@@ -1,18 +1,20 @@
 'use strict';
 
+var _files = ['src/**/*.js', 'test/unit/**.js', 'test/unit/**.coffee',  'test/e2e/**.js'];
+
 module.exports = function (grunt, options) {
     return {
         options : {
             livereload: 7777
         },
         fast: {
-            files: ['src/**/*.js', 'test/unit/**.js', 'test/e2e/**.js'],
+            files: _files,
             tasks: [
                 'fast-build'
             ]
         },
         source: {
-            files: ['src/**/*.js', 'test/unit/**.js', 'test/e2e/**.js'],
+            files: _files,
             tasks: [
                 'fast-build',
                 'uglify',
@@ -21,14 +23,21 @@ module.exports = function (grunt, options) {
             ]
         },
         unit: {
-            files: ['src/**/*.js', 'test/unit/**.js', 'test/e2e/**.js'],
+            files: _files,
             tasks: [
                 'fast-build',
                 'karma:unit'
             ]
         },
+        'unit-mocha': {
+            files: _files,
+            tasks: [
+                'fast-build',
+                'karma:unit-mocha'
+            ]
+        },
         chrome: {
-            files: ['src/**/*.js', 'test/unit/**.js', 'test/e2e/**.js'],
+            files: _files,
             tasks: [
                 'fast-build',
                 'karma:unit-chrome'
