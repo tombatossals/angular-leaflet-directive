@@ -28,6 +28,9 @@ describe 'Directive: leaflet', ->
                 lng: 4.04
         mainLayers =
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> - geojson nested working
             baselayers:
                 osm:
                     name: 'OpenStreetMap'
@@ -41,6 +44,7 @@ describe 'Directive: leaflet', ->
                         ]
                         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                         continuousWorld: true
+<<<<<<< HEAD
 =======
             baselayers: osm:
                 name: 'OpenStreetMap'
@@ -55,6 +59,8 @@ describe 'Directive: leaflet', ->
                     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     continuousWorld: true
 >>>>>>> geojson support for parsing to cerate markers
+=======
+>>>>>>> - geojson nested working
             overlays:
                 cars:
                     name: 'cars'
@@ -73,11 +79,16 @@ describe 'Directive: leaflet', ->
             lat: 0.966
             lng: 2.02
 <<<<<<< HEAD
+<<<<<<< HEAD
         angular.extend $rootScope, markers:
             main_marker: main_marker
 =======
         angular.extend $rootScope, markers: main_marker: main_marker
 >>>>>>> geojson support for parsing to cerate markers
+=======
+        angular.extend $rootScope, markers:
+            main_marker: main_marker
+>>>>>>> - geojson nested working
         element = angular.element('<leaflet markers="markers"></leaflet>')
         element = $compile(element)($rootScope)
         $rootScope.$digest()
@@ -94,12 +105,18 @@ describe 'Directive: leaflet', ->
 
             @testRunner = (postRunnerCb, preRunnerCb) ->
 <<<<<<< HEAD
+<<<<<<< HEAD
                 angular.extend $rootScope, markers:
                     layer1:
                         main_marker: main_marker
 =======
                 angular.extend $rootScope, markers: layer1: main_marker: main_marker
 >>>>>>> geojson support for parsing to cerate markers
+=======
+                angular.extend $rootScope, markers:
+                    layer1:
+                        main_marker: main_marker
+>>>>>>> - geojson nested working
                 if preRunnerCb
                     preRunnerRet = preRunnerCb(main_marker)
                     main_marker = if preRunnerRet then preRunnerRet else main_marker
@@ -113,10 +130,14 @@ describe 'Directive: leaflet', ->
         afterEach ->
             self = this
 <<<<<<< HEAD
+<<<<<<< HEAD
             ['testRunner'].forEach (key) ->
 =======
             [ 'testRunner' ].forEach (key) ->
 >>>>>>> geojson support for parsing to cerate markers
+=======
+            ['testRunner'].forEach (key) ->
+>>>>>>> - geojson nested working
                 delete self[key]
 
         # Marker
@@ -138,11 +159,16 @@ describe 'Directive: leaflet', ->
             lng: 2.02
             message: 'this is paris'
 <<<<<<< HEAD
+<<<<<<< HEAD
         angular.extend $rootScope, markers:
             marker: marker
 =======
         angular.extend $rootScope, markers: marker: marker
 >>>>>>> geojson support for parsing to cerate markers
+=======
+        angular.extend $rootScope, markers:
+            marker: marker
+>>>>>>> - geojson nested working
         element = angular.element('<leaflet markers="markers"></leaflet>')
         element = $compile(element)($rootScope)
         $rootScope.$digest()
@@ -157,14 +183,20 @@ describe 'Directive: leaflet', ->
             message: '<p>{{model.color}}</p>'
             focus: true
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> - geojson nested working
         angular.extend $rootScope, {
             markers:
                 marker: marker
         }, model:
             color: 'blue'
+<<<<<<< HEAD
 =======
         angular.extend $rootScope, { markers: marker: marker }, model: color: 'blue'
 >>>>>>> geojson support for parsing to cerate markers
+=======
+>>>>>>> - geojson nested working
         element = angular.element('<leaflet markers="markers"></leaflet>')
         element = $compile(element)($rootScope)
         $rootScope.$digest()
@@ -180,11 +212,16 @@ describe 'Directive: leaflet', ->
     it 'message should be compiled in specified scope', ->
         arbitraryIsolateScope = $rootScope.$new(true)
 <<<<<<< HEAD
+<<<<<<< HEAD
         angular.extend arbitraryIsolateScope, model:
             color: 'angular'
 =======
         angular.extend arbitraryIsolateScope, model: color: 'angular'
 >>>>>>> geojson support for parsing to cerate markers
+=======
+        angular.extend arbitraryIsolateScope, model:
+            color: 'angular'
+>>>>>>> - geojson nested working
         marker =
             lat: 0.966
             lng: 2.02
@@ -193,11 +230,16 @@ describe 'Directive: leaflet', ->
             message: '<p>{{model.color}}</p>'
             focus: true
 <<<<<<< HEAD
+<<<<<<< HEAD
         angular.extend $rootScope, markers:
             marker: marker
 =======
         angular.extend $rootScope, markers: marker: marker
 >>>>>>> geojson support for parsing to cerate markers
+=======
+        angular.extend $rootScope, markers:
+            marker: marker
+>>>>>>> - geojson nested working
         element = angular.element('<leaflet markers="markers"></leaflet>')
         element = $compile(element)($rootScope)
         $rootScope.$digest()
@@ -228,14 +270,20 @@ describe 'Directive: leaflet', ->
             label:
                 message: 'original'
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> - geojson nested working
                 options:
                     clickable: true
         angular.extend $rootScope, markers:
             marker: marker
+<<<<<<< HEAD
 =======
                 options: clickable: true
         angular.extend $rootScope, markers: marker: marker
 >>>>>>> geojson support for parsing to cerate markers
+=======
+>>>>>>> - geojson nested working
         element = angular.element('<leaflet markers="markers"></leaflet>')
         $compile(element) $rootScope
         $rootScope.$digest()
@@ -476,10 +524,14 @@ describe 'Directive: leaflet', ->
                 $rootScope.$digest()
                 expect(map.hasLayer(markers.paris)).toBe false
 <<<<<<< HEAD
+<<<<<<< HEAD
         #expect(overlays.cars.hasLayer(markers.paris)).toBe(false);
 =======
                 #expect(overlays.cars.hasLayer(markers.paris)).toBe(false);
 >>>>>>> geojson support for parsing to cerate markers
+=======
+        #expect(overlays.cars.hasLayer(markers.paris)).toBe(false);
+>>>>>>> - geojson nested working
 
         it 'updates lat-lng', ->
             angular.extend $rootScope, markers: mainMarkers
@@ -633,17 +685,23 @@ describe 'Directive: leaflet', ->
                     40
                 ]
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> - geojson nested working
             mainMarkers =
                 m1:
                     lat: 123
                     lng: 456
                     icon: leafIcon
+<<<<<<< HEAD
 =======
             mainMarkers = m1:
                 lat: 123
                 lng: 456
                 icon: leafIcon
 >>>>>>> geojson support for parsing to cerate markers
+=======
+>>>>>>> - geojson nested working
             scope = $rootScope.$new()
             scope.markers = mainMarkers
 

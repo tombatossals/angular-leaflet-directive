@@ -5,6 +5,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 *  angular-leaflet-directive 0.7.11 2015-04-10
 =======
 *  angular-leaflet-directive 0.7.11 2015-03-31
@@ -24,6 +25,9 @@
 =======
 *  angular-leaflet-directive 0.7.11 2015-04-08
 >>>>>>> resolve issue #676
+=======
+*  angular-leaflet-directive 0.7.11 2015-04-10
+>>>>>>> - geojson nested working
 *  angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps
 *  git: https://github.com/tombatossals/angular-leaflet-directive
 */
@@ -2403,8 +2407,17 @@ angular.module("leaflet-directive")
                 $log.error(errorHeader + 'The MakiMarkers Plugin is not loaded.');
             }
 
+<<<<<<< HEAD
             return new L.MakiMarkers.icon(iconData);
         }
+=======
+angular.module("leaflet-directive")
+.factory('leafletLayerHelpers', function ($rootScope, $log, leafletHelpers) {
+    var Helpers = leafletHelpers,
+        isString = leafletHelpers.isString,
+        isObject = leafletHelpers.isObject,
+        isDefined = leafletHelpers.isDefined;
+>>>>>>> - geojson nested working
 
         if (isDefined(iconData) && isDefined(iconData.type) && iconData.type === 'extraMarker') {
             if (!ExtraMarkersPlugin.isLoaded()) {
@@ -4331,11 +4344,13 @@ angular.module("leaflet-directive").directive('legend', function ($log, $http, l
 =======
 angular.module("leaflet-directive")
 .directive('geojson', function ($log, $rootScope, leafletData, leafletHelpers,
-    leafletWatchHelpers, leafletDirectiveControlsHelpers) {
+    leafletWatchHelpers, leafletDirectiveControlsHelpers,leafletIterators) {
 
     var _maybeWatchCollection = leafletWatchHelpers.maybeWatchCollection,
         _watchOptions = leafletHelpers.watchOptions,
-        _extendDirectiveControls = leafletDirectiveControlsHelpers.extend;
+        _extendDirectiveControls = leafletDirectiveControlsHelpers.extend,
+        hlp = leafletHelpers,
+        $it = leafletIterators;
 
     return {
         restrict: "A",
@@ -4365,8 +4380,253 @@ angular.module("leaflet-directive")
                     var onEachFeature;
 >>>>>>> - leafletWatchHelpers for sharing unwatch code with other directives
 
+<<<<<<< HEAD
                             return;
                         }
+=======
+                    if (angular.isFunction(geojson.onEachFeature)) {
+                        onEachFeature = geojson.onEachFeature;
+                    } else {
+                        onEachFeature = function(feature, layer) {
+                            if (leafletHelpers.LabelPlugin.isLoaded() && isDefined(geojson.label)) {
+                                layer.bindLabel(feature.properties.description);
+                            }
+
+                            layer.on({
+                                mouseover: function(e) {
+                                    safeApply(leafletScope, function() {
+                                        $rootScope.$broadcast('leafletDirectiveMap.geojsonMouseover', feature, e);
+                                    });
+                                },
+                                mouseout: function(e) {
+                                    if (resetStyleOnMouseout) {
+                                        leafletGeoJSON.resetStyle(e.target);
+                                    }
+                                    safeApply(leafletScope, function() {
+                                        $rootScope.$broadcast('leafletDirectiveMap.geojsonMouseout', e);
+                                    });
+                                },
+                                click: function(e) {
+                                    safeApply(leafletScope, function() {
+                                        $rootScope.$broadcast('leafletDirectiveMap.geojsonClick', feature, e);
+                                    });
+                                }
+                            });
+                        };
+                    }
+                    return onEachFeature;
+                };
+
+                var isNested = (hlp.isDefined(attrs.geojsonNested) &&
+                    hlp.isTruthy(attrs.geojsonNested));
+
+                var _clean = function(){
+                    var _remove = function(lObject) {
+                        if (isDefined(lObject) && map.hasLayer(lObject)) {
+                            map.removeLayer(lObject);
+                        }
+                    };
+                    if(isNested) {
+                        $it.each(leafletGeoJSON, function(lObject) {
+                            _remove(lObject);
+                        });
+                        return;
+                    }
+                    _remove(leafletGeoJSON);
+                };
+
+                var _addGeojson = function(geojson, maybeName){
+                    if (!(isDefined(geojson) && isDefined(geojson.data))) {
+                        return;
+                    }
+                    var onEachFeature = _hookUpEvents(geojson);
+
+                    if (!isDefined(geojson.options)) {
+                        geojson.options = {
+                            style: geojson.style,
+                            filter: geojson.filter,
+                            onEachFeature: onEachFeature,
+                            pointToLayer: geojson.pointToLayer
+                        };
+                    }
+
+                    var lObject = L.geoJson(geojson.data, geojson.options);
+
+                    if(maybeName && hlp.isString(maybeName)){
+                        leafletGeoJSON[maybeName] = lObject;
+                    }
+                    else{
+                        leafletGeoJSON = lObject;
+                    }
+                    leafletData.setGeoJSON(leafletGeoJSON, attrs.id);
+                    lObject.addTo(map);
+                };
+
+                var _create = function(model){
+                    _clean();
+                    if(isNested) {
+                        if(!model || !Object.keys(model).length)
+                            return;
+                        $it.each(model, function(m, name) {
+                            //name could be layerName and or groupName
+                            //for now it is not tied to a layer
+                            _addGeojson(m,name);
+                        });
+                        return;
+                    }
+                    _addGeojson(model);
+                };
+
+                _extendDirectiveControls(attrs.id, 'geojson', _create, _clean);
+
+                _maybeWatchCollection(leafletScope,'geojson', watchOptions, function(geojson){
+                    _create(geojson);
+                });
+            });
+        }
+    };
+});
+
+angular.module("leaflet-directive").directive('layercontrol', function ($log, leafletData, leafletHelpers) {
+  return {
+    restrict: "E",
+    scope: {
+    },
+    replace: true,
+    transclude: false,
+    require: '^leaflet',
+    controller: function ($scope, $element, $sce) {
+      $log.debug('[Angular Directive - Layers] layers', $scope, $element);
+      var safeApply = leafletHelpers.safeApply,
+        isDefined = leafletHelpers.isDefined;
+      angular.extend($scope, {
+        baselayer: '',
+        icons: {
+          uncheck: 'fa fa-check-square-o',
+          check: 'fa fa-square-o',
+          radio: 'fa fa-dot-circle-o',
+          unradio: 'fa fa-circle-o',
+          up: 'fa fa-angle-up',
+          down: 'fa fa-angle-down',
+          open: 'fa fa-angle-double-down',
+          close: 'fa fa-angle-double-up'
+        },
+        changeBaseLayer: function(key, e) {
+          leafletHelpers.safeApply($scope, function(scp) {
+            scp.baselayer = key;
+            leafletData.getMap().then(function(map) {
+              leafletData.getLayers().then(function(leafletLayers) {
+                if(map.hasLayer(leafletLayers.baselayers[key])) {
+                  return;
+                }
+                for(var i in scp.layers.baselayers) {
+                  scp.layers.baselayers[i].icon = scp.icons.unradio;
+                  if(map.hasLayer(leafletLayers.baselayers[i])) {
+                    map.removeLayer(leafletLayers.baselayers[i]);
+                  }
+                }
+                map.addLayer(leafletLayers.baselayers[key]);
+                scp.layers.baselayers[key].icon = $scope.icons.radio;
+              });
+            });
+          });
+          e.preventDefault();
+        },
+        moveLayer: function(ly, newIndex, e) {
+            var delta = Object.keys($scope.layers.baselayers).length;
+            if(newIndex >= (1+delta) && newIndex <= ($scope.overlaysArray.length+delta)) {
+                var oldLy;
+                for(var key in $scope.layers.overlays) {
+                    if($scope.layers.overlays[key].index === newIndex) {
+                        oldLy = $scope.layers.overlays[key];
+                        break;
+                    }
+                }
+                if(oldLy) {
+                    safeApply($scope, function() {
+                        oldLy.index = ly.index;
+                        ly.index = newIndex;
+                    });
+                }
+            }
+            e.stopPropagation();
+            e.preventDefault();
+        },
+        initIndex: function(layer, idx) {
+            var delta = Object.keys($scope.layers.baselayers).length;
+            layer.index = isDefined(layer.index)? layer.index:idx+delta+1;
+        },
+        toggleOpacity: function(e, layer) {
+            $log.debug('Event', e);
+            if(layer.visible) {
+                var el = angular.element(e.currentTarget);
+                el.toggleClass($scope.icons.close + ' ' + $scope.icons.open);
+                el = el.parents('.lf-row').find('.lf-opacity');
+                el.toggle('fast', function() {
+                    safeApply($scope, function() {
+                        layer.opacityControl = !layer.opacityControl;
+                    });
+                });
+            }
+            e.stopPropagation();
+            e.preventDefault();
+        },
+        unsafeHTML: function(html) {
+          return $sce.trustAsHtml(html);
+        }
+      });
+
+      var div = $element.get(0);
+      if (!L.Browser.touch) {
+          L.DomEvent.disableClickPropagation(div);
+          L.DomEvent.on(div, 'mousewheel', L.DomEvent.stopPropagation);
+      } else {
+          L.DomEvent.on(div, 'click', L.DomEvent.stopPropagation);
+      }
+    },
+    template:
+      '<div class="angular-leaflet-control-layers" ng-show="overlaysArray.length">' +
+        '<div class="lf-baselayers">' +
+            '<div class="lf-row" ng-repeat="(key, layer) in layers.baselayers">' +
+                '<label class="lf-icon-bl" ng-click="changeBaseLayer(key, $event)">' +
+                    '<input class="leaflet-control-layers-selector" type="radio" name="lf-radio" ' +
+                        'ng-show="false" ng-checked="baselayer === key" ng-value="key" /> ' +
+                    '<i class="lf-icon lf-icon-radio" ng-class="layer.icon"></i>' +
+                    '<div class="lf-text">{{layer.name}}</div>' +
+                '</label>' +
+            '</div>' +
+        '</div>' +
+        '<div class="lf-overlays">' +
+            '<div class="lf-container">' +
+                '<div class="lf-row" ng-repeat="layer in overlaysArray | orderBy:\'index\':order" ng-init="initIndex(layer, $index)">' +
+                    '<label class="lf-icon-ol">' +
+                        '<input class="lf-control-layers-selector" type="checkbox" ng-show="false" ng-model="layer.visible"/> ' +
+                        '<i class="lf-icon lf-icon-check" ng-class="layer.icon"></i>' +
+                        '<div class="lf-text">{{layer.name}}</div>' +
+                        '<div class="lf-icons">' +
+                            '<i class="lf-icon lf-up" ng-class="icons.up" ng-click="moveLayer(layer, layer.index - orderNumber, $event)"></i> ' +
+                            '<i class="lf-icon lf-down" ng-class="icons.down" ng-click="moveLayer(layer, layer.index + orderNumber, $event)"></i> ' +
+                            '<i class="lf-icon lf-open" ng-class="layer.opacityControl? icons.close:icons.open" ng-click="toggleOpacity($event, layer)"></i>' +
+                        '</div>' +
+                    '</label>'+
+                    '<div class="lf-legend" ng-if="layer.legend" ng-bind-html="unsafeHTML(layer.legend)"></div>' +
+                    '<div class="lf-opacity" ng-show="layer.visible &amp;&amp; layer.opacityControl">' +
+                        '<input type="text" class="lf-opacity-control" name="lf-opacity-control" data-key="{{layer.index}}" />' +
+                    '</div>' +
+                '</div>' +
+            '</div>' +
+        '</div>' +
+      '</div>',
+    link: function(scope, element, attrs, controller) {
+        var isDefined = leafletHelpers.isDefined,
+        leafletScope = controller.getLeafletScope(),
+        layers = leafletScope.layers;
+
+        // Setting layer stack order.
+        attrs.order = (isDefined(attrs.order) && (attrs.order === 'normal' || attrs.order === 'reverse'))? attrs.order:'normal';
+        scope.order = attrs.order === 'normal';
+        scope.orderNumber = attrs.order === 'normal'? -1:1;
+>>>>>>> - geojson nested working
 
 <<<<<<< HEAD
                         if (isDefined(newLegend.url)) {

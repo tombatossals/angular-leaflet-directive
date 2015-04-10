@@ -29,12 +29,15 @@ module.exports = function (grunt, options) {
                 'karma:unit'
             ]
         },
+<<<<<<< HEAD
         examples: {
             files: ['examples/*.html'],
             tasks: [
                 'examples'
             ]
         },
+=======
+>>>>>>> - geojson nested working
         'unit-mocha': {
             files: _files,
             tasks: [

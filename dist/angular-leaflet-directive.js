@@ -5,6 +5,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 *  angular-leaflet-directive 0.7.11 2015-04-10
 =======
 *  angular-leaflet-directive 0.7.11 2015-03-31
@@ -24,6 +25,9 @@
 =======
 *  angular-leaflet-directive 0.7.11 2015-04-08
 >>>>>>> resolve issue #676
+=======
+*  angular-leaflet-directive 0.7.11 2015-04-10
+>>>>>>> - geojson nested working
 *  angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps
 *  git: https://github.com/tombatossals/angular-leaflet-directive
 */
@@ -2227,7 +2231,14 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', ["$q", "leafle
         };
     }
 
+<<<<<<< HEAD
     var isDefined = leafletHelpers.isDefined,
+=======
+angular.module("leaflet-directive")
+.factory('leafletLayerHelpers', ["$rootScope", "$log", "leafletHelpers", function ($rootScope, $log, leafletHelpers) {
+    var Helpers = leafletHelpers,
+        isString = leafletHelpers.isString,
+>>>>>>> - geojson nested working
         isObject = leafletHelpers.isObject,
         obtainEffectiveMapId = leafletHelpers.obtainEffectiveMapId,
         defaults = {};
@@ -4260,6 +4271,7 @@ angular.module("leaflet-directive").directive('layers', ["$log", "$q", "leafletD
     };
 }]);
 
+<<<<<<< HEAD
 angular.module("leaflet-directive").directive('legend', ["$log", "$http", "leafletHelpers", "leafletLegendHelpers", function ($log, $http, leafletHelpers, leafletLegendHelpers) {
         return {
             restrict: "A",
@@ -4268,6 +4280,17 @@ angular.module("leaflet-directive").directive('legend', ["$log", "$http", "leafl
             require: 'leaflet',
 
             link: function (scope, element, attrs, controller) {
+=======
+angular.module("leaflet-directive")
+.directive('geojson', ["$log", "$rootScope", "leafletData", "leafletHelpers", "leafletWatchHelpers", "leafletDirectiveControlsHelpers", "leafletIterators", function ($log, $rootScope, leafletData, leafletHelpers,
+    leafletWatchHelpers, leafletDirectiveControlsHelpers,leafletIterators) {
+
+    var _maybeWatchCollection = leafletWatchHelpers.maybeWatchCollection,
+        _watchOptions = leafletHelpers.watchOptions,
+        _extendDirectiveControls = leafletDirectiveControlsHelpers.extend,
+        hlp = leafletHelpers,
+        $it = leafletIterators;
+>>>>>>> - geojson nested working
 
                 var isArray = leafletHelpers.isArray,
                     isDefined = leafletHelpers.isDefined,
@@ -4288,6 +4311,7 @@ angular.module("leaflet-directive").directive('legend', ["$log", "$http", "leafl
 
                         position = newLegend.position || 'bottomright';
 
+<<<<<<< HEAD
                         // default to arcgis
                         type = newLegend.type || 'arcgis'; 
                     }
@@ -4295,10 +4319,64 @@ angular.module("leaflet-directive").directive('legend', ["$log", "$http", "leafl
                 }, true);
 
                 controller.getMap().then(function (map) {
+=======
+                var isNested = (hlp.isDefined(attrs.geojsonNested) &&
+                    hlp.isTruthy(attrs.geojsonNested));
+
+                var _clean = function(){
+                    var _remove = function(lObject) {
+                        if (isDefined(lObject) && map.hasLayer(lObject)) {
+                            map.removeLayer(lObject);
+                        }
+                    };
+                    if(isNested) {
+                        $it.each(leafletGeoJSON, function(lObject) {
+                            _remove(lObject);
+                        });
+                        return;
+                    }
+                    _remove(leafletGeoJSON);
+                };
+
+                var _addGeojson = function(geojson, maybeName){
+                    if (!(isDefined(geojson) && isDefined(geojson.data))) {
+                        return;
+                    }
+                    var onEachFeature = _hookUpEvents(geojson);
+>>>>>>> - geojson nested working
 
                     leafletScope.$watch('legend', function (newLegend) {
 
+<<<<<<< HEAD
                         if (!isDefined(newLegend)) {
+=======
+                    var lObject = L.geoJson(geojson.data, geojson.options);
+
+                    if(maybeName && hlp.isString(maybeName)){
+                        leafletGeoJSON[maybeName] = lObject;
+                    }
+                    else{
+                        leafletGeoJSON = lObject;
+                    }
+                    leafletData.setGeoJSON(leafletGeoJSON, attrs.id);
+                    lObject.addTo(map);
+                };
+
+                var _create = function(model){
+                    _clean();
+                    if(isNested) {
+                        if(!model || !Object.keys(model).length)
+                            return;
+                        $it.each(model, function(m, name) {
+                            //name could be layerName and or groupName
+                            //for now it is not tied to a layer
+                            _addGeojson(m,name);
+                        });
+                        return;
+                    }
+                    _addGeojson(model);
+                };
+>>>>>>> - geojson nested working
 
                             if (isDefined(leafletLegend)) {
                                 leafletLegend.removeFrom(map);
