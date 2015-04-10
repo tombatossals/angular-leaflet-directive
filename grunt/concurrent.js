@@ -15,7 +15,13 @@ module.exports = function (grunt, options) {
             }
         },
         unit: {
-            tasks: ['karma:unit-mocha', 'watch:chrome'],
+            tasks: ['karma:unit', 'watch:unit'],
+            options: {
+                logConcurrentOutput: true
+            }
+        },
+        'unit-mocha': {
+            tasks: ['karma:unit-mocha', 'watch:unit-mocha'],
             options: {
                 logConcurrentOutput: true
             }
