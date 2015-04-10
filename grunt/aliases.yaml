@@ -51,12 +51,11 @@ dev-chrome:
 
 spec: #continuos running specs
  - 'fast-build'
- - 'concurrent:spec'
+ - 'concurrent:unit-mocha'
 
-spec-unit:
+spec-chrome:
  - 'fast-build'
- - 'karma:unit'
- - 'watch:unit'
+ - 'concurrent:chrome'
 
 serve:
  - 'concurrent:watchServe'
