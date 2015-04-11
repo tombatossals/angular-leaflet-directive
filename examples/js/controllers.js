@@ -8,7 +8,7 @@ var app = angular.module('webapp');
                     zoom: 4
                 }
             });
-            $scope.showLeaflet = function() {
+            $scope.fitBounds = function() {
                 leafletData.getMap().then(function(map) {
                     map.fitBounds([ [40.712, -74.227], [40.774, -74.125] ]);
                 });
@@ -96,6 +96,190 @@ var app = angular.module('webapp');
                 }
             });
         }]);
+        app.controller("BasicDoubleMapAccessMapObjectController", [ "$scope", "$log", "leafletData", function($scope, $log, leafletData) {
+            angular.extend($scope, {
+                london: {
+                    lat: 51.505,
+                    lng: -0.09,
+                    zoom: 4
+                },
+                markers: {
+                    london: {
+                        lat: 51.505,
+                        lng: -0.09,
+                        draggable: true
+                    }
+                },
+                defaults: {
+                     tileLayer: "http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png",
+                }
+            });
+            $scope.logLeafletData = function(name) {
+                leafletData.getMap(name).then(function(map) {
+                    $log.info(map);
+                });
+            };
+        }]);
+        app.controller("BasicDoubleMapEventsController", [ "$scope", "$log", "leafletData", "leafletEvents", function($scope, $log, leafletData, leafletEvents) {
+            angular.extend($scope, {
+                london: {
+                    lat: 51.505,
+                    lng: -0.09,
+                    zoom: 4
+                },
+                markers: {
+                    london: {
+                        lat: 51.505,
+                        lng: -0.09,
+                        draggable: true
+                    }
+                },
+                defaults: {
+                     tileLayer: "http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png",
+                }
+            });
+            $scope.events = {
+                map: {
+                    enable: leafletEvents.getAvailableMapEvents(),
+                    logic: 'emit'
+                }
+            };
+            var mapEvents = leafletEvents.getAvailableMapEvents();
+            for (var k in mapEvents) {
+                var eventName = 'leafletDirectiveMap.' + mapEvents[k];
+                $scope.$on(eventName, function(event){
+                    $scope.eventDetected = event.name;
+                });
+            }
+            angular.extend($scope, {
+                spain: {
+                    lat: 40.095,
+                    lng: -3.823,
+                    zoom: 4
+                },
+                markers2: {
+                    spain: {
+                        lat: 51.505,
+                        lng: -0.09,
+                        draggable: true
+                    }
+                },
+                defaults: {
+                     tileLayer: "http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png",
+                }
+            });
+            $scope.events2 = {
+                map: {
+                    enable: ['click', 'dblclick'],
+                    logic: 'emit'
+                }
+            };
+            var mapEvents2 = $scope.events2.map.enable;
+            for (var j in mapEvents2) {
+                var eventName2 = 'leafletDirectiveMap.' + mapEvents[j];
+                $scope.$on(eventName2, function(event){
+                    $scope.eventDetected2 = event.name;
+                });
+            }
+        }]);
+        app.controller("BasicDoubleMapSharingAttributesController", [ "$scope", "$log", "$http", "leafletData", function($scope, $log, $http, leafletData) {
+            angular.extend($scope, {
+                center: {
+                    lat: 43.7350,
+                    lng: -79.3734,
+                    zoom: 11
+                },
+                defaults: {
+                    scrollWheelZoom: false
+                },
+                markers1: {
+                    one: {
+                        lat: 43.75,
+                        lng: -79.56
+                    },
+                    two: {
+                        lat: 43.76,
+                        lng: -79.50
+                    }
+                },
+                markers2: {
+                    one: {
+                        lat: 43.75,
+                        lng: -79.56
+                    },
+                    two: {
+                        lat: 43.75,
+                        lng: -79.45
+                    },
+                    three: {
+                        lat: 43.81,
+                        lng: -79.26
+                    }
+                }
+            });
+            $http.get('json/toronto1.json').success(function(data, status) {
+                $scope.toronto1 = data;
+            });
+            $http.get('json/toronto2.json').success(function(data, status) {
+                $scope.toronto2 = data;
+            });
+        }]);
+        app.controller("BasicDoubleMapToggleController", [ "$scope", "$log", "leafletData", function($scope, $log, leafletData) {
+            angular.extend($scope, {
+                center: {
+                    lat: 51.505,
+                    lng: -0.09,
+                    zoom: 5
+                },
+                paths: {
+                    p1: {
+                        color: 'blue',
+                        weight: 8,
+                        latlngs: [{
+                            lat: 51.50,
+                            lng: -0.082
+                        }, {
+                            lat: 48.83,
+                            lng: 2.37
+                        }, {
+                            lat: 41.91,
+                            lng: 12.48
+                        }]
+                    }
+                },
+            });
+            angular.extend($scope, {
+                center2: {
+                    lat: 51.505,
+                    lng: -0.09,
+                    zoom: 5
+                },
+                paths2: {
+                    p1: {
+                        color: 'red',
+                        weight: 8,
+                        latlngs: [{
+                            lat: 51.50,
+                            lng: -0.082
+                        }, {
+                            lat: 48.83,
+                            lng: 2.37
+                        }, {
+                            lat: 41.91,
+                            lng: 12.48
+                        }]
+                    }
+                },
+            });
+        }]);
+        app.config(function ($routeProvider) {
+            $routeProvider.when('/map', {
+                template: '<leaflet width="100%" height="480px"></leaflet>',
+                controller: 'BasicDynamicAddRemoveMapExample'
+            });
+        });
+        app.controller('BasicDynamicAddRemoveMapExample', [ '$scope', 'leafletData', function($scope, leafletData) {
+        } ]);
         app.controller("BasicEventsController", [ "$scope", "leafletEvents", function($scope, leafletEvents) {
             $scope.center  = {
                 lat: 51.505,
@@ -114,6 +298,116 @@ var app = angular.module('webapp');
         app.controller("BasicFirstController", [ "$scope", function($scope) {
             // Nothing here!
         }]);
+      app.controller("BasicGeoJSONUpdateController", [ '$scope', '$http', 'leafletData', function($scope, $http, leafletData) {
+            angular.extend($scope, {
+                center: {
+                    lat: 31.99,
+                    lng: -33.43,
+                    zoom: 3
+                },
+                geojson : {
+                    data: {
+                      "type": "FeatureCollection",
+                      "features": [
+                        {
+                          "type": "Feature",
+                          "properties": {},
+                          "geometry": {
+                            "type": "Polygon",
+                            "coordinates": [
+                              [
+                                [
+                                  -49.92187499999999,
+                                  13.239945499286312
+                                ],
+                                [
+                                  -49.92187499999999,
+                                  54.57206165565852
+                                ],
+                                [
+                                  -13.7109375,
+                                  54.57206165565852
+                                ],
+                                [
+                                  -13.7109375,
+                                  13.239945499286312
+                                ],
+                                [
+                                  -49.92187499999999,
+                                  13.239945499286312
+                                ]
+                              ]
+                            ]
+                          }
+                        }
+                      ]
+                    },
+                    style: {
+                        fillColor: "green",
+                            weight: 2,
+                            opacity: 1,
+                            color: 'white',
+                            dashArray: '3',
+                            fillOpacity: 0.7
+                    }
+                }
+            });
+            $scope.updateGeojson = function() {
+                $scope.geojson.data = {
+                                  "type": "FeatureCollection",
+                                  "features": [
+                                    {
+                                      "type": "Feature",
+                                      "properties": {},
+                                      "geometry": {
+                                        "type": "Polygon",
+                                        "coordinates": [
+                                          [
+                                            [
+                                              -41.8359375,
+                                              28.92163128242129
+                                            ],
+                                            [
+                                              -41.8359375,
+                                              38.272688535980976
+                                            ],
+                                            [
+                                              -26.015625,
+                                              38.272688535980976
+                                            ],
+                                            [
+                                              -26.015625,
+                                              28.92163128242129
+                                            ],
+                                            [
+                                              -41.8359375,
+                                              28.92163128242129
+                                            ]
+                                          ]
+                                        ]
+                                      }
+                                    }
+                                  ]
+                                }
+                        }
+                }]);
+        app.controller('BasicHideShowMapController', function($scope, $timeout, leafletData) {
+            $scope.center = {
+                lat: 35,
+                lng: 0,
+                zoom: 8
+            };
+            $scope.showMap = false;
+            $scope.$watch("showMap", function(value) {
+                if (value === true) {
+                    leafletData.getMap().then(function(map) {
+                      $timeout(function() {
+                        map.invalidateSize();
+                      }, 300);
+                    });
+                }
+            });
+        });
         app.controller('BasicLegendController', [ '$scope', function($scope) {
             angular.extend($scope, {
                 london: {
@@ -285,39 +579,7 @@ var app = angular.module('webapp');
                         : "http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
             });
         } ]);
-        app.controller("ControlsDrawController", [ "$scope", "leafletData", function($scope, leafletData) {
-            angular.extend($scope, {
-                london: {
-                    lat: 51.505,
-                    lng: -0.09,
-                    zoom: 4
-                },
-                controls: {
-                    draw: {}
-                }
-           });
-           leafletData.getMap().then(function(map) {
-              var drawnItems = $scope.controls.edit.featureGroup;
-              map.on('draw:created', function (e) {
-                var layer = e.layer;
-                drawnItems.addLayer(layer);
-                console.log(JSON.stringify(layer.toGeoJSON()));
-              });
-           });
-       }]);
-        app.controller("ControlsScaleController", [ "$scope", function($scope) {
-            angular.extend($scope, {
-                london: {
-                    lat: 51.505,
-                    lng: -0.09,
-                    zoom: 4
-                },
-                controls: {
-                    scale: true
-                }
-           });
-       }]);
-        app.controller('DynamicOverlaysController', [ '$scope', function($scope) {
+        app.controller('ControlsCustomLayerControlController', [ '$scope', function($scope) {
             angular.extend($scope, {
                 ripoll: {
                     lat: 42.20133,
@@ -418,6 +680,161 @@ var app = angular.module('webapp');
                 }
             });
         } ]);
+        app.controller("ControlsDrawController", [ "$scope", "leafletData", function($scope, leafletData) {
+            angular.extend($scope, {
+                london: {
+                    lat: 51.505,
+                    lng: -0.09,
+                    zoom: 4
+                },
+                controls: {
+                    draw: {}
+                }
+           });
+           leafletData.getMap().then(function(map) {
+              var drawnItems = $scope.controls.edit.featureGroup;
+              map.on('draw:created', function (e) {
+                var layer = e.layer;
+                drawnItems.addLayer(layer);
+                console.log(JSON.stringify(layer.toGeoJSON()));
+              });
+           });
+       }]);
+        app.controller("ControlsScaleController", [ "$scope", function($scope) {
+            angular.extend($scope, {
+                london: {
+                    lat: 51.505,
+                    lng: -0.09,
+                    zoom: 4
+                },
+                controls: {
+                    scale: true
+                }
+           });
+       }]);
+        app.controller('OverlaysController', [ '$scope', function($scope) {
+            angular.extend($scope, {
+                ripoll: {
+                    lat: 42.20133,
+                    lng: 2.19110,
+                    zoom: 11
+                },
+                markers: {
+                    m1: {
+                        lat: 51.505,
+                        lng: -0.09
+                    }
+                },
+                layers: {
+                    baselayers: {
+                        osm: {
+                            name: 'OpenStreetMap',
+                            type: 'xyz',
+                            url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                            layerOptions: {
+                                subdomains: ['a', 'b', 'c'],
+                                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                                continuousWorld: true
+                            }
+                        },
+                        cycle: {
+                            name: 'OpenCycleMap',
+                            type: 'xyz',
+                            url: 'http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png',
+                            layerOptions: {
+                                subdomains: ['a', 'b', 'c'],
+                                attribution: '&copy; <a href="http://www.opencyclemap.org/copyright">OpenCycleMap</a> contributors - &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                                continuousWorld: true
+                            }
+                        }
+                    },
+                    overlays: {
+                        hillshade: {
+                            name: 'Hillshade Europa',
+                            type: 'wms',
+                            url: 'http://129.206.228.72/cached/hillshade',
+                            visible: true,
+                            layerOptions: {
+                                layers: 'europe_wms:hs_srtm_europa',
+                                format: 'image/png',
+                                opacity: 0.25,
+                                attribution: 'Hillshade layer by GIScience http://www.osm-wms.de',
+                                crs: L.CRS.EPSG900913
+                            }
+                        },
+                        fire: {
+                            name: 'OpenFireMap',
+                            type: 'xyz',
+                            url: 'http://openfiremap.org/hytiles/{z}/{x}/{y}.png',
+                            layerOptions: {
+                                attribution: '&copy; <a href="http://www.openfiremap.org">OpenFireMap</a> contributors - &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                                continuousWorld: true
+                            }
+                        },
+                        cars: {
+                            name: 'Cars',
+                            type: 'group',
+                            visible: true
+                        },
+                        bikes: {
+                            name: 'Bicycles',
+                            type: 'group',
+                            visible: false
+                        }
+                    }
+                },
+                markers: {
+                    m1: {
+                        lat: 42.20133,
+                        lng: 2.19110,
+                        layer: 'cars',
+                        message: "I'm a car"
+                    },
+                    m2: {
+                        lat: 42.21133,
+                        lng: 2.18110,
+                        layer: 'cars',
+                        message: "I'm a car"
+                    },
+                    m3: {
+                        lat: 42.19133,
+                        lng: 2.18110,
+                        layer: 'bikes',
+                        message: 'A bike!!'
+                    },
+                    m4: {
+                        lat: 42.3,
+                        lng: 2.16110,
+                        layer: 'bikes'
+                    },
+                    m5: {
+                        lat: 42.1,
+                        lng: 2.16910
+                    },
+                    m6: {
+                        lat: 42.15,
+                        lng: 2.17110
+                    }
+                }
+            });
+        } ]);
+        app.controller('DefaultController', [ '$scope', function($scope) {
+            angular.extend($scope, {
+                mapDefault: {
+                    london: {
+                        lat: 51.505,
+                        lng: -0.09,
+                        zoom: 8
+                    },
+                    markers: {
+                        m1: {
+                            lat: 51.505,
+                            lng: -0.09
+                        }
+                    }
+                }
+            });
+        } ]);
       app.controller("GeoJSONCenterController", [ '$scope', '$http', 'leafletData', function($scope, $http, leafletData) {
         angular.extend($scope, {
             japan: {
@@ -489,6 +906,123 @@ var app = angular.module('webapp');
             });
         });
       } ]);
+    app.controller("GeoJSONNestedController", [ '$scope', '$http', 'leafletData', function($scope, $http, leafletData) {
+        angular.extend($scope, {
+            japan: {
+                lat: 27.26,
+                lng: 78.86,
+                zoom: 2
+            },
+            defaults: {
+                scrollWheelZoom: false
+            },
+            geojson:{}
+        });
+        $scope.centerJSON = function(name) {
+            leafletData.getMap().then(function(map) {
+                var latlngs = [];
+                for (var i in $scope.geojson[name].data.features[0].geometry.coordinates) {
+                    var coord = $scope.geojson[name].data.features[0].geometry.coordinates[i];
+                    for (var j in coord) {
+                        var points = coord[j];
+                        for (var k in points) {
+                            latlngs.push(L.GeoJSON.coordsToLatLng(points[k]));
+                        }
+                    }
+                }
+                map.fitBounds(latlngs);
+            });
+        };
+        // Get the countries geojson data from a JSON
+        $http.get("json/JPN.geo.json").success(function(data, status) {
+            angular.extend($scope.geojson, {
+                japan: {
+                    data: data,
+                    style: {
+                        fillColor: "green",
+                        weight: 2,
+                        opacity: 1,
+                        color: 'white',
+                        dashArray: '3',
+                        fillOpacity: 0.7
+                    }
+                }
+            });
+        });
+        $http.get("json/USA.geo.json").success(function(data, status) {
+            angular.extend($scope.geojson, {
+                usa:{
+                    data: data,
+                    style: {
+                        fillColor: "blue",
+                        weight: 2,
+                        opacity: 1,
+                        color: 'white',
+                        dashArray: '3',
+                        fillOpacity: 0.7
+                    }
+                }
+            });
+        });
+    } ]);
+    app.controller("GeoJSONNonNestedController", [ '$scope', '$http', 'leafletData', function($scope, $http, leafletData) {
+        var getColor = function(id){
+            return id == 'USA'? 'blue' : 'green';
+        };
+        var getStyle = function(feature){
+            return {
+                fillColor: getColor(feature.id),
+                weight: 2,
+                opacity: 1,
+                color: 'white',
+                dashArray: '3',
+                fillOpacity: 0.7
+            };
+        };
+        var createGeoJsonObject = function (data){
+            return {
+                data: data,
+                style: getStyle
+            };
+        };
+        angular.extend($scope, {
+            japan: {
+                lat: 27.26,
+                lng: 78.86,
+                zoom: 2
+            },
+            defaults: {
+                scrollWheelZoom: false
+            },
+        });
+        $scope.centerJSON = function(index) {
+            leafletData.getMap().then(function(map) {
+                var latlngs = [];
+                for (var i in $scope.geojson.data.features[index].geometry.coordinates) {
+                    var coord = $scope.geojson.data.features[index].geometry.coordinates[i];
+                    for (var j in coord) {
+                        var points = coord[j];
+                        for (var k in points) {
+                            latlngs.push(L.GeoJSON.coordsToLatLng(points[k]));
+                        }
+                    }
+                }
+                map.fitBounds(latlngs);
+            });
+        };
+        // Get the countries geojson data from a JSON
+        $http.get("json/JPN.geo.json").success(function(data, status) {
+            if(!$scope.geojson){
+                $scope.geojson = createGeoJsonObject(data);
+            }
+        });
+        $http.get("json/USA.geo.json").success(function(data, status) {
+            var features = $scope.geojson.data.features.concat(data.features);
+            var copy = angular.extend({}, $scope.geojson.data);
+            copy.features = features;
+            $scope.geojson.data = copy;
+        });
+    } ]);
         app.controller("GoogleMapsController", [ "$scope", function($scope) {
             angular.extend($scope, {
                 berlin: {
@@ -997,6 +1531,253 @@ var app = angular.module('webapp');
                 $scope.country = leafletEvent.data.name;
             });
         }]);
+        app.controller('LayersOverlaysMarkerclusterController', [ '$scope', function($scope) {
+            angular.extend($scope, {
+                ripoll: {
+                    lat: 42.20133,
+                    lng: 2.19110,
+                    zoom: 8
+                },
+                layers: {
+                    baselayers: {
+                        osm: {
+                            name: 'OpenStreetMap',
+                            type: 'xyz',
+                            url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                            layerOptions: {
+                                subdomains: ['a', 'b', 'c'],
+                                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                                continuousWorld: true
+                            }
+                        },
+                        cycle: {
+                            name: 'OpenCycleMap',
+                            type: 'xyz',
+                            url: 'http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png',
+                            layerOptions: {
+                                subdomains: ['a', 'b', 'c'],
+                                attribution: '&copy; <a href="http://www.opencyclemap.org/copyright">OpenCycleMap</a> contributors - &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                                continuousWorld: true
+                            }
+                        }
+                    },
+                    overlays: {
+                        hillshade: {
+                            name: 'Hillshade Europa',
+                            type: 'wms',
+                            url: 'http://129.206.228.72/cached/hillshade',
+                            visible: true,
+                            layerOptions: {
+                                layers: 'europe_wms:hs_srtm_europa',
+                                format: 'image/png',
+                                opacity: 0.25,
+                                attribution: 'Hillshade layer by GIScience http://www.osm-wms.de',
+                                crs: L.CRS.EPSG900913
+                            }
+                        },
+                        cars: {
+                            name: 'Cars',
+                            type: 'markercluster',
+                            visible: true
+                        }
+                    }
+                },
+                markers: {
+                    m1: {
+                        lat: 42.20133,
+                        lng: 2.19110,
+                        layer: 'cars',
+                        message: "I'm a moving car"
+                    },
+                    m2: {
+                        lat: 42.21133,
+                        lng: 2.18110,
+                        layer: 'cars',
+                        message: "I'm a car"
+                    },
+                    m3: {
+                        lat: 42.19133,
+                        lng: 2.18110,
+                        layer: 'cars',
+                        message: 'A bike!!'
+                    },
+                    m4: {
+                        lat: 42.3,
+                        lng: 2.16110,
+                        layer: 'cars'
+                    },
+                    m5: {
+                        lat: 42.1,
+                        lng: 2.16910,
+                        layer: 'cars'
+                    },
+                    m6: {
+                        lat: 42.15,
+                        lng: 2.17110,
+                        layer: 'cars'
+                    }
+                }
+            });
+            $scope.move = function() {
+                $scope.markers.m1.lng = $scope.markers.m1.lng + 0.1;
+            }
+        } ]);
+        app.controller('LayersOverlaysPathsController', [ '$scope', function($scope) {
+            var markers = {
+                London : {
+                    lat: 51.50,
+                    lng: -0.082,
+                    draggable: false
+                },
+                Manchester: {
+                    lat: 53.48,
+                    lng: -2.24,
+                    draggable: true
+                },
+                Lincoln: {
+                    lat: 53.230495,
+                    lng: -0.53936,
+                    draggable: true
+                },
+                Northhampton: {
+                    lat: 52.237892,
+                    lng: -0.90087,
+                    draggable: true
+                },
+                Worcester: {
+                    lat: 52.187404,
+                    lng: -2.20275,
+                    draggable: true
+                },
+                York: {
+                    lat: 53.959317,
+                    lng: -1.08215,
+                    draggable: true
+                }
+            };
+            angular.extend($scope, {
+                cen: {
+                    lat: 53,
+                    lng: -3,
+                    zoom: 6
+                },
+                layers: {
+                    baselayers: {
+                        osm: {
+                            name: 'OpenStreetMap',
+                            type: 'xyz',
+                            url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                            layerOptions: {
+                                subdomains: ['a', 'b', 'c'],
+                                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                                continuousWorld: true
+                            }
+                        },
+                        cycle: {
+                            name: 'OpenCycleMap',
+                            type: 'xyz',
+                            url: 'http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png',
+                            layerOptions: {
+                                subdomains: ['a', 'b', 'c'],
+                                attribution: '&copy; <a href="http://www.opencyclemap.org/copyright">OpenCycleMap</a> contributors - &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                                continuousWorld: true
+                            }
+                        }
+                    },
+                    overlays: {
+                        hillshade: {
+                            name: 'Hillshade Europa',
+                            type: 'wms',
+                            url: 'http://129.206.228.72/cached/hillshade',
+                            visible: true,
+                            layerOptions: {
+                                layers: 'europe_wms:hs_srtm_europa',
+                                format: 'image/png',
+                                opacity: 0.25,
+                                attribution: 'Hillshade layer by GIScience http://www.osm-wms.de',
+                                crs: L.CRS.EPSG900913
+                            }
+                        },
+                        fire: {
+                            name: 'OpenFireMap',
+                            type: 'xyz',
+                            url: 'http://openfiremap.org/hytiles/{z}/{x}/{y}.png',
+                            layerOptions: {
+                                attribution: '&copy; <a href="http://www.openfiremap.org">OpenFireMap</a> contributors - &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                                continuousWorld: true
+                            }
+                        },
+                        lines: {
+                            name: 'Lines',
+                            type: 'group',
+                            visible: true
+                        },
+                        shapes: {
+                            name: 'Shapes',
+                            type: 'group',
+                            visible: false
+                        }
+                    }
+                },
+                markers: markers,
+                paths: {
+                    p1: {
+                        color: '#008000',
+                        weight: 4,
+                        latlngs: [ markers.London, markers.Manchester ],
+                        layer: 'lines'
+                    },
+                    p2: {
+                        weight: 3,
+                        opacity: 0.5,
+                        latlngs: [
+                            [ markers.London, markers.Lincoln ],
+                            [ markers.Manchester, markers.Worcester]
+                        ],
+                        type: 'multiPolyline',
+                        layer: 'lines'
+                    },
+                    c1: {
+                        weight: 2,
+                        color: '#ff612f',
+                        latlngs: markers.Northhampton,
+                        radius: 10000,
+                        type: 'circle',
+                        layer: 'shapes'
+                    },
+                    c2: {
+                        weight: 2,
+                        color: '#ff612f',
+                        latlngs: markers.Lincoln,
+                        radius: 50,
+                        type: 'circleMarker',
+                        layer: 'shapes'
+                    },
+                    pg1: {
+                        latlngs: [ markers.London, markers.Worcester, markers.Lincoln ],
+                        stroke: false,
+                        fillColor: '#ff69b4',
+                        type: 'polygon',
+                        layer: 'shapes'
+                    },
+                    pg2: {
+                        weight: 1,
+                        color: '#2e3974',
+                        latlngs: [
+                            [ markers.London, markers.Worcester, markers.Northhampton ],
+                            [ markers.Manchester, markers.Lincoln, markers.York ]
+                        ],
+                        type: 'multiPolygon',
+                        layer: 'shapes'
+                    },
+                    r1: {
+                        latlngs: [ markers.Lincoln, markers.York ],
+                        type: 'rectangle',
+                        layer: 'shapes'
+                    }
+                }
+            });
+        } ]);
         app.controller("LayersOverlaysSimpleController", [ "$scope", function($scope) {
             angular.extend($scope, {
                 center: {
@@ -1098,6 +1879,45 @@ var app = angular.module('webapp');
                 $scope.flag = "";
             });
         }]);
+        // For more info take a look at https://github.com/kartena/Proj4Leaflet proj4leaflet.js
+        app.controller('LayersWMSWithDifferentProjectionController', [ '$scope', '$location', function($scope) {
+            $scope.map = {
+                defaults: {
+                    crs: new L.Proj.CRS('EPSG:3006', '+proj=utm +zone=33 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs',
+                    {
+                        resolutions: [
+                            8192, 4096, 2048, 1024, 512, 256, 128,
+                            64, 32, 16, 8, 4, 2, 1, 0.5
+                        ],
+                        origin: [0, 0]
+                    }),
+                    continuousWorld: true
+                },
+                malmo: {
+                    lat: 55.5902,
+                    lng: 12.9956,
+                    zoom: 3
+                },
+                layers: {
+                    baselayers: {
+                        malmo: {
+                            name: 'Fishery',
+                            type: 'wms',
+                            url: 'http://geodatatest.havochvatten.se/geoservices/ows',
+                            visible: true,
+                            layerOptions: {
+                                layers: 'hav-fisketsgeografier:havet-ostersjons-delomraden',
+                                format: 'image/png',
+                                maxZoom: 14,
+                                minZoom: 0,
+                                continuousWorld: true,
+                                attribution: '&copy; <a href="https://www.havochvatten.se/kunskap-om-vara-vatten/kartor-och-geografisk-information/karttjanster.html">Havs- och vattenmyndigheten (Swedish Agency for Marine and Water Management)</a>'
+                            }
+                        }
+                    }
+                }
+            };
+        }]);
         app.controller("LayersWebGLHeatmapController", [ "$scope", function($scope) {
             var dataPoints = [
                 [44.651144316,-63.586260171, 0.5],
@@ -1127,25 +1947,6 @@ var app = angular.module('webapp');
                 }
             });
         }]);
-        app.config(function ($routeProvider) {
-            $routeProvider
-                .when('/', {
-                    template: '<a href="#/map">Go to Map</a>'
-                })
-                .when('/map', {
-                    template: '<button type="button" ng-click="makeFit()">Make Fit!</button><a href="#/">Go Back!</a><leaflet></leaflet>',
-                    controller: 'MapCtrl'
-                })
-            });
-        app.controller('MapCtrl', [ '$scope', 'leafletData', function($scope, leafletData) {
-           $scope.makeFit = function() {
-               leafletData.getMap().then(function(map) {
-                   map.fitBounds([
-                       [48.7120066603552, 9.04994057067812],
-                       [48.6120066603552, 9.14994057067812]]);
-                   });
-            };
-        } ]);
         app.controller('MarkersAddRemoveController', [ '$scope', function($scope) {
             angular.extend($scope, {
                 london: {
@@ -1854,6 +2655,206 @@ var app = angular.module('webapp');
                 });
             });
         }]);
+		app.controller("MixedLayersOverlaysGeoJSONController", ["$scope", function($scope){
+				angular.extend($scope, {
+			        sanfrancisco: {
+			            lat: 37.79,
+			            lng: -122.4,
+			            zoom: 17
+		       		},
+					defaults: {
+			            scrollWheelZoom: false
+			        },
+			        layers:{
+			        	baselayers: {
+						osm:{
+				        		name: "OpenStreetMap (XYZ)",
+				        		type: "xyz",
+								url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+		                        layerOptions: {
+		                            subdomains: ['a', 'b', 'c'],
+		                            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+		                            continuousWorld: true
+		                        }
+		        			}
+			        	}
+		        	,
+		        	overlays: {
+		                buildings: {
+		                	name:'Buildings',
+		                	type: 'geoJSON',
+		                	url:'http://tile.openstreetmap.us/vectiles-buildings/{z}/{x}/{y}.json',
+		                	layerOptions: {
+		                        	style: {
+								        "color": "#00D",
+								        "fillColor": "#00D",
+								        "weight": 1.0,
+								        "opacity": 0.6,
+								        "fillOpacity": .2
+								    }
+		                        },
+	                        pluginOptions:{
+	                        	cliptiles: true
+	                        }
+		                },
+		                Roads:{
+		                	name:'Roads',
+		                	type: 'geoJSON',
+		                	url: 'http://tile.openstreetmap.us/vectiles-skeletron/{z}/{x}/{y}.json',
+		                	layerOptions: {
+		                        	style: {
+								        "color": "#DD0000 ",
+								        "fillColor": "#DD0000",
+								        "weight": 1.0,
+								        "fillOpacity": .4
+								    }
+		                        },
+	                        pluginOptions:{
+	                        	cliptiles: false
+	                        }
+		                }
+		        		}
+			        }
+		    	})
+		   	}]);
+app.controller('MixedMOverlaysMarkersNestedController', function ($scope, leafletData, $timeout) {
+    var _clonedMarkers;
+    $timeout(function () {
+        //should do nothing (not watched) and only see one destroy
+        _clonedMarkers = angular.extend({},$scope.markers);
+        $scope.markers = {};
+    },1000);
+    $timeout(function () {
+        leafletData.getDirectiveControls().then(function (controls) {
+            //move all markers by a few decimal points
+            for (var layer in _clonedMarkers) {
+                var markerSet = _clonedMarkers[layer];
+                for (var markerName in markerSet) {
+                    var marker = markerSet[markerName];
+                    marker.lat += .05;
+                }
+            }
+            //force manual update
+            $scope.markers = _clonedMarkers;
+            controls.markers.create($scope.markers);
+        });
+    }, 4000);
+    angular.extend($scope, {
+        markersWatchOptions: {
+            doWatch: false,
+            isDeep: false,
+            individual: {
+                doWatch: false,
+                isDeep: false
+            }
+        },
+        center: {
+            lat: 42.20133,
+            lng: 2.19110,
+            zoom: 11
+        },
+        layers: {
+            baselayers: {
+                osm: {
+                    name: 'OpenStreetMap',
+                    type: 'xyz',
+                    url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                    layerOptions: {
+                        subdomains: ['a', 'b', 'c'],
+                        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                        continuousWorld: true
+                    }
+                },
+                cycle: {
+                    name: 'OpenCycleMap',
+                    type: 'xyz',
+                    url: 'http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png',
+                    layerOptions: {
+                        subdomains: ['a', 'b', 'c'],
+                        attribution: '&copy; <a href="http://www.opencyclemap.org/copyright">OpenCycleMap</a> contributors - &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                        continuousWorld: true
+                    }
+                }
+            },
+            overlays: {
+                hillshade: {
+                    name: 'Hillshade Europa',
+                    type: 'wms',
+                    url: 'http://129.206.228.72/cached/hillshade',
+                    visible: true,
+                    layerOptions: {
+                        layers: 'europe_wms:hs_srtm_europa',
+                        format: 'image/png',
+                        opacity: 0.25,
+                        attribution: 'Hillshade layer by GIScience http://www.osm-wms.de',
+                        crs: L.CRS.EPSG900913
+                    }
+                },
+                fire: {
+                    name: 'OpenFireMap',
+                    type: 'xyz',
+                    url: 'http://openfiremap.org/hytiles/{z}/{x}/{y}.png',
+                    layerOptions: {
+                        attribution: '&copy; <a href="http://www.openfiremap.org">OpenFireMap</a> contributors - &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                        continuousWorld: true
+                    }
+                },
+                cars: {
+                    name: 'Cars',
+                    type: 'group',
+                    visible: true
+                },
+                bikes: {
+                    name: 'Bicycles',
+                    type: 'group',
+                    visible: false
+                },
+                runners: {
+                    name: 'Runners',
+                    type: 'group',
+                    visible: false
+                }
+            }
+        },
+        markers: {
+            cars: {
+                m1: {
+                    lat: 42.20133,
+                    lng: 2.19110,
+                    message: "I'm a car"
+                },
+                m2: {
+                    lat: 42.21133,
+                    lng: 2.18110,
+                    message: "I'm a car"
+                }
+            },
+            bikes: {
+                m3: {
+                    lat: 42.19133,
+                    lng: 2.18110,
+                    layer: 'bikes',
+                    message: 'A bike!!'
+                },
+                m4: {
+                    lat: 42.3,
+                    lng: 2.16110,
+                    layer: 'bikes'
+                }
+            },
+            runners: {
+                m5: {
+                    lat: 42.1,
+                    lng: 2.16910
+                },
+                m6: {
+                    lat: 42.15,
+                    lng: 2.17110
+                }
+            }
+        }
+    });
+});
         app.controller("MixedMapboxTilesGeojsonController", [ "$scope", "$http", function($scope, $http) {
             angular.extend($scope, {
                 center: {
@@ -1875,6 +2876,203 @@ var app = angular.module('webapp');
             $http.get("https://a.tiles.mapbox.com/v4/feelcreative.llm8dpdk/features.json?access_token=pk.eyJ1IjoiZmVlbGNyZWF0aXZlIiwiYSI6Ik1Gak9FXzAifQ.9eB142zVCM4JMg7btDDaZQ").success(function(data) {
                 $scope.geojson.data = data;
                 console.log(data);
+            });
+        }]);
+        app.controller("MixedMarkersNestedEventsController", ["$scope", "leafletEvents", function ($scope, leafletEvents) {
+            $scope.map = {
+                show: true
+            };
+            $scope.layers = {
+                baselayers: {
+                    osm: {
+                        name: 'OpenStreetMap',
+                        type: 'xyz',
+                        url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                        layerOptions: {
+                            subdomains: ['a', 'b', 'c'],
+                            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                            continuousWorld: true
+                        }
+                    }
+                },
+                overlays: {
+                    london: {
+                        name: 'London',
+                        type: 'group',
+                        visible: true
+                    }
+                }
+            };
+            $scope.center = {
+                lat: 51.505,
+                lng: -0.09,
+                zoom: 8
+            };
+            $scope.markers = {
+                london: {
+                    1: {
+                        lat: 51.505,
+                        lng: -0.09,
+                        draggable: true,
+                        focus: true
+                    }
+                }
+            };
+            $scope.events = {
+                markers: {
+                    enable: leafletEvents.getAvailableMarkerEvents()
+                }
+            };
+            $scope.eventDetected = "No events yet...";
+            var markerEvents = leafletEvents.getAvailableMarkerEvents();
+            for (var k in markerEvents) {
+                var eventName = 'leafletDirectiveMarker.' + markerEvents[k];
+                $scope.$on(eventName, function (event, args) {
+                    $scope.eventDetected = event.name;
+                    $scope.args = {
+                        layerName: args.layerName,
+                        model: args.model,
+                        modelName: args.modelName
+                    };
+                });
+            }
+        }]);
+        app.controller('OverlaysController', ['$scope', 'leafletData','$timeout',
+        function ($scope, leafletData, $timeout) {
+            var _map;
+            leafletData.getMap().then(function(map){
+                _map = map;
+            });
+            angular.extend($scope, {
+                eraseMarkers: function(){
+                    $scope.markers = {
+                        cars: {
+                            m1: {
+                                lat: 42.20133,
+                                lng: 2.19110,
+                                message: "I'm a car"
+                            }
+                        }
+                    };
+                    //$scope.$apply();
+                    leafletData.getMarkers().then(function(lmarkers) {
+                        $scope.hasM1 = _map.hasLayer(lmarkers.m1);
+                        $scope.hasM2 = _map.hasLayer(lmarkers.m2);
+                    });
+                    $timeout(function(){
+                        leafletData.getMarkers().then(function(lmarkers){
+                            $scope.lMarkers = Object.keys(lmarkers);
+                            $scope.hasM1 = _map.hasLayer(lmarkers.m1);
+                            $scope.hasM2 = _map.hasLayer(lmarkers.m2);
+                        });
+                    },1000);
+                },
+                lMarkers:{},
+                ripoll: {
+                    lat: 42.20133,
+                    lng: 2.19110,
+                    zoom: 11
+                },
+                layers: {
+                    baselayers: {
+                        osm: {
+                            name: 'OpenStreetMap',
+                            type: 'xyz',
+                            url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                            layerOptions: {
+                                subdomains: ['a', 'b', 'c'],
+                                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                                continuousWorld: true
+                            }
+                        },
+                        cycle: {
+                            name: 'OpenCycleMap',
+                            type: 'xyz',
+                            url: 'http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png',
+                            layerOptions: {
+                                subdomains: ['a', 'b', 'c'],
+                                attribution: '&copy; <a href="http://www.opencyclemap.org/copyright">OpenCycleMap</a> contributors - &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                                continuousWorld: true
+                            }
+                        }
+                    },
+                    overlays: {
+                        hillshade: {
+                            name: 'Hillshade Europa',
+                            type: 'wms',
+                            url: 'http://129.206.228.72/cached/hillshade',
+                            visible: true,
+                            layerOptions: {
+                                layers: 'europe_wms:hs_srtm_europa',
+                                format: 'image/png',
+                                opacity: 0.25,
+                                attribution: 'Hillshade layer by GIScience http://www.osm-wms.de',
+                                crs: L.CRS.EPSG900913
+                            }
+                        },
+                        fire: {
+                            name: 'OpenFireMap',
+                            type: 'xyz',
+                            url: 'http://openfiremap.org/hytiles/{z}/{x}/{y}.png',
+                            layerOptions: {
+                                attribution: '&copy; <a href="http://www.openfiremap.org">OpenFireMap</a> contributors - &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                                continuousWorld: true
+                            }
+                        },
+                        cars: {
+                            name: 'Cars',
+                            type: 'group',
+                            visible: true
+                        },
+                        bikes: {
+                            name: 'Bicycles',
+                            type: 'group',
+                            visible: false
+                        },
+                        runners:{
+                            name: 'Runners',
+                            type: 'group',
+                            visible: false
+                        }
+                    }
+                },
+                markers: {
+                    cars: {
+                        m1: {
+                            lat: 42.20133,
+                            lng: 2.19110,
+                            message: "I'm a car"
+                        },
+                        m2: {
+                            lat: 42.21133,
+                            lng: 2.18110,
+                            message: "I'm a car"
+                        }
+                    },
+                    bikes: {
+                        m3: {
+                            lat: 42.19133,
+                            lng: 2.18110,
+                            layer: 'bikes',
+                            message: 'A bike!!'
+                        },
+                        m4: {
+                            lat: 42.3,
+                            lng: 2.16110,
+                            layer: 'bikes'
+                        }
+                    },
+                    runners: {
+                        m5: {
+                            lat: 42.1,
+                            lng: 2.16910
+                        },
+                        m6: {
+                            lat: 42.15,
+                            lng: 2.17110
+                        }
+                    }
+                }
             });
         }]);
         app.controller("PathSimpleController", [ "$scope", function($scope) {
@@ -2118,7 +3316,7 @@ var app = angular.module('webapp');
                         draggable: true
                     };
                     $scope.paths.p1.latlngs.push($scope.markers[m_key]);
-                }
+                };
                 $scope.deleteMarker = function(m_key) {
                     var marker = $scope.markers[m_key];
                     for (var pkey in $scope.paths) {
@@ -2130,7 +3328,7 @@ var app = angular.module('webapp');
                         }
                     }
                     delete $scope.markers[m_key];
-                }
+                };
                 angular.extend($scope, {
                     // set up map center
                     cen: {
@@ -2328,70 +3526,6 @@ var app = angular.module('webapp');
                 }
             };
         } ]);
-        app.controller("FirstMapController", [ "$scope", "$log", "leafletData", "leafletEvents", function($scope, $log, leafletData, leafletEvents) {
-            angular.extend($scope, {
-                london: {
-                    lat: 51.505,
-                    lng: -0.09,
-                    zoom: 4
-                },
-                markers: {
-                    london: {
-                        lat: 51.505,
-                        lng: -0.09,
-                        draggable: true
-                    }
-                },
-                defaults: {
-                     tileLayer: "http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png",
-                }
-            });
-            $scope.events = {
-                map: {
-                    enable: leafletEvents.getAvailableMapEvents(),
-                    logic: 'emit'
-                }
-            };
-            var mapEvents = leafletEvents.getAvailableMapEvents();
-            for (var k in mapEvents) {
-                var eventName = 'leafletDirectiveMap.' + mapEvents[k];
-                $scope.$on(eventName, function(event){
-                    $scope.eventDetected = event.name;
-                });
-            }
-        }]);
-        app.controller("SecondMapController", [ "$scope", "$log", "leafletData", "leafletEvents", function($scope, $log, leafletData, leafletEvents) {
-            angular.extend($scope, {
-                spain: {
-                    lat: 40.095,
-                    lng: -3.823,
-                    zoom: 4
-                },
-                markers: {
-                    spain: {
-                        lat: 51.505,
-                        lng: -0.09,
-                        draggable: true
-                    }
-                },
-                defaults: {
-                     tileLayer: "http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png",
-                }
-            });
-            $scope.events = {
-                map: {
-                    enable: ['click', 'dblclick'],
-                    logic: 'emit'
-                }
-            };
-            var mapEvents = $scope.events.map.enable;
-            for (var k in mapEvents) {
-                var eventName = 'leafletDirectiveMap.' + mapEvents[k];
-                $scope.$on(eventName, function(event){
-                    $scope.eventDetected = event.name;
-                });
-            }
-        }]);
         app.controller('MarkersLabelController', [ '$scope', function($scope) {
             angular.extend($scope, {
                 london: {
@@ -2435,4 +3569,105 @@ var app = angular.module('webapp');
             $scope.greet = function(user) {
               alert('hello ' + user.name);
             }
-        } ]);}(angular));
+        } ]);
+        app.controller("leafletMarkerController", ['$scope', 'leafletData', function ($scope, $modalInstance, leafletData) {
+            var markers = [];
+            markers.push({
+                lat: 52.229676,
+                lng: 21.012229,
+                draggable: false
+            });
+            markers.push({
+                lat: 52.219081,
+                lng: 21.025386,
+                draggable: false
+            });
+            angular.extend($scope, {
+                defaults: {
+                    maxZoom: 18,
+                    minZoom: 0,
+                    scrollWheelZoom: false
+                },
+                events: {
+                    map: {
+                        enable: [],
+                        logic: 'emit'
+                    },
+                    marker: {
+                        enable: [ 'click' ],
+                        logic: 'emit'
+                    }
+                },
+                layers: {
+                    baselayers: {
+                        osm: {
+                            name: 'OpenStreetMap',
+                            type: 'xyz',
+                            url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                            layerOptions: {
+                                subdomains: ['a', 'b', 'c'],
+                                attribution: '© OpenStreetMap contributors',
+                                continuousWorld: true
+                            }
+                        }
+                    }
+                },
+                center: {
+                    zoom: 13,
+                    lat: 52.229676,
+                    lng: 21.012229
+                },
+                markers: markers
+            });
+            $scope.$on('leafletDirectiveMarker.click', function (e, args) {
+                alert('Marker in map 1 clicked');
+            });
+        }]);
+        app.controller("leafletMarker2Controller", ['$scope', 'leafletData', function ($scope, $modalInstance, leafletData) {
+            var markers = [];
+            markers.push({
+                lat: 52.229676,
+                lng: 21.012229,
+                draggable: false
+            });
+            markers.push({
+                lat: 52.219081,
+                lng: 21.025386,
+                draggable: false
+            });
+            angular.extend($scope, {
+                defaults: {
+                    maxZoom: 18,
+                    minZoom: 0,
+                    scrollWheelZoom: false
+                },
+                events: {
+                    map: {
+                        enable: [],
+                        logic: 'emit'
+                    },
+                    marker: {
+                        enable: [ 'click' ],
+                        logic: 'emit'
+                    }
+                },
+                layers: {
+                    baselayers: {
+                        mapbox: {
+                            name: 'Mapbox Terrain',
+                            url: 'http://a.tiles.mapbox.com/v3/examples.map-i86nkdio/{z}/{x}/{y}.png',
+                            type: 'xyz'
+                        }
+                    }
+                },
+                center: {
+                    zoom: 13,
+                    lat: 52.229676,
+                    lng: 21.012229
+                },
+                markers: markers
+            });
+            $scope.$on('leafletDirectiveMarker.click', function (e, args) {
+                alert('Marker in map 2 clicked');
+            });
+        }]);}(angular));

@@ -1,12 +1,3 @@
-<!DOCTYPE html>
-<html ng-app="demoapp">
-  <head>
-    <script src="../bower_components/angular/angular.min.js"></script>
-    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
-    <script src="../dist/angular-leaflet-directive.min.js"></script>
-    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
-    <script>
-      var app = angular.module("demoapp", ["leaflet-directive"]);
       app.controller("BasicGeoJSONUpdateController", [ '$scope', '$http', 'leafletData', function($scope, $http, leafletData) {
             angular.extend($scope, {
                 center: {
@@ -61,7 +52,6 @@
                     }
                 }
             });
-
             $scope.updateGeojson = function() {
                 $scope.geojson.data = {
                                   "type": "FeatureCollection",
@@ -101,11 +91,3 @@
                                 }
                         }
                 }]);
-              </script>
-          </head>
-    <body ng-controller="BasicGeoJSONUpdateController">
-        <leaflet center="center" geojson="geojson" width="100%" height="480px"></leaflet>
-        <h1>GeoJSON update example</h1>
-        <button ng-click="updateGeojson()">update GeoJSON</button>
-    </body>
-</html>

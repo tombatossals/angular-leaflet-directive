@@ -30,7 +30,7 @@ module.exports = function (grunt, options) {
             ]
         },
         examples: {
-            files: ['examples-reworked/*.html'],
+            files: ['examples/*.html'],
             tasks: [
                 'examples'
             ]

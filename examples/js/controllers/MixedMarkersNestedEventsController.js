@@ -1,13 +1,4 @@
-<!DOCTYPE html>
-<html ng-app="demoapp">
-<head>
-    <script src="../bower_components/angular/angular.js"></script>
-    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
-    <script src="../dist/angular-leaflet-directive_dev_mapped.js"></script>
-    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css"/>
-    <script>
-        var app = angular.module("demoapp", ["leaflet-directive"]);
-        app.controller("DemoController", ["$scope", "leafletEvents", function ($scope, leafletEvents) {
+        app.controller("MixedMarkersNestedEventsController", ["$scope", "leafletEvents", function ($scope, leafletEvents) {
             $scope.map = {
                 show: true
             };
@@ -37,7 +28,6 @@
                 lng: -0.09,
                 zoom: 8
             };
-
             $scope.markers = {
                 london: {
                     1: {
@@ -48,13 +38,11 @@
                     }
                 }
             };
-
             $scope.events = {
                 markers: {
                     enable: leafletEvents.getAvailableMarkerEvents()
                 }
             };
-
             $scope.eventDetected = "No events yet...";
             var markerEvents = leafletEvents.getAvailableMarkerEvents();
             for (var k in markerEvents) {
@@ -69,24 +57,3 @@
                 });
             }
         }]);
-    </script>
-</head>
-<body ng-controller="DemoController">
-<h1>Marker Events example</h1>
-<ul ng-cloak>
-    <li>show map: <input type="checkbox" ng-model="map.show"></li>
-    <li>eventDetected: {{eventDetected}}</li>
-    <li>args: {{args}}</li>
-</ul>
-<leaflet
-    ng-if="map.show"
-    event-broadcast="events"
-    center="center"
-    markers="markers"
-    markers-nested="true"
-    layers="layers"
-    width="640px"
-    height="400px">
-</leaflet>
-</body>
-</html>

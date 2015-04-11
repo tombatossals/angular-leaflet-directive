@@ -38,7 +38,7 @@
                         draggable: true
                     };
                     $scope.paths.p1.latlngs.push($scope.markers[m_key]);
-                }
+                };
 
                 $scope.deleteMarker = function(m_key) {
                     var marker = $scope.markers[m_key];
@@ -53,7 +53,7 @@
                     }
 
                     delete $scope.markers[m_key];
-                }
+                };
 
                 angular.extend($scope, {
                     // set up map center
@@ -153,6 +153,8 @@
         </script>
     </head>
     <body ng-controller="PathsAdvancedController">
+        <leaflet center="cen" markers="markers" paths="paths"></leaflet>
+        <h1>Advanced Paths Example</h1>
         <div id="control">
             <div class="panel">
                 <h3>Center</h3>
@@ -187,6 +189,5 @@
                 </div>
             </div>
         </div>
-        <leaflet center="cen" markers="markers" paths="paths"></leaflet>
     </body>
 </html>

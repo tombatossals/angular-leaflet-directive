@@ -8,7 +8,7 @@
                         draggable: true
                     };
                     $scope.paths.p1.latlngs.push($scope.markers[m_key]);
-                }
+                };
                 $scope.deleteMarker = function(m_key) {
                     var marker = $scope.markers[m_key];
                     for (var pkey in $scope.paths) {
@@ -20,7 +20,7 @@
                         }
                     }
                     delete $scope.markers[m_key];
-                }
+                };
                 angular.extend($scope, {
                     // set up map center
                     cen: {

@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
     <script>
     var app = angular.module("demoapp", ["leaflet-directive"]);
-    app.controller("GeoJSONController", [ '$scope', '$http', 'leafletData', function($scope, $http, leafletData) {
+    app.controller("GeoJSONNonNestedController", [ '$scope', '$http', 'leafletData', function($scope, $http, leafletData) {
 
         var getColor = function(id){
             return id == 'USA'? 'blue' : 'green';
@@ -73,8 +73,9 @@
     } ]);
     </script>
 </head>
-<body ng-controller="GeoJSONController">
+<body ng-controller="GeoJSONNonNestedController">
     <leaflet center="japan" geojson="geojson" width="640px" height="480px"></leaflet>
+    <h1>GeoJSON non nested example</h1>
     <input type="button" value="center usa" ng-click="centerJSON(1)" />
     <input type="button" value="center jpn" ng-click="centerJSON(0)" />
 </body>

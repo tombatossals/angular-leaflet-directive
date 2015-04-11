@@ -39,8 +39,8 @@ module.exports = function (grunt, options) {
                 banner: '(function(angular){ \nvar app = angular.module(\'webapp\');\n',
                 footer: '}(angular));'
             },
-            src: [ 'examples-reworked/js/controllers/*.js' ],
-            dest: 'examples-reworked/js/controllers.js'
+            src: [ 'examples/js/controllers/*.js' ],
+            dest: 'examples/js/controllers.js'
         }
     };
 };

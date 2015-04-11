@@ -1,16 +1,3 @@
-<!DOCTYPE html>
-<html ng-app="demoapp">
-<head>
-    <script src="../bower_components/jquery/dist/jquery.min.js"></script>
-    <script src="../bower_components/angular/angular.min.js"></script>
-    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
-    <script src="../dist/angular-leaflet-directive.js"></script>
-    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
-    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
-    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script>
-        var app = angular.module("demoapp", ["leaflet-directive"]);
         app.controller('ControlsCustomLayerControlController', [ '$scope', function($scope) {
             angular.extend($scope, {
                 ripoll: {
@@ -112,48 +99,3 @@
                 }
             });
         } ]);
-    </script>
-    <style>
-      .angular-leaflet-control-layers {
-        position: absolute;
-        background: white;
-        z-index: 100;
-        left: 10px;
-        top: 100px;
-        width: 200px;
-        box-shadow: 1px 1px 5px #333;
-        padding: 5px;
-      }
-
-      .angular-leaflet-control-layers .lf-row label {
-        cursor: pointer;
-        width: 100%;
-      }
-
-      .angular-leaflet-control-layers .lf-row label .lf-icons {
-        float: right;
-      }
-
-      .angular-leaflet-control-layers .lf-row label .lf-icon {
-        cursor: pointer;
-        float: left;
-        margin-right: 5px;
-        padding-top: 2px;
-      }
-
-      .angular-leaflet-control-layers .lf-row label .lf-text {
-        float: left;
-      }
-    </style>
-</head>
-<body ng-controller="ControlsCustomLayerControlController">
-    <leaflet center="ripoll" layers="layers" height="480px" width="100%">
-        <layercontrol order="normal"></layercontrol>
-    </leaflet>
-    <h1>Dynamic addition and deletion of Overlays control</h1>
-    <button type="button" class="btn btn-default" ng-click="removeHillshadeLayer()" ng-disabled="!existsHillshadeLayer()">Remove Hillshade Overlay</button>
-    <button type="button" class="btn btn-default" ng-click="removeFireLayer()" ng-disabled="!existsFireLayer()">Remove Fire Overlay</button>
-    <button type="button" class="btn btn-default" ng-click="addHillshadeLayer()" ng-disabled="existsHillshadeLayer()">Add Hillshade Overlay</button>
-    <button type="button" class="btn btn-default" ng-click="addFireLayer()" ng-disabled="existsFireLayer()">Add Fire Overlay</button>
-</body>
-</html>

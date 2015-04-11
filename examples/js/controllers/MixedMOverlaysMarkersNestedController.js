@@ -1,15 +1,4 @@
-<!DOCTYPE html>
-<html ng-app="demoapp">
-<head>
-    <script src="../bower_components/angular/angular.min.js"></script>
-    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
-    <script src="../dist/angular-leaflet-directive_dev_mapped.js"></script>
-    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css"/>
-    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script>
-var app = angular.module("demoapp", ["leaflet-directive"]);
-app.controller('OverlaysController', function ($scope, leafletData, $timeout) {
+app.controller('MixedMOverlaysMarkersNestedController', function ($scope, leafletData, $timeout) {
     var _clonedMarkers;
     $timeout(function () {
         //should do nothing (not watched) and only see one destroy
@@ -120,7 +109,6 @@ app.controller('OverlaysController', function ($scope, leafletData, $timeout) {
                     lng: 2.18110,
                     message: "I'm a car"
                 }
-
             },
             bikes: {
                 m3: {
@@ -134,7 +122,6 @@ app.controller('OverlaysController', function ($scope, leafletData, $timeout) {
                     lng: 2.16110,
                     layer: 'bikes'
                 }
-
             },
             runners: {
                 m5: {
@@ -145,25 +132,7 @@ app.controller('OverlaysController', function ($scope, leafletData, $timeout) {
                     lat: 42.15,
                     lng: 2.17110
                 }
-
             }
-
         }
     });
 });
-  </script>
-</head>
-<body>
-<div class="container" ng-controller="OverlaysController">
-    <leaflet
-        center="center"
-        markers="markers"
-        layers="layers"
-        markers-nested="true"
-        markers-watch-options="markersWatchOptions"
-        height="480px" width="640px">
-    </leaflet>
-</div>
-</div>
-</body>
-</html>

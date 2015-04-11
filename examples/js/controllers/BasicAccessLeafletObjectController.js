@@ -6,7 +6,7 @@
                     zoom: 4
                 }
             });
-            $scope.showLeaflet = function() {
+            $scope.fitBounds = function() {
                 leafletData.getMap().then(function(map) {
                     map.fitBounds([ [40.712, -74.227], [40.774, -74.125] ]);
                 });

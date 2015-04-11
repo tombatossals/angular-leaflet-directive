@@ -1,15 +1,4 @@
-<!DOCTYPE html>
-<html ng-app="demoapp">
-  <head>
-    <script src="../bower_components/angular/angular.min.js"></script>
-    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
-    <script src="../bower_components/proj4/dist/proj4.js"></script>
-    <script src="../bower_components/proj4leaflet/src/proj4leaflet.js"></script>
-    <script src="../dist/angular-leaflet-directive.js"></script>
-    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
-    <script>
         // For more info take a look at https://github.com/kartena/Proj4Leaflet proj4leaflet.js
-        var app = angular.module('demoapp', ['leaflet-directive']);
         app.controller('LayersWMSWithDifferentProjectionController', [ '$scope', '$location', function($scope) {
             $scope.map = {
                 defaults: {
@@ -42,17 +31,9 @@
                                 minZoom: 0,
                                 continuousWorld: true,
                                 attribution: '&copy; <a href="https://www.havochvatten.se/kunskap-om-vara-vatten/kartor-och-geografisk-information/karttjanster.html">Havs- och vattenmyndigheten (Swedish Agency for Marine and Water Management)</a>'
-
                             }
                         }
                     }
                 }
             };
         }]);
-    </script>
-  </head>
-  <body ng-controller="LayersWMSWithDifferentProjectionController">
-    <h1>Load a map in non standard projection</h1>
-    <leaflet center="map.malmo" defaults="map.defaults" layers="map.layers" width="640" height="400"></leaflet>
-  </body>
-</html>

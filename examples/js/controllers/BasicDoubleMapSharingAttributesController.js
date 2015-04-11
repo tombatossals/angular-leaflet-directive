@@ -1,12 +1,3 @@
-<!DOCTYPE html>
-<html ng-app="demoapp">
-  <head>
-    <script src="../bower_components/angular/angular.min.js"></script>
-    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
-    <script src="../dist/angular-leaflet-directive.min.js"></script>
-    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
-    <script>
-        var app = angular.module("demoapp", ["leaflet-directive"]);
         app.controller("BasicDoubleMapSharingAttributesController", [ "$scope", "$log", "$http", "leafletData", function($scope, $log, $http, leafletData) {
             angular.extend($scope, {
                 center: {
@@ -42,27 +33,10 @@
                     }
                 }
             });
-
             $http.get('json/toronto1.json').success(function(data, status) {
                 $scope.toronto1 = data;
             });
-
             $http.get('json/toronto2.json').success(function(data, status) {
                 $scope.toronto2 = data;
             });
-
         }]);
-
-    </script>
-  </head>
-  <body ng-controller="BasicDoubleMapSharingAttributesController">
-    <div style="float: left; width: 50%;">
-        <leaflet id="map1" geojson="toronto1" defaults="defaults" markers="markers1" center="center" width="100%" height="320px"></leaflet>
-    </div>
-    <div style="float: left; width: 50%;">
-        <leaflet id="map2" geojson="toronto2" defaults="defaults" markers="markers2" center="center" width="100%" height="320px"></leaflet>
-    </div>
-    <h1>Two maps sharing center example</h1>
-    <p>Drag the center in any of the maps</p>
-  </body>
-</html>

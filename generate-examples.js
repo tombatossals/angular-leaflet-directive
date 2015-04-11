@@ -98,7 +98,7 @@ var generateControllersFromExamples = function(examples_directory, controllers_d
         var l = [];
         list.forEach(function(filename) {
             if (isAnExample(filename)) {
-                var html = fs.readFileSync(path.join(__dirname, 'examples-reworked', filename));
+                var html = fs.readFileSync(path.join(__dirname, 'examples', filename));
                 jsdom.env({
                     html: html.toString(),
                     done: function(err, window) {
@@ -126,7 +126,7 @@ var extractId = function(filename) {
 };
 
 var extractTitle = function(filename) {
-    var html = fs.readFileSync(path.join(__dirname, 'examples-reworked', filename));
+    var html = fs.readFileSync(path.join(__dirname, 'examples', filename));
     var title;
     var arr = html.toString().split('\n');
 
@@ -186,12 +186,12 @@ var generateExamplesJSONFile = function(examples_directory, json_file) {
     return df.promise;
 };
 
-var controllers_directory = path.join(__dirname, 'examples-reworked', 'js', 'controllers');
+var controllers_directory = path.join(__dirname, 'examples', 'js', 'controllers');
 mkdirp(controllers_directory, function(err) {
     cleanJavascriptFilesFromControllersDirectory(controllers_directory).then(function() {
-        var examples_directory = path.join(__dirname, 'examples-reworked');
+        var examples_directory = path.join(__dirname, 'examples');
         generateControllersFromExamples(examples_directory, controllers_directory).then(function() {
-            var json_file = path.join(__dirname, 'examples-reworked', 'json', 'examples.json');
+            var json_file = path.join(__dirname, 'examples', 'json', 'examples.json');
             generateExamplesJSONFile(examples_directory, json_file);
         });
     });

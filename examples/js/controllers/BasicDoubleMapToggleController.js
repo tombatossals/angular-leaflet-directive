@@ -1,18 +1,3 @@
-<!DOCTYPE html>
-<html ng-app="demoapp">
-  <head>
-    <script src="../bower_components/angular/angular.min.js"></script>
-    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
-    <script src="../dist/angular-leaflet-directive.js"></script>
-    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
-    <style>
-        .map {
-            float: left;
-            margin-right: 1em;
-        }
-    </style>
-    <script>
-        var app = angular.module("demoapp", ["leaflet-directive"]);
         app.controller("BasicDoubleMapToggleController", [ "$scope", "$log", "leafletData", function($scope, $log, leafletData) {
             angular.extend($scope, {
                 center: {
@@ -61,15 +46,3 @@
                 },
             });
         }]);
-
-    </script>
-  </head>
-  <body ng-controller="BasicDoubleMapToggleController">
-    <leaflet ng-if="togglemap" id="map1" center="center" paths="paths" width="100%" height="480px"></leaflet>
-    <leaflet ng-if="!togglemap" id="map2" center="center2" paths="paths2" width="100%" height="480px"></leaflet>
-    <h1>Toggle between two maps on screen</h1>
-    <p>View javascript console while toggling map</p>
-    <button ng-click="togglemap = !togglemap">Toggle Map</button>
-    </div>
-  </body>
-</html>

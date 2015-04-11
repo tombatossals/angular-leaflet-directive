@@ -1,12 +1,3 @@
-<html ng-app="demoapp">
-<head>
-	<script src="../bower_components/angular/angular.min.js"></script>
-	<script src="../bower_components/leaflet/dist/leaflet.js"></script>
-	<script src="../bower_components/leaflet-tilelayer-geojson/TileLayer.GeoJSON.js"></script>
-	<link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
-	<script src="../dist/angular-leaflet-directive.js"></script>
-	<script>
-		var app = angular.module('demoapp', ["leaflet-directive"]);
 		app.controller("MixedLayersOverlaysGeoJSONController", ["$scope", function($scope){
 				angular.extend($scope, {
 			        sanfrancisco: {
@@ -65,16 +56,7 @@
 	                        	cliptiles: false
 	                        }
 		                }
-
 		        		}
 			        }
 		    	})
 		   	}]);
-	</script>
-</head>
-<body ng-controller='MixedLayersOverlaysGeoJSONController'>
-		<leaflet height="480px" width="100%" center="sanfrancisco" layers="layers"></leaflet>
-		<h1> GeoJSON TileLayers</h1>
-		<p>Data source: Openstreetmap (buildings data) </p>
-</body>
-</html>

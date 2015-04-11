@@ -1,14 +1,3 @@
-<!DOCTYPE html>
-<html ng-app="demoapp">
-<head>
-    <script src="../bower_components/angular/angular.min.js"></script>
-    <script src="../bower_components/leaflet-dist/leaflet.js"></script>
-    <script src="../dist/angular-leaflet-directive.js"></script>
-    <link rel="stylesheet" href="../bower_components/leaflet-dist/leaflet.css" />
-    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script>
-        var app = angular.module("demoapp", ["leaflet-directive"]);
         app.controller('LayersOverlaysPathsController', [ '$scope', function($scope) {
             var markers = {
                 London : {
@@ -123,7 +112,6 @@
                         ],
                         type: 'multiPolyline',
                         layer: 'lines'
-
                     },
                     c1: {
                         weight: 2,
@@ -166,24 +154,3 @@
                 }
             });
         } ]);
-    </script>
-</head>
-<body>
-    <div class="container">
-    <div ng-controller="LayersOverlaysPathsController">
-        <div class="row">
-            <h2>This is a map with different overlays for paths</h2>
-        </div>
-        <div class="row">
-            <p>
-            In this example we create two layer groups lines, and shapes. We insert markers in both layers (note that on is initially
-            visible and one not).
-            </p>
-        </div>
-        <div class="row">
-            <leaflet center="cen" markers="markers" paths="paths" layers="layers" height="480px" width="640px"></leaflet>
-        </div>
-    </div>
-    </div>
-</body>
-</html>
