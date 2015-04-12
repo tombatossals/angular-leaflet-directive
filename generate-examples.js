@@ -9,6 +9,9 @@ var jsdom = require('jsdom').jsdom;
 var Q = require('q');
 
 var isAnExample = function(filename) {
+    if (filename === '0000-viewer.html') {
+      return false;
+    }
     return /[0-9][0-9][0-9][0-9].*\.html/.test(filename);
 };
 
@@ -64,7 +67,7 @@ var writeController = function(script, examplefile, controllers_directory) {
         }
 
         // Extract controller name
-        if (line.search('app.controller') !== -1) {
+        if (line.search('app.controller') !== -1 && !outfilename) {
             var controller = line.match(/app.controller\((\'|\")([^'"]*)/);
             if (controller && controller.length > 2 && controller[2]) {
                 outfilename = controller[2] + '.js';
@@ -151,7 +154,6 @@ var extractDate = function(filename) {
 };
 
 var generateExamplesJSONFile = function(examples_directory, json_file) {
-    return;
     var df = Q.defer();
     var examples = {};
     fs.readdir(examples_directory, function(err, list) {

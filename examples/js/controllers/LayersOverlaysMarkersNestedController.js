@@ -1,15 +1,38 @@
-        app.controller('OverlaysController', [ '$scope', function($scope) {
+        app.controller('LayersOverlaysMarkersNestedController', ['$scope', 'leafletData','$timeout',
+        function ($scope, leafletData, $timeout) {
+            var _map;
+            leafletData.getMap().then(function(map){
+                _map = map;
+            });
             angular.extend($scope, {
+                eraseMarkers: function(){
+                    $scope.markers = {
+                        cars: {
+                            m1: {
+                                lat: 42.20133,
+                                lng: 2.19110,
+                                message: "I'm a car"
+                            }
+                        }
+                    };
+                    //$scope.$apply();
+                    leafletData.getMarkers().then(function(lmarkers) {
+                        $scope.hasM1 = _map.hasLayer(lmarkers.m1);
+                        $scope.hasM2 = _map.hasLayer(lmarkers.m2);
+                    });
+                    $timeout(function(){
+                        leafletData.getMarkers().then(function(lmarkers){
+                            $scope.lMarkers = Object.keys(lmarkers);
+                            $scope.hasM1 = _map.hasLayer(lmarkers.m1);
+                            $scope.hasM2 = _map.hasLayer(lmarkers.m2);
+                        });
+                    },1000);
+                },
+                lMarkers:{},
                 ripoll: {
                     lat: 42.20133,
                     lng: 2.19110,
                     zoom: 11
-                },
-                markers: {
-                    m1: {
-                        lat: 51.505,
-                        lng: -0.09
-                    }
                 },
                 layers: {
                     baselayers: {
@@ -66,58 +89,50 @@
                             name: 'Bicycles',
                             type: 'group',
                             visible: false
+                        },
+                        runners:{
+                            name: 'Runners',
+                            type: 'group',
+                            visible: false
                         }
                     }
                 },
                 markers: {
-                    m1: {
-                        lat: 42.20133,
-                        lng: 2.19110,
-                        layer: 'cars',
-                        message: "I'm a car"
-                    },
-                    m2: {
-                        lat: 42.21133,
-                        lng: 2.18110,
-                        layer: 'cars',
-                        message: "I'm a car"
-                    },
-                    m3: {
-                        lat: 42.19133,
-                        lng: 2.18110,
-                        layer: 'bikes',
-                        message: 'A bike!!'
-                    },
-                    m4: {
-                        lat: 42.3,
-                        lng: 2.16110,
-                        layer: 'bikes'
-                    },
-                    m5: {
-                        lat: 42.1,
-                        lng: 2.16910
-                    },
-                    m6: {
-                        lat: 42.15,
-                        lng: 2.17110
-                    }
-                }
-            });
-        } ]);
-        app.controller('DefaultController', [ '$scope', function($scope) {
-            angular.extend($scope, {
-                mapDefault: {
-                    london: {
-                        lat: 51.505,
-                        lng: -0.09,
-                        zoom: 8
-                    },
-                    markers: {
+                    cars: {
                         m1: {
-                            lat: 51.505,
-                            lng: -0.09
+                            lat: 42.20133,
+                            lng: 2.19110,
+                            message: "I'm a car"
+                        },
+                        m2: {
+                            lat: 42.21133,
+                            lng: 2.18110,
+                            message: "I'm a car"
+                        }
+                    },
+                    bikes: {
+                        m3: {
+                            lat: 42.19133,
+                            lng: 2.18110,
+                            layer: 'bikes',
+                            message: 'A bike!!'
+                        },
+                        m4: {
+                            lat: 42.3,
+                            lng: 2.16110,
+                            layer: 'bikes'
+                        }
+                    },
+                    runners: {
+                        m5: {
+                            lat: 42.1,
+                            lng: 2.16910
+                        },
+                        m6: {
+                            lat: 42.15,
+                            lng: 2.17110
                         }
                     }
                 }
             });
-        } ]);
+        }]);

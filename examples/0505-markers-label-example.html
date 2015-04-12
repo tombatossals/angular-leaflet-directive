@@ -33,34 +33,14 @@
                                 noHide: true
                             }
                         }
-                    },
-                    another_marker: {
-                        lat: 51,
-                        lng: 0,
-                        focus: true,
-                        title: "Marker",
-                        draggable: true,
-                        label: {
-                            message: "<div ng-include src=\"'views/template.html'\"></div>",
-                            options: {
-                                noHide: true
-                            }
-                        }
                     }
-
                 }
             });
-        } ]);
-        app.controller('ViewController', ['$scope', function($scope) {
-            $scope.user = {};
-            $scope.greet = function(user) {
-              alert('hello ' + user.name);
-            }
         } ]);
     </script>
   </head>
   <body ng-controller="MarkersLabelController">
-      <leaflet center="london" markers="markers" height="480px" width="640px">
-      </leaflet>
+      <leaflet center="london" markers="markers" height="480px" width="640px"></leaflet>
+      <h1>Marker with label example</h1>
   </body>
 </html>

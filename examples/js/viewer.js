@@ -133,6 +133,7 @@
         $http.get('json/examples.json').success(function(data) {
             $scope.sections = extractSections(data);
             $scope.examples = data;
+            console.log(data);
             examples.resolve(data);
             $scope.setActiveSection('basic');
         });
