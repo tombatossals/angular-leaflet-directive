@@ -84,3 +84,18 @@ build:
 travis:
  - 'bower:install'
  - 'test-unit'
+
+bump-@:
+ - 'bump-only'
+ - 'default'
+ - 'bump-commit'
+
+bump-@-minor:
+ - 'bump-only:minor'
+ - 'default'
+ - 'bump-commit'
+
+bump-@-major:
+ - 'bump-only:major'
+ - 'default'
+ - 'bump-commit'

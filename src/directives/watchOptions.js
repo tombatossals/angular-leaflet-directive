@@ -1,9 +1,11 @@
 /*
     Create multiple similar directives for watchOptions to support directiveControl
     instead. (when watches are disabled)
+    NgAnnotate does not work here due to the functional creation
 */
 ['markers', 'geojson'].forEach(function(name){
-    angular.module("leaflet-directive").directive(name + 'WatchOptions',
+    angular.module("leaflet-directive").directive(name + 'WatchOptions', [
+        '$log', '$rootScope', '$q', 'leafletData', 'leafletHelpers',
         function ($log, $rootScope, $q, leafletData, leafletHelpers) {
 
             var isDefined = leafletHelpers.isDefined,
@@ -32,5 +34,5 @@
                     });
                 }
             };
-    });
+    }]);
 });
