@@ -1,6 +1,12 @@
-<a name"0.7.11"></a>
-### 0.7.11 (2015-04-13)
+<a name"0.7.12"></a>
+### 0.7.12 (2015-04-13)
 
+* **markers-watch-options** - much more flexible watch options to entireley disable watches
+* **markers-nested** - markers can be nested via layer name
+* **geojson-watch-options**  - much more flexible watch options to entireley disable watches
+* **geojson-nested** - geojson can be nested to create additional geojson layers
+* **leafletData.getDirectiveControls**
+* bug fixes see git log
 
 #### Bug Fixes
 
