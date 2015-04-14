@@ -1,3 +1,9 @@
+<a name"0.7.13"></a>
+### 0.7.13 (2015-04-14)
+
+* **bump-@, bump-@-minor, bump-@-major** - correct workflow for bumping and keeping dist version numbers in sync with package json files
+* **[geojson, markers]watchOptions** - minify fix for annotations
+
 <a name"0.7.12"></a>
 ### 0.7.12 (2015-04-13)
 
