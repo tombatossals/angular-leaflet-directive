@@ -7,7 +7,14 @@ module.exports = function (grunt, options) {
             updateConfigs: [],
             commit: true,
             commitMessage: 'Release v%VERSION%',
-            commitFiles: ['package.json', 'bower.json', 'dist/*'],
+            commitFiles: [
+                'package.json',
+                'bower.json',
+                'dist/angular-leaflet-directive.js',
+                'dist/angular-leaflet-directive.min.js',
+                'dist/angular-leaflet-directive_dev_mapped.js',
+                'dist/angular-leaflet-directive_dev_mapped.js.map'
+            ],
             createTag: true,
             tagName: 'v%VERSION%',
             tagMessage: 'Version %VERSION%',
