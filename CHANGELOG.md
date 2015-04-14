@@ -1,3 +1,23 @@
+<a name"0.7.11"></a>
+### 0.7.11 (2015-04-13)
+
+
+#### Bug Fixes
+
+* bad caching for _layerControl ([bbeb54e9](https://github.com/tombatossals/angular-leaflet-directive/commit/bbeb54e9))
+* **marker:** Tests passing again after this new functionality: https://github.com/tombatossal ([e0c7d2d7](https://github.com/tombatossals/angular-leaflet-directive/commit/e0c7d2d7))
+* **markers:** Solved a bug related with the default icon position, thanks to @Jespersm75 for r ([9626e19e](https://github.com/tombatossals/angular-leaflet-directive/commit/9626e19e))
+
+
+#### Features
+
+* **controls:** Added the scale control and an example showing it. Thanks to @dts here: https:// ([7f1fbf56](https://github.com/tombatossals/angular-leaflet-directive/commit/7f1fbf56))
+* **events:** Reworked the marker events. We use the "emit" login instead of "broadcast" for m ([5c50f7f1](https://github.com/tombatossals/angular-leaflet-directive/commit/5c50f7f1))
+* **examples:** New bootstrap-ui integration with modal and a map with marker-clustering. Exampl ([bceff464](https://github.com/tombatossals/angular-leaflet-directive/commit/bceff464))
+* **map:** Option to disable scrolling on mobile devices. Thanks to @rckclmbr here: https:/ ([368b4d21](https://github.com/tombatossals/angular-leaflet-directive/commit/368b4d21))
+* **overlay:** Added an option to hide the overlay from the switch selector. Thanks to @Getz85  ([010e773b](https://github.com/tombatossals/angular-leaflet-directive/commit/010e773b))
+
+
 <a name="0.7.11"></a>
 ### 0.7.11 (2015-01-17)
 

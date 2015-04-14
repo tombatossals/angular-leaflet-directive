@@ -1,6 +1,9 @@
 {
   "name": "angular-leaflet-directive",
-  "description": "AngularJS directive to embed an interact with maps managed by Leaflet library",
+  "author": "https://github.com/tombatossals/angular-leaflet-directive/graphs/contributors",
+  "description": "angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps",
+  "version": "0.7.11",
+  "homepage": "http://tombatossals.github.io/angular-leaflet-directive/",
   "keywords": [
     "angularjs",
     "javascript",
