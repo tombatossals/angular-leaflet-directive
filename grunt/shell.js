@@ -17,9 +17,6 @@ module.exports = function (grunt, options) {
         },
         npm_install: {
             command: 'npm install'
-        },
-        examples: {
-            command: 'node generate-examples.js'
         }
     };
 };

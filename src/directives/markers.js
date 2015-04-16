@@ -1,22 +1,7 @@
 angular.module("leaflet-directive").directive('markers',
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
     function ($log, $rootScope, $q, leafletData, leafletHelpers, leafletMapDefaults,
       leafletMarkersHelpers, leafletEvents, leafletIterators, leafletWatchHelpers,
       leafletDirectiveControlsHelpers) {
-=======
-    function ($log, $rootScope, $q, $parse, leafletData, leafletHelpers,
-=======
-    function ($log, $rootScope, $q, leafletData, leafletHelpers,
->>>>>>>  removed
-              leafletMapDefaults, leafletMarkersHelpers, leafletEvents, leafletIterators) {
->>>>>>> ability to disable watches in markers 100%
-=======
-    function ($log, $rootScope, $q, leafletData, leafletHelpers, leafletMapDefaults,
-      leafletMarkersHelpers, leafletEvents, leafletIterators, leafletWatchHelpers,
-      leafletDirectiveControlsHelpers) {
->>>>>>> - leafletWatchHelpers for sharing unwatch code with other directives
     //less terse vars to helpers
     var isDefined = leafletHelpers.isDefined,
         errorHeader = leafletHelpers.errorHeader,
@@ -29,19 +14,9 @@ angular.module("leaflet-directive").directive('markers',
         createMarker = leafletMarkersHelpers.createMarker,
         deleteMarker = leafletMarkersHelpers.deleteMarker,
         $it = leafletIterators,
-<<<<<<< HEAD
-<<<<<<< HEAD
         _markersWatchOptions = leafletHelpers.watchOptions,
         maybeWatch = leafletWatchHelpers.maybeWatch,
         extendDirectiveControls = leafletDirectiveControlsHelpers.extend;
-=======
-        _markersWatchOptions = leafletMarkersHelpers.markersWatchOptions;
->>>>>>> ability to disable watches in markers 100%
-=======
-        _markersWatchOptions = leafletHelpers.watchOptions,
-        maybeWatch = leafletWatchHelpers.maybeWatch,
-        extendDirectiveControls = leafletDirectiveControlsHelpers.extend;
->>>>>>> - leafletWatchHelpers for sharing unwatch code with other directives
 
     var _maybeAddMarkerToLayer = function(layerName, layers, model, marker, doIndividualWatch, map){
 
@@ -78,10 +53,6 @@ angular.module("leaflet-directive").directive('markers',
     //TODO: move to leafletMarkersHelpers??? or make a new class/function file (leafletMarkersHelpers is large already)
     var _addMarkers = function(markersToRender, map, layers, leafletMarkers, leafletScope,
                                watchOptions, maybeLayerName){
-<<<<<<< HEAD
-
-=======
->>>>>>> ability to disable watches in markers 100%
 
         for (var newName in markersToRender) {
             if (newName.search("-") !== -1) {
@@ -90,31 +61,13 @@ angular.module("leaflet-directive").directive('markers',
             }
 
             if (!isDefined(leafletMarkers[newName])) {
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> resolve issue #676
                 //(nmccready) very important to not have model changes when lObject is changed
                 //this might be desirable in some cases but it causes two-way binding to lObject which is not ideal
                 //if it is left as the reference then all changes from oldModel vs newModel are ignored
                 //see _destroy (where modelDiff becomes meaningless if we do not copy here)
                 var model = Helpers.copy(markersToRender[newName]);
-<<<<<<< HEAD
                 var marker = createMarker(model);
                 var layerName = (model? model.layer : undefined) || maybeLayerName; //original way takes pref
-=======
-                var markerData = markersToRender[newName];
-                var marker = createMarker(markerData);
-                var layerName = (markerData? markerData.layer : undefined) || maybeLayerName; //original way takes pref
->>>>>>> breaking up leafletEvents for developers sake
-=======
-                var model = markersToRender[newName];
-=======
->>>>>>> resolve issue #676
-                var marker = createMarker(model);
-                var layerName = (model? model.layer : undefined) || maybeLayerName; //original way takes pref
->>>>>>> ability to disable watches in markers 100%
                 if (!isDefined(marker)) {
                     $log.error(errorHeader + ' Received invalid data on the marker ' + newName + '.');
                     continue;
@@ -140,17 +93,8 @@ angular.module("leaflet-directive").directive('markers',
                 // Check if the marker should be added to a layer
                 if (isDefined(model) && (isDefined(model.layer) || isDefined(maybeLayerName))){
 
-<<<<<<< HEAD
-<<<<<<< HEAD
                     var pass = _maybeAddMarkerToLayer(layerName, layers, model, marker,
                         watchOptions.individual.doWatch, map);
-=======
-                    var pass = _maybeAddMarkerToLayer(layerName, layers, markerData, marker, shouldWatch, map);
->>>>>>> breaking up leafletEvents for developers sake
-=======
-                    var pass = _maybeAddMarkerToLayer(layerName, layers, model, marker,
-                        watchOptions.individual.doWatch, map);
->>>>>>> ability to disable watches in markers 100%
                     if(!pass)
                         continue; //something went wrong move on in the loop
                 } else if (!isDefined(model.group)) {
@@ -166,18 +110,8 @@ angular.module("leaflet-directive").directive('markers',
                         watchOptions.individual.doWatch);
                 }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
                 listenMarkerEvents(marker, model, leafletScope, watchOptions.individual.doWatch);
                 bindMarkerEvents(marker, pathToMarker, model, leafletScope, layerName);
-=======
-                listenMarkerEvents(marker, markerData, leafletScope, shouldWatch);
-                bindMarkerEvents(marker, pathToMarker, markerData, leafletScope, layerName);
->>>>>>> breaking up leafletEvents for developers sake
-=======
-                listenMarkerEvents(marker, model, leafletScope, watchOptions.individual.doWatch);
-                bindMarkerEvents(marker, pathToMarker, model, leafletScope, layerName);
->>>>>>> ability to disable watches in markers 100%
             }
         }
     };
@@ -191,10 +125,6 @@ angular.module("leaflet-directive").directive('markers',
                 $log.debug(errorHeader + "[markers] destroy: ");
                 hasLogged = true;
             }
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> resolve issue #676
 
             if(doCheckOldModel){
               //might want to make the option (in watch options) to disable deep checking
@@ -206,13 +136,6 @@ angular.module("leaflet-directive").directive('markers',
                 !isDefined(markerModels[name]) ||
                 !Object.keys(markerModels[name]).length ||
                 modelIsDiff) {
-<<<<<<< HEAD
-=======
-            if (!isDefined(markerModels) || !Object.keys(markerModels).length ||
-                !isDefined(markerModels[name]) || !Object.keys(markerModels[name]).length) {
->>>>>>> ability to disable watches in markers 100%
-=======
->>>>>>> resolve issue #676
                 deleteMarker(lMarkers[name], map, layers);
                 delete lMarkers[name];
             }
@@ -247,44 +170,18 @@ angular.module("leaflet-directive").directive('markers',
 
                 // backwards compat
                 if(isDefined(attrs.watchMarkers))
-<<<<<<< HEAD
-<<<<<<< HEAD
                   watchOptions.doWatch = watchOptions.individual.doWatch =
-=======
-                    watchOptions.individual.doWatch =
->>>>>>> ability to disable watches in markers 100%
-=======
-                  watchOptions.doWatch = watchOptions.individual.doWatch =
->>>>>>> resolve issue #676
                         (!isDefined(attrs.watchMarkers) || Helpers.isTruthy(attrs.watchMarkers));
 
                 var isNested = (isDefined(attrs.markersNested) && Helpers.isTruthy(attrs.markersNested));
 
                 getLayers().then(function(layers) {
-<<<<<<< HEAD
-<<<<<<< HEAD
                     var _clean = function(models, oldModels){
                         _destroy(models, oldModels, leafletMarkers, map, layers);
                     };
 
                     var _create = function(models, oldModels){
                         _clean(models, oldModels);
-=======
-                    var _clean = function(models){
-                        _destroy(models, leafletMarkers, map, layers);
-                    };
-
-                    var _create = function(models){
-                        _clean(models);
->>>>>>> ability to disable watches in markers 100%
-=======
-                    var _clean = function(models, oldModels){
-                        _destroy(models, oldModels, leafletMarkers, map, layers);
-                    };
-
-                    var _create = function(models, oldModels){
-                        _clean(models, oldModels);
->>>>>>> resolve issue #676
                         if(isNested) {
                             $it.each(models, function(markersToAdd, layerName) {
                                 _addMarkers(markersToAdd, map, layers, leafletMarkers, leafletScope,
@@ -295,37 +192,11 @@ angular.module("leaflet-directive").directive('markers',
                         _addMarkers(models, map, layers, leafletMarkers, leafletScope,
                             watchOptions);
                     };
-<<<<<<< HEAD
-<<<<<<< HEAD
                     extendDirectiveControls(attrs.id, 'markers', _create, _clean);
                     leafletData.setMarkers(leafletMarkers, attrs.id);
 
                     maybeWatch(leafletScope,'markers', watchOptions, function(newMarkers, oldMarkers){
                         _create(newMarkers, oldMarkers);
-=======
-                    //add external control to create / destroy markers without a watch
-                    leafletData.getDirectiveControls().then(function(controls){
-                        angular.extend(controls, {
-                            markers:{
-                                create: _create,
-                                clean: _clean
-                            }
-                        });
-                        leafletData.setDirectiveControls(controls, attrs.id);
-                    });
-=======
-                    extendDirectiveControls(attrs.id, 'markers', _create, _clean);
->>>>>>> - leafletWatchHelpers for sharing unwatch code with other directives
-                    leafletData.setMarkers(leafletMarkers, attrs.id);
-
-<<<<<<< HEAD
-                    maybeWatch(leafletScope,'markers', watchOptions, function(newMarkers){
-                        _create(newMarkers);
->>>>>>> ability to disable watches in markers 100%
-=======
-                    maybeWatch(leafletScope,'markers', watchOptions, function(newMarkers, oldMarkers){
-                        _create(newMarkers, oldMarkers);
->>>>>>> resolve issue #676
                     });
                 });
             });

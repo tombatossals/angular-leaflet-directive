@@ -33,14 +33,6 @@ module.exports = function (grunt, options) {
                 'dist/angular-leaflet-directive.min.no-header.js'
             ],
             dest: 'dist/angular-leaflet-directive.min.js'
-        },
-        examples: {
-            options: {
-                banner: '(function(angular){ \nvar app = angular.module(\'webapp\');\n',
-                footer: '}(angular));'
-            },
-            src: [ 'examples/js/controllers/*.js' ],
-            dest: 'examples/js/controllers.js'
         }
     };
 };

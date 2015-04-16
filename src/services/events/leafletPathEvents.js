@@ -1,20 +1,9 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
 angular.module("leaflet-directive")
 .factory('leafletPathEvents', function ($rootScope, $q, $log, leafletHelpers, leafletLabelEvents) {
-=======
-angular.module("leaflet-directive").factory('leafletPathEvents', function ($rootScope, $q, $log, leafletHelpers) {
->>>>>>> breaking up leafletEvents for developers sake
-=======
-angular.module("leaflet-directive")
-.factory('leafletPathEvents', function ($rootScope, $q, $log, leafletHelpers, leafletLabelEvents) {
->>>>>>> leafletEvents split up to keep sanity.
     var safeApply = leafletHelpers.safeApply,
         isDefined = leafletHelpers.isDefined,
         isObject = leafletHelpers.isObject,
         Helpers = leafletHelpers,
-<<<<<<< HEAD
-<<<<<<< HEAD
         errorHeader = leafletHelpers.errorHeader,
         lblHelp = leafletLabelEvents;
 
@@ -31,35 +20,6 @@ angular.module("leaflet-directive")
             i,
             eventName,
             logic = "broadcast";
-=======
-        errorHeader = leafletHelpers.errorHeader;
-=======
-        errorHeader = leafletHelpers.errorHeader,
-        lblHelp = leafletLabelEvents;
->>>>>>> leafletEvents split up to keep sanity.
-
-    var _genDispatchPathEvent = function (eventName, logic, leafletScope, lObject, name, model, layerName) {
-        return function (e) {
-            var broadcastName = 'leafletDirectivePath.' + eventName;
-
-            fire(leafletScope, broadcastName, logic, e, e.target || lObject, model, name, layerName);
-        };
-    };
-
-<<<<<<< HEAD
-    var _bindPathEvents = function (path, name, pathData, leafletScope) {
-        var pathEvents = [];
-        var i;
-        var eventName;
-        var logic = "broadcast";
->>>>>>> breaking up leafletEvents for developers sake
-=======
-    var _bindPathEvents = function (lObject, name, model, leafletScope) {
-        var pathEvents = [],
-            i,
-            eventName,
-            logic = "broadcast";
->>>>>>> leafletEvents split up to keep sanity.
 
         if (!isDefined(leafletScope.eventBroadcast)) {
             // Backward compatibility, if no event-broadcast attribute, all events are broadcasted
@@ -147,27 +107,11 @@ angular.module("leaflet-directive")
 
         for (i = 0; i < pathEvents.length; i++) {
             eventName = pathEvents[i];
-<<<<<<< HEAD
-<<<<<<< HEAD
             lObject.on(eventName, _genDispatchPathEvent(eventName, logic, leafletScope, pathEvents, name));
         }
 
         if (Helpers.LabelPlugin.isLoaded() && isDefined(lObject.label)) {
             lblHelp.genLabelEvents(leafletScope, logic, lObject, name);
-=======
-            path.on(eventName, _genDispatchPathEvent(eventName, logic, leafletScope, pathEvents, name));
-        }
-
-        if (Helpers.LabelPlugin.isLoaded() && isDefined(path.label)) {
-            genLabelEvents(leafletScope, logic, path, name);
->>>>>>> breaking up leafletEvents for developers sake
-=======
-            lObject.on(eventName, _genDispatchPathEvent(eventName, logic, leafletScope, pathEvents, name));
-        }
-
-        if (Helpers.LabelPlugin.isLoaded() && isDefined(lObject.label)) {
-            lblHelp.genLabelEvents(leafletScope, logic, lObject, name);
->>>>>>> leafletEvents split up to keep sanity.
         }
     };
 

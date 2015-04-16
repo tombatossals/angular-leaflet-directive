@@ -1,7 +1,5 @@
 angular.module("leaflet-directive")
 .directive('geojson', function ($log, $rootScope, leafletData, leafletHelpers,
-<<<<<<< HEAD
-<<<<<<< HEAD
     leafletWatchHelpers, leafletDirectiveControlsHelpers,leafletIterators) {
 
     var _maybeWatchCollection = leafletWatchHelpers.maybeWatchCollection,
@@ -9,22 +7,6 @@ angular.module("leaflet-directive")
         _extendDirectiveControls = leafletDirectiveControlsHelpers.extend,
         hlp = leafletHelpers,
         $it = leafletIterators;
-=======
-    leafletWatchHelpers, leafletDirectiveControlsHelpers) {
-
-    var _maybeWatchCollection = leafletWatchHelpers.maybeWatchCollection,
-        _watchOptions = leafletHelpers.watchOptions,
-        _extendDirectiveControls = leafletDirectiveControlsHelpers.extend;
->>>>>>> - leafletWatchHelpers for sharing unwatch code with other directives
-=======
-    leafletWatchHelpers, leafletDirectiveControlsHelpers,leafletIterators) {
-
-    var _maybeWatchCollection = leafletWatchHelpers.maybeWatchCollection,
-        _watchOptions = leafletHelpers.watchOptions,
-        _extendDirectiveControls = leafletDirectiveControlsHelpers.extend,
-        hlp = leafletHelpers,
-        $it = leafletIterators;
->>>>>>> - geojson nested working
 
     return {
         restrict: "A",
@@ -78,8 +60,6 @@ angular.module("leaflet-directive")
                     return onEachFeature;
                 };
 
-<<<<<<< HEAD
-<<<<<<< HEAD
                 var isNested = (hlp.isDefined(attrs.geojsonNested) &&
                     hlp.isTruthy(attrs.geojsonNested));
 
@@ -102,36 +82,6 @@ angular.module("leaflet-directive")
                     if (!(isDefined(geojson) && isDefined(geojson.data))) {
                         return;
                     }
-=======
-=======
-                var isNested = (hlp.isDefined(attrs.geojsonNested) &&
-                    hlp.isTruthy(attrs.geojsonNested));
-
->>>>>>> - geojson nested working
-                var _clean = function(){
-                    var _remove = function(lObject) {
-                        if (isDefined(lObject) && map.hasLayer(lObject)) {
-                            map.removeLayer(lObject);
-                        }
-                    };
-                    if(isNested) {
-                        $it.each(leafletGeoJSON, function(lObject) {
-                            _remove(lObject);
-                        });
-                        return;
-                    }
-                    _remove(leafletGeoJSON);
-                };
-
-                var _addGeojson = function(geojson, maybeName){
-                    if (!(isDefined(geojson) && isDefined(geojson.data))) {
-                        return;
-                    }
-<<<<<<< HEAD
-
->>>>>>> - leafletWatchHelpers for sharing unwatch code with other directives
-=======
->>>>>>> - geojson nested working
                     var onEachFeature = _hookUpEvents(geojson);
 
                     if (!isDefined(geojson.options)) {
@@ -152,10 +102,6 @@ angular.module("leaflet-directive")
                         leafletGeoJSON = lObject;
                     }
                     leafletData.setGeoJSON(leafletGeoJSON, attrs.id);
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> - geojson nested working
                     lObject.addTo(map);
                 };
 
@@ -172,12 +118,6 @@ angular.module("leaflet-directive")
                         return;
                     }
                     _addGeojson(model);
-<<<<<<< HEAD
-=======
-                    leafletGeoJSON.addTo(map);
->>>>>>> - leafletWatchHelpers for sharing unwatch code with other directives
-=======
->>>>>>> - geojson nested working
                 };
 
                 _extendDirectiveControls(attrs.id, 'geojson', _create, _clean);

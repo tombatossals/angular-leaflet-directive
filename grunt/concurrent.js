@@ -15,10 +15,6 @@ module.exports = function (grunt, options) {
             }
         },
         unit: {
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> - geojson nested working
             tasks: ['karma:unit', 'watch:unit'],
             options: {
                 logConcurrentOutput: true
@@ -26,12 +22,6 @@ module.exports = function (grunt, options) {
         },
         'unit-mocha': {
             tasks: ['karma:unit-mocha', 'watch:unit-mocha'],
-<<<<<<< HEAD
-=======
-            tasks: ['karma:unit-mocha', 'watch:chrome'],
->>>>>>> ability to disable watches in markers 100%
-=======
->>>>>>> - geojson nested working
             options: {
                 logConcurrentOutput: true
             }
