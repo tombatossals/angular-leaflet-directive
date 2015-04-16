@@ -50,26 +50,24 @@
             $scope.$on('leafletDirectiveMarker.click', function (e, args) {
                 alert('Marker in map 1 clicked');
             });
-        }]);
-        app.controller("leafletMarker2Controller", ['$scope', 'leafletData', function ($scope, $modalInstance, leafletData) {
-            var markers = [];
-            markers.push({
+            var markers2 = [];
+            markers2.push({
                 lat: 52.229676,
                 lng: 21.012229,
                 draggable: false
             });
-            markers.push({
+            markers2.push({
                 lat: 52.219081,
                 lng: 21.025386,
                 draggable: false
             });
             angular.extend($scope, {
-                defaults: {
+                defaults2: {
                     maxZoom: 18,
                     minZoom: 0,
                     scrollWheelZoom: false
                 },
-                events: {
+                events2: {
                     map: {
                         enable: [],
                         logic: 'emit'
@@ -79,7 +77,7 @@
                         logic: 'emit'
                     }
                 },
-                layers: {
+                layers2: {
                     baselayers: {
                         mapbox: {
                             name: 'Mapbox Terrain',
@@ -88,12 +86,12 @@
                         }
                     }
                 },
-                center: {
+                center2: {
                     zoom: 13,
                     lat: 52.229676,
                     lng: 21.012229
                 },
-                markers: markers
+                markers: markers2
             });
             $scope.$on('leafletDirectiveMarker.click', function (e, args) {
                 alert('Marker in map 2 clicked');

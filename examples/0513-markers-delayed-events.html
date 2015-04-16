@@ -60,11 +60,12 @@
     </script>
   </head>
   <body ng-controller="MarkersDelayedEventsController">
-      <a href="#" ng-click="removeMarkers()">Remove markers</a> #
-      <a href="#" ng-click="addMarkers()">Add markers</a>
-    <ul ng-cloak>
+      <leaflet events-broadcast="events" center="london" markers="markers" height="480px" width="100%"></leaflet>
+      <h1>Markers delayed events example</h1>
+      <button ng-click="removeMarkers()">Remove markers</button>
+      <button ng-click="addMarkers()">Add markers</button>
+      <ul ng-cloak>
         <li><strong ng-bind="eventDetected"></strong> event caught in listener.</li>
-    </ul>
-      <leaflet events-broadcast="events" center="london" markers="markers" height="480px" width="640px"></leaflet>
+      </ul>
   </body>
 </html>

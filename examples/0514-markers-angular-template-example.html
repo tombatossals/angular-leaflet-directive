@@ -66,8 +66,9 @@
     </script>
   </head>
   <body ng-controller="MarkersAngularTemplateController">
-      <a href="#" ng-click="removeMarkers()">Remove markers</a> #
-      <a href="#" ng-click="addMarkers()">Add markers</a>
-      <leaflet center="london" markers="data.markers" height="480px" width="640px"></leaflet>
+      <leaflet center="london" markers="data.markers" height="480px" width="100%"></leaflet>
+      <h1>Markers angular template example</h1>
+      <button ng-click="removeMarkers()">Remove markers</button>
+      <button ng-click="addMarkers()">Add markers</button>
   </body>
 </html>

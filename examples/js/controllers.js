@@ -2179,13 +2179,13 @@ var app = angular.module('webapp');
                 },
                 layers: {
                     baselayers: {
-                        mapbox_terrain: {
-                            name: 'Mapbox Terrain',
+                        mapbox_light: {
+                            name: 'Mapbox Light',
                             url: 'http://api.tiles.mapbox.com/v4/{mapid}/{z}/{x}/{y}.png?access_token={apikey}',
                             type: 'xyz',
                             layerOptions: {
-                                apikey: 'pk.eyJ1IjoidG9tYmF0b3NzYWxzIiwiYSI6Imo3MWxyTHMifQ.TjXg_IV7ZYMHX6tqjMikPg',
-                                mapid: 'examples.map-i86nkdio'
+                                apikey: 'pk.eyJ1IjoiYnVmYW51dm9scyIsImEiOiJLSURpX0pnIn0.2_9NrLz1U9bpwMQBhVk97Q',
+                                mapid: 'bufanuvols.lia22g09'
                             }
                         }
                     },
@@ -3541,26 +3541,24 @@ app.controller('MixedMOverlaysMarkersNestedController', function ($scope, leafle
             $scope.$on('leafletDirectiveMarker.click', function (e, args) {
                 alert('Marker in map 1 clicked');
             });
-        }]);
-        app.controller("leafletMarker2Controller", ['$scope', 'leafletData', function ($scope, $modalInstance, leafletData) {
-            var markers = [];
-            markers.push({
+            var markers2 = [];
+            markers2.push({
                 lat: 52.229676,
                 lng: 21.012229,
                 draggable: false
             });
-            markers.push({
+            markers2.push({
                 lat: 52.219081,
                 lng: 21.025386,
                 draggable: false
             });
             angular.extend($scope, {
-                defaults: {
+                defaults2: {
                     maxZoom: 18,
                     minZoom: 0,
                     scrollWheelZoom: false
                 },
-                events: {
+                events2: {
                     map: {
                         enable: [],
                         logic: 'emit'
@@ -3570,7 +3568,7 @@ app.controller('MixedMOverlaysMarkersNestedController', function ($scope, leafle
                         logic: 'emit'
                     }
                 },
-                layers: {
+                layers2: {
                     baselayers: {
                         mapbox: {
                             name: 'Mapbox Terrain',
@@ -3579,12 +3577,12 @@ app.controller('MixedMOverlaysMarkersNestedController', function ($scope, leafle
                         }
                     }
                 },
-                center: {
+                center2: {
                     zoom: 13,
                     lat: 52.229676,
                     lng: 21.012229
                 },
-                markers: markers
+                markers: markers2
             });
             $scope.$on('leafletDirectiveMarker.click', function (e, args) {
                 alert('Marker in map 2 clicked');

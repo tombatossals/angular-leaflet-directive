@@ -365,7 +365,7 @@
             "title": "Paths simple example"
         },
         {
-            "date": "2015-04-11T07:59:44.924Z",
+            "date": "2015-04-16T19:46:37.304Z",
             "section": "paths",
             "onlyStandAlone": false,
             "id": "/paths/types-example",
@@ -397,18 +397,20 @@
             "title": "Advanced Paths Example"
         },
         {
-            "date": "2015-04-11T07:59:44.924Z",
+            "date": "2015-04-16T19:48:12.942Z",
             "section": "paths",
             "onlyStandAlone": false,
             "id": "/paths/change-in-group-layer-example",
-            "extUrl": "0305-paths-change-in-group-layer-example.html"
+            "extUrl": "0305-paths-change-in-group-layer-example.html",
+            "title": "Path change in group layer"
         },
         {
-            "date": "2015-04-11T07:59:44.924Z",
+            "date": "2015-04-16T19:49:59.580Z",
             "section": "paths",
             "onlyStandAlone": false,
             "id": "/paths/decorations-simple-example",
-            "extUrl": "0306-paths-decorations-simple-example.html"
+            "extUrl": "0306-paths-decorations-simple-example.html",
+            "title": "Path decoration example"
         }
     ],
     "controls": [
@@ -463,11 +465,12 @@
             "title": "Add/remove markers easily example"
         },
         {
-            "date": "2015-04-11T07:59:44.924Z",
+            "date": "2015-04-16T19:53:01.939Z",
             "section": "markers",
             "onlyStandAlone": false,
             "id": "/markers/icons-example",
-            "extUrl": "0503-markers-icons-example.html"
+            "extUrl": "0503-markers-icons-example.html",
+            "title": "Changing the marker icons"
         },
         {
             "date": "2015-04-11T07:59:44.924Z",
@@ -486,11 +489,12 @@
             "title": "Marker with label example"
         },
         {
-            "date": "2015-04-11T07:59:44.924Z",
+            "date": "2015-04-16T19:54:41.067Z",
             "section": "markers",
             "onlyStandAlone": false,
             "id": "/markers/groups-example",
-            "extUrl": "0506-markers-groups-example.html"
+            "extUrl": "0506-markers-groups-example.html",
+            "title": "This is a map with two hidden marker groups"
         },
         {
             "date": "2015-04-11T07:59:44.924Z",
@@ -509,7 +513,7 @@
             "title": "Change icon opacity"
         },
         {
-            "date": "2015-04-11T07:59:44.924Z",
+            "date": "2015-04-16T19:57:21.229Z",
             "section": "markers",
             "onlyStandAlone": false,
             "id": "/markers/clustering-example",
@@ -517,11 +521,12 @@
             "title": "Marker clustering example"
         },
         {
-            "date": "2015-04-11T07:59:44.924Z",
+            "date": "2015-04-16T19:58:09.760Z",
             "section": "markers",
             "onlyStandAlone": false,
             "id": "/markers/clustering-without-overlays-example",
-            "extUrl": "0509-markers-clustering-without-overlays-example.html"
+            "extUrl": "0509-markers-clustering-without-overlays-example.html",
+            "title": "Marker clustering example without layers"
         },
         {
             "date": "2015-04-11T07:59:44.924Z",
@@ -548,21 +553,23 @@
             "title": "Marker Events example"
         },
         {
-            "date": "2015-04-11T07:59:44.927Z",
+            "date": "2015-04-16T20:00:07.048Z",
             "section": "markers",
             "onlyStandAlone": false,
             "id": "/markers/delayed-events",
-            "extUrl": "0513-markers-delayed-events.html"
+            "extUrl": "0513-markers-delayed-events.html",
+            "title": "Markers delayed events example"
         },
         {
-            "date": "2015-04-11T20:45:37.949Z",
+            "date": "2015-04-16T20:01:12.525Z",
             "section": "markers",
             "onlyStandAlone": false,
             "id": "/markers/angular-template-example",
-            "extUrl": "0514-markers-angular-template-example.html"
+            "extUrl": "0514-markers-angular-template-example.html",
+            "title": "Markers angular template example"
         },
         {
-            "date": "2015-04-11T07:59:44.927Z",
+            "date": "2015-04-16T20:03:27.647Z",
             "section": "markers",
             "onlyStandAlone": false,
             "id": "/markers/two-maps-events-example",

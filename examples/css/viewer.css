@@ -230,3 +230,15 @@ input[type=range] {
 .angular-leaflet-control-layers .lf-row label .lf-text {
   float: left;
 }
+
+.red {
+    border-radius: 120px;
+    opacity: .75;
+    background-color: #FF0000;
+}
+
+.blue {
+    border-radius: 120px;
+    opacity: .75;
+    background-color: #0000FF;
+}
