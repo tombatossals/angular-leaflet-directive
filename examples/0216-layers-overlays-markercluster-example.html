@@ -6,7 +6,6 @@
     <script src="../dist/angular-leaflet-directive.min.js"></script>
     <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
     <script src="../bower_components/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
-    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="../bower_components/leaflet.markercluster/dist/MarkerCluster.css" />
     <link rel="stylesheet" href="../bower_components/leaflet.markercluster/dist/MarkerCluster.Default.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -105,46 +104,34 @@
         } ]);
     </script>
 </head>
-<body>
-    <div ng-controller="LayersOverlaysMarkerclusterController" class="container">
-        <div class="row">
-            <h2>This is a map with overlays and a markercluster</h2>
-        </div>
-        <div class="row">
-            <p>
-            In this example we use a <a href="https://github.com/Leaflet/Leaflet.markercluster">MarkerCluster</a> overlay to group the markers instead of a LayerGroup.
-            The layer is defined as any other overlay. The possible options can be found in the <a href="https://github.com/Leaflet/Leaflet.markercluster">MarkerCluster docs</a>
-            </p>
-        </div>
-        <div class="row">
-            <p>
-            Layer definition:
-            </p>
-        	<p>
-        	    <pre>
+<body ng-controller="LayersOverlaysMarkerclusterController">
+    <leaflet center="ripoll" markers="markers" layers="layers" height="480px" width="640px"></leaflet>
+    <h1>This is a map with overlays and a markercluster</h1>
+    <p>
+    In this example we use a <a href="https://github.com/Leaflet/Leaflet.markercluster">MarkerCluster</a> overlay to group the markers instead of a LayerGroup.
+    The layer is defined as any other overlay. The possible options can be found in the <a href="https://github.com/Leaflet/Leaflet.markercluster">MarkerCluster docs</a>
+    </p>
+    <p>
+    Layer definition:
+    </p>
+	<p>
+	    <pre>
 cars: {
     name: 'Cars',
     type: 'markercluster',
     visible: true
 }
-                </pre>
-        	</p>
+        </pre>
+	</p>
+    <p>
+        <div class="alert alert-warning">
+            The MarkerCluster, at this moment, does not support the location change of the markers and they have to be
+            removed and added again to the cluster. So, as we remove & add markers when the model is changed, you can
+            experience a slight glitch during this operation. You can test it clicking the button below.
         </div>
-        <div class="row">
-            <leaflet center="ripoll" markers="markers" layers="layers" height="480px" width="640px"></leaflet>
-        </div>
-        <div class="row">
-            <p>
-                <div class="alert alert-warning">
-                    The MarkerCluster, at this moment, does not support the location change of the markers and they have to be
-                    removed and added again to the cluster. So, as we remove & add markers when the model is changed, you can
-                    experience a slight glitch during this operation. You can test it clicking the button below.
-                </div>
-            </p>
-            <p>
-                <button ng-click="move()" class="btn">Move a car!</button>
-            </p>
-        </div>
-    </div>
+    </p>
+    <p>
+        <button ng-click="move()" class="btn">Move a car!</button>
+    </p>
 </body>
 </html>

@@ -88,7 +88,5 @@
     <button type="button" ng-if="!layers.baselayers['osm']" ng-click="toggleLayer('osm')">Add OpenStreetMap Layer</button>
     <button type="button" ng-if="layers.overlays['hillshade']" ng-click="toggleOverlay('hillshade')">Remove Hillshade Europe Overlay</button>
     <button type="button" ng-if="!layers.overlays['hillshade']" ng-click="toggleOverlay('hillshade')">Add Hillshade Europe Overlay</button>
-    <p>Layer definition:</p>
-    <pre ng-bind="layers.baselayers | json"></pre>
 </body>
 </html>

@@ -1,19 +1,4 @@
-<<<<<<< HEAD:examples/js/controllers/LayersOverlaysMarkersNestedController.js
         app.controller('LayersOverlaysMarkersNestedController', ['$scope', 'leafletData','$timeout',
-=======
-<!DOCTYPE html>
-<html ng-app="demoapp">
-<head>
-    <script src="../bower_components/angular/angular.min.js"></script>
-    <script src="../bower_components/leaflet/dist/leaflet-src.js"></script>
-    <script src="../dist/angular-leaflet-directive_dev_mapped.js"></script>
-    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css"/>
-    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script>
-        var app = angular.module("demoapp", ["leaflet-directive"]);
-        app.controller('OverlaysController', ['$scope', 'leafletData','$timeout',
->>>>>>> ability to disable watches in markers 100%:examples/overlays-markers-nested-example.html
         function ($scope, leafletData, $timeout) {
             var _map;
             leafletData.getMap().then(function(map){
@@ -150,29 +135,4 @@
                     }
                 }
             });
-<<<<<<< HEAD:examples/js/controllers/LayersOverlaysMarkersNestedController.js
         }]);
-=======
-        }]);
-
-    </script>
-</head>
-<body>
-<div class="container" ng-controller="OverlaysController">
-    <button ng-click="eraseMarkers()">erase markers</button>
-            <leaflet center="ripoll"
-                     markers="markers"
-                     layers="layers"
-                     markers-nested="true"
-                     height="480px"
-                     width="640px">
-
-            </leaflet>
-    <div>{{lMarkers}}</div>
-    <div>m1: {{hasM1}}</div>
-    <div>m2: {{hasM2}}</div>
-</div>
-</div>
-</body>
-</html>
->>>>>>> ability to disable watches in markers 100%:examples/overlays-markers-nested-example.html

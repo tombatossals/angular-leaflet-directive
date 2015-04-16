@@ -28,6 +28,15 @@
                     lng: -0.09,
                     zoom: 5
                 },
+                tiles2: {
+                    name: 'Mapbox Outdoors',
+                    url: 'http://api.tiles.mapbox.com/v4/{mapid}/{z}/{x}/{y}.png?access_token={apikey}',
+                    type: 'xyz',
+                    options: {
+                        apikey: 'pk.eyJ1IjoiYnVmYW51dm9scyIsImEiOiJLSURpX0pnIn0.2_9NrLz1U9bpwMQBhVk97Q',
+                        mapid: 'bufanuvols.lia3no0m'
+                    }
+                },
                 paths2: {
                     p1: {
                         color: 'red',

@@ -8,6 +8,10 @@ var mkdirp = require('mkdirp');
 var jsdom = require('jsdom').jsdom;
 var Q = require('q');
 
+var onlyStandAlone = [
+    "0117-basic-routing-show-hide-map-example.html"
+];
+
 var isAnExample = function(filename) {
     if (filename === '0000-viewer.html') {
       return false;
@@ -172,6 +176,7 @@ var generateExamplesJSONFile = function(examples_directory, json_file) {
                 examples[section].push({
                     date: date,
                     section: section,
+                    onlyStandAlone: onlyStandAlone.indexOf(extUrl) !== -1,
                     id: '/' + section + '/' + id,
                     extUrl: extUrl,
                     title: title,

@@ -54,8 +54,8 @@
 <body ng-controller="LayersUTFGridController">
     <leaflet center="center" layers="layers" width="100%" height="480px"></leaflet>
     <h1>Baselayer with UTFGrid interactivity in Overlay</h1>
-    <p>You can add UTFGrid intactivity in overlays to a baselayer, which will show in the layer selector in the top right corner, defining <strong>layers</strong> like this.</p>
-    <p><img ng-src="{{flag}}"> {{interactivity}}</p>
-    <pre ng-bind="layers | json"></pre>
+    <p>Mouse over the map regions to interact with UTFGrid.</p>
+    <h2>{{interactivity}}</h2>
+    <p><img ng-src="{{flag}}"></p>
 </body>
 </html>

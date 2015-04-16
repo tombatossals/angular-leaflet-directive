@@ -1,12 +1,16 @@
-        app.controller("BasicMaxBoundsPadController", [ "$scope", "leafletBoundsHelpers", function($scope, leafletBoundsHelpers) {
+        app.controller("BasicMaxBoundsPadController", ["$scope", "leafletBoundsHelpers", function($scope, leafletBoundsHelpers) {
             var maxbounds = leafletBoundsHelpers.createBoundsFromArray([
-                [ 37.8866, -79.4877 ],
-                [ 39.7230, -74.9863 ]
+                [37.8866, -79.4877],
+                [39.7230, -74.9863]
             ]);
-            $scope.maxBoundsPad = maxbounds.pad = 1;
+            maxbounds.pad = 1.0;
             angular.extend($scope, {
                 bounds: maxbounds,
-                center: {},
+                center: {
+                    lat: 37.8866,
+                    lng: -79-4877,
+                    zoom: 4
+                },
                 layers: {
                     baselayers: {
                         xyz: {

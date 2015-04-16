@@ -254,6 +254,15 @@ var app = angular.module('webapp');
                     lng: -0.09,
                     zoom: 5
                 },
+                tiles2: {
+                    name: 'Mapbox Outdoors',
+                    url: 'http://api.tiles.mapbox.com/v4/{mapid}/{z}/{x}/{y}.png?access_token={apikey}',
+                    type: 'xyz',
+                    options: {
+                        apikey: 'pk.eyJ1IjoiYnVmYW51dm9scyIsImEiOiJLSURpX0pnIn0.2_9NrLz1U9bpwMQBhVk97Q',
+                        mapid: 'bufanuvols.lia3no0m'
+                    }
+                },
                 paths2: {
                     p1: {
                         color: 'red',
@@ -482,15 +491,19 @@ var app = angular.module('webapp');
                 maxbounds: $scope.regions.london
             });
         } ]);
-        app.controller("BasicMaxBoundsPadController", [ "$scope", "leafletBoundsHelpers", function($scope, leafletBoundsHelpers) {
+        app.controller("BasicMaxBoundsPadController", ["$scope", "leafletBoundsHelpers", function($scope, leafletBoundsHelpers) {
             var maxbounds = leafletBoundsHelpers.createBoundsFromArray([
-                [ 37.8866, -79.4877 ],
-                [ 39.7230, -74.9863 ]
+                [37.8866, -79.4877],
+                [39.7230, -74.9863]
             ]);
-            $scope.maxBoundsPad = maxbounds.pad = 1;
+            maxbounds.pad = 1.0;
             angular.extend($scope, {
                 bounds: maxbounds,
-                center: {},
+                center: {
+                    lat: 37.8866,
+                    lng: -79-4877,
+                    zoom: 4
+                },
                 layers: {
                     baselayers: {
                         xyz: {
