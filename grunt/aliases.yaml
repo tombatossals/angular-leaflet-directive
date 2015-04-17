@@ -99,3 +99,7 @@ bump-@-major:
  - 'bump-only:major'
  - 'default'
  - 'bump-commit'
+
+examples:
+ - 'shell:examples'
+ - 'concat:examples'

@@ -53,7 +53,7 @@ angular.module("leaflet-directive").factory('leafletControlHelpers', function ($
                 for (i in leafletLayers.overlays) {
                     _layersControl.removeLayer(leafletLayers.overlays[i]);
                 }
-                _layersControl.removeFrom(map);
+                map.removeControl(_layersControl);
                 delete _controls[mapId];
             }
 
@@ -74,7 +74,7 @@ angular.module("leaflet-directive").factory('leafletControlHelpers', function ($
                         _layersControl.addOverlay(leafletLayers.overlays[i], overlays[i].name);
                     }
                 }
-                _layersControl.addTo(map);
+                map.addControl(_layersControl);
             }
             return mustBeLoaded;
         }
