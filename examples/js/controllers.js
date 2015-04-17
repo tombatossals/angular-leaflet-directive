@@ -2427,33 +2427,6 @@ var app = angular.module('webapp');
             });
         } ]);
         app.controller('MarkersIconsController', [ '$scope', function($scope) {
-            var local_icons = {
-                defaultIcon: {},
-                leafIcon: {
-                    iconUrl: 'img/leaf-green.png',
-                    shadowUrl: 'img/leaf-shadow.png',
-                    iconSize:     [38, 95], // size of the icon
-                    shadowSize:   [50, 64], // size of the shadow
-                    iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
-                    shadowAnchor: [4, 62],  // the same for the shadow
-                    popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
-                },
-                orangeLeafIcon: {
-                    iconUrl: 'img/leaf-orange.png',
-                	shadowUrl: 'img/leaf-shadow.png',
-                	iconSize:     [38, 95],
-                    shadowSize:   [50, 64],
-                    iconAnchor:   [22, 94],
-                    shadowAnchor: [4, 62],
-                    popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
-                },
-                divIcon: {
-                    type: 'div',
-                	iconSize: [200, 0],
-                	popupAnchor:  [0, 0],
-                    html: 'Using <strong>Bold text as an icon</strong>:'
-                }
-            }
             angular.extend($scope, {
                 chicago: {
                     lat: 41.85,
@@ -2466,14 +2439,53 @@ var app = angular.module('webapp');
                         lng: -87.65,
                         message: "I'm a static marker with defaultIcon",
                         focus: false,
-                        icon: local_icons.defaultIcon,
+                        icon: {},
                     },
+                },
+                defaultIcon: {},
+                leafIcon: {
+                    iconUrl: 'img/leaf-green.png',
+                    shadowUrl: 'img/leaf-shadow.png',
+                    iconSize:     [38, 95], // size of the icon
+                    shadowSize:   [50, 64], // size of the shadow
+                    iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+                    shadowAnchor: [4, 62],  // the same for the shadow
+                    popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+                },
+                orangeLeafIcon: {
+                    iconUrl: 'img/leaf-orange.png',
+                    shadowUrl: 'img/leaf-shadow.png',
+                    iconSize:     [38, 95],
+                    shadowSize:   [50, 64],
+                    iconAnchor:   [22, 94],
+                    shadowAnchor: [4, 62],
+                    popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+                },
+                divIcon: {
+                    type: 'div',
+                    iconSize: [200, 0],
+                    popupAnchor:  [0, 0],
+                    html: 'Using <strong>Bold text as an icon</strong>:'
+                },
+                awesomeMarkerIcon: {
+                    type: 'awesomeMarker',
+                    icon: 'tag',
+                    markerColor: 'red'
+                },
+                makiMarkerIcon: {
+                    type: 'makiMarker',
+                    icon: 'beer',
+                    color: '#f00',
+                    size: "l"
+                },
+                extraMarkerIcon: {
+                    type: 'extraMarker',
+                    icon: 'fa-star',
+                    color: '#f00',
+                    prefix: 'fa',
+                    shape: 'circle'
                 }
             });
-            $scope.changeIcon = function(iconType) {
-                $scope.markers.m1.icon = local_icons[iconType];
-                $scope.markers.m1.message = "I'm a static marker with " + iconType;
-            };
         } ]);
         app.controller('MarkersLabelController', [ '$scope', function($scope) {
             angular.extend($scope, {
@@ -2562,33 +2574,6 @@ var app = angular.module('webapp');
                         icon: {}
                     }
                 },
-                iconA: {},
-                iconB: {
-                	iconUrl: 'img/leaf-orange.png',
-                	shadowUrl: 'img/leaf-shadow.png',
-                	iconSize:     [38, 95],
-                    shadowSize:   [50, 64],
-                    iconAnchor:   [22, 94],
-                    shadowAnchor: [4, 62]
-                },
-                iconC: {
-                    type: 'awesomeMarker',
-                    icon: 'tag',
-                    markerColor: 'red'
-                },
-                iconD: {
-                    type: 'makiMarker',
-                    icon: 'beer',
-                    color: '#f00',
-                    size: "l"
-                },
-                iconE: {
-                    type: 'extraMarker',
-                    icon: 'fa-star',
-                    color: '#f00',
-                    prefix: 'fa',
-                    shape: 'circle'
-                }
             });
             $scope.$on('leafletDirectiveMarker.click', function(e, args) {
                 // Args will contain the marker name and other relevant information
