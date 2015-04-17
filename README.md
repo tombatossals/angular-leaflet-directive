@@ -24,7 +24,11 @@ Status](https://coveralls.io/repos/realtymaps/angular-leaflet-directive/badge.pn
 Library. This software aims to easily embed maps managed by leaflet on your
 [Leaflet](http://leaflet.cloudmade.com) project.
 
-See some basic examples:
+You can browse all the examples added by the community to learn about the directive and its possibilities here:
+
+http://tombatossals.github.io/angular-leaflet-directive/examples/0000-viewer.html
+
+Or you can see some examples directly:
 
 * [Basic example](http://tombatossals.github.io/angular-leaflet-directive/examples/simple-example.html)
 * [Center example](http://tombatossals.github.io/angular-leaflet-directive/examples/center-example.html)
