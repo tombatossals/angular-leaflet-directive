@@ -5,7 +5,7 @@
 var fs = require('fs');
 var path = require('path');
 var mkdirp = require('mkdirp');
-var jsdom = require('jsdom').jsdom;
+var jsdom = require('jsdom');
 var Q = require('q');
 
 var onlyStandAlone = [
