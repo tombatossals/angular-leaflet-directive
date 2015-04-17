@@ -1,5 +1,5 @@
 /*!
-*  angular-leaflet-directive 0.7.13 2015-04-14
+*  angular-leaflet-directive 0.7.13 2015-04-17
 *  angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps
 *  git: https://github.com/tombatossals/angular-leaflet-directive
 */
@@ -1879,7 +1879,7 @@ angular.module("leaflet-directive")
             if (isDefined(markerData.label.options) && markerData.label.options.noHide === true) {
                 marker.showLabel();
             }
-            if (compileMessage) {
+            if (compileMessage && marker.label != null) {
                 $compile(marker.label._container)(labelScope);
             }
         }
@@ -4410,13 +4410,14 @@ angular.module("leaflet-directive")
 });
 
 angular.module("leaflet-directive")
-.factory('leafletPathEvents', function ($rootScope, $q, $log, leafletHelpers, leafletLabelEvents) {
+.factory('leafletPathEvents', function ($rootScope, $q, $log, leafletHelpers, leafletLabelEvents, leafletEventsHelpers) {
     var safeApply = leafletHelpers.safeApply,
         isDefined = leafletHelpers.isDefined,
         isObject = leafletHelpers.isObject,
         Helpers = leafletHelpers,
         errorHeader = leafletHelpers.errorHeader,
-        lblHelp = leafletLabelEvents;
+        lblHelp = leafletLabelEvents,
+        fire = leafletEventsHelpers.fire;
 
     var _genDispatchPathEvent = function (eventName, logic, leafletScope, lObject, name, model, layerName) {
         return function (e) {
