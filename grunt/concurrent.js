@@ -8,7 +8,7 @@ module.exports = function (grunt, options) {
                 logConcurrentOutput: true
             }
         },
-        spec: {
+        chrome: {
             tasks: ['karma:unit-chrome', 'watch:chrome'],
             options: {
                 logConcurrentOutput: true
