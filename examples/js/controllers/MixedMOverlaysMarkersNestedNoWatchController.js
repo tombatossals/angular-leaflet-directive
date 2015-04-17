@@ -1,4 +1,4 @@
-app.controller('MixedMOverlaysMarkersNestedController', function ($scope, leafletData, $timeout) {
+app.controller('MixedMOverlaysMarkersNestedNoWatchController', function ($scope, leafletData, $timeout) {
     var _clonedMarkers;
     $timeout(function () {
         //should do nothing (not watched) and only see one destroy

@@ -13,7 +13,7 @@
 
         body, html { height: 100%; }
 
-        .info {
+        .worldmap {
             background: rgba(255, 255, 255, 0.9);
             border-radius: 5px;
         }
@@ -39,7 +39,7 @@
             margin-right: 8px;
         }
 
-        div.box {
+        div.worldmap.box {
             position: absolute;
             top: 1em;
             right: 1em;
@@ -48,7 +48,7 @@
             text-align: center;
         }
 
-        div.country {
+        div.worldmap.country {
             font-size: 2em;
             font-weight: bold;
             position: absolute;
@@ -177,11 +177,12 @@
     </style>
   </head>
   <body ng-controller="MixedGeoJSONEventsController">
-    <div class="info country f32">
+      <leaflet center="center" events="events" legend="legend" geojson="geojson"></leaflet>
+      <div class="worldmap country f32">
         <div ng-show="selectedCountry" class="flag" ng-class="countries[selectedCountry.id]['alpha-2']|lowercase"></div>
         {{ selectedCountry.properties.name || 'No country'}}
-    </div>
-    <div class="info box">Map center: [ lat: {{ center.lat | number:4 }}, lng: {{ center.lng | number:4 }} ]</div>
-    <leaflet center="center" events="events" legend="legend" geojson="geojson"></leaflet>
+      </div>
+      <div class="worldmap box">Map center: [ lat: {{ center.lat | number:4 }}, lng: {{ center.lng | number:4 }} ]</div>
+      <h1>World map flags example</h1>
   </body>
 </html>

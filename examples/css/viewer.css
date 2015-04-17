@@ -242,3 +242,33 @@ input[type=range] {
     opacity: .75;
     background-color: #0000FF;
 }
+
+.angular-leaflet-map {
+    height: 480px;
+}
+
+.worldmap {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 5px;
+}
+
+div.worldmap.box {
+    position: absolute;
+    top: 2em;
+    right: 2em;
+    z-index: 100;
+    padding: 1em;
+    text-align: center;
+}
+
+div.worldmap.country {
+    font-size: 2em;
+    font-weight: bold;
+    position: absolute;
+    bottom: 3em;
+    left: 1em;
+    z-index: 100;
+    padding: .2em .5em;
+    line-height: 1.1em;
+    text-align: center;
+}

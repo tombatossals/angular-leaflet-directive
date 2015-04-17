@@ -441,7 +441,7 @@
     ],
     "markers": [
         {
-            "date": "2015-04-11T07:59:44.924Z",
+            "date": "2015-04-17T17:27:29.657Z",
             "section": "markers",
             "onlyStandAlone": false,
             "id": "/markers/simple-example",
@@ -587,11 +587,12 @@
             "title": "Image Legend Service"
         },
         {
-            "date": "2015-04-16T14:40:16.615Z",
+            "date": "2015-04-17T17:18:28.081Z",
             "section": "mixed",
             "onlyStandAlone": false,
             "id": "/mixed/geojson-events-example",
-            "extUrl": "0601-mixed-geojson-events-example.html"
+            "extUrl": "0601-mixed-geojson-events-example.html",
+            "title": "World map flags example"
         },
         {
             "date": "2015-04-11T07:59:44.927Z",
@@ -618,7 +619,7 @@
             "title": "Marker Events example"
         },
         {
-            "date": "2015-04-11T20:45:37.949Z",
+            "date": "2015-04-17T17:22:33.001Z",
             "section": "mixed",
             "onlyStandAlone": false,
             "id": "/mixed/overlays-markers-nested-no-watch-example",
