@@ -1,0 +1,15 @@
+{
+  "name": "jsdom",
+  "homepage": "https://github.com/tmpvar/jsdom",
+  "version": "4.1.0",
+  "_release": "4.1.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "4.1.0",
+    "commit": "a539335956dae60489af5027886ad0f1d405c063"
+  },
+  "_source": "git://github.com/tmpvar/jsdom.git",
+  "_target": "~4.1.0",
+  "_originalSource": "jsdom",
+  "_direct": true
+}
