@@ -46,11 +46,14 @@ module.exports = function (grunt, options) {
             //logLevel: 'DEBUG',
             reporters: ['progress', 'coverage'],
             preprocessors: {
+                'test/**/**/*.coffee': ['coffee'],
                 'dist/angular-leaflet-directive.js': ['coverage']
             },
             coverageReporter: {
-                type : 'lcov',
-                dir : 'coverage/'
+                reporters:[
+                    {type: 'lcov', dir:'coverage/', subdir:'report'},
+                    {type: 'text-summary', dir:'coverage/', subdir:'report'}
+                ]
             }
         }
     };
