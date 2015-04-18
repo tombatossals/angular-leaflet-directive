@@ -1,5 +1,5 @@
 /*!
-*  angular-leaflet-directive 0.7.11 2015-04-10
+*  angular-leaflet-directive 0.7.13 2015-04-17
 *  angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps
 *  git: https://github.com/tombatossals/angular-leaflet-directive
 */
@@ -1879,7 +1879,7 @@ angular.module("leaflet-directive")
             if (isDefined(markerData.label.options) && markerData.label.options.noHide === true) {
                 marker.showLabel();
             }
-            if (compileMessage) {
+            if (compileMessage && marker.label !== null) {
                 $compile(marker.label._container)(labelScope);
             }
         }
@@ -4034,9 +4034,11 @@ angular.module("leaflet-directive").directive('tiles', ["$log", "leafletData", "
 /*
     Create multiple similar directives for watchOptions to support directiveControl
     instead. (when watches are disabled)
+    NgAnnotate does not work here due to the functional creation
 */
 ['markers', 'geojson'].forEach(function(name){
-    angular.module("leaflet-directive").directive(name + 'WatchOptions',
+    angular.module("leaflet-directive").directive(name + 'WatchOptions', [
+        '$log', '$rootScope', '$q', 'leafletData', 'leafletHelpers',
         function ($log, $rootScope, $q, leafletData, leafletHelpers) {
 
             var isDefined = leafletHelpers.isDefined,
@@ -4065,7 +4067,7 @@ angular.module("leaflet-directive").directive('tiles', ["$log", "leafletData", "
                     });
                 }
             };
-    });
+    }]);
 });
 
 angular.module("leaflet-directive")
@@ -4408,13 +4410,14 @@ angular.module("leaflet-directive")
 }]);
 
 angular.module("leaflet-directive")
-.factory('leafletPathEvents', ["$rootScope", "$q", "$log", "leafletHelpers", "leafletLabelEvents", function ($rootScope, $q, $log, leafletHelpers, leafletLabelEvents) {
+.factory('leafletPathEvents', ["$rootScope", "$q", "$log", "leafletHelpers", "leafletLabelEvents", "leafletEventsHelpers", function ($rootScope, $q, $log, leafletHelpers, leafletLabelEvents, leafletEventsHelpers) {
     var safeApply = leafletHelpers.safeApply,
         isDefined = leafletHelpers.isDefined,
         isObject = leafletHelpers.isObject,
         Helpers = leafletHelpers,
         errorHeader = leafletHelpers.errorHeader,
-        lblHelp = leafletLabelEvents;
+        lblHelp = leafletLabelEvents,
+        fire = leafletEventsHelpers.fire;
 
     var _genDispatchPathEvent = function (eventName, logic, leafletScope, lObject, name, model, layerName) {
         return function (e) {
