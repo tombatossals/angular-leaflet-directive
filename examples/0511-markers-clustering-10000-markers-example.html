@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html ng-app="demoapp">
+<head>
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="../bower_components/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+    <script src="../dist/angular-leaflet-directive.min.js"></script>
+    <script src="realworld.10000.js"></script>
+    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="../bower_components/leaflet.markercluster/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="../bower_components/leaflet.markercluster/dist/MarkerCluster.Default.css" />
+    <script>
+        var app = angular.module("demoapp", ["leaflet-directive"]);
+        app.controller("MarkersClustering10000MarkersController", [ "$scope", function($scope) {
+            var addressPointsToMarkers = function(points) {
+              return points.map(function(ap) {
+                return {
+                  layer: 'realworld',
+                  lat: ap[0],
+                  lng: ap[1]
+                };
+              });
+            };
+            angular.extend($scope, {
+                center: {
+                    lat: -37.9212959167,
+                    lng: 175.5604435167,
+                    zoom: 11
+                },
+                events: {
+                    map: {
+                        enable: ['moveend', 'popupopen'],
+                        logic: 'emit'
+                    },
+                    marker: {
+                        enable: [],
+                        logic: 'emit'
+                    }
+                },
+                markers: addressPointsToMarkers(addressPoints),
+                layers: {
+                    baselayers: {
+                        osm: {
+                            name: 'OpenStreetMap',
+                            type: 'xyz',
+                            url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                            layerOptions: {
+                                subdomains: ['a', 'b', 'c'],
+                                attribution: '© OpenStreetMap contributors',
+                                continuousWorld: true
+                            }
+                        }
+                    },
+                    overlays: {
+                        realworld: {
+                            name: "Real world data",
+                            type: "markercluster",
+                            visible: true,
+                            "layerOptions": {
+                                "chunkedLoading": true,
+                                "showCoverageOnHover": false,
+                                "removeOutsideVisibleBounds": true
+                            }
+                        },
+                    }
+                }
+            });
+        }]);
+    </script>
+    <style>
+        .angular-leaflet-map {
+            width: 100%;
+            height: 480px;
+        }
+        .left {
+            float: left;
+            width: 58%;
+            padding-right: 1em;
+        }
+        .right {
+            float: right;
+            width: 40%;
+        }
+    </style>
+</head>
+<body ng-controller="MarkersClustering10000MarkersController">
+    <leaflet center="center" markers="markers" layers="layers" watch-markers="no" event-broadcast="events"></leaflet>
+    <h1>Marker clustering example (10000 markers)</h1>
+    <div class="left">
+        <p>You can create a marker-clustering group on the map, defining <strong>layers</strong> like this.</p>
+        <pre ng-bind="layers | json"></pre>
+    </div>
+    <div class="right">
+        <p>And your <strong>markers</strong> definition this way; this real world data is from the Leaflet.markercluster examples.</p>
+        <pre ng-bind="markers | json"></pre>
+    </div>
+</body>
+</html>
