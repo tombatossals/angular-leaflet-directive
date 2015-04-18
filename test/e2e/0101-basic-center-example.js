@@ -4,6 +4,9 @@ describe('Loading 0101-basic-center-example.html', function() {
 
     beforeEach(function() {
         browser.get('0101-basic-center-example.html');
+        browser.wait(function() {
+            return element(by.css('img.leaflet-tile-loaded')).isPresent();
+        }, 5000);
     }, 30000);
 
     it('should update the zoom value in the input if clicked the zoom control', function() {

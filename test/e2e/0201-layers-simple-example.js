@@ -1,31 +1,25 @@
 'use strict';
 
-describe('Loading layers-simple-example.html', function() {
+describe('Loading 0201-layers-simple-example.html', function() {
 
-    var ptor, driver;
     beforeEach(function() {
-        ptor = protractor.getInstance();
-        browser.get('layers-simple-example.html');
-        driver = ptor.driver;
+        browser.get('0201-layers-simple-example.html');
+        browser.wait(function() {
+            return element(by.css('img.leaflet-tile-loaded')).isPresent();
+        }, 5000);
     });
 
     it('should change the layer tiles if clicked on the leaflet control switch layer', function() {
-        ptor.wait(function() {
-            return ptor.isElementPresent(by.xpath('//img[contains(@src, "http://c.tile.openstreetmap.org/")]'));
-        });
+        expect(element(by.xpath('//img[contains(@src, "http://api.tiles.mapbox.com/v4/bufanuvols.lia22g09/")]')).isPresent()).toBe(true);
+        browser.actions().mouseMove(element(by.xpath('//a[contains(@class, "leaflet-control-layers-toggle")][1]'))).perform();
 
-        expect(ptor.isElementPresent(by.xpath('//img[contains(@src, "http://c.tile.openstreetmap.org/6/53/27.png")]'))).toBe(true);
-        ptor.actions().mouseMove(element(by.xpath('//a[contains(@class, "leaflet-control-layers-toggle")][1]'))).perform();
-
-        ptor.findElements(by.css("input.leaflet-control-layers-selector")).then(function(inputs) {
+        browser.findElements(by.css("input.leaflet-control-layers-selector")).then(function(inputs) {
             var input = inputs[1];
             input.click().then(function() {
-                ptor.wait(function() {
-                    return ptor.isElementPresent(by.xpath('//img[contains(@src, "http://api.tiles.mapbox.com")]')).then(function(elementLoaded) {
-                        return elementLoaded;
-                    });
-                });
-                expect(ptor.isElementPresent(by.xpath('//img[contains(@src, "http://api.tiles.mapbox.com/v4/examples.map-i86nkdio/6/53/27.png?access_token=pk.eyJ1IjoidG9tYmF0b3NzYWxzIiwiYSI6Imo3MWxyTHMifQ.TjXg_IV7ZYMHX6tqjMikPg")]'))).toBe(true);
+                browser.wait(function() {
+                    return element(by.xpath('//img[contains(@src, "http://b.tile.openstreetmap.org")]')).isPresent();
+                }, 5000);
+                expect(element(by.xpath('//img[contains(@src, "http://b.tile.openstreetmap.org")]')).isPresent()).toBe(true);
             });
         });
     });

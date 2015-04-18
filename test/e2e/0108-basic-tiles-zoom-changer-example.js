@@ -1,34 +1,26 @@
 'use strict';
 
-describe('Loading tiles-zoom-changer-example.html', function() {
+describe('Loading 0108-basic-tiles-zoom-changer-example.html', function() {
 
-    var ptor, driver;
     beforeEach(function() {
-        ptor = protractor.getInstance();
-        browser.get('tiles-zoom-changer-example.html');
-        driver = ptor.driver;
+        browser.get('0108-basic-tiles-zoom-changer-example.html');
+        browser.wait(function() {
+            return element(by.css('img.leaflet-tile-loaded')).isPresent();
+        }, 5000);
     });
 
     it('should update the map tiles if zoom in the map', function() {
-        ptor.wait(function() {
-            return ptor.isElementPresent(by.css('img.leaflet-tile-loaded'));
-        });
-
-        expect(ptor.isElementPresent(by.xpath('//img[contains(@src, "http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/")]'))).toBe(true);
+        expect(element(by.xpath('//img[contains(@src, "http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/")]')).isPresent()).toBe(true);
         var zoomin = element(by.xpath('.//*[@title="Zoom in"]'));
 
-        zoomin.click().then(function() {
-            ptor.sleep(300);
-            zoomin.click().then(function() {
-                ptor.sleep(300);
-                zoomin.click().then(function() {
-                    ptor.wait(function() {
-                        return ptor.isElementPresent(by.xpath('//img[contains(@src, "http://a.tile.openstreetmap.org/")]'));
-                    });
-
-                    expect(ptor.isElementPresent(by.xpath('//img[contains(@src, "http://a.tile.openstreetmap.org/")]'))).toBe(true);
-                });
-            });
-        });
+        zoomin.click();
+        browser.driver.sleep(300);
+        zoomin.click();
+        browser.driver.sleep(300);
+        zoomin.click();
+        browser.wait(function() {
+            return element(by.xpath('//img[contains(@src, "http://a.tile.openstreetmap.org/")]')).isPresent();
+        }, 5000);
+        expect(element(by.xpath('//img[contains(@src, "http://a.tile.openstreetmap.org/")]')).isPresent()).toBe(true);
     });
 });

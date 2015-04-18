@@ -1,23 +1,19 @@
 'use strict';
 
-describe('Loading tiles-example.html', function() {
+describe('Loading 0107-basic-tiles-example.html', function() {
 
     var ptor, driver;
     beforeEach(function() {
-        ptor = protractor.getInstance();
-        browser.get('tiles-example.html');
-        driver = ptor.driver;
+        browser.get('0107-basic-tiles-example.html');
+        browser.wait(function() {
+            return element(by.css('img.leaflet-tile-loaded')).isPresent();
+        }, 5000);
     });
 
     it('should update the map tiles if clicked on the tiles changer buttons', function() {
-        ptor.wait(function() {
-            return ptor.isElementPresent(by.css('img.leaflet-tile-loaded'));
-        });
+        expect(element(by.xpath('//img[contains(@src, "http://api.tiles.mapbox.com/v4/bufanuvols.lia35jfp/")]')).isPresent()).toBe(true);
 
-        expect(ptor.isElementPresent(by.xpath('//img[contains(@src, "http://b.tile.opencyclemap.org")]'))).toBe(true);
-
-        element(by.xpath('//button[text()="OpenStreetMaps"]')).click().then(function() {
-            expect(ptor.isElementPresent(by.xpath('//img[contains(@src, "http://b.tile.openstreetmap.org")]'))).toBe(true);
-        });
+        element(by.xpath('//button[text()="OpenStreetMaps"]')).click();
+        expect(element(by.xpath('//img[contains(@src, "http://b.tile.openstreetmap.org")]')).isPresent()).toBe(true);
     });
 });
