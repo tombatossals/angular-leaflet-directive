@@ -1,36 +1,27 @@
 'use strict';
 
-describe('Loading overlays-simple-example.html', function() {
+describe('Loading 0202-layers-overlays-simple-example.html', function() {
 
-    var ptor, driver;
     beforeEach(function() {
-        ptor = protractor.getInstance();
-        browser.get('overlays-simple-example.html');
-        driver = ptor.driver;
+        browser.get('0202-layers-overlays-simple-example.html');
+        browser.wait(function() {
+            return element(by.css('img.leaflet-tile-loaded')).isPresent();
+        }, 5000);
     });
 
     it('should change the layer tiles if clicked on the leaflet control switch layer', function() {
-        ptor.wait(function() {
-            return ptor.isElementPresent(by.xpath('//img[contains(@src, "http://c.tile.openstreetmap.org/")]'));
-        });
+        expect(element(by.xpath('//img[contains(@src, "http://c.tile.openstreetmap.org/")]')).isPresent()).toBe(true);
+        browser.actions().mouseMove(element(by.xpath('//a[contains(@class, "leaflet-control-layers-toggle")][1]'))).perform();
 
-        expect(ptor.isElementPresent(by.xpath('//img[contains(@src, "http://c.tile.openstreetmap.org/")]'))).toBe(true);
-        ptor.actions().mouseMove(element(by.xpath('//a[contains(@class, "leaflet-control-layers-toggle")][1]'))).perform();
+        browser.wait(function() {
+            return element(by.xpath('//img[contains(@src, "http://suite.opengeo.org/geoserver/usa/wms")]')).isPresent();
+        }, 5000);
+
+        expect(element(by.xpath('//img[contains(@src, "http://suite.opengeo.org/geoserver/usa/wms")]')).isPresent()).toBe(true);
 
         var overlayButton = element(by.xpath("//input[@type='checkbox'][1]"));
-        overlayButton.click().then(function() {
-            ptor.wait(function() {
-                return ptor.isElementPresent(by.xpath('//img[contains(@src, "http://suite.opengeo.org/geoserver/usa/wms")]'));
-            });
-            expect(ptor.isElementPresent(by.xpath('//img[contains(@src, "http://suite.opengeo.org/geoserver/usa/wms")]'))).toBe(true);
-            overlayButton.click().then(function() {
-                ptor.wait(function() {
-                    return ptor.isElementPresent(by.xpath('//img[contains(@src, "http://suite.opengeo.org/geoserver/usa/wms")]')).then(function(present) {
-                        return !present;
-                    });
-                });
-                expect(ptor.isElementPresent(by.xpath('//img[contains(@src, "http://suite.opengeo.org/geoserver/usa/wms")]'))).toBe(false);
-            });
-        });
+        overlayButton.click();
+        browser.driver.sleep(300);
+        expect(element(by.xpath('//img[contains(@src, "http://suite.opengeo.org/geoserver/usa/wms")]')).isPresent()).toBe(false);
     });
 });

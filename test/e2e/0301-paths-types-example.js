@@ -1,56 +1,51 @@
 'use strict';
 
-describe('Loading paths-types-example.html', function() {
+describe('Loading 0301-paths-types-example.html', function() {
 
-    var ptor, driver;
     beforeEach(function() {
-        ptor = protractor.getInstance();
-        browser.get('paths-types-example.html');
-        driver = ptor.driver;
+        browser.get('0301-paths-types-example.html');
+        browser.wait(function() {
+            return element(by.css('img.leaflet-tile-loaded')).isPresent();
+        }, 5000);
     });
 
     it('should show a polyline on the map when clicked the polyline button', function() {
-        element(by.xpath('//button[text()="polyline"]')).click().then(function() {
-            expect(ptor.isElementPresent(by.xpath('//*[local-name()="svg" and namespace-uri()="http://www.w3.org/2000/svg"]//*[local-name()="path" and @d="M320 200L300 291L392 280"]'))).toBe(true);
-        });
+        element(by.xpath('//button[text()="polyline"]')).click();
+        expect(element(by.xpath('//*[name()="svg"]//*[name()="path"]')).getAttribute("d")).toEqual("M512 240L492 331L584 320");
     });
 
     it('should show a multipolyline on the map when clicked the multipolyline button', function() {
-        element(by.xpath('//button[text()="multiPolyline"]')).click().then(function() {
-            expect(ptor.isElementPresent(by.xpath('//*[local-name()="svg" and namespace-uri()="http://www.w3.org/2000/svg"]//*[local-name()="path" and @d="M320 200L269 304"]'))).toBe(true);
-            expect(ptor.isElementPresent(by.xpath('//*[local-name()="svg" and namespace-uri()="http://www.w3.org/2000/svg"]//*[local-name()="path" and @d="M334 223L300 291"]'))).toBe(true);
-        });
+        element(by.xpath('//button[text()="multiPolyline"]')).click();
+
+        expect(element(by.xpath('(//*[name()="svg"]//*[name()="path"])[1]')).getAttribute("d")).toEqual("M512 240L461 344");
+        expect(element(by.xpath('(//*[name()="svg"]//*[name()="path"])[2]')).getAttribute("d")).toEqual("M526 263L492 331");
+
     });
 
     it('should show a polygon on the map when clicked the polygon button', function() {
-        element(by.xpath('//button[text()="polygon"]')).click().then(function() {
-            expect(ptor.isElementPresent(by.xpath('//*[local-name()="svg" and namespace-uri()="http://www.w3.org/2000/svg"]//*[local-name()="path" and @d="M320 200L269 304L300 291L334 223z"]'))).toBe(true);
-        });
+        element(by.xpath('//button[text()="polygon"]')).click();
+        expect(element(by.xpath('(//*[name()="svg"]//*[name()="path"])[1]')).getAttribute("d")).toEqual("M512 240L461 344L492 331L526 263z");
     });
 
     it('should show a multipolygon on the map when clicked the multipolygon button', function() {
-        element(by.xpath('//button[text()="multiPolygon"]')).click().then(function() {
-            expect(ptor.isElementPresent(by.xpath('//*[local-name()="svg" and namespace-uri()="http://www.w3.org/2000/svg"]//*[local-name()="path" and @d="M320 200L269 304L300 291L334 223z"]'))).toBe(true);
-            expect(ptor.isElementPresent(by.xpath('//*[local-name()="svg" and namespace-uri()="http://www.w3.org/2000/svg"]//*[local-name()="path" and @d="M397 191L392 280L344 206z"]'))).toBe(true);
-        });
+        element(by.xpath('//button[text()="multiPolygon"]')).click();
+        expect(element(by.xpath('(//*[name()="svg"]//*[name()="path"])[1]')).getAttribute("d")).toEqual("M512 240L461 344L492 331L526 263z");
+        expect(element(by.xpath('(//*[name()="svg"]//*[name()="path"])[2]')).getAttribute("d")).toEqual("M589 231L584 320L536 246z");
     });
 
     it('should show a rectangle on the map when clicked the rectangle button', function() {
-        element(by.xpath('//button[text()="rectangle"]')).click().then(function() {
-            expect(ptor.isElementPresent(by.xpath('//*[local-name()="svg" and namespace-uri()="http://www.w3.org/2000/svg"]//*[local-name()="path" and @d="M269 304L269 191L397 191L397 304z"]'))).toBe(true);
-        });
+        element(by.xpath('//button[text()="rectangle"]')).click();
+        expect(element(by.xpath('(//*[name()="svg"]//*[name()="path"])[1]')).getAttribute("d")).toEqual("M461 344L461 231L589 231L589 344z");
     });
 
     it('should show a circle on the map when clicked the circle button', function() {
-        element(by.xpath('//button[text()="circle"]')).click().then(function() {
-            expect(ptor.isElementPresent(by.xpath('//*[local-name()="svg" and namespace-uri()="http://www.w3.org/2000/svg"]//*[local-name()="path" and @d="M344,165A41,41,0,1,1,343.9,165 z" and @stroke-linejoin="round"]'))).toBe(true);
-        });
+        element(by.xpath('//button[text()="circle"]')).click();
+        expect(element(by.xpath('(//*[name()="svg"]//*[name()="path" and @stroke-linejoin="round"])[1]')).getAttribute("d")).toEqual("M536,205A41,41,0,1,1,535.9,205 z");
     });
 
     it('should show a circleMarker on the map when clicked the circleMarker button', function() {
-        element(by.xpath('//button[text()="circleMarker"]')).click().then(function() {
-            expect(ptor.isElementPresent(by.xpath('//*[local-name()="svg" and namespace-uri()="http://www.w3.org/2000/svg"]//*[local-name()="path" and @d="M392,230A50,50,0,1,1,391.9,230 z" and @stroke-linejoin="round"]'))).toBe(true);
-        });
+        element(by.xpath('//button[text()="circleMarker"]')).click();
+        expect(element(by.xpath('(//*[name()="svg"]//*[name()="path" and @stroke-linejoin="round"])[1]')).getAttribute("d")).toEqual("M584,270A50,50,0,1,1,583.9,270 z");
     });
 
 });

@@ -1,19 +1,15 @@
 'use strict';
 
-describe('Loading layers-imageoverlay-example.html', function() {
+describe('Loading 0203-layers-imageoverlay-example.html', function() {
 
-    var ptor, driver;
     beforeEach(function() {
-        ptor = protractor.getInstance();
-        browser.get('layers-imageoverlay-example.html');
-        driver = ptor.driver;
+        browser.get('0203-layers-imageoverlay-example.html');
+        browser.wait(function() {
+            return element(by.xpath('//img[contains(@src, "andes.jpg")]')).isPresent();
+        }, 5000);
     });
 
     it('should load the static image of the andes on the map', function() {
-        ptor.wait(function() {
-            return ptor.isElementPresent(by.xpath('//img[contains(@src, "andes.jpg")]'));
-        });
-
-        expect(ptor.isElementPresent(by.xpath('//img[contains(@src, "andes.jpg")]'))).toBe(true);
+        expect(element(by.xpath('//img[contains(@src, "andes.jpg")]')).isPresent()).toBe(true);
     });
 });
