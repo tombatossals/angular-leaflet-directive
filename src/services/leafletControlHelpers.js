@@ -1,6 +1,6 @@
 angular.module("leaflet-directive").factory('leafletControlHelpers', function ($rootScope, $log, leafletHelpers, leafletMapDefaults) {
-    var isObject = leafletHelpers.isObject,
-        isDefined = leafletHelpers.isDefined;
+    var isDefined = leafletHelpers.isDefined;
+    var isObject = leafletHelpers.isObject;
     var _controls = {};
 
     var _controlLayersMustBeVisible = function(baselayers, overlays, mapId) {
@@ -9,21 +9,35 @@ angular.module("leaflet-directive").factory('leafletControlHelpers', function ($
             return false;
         }
 
-        var numberOfLayers = 0;
+        var atLeastOneControlItemMustBeShown = false;
+
         if (isObject(baselayers)) {
-            numberOfLayers += Object.keys(baselayers).length;
+            Object.keys(baselayers).forEach(function(key) {
+                var layer = baselayers[key];
+                if (!isDefined(layer.layerOptions) || layer.layerOptions.showOnSelector !== false) {
+                    atLeastOneControlItemMustBeShown = true;
+                }
+            });
         }
+
         if (isObject(overlays)) {
-            numberOfLayers += Object.keys(overlays).length;
+            Object.keys(overlays).forEach(function(key) {
+                var layer = overlays[key];
+                if (!isDefined(layer.layerParams) || layer.layerParams.showOnSelector !== false) {
+                    atLeastOneControlItemMustBeShown = true;
+                }
+            });
         }
-        return numberOfLayers > 1;
+
+        return atLeastOneControlItemMustBeShown;
     };
 
     var _createLayersControl = function(mapId) {
         var defaults = leafletMapDefaults.getDefaults(mapId);
         var controlOptions = {
             collapsed: defaults.controls.layers.collapsed,
-            position: defaults.controls.layers.position
+            position: defaults.controls.layers.position,
+            autoZIndex: false
         };
 
         angular.extend(controlOptions, defaults.controls.layers.options);
@@ -74,6 +88,7 @@ angular.module("leaflet-directive").factory('leafletControlHelpers', function ($
                         _layersControl.addOverlay(leafletLayers.overlays[i], overlays[i].name);
                     }
                 }
+
                 map.addControl(_layersControl);
             }
             return mustBeLoaded;
