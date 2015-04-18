@@ -1,12 +1,9 @@
 'use strict';
 
-describe('Loading simple-example.html', function() {
+describe('Loading 0100-basic-first-example.html', function() {
 
-    var ptor, driver;
     beforeEach(function() {
-        ptor = protractor.getInstance();
-        browser.get('simple-example.html');
-        driver = ptor.driver;
+        browser.get('0100-basic-first-example.html');
     }, 30000);
 
     it('should load the Leaflet map inside the directive tag', function() {
