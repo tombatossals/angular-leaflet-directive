@@ -362,7 +362,12 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
                 return angular.isDefined(L.tileLayer.chinaProvider);
             }
         },
-        HeatMapLayerPlugin: {
+        HeatLayerPlugin: {
+            isLoaded: function() {
+                return angular.isDefined(L.heatLayer);
+            }
+        },
+        WebGLHeatMapLayerPlugin: {
             isLoaded: function() {
                 return angular.isDefined(L.TileLayer.WebGLHeatMap);
             }
