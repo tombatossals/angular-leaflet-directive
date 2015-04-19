@@ -31,6 +31,15 @@ angular.module("leaflet-directive").directive('controls', function ($log, leafle
                     map.addControl(scaleControl);
                 }
 
+                if (isDefined(controls.fullscreen)) {
+                    if (leafletHelpers.FullScreenControlPlugin.isLoaded()) {
+                        var fullscreenControl = new L.Control.Fullscreen(controls.fullscreen);
+                        map.addControl(fullscreenControl);
+                    } else {
+                        $log.error('[AngularJS - Leaflet] Fullscreen plugin is not loaded.');
+                    }
+                }
+
                 if (isDefined(controls.custom)) {
                     for(var i in controls.custom) {
                         map.addControl(controls.custom[i]);
