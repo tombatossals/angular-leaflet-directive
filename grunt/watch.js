@@ -10,7 +10,9 @@ module.exports = function(grunt, options) {
         fast: {
             files: _files,
             tasks: [
-                'fast-build'
+                'fast-build',
+                'uglify',
+                'concat:license'
             ]
         },
         source: {
