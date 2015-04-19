@@ -201,7 +201,7 @@
             "title": "GeoJSON non nested example"
         },
         {
-            "date": "2015-04-18T19:40:30.921Z",
+            "date": "2015-04-19T08:13:07.879Z",
             "section": "basic",
             "onlyStandAlone": false,
             "id": "/basic/geojson-nested-example",
@@ -529,7 +529,7 @@
             "title": "Marker clustering example without layers"
         },
         {
-            "date": "2015-04-18T20:49:36.382Z",
+            "date": "2015-04-19T09:02:03.579Z",
             "section": "markers",
             "onlyStandAlone": false,
             "id": "/markers/modal-markercluster-example",

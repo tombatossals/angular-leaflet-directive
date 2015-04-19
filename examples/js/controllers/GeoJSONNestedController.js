@@ -1,17 +1,7 @@
-<!DOCTYPE html>
-<html ng-app="demoapp">
-<head>
-    <script src="../bower_components/angular/angular.min.js"></script>
-    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
-    <script src="../dist/angular-leaflet-directive_dev_mapped.js"></script>
-    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
-    <script>
-    var app = angular.module("demoapp", ["leaflet-directive"]);
     app.controller("GeoJSONNestedController", [ '$scope', '$http', 'leafletData', function($scope, $http, leafletData) {
         leafletData.getGeoJSON().then(function(lObjs){
             window.leafletDataGeoJSON = lObjs;
         });
-
         angular.extend($scope, {
             japan: {
                 lat: 27.26,
@@ -23,7 +13,6 @@
             },
             geojson:{}
         });
-
         $scope.centerJSON = function(name) {
             leafletData.getMap().then(function(map) {
                 window.leafletMap = map;
@@ -40,7 +29,6 @@
                 map.fitBounds(latlngs);
             });
         };
-
         // Get the countries geojson data from a JSON
         $http.get("json/JPN.geo.json").success(function(data, status) {
             angular.extend($scope.geojson, {
@@ -73,12 +61,3 @@
             });
         });
     } ]);
-    </script>
-</head>
-<body ng-controller="GeoJSONNestedController">
-    <leaflet center="japan" geojson="geojson" geojson-nested="true" width="100%" height="480px"></leaflet>
-    <h1>GeoJSON nested example</h1>
-    <input type="button" value="center usa" ng-click="centerJSON('usa')" />
-    <input type="button" value="center jpn" ng-click="centerJSON('japan')" />
-</body>
-</html>
