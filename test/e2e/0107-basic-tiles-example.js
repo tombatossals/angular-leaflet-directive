@@ -2,7 +2,6 @@
 
 describe('Loading 0107-basic-tiles-example.html', function() {
 
-    var ptor, driver;
     beforeEach(function() {
         browser.get('0107-basic-tiles-example.html');
         browser.wait(function() {

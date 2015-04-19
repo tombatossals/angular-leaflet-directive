@@ -2,7 +2,6 @@
 
 describe('Loading 0205-layers-googlemaps-example.html', function() {
 
-    var ptor, driver;
     beforeEach(function() {
         browser.get('0205-layers-googlemaps-example.html');
         browser.wait(function() {
