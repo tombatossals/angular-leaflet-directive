@@ -262,7 +262,7 @@ angular.module("leaflet-directive").factory('leafletControlHelpers', ["$rootScop
                 for (i in leafletLayers.overlays) {
                     _layersControl.removeLayer(leafletLayers.overlays[i]);
                 }
-                _layersControl.removeFrom(map);
+                map.removeControl(_layersControl);
                 delete _controls[mapId];
             }
 
@@ -283,7 +283,7 @@ angular.module("leaflet-directive").factory('leafletControlHelpers', ["$rootScop
                         _layersControl.addOverlay(leafletLayers.overlays[i], overlays[i].name);
                     }
                 }
-                _layersControl.addTo(map);
+                map.addControl(_layersControl);
             }
             return mustBeLoaded;
         }
@@ -2939,7 +2939,8 @@ angular.module("leaflet-directive")
             var safeApply = leafletHelpers.safeApply,
                 isDefined = leafletHelpers.isDefined,
                 leafletScope  = controller.getLeafletScope(),
-                leafletGeoJSON = {};
+                leafletGeoJSON = {},
+                _hasSetLeafletData = false;
 
             controller.getMap().then(function(map) {
                 var watchOptions = leafletScope.geojsonWatchOptions || _watchOptions;
@@ -2964,6 +2965,7 @@ angular.module("leaflet-directive")
                                 },
                                 mouseout: function(e) {
                                     if (resetStyleOnMouseout) {
+                                        //this is broken on nested needs to traverse
                                         leafletGeoJSON.resetStyle(e.target);
                                     }
                                     safeApply(leafletScope, function() {
@@ -2985,6 +2987,8 @@ angular.module("leaflet-directive")
                     hlp.isTruthy(attrs.geojsonNested));
 
                 var _clean = function(){
+                    if(!leafletGeoJSON)
+                        return;
                     var _remove = function(lObject) {
                         if (isDefined(lObject) && map.hasLayer(lObject)) {
                             map.removeLayer(lObject);
@@ -2999,13 +3003,17 @@ angular.module("leaflet-directive")
                     _remove(leafletGeoJSON);
                 };
 
-                var _addGeojson = function(geojson, maybeName){
+                var _addGeojson = function(model, maybeName){
+                    var geojson = angular.copy(model);
                     if (!(isDefined(geojson) && isDefined(geojson.data))) {
                         return;
                     }
                     var onEachFeature = _hookUpEvents(geojson);
 
                     if (!isDefined(geojson.options)) {
+                        //right here is why we use a clone / copy (we modify and thus)
+                        //would kick of a watcher.. we need to be more careful everywhere
+                        //for stuff like this
                         geojson.options = {
                             style: geojson.style,
                             filter: geojson.filter,
@@ -3022,8 +3030,13 @@ angular.module("leaflet-directive")
                     else{
                         leafletGeoJSON = lObject;
                     }
-                    leafletData.setGeoJSON(leafletGeoJSON, attrs.id);
+
                     lObject.addTo(map);
+
+                    if(!_hasSetLeafletData){//only do this once and play with the same ref forever
+                        _hasSetLeafletData = true;
+                        leafletData.setGeoJSON(leafletGeoJSON, attrs.id);
+                    }
                 };
 
                 var _create = function(model){

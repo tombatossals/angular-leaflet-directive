@@ -1,8 +1,4 @@
-        app.controller("MarkersModalMarkerClusterController", ['$scope', 'leafletData', function ($scope, leafletData) {
-            $scope.oneAtATime = false;
-            $scope.cancel = function () {
-                $modalInstance.dismiss('cancel');
-            };
+        app.controller("MarkersModalMarkerClusterController", ['$scope', 'leafletData', function($scope, leafletData) {
             var markers = [];
             markers.push({
                 lat: 52.229676,
@@ -40,6 +36,27 @@
                     lat: 52.229676,
                     lng: 21.012229
                 },
-                markers: markers
+                markers: {
+                    m1: {
+                        lat: 52.229676,
+                        lng: 21.012229,
+                        draggable: false,
+                        group: 'markers'
+                    },
+                    m2: {
+                        lat: 52.219081,
+                        lng: 21.025386,
+                        draggable: false,
+                        group: 'markers'
+                    }
+                }
             });
+            var map;
+            leafletData.getMap().then(function(lfMap) {
+                map = lfMap;
+            });
+            $scope.showModal = function() {
+                $('.ui.modal').modal('show');
+                map.invalidateSize();
+            };
         }]);
