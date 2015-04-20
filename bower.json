@@ -37,6 +37,7 @@
     "proj4": "*",
     "proj4leaflet": "*",
     "Leaflet.MakiMarkers": "*",
+    "Leaflet.heat": "git@github.com:Leaflet/Leaflet.heat.git#gh-pages",
     "Leaflet.ExtraMarkers": "git://github.com/coryasilva/Leaflet.ExtraMarkers#master",
     "Leaflet.PolylineDecorator": "bbecquet/Leaflet.PolylineDecorator",
     "ionrangeslider": "~1.9.3"

@@ -19,7 +19,7 @@
                     overlays: {
                         heatmap: {
                             name: 'Heat Map',
-                            type: 'heatmap',
+                            type: 'webGLHeatmap',
                             data: dataPoints,
                             visible: true
                         }
