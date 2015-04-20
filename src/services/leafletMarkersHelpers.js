@@ -160,7 +160,7 @@ angular.module("leaflet-directive")
             if (isDefined(markerData.label.options) && markerData.label.options.noHide === true) {
                 marker.showLabel();
             }
-            if (compileMessage && marker.label !== null) {
+            if (compileMessage && marker.label !== null && marker.label !== undefined) {
                 $compile(marker.label._container)(labelScope);
             }
         }
