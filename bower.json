@@ -37,9 +37,9 @@
     "proj4": "*",
     "proj4leaflet": "*",
     "Leaflet.MakiMarkers": "*",
-    "Leaflet.heat": "git@github.com:Leaflet/Leaflet.heat.git#gh-pages",
-    "Leaflet.ExtraMarkers": "git://github.com/coryasilva/Leaflet.ExtraMarkers#master",
-    "Leaflet.fullscreen": "git@github.com:Leaflet/Leaflet.fullscreen.git#gh-pages",
+    "Leaflet.heat": "https://github.com/Leaflet/Leaflet.heat/archive/gh-pages.tar.gz",
+    "Leaflet.ExtraMarkers": "https://github.com/coryasilva/Leaflet.ExtraMarkers/archive/v1.0.1.tar.gz",
+    "Leaflet.fullscreen": "http://github.com/Leaflet/Leaflet.fullscreen/archive/v0.0.4.tar.gz",
     "Leaflet.PolylineDecorator": "bbecquet/Leaflet.PolylineDecorator",
     "ionrangeslider": "~1.9.3"
   },
