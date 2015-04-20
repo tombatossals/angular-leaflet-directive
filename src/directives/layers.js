@@ -135,31 +135,29 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
 
                     // add new overlays
                     for (var newName in newOverlayLayers) {
-                        var overlayCreated = false;
                         if (!isDefined(leafletLayers.overlays[newName])) {
                             var testOverlayLayer = createLayer(newOverlayLayers[newName]);
-                            if (isDefined(testOverlayLayer)) {
-                                overlayCreated = true;
-                                leafletLayers.overlays[newName] = testOverlayLayer;
-                                if (newOverlayLayers[newName].visible === true) {
-                                    map.addLayer(leafletLayers.overlays[newName]);
-                                }
+                            if (!isDefined(testOverlayLayer)) {
+                                // If the layer creation fails, continue to the next overlay
+                                continue;
+                            }
+                            leafletLayers.overlays[newName] = testOverlayLayer;
+                            if (newOverlayLayers[newName].visible === true) {
+                                map.addLayer(leafletLayers.overlays[newName]);
                             }
                         }
 
-                        if (overlayCreated) {
-                            // check for the .visible property to hide/show overLayers
-                            if (newOverlayLayers[newName].visible && !map.hasLayer(leafletLayers.overlays[newName])) {
-                                map.addLayer(leafletLayers.overlays[newName]);
-                            } else if (newOverlayLayers[newName].visible === false && map.hasLayer(leafletLayers.overlays[newName])) {
-                                map.removeLayer(leafletLayers.overlays[newName]);
-                            }
+                        // check for the .visible property to hide/show overLayers
+                        if (newOverlayLayers[newName].visible && !map.hasLayer(leafletLayers.overlays[newName])) {
+                            map.addLayer(leafletLayers.overlays[newName]);
+                        } else if (newOverlayLayers[newName].visible === false && map.hasLayer(leafletLayers.overlays[newName])) {
+                            map.removeLayer(leafletLayers.overlays[newName]);
+                        }
 
-                            //refresh heatmap data if present
-                            if (newOverlayLayers[newName].visible && map._loaded && newOverlayLayers[newName].data && newOverlayLayers[newName].type === "heatmap") {
-                                leafletLayers.overlays[newName].setData(newOverlayLayers[newName].data);
-                                leafletLayers.overlays[newName].update();
-                            }
+                        //refresh heatmap data if present
+                        if (newOverlayLayers[newName].visible && map._loaded && newOverlayLayers[newName].data && newOverlayLayers[newName].type === "heatmap") {
+                            leafletLayers.overlays[newName].setData(newOverlayLayers[newName].data);
+                            leafletLayers.overlays[newName].update();
                         }
                     }
 
