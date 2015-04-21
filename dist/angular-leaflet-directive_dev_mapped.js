@@ -1,5 +1,5 @@
 /*!
-*  angular-leaflet-directive 0.7.13 2015-04-17
+*  angular-leaflet-directive 0.7.14 2015-04-20
 *  angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps
 *  git: https://github.com/tombatossals/angular-leaflet-directive
 */
@@ -208,8 +208,8 @@ angular.module("leaflet-directive").factory('leafletBoundsHelpers', function ($l
 });
 
 angular.module("leaflet-directive").factory('leafletControlHelpers', function ($rootScope, $log, leafletHelpers, leafletMapDefaults) {
-    var isObject = leafletHelpers.isObject,
-        isDefined = leafletHelpers.isDefined;
+    var isDefined = leafletHelpers.isDefined;
+    var isObject = leafletHelpers.isObject;
     var _controls = {};
 
     var _controlLayersMustBeVisible = function(baselayers, overlays, mapId) {
@@ -218,21 +218,35 @@ angular.module("leaflet-directive").factory('leafletControlHelpers', function ($
             return false;
         }
 
-        var numberOfLayers = 0;
+        var atLeastOneControlItemMustBeShown = false;
+
         if (isObject(baselayers)) {
-            numberOfLayers += Object.keys(baselayers).length;
+            Object.keys(baselayers).forEach(function(key) {
+                var layer = baselayers[key];
+                if (!isDefined(layer.layerOptions) || layer.layerOptions.showOnSelector !== false) {
+                    atLeastOneControlItemMustBeShown = true;
+                }
+            });
         }
+
         if (isObject(overlays)) {
-            numberOfLayers += Object.keys(overlays).length;
+            Object.keys(overlays).forEach(function(key) {
+                var layer = overlays[key];
+                if (!isDefined(layer.layerParams) || layer.layerParams.showOnSelector !== false) {
+                    atLeastOneControlItemMustBeShown = true;
+                }
+            });
         }
-        return numberOfLayers > 1;
+
+        return atLeastOneControlItemMustBeShown;
     };
 
     var _createLayersControl = function(mapId) {
         var defaults = leafletMapDefaults.getDefaults(mapId);
         var controlOptions = {
             collapsed: defaults.controls.layers.collapsed,
-            position: defaults.controls.layers.position
+            position: defaults.controls.layers.position,
+            autoZIndex: false
         };
 
         angular.extend(controlOptions, defaults.controls.layers.options);
@@ -283,6 +297,7 @@ angular.module("leaflet-directive").factory('leafletControlHelpers', function ($
                         _layersControl.addOverlay(leafletLayers.overlays[i], overlays[i].name);
                     }
                 }
+
                 map.addControl(_layersControl);
             }
             return mustBeLoaded;
@@ -687,13 +702,15 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
             d[id].resolvedDefer = true;
         },
 
+        FullScreenControlPlugin: {
+            isLoaded: function() {
+                return angular.isDefined(L.Control.Fullscreen);
+            }
+        },
+
         AwesomeMarkersPlugin: {
             isLoaded: function() {
-                if (angular.isDefined(L.AwesomeMarkers) && angular.isDefined(L.AwesomeMarkers.Icon)) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return angular.isDefined(L.AwesomeMarkers) && angular.isDefined(L.AwesomeMarkers.Icon);
             },
             is: function(icon) {
                 if (this.isLoaded()) {
@@ -834,7 +851,12 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
                 return angular.isDefined(L.tileLayer.chinaProvider);
             }
         },
-        HeatMapLayerPlugin: {
+        HeatLayerPlugin: {
+            isLoaded: function() {
+                return angular.isDefined(L.heatLayer);
+            }
+        },
+        WebGLHeatMapLayerPlugin: {
             isLoaded: function() {
                 return angular.isDefined(L.TileLayer.WebGLHeatMap);
             }
@@ -1155,10 +1177,11 @@ angular.module('leaflet-directive').service('leafletIterators', function ($log, 
 
 angular.module("leaflet-directive")
 .factory('leafletLayerHelpers', function ($rootScope, $log, leafletHelpers) {
-    var Helpers = leafletHelpers,
-        isString = leafletHelpers.isString,
-        isObject = leafletHelpers.isObject,
-        isDefined = leafletHelpers.isDefined;
+    var Helpers = leafletHelpers;
+    var isString = leafletHelpers.isString;
+    var isObject = leafletHelpers.isObject;
+    var isArray = leafletHelpers.isArray;
+    var isDefined = leafletHelpers.isDefined;
 
     var utfGridCreateLayer = function(params) {
         if (!Helpers.UTFGridPlugin.isLoaded()) {
@@ -1347,16 +1370,36 @@ angular.module("leaflet-directive")
                 return new L.BingLayer(params.key, params.options);
             }
         },
-        heatmap: {
+        webGLHeatmap: {
             mustHaveUrl: false,
             mustHaveData: true,
             createLayer: function(params) {
-                if (!Helpers.HeatMapLayerPlugin.isLoaded()) {
+                if (!Helpers.WebGLHeatMapLayerPlugin.isLoaded()) {
                     return;
                 }
                 var layer = new L.TileLayer.WebGLHeatMap(params.options);
                 if (isDefined(params.data)) {
                     layer.setData(params.data);
+                }
+
+                return layer;
+            }
+        },
+        heat: {
+            mustHaveUrl: false,
+            mustHaveData: true,
+            createLayer: function(params) {
+                if (!Helpers.HeatLayerPlugin.isLoaded()) {
+                    return;
+                }
+                var layer = new L.heatLayer();
+
+                if (isArray(params.data)) {
+                    layer.setLatLngs(params.data);
+                }
+
+                if (isObject(params.options)) {
+                    layer.setOptions(params.options);
                 }
 
                 return layer;
@@ -1879,7 +1922,7 @@ angular.module("leaflet-directive")
             if (isDefined(markerData.label.options) && markerData.label.options.noHide === true) {
                 marker.showLabel();
             }
-            if (compileMessage && marker.label !== null) {
+            if (compileMessage && isDefined(marker.label)) {
                 $compile(marker.label._container)(labelScope);
             }
         }
@@ -2785,6 +2828,15 @@ angular.module("leaflet-directive").directive('controls', function ($log, leafle
                     map.addControl(scaleControl);
                 }
 
+                if (isDefined(controls.fullscreen)) {
+                    if (leafletHelpers.FullScreenControlPlugin.isLoaded()) {
+                        var fullscreenControl = new L.Control.Fullscreen(controls.fullscreen);
+                        map.addControl(fullscreenControl);
+                    } else {
+                        $log.error('[AngularJS - Leaflet] Fullscreen plugin is not loaded.');
+                    }
+                }
+
                 if (isDefined(controls.custom)) {
                     for(var i in controls.custom) {
                         map.addControl(controls.custom[i]);
@@ -3440,9 +3492,11 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
 
                     // add new overlays
                     for (var newName in newOverlayLayers) {
+                        var overlayCreated = false;
                         if (!isDefined(leafletLayers.overlays[newName])) {
                             var testOverlayLayer = createLayer(newOverlayLayers[newName]);
                             if (isDefined(testOverlayLayer)) {
+                                overlayCreated = true;
                                 leafletLayers.overlays[newName] = testOverlayLayer;
                                 if (newOverlayLayers[newName].visible === true) {
                                     map.addLayer(leafletLayers.overlays[newName]);
@@ -3450,17 +3504,19 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                             }
                         }
 
-                        // check for the .visible property to hide/show overLayers
-                        if (newOverlayLayers[newName].visible && !map.hasLayer(leafletLayers.overlays[newName])) {
-                            map.addLayer(leafletLayers.overlays[newName]);
-                        } else if (newOverlayLayers[newName].visible === false && map.hasLayer(leafletLayers.overlays[newName])) {
-                            map.removeLayer(leafletLayers.overlays[newName]);
-                        }
+                        if (overlayCreated) {
+                            // check for the .visible property to hide/show overLayers
+                            if (newOverlayLayers[newName].visible && !map.hasLayer(leafletLayers.overlays[newName])) {
+                                map.addLayer(leafletLayers.overlays[newName]);
+                            } else if (newOverlayLayers[newName].visible === false && map.hasLayer(leafletLayers.overlays[newName])) {
+                                map.removeLayer(leafletLayers.overlays[newName]);
+                            }
 
-                        //refresh heatmap data if present
-                        if (newOverlayLayers[newName].visible && map._loaded && newOverlayLayers[newName].data && newOverlayLayers[newName].type === "heatmap") {
-                            leafletLayers.overlays[newName].setData(newOverlayLayers[newName].data);
-                            leafletLayers.overlays[newName].update();
+                            //refresh heatmap data if present
+                            if (newOverlayLayers[newName].visible && map._loaded && newOverlayLayers[newName].data && newOverlayLayers[newName].type === "heatmap") {
+                                leafletLayers.overlays[newName].setData(newOverlayLayers[newName].data);
+                                leafletLayers.overlays[newName].update();
+                            }
                         }
                     }
 
