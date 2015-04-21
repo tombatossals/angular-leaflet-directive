@@ -1,6 +1,6 @@
 angular.module("leaflet-directive").directive("decorations", function($log, leafletHelpers) {
 	return {
-		restrict: "A", 
+		restrict: "A",
 		scope: false,
 		replace: false,
 		require: 'leaflet',
@@ -36,12 +36,12 @@ angular.module("leaflet-directive").directive("decorations", function($log, leaf
 			controller.getMap().then(function(map) {
 				leafletScope.$watch("decorations", function(newDecorations) {
 					for (var name in leafletDecorations) {
-						if (!isDefined(newDecorations) || !isDefined(newDecorations[name])) {
+						if (!isDefined(newDecorations[name]) || !angular.equals(newDecorations[name], leafletDecorations)) {
 							map.removeLayer(leafletDecorations[name]);
 							delete leafletDecorations[name];
 						}
 					}
-					
+
 					for (var newName in newDecorations) {
 						var decorationData = newDecorations[newName],
 							newDecoration = createDecoration(decorationData);
