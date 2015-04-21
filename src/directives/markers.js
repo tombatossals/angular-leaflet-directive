@@ -1,5 +1,5 @@
 angular.module("leaflet-directive").directive('markers',
-    function ($log, $rootScope, $q, leafletData, leafletHelpers, leafletMapDefaults, leafletMarkersHelpers,
+    function ($log, $rootScope, $q, $compile, leafletData, leafletHelpers, leafletMapDefaults, leafletMarkersHelpers,
               leafletEvents, leafletIterators) {
     //less terse vars to helpers
     var isDefined = leafletHelpers.isDefined,
@@ -68,9 +68,15 @@ angular.module("leaflet-directive").directive('markers',
                 }
                 leafletMarkers[newName] = marker;
 
-                // Bind message
-                if (isDefined(markerData.message)) {
-                    marker.bindPopup(markerData.message, markerData.popupOptions);
+                // Bind message and compile if needed
+                if (isDefined(markerData.message) || isDefined(markerData.compile)) {
+                    if (markerData.compile) {
+                        var newScope = leafletScope.$new();
+                        newScope.data = markerData;
+                        marker.bindPopup($compile(markerData.compile)(newScope)[0]);
+                    } else {
+                        marker.bindPopup(markerData.message);
+                    }
                 }
 
                 // Add the marker to a cluster group if needed

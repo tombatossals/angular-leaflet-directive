@@ -95,11 +95,11 @@ angular.module("leaflet-directive").directive('center',
                         var urlCenter = extractCenterFromUrl();
                         if (isDefined(urlCenter) && !isSameCenterOnMap(urlCenter, map)) {
                             //$log.debug("updating center model...", urlCenter);
-                            scope.center = {
+                            angular.extend(scope.center,{
                                 lat: urlCenter.lat,
                                 lng: urlCenter.lng,
                                 zoom: urlCenter.zoom
-                            };
+                            });
                         }
                     });
                 }

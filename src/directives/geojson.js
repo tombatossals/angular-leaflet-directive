@@ -28,7 +28,7 @@ angular.module("leaflet-directive").directive('geojson', function ($log, $rootSc
                         onEachFeature = geojson.onEachFeature;
                     } else {
                         onEachFeature = function(feature, layer) {
-                            if (leafletHelpers.LabelPlugin.isLoaded() && isDefined(geojson.label)) {
+                            if (leafletHelpers.LabelPlugin.isLoaded() && feature.properties.description) {
                                 layer.bindLabel(feature.properties.description);
                             }
 
@@ -68,7 +68,7 @@ angular.module("leaflet-directive").directive('geojson', function ($log, $rootSc
                     leafletData.setGeoJSON(leafletGeoJSON, attrs.id);
                     leafletGeoJSON.addTo(map);
 
-                });
+                }, true);
             });
         }
     };

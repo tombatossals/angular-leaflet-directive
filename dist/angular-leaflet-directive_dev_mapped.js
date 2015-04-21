@@ -1,5 +1,5 @@
 /*!
-*  angular-leaflet-directive 0.7.11 2015-04-01
+*  angular-leaflet-directive 0.7.11 2015-04-21
 *  angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps
 *  git: https://github.com/tombatossals/angular-leaflet-directive
 */
@@ -2599,11 +2599,11 @@ angular.module("leaflet-directive").directive('center',
                         var urlCenter = extractCenterFromUrl();
                         if (isDefined(urlCenter) && !isSameCenterOnMap(urlCenter, map)) {
                             //$log.debug("updating center model...", urlCenter);
-                            scope.center = {
+                            angular.extend(scope.center,{
                                 lat: urlCenter.lat,
                                 lng: urlCenter.lng,
                                 zoom: urlCenter.zoom
-                            };
+                            });
                         }
                     });
                 }
@@ -2893,7 +2893,7 @@ angular.module("leaflet-directive").directive('geojson', function ($log, $rootSc
                         onEachFeature = geojson.onEachFeature;
                     } else {
                         onEachFeature = function(feature, layer) {
-                            if (leafletHelpers.LabelPlugin.isLoaded() && isDefined(geojson.label)) {
+                            if (leafletHelpers.LabelPlugin.isLoaded() && feature.properties.description) {
                                 layer.bindLabel(feature.properties.description);
                             }
 
@@ -2933,7 +2933,7 @@ angular.module("leaflet-directive").directive('geojson', function ($log, $rootSc
                     leafletData.setGeoJSON(leafletGeoJSON, attrs.id);
                     leafletGeoJSON.addTo(map);
 
-                });
+                }, true);
             });
         }
     };
@@ -3460,21 +3460,21 @@ angular.module("leaflet-directive").directive('legend', function ($log, $http, l
     });
 
 angular.module("leaflet-directive").directive('markers',
-    function ($log, $rootScope, $q, leafletData, leafletHelpers, leafletMapDefaults, leafletMarkersHelpers,
-              leafletEvents, leafletIterators) {
+    function ($log, $rootScope, $q, $compile, leafletData, leafletHelpers, leafletMapDefaults, leafletMarkersHelpers,
+      leafletEvents, leafletIterators) {
     //less terse vars to helpers
     var isDefined = leafletHelpers.isDefined,
-        errorHeader = leafletHelpers.errorHeader,
-        defaultTo= leafletHelpers.defaultTo,
-        Helpers = leafletHelpers,
-        isString = leafletHelpers.isString,
-        addMarkerWatcher = leafletMarkersHelpers.addMarkerWatcher,
-        listenMarkerEvents = leafletMarkersHelpers.listenMarkerEvents,
-        addMarkerToGroup = leafletMarkersHelpers.addMarkerToGroup,
-        bindMarkerEvents = leafletEvents.bindMarkerEvents,
-        createMarker = leafletMarkersHelpers.createMarker,
-        deleteMarker = leafletMarkersHelpers.deleteMarker,
-        $it = leafletIterators;
+    errorHeader = leafletHelpers.errorHeader,
+    defaultTo= leafletHelpers.defaultTo,
+    Helpers = leafletHelpers,
+    isString = leafletHelpers.isString,
+    addMarkerWatcher = leafletMarkersHelpers.addMarkerWatcher,
+    listenMarkerEvents = leafletMarkersHelpers.listenMarkerEvents,
+    addMarkerToGroup = leafletMarkersHelpers.addMarkerToGroup,
+    bindMarkerEvents = leafletEvents.bindMarkerEvents,
+    createMarker = leafletMarkersHelpers.createMarker,
+    deleteMarker = leafletMarkersHelpers.deleteMarker,
+    $it = leafletIterators;
 
     var _maybeAddMarkerToLayer = function(layerName, layers, markerData, marker, shouldWatch, map){
 
@@ -3529,9 +3529,15 @@ angular.module("leaflet-directive").directive('markers',
                 }
                 leafletMarkers[newName] = marker;
 
-                // Bind message
-                if (isDefined(markerData.message)) {
-                    marker.bindPopup(markerData.message, markerData.popupOptions);
+                // Bind message and compile if needed
+                if (isDefined(markerData.message) || isDefined(markerData.compile)) {
+                    if (markerData.compile) {
+                        var newScope = leafletScope.$new();
+                        newScope.data = markerData;
+                        marker.bindPopup($compile(markerData.compile)(newScope)[0]);
+                    } else {
+                        marker.bindPopup(markerData.message);
+                    }
                 }
 
                 // Add the marker to a cluster group if needed
@@ -3591,7 +3597,7 @@ angular.module("leaflet-directive").directive('markers',
 
         link: function(scope, element, attrs, controller) {
             var mapController = controller[0],
-                leafletScope  = mapController.getLeafletScope();
+            leafletScope  = mapController.getLeafletScope();
 
             mapController.getMap().then(function(map) {
                 var leafletMarkers = {}, getLayers;
