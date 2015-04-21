@@ -9,7 +9,7 @@ When submitting an issue please include context from your test and
 your application. If there's an error, please include the error text.
 
 It isn't always easy to understand the bug/problem visually, you can use this [predefined
-jsfiddle](http://jsfiddle.net/tombatossals/4PhzC/) example which loads a simple map. 
+jsfiddle](http://jsfiddle.net/maistho/9jymzymu/) example which loads a simple map. 
 Then you can customize it to demonstrate your issue.
 
 Code style
