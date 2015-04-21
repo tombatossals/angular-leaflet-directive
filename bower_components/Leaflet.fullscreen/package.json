@@ -1,0 +1,30 @@
+{
+  "name": "leaflet-fullscreen",
+  "version": "0.0.4",
+  "description": "A fullscreen control for Leaflet",
+  "main": "src/Leaflet.fullscreen.js",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "test": "jshint index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/mapbox/Leaflet.fullscreen.git"
+  },
+  "keywords": [
+    "leaflet",
+    "maps",
+    "fullscreen",
+    "client"
+  ],
+  "devDependencies": {
+    "uglify-js": "2.4.3",
+    "jshint": "2.3.0"
+  },
+  "author": "John Firebaugh",
+  "license": "BSD",
+  "gitHead": "440a832850e205f4ab30ef185c905d153eaec14e",
+  "readmeFilename": "README.md"
+}

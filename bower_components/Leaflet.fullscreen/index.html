@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+  <meta charset=utf-8 />
+  <title>Leaflet.fullscreen</title>
+
+  <link href='https://www.mapbox.com/base/latest/base.css' rel='stylesheet' />
+  <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+  <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+
+  <link href='dist/leaflet.fullscreen.css' rel='stylesheet' />
+  <script src='dist/Leaflet.fullscreen.min.js'></script>
+</head>
+<body>
+  <div class='limiter'>
+    <div class='col10 margin1 pad4y'>
+      <h1>Leaflet.fullscreen</h1>
+      <p>A HTML5 fullscreen plugin for Leaflet.</p>
+      <div class='space-bottom'>
+        <div id='map' class='col12 row10'></div>
+      </div>
+      <p>For usage, check out the <a href='https://github.com/mapbox/Leaflet.fullscreen'>project on GitHub</a>.</p>
+    </div>
+  </div>
+<script>
+  var map = L.map('map', {
+    fullscreenControl: true
+  }).setView([37.8, -96], 4);
+
+  L.tileLayer('http://{s}.tiles.mapbox.com/v4/examples.map-i86l3621/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiZXhhbXBsZXMiLCJhIjoiOTZQTkFkcyJ9.0DKk_5HaToBWqNOJqCwB-g', {
+    attribution: '<a href="https://www.mapbox.com/about/maps/" target="_blank">© Mapbox © OpenStreetMap</a>'
+  }).addTo(map);
+</script>
+</body>
+</html>

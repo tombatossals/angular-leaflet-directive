@@ -1,0 +1,13 @@
+{
+  "name": "Leaflet.fullscreen",
+  "homepage": "https://github.com/Leaflet/Leaflet.fullscreen",
+  "_release": "0380d61305",
+  "_resolution": {
+    "type": "branch",
+    "branch": "gh-pages",
+    "commit": "0380d613059eba1180cd1bebda2e7a21f4c2aec8"
+  },
+  "_source": "git@github.com:Leaflet/Leaflet.fullscreen.git",
+  "_target": "gh-pages",
+  "_originalSource": "git@github.com:Leaflet/Leaflet.fullscreen.git"
+}
