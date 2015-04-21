@@ -60,7 +60,6 @@ angular.module("leaflet-directive").factory('leafletControlHelpers', function ($
             var _layersControl = _controls[mapId];
             var mustBeLoaded = _controlLayersMustBeVisible(baselayers, overlays, mapId);
 
-            console.log(overlays);
             if (isDefined(_layersControl) && loaded) {
                 for (i in leafletLayers.baselayers) {
                     _layersControl.removeLayer(leafletLayers.baselayers[i]);
