@@ -1,4 +1,7 @@
     app.controller("GeoJSONNestedController", [ '$scope', '$http', 'leafletData', function($scope, $http, leafletData) {
+        leafletData.getGeoJSON().then(function(lObjs){
+            window.leafletDataGeoJSON = lObjs;
+        });
         angular.extend($scope, {
             japan: {
                 lat: 27.26,
@@ -12,6 +15,7 @@
         });
         $scope.centerJSON = function(name) {
             leafletData.getMap().then(function(map) {
+                window.leafletMap = map;
                 var latlngs = [];
                 for (var i in $scope.geojson[name].data.features[0].geometry.coordinates) {
                     var coord = $scope.geojson[name].data.features[0].geometry.coordinates[i];

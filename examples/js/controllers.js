@@ -796,6 +796,69 @@ var app = angular.module('webapp');
             });
         });
       } ]);
+    app.controller("GeoJSONNestedController", [ '$scope', '$http', 'leafletData', function($scope, $http, leafletData) {
+        leafletData.getGeoJSON().then(function(lObjs){
+            window.leafletDataGeoJSON = lObjs;
+        });
+        angular.extend($scope, {
+            japan: {
+                lat: 27.26,
+                lng: 78.86,
+                zoom: 2
+            },
+            defaults: {
+                scrollWheelZoom: false
+            },
+            geojson:{}
+        });
+        $scope.centerJSON = function(name) {
+            leafletData.getMap().then(function(map) {
+                window.leafletMap = map;
+                var latlngs = [];
+                for (var i in $scope.geojson[name].data.features[0].geometry.coordinates) {
+                    var coord = $scope.geojson[name].data.features[0].geometry.coordinates[i];
+                    for (var j in coord) {
+                        var points = coord[j];
+                        for (var k in points) {
+                            latlngs.push(L.GeoJSON.coordsToLatLng(points[k]));
+                        }
+                    }
+                }
+                map.fitBounds(latlngs);
+            });
+        };
+        // Get the countries geojson data from a JSON
+        $http.get("json/JPN.geo.json").success(function(data, status) {
+            angular.extend($scope.geojson, {
+                japan: {
+                    data: data,
+                    style: {
+                        fillColor: "green",
+                        weight: 2,
+                        opacity: 1,
+                        color: 'white',
+                        dashArray: '3',
+                        fillOpacity: 0.7
+                    }
+                }
+            });
+        });
+        $http.get("json/USA.geo.json").success(function(data, status) {
+            angular.extend($scope.geojson, {
+                usa:{
+                    data: data,
+                    style: {
+                        fillColor: "blue",
+                        weight: 2,
+                        opacity: 1,
+                        color: 'white',
+                        dashArray: '3',
+                        fillOpacity: 0.7
+                    }
+                }
+            });
+        });
+    } ]);
     app.controller("GeoJSONNonNestedController", [ '$scope', '$http', 'leafletData', function($scope, $http, leafletData) {
         var getColor = function(id){
             return id == 'USA'? 'blue' : 'green';
@@ -1207,6 +1270,49 @@ var app = angular.module('webapp');
                 	$scope.layers.overlays.usa_social.visible = !$scope.layers.overlays.usa_social.visible;
                 	$scope.legend.url =
                 		$scope.legend.url == $scope.legendURL1? $scope.legendURL2:$scope.legendURL1;
+                }
+            });
+        }]);
+        app.controller("LayersHeatmapController", ["$scope", "$http", function($scope, $http) {
+            var points = [];
+            var heatmap = {
+                name: 'Heat Map',
+                type: 'heat',
+                data: points,
+                visible: true
+            };
+            $http.get("json/heat-points.json").success(function(data) {
+                $scope.layers.overlays = {
+                    heat: {
+                        name: 'Heat Map',
+                        type: 'heat',
+                        data: data,
+                        layerOptions: {
+                            radius: 20,
+                            blur: 10
+                        },
+                        visible: true
+                    }
+                };
+            });
+            angular.extend($scope, {
+                center: {
+                    lat: 37.774546,
+                    lng: -122.433523,
+                    zoom: 12
+                },
+                layers: {
+                    baselayers: {
+                        mapbox_light: {
+                            name: 'Mapbox Light',
+                            url: 'http://api.tiles.mapbox.com/v4/{mapid}/{z}/{x}/{y}.png?access_token={apikey}',
+                            type: 'xyz',
+                            layerOptions: {
+                                apikey: 'pk.eyJ1IjoiYnVmYW51dm9scyIsImEiOiJLSURpX0pnIn0.2_9NrLz1U9bpwMQBhVk97Q',
+                                mapid: 'bufanuvols.lia22g09'
+                            }
+                        }
+                    }
                 }
             });
         }]);
@@ -1908,7 +2014,7 @@ var app = angular.module('webapp');
                     overlays: {
                         heatmap: {
                             name: 'Heat Map',
-                            type: 'heatmap',
+                            type: 'webGLHeatmap',
                             data: dataPoints,
                             visible: true
                         }

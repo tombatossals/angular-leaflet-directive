@@ -201,7 +201,7 @@
             "title": "GeoJSON non nested example"
         },
         {
-            "date": "2015-04-18T19:40:30.921Z",
+            "date": "2015-04-19T09:41:11.124Z",
             "section": "basic",
             "onlyStandAlone": false,
             "id": "/basic/geojson-nested-example",
@@ -283,7 +283,7 @@
             "title": "Esri ArcGIS Legend Service"
         },
         {
-            "date": "2015-04-18T19:40:30.921Z",
+            "date": "2015-04-19T13:57:58.960Z",
             "section": "layers",
             "onlyStandAlone": false,
             "id": "/layers/webgl-heatmap-example",
@@ -353,6 +353,14 @@
             "id": "/layers/wms-with-different-projection-example",
             "extUrl": "0220-layers-wms-with-different-projection-example.html",
             "title": "Load a map in non standard projection"
+        },
+        {
+            "date": "2015-04-19T13:54:26.351Z",
+            "section": "layers",
+            "onlyStandAlone": false,
+            "id": "/layers/heatmap-example",
+            "extUrl": "0221-layers-heatmap-example.html",
+            "title": "HeatMap example"
         }
     ],
     "paths": [
@@ -529,7 +537,7 @@
             "title": "Marker clustering example without layers"
         },
         {
-            "date": "2015-04-18T20:49:36.382Z",
+            "date": "2015-04-19T09:02:03.579Z",
             "section": "markers",
             "onlyStandAlone": false,
             "id": "/markers/modal-markercluster-example",
