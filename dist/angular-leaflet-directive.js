@@ -1,5 +1,5 @@
 /*!
-*  angular-leaflet-directive 0.7.14 2015-04-20
+*  angular-leaflet-directive 0.7.14 2015-04-21
 *  angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps
 *  git: https://github.com/tombatossals/angular-leaflet-directive
 */
@@ -266,9 +266,9 @@ angular.module("leaflet-directive").factory('leafletControlHelpers', ["$rootScop
 
         updateLayersControl: function(map, mapId, loaded, baselayers, overlays, leafletLayers) {
             var i;
-
             var _layersControl = _controls[mapId];
             var mustBeLoaded = _controlLayersMustBeVisible(baselayers, overlays, mapId);
+
             if (isDefined(_layersControl) && loaded) {
                 for (i in leafletLayers.baselayers) {
                     _layersControl.removeLayer(leafletLayers.baselayers[i]);
@@ -291,8 +291,8 @@ angular.module("leaflet-directive").factory('leafletControlHelpers', ["$rootScop
                     }
                 }
                 for (i in overlays) {
-                	var hideOverlayOnSelector = isDefined(overlays[i].layerOptions) &&
-                            overlays[i].layerOptions.showOnSelector === false;
+                	var hideOverlayOnSelector = isDefined(overlays[i].layerParams) &&
+                            overlays[i].layerParams.showOnSelector === false;
                     if (!hideOverlayOnSelector && isDefined(leafletLayers.overlays[i])) {
                         _layersControl.addOverlay(leafletLayers.overlays[i], overlays[i].name);
                     }
@@ -2849,7 +2849,7 @@ angular.module("leaflet-directive").directive('controls', ["$log", "leafletHelpe
 
 angular.module("leaflet-directive").directive("decorations", ["$log", "leafletHelpers", function($log, leafletHelpers) {
 	return {
-		restrict: "A", 
+		restrict: "A",
 		scope: false,
 		replace: false,
 		require: 'leaflet',
@@ -2885,12 +2885,12 @@ angular.module("leaflet-directive").directive("decorations", ["$log", "leafletHe
 			controller.getMap().then(function(map) {
 				leafletScope.$watch("decorations", function(newDecorations) {
 					for (var name in leafletDecorations) {
-						if (!isDefined(newDecorations) || !isDefined(newDecorations[name])) {
+						if (!isDefined(newDecorations[name]) || !angular.equals(newDecorations[name], leafletDecorations)) {
 							map.removeLayer(leafletDecorations[name]);
 							delete leafletDecorations[name];
 						}
 					}
-					
+
 					for (var newName in newDecorations) {
 						var decorationData = newDecorations[newName],
 							newDecoration = createDecoration(decorationData);
@@ -2906,6 +2906,7 @@ angular.module("leaflet-directive").directive("decorations", ["$log", "leafletHe
 		}
 	};
 }]);
+
 angular.module("leaflet-directive").directive('eventBroadcast', ["$log", "$rootScope", "leafletHelpers", "leafletEvents", function ($log, $rootScope, leafletHelpers, leafletEvents) {
     return {
         restrict: "A",
@@ -3492,31 +3493,29 @@ angular.module("leaflet-directive").directive('layers', ["$log", "$q", "leafletD
 
                     // add new overlays
                     for (var newName in newOverlayLayers) {
-                        var overlayCreated = false;
                         if (!isDefined(leafletLayers.overlays[newName])) {
                             var testOverlayLayer = createLayer(newOverlayLayers[newName]);
-                            if (isDefined(testOverlayLayer)) {
-                                overlayCreated = true;
-                                leafletLayers.overlays[newName] = testOverlayLayer;
-                                if (newOverlayLayers[newName].visible === true) {
-                                    map.addLayer(leafletLayers.overlays[newName]);
-                                }
+                            if (!isDefined(testOverlayLayer)) {
+                                // If the layer creation fails, continue to the next overlay
+                                continue;
+                            }
+                            leafletLayers.overlays[newName] = testOverlayLayer;
+                            if (newOverlayLayers[newName].visible === true) {
+                                map.addLayer(leafletLayers.overlays[newName]);
                             }
                         }
 
-                        if (overlayCreated) {
-                            // check for the .visible property to hide/show overLayers
-                            if (newOverlayLayers[newName].visible && !map.hasLayer(leafletLayers.overlays[newName])) {
-                                map.addLayer(leafletLayers.overlays[newName]);
-                            } else if (newOverlayLayers[newName].visible === false && map.hasLayer(leafletLayers.overlays[newName])) {
-                                map.removeLayer(leafletLayers.overlays[newName]);
-                            }
+                        // check for the .visible property to hide/show overLayers
+                        if (newOverlayLayers[newName].visible && !map.hasLayer(leafletLayers.overlays[newName])) {
+                            map.addLayer(leafletLayers.overlays[newName]);
+                        } else if (newOverlayLayers[newName].visible === false && map.hasLayer(leafletLayers.overlays[newName])) {
+                            map.removeLayer(leafletLayers.overlays[newName]);
+                        }
 
-                            //refresh heatmap data if present
-                            if (newOverlayLayers[newName].visible && map._loaded && newOverlayLayers[newName].data && newOverlayLayers[newName].type === "heatmap") {
-                                leafletLayers.overlays[newName].setData(newOverlayLayers[newName].data);
-                                leafletLayers.overlays[newName].update();
-                            }
+                        //refresh heatmap data if present
+                        if (newOverlayLayers[newName].visible && map._loaded && newOverlayLayers[newName].data && newOverlayLayers[newName].type === "heatmap") {
+                            leafletLayers.overlays[newName].setData(newOverlayLayers[newName].data);
+                            leafletLayers.overlays[newName].update();
                         }
                     }
 
