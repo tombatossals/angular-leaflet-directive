@@ -28,7 +28,7 @@
                             visible: true,
                             url: 'http://suite.opengeo.org/geoserver/usa/wms',
                             layerParams: {
-                                showOnSelector: true,
+                                showOnSelector: false,
                                 layers: 'usa:states',
                                 format: 'image/png',
                                 transparent: true

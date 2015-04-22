@@ -1403,7 +1403,7 @@ var app = angular.module('webapp');
                             visible: true,
                             url: 'http://suite.opengeo.org/geoserver/usa/wms',
                             layerParams: {
-                                showOnSelector: true,
+                                showOnSelector: false,
                                 layers: 'usa:states',
                                 format: 'image/png',
                                 transparent: true
@@ -1435,8 +1435,9 @@ var app = angular.module('webapp');
                             url: 'images/andes.jpg',
                             bounds: [[-540, -960], [540, 960]],
                             layerParams: {
-                              noWrap: true,
-                              attribution: 'Creative Commons image found <a href="http://www.flickr.com/photos/c32/8025422440/">here</a>'
+                                showOnSelector: false,
+                                noWrap: true,
+                                attribution: 'Creative Commons image found <a href="http://www.flickr.com/photos/c32/8025422440/">here</a>'
                             }
                         }
                     },
@@ -2181,7 +2182,7 @@ var app = angular.module('webapp');
                 }
             });
         } ]);
-        app.controller("MarkersClustering10000MarkersController", [ "$scope", function($scope) {
+        app.controller("MarkersClustering10000MarkersController", [ "$scope", "$http", function($scope, $http) {
             var addressPointsToMarkers = function(points) {
               return points.map(function(ap) {
                 return {
@@ -2207,33 +2208,25 @@ var app = angular.module('webapp');
                         logic: 'emit'
                     }
                 },
-                markers: addressPointsToMarkers(addressPoints),
                 layers: {
                     baselayers: {
                         osm: {
                             name: 'OpenStreetMap',
                             type: 'xyz',
-                            url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                            layerOptions: {
-                                subdomains: ['a', 'b', 'c'],
-                                attribution: '© OpenStreetMap contributors',
-                                continuousWorld: true
-                            }
+                            url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
                         }
                     },
                     overlays: {
                         realworld: {
                             name: "Real world data",
                             type: "markercluster",
-                            visible: true,
-                            "layerOptions": {
-                                "chunkedLoading": true,
-                                "showCoverageOnHover": false,
-                                "removeOutsideVisibleBounds": true
-                            }
-                        },
+                            visible: true
+                        }
                     }
                 }
+            });
+            $http.get("json/realworld.10000.json").success(function(data) {
+                $scope.markers = addressPointsToMarkers(data);
             });
         }]);
         app.controller("MarkersClusteringController", [ "$scope", function($scope) {
@@ -2754,6 +2747,13 @@ var app = angular.module('webapp');
             });
         } ]);
         app.controller('MarkersSimpleController', [ '$scope', function($scope) {
+            var mainMarker = {
+                lat: 51,
+                lng: 0,
+                focus: true,
+                message: "Hey, drag me if you want",
+                draggable: true
+            };
             angular.extend($scope, {
                 london: {
                     lat: 51.505,
@@ -2761,14 +2761,19 @@ var app = angular.module('webapp');
                     zoom: 8
                 },
                 markers: {
-                    mainMarker: {
-                        lat: 51,
-                        lng: 0,
-                        focus: true,
-                        message: "Hey, drag me if you want",
-                        draggable: true
-                    }
+                    mainMarker: angular.copy(mainMarker)
+                },
+                position: {
+                    lat: 51,
+                    lng: 0
+                },
+                events: {
+                    markers: [ 'dragend' ]
                 }
+            });
+            $scope.$on("leafletDirectiveMarker.dragend", function(event, args){
+                $scope.position.lat = args.model.lat;
+                $scope.position.lng = args.model.lng;
             });
         } ]);
         app.controller('MixedGeoJSONEventsController', [ "$scope", "$http", function($scope, $http) {
@@ -3583,19 +3588,47 @@ var app = angular.module('webapp');
             });
             $scope.changePattern = function(type) {
                 if (type === 'dot') {
-                    $scope.decorations.markers.patterns = [ {offset: 0, repeat: 10, symbol: L.Symbol.dash({pixelSize: 0})} ];
+                    $scope.decorations.markers.patterns = [
+                        {
+                            offset: 0,
+                            repeat: 10,
+                            symbol: L.Symbol.dash({pixelSize: 0})
+                        }
+                    ];
                 } else if (type === 'slash') {
-                    $scope.decorations.markers.patterns = [ {offset: 12, repeat: 25, symbol: L.Symbol.dash({pixelSize: 10, pathOptions: {color: '#f00', weight: 2}})} ];
+                    $scope.decorations.markers.patterns = [
+                        {
+                            offset: 12,
+                            repeat: 25,
+                            symbol: L.Symbol.dash({pixelSize: 10, pathOptions: {color: '#f00', weight: 2}})
+                        }
+                    ];
                 } else if (type === 'slashdot') {
                     $scope.decorations.markers.patterns = [
-                        { offset: 12, repeat: 25, symbol: L.Symbol.dash({pixelSize: 10, pathOptions: {color: '#f00', weight: 2}}) },
-                        { offset: 0, repeat: 25, symbol: L.Symbol.dash({pixelSize: 0}) }
+                        {
+                            offset: 12,
+                            repeat: 25,
+                            symbol: L.Symbol.dash({pixelSize: 10, pathOptions: {color: '#f00', weight: 2}})
+                        },
+                        {
+                            offset: 0,
+                            repeat: 25,
+                            symbol: L.Symbol.dash({pixelSize: 0})
+                        }
                     ];
                 } else if (type === 'arrow') {
                     $scope.decorations.markers.patterns = [
-                        {offset: 12, repeat: 25, symbol: L.Symbol.dash({pixelSize: 18, pathOptions: {color: '#f00', weight: 4}})},
-                        {offset: '10%', repeat: 25, symbol: L.Symbol.arrowHead({pixelSize: 10, polygon: false, pathOptions: {stroke: true}})}
-                    ]
+                        {
+                            offset: 12,
+                            repeat: 25,
+                            symbol: L.Symbol.dash({pixelSize: 18, pathOptions: {color: '#f00', weight: 4}})
+                        },
+                        {
+                            offset: '10%',
+                            repeat: 25,
+                            symbol: L.Symbol.arrowHead({pixelSize: 10, polygon: false, pathOptions: {stroke: true}})
+                        }
+                    ];
                 }
             };
         } ]);
