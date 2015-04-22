@@ -1,4 +1,4 @@
-        app.controller("MarkersClustering10000MarkersController", [ "$scope", function($scope) {
+        app.controller("MarkersClustering10000MarkersController", [ "$scope", "$http", function($scope, $http) {
             var addressPointsToMarkers = function(points) {
               return points.map(function(ap) {
                 return {
@@ -24,32 +24,24 @@
                         logic: 'emit'
                     }
                 },
-                markers: addressPointsToMarkers(addressPoints),
                 layers: {
                     baselayers: {
                         osm: {
                             name: 'OpenStreetMap',
                             type: 'xyz',
-                            url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                            layerOptions: {
-                                subdomains: ['a', 'b', 'c'],
-                                attribution: '© OpenStreetMap contributors',
-                                continuousWorld: true
-                            }
+                            url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
                         }
                     },
                     overlays: {
                         realworld: {
                             name: "Real world data",
                             type: "markercluster",
-                            visible: true,
-                            "layerOptions": {
-                                "chunkedLoading": true,
-                                "showCoverageOnHover": false,
-                                "removeOutsideVisibleBounds": true
-                            }
-                        },
+                            visible: true
+                        }
                     }
                 }
+            });
+            $http.get("json/realworld.10000.json").success(function(data) {
+                $scope.markers = addressPointsToMarkers(data);
             });
         }]);
