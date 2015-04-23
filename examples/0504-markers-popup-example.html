@@ -5,15 +5,7 @@
     <script src="../bower_components/angular/angular.min.js"></script>
     <script src="../bower_components/leaflet/dist/leaflet.js"></script>
     <script src="../dist/angular-leaflet-directive.min.js"></script>
-    <script src="../bower_components/Leaflet.awesome-markers/dist/leaflet.awesome-markers.js"></script>
-    <script src="../bower_components/Leaflet.MakiMarkers/Leaflet.MakiMarkers.js"></script>
-    <script src="../bower_components/Leaflet.ExtraMarkers/src/leaflet.extra-markers.js"></script>
     <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
-    <link rel="stylesheet" href="../bower_components/Leaflet.awesome-markers/dist/leaflet.awesome-markers.css">
-    <link rel="stylesheet" href="../bower_components/Leaflet.ExtraMarkers/src/leaflet.extra-markers.css">
-    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap-theme.min.css">
-    <link rel="stylesheet" href="../bower_components/font-awesome/css/font-awesome.min.css">
     <script>
         var app = angular.module("demoapp", ["leaflet-directive"]);
         app.controller('MarkersPopupController', [ '$scope', function($scope) {
@@ -33,38 +25,22 @@
                         icon: {}
                     }
                 },
+                events: {
+                    markers: [ 'dragend' ]
+                }
 
+            });
 
-            });
-            $scope.$on('leafletDirectiveMarker.click', function(e, args) {
-                // Args will contain the marker name and other relevant information
-                console.log("Leaflet Click");
-            });
-            $scope.$on('leafletDirectiveMarker.popupopen', function(e, args) {
-                // Args will contain the marker name and other relevant information
-                console.log("Leaflet Popup Open");
-            });
-            $scope.$on('leafletDirectiveMarker.popupclose', function(e, args) {
-                // Args will contain the marker name and other relevant information
-                console.log("Leaflet Popup Close");
+            $scope.$on("leafletDirectiveMarker.dragend", function(event, args){
+                console.log('hola');
+                $scope.markers.m1.lat = args.model.lat;
+                $scope.markers.m1.lng = args.model.lng;
             });
         } ]);
     </script>
-    <style>
-        html,body {
-            height: 100%;
-        }
-        .angular-leaflet-map {
-            margin-top: 20px;
-            height: 100%;
-        }
-        .fullheight {
-            height: 100%;
-        }
-    </style>
   </head>
   <body ng-controller="MarkersPopupController">
-    <leaflet center="london" markers="markers" height="480px" width="100%"></leaflet>
+    <leaflet center="london" markers="markers" event-broadcast="events" height="480px" width="100%"></leaflet>
     <h1>Marker Popup properties</h1>
     <h3>Marker position</h3>
         Latitude: <input ng-model="markers.m1.lat" type="number" />
