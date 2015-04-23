@@ -73,12 +73,16 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                 leafletScope.$watch('layers.baselayers', function(newBaseLayers) {
                     // Delete layers from the array
                     for (var name in leafletLayers.baselayers) {
-                        if (!isDefined(newBaseLayers[name])) {
+                        if (!isDefined(newBaseLayers[name]) || newBaseLayers[name].doRefresh) {
                             // Remove from the map if it's on it
                             if (map.hasLayer(leafletLayers.baselayers[name])) {
                                 map.removeLayer(leafletLayers.baselayers[name]);
                             }
                             delete leafletLayers.baselayers[name];
+
+                            if (newBaseLayers[name].doRefresh) {
+                                newBaseLayers[name].doRefresh = false;
+                            }
                         }
                     }
                     // add new layers
@@ -123,13 +127,17 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                 leafletScope.$watch('layers.overlays', function(newOverlayLayers) {
                     // Delete layers from the array
                     for (var name in leafletLayers.overlays) {
-                        if (!isDefined(newOverlayLayers[name])) {
+                        if (!isDefined(newOverlayLayers[name]) || newOverlayLayers[name].doRefresh) {
                             // Remove from the map if it's on it
                             if (map.hasLayer(leafletLayers.overlays[name])) {
                                 map.removeLayer(leafletLayers.overlays[name]);
                             }
                             // TODO: Depending on the layer type we will have to delete what's included on it
                             delete leafletLayers.overlays[name];
+
+                            if (newOverlayLayers[name].doRefresh) {
+                                newOverlayLayers[name].doRefresh = false;
+                            }
                         }
                     }
 
