@@ -53,7 +53,7 @@
                 extraMarkerIcon: {
                     type: 'extraMarker',
                     icon: 'fa-star',
-                    color: '#f00',
+                    markerColor: '#f00',
                     prefix: 'fa',
                     shape: 'circle'
                 }

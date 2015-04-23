@@ -1,4 +1,4 @@
-        app.controller("leafletMarkerController", ['$scope', 'leafletData', function ($scope, $modalInstance, leafletData) {
+        app.controller("MarkersTwoMapsEventsController", ['$scope', 'leafletData', function ($scope, $modalInstance, leafletData) {
             var markers = [];
             markers.push({
                 lat: 52.229676,
@@ -47,9 +47,6 @@
                 },
                 markers: markers
             });
-            $scope.$on('leafletDirectiveMarker.click', function (e, args) {
-                alert('Marker in map 1 clicked');
-            });
             var markers2 = [];
             markers2.push({
                 lat: 52.229676,
@@ -91,9 +88,9 @@
                     lat: 52.229676,
                     lng: 21.012229
                 },
-                markers: markers2
+                markers2: markers2
             });
             $scope.$on('leafletDirectiveMarker.click', function (e, args) {
-                alert('Marker in map 2 clicked');
+                console.log(args);
             });
         }]);

@@ -21,6 +21,7 @@
   "devDependencies": {
     "jquery": "*",
     "semantic-ui": "*",
+    "bootstrap": "*",
     "prism": "*",
     "angular-route": "1.3.x",
     "angular-animate": "1.3.x",
