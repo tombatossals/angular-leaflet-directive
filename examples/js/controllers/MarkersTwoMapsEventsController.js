@@ -1,15 +1,4 @@
-<!DOCTYPE html>
-<html ng-app="demoapp">
-  <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="../bower_components/angular/angular.min.js"></script>
-    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
-    <script src="../dist/angular-leaflet-directive.min.js"></script>
-    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
-    <script>
-        var app = angular.module('demoapp', ['leaflet-directive']);
         app.controller("MarkersTwoMapsEventsController", ['$scope', 'leafletData', function ($scope, $modalInstance, leafletData) {
-
             var markers = [];
             markers.push({
                 lat: 52.229676,
@@ -21,7 +10,6 @@
                 lng: 21.025386,
                 draggable: false
             });
-
             angular.extend($scope, {
                 defaults: {
                     maxZoom: 18,
@@ -59,7 +47,6 @@
                 },
                 markers: markers
             });
-
             var markers2 = [];
             markers2.push({
                 lat: 52.229676,
@@ -71,8 +58,6 @@
                 lng: 21.025386,
                 draggable: false
             });
-
-
             angular.extend($scope, {
                 defaults2: {
                     maxZoom: 18,
@@ -105,18 +90,7 @@
                 },
                 markers2: markers2
             });
-
             $scope.$on('leafletDirectiveMarker.click', function (e, args) {
                 console.log(args);
             });
-
         }]);
-    </script>
-  </head>
-  <body ng-controller="MarkersTwoMapsEventsController">
-      <leaflet defaults="defaults" event-broadcast="events" center="center" markers="markers" layers="layers" id="global-map" width="100%" height="240px"></leaflet>
-      <leaflet defaults="defaults2" event-broadcast="events2" center="center2" markers="markers2" layers="layers2" id="global-map2" width="100%" height="240px"></leaflet>
-      <h1>Two maps with markers and events</h1>
-      <p>Click on any of the markers to show a popup with a message.</p>
-  </body>
-</html>

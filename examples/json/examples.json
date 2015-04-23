@@ -465,7 +465,7 @@
     ],
     "markers": [
         {
-            "date": "2015-04-22T19:05:31.437Z",
+            "date": "2015-04-23T14:27:38.985Z",
             "section": "markers",
             "onlyStandAlone": false,
             "id": "/markers/simple-example",
@@ -473,7 +473,7 @@
             "title": "Markers simple example"
         },
         {
-            "date": "2015-04-21T06:04:16.665Z",
+            "date": "2015-04-23T14:24:15.749Z",
             "section": "markers",
             "onlyStandAlone": false,
             "id": "/markers/events-add-example",
@@ -489,7 +489,7 @@
             "title": "Add/remove markers easily example"
         },
         {
-            "date": "2015-04-21T06:04:16.665Z",
+            "date": "2015-04-23T14:48:45.999Z",
             "section": "markers",
             "onlyStandAlone": false,
             "id": "/markers/icons-example",
@@ -497,7 +497,7 @@
             "title": "Changing the marker icons"
         },
         {
-            "date": "2015-04-21T06:04:16.665Z",
+            "date": "2015-04-23T14:59:54.969Z",
             "section": "markers",
             "onlyStandAlone": false,
             "id": "/markers/popup-example",
@@ -561,7 +561,7 @@
             "title": "Markercluster in a SemanticUI modal"
         },
         {
-            "date": "2015-04-22T20:45:05.551Z",
+            "date": "2015-04-23T06:10:15.301Z",
             "section": "markers",
             "onlyStandAlone": false,
             "id": "/markers/clustering-10000-markers-example",
@@ -593,7 +593,7 @@
             "title": "Markers angular template example"
         },
         {
-            "date": "2015-04-21T06:04:16.665Z",
+            "date": "2015-04-23T16:42:30.717Z",
             "section": "markers",
             "onlyStandAlone": false,
             "id": "/markers/two-maps-events-example",

@@ -7,8 +7,9 @@
     <script src="../bower_components/Leaflet.awesome-markers/dist/leaflet.awesome-markers.js"></script>
     <script src="../bower_components/Leaflet.MakiMarkers/Leaflet.MakiMarkers.js"></script>
     <script src="../bower_components/Leaflet.ExtraMarkers/src/leaflet.extra-markers.js"></script>
-
     <script src="../dist/angular-leaflet-directive.min.js"></script>
+
+    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="../bower_components/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="../bower_components/Leaflet.awesome-markers/dist/leaflet.awesome-markers.css">
@@ -71,40 +72,78 @@
                 extraMarkerIcon: {
                     type: 'extraMarker',
                     icon: 'fa-star',
-                    color: '#f00',
+                    markerColor: '#f00',
                     prefix: 'fa',
                     shape: 'circle'
                 }
             });
         } ]);
     </script>
+    <style>
+      body {
+          padding: 20px;
+      }
+    </style>
   </head>
   <body ng-controller="MarkersIconsController">
       <leaflet center="chicago" markers="markers" height="480px" width="100%"></leaflet>
       <h1>Changing the marker icons</h1>
+      <p>You can change the marker icons, using the default Leaflet marker icons functions, or using helper libraries like AwesomeMarkers, MakiMarkers or ExtraMarker.</p>
+
+      <h2>Default Icons</h2>
       <button ng-click="markers.m1.icon=defaultIcon">Default</button>
       <button ng-click="markers.m1.icon=leafIcon">Leaflet Icon</button>
-      <button ng-click="markers.m1.icon=orangeLeafIcon">AwesomeMarker Icon</button>
+      <button ng-click="markers.m1.icon=orangeLeafIcon">Orange leaflet Icon</button>
 
       <h2>AwesomeMarker Icons</h2>
-      <button ng-click="markers.m1.icon=awesomeMarkerIcon; markers.m1.icon.markerColor='blue'">Blue</button>
-      <button ng-click="markers.m1.icon=awesomeMarkerIcon; markers.m1.icon.markerColor='red'">Red</button>
-      <button ng-click="markers.m1.icon=awesomeMarkerIcon; markers.m1.icon.markerColor='green'">Green</button>
-
-      <button ng-click="markers.m1.icon=awesomeMarkerIcon; markers.m1.icon.icon='tag'">Tag</button>
-      <button ng-click="markers.m1.icon=awesomeMarkerIcon; markers.m1.icon.icon='usd'">USD</button>
-      <button ng-click="markers.m1.icon=awesomeMarkerIcon; markers.m1.icon.icon='heart'">Heart</button>
-      <button ng-click="markers.m1.icon=awesomeMarkerIcon; markers.m1.icon.icon='home'">Home</button>
+      <p>
+          <button ng-click="markers.m1.icon=awesomeMarkerIcon; markers.m1.icon.markerColor='blue'">Blue</button>
+          <button ng-click="markers.m1.icon=awesomeMarkerIcon; markers.m1.icon.markerColor='red'">Red</button>
+          <button ng-click="markers.m1.icon=awesomeMarkerIcon; markers.m1.icon.markerColor='green'">Green</button>
+      </p>
+      <p>
+          <button ng-click="markers.m1.icon=awesomeMarkerIcon; markers.m1.icon.icon='tag'">Tag</button>
+          <button ng-click="markers.m1.icon=awesomeMarkerIcon; markers.m1.icon.icon='usd'">USD</button>
+          <button ng-click="markers.m1.icon=awesomeMarkerIcon; markers.m1.icon.icon='heart'">Heart</button>
+          <button ng-click="markers.m1.icon=awesomeMarkerIcon; markers.m1.icon.icon='home'">Home</button>
+          <button ng-click="markers.m1.icon=awesomeMarkerIcon; markers.m1.icon.icon='cog'">Cog</button>
+          <button ng-click="markers.m1.icon=awesomeMarkerIcon; markers.m1.icon.icon='star'">Star</button>
+          <button ng-click="markers.m1.icon=awesomeMarkerIcon; markers.m1.icon.icon='certificate'">Certificate</button>
+      </p>
 
       <h2>MakiMarker Icons</h2>
-      <button ng-click="markers.m1.icon=makiMarkerIcon; markers.m1.icon.color='blue'">Blue</button>
-      <button ng-click="markers.m1.icon=makiMarkerIcon; markers.m1.icon.color='red'">Red</button>
-      <button ng-click="markers.m1.icon=makiMarkerIcon; markers.m1.icon.color='green'">Green</button>
+      <p>
+          <button ng-click="markers.m1.icon=makiMarkerIcon; markers.m1.icon.color='12a'">Blue</button>
+          <button ng-click="markers.m1.icon=makiMarkerIcon; markers.m1.icon.color='f00'">Red</button>
+          <button ng-click="markers.m1.icon=makiMarkerIcon; markers.m1.icon.color='0f0'">Green</button>
+          <button ng-click="markers.m1.icon=makiMarkerIcon; markers.m1.icon.color='b0b'">Purple</button>
+      </p>
+      <p>
+          <button ng-click="markers.m1.icon=makiMarkerIcon; markers.m1.icon.icon='rocket'">Rocket</button>
+          <button ng-click="markers.m1.icon=makiMarkerIcon; markers.m1.icon.icon='beer'">Beer</button>
+          <button ng-click="markers.m1.icon=makiMarkerIcon; markers.m1.icon.icon='warehouse'">Warehouse</button>
+          <button ng-click="markers.m1.icon=makiMarkerIcon; markers.m1.icon.icon='shop'">Shop</button>
+      </p>
 
       <h2>ExtraMarker Icons</h2>
-      <button ng-click="markers.m1.icon=makiMarkerIcon; markers.m1.icon.color='blue'">Blue</button>
-      <button ng-click="markers.m1.icon=makiMarkerIcon; markers.m1.icon.color='red'">Red</button>
-      <button ng-click="markers.m1.icon=makiMarkerIcon; markers.m1.icon.color='green'">Green</button>
-
+      <p>
+          <button ng-click="markers.m1.icon=extraMarkerIcon; markers.m1.icon.markerColor='blue-dark'">Blue</button>
+          <button ng-click="markers.m1.icon=extraMarkerIcon; markers.m1.icon.markerColor='red'">Red</button>
+          <button ng-click="markers.m1.icon=extraMarkerIcon; markers.m1.icon.markerColor='green'">Green</button>
+      </p>
+      <p>
+          <button ng-click="markers.m1.icon=extraMarkerIcon; markers.m1.icon.icon='fa-tag'">Tag</button>
+          <button ng-click="markers.m1.icon=extraMarkerIcon; markers.m1.icon.icon='fa-usd'">USD</button>
+          <button ng-click="markers.m1.icon=extraMarkerIcon; markers.m1.icon.icon='fa-heart'">Heart</button>
+          <button ng-click="markers.m1.icon=extraMarkerIcon; markers.m1.icon.icon='fa-home'">Home</button>
+          <button ng-click="markers.m1.icon=extraMarkerIcon; markers.m1.icon.icon='fa-cog'">Cog</button>
+          <button ng-click="markers.m1.icon=extraMarkerIcon; markers.m1.icon.icon='fa-star'">Star</button>
+          <button ng-click="markers.m1.icon=extraMarkerIcon; markers.m1.icon.icon='fa-certificate'">Certificate</button>
+      </p>
+      <p>
+          <button ng-click="markers.m1.icon=extraMarkerIcon; markers.m1.icon.shape='square'">Square</button>
+          <button ng-click="markers.m1.icon=extraMarkerIcon; markers.m1.icon.shape='star'">Star</button>
+          <button ng-click="markers.m1.icon=extraMarkerIcon; markers.m1.icon.shape='circle'">Circle</button>
+      </p>
   </body>
 </html>

@@ -2582,7 +2582,7 @@ var app = angular.module('webapp');
                 extraMarkerIcon: {
                     type: 'extraMarker',
                     icon: 'fa-star',
-                    color: '#f00',
+                    markerColor: '#f00',
                     prefix: 'fa',
                     shape: 'circle'
                 }
@@ -2692,18 +2692,14 @@ var app = angular.module('webapp');
                         icon: {}
                     }
                 },
+                events: {
+                    markers: [ 'dragend' ]
+                }
             });
-            $scope.$on('leafletDirectiveMarker.click', function(e, args) {
-                // Args will contain the marker name and other relevant information
-                console.log("Leaflet Click");
-            });
-            $scope.$on('leafletDirectiveMarker.popupopen', function(e, args) {
-                // Args will contain the marker name and other relevant information
-                console.log("Leaflet Popup Open");
-            });
-            $scope.$on('leafletDirectiveMarker.popupclose', function(e, args) {
-                // Args will contain the marker name and other relevant information
-                console.log("Leaflet Popup Close");
+            $scope.$on("leafletDirectiveMarker.dragend", function(event, args){
+                console.log('hola');
+                $scope.markers.m1.lat = args.model.lat;
+                $scope.markers.m1.lng = args.model.lng;
             });
         } ]);
         app.controller('MarkersRotationController', [ '$scope', function($scope) {
@@ -2776,6 +2772,102 @@ var app = angular.module('webapp');
                 $scope.position.lng = args.model.lng;
             });
         } ]);
+        app.controller("MarkersTwoMapsEventsController", ['$scope', 'leafletData', function ($scope, $modalInstance, leafletData) {
+            var markers = [];
+            markers.push({
+                lat: 52.229676,
+                lng: 21.012229,
+                draggable: false
+            });
+            markers.push({
+                lat: 52.219081,
+                lng: 21.025386,
+                draggable: false
+            });
+            angular.extend($scope, {
+                defaults: {
+                    maxZoom: 18,
+                    minZoom: 0,
+                    scrollWheelZoom: false
+                },
+                events: {
+                    map: {
+                        enable: [],
+                        logic: 'emit'
+                    },
+                    marker: {
+                        enable: [ 'click' ],
+                        logic: 'emit'
+                    }
+                },
+                layers: {
+                    baselayers: {
+                        osm: {
+                            name: 'OpenStreetMap',
+                            type: 'xyz',
+                            url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                            layerOptions: {
+                                subdomains: ['a', 'b', 'c'],
+                                attribution: '© OpenStreetMap contributors',
+                                continuousWorld: true
+                            }
+                        }
+                    }
+                },
+                center: {
+                    zoom: 13,
+                    lat: 52.229676,
+                    lng: 21.012229
+                },
+                markers: markers
+            });
+            var markers2 = [];
+            markers2.push({
+                lat: 52.229676,
+                lng: 21.012229,
+                draggable: false
+            });
+            markers2.push({
+                lat: 52.219081,
+                lng: 21.025386,
+                draggable: false
+            });
+            angular.extend($scope, {
+                defaults2: {
+                    maxZoom: 18,
+                    minZoom: 0,
+                    scrollWheelZoom: false
+                },
+                events2: {
+                    map: {
+                        enable: [],
+                        logic: 'emit'
+                    },
+                    marker: {
+                        enable: [ 'click' ],
+                        logic: 'emit'
+                    }
+                },
+                layers2: {
+                    baselayers: {
+                        mapbox: {
+                            name: 'Mapbox Terrain',
+                            url: 'http://a.tiles.mapbox.com/v3/examples.map-i86nkdio/{z}/{x}/{y}.png',
+                            type: 'xyz'
+                        }
+                    }
+                },
+                center2: {
+                    zoom: 13,
+                    lat: 52.229676,
+                    lng: 21.012229
+                },
+                markers2: markers2
+            });
+            $scope.$on('leafletDirectiveMarker.click', function (e, args) {
+                console.log(args);
+            });
+        }]);
         app.controller('MixedGeoJSONEventsController', [ "$scope", "$http", function($scope, $http) {
             $scope.$on("leafletDirectiveMap.geojsonMouseover", function(ev, feature, leafletEvent) {
                 countryMouseover(feature, leafletEvent);
@@ -3631,103 +3723,4 @@ var app = angular.module('webapp');
                     ];
                 }
             };
-        } ]);
-        app.controller("leafletMarkerController", ['$scope', 'leafletData', function ($scope, $modalInstance, leafletData) {
-            var markers = [];
-            markers.push({
-                lat: 52.229676,
-                lng: 21.012229,
-                draggable: false
-            });
-            markers.push({
-                lat: 52.219081,
-                lng: 21.025386,
-                draggable: false
-            });
-            angular.extend($scope, {
-                defaults: {
-                    maxZoom: 18,
-                    minZoom: 0,
-                    scrollWheelZoom: false
-                },
-                events: {
-                    map: {
-                        enable: [],
-                        logic: 'emit'
-                    },
-                    marker: {
-                        enable: [ 'click' ],
-                        logic: 'emit'
-                    }
-                },
-                layers: {
-                    baselayers: {
-                        osm: {
-                            name: 'OpenStreetMap',
-                            type: 'xyz',
-                            url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                            layerOptions: {
-                                subdomains: ['a', 'b', 'c'],
-                                attribution: '© OpenStreetMap contributors',
-                                continuousWorld: true
-                            }
-                        }
-                    }
-                },
-                center: {
-                    zoom: 13,
-                    lat: 52.229676,
-                    lng: 21.012229
-                },
-                markers: markers
-            });
-            $scope.$on('leafletDirectiveMarker.click', function (e, args) {
-                alert('Marker in map 1 clicked');
-            });
-            var markers2 = [];
-            markers2.push({
-                lat: 52.229676,
-                lng: 21.012229,
-                draggable: false
-            });
-            markers2.push({
-                lat: 52.219081,
-                lng: 21.025386,
-                draggable: false
-            });
-            angular.extend($scope, {
-                defaults2: {
-                    maxZoom: 18,
-                    minZoom: 0,
-                    scrollWheelZoom: false
-                },
-                events2: {
-                    map: {
-                        enable: [],
-                        logic: 'emit'
-                    },
-                    marker: {
-                        enable: [ 'click' ],
-                        logic: 'emit'
-                    }
-                },
-                layers2: {
-                    baselayers: {
-                        mapbox: {
-                            name: 'Mapbox Terrain',
-                            url: 'http://a.tiles.mapbox.com/v3/examples.map-i86nkdio/{z}/{x}/{y}.png',
-                            type: 'xyz'
-                        }
-                    }
-                },
-                center2: {
-                    zoom: 13,
-                    lat: 52.229676,
-                    lng: 21.012229
-                },
-                markers: markers2
-            });
-            $scope.$on('leafletDirectiveMarker.click', function (e, args) {
-                alert('Marker in map 2 clicked');
-            });
-        }]);}(angular));
+        } ]);}(angular));

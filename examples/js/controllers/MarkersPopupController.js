@@ -15,17 +15,13 @@
                         icon: {}
                     }
                 },
+                events: {
+                    markers: [ 'dragend' ]
+                }
             });
-            $scope.$on('leafletDirectiveMarker.click', function(e, args) {
-                // Args will contain the marker name and other relevant information
-                console.log("Leaflet Click");
-            });
-            $scope.$on('leafletDirectiveMarker.popupopen', function(e, args) {
-                // Args will contain the marker name and other relevant information
-                console.log("Leaflet Popup Open");
-            });
-            $scope.$on('leafletDirectiveMarker.popupclose', function(e, args) {
-                // Args will contain the marker name and other relevant information
-                console.log("Leaflet Popup Close");
+            $scope.$on("leafletDirectiveMarker.dragend", function(event, args){
+                console.log('hola');
+                $scope.markers.m1.lat = args.model.lat;
+                $scope.markers.m1.lng = args.model.lng;
             });
         } ]);
