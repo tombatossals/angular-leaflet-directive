@@ -3428,7 +3428,8 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                 }
 
                 // Watch for the base layers
-                leafletScope.$watch('layers.baselayers', function(newBaseLayers) {
+                leafletScope.$watch('layers.baselayers', function(newBaseLayers, oldBaseLayers) {
+                    if(angular.equals(newBaseLayers, oldBaseLayers)) return;
                     // Delete layers from the array
                     for (var name in leafletLayers.baselayers) {
                         if (!isDefined(newBaseLayers[name]) || newBaseLayers[name].doRefresh) {
@@ -3482,7 +3483,8 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                 }, true);
 
                 // Watch for the overlay layers
-                leafletScope.$watch('layers.overlays', function(newOverlayLayers) {
+                leafletScope.$watch('layers.overlays', function(newOverlayLayers, oldOverlayLayers) {
+                    if(angular.equals(newOverlayLayers, oldOverlayLayers)) return;
                     // Delete layers from the array
                     for (var name in leafletLayers.overlays) {
                         if (!isDefined(newOverlayLayers[name]) || newOverlayLayers[name].doRefresh) {
@@ -4176,6 +4178,7 @@ angular.module("leaflet-directive")
         }
 });
 
+
 angular.module("leaflet-directive")
 .factory('leafletLabelEvents', function ($rootScope, $q, $log, leafletHelpers, leafletEventsHelpers) {
     var Helpers = leafletHelpers,
@@ -4384,7 +4387,6 @@ angular.module("leaflet-directive")
 
         bindMarkerEvents: function (lObject, name, model, leafletScope, layerName) {
             var markerEvents = [];
-            var i;
             var eventName;
             var logic = "emit";
 
@@ -4405,7 +4407,7 @@ angular.module("leaflet-directive")
                 } else {
                     // We have a possible valid map object
                     // Event propadation logic
-                    if (leafletScope.eventBroadcast.marker.logic !== undefined && leafletScope.eventBroadcast.marker.logic !== null) {
+                    if (isDefined(leafletScope.eventBroadcast.marker.logic)) {
                         // We take care of possible propagation logic
                         if (leafletScope.eventBroadcast.marker.logic !== "emit" && leafletScope.eventBroadcast.marker.logic !== "broadcast") {
                             // This is an error
@@ -4416,12 +4418,12 @@ angular.module("leaflet-directive")
                     }
                     // Enable / Disable
                     var markerEventsEnable = false, markerEventsDisable = false;
-                    if (leafletScope.eventBroadcast.marker.enable !== undefined && leafletScope.eventBroadcast.marker.enable !== null) {
+                    if (isDefined(leafletScope.eventBroadcast.marker.enable)) {
                         if (typeof leafletScope.eventBroadcast.marker.enable === 'object') {
                             markerEventsEnable = true;
                         }
                     }
-                    if (leafletScope.eventBroadcast.marker.disable !== undefined && leafletScope.eventBroadcast.marker.disable !== null) {
+                    if (isDefined(leafletScope.eventBroadcast.marker.disable)) {
                         if (typeof leafletScope.eventBroadcast.marker.disable === 'object') {
                             markerEventsDisable = true;
                         }
@@ -4436,8 +4438,7 @@ angular.module("leaflet-directive")
                         // At this point the marker object is OK, lets enable or disable events
                         if (markerEventsEnable) {
                             // Enable events
-                            for (i = 0; i < leafletScope.eventBroadcast.marker.enable.length; i++) {
-                                eventName = leafletScope.eventBroadcast.marker.enable[i];
+                            leafletScope.eventBroadcast.marker.enable.forEach(function(eventName){
                                 // Do we have already the event enabled?
                                 if (markerEvents.indexOf(eventName) !== -1) {
                                     // Repeated event, this is an error
@@ -4452,12 +4453,11 @@ angular.module("leaflet-directive")
                                         markerEvents.push(eventName);
                                     }
                                 }
-                            }
+                            });
                         } else {
                             // Disable events
                             markerEvents = _getAvailableMarkerEvents();
-                            for (i = 0; i < leafletScope.eventBroadcast.marker.disable.length; i++) {
-                                eventName = leafletScope.eventBroadcast.marker.disable[i];
+                            leafletScope.eventBroadcast.marker.disable.forEach(function(eventName) {
                                 var index = markerEvents.indexOf(eventName);
                                 if (index === -1) {
                                     // The event does not exist
@@ -4466,17 +4466,16 @@ angular.module("leaflet-directive")
                                 } else {
                                     markerEvents.splice(index, 1);
                                 }
-                            }
+                            });
                         }
                     }
                 }
             }
 
-            for (i = 0; i < markerEvents.length; i++) {
-                eventName = markerEvents[i];
+            markerEvents.forEach(function(eventName){
                 lObject.on(eventName,
                     _genDispatchMarkerEvent(eventName, logic, leafletScope, lObject, name, model, layerName));
-            }
+            });
 
             if (Helpers.LabelPlugin.isLoaded() && isDefined(lObject.label)) {
                 lblHelp.genLabelEvents(name, logic, leafletScope, lObject, model, layerName);
