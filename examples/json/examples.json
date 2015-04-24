@@ -363,12 +363,20 @@
             "title": "HeatMap example"
         },
         {
-            "date": "2015-04-21T14:20:14.805Z",
+            "date": "2015-04-23T17:03:44.258Z",
             "section": "layers",
             "onlyStandAlone": false,
             "id": "/layers/overlays-hide-on-zoomout-example",
             "extUrl": "0222-layers-overlays-hide-on-zoomout-example.html",
             "title": "Baselayer with overlay which is hidden on Zoom less than 4 "
+        },
+        {
+            "date": "2015-04-24T14:19:07.228Z",
+            "section": "layers",
+            "onlyStandAlone": false,
+            "id": "/layers/refresh-overlay-every-minute-example",
+            "extUrl": "0223-layers-refresh-overlay-every-minute-example.html",
+            "title": "Refreshable overlays example"
         }
     ],
     "paths": [
@@ -489,7 +497,7 @@
             "title": "Add/remove markers easily example"
         },
         {
-            "date": "2015-04-23T14:48:45.999Z",
+            "date": "2015-04-23T17:41:08.778Z",
             "section": "markers",
             "onlyStandAlone": false,
             "id": "/markers/icons-example",
@@ -497,7 +505,7 @@
             "title": "Changing the marker icons"
         },
         {
-            "date": "2015-04-23T14:59:54.969Z",
+            "date": "2015-04-23T17:41:08.778Z",
             "section": "markers",
             "onlyStandAlone": false,
             "id": "/markers/popup-example",
@@ -593,7 +601,7 @@
             "title": "Markers angular template example"
         },
         {
-            "date": "2015-04-23T16:42:30.717Z",
+            "date": "2015-04-23T17:41:08.778Z",
             "section": "markers",
             "onlyStandAlone": false,
             "id": "/markers/two-maps-events-example",
