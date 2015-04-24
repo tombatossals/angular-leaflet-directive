@@ -80,7 +80,7 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                             }
                             delete leafletLayers.baselayers[name];
 
-                            if (newBaseLayers[name].doRefresh) {
+                            if (newBaseLayers[name] && newBaseLayers[name].doRefresh) {
                                 newBaseLayers[name].doRefresh = false;
                             }
                         }
@@ -135,7 +135,7 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                             // TODO: Depending on the layer type we will have to delete what's included on it
                             delete leafletLayers.overlays[name];
 
-                            if (newOverlayLayers[name].doRefresh) {
+                            if (newOverlayLayers[name] && newOverlayLayers[name].doRefresh) {
                                 newOverlayLayers[name].doRefresh = false;
                             }
                         }
