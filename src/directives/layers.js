@@ -70,7 +70,8 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                 }
 
                 // Watch for the base layers
-                leafletScope.$watch('layers.baselayers', function(newBaseLayers) {
+                leafletScope.$watch('layers.baselayers', function(newBaseLayers, oldBaseLayers) {
+                    if(angular.equals(newBaseLayers, oldBaseLayers)) return;
                     // Delete layers from the array
                     for (var name in leafletLayers.baselayers) {
                         if (!isDefined(newBaseLayers[name]) || newBaseLayers[name].doRefresh) {
@@ -124,7 +125,8 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                 }, true);
 
                 // Watch for the overlay layers
-                leafletScope.$watch('layers.overlays', function(newOverlayLayers) {
+                leafletScope.$watch('layers.overlays', function(newOverlayLayers, oldOverlayLayers) {
+                    if(angular.equals(newOverlayLayers, oldOverlayLayers)) return;
                     // Delete layers from the array
                     for (var name in leafletLayers.overlays) {
                         if (!isDefined(newOverlayLayers[name]) || newOverlayLayers[name].doRefresh) {
