@@ -1,5 +1,5 @@
 /*!
-*  angular-leaflet-directive 0.7.15 2015-04-24
+*  angular-leaflet-directive 0.7.15 2015-04-27
 *  angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps
 *  git: https://github.com/tombatossals/angular-leaflet-directive
 */
@@ -2976,7 +2976,7 @@ angular.module("leaflet-directive")
 .directive('geojson', ["$log", "$rootScope", "leafletData", "leafletHelpers", "leafletWatchHelpers", "leafletDirectiveControlsHelpers", "leafletIterators", function ($log, $rootScope, leafletData, leafletHelpers,
     leafletWatchHelpers, leafletDirectiveControlsHelpers,leafletIterators) {
 
-    var _maybeWatchCollection = leafletWatchHelpers.maybeWatchCollection,
+    var _maybeWatch = leafletWatchHelpers.maybeWatch,
         _watchOptions = leafletHelpers.watchOptions,
         _extendDirectiveControls = leafletDirectiveControlsHelpers.extend,
         hlp = leafletHelpers,
@@ -3109,7 +3109,7 @@ angular.module("leaflet-directive")
 
                 _extendDirectiveControls(attrs.id, 'geojson', _create, _clean);
 
-                _maybeWatchCollection(leafletScope,'geojson', watchOptions, function(geojson){
+                _maybeWatch(leafletScope,'geojson', watchOptions, function(geojson){
                     _create(geojson);
                 });
             });
@@ -3428,7 +3428,8 @@ angular.module("leaflet-directive").directive('layers', ["$log", "$q", "leafletD
                 }
 
                 // Watch for the base layers
-                leafletScope.$watch('layers.baselayers', function(newBaseLayers) {
+                leafletScope.$watch('layers.baselayers', function(newBaseLayers, oldBaseLayers) {
+                    if(angular.equals(newBaseLayers, oldBaseLayers)) return;
                     // Delete layers from the array
                     for (var name in leafletLayers.baselayers) {
                         if (!isDefined(newBaseLayers[name]) || newBaseLayers[name].doRefresh) {
@@ -3482,7 +3483,8 @@ angular.module("leaflet-directive").directive('layers', ["$log", "$q", "leafletD
                 }, true);
 
                 // Watch for the overlay layers
-                leafletScope.$watch('layers.overlays', function(newOverlayLayers) {
+                leafletScope.$watch('layers.overlays', function(newOverlayLayers, oldOverlayLayers) {
+                    if(angular.equals(newOverlayLayers, oldOverlayLayers)) return;
                     // Delete layers from the array
                     for (var name in leafletLayers.overlays) {
                         if (!isDefined(newOverlayLayers[name]) || newOverlayLayers[name].doRefresh) {
