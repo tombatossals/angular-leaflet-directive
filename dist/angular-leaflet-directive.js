@@ -1,5 +1,5 @@
 /*!
-*  angular-leaflet-directive 0.7.15 2015-04-27
+*  angular-leaflet-directive 0.7.15 2015-05-07
 *  angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps
 *  git: https://github.com/tombatossals/angular-leaflet-directive
 */
@@ -1761,7 +1761,7 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', ["$q", "leafle
 }]);
 
 angular.module("leaflet-directive")
-.service('leafletMarkersHelpers', ["$rootScope", "leafletHelpers", "$log", "$compile", "leafletGeoJsonHelpers", function ($rootScope, leafletHelpers, $log, $compile,
+.service('leafletMarkersHelpers', ["$rootScope", "$timeout", "leafletHelpers", "$log", "$compile", "leafletGeoJsonHelpers", function ($rootScope, $timeout, leafletHelpers, $log, $compile,
   leafletGeoJsonHelpers) {
 
     var isDefined = leafletHelpers.isDefined,
@@ -1907,7 +1907,10 @@ angular.module("leaflet-directive")
                     });
                 }
                 else {
-                    updatePopup(popup);
+                    // We need to wait until after the next draw in order to get the correct width
+                    $timeout(function() {
+                        updatePopup(popup);
+                    });
                 }
             }
         }
@@ -3439,9 +3442,9 @@ angular.module("leaflet-directive").directive('layers', ["$log", "$q", "leafletD
                             }
                             delete leafletLayers.baselayers[name];
 
-                            // if (newBaseLayers[name].doRefresh) {
-                            //     newBaseLayers[name].doRefresh = false;
-                            // }
+                            if (newBaseLayers[name] && newBaseLayers[name].doRefresh) {
+                                newBaseLayers[name].doRefresh = false;
+                            }
                         }
                     }
                     // add new layers
@@ -3495,9 +3498,9 @@ angular.module("leaflet-directive").directive('layers', ["$log", "$q", "leafletD
                             // TODO: Depending on the layer type we will have to delete what's included on it
                             delete leafletLayers.overlays[name];
 
-                            // if (newOverlayLayers[name].doRefresh) {
-                            //     newOverlayLayers[name].doRefresh = false;
-                            // }
+                            if (newOverlayLayers[name] && newOverlayLayers[name].doRefresh) {
+                                newOverlayLayers[name].doRefresh = false;
+                            }
                         }
                     }
 
