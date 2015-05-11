@@ -1,5 +1,5 @@
 angular.module("leaflet-directive")
-.service('leafletMarkersHelpers', function ($rootScope, leafletHelpers, $log, $compile,
+.service('leafletMarkersHelpers', function ($rootScope, $timeout, leafletHelpers, $log, $compile,
   leafletGeoJsonHelpers) {
 
     var isDefined = leafletHelpers.isDefined,
@@ -145,7 +145,10 @@ angular.module("leaflet-directive")
                     });
                 }
                 else {
-                    updatePopup(popup);
+                    // We need to wait until after the next draw in order to get the correct width
+                    $timeout(function() {
+                        updatePopup(popup);
+                    });
                 }
             }
         }

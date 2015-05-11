@@ -2,7 +2,7 @@ angular.module("leaflet-directive")
 .directive('geojson', function ($log, $rootScope, leafletData, leafletHelpers,
     leafletWatchHelpers, leafletDirectiveControlsHelpers,leafletIterators) {
 
-    var _maybeWatchCollection = leafletWatchHelpers.maybeWatchCollection,
+    var _maybeWatch = leafletWatchHelpers.maybeWatch,
         _watchOptions = leafletHelpers.watchOptions,
         _extendDirectiveControls = leafletDirectiveControlsHelpers.extend,
         hlp = leafletHelpers,
@@ -135,7 +135,7 @@ angular.module("leaflet-directive")
 
                 _extendDirectiveControls(attrs.id, 'geojson', _create, _clean);
 
-                _maybeWatchCollection(leafletScope,'geojson', watchOptions, function(geojson){
+                _maybeWatch(leafletScope,'geojson', watchOptions, function(geojson){
                     _create(geojson);
                 });
             });
