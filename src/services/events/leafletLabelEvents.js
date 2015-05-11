@@ -1,14 +1,15 @@
 angular.module("leaflet-directive")
-.factory('leafletLabelEvents', function ($rootScope, $q, $log, leafletHelpers, leafletEventsHelpers) {
-    var Helpers = leafletHelpers;
-        var MarkerEvents = function(){
-            leafletEventsHelpers.call(this,'leafletDirectiveMarker', 'markers');
+.factory('leafletLabelEvents', function ($rootScope, $q, $log, leafletHelpers, leafletEventsHelpersFactory) {
+    var Helpers = leafletHelpers,
+    EventsHelper = leafletEventsHelpersFactory;
+        var LabelEvents = function(){
+          EventsHelper.call(this,'leafletDirectiveLabel', 'markers');
         };
-        LabelEvents.prototype =  new leafletEventsHelpers();
+        LabelEvents.prototype =  new EventsHelper();
 
         LabelEvents.prototype.genDispatchEvent = function(eventName, logic, leafletScope, lObject, name, model, layerName) {
             var markerName = name.replace('markers.', '');
-            return leafletEventsHelpers.prototype
+            return EventsHelper.prototype
                 .genDispatchEvent.call(this, eventName, logic, leafletScope, lObject, markerName, model, layerName);
         };
 
@@ -24,10 +25,11 @@ angular.module("leaflet-directive")
         };
 
         LabelEvents.prototype.genEvents = function (eventName, logic, leafletScope, lObject, name, model, layerName) {
+            var _this = this;
             var labelEvents = this.getAvailableEvents();
             var scopeWatchName = Helpers.getObjectArrayPath("markers." + name);
             labelEvents.forEach(function(eventName) {
-                lObject.label.on(eventName, this.genDispatchEvent(
+                lObject.label.on(eventName, _this.genDispatchEvent(
                     eventName, logic, leafletScope, lObject.label, scopeWatchName, model, layerName));
             });
         };

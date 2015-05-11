@@ -1,10 +1,10 @@
 angular.module("leaflet-directive").factory('leafletEvents',
     function (leafletMapEvents, leafletMarkerEvents, leafletPathEvents) {
-        var retObj = {};
-        angular.extend(retObj,
+      //NOTE THIS SHOULD BE DEPRECATED infavor of getting a specific events helper
+        return angular.extend({},
             leafletMapEvents, {
-                bindMarkerEvents: leafletMarkerEvents.bindEvents
+                bindMarkerEvents: leafletMarkerEvents.bindEvents,
+                getAvailableMarkerEvents: leafletMarkerEvents.getAvailableEvents
             },
             leafletPathEvents);
-        return retObj;
 });

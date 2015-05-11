@@ -1,17 +1,19 @@
 angular.module("leaflet-directive")
-.factory('leafletMarkerEvents', function ($rootScope, $q, $log, leafletHelpers, leafletEventsHelpers, leafletLabelEvents) {
+.factory('leafletMarkerEvents', function ($rootScope, $q, $log, leafletHelpers, leafletEventsHelpersFactory, leafletLabelEvents) {
     var safeApply = leafletHelpers.safeApply,
         isDefined = leafletHelpers.isDefined,
         Helpers = leafletHelpers,
-        lblHelp = leafletLabelEvents;
+        lblHelp = leafletLabelEvents,
+        EventsHelper = leafletEventsHelpersFactory;
 
     var MarkerEvents = function(){
-        leafletEventsHelpers.call(this,'leafletDirectiveMarker', 'markers');
+      EventsHelper.call(this,'leafletDirectiveMarker', 'markers');
     };
-    MarkerEvents.prototype =  new leafletEventsHelpers();
+
+    MarkerEvents.prototype =  new EventsHelper();
 
     MarkerEvents.prototype.genDispatchEvent = function(eventName, logic, leafletScope, lObject, name, model, layerName) {
-        var handle = leafletEventsHelpers.prototype
+        var handle = EventsHelper.prototype
             .genDispatchEvent.call(this, eventName, logic, leafletScope, lObject, name, model, layerName);
         return function(e){
             // Broadcast old marker click name for backwards compatibility
@@ -50,11 +52,11 @@ angular.module("leaflet-directive")
     };
 
     MarkerEvents.prototype.bindEvents = function (lObject, name, model, leafletScope, layerName) {
-        EventsHelper.prototype.bindEvents.call(this,lObject, name, model, leafletScope, layerName);
+      var logic = EventsHelper.prototype.bindEvents.call(this,lObject, name, model, leafletScope, layerName);
 
-        if (Helpers.LabelPlugin.isLoaded() && isDefined(lObject.label)) {
-            lblHelp.genEvents(name, logic, leafletScope, lObject, model, layerName);
-        }
+      if (Helpers.LabelPlugin.isLoaded() && isDefined(lObject.label)) {
+          lblHelp.genEvents(name, logic, leafletScope, lObject, model, layerName);
+      }
     };
 
     return new MarkerEvents();

@@ -1,6 +1,6 @@
 angular.module("leaflet-directive").directive('markers',
     function ($log, $rootScope, $q, leafletData, leafletHelpers, leafletMapDefaults,
-      leafletMarkersHelpers, leafletEvents, leafletIterators, leafletWatchHelpers,
+      leafletMarkersHelpers, leafletMarkerEvents, leafletIterators, leafletWatchHelpers,
       leafletDirectiveControlsHelpers) {
     //less terse vars to helpers
     var isDefined = leafletHelpers.isDefined,
@@ -10,7 +10,6 @@ angular.module("leaflet-directive").directive('markers',
         addMarkerWatcher = leafletMarkersHelpers.addMarkerWatcher,
         listenMarkerEvents = leafletMarkersHelpers.listenMarkerEvents,
         addMarkerToGroup = leafletMarkersHelpers.addMarkerToGroup,
-        bindMarkerEvents = leafletEvents.bindMarkerEvents,
         createMarker = leafletMarkersHelpers.createMarker,
         deleteMarker = leafletMarkersHelpers.deleteMarker,
         $it = leafletIterators,
@@ -111,7 +110,7 @@ angular.module("leaflet-directive").directive('markers',
                 }
 
                 listenMarkerEvents(marker, model, leafletScope, watchOptions.individual.doWatch);
-                bindMarkerEvents(marker, pathToMarker, model, leafletScope, layerName);
+                leafletMarkerEvents.bindEvents(marker, pathToMarker, model, leafletScope, layerName);
             }
         }
     };
