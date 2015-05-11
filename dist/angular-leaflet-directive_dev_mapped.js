@@ -2981,7 +2981,8 @@ angular.module("leaflet-directive").directive('eventBroadcast', function ($log, 
 
 angular.module("leaflet-directive")
 .directive('geojson', function ($log, $rootScope, leafletData, leafletHelpers,
-    leafletWatchHelpers, leafletDirectiveControlsHelpers,leafletIterators) {
+    leafletWatchHelpers, leafletDirectiveControlsHelpers,leafletIterators,
+    leafletGeoJsonEvents) {
 
     var _maybeWatch = leafletWatchHelpers.maybeWatch,
         _watchOptions = leafletHelpers.watchOptions,
@@ -2996,8 +2997,7 @@ angular.module("leaflet-directive")
         require: 'leaflet',
 
         link: function(scope, element, attrs, controller) {
-            var safeApply = leafletHelpers.safeApply,
-                isDefined = leafletHelpers.isDefined,
+            var isDefined = leafletHelpers.isDefined,
                 leafletScope  = controller.getLeafletScope(),
                 leafletGeoJSON = {},
                 _hasSetLeafletData = false;
@@ -3006,7 +3006,6 @@ angular.module("leaflet-directive")
                 var watchOptions = leafletScope.geojsonWatchOptions || _watchOptions;
 
                 var _hookUpEvents = function(geojson){
-                    var resetStyleOnMouseout = geojson.resetStyleOnMouseout;
                     var onEachFeature;
 
                     if (angular.isFunction(geojson.onEachFeature)) {
@@ -3017,27 +3016,7 @@ angular.module("leaflet-directive")
                                 layer.bindLabel(feature.properties.description);
                             }
 
-                            layer.on({
-                                mouseover: function(e) {
-                                    safeApply(leafletScope, function() {
-                                        $rootScope.$broadcast('leafletDirectiveMap.geojsonMouseover', feature, e);
-                                    });
-                                },
-                                mouseout: function(e) {
-                                    if (resetStyleOnMouseout) {
-                                        //this is broken on nested needs to traverse
-                                        leafletGeoJSON.resetStyle(e.target);
-                                    }
-                                    safeApply(leafletScope, function() {
-                                        $rootScope.$broadcast('leafletDirectiveMap.geojsonMouseout', e);
-                                    });
-                                },
-                                click: function(e) {
-                                    safeApply(leafletScope, function() {
-                                        $rootScope.$broadcast('leafletDirectiveMap.geojsonClick', feature, e);
-                                    });
-                                }
-                            });
+                            leafletGeoJsonEvents.bindEvents(layer, null, feature, leafletScope, null);
                         };
                     }
                     return onEachFeature;
@@ -4228,28 +4207,28 @@ angular.module("leaflet-directive")
                 $log.error(errorHeader + "event-broadcast must be an object check your model.");
             } else {
                 // We have a possible valid object
-                if (!isDefined(leafletScope.eventBroadcast[this.lObjectType])) {
+                if (!isDefined(leafletScope.eventBroadcast[_this.lObjectType])) {
                     // We do not have events enable/disable do we do nothing (all enabled by default)
                     events = this.getAvailableEvents();
-                } else if (!isObject(leafletScope.eventBroadcast[this.lObjectType])) {
+                } else if (!isObject(leafletScope.eventBroadcast[_this.lObjectType])) {
                     // Not a valid object
-                    $log.warn(errorHeader + 'event-broadcast.' + [this.lObjectType]  + ' must be an object check your model.');
+                    $log.warn(errorHeader + 'event-broadcast.' + [_this.lObjectType]  + ' must be an object check your model.');
                 } else {
                     // We have a possible valid map object
                     // Event propadation logic
                     if (isDefined(leafletScope.eventBroadcast[this.lObjectType].logic)) {
                         // We take care of possible propagation logic
-                        if (leafletScope.eventBroadcast[this.lObjectType].logic !== "emit" &&
-                            leafletScope.eventBroadcast[this.lObjectType].logic !== "broadcast")
+                        if (leafletScope.eventBroadcast[_this.lObjectType].logic !== "emit" &&
+                            leafletScope.eventBroadcast[_this.lObjectType].logic !== "broadcast")
                                 $log.warn(errorHeader + "Available event propagation logic are: 'emit' or 'broadcast'.");
                     }
                     // Enable / Disable
                     var eventsEnable = false, eventsDisable = false;
-                    if (isDefined(leafletScope.eventBroadcast[this.lObjectType].enable) &&
-                        isArray(leafletScope.eventBroadcast[this.lObjectType].enable))
+                    if (isDefined(leafletScope.eventBroadcast[_this.lObjectType].enable) &&
+                        isArray(leafletScope.eventBroadcast[_this.lObjectType].enable))
                             eventsEnable = true;
-                    if (isDefined(leafletScope.eventBroadcast[this.lObjectType].disable) &&
-                        isArray(leafletScope.eventBroadcast[this.lObjectType].disable))
+                    if (isDefined(leafletScope.eventBroadcast[_this.lObjectType].disable) &&
+                        isArray(leafletScope.eventBroadcast[_this.lObjectType].disable))
                             eventsDisable = true;
 
                     if (eventsEnable && eventsDisable) {
@@ -4281,7 +4260,7 @@ angular.module("leaflet-directive")
                         } else {
                             // Disable events
                             events = this.getAvailableEvents();
-                            leafletScope.eventBroadcast[this.lObjectType].disable.forEach(function(eventName) {
+                            leafletScope.eventBroadcast[_this.lObjectType].disable.forEach(function(eventName) {
                                 var index = events.indexOf(eventName);
                                 if (index === -1) {
                                     // The event does not exist
@@ -4308,6 +4287,49 @@ angular.module("leaflet-directive")
   return new leafletEventsHelpersFactory();
 });
 
+angular.module("leaflet-directive")
+.factory('leafletGeoJsonEvents', function ($rootScope, $q, $log, leafletHelpers, leafletEventsHelpersFactory, leafletLabelEvents) {
+    var safeApply = leafletHelpers.safeApply,
+        isDefined = leafletHelpers.isDefined,
+        Helpers = leafletHelpers,
+        lblHelp = leafletLabelEvents,
+        EventsHelper = leafletEventsHelpersFactory;
+
+    var GeoJsonEvents = function(){
+      EventsHelper.call(this,'leafletDirectiveGeoJson', 'geojson');
+    };
+
+    GeoJsonEvents.prototype =  new EventsHelper();
+
+    GeoJsonEvents.prototype.genDispatchEvent = function(eventName, logic, leafletScope, lObject, name, model, layerName) {
+        var base = EventsHelper.prototype.genDispatchEvent.call(this, eventName, logic, leafletScope, lObject, name, model, layerName),
+        resetStyleOnMouseout = model.resetStyleOnMouseout,
+        _this = this;
+
+        return function(e){
+            if (eventName === 'mouseout') {
+                if (resetStyleOnMouseout) {
+                    //this is broken on nested needs to traverse
+                    leafletGeoJSON.resetStyle(e.target);
+                }
+                safeApply(leafletScope, function() {
+                    $rootScope.$broadcast(_this.rootBroadcastName + '.mouseout', e);
+                });
+            }
+            base(e); //common
+        };
+    };
+
+    GeoJsonEvents.prototype.getAvailableEvents = function(){ return [
+        'click',
+        'dblclick',
+        'mouseover',
+        'mouseout',
+        ];
+    };
+
+    return new GeoJsonEvents();
+});
 
 angular.module("leaflet-directive")
 .factory('leafletLabelEvents', function ($rootScope, $q, $log, leafletHelpers, leafletEventsHelpersFactory) {
