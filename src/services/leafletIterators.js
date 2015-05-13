@@ -149,16 +149,15 @@ angular.module('leaflet-directive').service('leafletIterators', function ($log, 
     }
   };
 
-
-  //consider adding lodash or underscore but for now adding iterators as we need them
+  //see http://jsperf.com/iterators/3
+  //utilizing for in is way faster
   var _each = function(collection, cb){
     _iterate(collection, cb, function(val, key){
       cb(val, key);
     });
   };
 
-  //lodash or underscore have preference
-  return window._ ? window._ : {
+  return {
     each:_each,
     every: _every,
     all: _all

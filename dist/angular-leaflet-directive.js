@@ -1,5 +1,5 @@
 /*!
-*  angular-leaflet-directive 0.7.15 2015-05-07
+*  angular-leaflet-directive 0.7.15 2015-05-13
 *  angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps
 *  git: https://github.com/tombatossals/angular-leaflet-directive
 */
@@ -616,35 +616,12 @@ angular.module("leaflet-directive").factory('leafletHelpers', ["$q", "$log", fun
         // Determine if a reference is defined
         isDefined: _isDefined,
         isUndefined:_isUndefined,
-        // Determine if a reference is a number
-        isNumber: function(value) {
-            return angular.isNumber(value);
-        },
-
-        // Determine if a reference is a string
-        isString: function(value) {
-            return angular.isString(value);
-        },
-
-        // Determine if a reference is an array
-        isArray: function(value) {
-            return angular.isArray(value);
-        },
-
-        // Determine if a reference is an object
-        isObject: function(value) {
-            return angular.isObject(value);
-        },
-
-        // Determine if a reference is a function.
-        isFunction: function(value) {
-            return angular.isFunction(value);
-        },
-
-        // Determine if two objects have the same properties
-        equals: function(o1, o2) {
-            return angular.equals(o1, o2);
-        },
+        isNumber: angular.isNumber,
+        isString: angular.isString,
+        isArray: angular.isArray,
+        isObject: angular.isObject,
+        isFunction: angular.isFunction,
+        equals: angular.equals,
 
         isValidCenter: function(center) {
             return angular.isDefined(center) && angular.isNumber(center.lat) &&
@@ -1159,16 +1136,15 @@ angular.module('leaflet-directive').service('leafletIterators', ["$log", "leafle
     }
   };
 
-
-  //consider adding lodash or underscore but for now adding iterators as we need them
+  //see http://jsperf.com/iterators/3
+  //utilizing for in is way faster
   var _each = function(collection, cb){
     _iterate(collection, cb, function(val, key){
       cb(val, key);
     });
   };
 
-  //lodash or underscore have preference
-  return window._ ? window._ : {
+  return {
     each:_each,
     every: _every,
     all: _all
