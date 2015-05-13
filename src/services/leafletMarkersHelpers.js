@@ -122,35 +122,40 @@ angular.module("leaflet-directive")
     var _manageOpenPopup = function(marker, markerData) {
         marker.openPopup();
 
-        //the marker may have angular templates to compile
-        var popup = marker.getPopup(),
-            //the marker may provide a scope returning function used to compile the message
-            //default to $rootScope otherwise
-            markerScope = angular.isFunction(markerData.getMessageScope) ? markerData.getMessageScope() : $rootScope,
+        // The marker may provide a scope returning function used to compile the message
+        // default to $rootScope otherwise
+        var markerScope = angular.isFunction(markerData.getMessageScope) ? markerData.getMessageScope() : $rootScope,
             compileMessage = isDefined(markerData.compileMessage) ? markerData.compileMessage : true;
 
-        if (isDefined(popup)) {
+        var compileAndUpdatePopup = function(popup) {
+            if (!isDefined(popup) || !isDefined(popup._contentNode)) {
+                return;
+            }
+
             var updatePopup = function(popup) {
                 popup._updateLayout();
                 popup._updatePosition();
             };
 
-            if (compileMessage) {
-                $compile(popup._contentNode)(markerScope);
-                //in case of an ng-include, we need to update the content after template load
-                if (isDefined(popup._contentNode) && popup._contentNode.innerHTML.indexOf("ngInclude") > -1) {
-                    var unregister = markerScope.$on('$includeContentLoaded', function() {
-                        updatePopup(popup);
-                        unregister();
-                    });
-                }
-                else {
-                    // We need to wait until after the next draw in order to get the correct width
-                    $timeout(function() {
-                        updatePopup(popup);
-                    });
-                }
+            $compile(popup._contentNode)(markerScope);
+
+            // In case of an ng-include, we need to update the content after template load
+            if (popup._contentNode.innerHTML.indexOf("ngInclude") > -1) {
+                var unregister = markerScope.$on('$includeContentLoaded', function() {
+                    updatePopup(popup);
+                    unregister();
+                });
             }
+            else {
+                // We need to wait until after the next draw in order to get the correct width
+                $timeout(function() {
+                    updatePopup(popup);
+                });
+            }
+        };
+
+        if (compileMessage) {
+            compileAndUpdatePopup(marker.getPopup());
         }
     };
 
