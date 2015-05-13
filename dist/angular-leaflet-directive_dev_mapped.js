@@ -620,35 +620,12 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
         // Determine if a reference is defined
         isDefined: _isDefined,
         isUndefined:_isUndefined,
-        // Determine if a reference is a number
-        isNumber: function(value) {
-            return angular.isNumber(value);
-        },
-
-        // Determine if a reference is a string
-        isString: function(value) {
-            return angular.isString(value);
-        },
-
-        // Determine if a reference is an array
-        isArray: function(value) {
-            return angular.isArray(value);
-        },
-
-        // Determine if a reference is an object
-        isObject: function(value) {
-            return angular.isObject(value);
-        },
-
-        // Determine if a reference is a function.
-        isFunction: function(value) {
-            return angular.isFunction(value);
-        },
-
-        // Determine if two objects have the same properties
-        equals: function(o1, o2) {
-            return angular.equals(o1, o2);
-        },
+        isNumber: angular.isNumber,
+        isString: angular.isString,
+        isArray: angular.isArray,
+        isObject: angular.isObject,
+        isFunction: angular.isFunction,
+        equals: angular.equals,
 
         isValidCenter: function(center) {
             return angular.isDefined(center) && angular.isNumber(center.lat) &&
@@ -1163,29 +1140,30 @@ angular.module('leaflet-directive').service('leafletIterators', function ($log, 
     }
   };
 
-
-  //consider adding lodash or underscore but for now adding iterators as we need them
+  //see http://jsperf.com/iterators/3
+  //utilizing for in is way faster
   var _each = function(collection, cb){
     _iterate(collection, cb, function(val, key){
       cb(val, key);
     });
   };
 
-  //lodash or underscore have preference
-  return window._ ? window._ : {
+  return {
     each:_each,
+    forEach: _each,
     every: _every,
     all: _all
   };
 });
 
 angular.module("leaflet-directive")
-.factory('leafletLayerHelpers', function ($rootScope, $log, leafletHelpers) {
+.factory('leafletLayerHelpers', function ($rootScope, $log, leafletHelpers, leafletIterators) {
     var Helpers = leafletHelpers;
     var isString = leafletHelpers.isString;
     var isObject = leafletHelpers.isObject;
     var isArray = leafletHelpers.isArray;
     var isDefined = leafletHelpers.isDefined;
+    var $it = leafletIterators;
 
     var utfGridCreateLayer = function(params) {
         if (!Helpers.UTFGridPlugin.isLoaded()) {
@@ -1293,7 +1271,7 @@ angular.module("leaflet-directive")
             mustHaveUrl: false,
             createLayer: function (params) {
                 var lyrs = [];
-                angular.forEach(params.options.layers, function(l){
+                $it.each(params.options.layers, function(l){
                   lyrs.push(createLayer(l));
                 });
                 return L.layerGroup(lyrs);
@@ -4316,7 +4294,7 @@ angular.module("leaflet-directive")
                 if (extra.resetStyleOnMouseout) {
                     leafletData.getGeoJSON(extra.mapId)
                     .then(function(leafletGeoJSON){
-                        //this is broken on nested needs to traverse or user layerName
+                        //this is broken on nested needs to traverse or user layerName (nested)
                         var lobj = layerName? leafletGeoJSON[layerName]: leafletGeoJSON;
                         lobj.resetStyle(e.target);
                     });
