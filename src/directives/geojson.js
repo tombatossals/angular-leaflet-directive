@@ -1,6 +1,7 @@
 angular.module("leaflet-directive")
 .directive('geojson', function ($log, $rootScope, leafletData, leafletHelpers,
-    leafletWatchHelpers, leafletDirectiveControlsHelpers,leafletIterators) {
+    leafletWatchHelpers, leafletDirectiveControlsHelpers,leafletIterators,
+    leafletGeoJsonEvents) {
 
     var _maybeWatch = leafletWatchHelpers.maybeWatch,
         _watchOptions = leafletHelpers.watchOptions,
@@ -15,8 +16,7 @@ angular.module("leaflet-directive")
         require: 'leaflet',
 
         link: function(scope, element, attrs, controller) {
-            var safeApply = leafletHelpers.safeApply,
-                isDefined = leafletHelpers.isDefined,
+            var isDefined = leafletHelpers.isDefined,
                 leafletScope  = controller.getLeafletScope(),
                 leafletGeoJSON = {},
                 _hasSetLeafletData = false;
@@ -24,8 +24,7 @@ angular.module("leaflet-directive")
             controller.getMap().then(function(map) {
                 var watchOptions = leafletScope.geojsonWatchOptions || _watchOptions;
 
-                var _hookUpEvents = function(geojson){
-                    var resetStyleOnMouseout = geojson.resetStyleOnMouseout;
+                var _hookUpEvents = function(geojson, maybeName){
                     var onEachFeature;
 
                     if (angular.isFunction(geojson.onEachFeature)) {
@@ -36,27 +35,10 @@ angular.module("leaflet-directive")
                                 layer.bindLabel(feature.properties.description);
                             }
 
-                            layer.on({
-                                mouseover: function(e) {
-                                    safeApply(leafletScope, function() {
-                                        $rootScope.$broadcast('leafletDirectiveMap.geojsonMouseover', feature, e);
-                                    });
-                                },
-                                mouseout: function(e) {
-                                    if (resetStyleOnMouseout) {
-                                        //this is broken on nested needs to traverse
-                                        leafletGeoJSON.resetStyle(e.target);
-                                    }
-                                    safeApply(leafletScope, function() {
-                                        $rootScope.$broadcast('leafletDirectiveMap.geojsonMouseout', e);
-                                    });
-                                },
-                                click: function(e) {
-                                    safeApply(leafletScope, function() {
-                                        $rootScope.$broadcast('leafletDirectiveMap.geojsonClick', feature, e);
-                                    });
-                                }
-                            });
+                            leafletGeoJsonEvents.bindEvents(layer, null, feature,
+                                leafletScope, maybeName,
+                                {resetStyleOnMouseout: geojson.resetStyleOnMouseout,
+                                mapId: attrs.id});
                         };
                     }
                     return onEachFeature;
@@ -87,7 +69,7 @@ angular.module("leaflet-directive")
                     if (!(isDefined(geojson) && isDefined(geojson.data))) {
                         return;
                     }
-                    var onEachFeature = _hookUpEvents(geojson);
+                    var onEachFeature = _hookUpEvents(geojson, maybeName);
 
                     if (!isDefined(geojson.options)) {
                         //right here is why we use a clone / copy (we modify and thus)

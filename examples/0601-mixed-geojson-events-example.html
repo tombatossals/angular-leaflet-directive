@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="../bower_components/angular/angular.min.js"></script>
     <script src="../bower_components/leaflet/dist/leaflet.js"></script>
-    <script src="../dist/angular-leaflet-directive.min.js"></script>
+    <script src="../dist/angular-leaflet-directive_dev_mapped.js"></script>
     <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" type="text/css" href="http://cloud.github.com/downloads/lafeber/world-flags-sprite/flags32.css" />
     <style>
@@ -65,12 +65,12 @@
         var app = angular.module("demoapp", ["leaflet-directive"]);
         app.controller('MixedGeoJSONEventsController', [ "$scope", "$http", function($scope, $http) {
 
-            $scope.$on("leafletDirectiveMap.geojsonMouseover", function(ev, feature, leafletEvent) {
-                countryMouseover(feature, leafletEvent);
+            $scope.$on("leafletDirectiveGeoJson.mouseover", function(ev, leafletPayload) {
+                countryMouseover(leafletPayload.leafletObject.feature, leafletPayload.leafletEvent);
             });
 
-            $scope.$on("leafletDirectiveMap.geojsonClick", function(ev, featureSelected, leafletEvent) {
-                countryClick(featureSelected, leafletEvent);
+            $scope.$on("leafletDirectiveGeoJson.click", function(ev, leafletPayload) {
+                countryClick(leafletPayload.leafletObject, leafletPayload.leafletEvent);
             });
 
             var continentProperties= {
@@ -109,6 +109,7 @@
             });
 
             function countryClick(country, event) {
+                country = country.feature;
                 console.log(country.properties.name);
             }
 
