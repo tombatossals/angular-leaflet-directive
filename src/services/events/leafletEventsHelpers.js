@@ -31,15 +31,15 @@ angular.module("leaflet-directive")
          //would yield name of
          name = "cars.m1"
          */
-        EventsHelper.prototype.genDispatchEvent = function(eventName, logic, leafletScope, lObject, name, model, layerName) {
+        EventsHelper.prototype.genDispatchEvent = function(eventName, logic, leafletScope, lObject, name, model, layerName, extra) {
             var _this = this;
             return function (e) {
                 var broadcastName = _this.rootBroadcastName + '.' + eventName;
-                _this.fire(leafletScope, broadcastName, logic, e, e.target || lObject, model, name, layerName);
+                _this.fire(leafletScope, broadcastName, logic, e, e.target || lObject, model, name, layerName, extra);
             };
         };
 
-        EventsHelper.prototype.fire = function(scope, broadcastName, logic, event, lObject, model, modelName, layerName){
+        EventsHelper.prototype.fire = function(scope, broadcastName, logic, event, lObject, model, modelName, layerName, extra){
             // Safely broadcast the event
             safeApply(scope, function(){
                 var toSend = {
@@ -59,7 +59,7 @@ angular.module("leaflet-directive")
             });
         };
 
-        EventsHelper.prototype.bindEvents = function (lObject, name, model, leafletScope, layerName) {
+        EventsHelper.prototype.bindEvents = function (lObject, name, model, leafletScope, layerName, extra) {
             var events = [];
             var logic = 'emit';
             var _this = this;
@@ -141,7 +141,7 @@ angular.module("leaflet-directive")
             }
 
             events.forEach(function(eventName){
-                lObject.on(eventName,_this.genDispatchEvent(eventName, logic, leafletScope, lObject, name, model, layerName));
+                lObject.on(eventName,_this.genDispatchEvent(eventName, logic, leafletScope, lObject, name, model, layerName, extra));
             });
           return logic;
         };

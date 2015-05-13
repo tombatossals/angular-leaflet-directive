@@ -1,10 +1,12 @@
 angular.module("leaflet-directive")
-.factory('leafletGeoJsonEvents', function ($rootScope, $q, $log, leafletHelpers, leafletEventsHelpersFactory, leafletLabelEvents) {
+.factory('leafletGeoJsonEvents', function ($rootScope, $q, $log, leafletHelpers,
+  leafletEventsHelpersFactory, leafletLabelEvents, leafletData) {
     var safeApply = leafletHelpers.safeApply,
         isDefined = leafletHelpers.isDefined,
         Helpers = leafletHelpers,
         lblHelp = leafletLabelEvents,
         EventsHelper = leafletEventsHelpersFactory;
+
 
     var GeoJsonEvents = function(){
       EventsHelper.call(this,'leafletDirectiveGeoJson', 'geojson');
@@ -12,16 +14,20 @@ angular.module("leaflet-directive")
 
     GeoJsonEvents.prototype =  new EventsHelper();
 
-    GeoJsonEvents.prototype.genDispatchEvent = function(eventName, logic, leafletScope, lObject, name, model, layerName) {
+
+    GeoJsonEvents.prototype.genDispatchEvent = function(eventName, logic, leafletScope, lObject, name, model, layerName, extra) {
         var base = EventsHelper.prototype.genDispatchEvent.call(this, eventName, logic, leafletScope, lObject, name, model, layerName),
-        resetStyleOnMouseout = model.resetStyleOnMouseout,
         _this = this;
 
         return function(e){
             if (eventName === 'mouseout') {
-                if (resetStyleOnMouseout) {
-                    //this is broken on nested needs to traverse
-                    leafletGeoJSON.resetStyle(e.target);
+                if (extra.resetStyleOnMouseout) {
+                    leafletData.getGeoJSON(extra.mapId)
+                    .then(function(leafletGeoJSON){
+                        //this is broken on nested needs to traverse or user layerName
+                        leafletGeoJSON.resetStyle(e.target);
+                    });
+
                 }
                 safeApply(leafletScope, function() {
                     $rootScope.$broadcast(_this.rootBroadcastName + '.mouseout', e);

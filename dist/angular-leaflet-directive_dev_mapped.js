@@ -1,5 +1,5 @@
 /*!
-*  angular-leaflet-directive 0.7.15 2015-05-11
+*  angular-leaflet-directive 0.7.15 2015-05-13
 *  angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps
 *  git: https://github.com/tombatossals/angular-leaflet-directive
 */
@@ -3016,7 +3016,10 @@ angular.module("leaflet-directive")
                                 layer.bindLabel(feature.properties.description);
                             }
 
-                            leafletGeoJsonEvents.bindEvents(layer, null, feature, leafletScope, null);
+                            leafletGeoJsonEvents.bindEvents(layer, null, feature,
+                                leafletScope, null,
+                                {resetStyleOnMouseout: geojson.resetStyleOnMouseout,
+                                mapId: attrs.id});
                         };
                     }
                     return onEachFeature;
@@ -4166,15 +4169,15 @@ angular.module("leaflet-directive")
          //would yield name of
          name = "cars.m1"
          */
-        EventsHelper.prototype.genDispatchEvent = function(eventName, logic, leafletScope, lObject, name, model, layerName) {
+        EventsHelper.prototype.genDispatchEvent = function(eventName, logic, leafletScope, lObject, name, model, layerName, extra) {
             var _this = this;
             return function (e) {
                 var broadcastName = _this.rootBroadcastName + '.' + eventName;
-                _this.fire(leafletScope, broadcastName, logic, e, e.target || lObject, model, name, layerName);
+                _this.fire(leafletScope, broadcastName, logic, e, e.target || lObject, model, name, layerName, extra);
             };
         };
 
-        EventsHelper.prototype.fire = function(scope, broadcastName, logic, event, lObject, model, modelName, layerName){
+        EventsHelper.prototype.fire = function(scope, broadcastName, logic, event, lObject, model, modelName, layerName, extra){
             // Safely broadcast the event
             safeApply(scope, function(){
                 var toSend = {
@@ -4194,7 +4197,7 @@ angular.module("leaflet-directive")
             });
         };
 
-        EventsHelper.prototype.bindEvents = function (lObject, name, model, leafletScope, layerName) {
+        EventsHelper.prototype.bindEvents = function (lObject, name, model, leafletScope, layerName, extra) {
             var events = [];
             var logic = 'emit';
             var _this = this;
@@ -4276,7 +4279,7 @@ angular.module("leaflet-directive")
             }
 
             events.forEach(function(eventName){
-                lObject.on(eventName,_this.genDispatchEvent(eventName, logic, leafletScope, lObject, name, model, layerName));
+                lObject.on(eventName,_this.genDispatchEvent(eventName, logic, leafletScope, lObject, name, model, layerName, extra));
             });
           return logic;
         };
@@ -4288,12 +4291,14 @@ angular.module("leaflet-directive")
 });
 
 angular.module("leaflet-directive")
-.factory('leafletGeoJsonEvents', function ($rootScope, $q, $log, leafletHelpers, leafletEventsHelpersFactory, leafletLabelEvents) {
+.factory('leafletGeoJsonEvents', function ($rootScope, $q, $log, leafletHelpers,
+  leafletEventsHelpersFactory, leafletLabelEvents, leafletData) {
     var safeApply = leafletHelpers.safeApply,
         isDefined = leafletHelpers.isDefined,
         Helpers = leafletHelpers,
         lblHelp = leafletLabelEvents,
         EventsHelper = leafletEventsHelpersFactory;
+
 
     var GeoJsonEvents = function(){
       EventsHelper.call(this,'leafletDirectiveGeoJson', 'geojson');
@@ -4301,16 +4306,20 @@ angular.module("leaflet-directive")
 
     GeoJsonEvents.prototype =  new EventsHelper();
 
-    GeoJsonEvents.prototype.genDispatchEvent = function(eventName, logic, leafletScope, lObject, name, model, layerName) {
+
+    GeoJsonEvents.prototype.genDispatchEvent = function(eventName, logic, leafletScope, lObject, name, model, layerName, extra) {
         var base = EventsHelper.prototype.genDispatchEvent.call(this, eventName, logic, leafletScope, lObject, name, model, layerName),
-        resetStyleOnMouseout = model.resetStyleOnMouseout,
         _this = this;
 
         return function(e){
             if (eventName === 'mouseout') {
-                if (resetStyleOnMouseout) {
-                    //this is broken on nested needs to traverse
-                    leafletGeoJSON.resetStyle(e.target);
+                if (extra.resetStyleOnMouseout) {
+                    leafletData.getGeoJSON(extra.mapId)
+                    .then(function(leafletGeoJSON){
+                        //this is broken on nested needs to traverse or user layerName
+                        leafletGeoJSON.resetStyle(e.target);
+                    });
+
                 }
                 safeApply(leafletScope, function() {
                     $rootScope.$broadcast(_this.rootBroadcastName + '.mouseout', e);

@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="../bower_components/angular/angular.min.js"></script>
     <script src="../bower_components/leaflet/dist/leaflet.js"></script>
-    <script src="../dist/angular-leaflet-directive.min.js"></script>
+    <script src="../dist/angular-leaflet-directive_dev_mapped.js"></script>
     <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" type="text/css" href="http://cloud.github.com/downloads/lafeber/world-flags-sprite/flags32.css" />
     <style>
@@ -66,7 +66,7 @@
         app.controller('MixedGeoJSONEventsController', [ "$scope", "$http", function($scope, $http) {
 
             $scope.$on("leafletDirectiveGeoJson.mouseover", function(ev, leafletPayload) {
-                countryMouseover(leafletPayload.leafletObject, leafletPayload.leafletEvent);
+                countryMouseover(leafletPayload.leafletObject.feature, leafletPayload.leafletEvent);
             });
 
             $scope.$on("leafletDirectiveGeoJson.click", function(ev, leafletPayload) {

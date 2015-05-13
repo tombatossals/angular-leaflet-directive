@@ -35,7 +35,10 @@ angular.module("leaflet-directive")
                                 layer.bindLabel(feature.properties.description);
                             }
 
-                            leafletGeoJsonEvents.bindEvents(layer, null, feature, leafletScope, null);
+                            leafletGeoJsonEvents.bindEvents(layer, null, feature,
+                                leafletScope, null,
+                                {resetStyleOnMouseout: geojson.resetStyleOnMouseout,
+                                mapId: attrs.id});
                         };
                     }
                     return onEachFeature;
