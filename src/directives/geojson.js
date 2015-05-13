@@ -24,7 +24,7 @@ angular.module("leaflet-directive")
             controller.getMap().then(function(map) {
                 var watchOptions = leafletScope.geojsonWatchOptions || _watchOptions;
 
-                var _hookUpEvents = function(geojson){
+                var _hookUpEvents = function(geojson, maybeName){
                     var onEachFeature;
 
                     if (angular.isFunction(geojson.onEachFeature)) {
@@ -36,7 +36,7 @@ angular.module("leaflet-directive")
                             }
 
                             leafletGeoJsonEvents.bindEvents(layer, null, feature,
-                                leafletScope, null,
+                                leafletScope, maybeName,
                                 {resetStyleOnMouseout: geojson.resetStyleOnMouseout,
                                 mapId: attrs.id});
                         };
@@ -69,7 +69,7 @@ angular.module("leaflet-directive")
                     if (!(isDefined(geojson) && isDefined(geojson.data))) {
                         return;
                     }
-                    var onEachFeature = _hookUpEvents(geojson);
+                    var onEachFeature = _hookUpEvents(geojson, maybeName);
 
                     if (!isDefined(geojson.options)) {
                         //right here is why we use a clone / copy (we modify and thus)

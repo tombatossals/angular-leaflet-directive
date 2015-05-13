@@ -24,8 +24,9 @@ angular.module("leaflet-directive")
                 if (extra.resetStyleOnMouseout) {
                     leafletData.getGeoJSON(extra.mapId)
                     .then(function(leafletGeoJSON){
-                        //this is broken on nested needs to traverse or user layerName
-                        leafletGeoJSON.resetStyle(e.target);
+                        //this is broken on nested needs to traverse or user layerName (nested)
+                        var lobj = layerName? leafletGeoJSON[layerName]: leafletGeoJSON;
+                        lobj.resetStyle(e.target);
                     });
 
                 }
