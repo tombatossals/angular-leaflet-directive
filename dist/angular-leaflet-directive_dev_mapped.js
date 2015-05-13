@@ -1117,7 +1117,6 @@ angular.module('leaflet-directive').service('leafletIterators', function ($log, 
   var _hasErrors = function(collection, cb, ignoreCollection, cbName){
     if(!ignoreCollection) {
       if (!lHlp.isDefined(collection) || !lHlp.isDefined(cb)) {
-        $log.error(errorHeader + 'collection or cb undefined');
         return true;
       }
     }
