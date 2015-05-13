@@ -1,11 +1,13 @@
 'use strict';
+var getAvailPort = require('./utils/getAvailPort');
+var port = getAvailPort(7777);
 
 var _files = ['src/**/*.js', 'test/unit/**.js', 'test/unit/**.coffee', 'test/e2e/**.js'];
 
 module.exports = function(grunt, options) {
     return {
         options: {
-            livereload: 7777
+            livereload: port
         },
         fast: {
             files: _files,

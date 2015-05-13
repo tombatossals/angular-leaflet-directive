@@ -1,4 +1,6 @@
 'use strict';
+var getAvailPort = require('./utils/getAvailPort');
+var port = getAvailPort(8888);
 
 module.exports = function (grunt, options) {
     return {
@@ -7,7 +9,7 @@ module.exports = function (grunt, options) {
         },
         webserver: {
             options: {
-                port: 8888,
+                port: port,
                 keepalive: true
             }
         },
