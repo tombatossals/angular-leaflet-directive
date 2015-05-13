@@ -1,3 +1,9 @@
+<a name"0.8.0"></a>
+### 0.8.0 (2015-05-13)
+
+* **geojson** - event handlers changed to be consistent with markers ([816a633](https://github.com/tombatossals/angular-leaflet-directive/commit/816a633))
+* iteration preference to lodash removed and not using angular.forEach, [see](http://jsperf.com/iterators/3)
+
 <a name"0.7.13"></a>
 ### 0.7.13 (2015-04-14)
 
