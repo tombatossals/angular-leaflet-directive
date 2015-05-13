@@ -159,6 +159,7 @@ angular.module('leaflet-directive').service('leafletIterators', function ($log, 
 
   return {
     each:_each,
+    forEach: _each,
     every: _every,
     all: _all
   };
