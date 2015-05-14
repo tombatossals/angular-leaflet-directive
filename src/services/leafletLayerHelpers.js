@@ -25,6 +25,10 @@ angular.module("leaflet-directive")
         utfgrid.on('click', function(e) {
             $rootScope.$broadcast('leafletDirectiveMap.utfgridClick', e);
         });
+        
+        utfgrid.on('mousemove', function(e) {
+            $rootScope.$broadcast('leafletDirectiveMap.utfgridMousemove', e);
+        });        
 
         return utfgrid;
     };
