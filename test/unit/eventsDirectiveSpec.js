@@ -715,7 +715,7 @@ describe('Directive: leaflet', function() {
     // ***************************************************************************
     //
 
-    it('should broadcast label events',function() {
+    xit('should broadcast label events',function() {
         spyOn($rootScope, '$broadcast');
         spyOn(leafletHelpers.LabelPlugin, 'isLoaded').and.returnValue(true);
         L.Label = L.Class.extend({

@@ -1,3 +1,55 @@
+<a name"0.8.0"></a>
+### 0.8.0 (2015-05-13)
+
+* **geojson** - event handlers changed to be consistent with markers ([816a633](https://github.com/tombatossals/angular-leaflet-directive/commit/816a633))
+* iteration preference to lodash removed and not using angular.forEach, [see](http://jsperf.com/iterators/3)
+
+<a name"0.7.13"></a>
+### 0.7.13 (2015-04-14)
+
+* **bump-@, bump-@-minor, bump-@-major** - correct workflow for bumping and keeping dist version numbers in sync with package json files
+* **[geojson, markers]watchOptions** - minify fix for annotations
+
+<a name"0.7.12"></a>
+### 0.7.12 (2015-04-13)
+
+* **markers-watch-options** - much more flexible watch options to entireley disable watches
+* **markers-nested** - markers can be nested via layer name
+* **geojson-watch-options**  - much more flexible watch options to entireley disable watches
+* **geojson-nested** - geojson can be nested to create additional geojson layers
+* **leafletData.getDirectiveControls**
+* bug fixes see git log
+
+#### Bug Fixes
+
+* bad caching for _layerControl ([bbeb54e9](https://github.com/tombatossals/angular-leaflet-directive/commit/bbeb54e9))
+* **marker:** Tests passing again after this new functionality: https://github.com/tombatossal ([e0c7d2d7](https://github.com/tombatossals/angular-leaflet-directive/commit/e0c7d2d7))
+* **markers:** Solved a bug related with the default icon position, thanks to @Jespersm75 for r ([9626e19e](https://github.com/tombatossals/angular-leaflet-directive/commit/9626e19e))
+
+
+#### Features
+
+* **controls:** Added the scale control and an example showing it. Thanks to @dts here: https:// ([7f1fbf56](https://github.com/tombatossals/angular-leaflet-directive/commit/7f1fbf56))
+* **events:** Reworked the marker events. We use the "emit" login instead of "broadcast" for m ([5c50f7f1](https://github.com/tombatossals/angular-leaflet-directive/commit/5c50f7f1))
+* **examples:** New bootstrap-ui integration with modal and a map with marker-clustering. Exampl ([bceff464](https://github.com/tombatossals/angular-leaflet-directive/commit/bceff464))
+* **map:** Option to disable scrolling on mobile devices. Thanks to @rckclmbr here: https:/ ([368b4d21](https://github.com/tombatossals/angular-leaflet-directive/commit/368b4d21))
+* **overlay:** Added an option to hide the overlay from the switch selector. Thanks to @Getz85  ([010e773b](https://github.com/tombatossals/angular-leaflet-directive/commit/010e773b))
+
+
+<a name="0.7.11"></a>
+### 0.7.11 (2015-01-17)
+
+#### Features
+
+* Added a new property to the layers to be able to hide the layer to the layer switcher. Example here: http://tombatossals.github.io/angular-leaflet-directive/examples/layers-hide-baselayer-on-selector-example.html
+
+#### Bug Fixes
+
+* **geojson:** Shallow watch of the geojson object to accomplish better performance, as stated  ([c893a1a8](https://github.com/tombatossals/angular-leaflet-directive/commit/c893a1a8e23d445a47ed5ea5d627cfe7955c667a))
+* **markerCompilation:** use specified scope to listen to includeContentLoaded ([2d937949](https://github.com/tombatossals/angular-leaflet-directive/commit/2d937949b52d62ca938986fd91c6adaa3266e775))
+* **paths:** Solved a bug with paths and layerGroup management. Reported by @ValentinH here:  ([10ac4e82](https://github.com/tombatossals/angular-leaflet-directive/commit/10ac4e82ebfa1a99f2f2c6d5bf30e403f52d0622))
+
+
 <a name="0.7.9"></a>
 ### 0.7.9 (2014-10-28)
 

@@ -6,6 +6,9 @@ test:
 test-unit:
  - 'karma:unit'
 
+test-unit-chrome:
+ - 'karma:unit-chrome'
+
 test-e2e:
  - 'shell:protractor_update'
  - 'connect:testserver'
@@ -32,22 +35,71 @@ install:
 default:
  - 'build'
 
+# cause zsh always puts me in grunt folder
+d:
+- 'default'
+
 dev:
  - 'connect:devserver'
  - 'open:devserver'
  - 'watch:source'
 
-serve:
- - 'connect:webserver'
+dev-chrome:
+ - 'connect:devserver'
+ - 'open:devserver'
+ - 'watch:chrome'
 
-build:
+spec: #continuos running specs
+ - 'fast-build'
+ - 'concurrent:unit-mocha'
+
+spec-chrome:
+ - 'fast-build'
+ - 'concurrent:chrome'
+
+serve:
+ - 'concurrent:watchServe'
+
+s:
+ - 'serve'
+
+fast-build:
+ - 'clean:dist'
  - 'jshint'
  - 'concat:dist'
+ - 'concat:distMapped'
  - 'ngAnnotate'
+
+d-watch:
+ - 'fast-build'
+ - 'concurrent:unit'
+
+build:
+ - 'fast-build'
  - 'uglify'
  - 'test-unit'
  - 'concat:license'
+ - 'clean:pre'
 
 travis:
  - 'bower:install'
  - 'test-unit'
+
+bump-@:
+ - 'bump-only'
+ - 'default'
+ - 'bump-commit'
+
+bump-@-minor:
+ - 'bump-only:minor'
+ - 'default'
+ - 'bump-commit'
+
+bump-@-major:
+ - 'bump-only:major'
+ - 'default'
+ - 'bump-commit'
+
+examples:
+ - 'shell:examples'
+ - 'concat:examples'

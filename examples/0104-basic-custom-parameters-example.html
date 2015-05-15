@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html ng-app="demoapp">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="../dist/angular-leaflet-directive.min.js"></script>
+    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
+    <script>
+        var app = angular.module("demoapp", ["leaflet-directive"]);
+        app.controller('BasicCustomParametersController', [ '$scope', function($scope) {
+            angular.extend($scope, {
+                london: {
+                    lat: 51.505,
+                    lng: -0.09,
+                    zoom: 8
+                },
+                defaults: {
+                    tileLayer: "http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png",
+                    zoomControlPosition: 'topright',
+                    tileLayerOptions: {
+                        opacity: 0.9,
+                        detectRetina: true,
+                        reuseTiles: true,
+                    },
+                    scrollWheelZoom: false
+                }
+            });
+        }]);
+    </script>
+  </head>
+  <body ng-controller="BasicCustomParametersController">
+    <leaflet center="london" defaults="defaults" width="100%" height="480px"></leaflet>
+    <h1>Using custom default parameters</h1>
+  </body>
+</html>

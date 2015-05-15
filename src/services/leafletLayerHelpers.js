@@ -1,8 +1,11 @@
-angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($rootScope, $log, leafletHelpers) {
-    var Helpers = leafletHelpers,
-        isString = leafletHelpers.isString,
-        isObject = leafletHelpers.isObject,
-        isDefined = leafletHelpers.isDefined;
+angular.module("leaflet-directive")
+.factory('leafletLayerHelpers', function ($rootScope, $log, leafletHelpers, leafletIterators) {
+    var Helpers = leafletHelpers;
+    var isString = leafletHelpers.isString;
+    var isObject = leafletHelpers.isObject;
+    var isArray = leafletHelpers.isArray;
+    var isDefined = leafletHelpers.isDefined;
+    var $it = leafletIterators;
 
     var utfGridCreateLayer = function(params) {
         if (!Helpers.UTFGridPlugin.isLoaded()) {
@@ -22,6 +25,10 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
         utfgrid.on('click', function(e) {
             $rootScope.$broadcast('leafletDirectiveMap.utfgridClick', e);
         });
+        
+        utfgrid.on('mousemove', function(e) {
+            $rootScope.$broadcast('leafletDirectiveMap.utfgridMousemove', e);
+        });        
 
         return utfgrid;
     };
@@ -110,7 +117,7 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
             mustHaveUrl: false,
             createLayer: function (params) {
                 var lyrs = [];
-                angular.forEach(params.options.layers, function(l){
+                $it.each(params.options.layers, function(l){
                   lyrs.push(createLayer(l));
                 });
                 return L.layerGroup(lyrs);
@@ -191,16 +198,36 @@ angular.module("leaflet-directive").factory('leafletLayerHelpers', function ($ro
                 return new L.BingLayer(params.key, params.options);
             }
         },
-        heatmap: {
+        webGLHeatmap: {
             mustHaveUrl: false,
             mustHaveData: true,
             createLayer: function(params) {
-                if (!Helpers.HeatMapLayerPlugin.isLoaded()) {
+                if (!Helpers.WebGLHeatMapLayerPlugin.isLoaded()) {
                     return;
                 }
                 var layer = new L.TileLayer.WebGLHeatMap(params.options);
                 if (isDefined(params.data)) {
                     layer.setData(params.data);
+                }
+
+                return layer;
+            }
+        },
+        heat: {
+            mustHaveUrl: false,
+            mustHaveData: true,
+            createLayer: function(params) {
+                if (!Helpers.HeatLayerPlugin.isLoaded()) {
+                    return;
+                }
+                var layer = new L.heatLayer();
+
+                if (isArray(params.data)) {
+                    layer.setLatLngs(params.data);
+                }
+
+                if (isObject(params.options)) {
+                    layer.setOptions(params.options);
                 }
 
                 return layer;

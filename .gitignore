@@ -15,4 +15,7 @@ coverage
 bower_components
 saucelabs.json
 lib
-
+tags
+.tags
+TAGS
+.TAGS

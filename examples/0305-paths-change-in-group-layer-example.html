@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html ng-app="demoapp">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="../dist/angular-leaflet-directive.min.js"></script>
+    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
+    <script>
+        var app = angular.module("demoapp", ["leaflet-directive"]);
+        app.controller('PathsChangeInGroupLayerController', function($scope, leafletData) {
+            $scope.changePaths = function() {
+                $scope.paths = {
+                    p2: {
+                        color: '#FC0',
+                        weight: 8,
+                        latlngs: [ { lat: 52.50, lng: -0.082 }, { lat: 42.91, lng: 12.48 } ],
+                        layer: 'test'
+                    }
+                };
+            };
+
+            angular.extend($scope, {
+                center: {
+                    lat: 51.505,
+                    lng: -0.09,
+                    zoom: 4
+                },
+                paths : {
+                    p1: {
+                        color: '#000',
+                        weight: 8,
+                        latlngs: [{ lat: 51.50, lng: -0.082 }, { lat: 41.91, lng: 12.48 }],
+                        layer: 'test'
+                    }
+                },
+                layers: {
+                    baselayers: {
+                        osm: {
+                            name: 'OpenStreetMap',
+                            type: 'xyz',
+                            url: 'http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpeg',
+                            layerOptions: {
+                                subdomains: '1234',
+                                attribution: 'test'
+                            }
+                        }
+                    },
+                    overlays: {
+                        test: {
+                            name: 'Test',
+                            visible: true,
+                            type: 'group'
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+  </head>
+  <body ng-controller="PathsChangeInGroupLayerController">
+      <leaflet width="100%" height="400px" center="center" paths="paths" layers="layers"></leaflet>
+      <h1>Path change in group layer</h1>
+      <p><button ng-click="changePaths()">Change Paths</button></p>
+  </body>
+</html>

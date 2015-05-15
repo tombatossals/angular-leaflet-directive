@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html ng-app="demoapp">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="../dist/angular-leaflet-directive.min.js"></script>
+    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
+    <script>
+      var app = angular.module("demoapp", ["leaflet-directive"]);
+      app.controller("GeoJSONCenterController", [ '$scope', '$http', 'leafletData', function($scope, $http, leafletData) {
+        angular.extend($scope, {
+            japan: {
+                lat: 27.26,
+                lng: 78.86,
+                zoom: 2
+            },
+            defaults: {
+                scrollWheelZoom: false
+            }
+        });
+
+        $scope.centerJSON = function() {
+            leafletData.getMap().then(function(map) {
+                var latlngs = [];
+                for (var i in $scope.geojson.data.features[0].geometry.coordinates) {
+                    var coord = $scope.geojson.data.features[0].geometry.coordinates[i];
+                    for (var j in coord) {
+                        var points = coord[j];
+                        for (var k in points) {
+                            latlngs.push(L.GeoJSON.coordsToLatLng(points[k]));
+                        }
+                    }
+                }
+                map.fitBounds(latlngs);
+            });
+        };
+
+        // Get the countries geojson data from a JSON
+        $http.get("json/JPN.geo.json").success(function(data, status) {
+            angular.extend($scope, {
+                geojson: {
+                    data: data,
+                    style: {
+                        fillColor: "green",
+                        weight: 2,
+                        opacity: 1,
+                        color: 'white',
+                        dashArray: '3',
+                        fillOpacity: 0.7
+                    }
+                }
+            });
+        });
+      } ]);
+      </script>
+  </head>
+  <body ng-controller="GeoJSONCenterController">
+     <leaflet center="japan" geojson="geojson" defaults="defaults" width="100%" height="480px"></leaflet>
+     <h1>Center to GeoJSON example</h1>
+     <input type="button" value="Click to center" ng-click="centerJSON()" />
+  </body>
+</html>

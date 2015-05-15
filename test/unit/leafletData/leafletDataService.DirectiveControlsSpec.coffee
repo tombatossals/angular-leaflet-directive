@@ -1,0 +1,88 @@
+describe 'leafletData directiveControls', ->
+    geojsonData = mainLayers = leafletHelpers = leafletData = $rootScope = $compile = undefined
+
+    beforeEach ->
+        module('leaflet-directive')
+        inject (_$compile_, _$rootScope_, _$timeout_, _leafletData_, _leafletHelpers_) ->
+            $compile = _$compile_
+            $rootScope = _$rootScope_
+            leafletData = _leafletData_
+            leafletHelpers = _leafletHelpers_
+            $timeout = _$timeout_
+            window.ngLeafLetTestGlobals.$timeout = $timeout
+
+        mainMarkers =
+            paris:
+                lat: 0.966
+                lng: 2.02
+                layer: 'cars'
+            madrid:
+                lat: 2.02
+                lng: 4.04
+
+        geojsonData =
+            type: "FeatureCollection",
+            features: [
+                id: 1,
+                "type": "Feature",
+                "geometry":
+                    "type": "MultiPolygon",
+                    "coordinates": [[[
+                      [-81.7909014988425, 26.1600486322945], [-81.7909042034464, 26.160182208485], [-81.7901026433014, 26.1601988284883], [-81.7900509269373, 26.1602037433384], [-81.7899997405748, 26.1602119107851],
+                      [-81.789949237096, 26.1602233987689], [-81.7898997957011, 26.1602379300958], [-81.789875463777, 26.1602463399312], [-81.7898396364971, 26.1602604526655], [-81.789793289851, 26.1602818448462],
+                      [-81.7897595712933, 26.160299751747], [-81.7897377588728, 26.1603125954271],[-81.789695545123, 26.1603403383986], [-81.7896752441735, 26.1603550537301], [-81.7896459830495, 26.1603784613785], [-81.7896090404221, 26.1604118152686], [-81.7895666860178, 26.1604564097438],
+                      [-81.7895359746114, 26.1604945898063], [-81.7895082214574, 26.1605344501827], [-81.7894894785174, 26.1605655033389], [-81.7894673836723, 26.1606081067568], [-81.7894485242141, 26.1606520450804],
+                      [-81.7894331024511, 26.1606971796443],[-81.7894212164532, 26.160742982609],[-81.7894128662244, 26.1607894539753],[-81.7894081269003, 26.1608364328483],[-81.78940703152, 26.1608699569814],
+                      [-81.7894277245396, 26.1620342659585],[-81.7872054176208, 26.1620696568853],[-81.7871723747966, 26.1602355104408],[-81.7896405283304, 26.160205994433],[-81.7896826589562, 26.1601810030797],
+                      [-81.7897210114136, 26.1601608469405],[-81.7897700172426, 26.1601382251093],[-81.7898119238038, 26.1601214654597],[-81.7898547834178, 26.1601066492989],[-81.7898969476196, 26.1600941983404],
+                      [-81.7900338907779, 26.1600619923072],[-81.7909014988425, 26.1600486322945]
+                    ]]]
+            ]
+
+        @testRunner = (postRunnerCb, preRunnerCb) ->
+            angular.extend $rootScope,
+                markers: mainMarkers
+                geojson:
+                    data: geojsonData,
+                    style:
+                        fillColor: "blue"
+                        color: 'white'
+
+            if preRunnerCb
+                preRunnerRet = preRunnerCb()
+
+            element = angular.element "<leaflet markers='markers' geojson='geojson'></leaflet>"
+            element = $compile(element)($rootScope)
+
+            $rootScope.$digest()
+            leafletData.getDirectiveControls().then (controls) ->
+                if postRunnerCb
+                    postRunnerCb controls
+
+    describe 'markers controls', ->
+        beforeEach ->
+            @rootName = 'markers'
+        describe 'exists', ->
+            it 'root', ->
+                @testRunner (controls) =>
+                    expect(controls[@rootName]).toBeDefined()
+            it 'create', ->
+                @testRunner (controls) =>
+                    expect(controls[@rootName].create).toBeDefined()
+            it 'clean', ->
+                @testRunner (controls) =>
+                    expect(controls[@rootName].clean).toBeDefined()
+
+    describe 'geojson controls', ->
+        beforeEach ->
+            @rootName = 'geojson'
+        describe 'exists', ->
+            it 'root', ->
+                @testRunner (controls) =>
+                    expect(controls[@rootName]).toBeDefined()
+            it 'create', ->
+                @testRunner (controls) =>
+                    expect(controls[@rootName].create).toBeDefined()
+            it 'clean', ->
+                @testRunner (controls) =>
+                    expect(controls[@rootName].clean).toBeDefined()

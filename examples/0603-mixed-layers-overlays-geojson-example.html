@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html ng-app="demoapp">
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="../bower_components/angular/angular.min.js"></script>
+	<script src="../bower_components/leaflet/dist/leaflet.js"></script>
+	<script src="../bower_components/leaflet-tilelayer-geojson/TileLayer.GeoJSON.js"></script>
+	<link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
+	<script src="../dist/angular-leaflet-directive.js"></script>
+	<script>
+		var app = angular.module('demoapp', ["leaflet-directive"]);
+		app.controller("MixedLayersOverlaysGeoJSONController", ["$scope", function($scope){
+				angular.extend($scope, {
+			        sanfrancisco: {
+			            lat: 37.79,
+			            lng: -122.4,
+			            zoom: 17
+		       		},
+					defaults: {
+			            scrollWheelZoom: false
+			        },
+			        layers:{
+			        	baselayers: {
+						osm:{
+				        		name: "OpenStreetMap (XYZ)",
+				        		type: "xyz",
+								url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+		                        layerOptions: {
+		                            subdomains: ['a', 'b', 'c'],
+		                            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+		                            continuousWorld: true
+		                        }
+		        			}
+			        	}
+		        	,
+		        	overlays: {
+		                buildings: {
+		                	name:'Buildings',
+		                	type: 'geoJSON',
+		                	url:'http://tile.openstreetmap.us/vectiles-buildings/{z}/{x}/{y}.json',
+		                	layerOptions: {
+		                        	style: {
+								        "color": "#00D",
+								        "fillColor": "#00D",
+								        "weight": 1.0,
+								        "opacity": 0.6,
+								        "fillOpacity": .2
+								    }
+		                        },
+	                        pluginOptions:{
+	                        	cliptiles: true
+	                        }
+		                },
+		                Roads:{
+		                	name:'Roads',
+		                	type: 'geoJSON',
+		                	url: 'http://tile.openstreetmap.us/vectiles-skeletron/{z}/{x}/{y}.json',
+		                	layerOptions: {
+		                        	style: {
+								        "color": "#DD0000 ",
+								        "fillColor": "#DD0000",
+								        "weight": 1.0,
+								        "fillOpacity": .4
+								    }
+		                        },
+	                        pluginOptions:{
+	                        	cliptiles: false
+	                        }
+		                }
+
+		        		}
+			        }
+		    	})
+		   	}]);
+	</script>
+</head>
+<body ng-controller='MixedLayersOverlaysGeoJSONController'>
+		<leaflet height="480px" width="100%" center="sanfrancisco" layers="layers"></leaflet>
+		<h1> GeoJSON TileLayers</h1>
+		<p>Data source: Openstreetmap (buildings data) </p>
+</body>
+</html>

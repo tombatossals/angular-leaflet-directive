@@ -3,7 +3,7 @@
 module.exports = function (grunt, options) {
     return {
         options: {
-            banner: '/*! <%= pkg.name %> <%= grunt.template.today("dd-mm-yyyy") %> */\n'
+            banner: require('./utils/banner')
         },
         dist: {
             files: {

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html ng-app="demoapp">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="../bower_components/Leaflet.label/dist/leaflet.label.js"></script>
+    <script src="../dist/angular-leaflet-directive.min.js"></script>
+    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="../bower_components/Leaflet.label/dist/leaflet.label.css" />
+    <!--[if lte IE 8]>
+        <link rel="stylesheet" href="leaflet/leaflet.ie.css" />
+    <![endif]-->
+    <script>
+        var app = angular.module("demoapp", ["leaflet-directive"]);
+        app.controller('MarkersLabelController', [ '$scope', function($scope) {
+            angular.extend($scope, {
+                london: {
+                    lat: 51.505,
+                    lng: -0.09,
+                    zoom: 8
+                },
+                markers: {
+                    main_marker: {
+                        lat: 51.5,
+                        lng: 0,
+                        focus: true,
+                        //message: "Hey, drag me if you want",
+                        title: "Marker",
+                        draggable: true,
+                        label: {
+                            message: "Hey, drag me if you want",
+                            options: {
+                                noHide: true
+                            }
+                        }
+                    }
+                }
+            });
+        } ]);
+    </script>
+  </head>
+  <body ng-controller="MarkersLabelController">
+      <leaflet center="london" markers="markers" height="480px" width="100%"></leaflet>
+      <h1>Marker with label example</h1>
+  </body>
+</html>

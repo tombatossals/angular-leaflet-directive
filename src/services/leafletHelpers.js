@@ -1,4 +1,59 @@
 angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log) {
+    var _errorHeader = '[AngularJS - Leaflet] ';
+    var _copy = angular.copy;
+    var _clone = _copy;
+    /*
+    For parsing paths to a field in an object
+
+    Example:
+    var obj = {
+        bike:{
+         1: 'hi'
+         2: 'foo'
+        }
+    };
+    _getObjectValue(obj,"bike.1") returns 'hi'
+    this is getPath in ui-gmap
+     */
+    var _getObjectValue = function(object, pathStr) {
+        var obj;
+        if(!object || !angular.isObject(object))
+            return;
+        //if the key is not a sting then we already have the value
+        if ((pathStr === null) || !angular.isString(pathStr)) {
+            return pathStr;
+        }
+        obj = object;
+        pathStr.split('.').forEach(function(value) {
+            if (obj) {
+                obj = obj[value];
+            }
+        });
+        return obj;
+    };
+
+    /*
+     Object Array Notation
+     _getObjectArrayPath("bike.one.two")
+     returns:
+     'bike["one"]["two"]'
+     */
+    var _getObjectArrayPath = function(pathStr){
+        return pathStr.split('.').reduce(function(previous, current) {
+            return previous + '["'+ current + '"]';
+        });
+    };
+
+    /* Object Dot Notation
+     _getObjectPath(["bike","one","two"])
+     returns:
+     "bike.one.two"
+     */
+    var _getObjectDotPath = function(arrayOfStrings){
+        return arrayOfStrings.reduce(function(previous, current) {
+            return previous + '.' + current;
+        });
+    };
 
     function _obtainEffectiveMapId(d, mapId) {
         var id, i;
@@ -14,7 +69,7 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
         } else if (Object.keys(d).length === 0) {
             id = "main";
         } else {
-                $log.error("[AngularJS - Leaflet] - You have more than 1 map on the DOM, you must provide the map ID to the leafletData.getXXX call");
+                $log.error(_errorHeader + "- You have more than 1 map on the DOM, you must provide the map ID to the leafletData.getXXX call");
             }
         } else {
             id = mapId;
@@ -40,7 +95,27 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
         return defer;
     }
 
+    var _isDefined = function(value) {
+        return angular.isDefined(value) && value !== null;
+    };
+    var _isUndefined = function(value){
+        return !_isDefined(value);
+    };
+
     return {
+        copy:_copy,
+        clone:_clone,
+        errorHeader: _errorHeader,
+        getObjectValue: _getObjectValue,
+        getObjectArrayPath:_getObjectArrayPath,
+        getObjectDotPath: _getObjectDotPath,
+        defaultTo: function(val, _default){
+            return _isDefined(val) ? val : _default;
+        },
+        //mainly for checking attributes of directives lets keep this minimal (on what we accept)
+        isTruthy: function(val){
+            return val === 'true' || val === true;
+        },
         //Determine if a reference is {}
         isEmpty: function(value) {
             return Object.keys(value).length === 0;
@@ -52,39 +127,14 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
         },
 
         // Determine if a reference is defined
-        isDefined: function(value) {
-            return angular.isDefined(value) && value !== null;
-        },
-
-        // Determine if a reference is a number
-        isNumber: function(value) {
-            return angular.isNumber(value);
-        },
-
-        // Determine if a reference is a string
-        isString: function(value) {
-            return angular.isString(value);
-        },
-
-        // Determine if a reference is an array
-        isArray: function(value) {
-            return angular.isArray(value);
-        },
-
-        // Determine if a reference is an object
-        isObject: function(value) {
-            return angular.isObject(value);
-        },
-
-		// Determine if a reference is a function.
-		isFunction: function(value) {
-			return angular.isFunction(value);
-		},
-
-        // Determine if two objects have the same properties
-        equals: function(o1, o2) {
-            return angular.equals(o1, o2);
-        },
+        isDefined: _isDefined,
+        isUndefined:_isUndefined,
+        isNumber: angular.isNumber,
+        isString: angular.isString,
+        isArray: angular.isArray,
+        isObject: angular.isObject,
+        isFunction: angular.isFunction,
+        equals: angular.equals,
 
         isValidCenter: function(center) {
             return angular.isDefined(center) && angular.isNumber(center.lat) &&
@@ -118,7 +168,7 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
             if (phase === '$apply' || phase === '$digest') {
                 $scope.$eval(fn);
             } else {
-                $scope.$apply(fn);
+                $scope.$evalAsync(fn);
             }
         },
 
@@ -142,13 +192,15 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
             d[id].resolvedDefer = true;
         },
 
+        FullScreenControlPlugin: {
+            isLoaded: function() {
+                return angular.isDefined(L.Control.Fullscreen);
+            }
+        },
+
         AwesomeMarkersPlugin: {
             isLoaded: function() {
-                if (angular.isDefined(L.AwesomeMarkers) && angular.isDefined(L.AwesomeMarkers.Icon)) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return angular.isDefined(L.AwesomeMarkers) && angular.isDefined(L.AwesomeMarkers.Icon);
             },
             is: function(icon) {
                 if (this.isLoaded()) {
@@ -289,7 +341,12 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
                 return angular.isDefined(L.tileLayer.chinaProvider);
             }
         },
-        HeatMapLayerPlugin: {
+        HeatLayerPlugin: {
+            isLoaded: function() {
+                return angular.isDefined(L.heatLayer);
+            }
+        },
+        WebGLHeatMapLayerPlugin: {
             isLoaded: function() {
                 return angular.isDefined(L.TileLayer.WebGLHeatMap);
             }
@@ -342,17 +399,17 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
                 }
             }
         },
-		DynamicMapLayerPlugin: {
-			isLoaded: function() {
-				return L.esri !== undefined && L.esri.dynamicMapLayer !== undefined;
-			},
-			is: function(layer) {
-				if (this.isLoaded()) {
-					return layer instanceof L.esri.dynamicMapLayer;
-				} else {
-					return false;
-				}
-			}
+        DynamicMapLayerPlugin: {
+            isLoaded: function () {
+                return L.esri !== undefined && L.esri.dynamicMapLayer !== undefined;
+            },
+            is: function (layer) {
+                if (this.isLoaded()) {
+                    return layer instanceof L.esri.dynamicMapLayer;
+                } else {
+                    return false;
+                }
+            }
         },
         GeoJSONPlugin: {
             isLoaded: function(){
@@ -366,7 +423,7 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
                 }
             }
         },
-		UTFGridPlugin: {
+        UTFGridPlugin: {
             isLoaded: function(){
                 return angular.isDefined(L.UtfGrid);
             },
@@ -417,6 +474,25 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
                         return false;
                     }
                 }
+            }
+        },
+        /*
+         watchOptions - object to set deep nested watches and turn off watches all together
+         (rely on control / functional updates)
+         watchOptions - Object
+             doWatch:boolean
+             isDeep:boolean (sets $watch(function,isDeep))
+             individual
+                 doWatch:boolean
+                 isDeep:boolean
+         */
+        //legacy defaults
+        watchOptions: {
+            doWatch:true,
+            isDeep: true,
+            individual:{
+                doWatch:true,
+                isDeep: true
             }
         }
     };

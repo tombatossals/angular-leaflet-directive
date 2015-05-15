@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html ng-app="demoapp">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../bower_components/angular/angular.js"></script>
+    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="../dist/angular-leaflet-directive_dev_mapped.js"></script>
+    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css"/>
+    <script>
+        var app = angular.module("demoapp", ["leaflet-directive"]);
+        app.controller("MixedMarkersNestedEventsController", ["$scope", "leafletEvents", function ($scope, leafletEvents) {
+            $scope.map = {
+                show: true
+            };
+            $scope.layers = {
+                baselayers: {
+                    osm: {
+                        name: 'OpenStreetMap',
+                        type: 'xyz',
+                        url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                        layerOptions: {
+                            subdomains: ['a', 'b', 'c'],
+                            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                            continuousWorld: true
+                        }
+                    }
+                },
+                overlays: {
+                    london: {
+                        name: 'London',
+                        type: 'group',
+                        visible: true
+                    }
+                }
+            };
+            $scope.center = {
+                lat: 51.505,
+                lng: -0.09,
+                zoom: 8
+            };
+
+            $scope.markers = {
+                london: {
+                    1: {
+                        lat: 51.505,
+                        lng: -0.09,
+                        draggable: true,
+                        focus: true
+                    }
+                }
+            };
+
+            $scope.events = {
+                markers: {
+                    enable: leafletEvents.getAvailableMarkerEvents()
+                }
+            };
+
+            $scope.eventDetected = "No events yet...";
+            var markerEvents = leafletEvents.getAvailableMarkerEvents();
+            for (var k in markerEvents) {
+                var eventName = 'leafletDirectiveMarker.' + markerEvents[k];
+                $scope.$on(eventName, function (event, args) {
+                    $scope.eventDetected = event.name;
+                    $scope.args = {
+                        layerName: args.layerName,
+                        model: args.model,
+                        modelName: args.modelName
+                    };
+                });
+            }
+        }]);
+    </script>
+</head>
+<body ng-controller="MixedMarkersNestedEventsController">
+  <leaflet
+      ng-if="map.show"
+      event-broadcast="events"
+      center="center"
+      markers="markers"
+      markers-nested="true"
+      layers="layers"
+      width="100%"
+      height="400px">
+  </leaflet>
+  <h1>Marker Events example</h1>
+  <ul ng-cloak>
+      <li>show map: <input type="checkbox" ng-model="map.show"></li>
+      <li>eventDetected: {{eventDetected}}</li>
+      <li>args: {{args}}</li>
+  </ul>
+</body>
+</html>

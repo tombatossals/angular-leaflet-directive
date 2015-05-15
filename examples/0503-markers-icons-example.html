@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html ng-app="demoapp">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="../bower_components/Leaflet.awesome-markers/dist/leaflet.awesome-markers.js"></script>
+    <script src="../bower_components/Leaflet.MakiMarkers/Leaflet.MakiMarkers.js"></script>
+    <script src="../bower_components/Leaflet.ExtraMarkers/src/leaflet.extra-markers.js"></script>
+    <script src="../dist/angular-leaflet-directive.min.js"></script>
+
+    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="../bower_components/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../bower_components/Leaflet.awesome-markers/dist/leaflet.awesome-markers.css">
+    <link rel="stylesheet" href="../bower_components/Leaflet.ExtraMarkers/src/leaflet.extra-markers.css">
+
+    <script>
+        var app = angular.module("demoapp", ["leaflet-directive"]);
+        app.controller('MarkersIconsController', [ '$scope', function($scope) {
+            angular.extend($scope, {
+                chicago: {
+                    lat: 41.85,
+                    lng: -87.65,
+                    zoom: 8
+                },
+                markers: {
+                    m1: {
+                        lat: 41.85,
+                        lng: -87.65,
+                        message: "I'm a static marker with defaultIcon",
+                        focus: false,
+                        icon: {},
+                    },
+                },
+                defaultIcon: {},
+                leafIcon: {
+                    iconUrl: 'img/leaf-green.png',
+                    shadowUrl: 'img/leaf-shadow.png',
+                    iconSize:     [38, 95], // size of the icon
+                    shadowSize:   [50, 64], // size of the shadow
+                    iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+                    shadowAnchor: [4, 62],  // the same for the shadow
+                    popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+                },
+                orangeLeafIcon: {
+                    iconUrl: 'img/leaf-orange.png',
+                    shadowUrl: 'img/leaf-shadow.png',
+                    iconSize:     [38, 95],
+                    shadowSize:   [50, 64],
+                    iconAnchor:   [22, 94],
+                    shadowAnchor: [4, 62],
+                    popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+                },
+                divIcon: {
+                    type: 'div',
+                    iconSize: [200, 0],
+                    popupAnchor:  [0, 0],
+                    html: 'Using <strong>Bold text as an icon</strong>:'
+                },
+                awesomeMarkerIcon: {
+                    type: 'awesomeMarker',
+                    icon: 'tag',
+                    markerColor: 'red'
+                },
+                makiMarkerIcon: {
+                    type: 'makiMarker',
+                    icon: 'beer',
+                    color: '#f00',
+                    size: "l"
+                },
+                extraMarkerIcon: {
+                    type: 'extraMarker',
+                    icon: 'fa-star',
+                    markerColor: '#f00',
+                    prefix: 'fa',
+                    shape: 'circle'
+                }
+            });
+        } ]);
+    </script>
+    <style>
+      body {
+          padding: 20px;
+      }
+    </style>
+  </head>
+  <body ng-controller="MarkersIconsController">
+      <leaflet center="chicago" markers="markers" height="480px" width="100%"></leaflet>
+      <h1>Changing the marker icons</h1>
+      <p>You can change the marker icons, using the default Leaflet marker icons functions, or using helper libraries like AwesomeMarkers, MakiMarkers or ExtraMarker.</p>
+
+      <h2>Default Icons</h2>
+      <button ng-click="markers.m1.icon=defaultIcon">Default</button>
+      <button ng-click="markers.m1.icon=leafIcon">Leaflet Icon</button>
+      <button ng-click="markers.m1.icon=orangeLeafIcon">Orange leaflet Icon</button>
+
+      <h2>AwesomeMarker Icons</h2>
+      <p>
+          <button ng-click="markers.m1.icon=awesomeMarkerIcon; markers.m1.icon.markerColor='blue'">Blue</button>
+          <button ng-click="markers.m1.icon=awesomeMarkerIcon; markers.m1.icon.markerColor='red'">Red</button>
+          <button ng-click="markers.m1.icon=awesomeMarkerIcon; markers.m1.icon.markerColor='green'">Green</button>
+      </p>
+      <p>
+          <button ng-click="markers.m1.icon=awesomeMarkerIcon; markers.m1.icon.icon='tag'">Tag</button>
+          <button ng-click="markers.m1.icon=awesomeMarkerIcon; markers.m1.icon.icon='usd'">USD</button>
+          <button ng-click="markers.m1.icon=awesomeMarkerIcon; markers.m1.icon.icon='heart'">Heart</button>
+          <button ng-click="markers.m1.icon=awesomeMarkerIcon; markers.m1.icon.icon='home'">Home</button>
+          <button ng-click="markers.m1.icon=awesomeMarkerIcon; markers.m1.icon.icon='cog'">Cog</button>
+          <button ng-click="markers.m1.icon=awesomeMarkerIcon; markers.m1.icon.icon='star'">Star</button>
+          <button ng-click="markers.m1.icon=awesomeMarkerIcon; markers.m1.icon.icon='certificate'">Certificate</button>
+      </p>
+
+      <h2>MakiMarker Icons</h2>
+      <p>
+          <button ng-click="markers.m1.icon=makiMarkerIcon; markers.m1.icon.color='12a'">Blue</button>
+          <button ng-click="markers.m1.icon=makiMarkerIcon; markers.m1.icon.color='f00'">Red</button>
+          <button ng-click="markers.m1.icon=makiMarkerIcon; markers.m1.icon.color='0f0'">Green</button>
+          <button ng-click="markers.m1.icon=makiMarkerIcon; markers.m1.icon.color='b0b'">Purple</button>
+      </p>
+      <p>
+          <button ng-click="markers.m1.icon=makiMarkerIcon; markers.m1.icon.icon='rocket'">Rocket</button>
+          <button ng-click="markers.m1.icon=makiMarkerIcon; markers.m1.icon.icon='beer'">Beer</button>
+          <button ng-click="markers.m1.icon=makiMarkerIcon; markers.m1.icon.icon='warehouse'">Warehouse</button>
+          <button ng-click="markers.m1.icon=makiMarkerIcon; markers.m1.icon.icon='shop'">Shop</button>
+      </p>
+
+      <h2>ExtraMarker Icons</h2>
+      <p>
+          <button ng-click="markers.m1.icon=extraMarkerIcon; markers.m1.icon.markerColor='blue-dark'">Blue</button>
+          <button ng-click="markers.m1.icon=extraMarkerIcon; markers.m1.icon.markerColor='red'">Red</button>
+          <button ng-click="markers.m1.icon=extraMarkerIcon; markers.m1.icon.markerColor='green'">Green</button>
+      </p>
+      <p>
+          <button ng-click="markers.m1.icon=extraMarkerIcon; markers.m1.icon.icon='fa-tag'">Tag</button>
+          <button ng-click="markers.m1.icon=extraMarkerIcon; markers.m1.icon.icon='fa-usd'">USD</button>
+          <button ng-click="markers.m1.icon=extraMarkerIcon; markers.m1.icon.icon='fa-heart'">Heart</button>
+          <button ng-click="markers.m1.icon=extraMarkerIcon; markers.m1.icon.icon='fa-home'">Home</button>
+          <button ng-click="markers.m1.icon=extraMarkerIcon; markers.m1.icon.icon='fa-cog'">Cog</button>
+          <button ng-click="markers.m1.icon=extraMarkerIcon; markers.m1.icon.icon='fa-star'">Star</button>
+          <button ng-click="markers.m1.icon=extraMarkerIcon; markers.m1.icon.icon='fa-certificate'">Certificate</button>
+      </p>
+      <p>
+          <button ng-click="markers.m1.icon=extraMarkerIcon; markers.m1.icon.shape='square'">Square</button>
+          <button ng-click="markers.m1.icon=extraMarkerIcon; markers.m1.icon.shape='star'">Star</button>
+          <button ng-click="markers.m1.icon=extraMarkerIcon; markers.m1.icon.shape='circle'">Circle</button>
+      </p>
+  </body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html ng-app="demoapp">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="../dist/angular-leaflet-directive.min.js"></script>
+    <script>
+        var app = angular.module('demoapp', ['leaflet-directive']);
+        app.controller('BasicCenterAutodiscoverController', [ '$scope', function($scope) {
+            angular.extend($scope, {
+                center: {
+                    autoDiscover: true
+                }
+            });
+       }]);
+    </script>
+    <style>
+        input {
+            width: 100px;
+            margin-right: 7px;
+        }
+    </style>
+  </head>
+  <body ng-controller="BasicCenterAutodiscoverController">
+    <leaflet center="center" width="100%" height="480px"></leaflet>
+    <h1>Center autodiscover example</h1>
+    <ul>
+        <li><input type="number" step="any" ng-model="center.lat" /> Latitude</li>
+        <li><input type="number" step="any" ng-model="center.lng" /> Longitude</li>
+        <li><input type="number" step="any" ng-model="center.zoom" /> Zoom</li>
+    </ul>
+
+    <button ng-click="center.autoDiscover=true">Discover position</button>
+
+  </body>
+</html>

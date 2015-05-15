@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html ng-app="demoapp">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="../dist/angular-leaflet-directive.min.js"></script>
+    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <script>
+        var app = angular.module("demoapp", ["leaflet-directive"]);
+        app.controller('BasicTilesZoomChangerController', [ "$scope", function($scope) {
+
+            angular.extend($scope, {
+                london: {
+                    lat: 51.505,
+                    lng: -0.09,
+                    zoom: 10
+                },
+                tiles: {
+                    url: "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+
+                }
+            });
+
+            $scope.$watch("london.zoom", function(zoom) {
+                $scope.tiles.url = (zoom > 12)
+                        ? "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        : "http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
+            });
+        } ]);
+    </script>
+  </head>
+  <body ng-controller="BasicTilesZoomChangerController">
+      <leaflet center="london" tiles="tiles" width="100%" height="480px"></leaflet>
+      <h1>Dynamic tile changer based on zoom level</h1>
+      <p>Zoom to level 13 to see how the tiles change:</p>
+      <ul>
+          <li>Current TileLayer Url: <strong ng-bind="tiles.url"></strong></li>
+          <li>Current Zoom Level: <strong ng-bind="london.zoom"></strong></li>
+      </ul>
+  </body>
+</html>

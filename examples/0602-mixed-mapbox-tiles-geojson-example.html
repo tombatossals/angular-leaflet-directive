@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html ng-app="demoapp">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="../dist/angular-leaflet-directive.min.js"></script>
+    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
+    <script>
+        var app = angular.module("demoapp", ["leaflet-directive"]);
+        app.controller("MixedMapboxTilesGeojsonController", [ "$scope", "$http", function($scope, $http) {
+            angular.extend($scope, {
+                center: {
+                    lat: -33.8979173,
+                    lng: 151.2323598,
+                    zoom: 14
+                },
+                tiles: {
+                    name: 'Mapbox Park',
+                    url: 'http://api.tiles.mapbox.com/v4/{mapid}/{z}/{x}/{y}.png?access_token={apikey}',
+                    type: 'xyz',
+                    options: {
+                        apikey: 'pk.eyJ1IjoiZmVlbGNyZWF0aXZlIiwiYSI6Ik1Gak9FXzAifQ.9eB142zVCM4JMg7btDDaZQ',
+                        mapid: 'feelcreative.llm8dpdk'
+                    }
+                },
+                geojson: {}
+
+            });
+
+            $http.get("https://a.tiles.mapbox.com/v4/feelcreative.llm8dpdk/features.json?access_token=pk.eyJ1IjoiZmVlbGNyZWF0aXZlIiwiYSI6Ik1Gak9FXzAifQ.9eB142zVCM4JMg7btDDaZQ").success(function(data) {
+                $scope.geojson.data = data;
+                console.log(data);
+            });
+        }]);
+
+    </script>
+</head>
+<body ng-controller="MixedMapboxTilesGeojsonController">
+    <leaflet center="center" tiles="tiles" geojson="geojson" width="100%" height="480px"></leaflet>
+    <h1>Mapbox tiles and Mapbox GeoJSON loading</h1>
+    <pre ng-bind="layers | json"></pre>
+</body>
+</html>

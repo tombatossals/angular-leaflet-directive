@@ -1,6 +1,9 @@
-angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($rootScope, leafletHelpers, $log, $compile) {
+angular.module("leaflet-directive")
+.service('leafletMarkersHelpers', function ($rootScope, $timeout, leafletHelpers, $log, $compile,
+  leafletGeoJsonHelpers) {
 
     var isDefined = leafletHelpers.isDefined,
+        defaultTo = leafletHelpers.defaultTo,
         MarkerClusterPlugin = leafletHelpers.MarkerClusterPlugin,
         AwesomeMarkersPlugin = leafletHelpers.AwesomeMarkersPlugin,
         MakiMarkersPlugin = leafletHelpers.MakiMarkersPlugin,
@@ -10,12 +13,28 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
         isString = leafletHelpers.isString,
         isNumber  = leafletHelpers.isNumber,
         isObject = leafletHelpers.isObject,
-        groups = {};
+        groups = {},
+        geoHlp = leafletGeoJsonHelpers,
+        errorHeader = leafletHelpers.errorHeader;
+
+
+   var _string = function(marker){
+       //this exists since JSON.stringify barfs on cyclic
+       var retStr = '';
+       ['_icon', '_latlng', '_leaflet_id', '_map', '_shadow'].forEach(function(prop){
+           retStr += prop + ': ' + defaultTo(marker[prop], 'undefined') + ' \n';
+       });
+       return '[leafletMarker] : \n' + retStr;
+   };
+    var _log = function(marker, useConsole){
+        var logger = useConsole? console : $log;
+        logger.debug(_string(marker));
+    };
 
     var createLeafletIcon = function(iconData) {
         if (isDefined(iconData) && isDefined(iconData.type) && iconData.type === 'awesomeMarker') {
             if (!AwesomeMarkersPlugin.isLoaded()) {
-                $log.error('[AngularJS - Leaflet] The AwesomeMarkers Plugin is not loaded.');
+                $log.error( errorHeader + ' The AwesomeMarkers Plugin is not loaded.');
             }
 
             return new L.AwesomeMarkers.icon(iconData);
@@ -23,7 +42,7 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
 
         if (isDefined(iconData) && isDefined(iconData.type) && iconData.type === 'makiMarker') {
             if (!MakiMarkersPlugin.isLoaded()) {
-                $log.error('[AngularJS - Leaflet] The MakiMarkers Plugin is not loaded.');
+                $log.error(errorHeader + 'The MakiMarkers Plugin is not loaded.');
             }
 
             return new L.MakiMarkers.icon(iconData);
@@ -31,7 +50,7 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
 
         if (isDefined(iconData) && isDefined(iconData.type) && iconData.type === 'extraMarker') {
             if (!ExtraMarkersPlugin.isLoaded()) {
-                $log.error('[AngularJS - Leaflet] The ExtraMarkers Plugin is not loaded.');
+                $log.error(errorHeader + 'The ExtraMarkers Plugin is not loaded.');
             }
             return new L.ExtraMarkers.icon(iconData);
         }
@@ -40,20 +59,23 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
             return new L.divIcon(iconData);
         }
 
-        var base64icon = "data:image/png;base64,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";
-
-        var base64shadow = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACkAAAApCAYAAACoYAD2AAAC5ElEQVRYw+2YW4/TMBCF45S0S1luXZCABy5CgLQgwf//S4BYBLTdJLax0fFqmB07nnQfEGqkIydpVH85M+NLjPe++dcPc4Q8Qh4hj5D/AaQJx6H/4TMwB0PeBNwU7EGQAmAtsNfAzoZkgIa0ZgLMa4Aj6CxIAsjhjOCoL5z7Glg1JAOkaicgvQBXuncwJAWjksLtBTWZe04CnYRktUGdilALppZBOgHGZcBzL6OClABvMSVIzyBjazOgrvACf1ydC5mguqAVg6RhdkSWQFj2uxfaq/BrIZOLEWgZdALIDvcMcZLD8ZbLC9de4yR1sYMi4G20S4Q/PWeJYxTOZn5zJXANZHIxAd4JWhPIloTJZhzMQduM89WQ3MUVAE/RnhAXpTycqys3NZALOBbB7kFrgLesQl2h45Fcj8L1tTSohUwuxhy8H/Qg6K7gIs+3kkaigQCOcyEXCHN07wyQazhrmIulvKMQAwMcmLNqyCVyMAI+BuxSMeTk3OPikLY2J1uE+VHQk6ANrhds+tNARqBeaGc72cK550FP4WhXmFmcMGhTwAR1ifOe3EvPqIegFmF+C8gVy0OfAaWQPMR7gF1OQKqGoBjq90HPMP01BUjPOqGFksC4emE48tWQAH0YmvOgF3DST6xieJgHAWxPAHMuNhrImIdvoNOKNWIOcE+UXE0pYAnkX6uhWsgVXDxHdTfCmrEEmMB2zMFimLVOtiiajxiGWrbU52EeCdyOwPEQD8LqyPH9Ti2kgYMf4OhSKB7qYILbBv3CuVTJ11Y80oaseiMWOONc/Y7kJYe0xL2f0BaiFTxknHO5HaMGMublKwxFGzYdWsBF174H/QDknhTHmHHN39iWFnkZx8lPyM8WHfYELmlLKtgWNmFNzQcC1b47gJ4hL19i7o65dhH0Negbca8vONZoP7doIeOC9zXm8RjuL0Gf4d4OYaU5ljo3GYiqzrWQHfJxA6ALhDpVKv9qYeZA8eM3EhfPSCmpuD0AAAAASUVORK5CYII=";
-
-        if (!isDefined(iconData)) {
-            return new L.Icon.Default({
-                iconUrl: base64icon,
-                shadowUrl: base64shadow
-            });
+        // allow for any custom icon to be used... assumes the icon has already been initialized
+        if (isDefined(iconData) && isDefined(iconData.type) && iconData.type === 'icon') {
+            return iconData.icon;
         }
 
-        if (!isDefined(iconData.iconUrl)) {
-            iconData.iconUrl = base64icon;
-            iconData.shadowUrl = base64shadow;
+        var base64icon = "data:image/png;base64,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";
+        var base64shadow = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACkAAAApCAYAAACoYAD2AAAC5ElEQVRYw+2YW4/TMBCF45S0S1luXZCABy5CgLQgwf//S4BYBLTdJLax0fFqmB07nnQfEGqkIydpVH85M+NLjPe++dcPc4Q8Qh4hj5D/AaQJx6H/4TMwB0PeBNwU7EGQAmAtsNfAzoZkgIa0ZgLMa4Aj6CxIAsjhjOCoL5z7Glg1JAOkaicgvQBXuncwJAWjksLtBTWZe04CnYRktUGdilALppZBOgHGZcBzL6OClABvMSVIzyBjazOgrvACf1ydC5mguqAVg6RhdkSWQFj2uxfaq/BrIZOLEWgZdALIDvcMcZLD8ZbLC9de4yR1sYMi4G20S4Q/PWeJYxTOZn5zJXANZHIxAd4JWhPIloTJZhzMQduM89WQ3MUVAE/RnhAXpTycqys3NZALOBbB7kFrgLesQl2h45Fcj8L1tTSohUwuxhy8H/Qg6K7gIs+3kkaigQCOcyEXCHN07wyQazhrmIulvKMQAwMcmLNqyCVyMAI+BuxSMeTk3OPikLY2J1uE+VHQk6ANrhds+tNARqBeaGc72cK550FP4WhXmFmcMGhTwAR1ifOe3EvPqIegFmF+C8gVy0OfAaWQPMR7gF1OQKqGoBjq90HPMP01BUjPOqGFksC4emE48tWQAH0YmvOgF3DST6xieJgHAWxPAHMuNhrImIdvoNOKNWIOcE+UXE0pYAnkX6uhWsgVXDxHdTfCmrEEmMB2zMFimLVOtiiajxiGWrbU52EeCdyOwPEQD8LqyPH9Ti2kgYMf4OhSKB7qYILbBv3CuVTJ11Y80oaseiMWOONc/Y7kJYe0xL2f0BaiFTxknHO5HaMGMublKwxFGzYdWsBF174H/QDknhTHmHHN39iWFnkZx8lPyM8WHfYELmlLKtgWNmFNzQcC1b47gJ4hL19i7o65dhH0Negbca8vONZoP7doIeOC9zXm8RjuL0Gf4d4OYaU5ljo3GYiqzrWQHfJxA6ALhDpVKv9qYeZA8eM3EhfPSCmpuD0AAAAASUVORK5CYII=";
+
+        if (!isDefined(iconData) || !isDefined(iconData.iconUrl)) {
+            return new L.Icon.Default({
+                iconUrl: base64icon,
+                shadowUrl: base64shadow,
+                iconSize: [25, 41],
+                iconAnchor: [12, 41],
+                popupAnchor: [1, -34],
+                shadowSize: [41, 41]
+            });
         }
 
         return new L.Icon(iconData);
@@ -100,40 +122,55 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
     var _manageOpenPopup = function(marker, markerData) {
         marker.openPopup();
 
-        //the marker may have angular templates to compile
-        var popup = marker.getPopup(),
-            //the marker may provide a scope returning function used to compile the message
-            //default to $rootScope otherwise
-            markerScope = angular.isFunction(markerData.getMessageScope) ? markerData.getMessageScope() : $rootScope,
+        // The marker may provide a scope returning function used to compile the message
+        // default to $rootScope otherwise
+        var markerScope = angular.isFunction(markerData.getMessageScope) ? markerData.getMessageScope() : $rootScope,
             compileMessage = isDefined(markerData.compileMessage) ? markerData.compileMessage : true;
 
-        if (isDefined(popup)) {
+        var compileAndUpdatePopup = function(popup) {
+            if (!isDefined(popup) || !isDefined(popup._contentNode)) {
+                return;
+            }
+
             var updatePopup = function(popup) {
                 popup._updateLayout();
                 popup._updatePosition();
             };
 
-            if (compileMessage) {
-                $compile(popup._contentNode)(markerScope);
-                //in case of an ng-include, we need to update the content after template load
-                if (isDefined(popup._contentNode) && popup._contentNode.innerHTML.indexOf("ngInclude") > -1) {
-                    var unregister = $rootScope.$on('$includeContentLoaded', function(event, src) {
-                        if (popup.getContent().indexOf(src) > -1) {
-                            updatePopup(popup);
-                            unregister();
-                        }
-                    });
-                }
-                else {
+            $compile(popup._contentNode)(markerScope);
+
+            // In case of an ng-include, we need to update the content after template load
+            if (popup._contentNode.innerHTML.indexOf("ngInclude") > -1) {
+                var unregister = markerScope.$on('$includeContentLoaded', function() {
                     updatePopup(popup);
-                }
+                    unregister();
+                });
             }
+            else {
+                // We need to wait until after the next draw in order to get the correct width
+                $timeout(function() {
+                    updatePopup(popup);
+                });
+            }
+        };
+
+        if (compileMessage) {
+            compileAndUpdatePopup(marker.getPopup());
         }
-        if (Helpers.LabelPlugin.isLoaded() && isDefined(markerData.label) && isDefined(markerData.label.options) && markerData.label.options.noHide === true) {
-            if (compileMessage) {
-                $compile(marker.label._container)(markerScope);
+    };
+
+    var _manageOpenLabel = function(marker, markerData) {
+        var markerScope = angular.isFunction(markerData.getMessageScope) ? markerData.getMessageScope() : $rootScope,
+            labelScope = angular.isFunction(markerData.getLabelScope) ? markerData.getLabelScope() : markerScope,
+            compileMessage = isDefined(markerData.compileMessage) ? markerData.compileMessage : true;
+
+        if (Helpers.LabelPlugin.isLoaded() && isDefined(markerData.label)) {
+            if (isDefined(markerData.label.options) && markerData.label.options.noHide === true) {
+                marker.showLabel();
             }
-            marker.showLabel();
+            if (compileMessage && isDefined(marker.label)) {
+                $compile(marker.label._container)(labelScope);
+            }
         }
     };
 
@@ -146,9 +183,17 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
 
         manageOpenPopup: _manageOpenPopup,
 
+        manageOpenLabel: _manageOpenLabel,
+
         createMarker: function(markerData) {
-            if (!isDefined(markerData)) {
-                $log.error('[AngularJS - Leaflet] The marker definition is not valid.');
+            if (!isDefined(markerData) || !geoHlp.validateCoords(markerData)){
+                $log.error(errorHeader + 'The marker definition is not valid.');
+                return;
+            }
+            var coords = geoHlp.getCoords(markerData);
+
+            if (!isDefined(coords)){
+                $log.error(errorHeader + 'Unable to get coordinates from markerData.');
                 return;
             }
 
@@ -168,7 +213,7 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
                 }
             }
 
-            var marker = new L.marker(markerData, markerOptions);
+            var marker = new L.marker(coords, markerOptions);
 
             if (!isString(markerData.message)) {
                 marker.unbindPopup();
@@ -179,12 +224,12 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
 
         addMarkerToGroup: function(marker, groupName, groupOptions, map) {
             if (!isString(groupName)) {
-                $log.error('[AngularJS - Leaflet] The marker group you have specified is invalid.');
+                $log.error(errorHeader + 'The marker group you have specified is invalid.');
                 return;
             }
 
             if (!MarkerClusterPlugin.isLoaded()) {
-                $log.error("[AngularJS - Leaflet] The MarkerCluster plugin is not loaded.");
+                $log.error(errorHeader + "The MarkerCluster plugin is not loaded.");
                 return;
             }
             if (!isDefined(groups[groupName])) {
@@ -195,9 +240,12 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
         },
 
         listenMarkerEvents: function(marker, markerData, leafletScope) {
+            //these should be deregistered on destroy .. possible leake
+            //handles should not be closures since they will need to be removed
             marker.on("popupopen", function(/* event */) {
                 safeApply(leafletScope, function() {
                     markerData.focus = true;
+                    _manageOpenPopup(marker, markerData);//needed since markerData is now a copy
                 });
             });
             marker.on("popupclose", function(/* event */) {
@@ -205,10 +253,19 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
                     markerData.focus = false;
                 });
             });
+            marker.on("add", function(/* event */) {
+                safeApply(leafletScope, function() {
+                  if('label' in markerData)
+                    _manageOpenLabel(marker, markerData);
+                });
+            });
         },
 
-        addMarkerWatcher: function(marker, name, leafletScope, layers, map) {
-            var clearWatch = leafletScope.$watch("markers[\""+name+"\"]", function(markerData, oldMarkerData) {
+        addMarkerWatcher: function(marker, name, leafletScope, layers, map, isDeepWatch) {
+            var markerWatchPath = Helpers.getObjectArrayPath("markers." + name);
+            isDeepWatch = defaultTo(isDeepWatch, true);
+            //TODO:break up this 200 line function to be readable (nmccready)
+            var clearWatch = leafletScope.$watch(markerWatchPath, function(markerData, oldMarkerData) {
                 if (!isDefined(markerData)) {
                     _deleteMarker(marker, map, layers);
                     clearWatch();
@@ -220,7 +277,7 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
                 }
 
                 // Update the lat-lng property (always present in marker properties)
-                if (!(isNumber(markerData.lat) && isNumber(markerData.lng))) {
+                if (!geoHlp.validateCoords(markerData)) {
                     $log.warn('There are problems with lat-lng data, please verify your marker model');
                     _deleteMarker(marker, map, layers);
                     return;
@@ -251,6 +308,11 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
                     }
                 }
 
+                if ((isNumber(markerData.opacity) || isNumber(parseFloat(markerData.opacity))) && markerData.opacity !== oldMarkerData.opacity) {
+                    // There was a different opacity so we update it
+                    marker.setOpacity(markerData.opacity);
+                }
+
                 if (isString(markerData.layer) && oldMarkerData.layer !== markerData.layer) {
                     // If it was on a layer group we have to remove it
                     if (isString(oldMarkerData.layer) && isDefined(layers.overlays[oldMarkerData.layer]) && layers.overlays[oldMarkerData.layer].hasLayer(marker)) {
@@ -265,13 +327,13 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
 
                     // The markerData.layer is defined so we add the marker to the layer if it is different from the old data
                     if (!isDefined(layers.overlays[markerData.layer])) {
-                        $log.error('[AngularJS - Leaflet] You must use a name of an existing layer');
+                        $log.error(errorHeader + 'You must use a name of an existing layer');
                         return;
                     }
                     // Is a group layer?
                     var layerGroup = layers.overlays[markerData.layer];
                     if (!(layerGroup instanceof L.LayerGroup || layerGroup instanceof L.FeatureGroup)) {
-                        $log.error('[AngularJS - Leaflet] A marker can only be added to a layer of type "group" or "featureGroup"');
+                        $log.error(errorHeader + 'A marker can only be added to a layer of type "group" or "featureGroup"');
                         return;
                     }
                     // The marker goes to a correct layer group, so first of all we add it
@@ -337,9 +399,22 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
                     marker.unbindPopup();
                 }
 
-                // Update the label content
-                if (Helpers.LabelPlugin.isLoaded() && isDefined(markerData.label) && isDefined(markerData.label.message) && !angular.equals(markerData.label.message, oldMarkerData.label.message)) {
-                    marker.updateLabelContent(markerData.label.message);
+                // Update the label content or bind a new label if the old one has been removed.
+                if (Helpers.LabelPlugin.isLoaded()) {
+                    if (isDefined(markerData.label) && isDefined(markerData.label.message)) {
+                        if ('label' in oldMarkerData && 'message' in oldMarkerData.label && !angular.equals(markerData.label.message, oldMarkerData.label.message)) {
+                            marker.updateLabelContent(markerData.label.message);
+                        } else if (!angular.isFunction(marker.getLabel)) {
+                            marker.bindLabel(markerData.label.message, markerData.label.options);
+                            _manageOpenLabel(marker, markerData);
+                        } else {
+                            _manageOpenLabel(marker, markerData);
+                        }
+                    } else if (!('label' in markerData && !('message' in markerData.label))) {
+                        if (angular.isFunction(marker.unbindLabel)) {
+                            marker.unbindLabel();
+                        }
+                    }
                 }
 
                 // There is some text in the popup, so we must show the text or update existing
@@ -408,7 +483,9 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
                 } else if (markerLatLng.lat !== markerData.lat || markerLatLng.lng !== markerData.lng) {
                     marker.setLatLng([markerData.lat, markerData.lng]);
                 }
-            }, true);
-        }
+            }, isDeepWatch);
+        },
+        string: _string,
+        log: _log
     };
 });
