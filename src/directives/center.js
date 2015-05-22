@@ -37,7 +37,7 @@ angular.module("leaflet-directive").directive('center',
                     map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
                     return;
                 } else if (shouldInitializeMapWithBounds(leafletScope.bounds, centerModel)) {
-                    map.fitBounds(leafletBoundsHelpers.createLeafletBounds(leafletScope.bounds));
+                    map.fitBounds(leafletBoundsHelpers.createLeafletBounds(leafletScope.bounds), leafletScope.bounds.options);
                     centerModel = map.getCenter();
                     safeApply(leafletScope, function (scope) {
                         scope.center = {

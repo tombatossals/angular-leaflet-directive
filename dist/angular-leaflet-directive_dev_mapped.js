@@ -1,5 +1,5 @@
 /*!
-*  angular-leaflet-directive 0.8.1 2015-05-13
+*  angular-leaflet-directive 0.8.1 2015-05-22
 *  angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps
 *  git: https://github.com/tombatossals/angular-leaflet-directive
 */
@@ -1182,6 +1182,10 @@ angular.module("leaflet-directive")
         utfgrid.on('click', function(e) {
             $rootScope.$broadcast('leafletDirectiveMap.utfgridClick', e);
         });
+        
+        utfgrid.on('mousemove', function(e) {
+            $rootScope.$broadcast('leafletDirectiveMap.utfgridMousemove', e);
+        });        
 
         return utfgrid;
     };
@@ -2561,7 +2565,8 @@ angular.module("leaflet-directive").directive('bounds', function ($log, $timeout
                         southWest: {
                             lat: bounds._southWest.lat,
                             lng: bounds._southWest.lng
-                        }
+                        },
+                        options: bounds.options
                     };
                     if (!angular.equals(scope.bounds, newScopeBounds)) {
                         //$log.debug('Need to update scope bounds.');
@@ -2578,7 +2583,7 @@ angular.module("leaflet-directive").directive('bounds', function ($log, $timeout
                     if (leafletBounds && !map.getBounds().equals(leafletBounds)) {
                         //$log.debug('Need to update map bounds.');
                         scope.settingBoundsFromScope = true;
-                        map.fitBounds(leafletBounds);
+                        map.fitBounds(leafletBounds, bounds.options);
                         $timeout( function() {
                             //$log.debug('Allow bound updates.');
                             scope.settingBoundsFromScope = false;
@@ -2629,7 +2634,7 @@ angular.module("leaflet-directive").directive('center',
                     map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
                     return;
                 } else if (shouldInitializeMapWithBounds(leafletScope.bounds, centerModel)) {
-                    map.fitBounds(leafletBoundsHelpers.createLeafletBounds(leafletScope.bounds));
+                    map.fitBounds(leafletBoundsHelpers.createLeafletBounds(leafletScope.bounds), leafletScope.bounds.options);
                     centerModel = map.getCenter();
                     safeApply(leafletScope, function (scope) {
                         scope.center = {
@@ -4503,7 +4508,12 @@ angular.module("leaflet-directive")
         'move',
         'remove',
         'popupopen',
-        'popupclose'
+        'popupclose',
+        'touchend',
+        'touchstart',
+        'touchmove',
+        'touchcancel',
+        'touchleave'
         ];
     };
 
