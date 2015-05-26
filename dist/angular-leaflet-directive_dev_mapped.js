@@ -1,5 +1,5 @@
 /*!
-*  angular-leaflet-directive 0.8.1 2015-05-22
+*  angular-leaflet-directive 0.8.1 2015-05-26
 *  angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps
 *  git: https://github.com/tombatossals/angular-leaflet-directive
 */
@@ -4128,7 +4128,8 @@ angular.module("leaflet-directive")
         var safeApply = leafletHelpers.safeApply,
             isDefined = leafletHelpers.isDefined,
             isObject = leafletHelpers.isObject,
-            isArray = leafletHelpers.isArray;
+            isArray = leafletHelpers.isArray,
+            errorHeader = leafletHelpers.errorHeader;
 
         var EventsHelper = function(rootBroadcastName, lObjectType){
             this.rootBroadcastName = rootBroadcastName;
