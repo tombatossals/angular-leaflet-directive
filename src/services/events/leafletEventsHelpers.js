@@ -3,7 +3,8 @@ angular.module("leaflet-directive")
         var safeApply = leafletHelpers.safeApply,
             isDefined = leafletHelpers.isDefined,
             isObject = leafletHelpers.isObject,
-            isArray = leafletHelpers.isArray;
+            isArray = leafletHelpers.isArray,
+            errorHeader = leafletHelpers.errorHeader;
 
         var EventsHelper = function(rootBroadcastName, lObjectType){
             this.rootBroadcastName = rootBroadcastName;
