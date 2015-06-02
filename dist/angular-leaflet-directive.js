@@ -7,7 +7,6 @@
 'use strict';
 angular.module("leaflet-directive", []).directive('leaflet',
     ["$q", "leafletData", "leafletMapDefaults", "leafletHelpers", "leafletEvents", function ($q, leafletData, leafletMapDefaults, leafletHelpers, leafletEvents) {
-    var _leafletMap;
     return {
         restrict: "EA",
         replace: true,
@@ -31,9 +30,9 @@ angular.module("leaflet-directive", []).directive('leaflet',
         transclude: true,
         template: '<div class="angular-leaflet-map"><div ng-transclude></div></div>',
         controller: ["$scope", function ($scope) {
-            _leafletMap = $q.defer();
+            this._leafletMap = $q.defer();
             this.getMap = function () {
-                return _leafletMap.promise;
+                return this._leafletMap.promise;
             };
 
             this.getLeafletScope = function() {
@@ -41,7 +40,7 @@ angular.module("leaflet-directive", []).directive('leaflet',
             };
         }],
 
-        link: function(scope, element, attrs) {
+        link: function(scope, element, attrs, ctrl) {
             var isDefined = leafletHelpers.isDefined,
                 defaults = leafletMapDefaults.setDefaults(scope.defaults, attrs.id),
                 genDispatchMapEvent = leafletEvents.genDispatchMapEvent,
@@ -98,7 +97,7 @@ angular.module("leaflet-directive", []).directive('leaflet',
 
             // Create the Leaflet Map Object with the options
             var map = new L.Map(element[0], leafletMapDefaults.getMapCreationDefaults(attrs.id));
-            _leafletMap.resolve(map);
+            ctrl._leafletMap.resolve(map);
 
             if (!isDefined(attrs.center)) {
                 map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
@@ -146,6 +145,7 @@ angular.module("leaflet-directive", []).directive('leaflet',
             });
 
             scope.$on('$destroy', function () {
+                leafletMapDefaults.reset();
                 map.remove();
                 leafletData.unresolveMap(attrs.id);
             });
@@ -1623,6 +1623,9 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', ["$q", "leafle
 
     // Get the _defaults dictionary, and override the properties defined by the user
     return {
+        reset: function () {
+           defaults = {};
+        },
         getDefaults: function (scopeId) {
             var mapId = obtainEffectiveMapId(defaults, scopeId);
             return defaults[mapId];
