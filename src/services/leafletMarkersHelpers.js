@@ -132,18 +132,23 @@ angular.module("leaflet-directive")
                 return;
             }
 
-            var updatePopup = function(popup) {
+            var updatePopup = function(popup,adjustPan) {
                 popup._updateLayout();
                 popup._updatePosition();
+                if (popup.options.autoPan && adjustPan) {
+                    popup._adjustPan();
+                }
             };
 
             $compile(popup._contentNode)(markerScope);
 
             // In case of an ng-include, we need to update the content after template load
             if (popup._contentNode.innerHTML.indexOf("ngInclude") > -1) {
-                var unregister = markerScope.$on('$includeContentLoaded', function() {
-                    updatePopup(popup);
-                    unregister();
+                var unregister = markerScope.$on('$includeContentLoaded', function () {
+                    $timeout(function() {
+                        updatePopup(popup, true);
+                        unregister();
+                    });
                 });
             }
             else {
@@ -152,7 +157,6 @@ angular.module("leaflet-directive")
                     updatePopup(popup);
                 });
             }
-        };
 
         if (compileMessage) {
             compileAndUpdatePopup(marker.getPopup());
