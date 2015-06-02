@@ -132,10 +132,10 @@ angular.module("leaflet-directive")
                 return;
             }
 
-            var updatePopup = function(popup,adjustPan) {
+            var updatePopup = function(popup) {
                 popup._updateLayout();
                 popup._updatePosition();
-                if (popup.options.autoPan && adjustPan) {
+                if (popup.options.autoPan) {
                     popup._adjustPan();
                 }
             };
@@ -146,7 +146,7 @@ angular.module("leaflet-directive")
             if (popup._contentNode.innerHTML.indexOf("ngInclude") > -1) {
                 var unregister = markerScope.$on('$includeContentLoaded', function () {
                     $timeout(function() {
-                        updatePopup(popup, true);
+                        updatePopup(popup);
                         unregister();
                     });
                 });
