@@ -1907,11 +1907,9 @@ angular.module("leaflet-directive")
                     updatePopup(popup);
                 });
             }
-
-            if (compileMessage) {
-                compileAndUpdatePopup(marker.getPopup());
-            }
         };
+        if (compileMessage)
+            compileAndUpdatePopup(marker.getPopup());
     };
 
     var _manageOpenLabel = function (marker, markerData) {

@@ -132,14 +132,14 @@ describe 'Directive: leaflet', ->
             color: 'blue'
         element = angular.element('<leaflet markers="markers"></leaflet>')
         element = $compile(element)($rootScope)
-        $rootScope.$digest()
+        @digest $rootScope
         leafletMainMarker = undefined
         leafletData.getMarkers().then (leafletMarkers) ->
             leafletMainMarker = leafletMarkers.marker
 
-        $rootScope.$digest()
+        @digest $rootScope
         leafletMainMarker.openPopup()
-        $rootScope.$digest()
+        @digest $rootScope
         expect(leafletMainMarker._popup._contentNode.innerHTML).toEqual '<p class="ng-binding">blue</p>'
 
     it 'message should be compiled in specified scope', ->
@@ -157,13 +157,13 @@ describe 'Directive: leaflet', ->
             marker: marker
         element = angular.element('<leaflet markers="markers"></leaflet>')
         element = $compile(element)($rootScope)
-        $rootScope.$digest()
+        @digest $rootScope
         leafletMainMarker = undefined
         leafletData.getMarkers().then (leafletMarkers) ->
             leafletMainMarker = leafletMarkers.marker
-        $rootScope.$digest()
+        @digest $rootScope
         leafletMainMarker.openPopup()
-        $rootScope.$digest()
+        @digest $rootScope
         expect(leafletMainMarker._popup._contentNode.innerHTML).toEqual '<p class="ng-binding">angular</p>'
 
     it 'should bind label to main marker if message is given', ->
