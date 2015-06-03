@@ -130,7 +130,7 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                 // Watch for the overlay layers
                 leafletScope.$watch('layers.overlays', function(newOverlayLayers, oldOverlayLayers) {
                     if(angular.equals(newOverlayLayers, oldOverlayLayers)) {
-                        isLayersControlVisible = updateLayersControl(map, mapId, isLayersControlVisible, newBaseLayers, layers.overlays, leafletLayers);
+                        isLayersControlVisible = updateLayersControl(map, mapId, isLayersControlVisible, layers.baselayers, newOverlayLayers, leafletLayers);
                         return true;
                     }
                     // Delete layers from the array
