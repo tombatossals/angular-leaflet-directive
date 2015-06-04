@@ -14,7 +14,7 @@ Let's define the markers model with an example:
 $scope.markers = {
     main: {
         lat: 51,
-        lng. 0,
+        lng: 0,
         focus: true,
         message: "This place is in London",
         draggable: true
