@@ -1,5 +1,5 @@
 /*!
-*  angular-leaflet-directive 0.8.2 2015-06-03
+*  angular-leaflet-directive 0.8.2 2015-06-04
 *  angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps
 *  git: https://github.com/tombatossals/angular-leaflet-directive
 */
@@ -4655,7 +4655,7 @@ angular.module("leaflet-directive")
         }
 
         if (Helpers.LabelPlugin.isLoaded() && isDefined(lObject.label)) {
-            lblHelp.genLabelEvents(name, logic, leafletScope, lObject, model);
+            lblHelp.genEvents(name, logic, leafletScope, lObject, model);
         }
     };
 

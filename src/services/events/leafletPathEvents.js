@@ -112,7 +112,7 @@ angular.module("leaflet-directive")
         }
 
         if (Helpers.LabelPlugin.isLoaded() && isDefined(lObject.label)) {
-            lblHelp.genLabelEvents(name, logic, leafletScope, lObject, model);
+            lblHelp.genEvents(name, logic, leafletScope, lObject, model);
         }
     };
 
