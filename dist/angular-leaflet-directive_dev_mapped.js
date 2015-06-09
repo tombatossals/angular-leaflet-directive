@@ -1,5 +1,5 @@
 /*!
-*  angular-leaflet-directive 0.8.2 2015-06-07
+*  angular-leaflet-directive 0.8.2 2015-06-08
 *  angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps
 *  git: https://github.com/tombatossals/angular-leaflet-directive
 */
@@ -3755,9 +3755,9 @@ angular.module("leaflet-directive").directive('markers',
             }
         }
     };
-    var _seeWhatWeAlreadyHave = function(markerModels, oldMarkerModels, lMarkers, cb){
+    var _seeWhatWeAlreadyHave = function(markerModels, oldMarkerModels, lMarkers, isEqual, cb){
         var hasLogged = false,
-          modelIsDiff = false,
+          equals = false,
           oldMarker,
           newMarker;
 
@@ -3773,20 +3773,20 @@ angular.module("leaflet-directive").directive('markers',
               //ie the options to only check !== (reference check) instead of angular.equals (slow)
               newMarker = markerModels[name];
               oldMarker = oldMarkerModels[name];
-              modelIsDiff = !angular.equals(newMarker,oldMarker);
+              equals = angular.equals(newMarker,oldMarker) && isEqual;
             }
             if (!isDefined(markerModels) ||
                 !Object.keys(markerModels).length ||
                 !isDefined(markerModels[name]) ||
                 !Object.keys(markerModels[name]).length ||
-                modelIsDiff) {
+                equals) {
                     if(cb && Helpers.isFunction(cb))
                         cb(newMarker, oldMarker, name);
             }
         }
     };
     var _destroy = function(markerModels, oldMarkerModels, lMarkers, map, layers){
-        _seeWhatWeAlreadyHave(markerModels, oldMarkerModels, lMarkers,
+        _seeWhatWeAlreadyHave(markerModels, oldMarkerModels, lMarkers, false,
             function(newMarker, oldMarker, lMarkerName){
                 $log.debug(errorHeader + '[marker] is deleting marker: ' + lMarkerName);
                 deleteMarker(lMarkers[lMarkerName], map, layers);
@@ -3796,7 +3796,7 @@ angular.module("leaflet-directive").directive('markers',
 
     var _getNewModelsToSkipp =  function(newModels, oldModels, lMarkers){
         var skips = {};
-        _seeWhatWeAlreadyHave(newModels, oldModels, lMarkers,
+        _seeWhatWeAlreadyHave(newModels, oldModels, lMarkers, true,
             function(newMarker, oldMarker, lMarkerName){
                 $log.debug(errorHeader + '[marker] is already rendered, marker: ' + lMarkerName);
                 skips[lMarkerName] = newMarker;
