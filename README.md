@@ -41,7 +41,7 @@ Or you can see some examples directly:
 * [Tiles example](http://tombatossals.github.io/angular-leaflet-directive/examples/0107-basic-tiles-example.html)
 * [Tile zoom changer example](http://tombatossals.github.io/angular-leaflet-directive/examples/0108-basic-tiles-zoom-changer-example.html)
 * [Layers simple example](http://tombatossals.github.io/angular-leaflet-directive/examples/0201-layers-simple-example.html)
-* [Overlays simple example](http://tombatossals.github.io/angular-leaflet-directive/examples/overlays-simple-example.html)
+* [Overlays simple example](http://tombatossals.github.io/angular-leaflet-directive/examples/0202-layers-overlays-simple-example.html)
 * [ImageOverlay simple example](http://tombatossals.github.io/angular-leaflet-directive/examples/0202-layers-overlays-simple-example.html)
 * [Dynamic add/remove layers/overlays example](http://tombatossals.github.io/angular-leaflet-directive/examples/0204-layers-dynamic-addition-example.html)
 * [Google Maps example](http://tombatossals.github.io/angular-leaflet-directive/examples/0205-layers-googlemaps-example.html)
