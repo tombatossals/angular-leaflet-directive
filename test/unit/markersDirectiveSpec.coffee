@@ -69,7 +69,7 @@ describe 'Directive: leaflet', ->
 
 
     describe 'handles common markers correctly', ->
-        it 'should create main marker on the map', ->
+        xit 'markers count should be correct post update with no dupes', ->
             markers1 = [
                 {lat: 0.966,lng: 2.02}
                 {lat: 0.10, lng: 5.02}
