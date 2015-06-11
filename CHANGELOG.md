@@ -1,5 +1,5 @@
 <a name"0.8.3"></a>
-### 0.8.0 (2015-05-13)
+### 0.8.3 (2015-06-11)
 
 #### Bug Fixes
 * **markers dupes** - issue #766 ([2d52aad](https://github.com/tombatossals/angular-leaflet-directive/commit/2d52aad5cee82a1da3817aca48ee6dee53a946af))
