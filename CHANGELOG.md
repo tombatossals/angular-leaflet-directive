@@ -1,3 +1,10 @@
+<a name"0.8.3"></a>
+### 0.8.0 (2015-05-13)
+
+#### Bug Fixes
+* **markers dupes** - issue #766 ([2d52aad](https://github.com/tombatossals/angular-leaflet-directive/commit/2d52aad5cee82a1da3817aca48ee6dee53a946af))
+* **paths** - Fix the leafletPathEvents._bindPathEvents method that was using an old syntax for binding label events. [7aa2926](https://github.com/tombatossals/angular-leaflet-directive/commit/7aa29263ca8d8cc623090d62e52aef1c8473d579)
+
 <a name"0.8.0"></a>
 ### 0.8.0 (2015-05-13)
 
