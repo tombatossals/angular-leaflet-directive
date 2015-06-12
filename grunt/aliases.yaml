@@ -82,6 +82,7 @@ build:
  - 'clean:pre'
 
 travis:
+ - 'fast-build'
  - 'bower:install'
  - 'test-unit'
 

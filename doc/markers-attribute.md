@@ -1,7 +1,7 @@
 'markers' Attribute Documentation
 =================================
 
-This sub-directive needs the **leaflet** main directive, so it is normaly used as an attribute of the *leaflet* tag, like this:
+This sub-directive needs the **leaflet** main directive, so it is normally used as an attribute of the *leaflet* tag, like this:
 
 ```
 <leaflet markers="markers"></leaflet>
@@ -14,7 +14,7 @@ Let's define the markers model with an example:
 $scope.markers = {
     main: {
         lat: 51,
-        lng. 0,
+        lng: 0,
         focus: true,
         message: "This place is in London",
         draggable: true
@@ -37,7 +37,7 @@ Every marker can have these properties:
 * **getMessageScope**. Function. A function that returns the scope on which the message will be compiled. Defaults to $rootScope if not specified.
 * **compileMessage**. true/false. Deactivate the Angular compilation of the message. Defaults to true if unspecified.
 * **draggable**. true/false. Make the marker draggable.
-* **popupOptions**. Options object passsed to the leaflet popup. You can see [here](http://leafletjs.com/reference.html#popup-options) its properties.
+* **popupOptions**. Options object passed to the leaflet popup. You can see [here](http://leafletjs.com/reference.html#popup-options) its properties.
 * **enable**. Array of Strings. Only events listed in this property will be watched and converted to angular events. Format for the angular event name: `leafletDirectiveMarker.event_name`.
 * **disable**. Array of Strings. All leaflet marker events, except the one listed in this property, will be watched and converted to angular events. This will overwrite **enable** property.
 * **icon**. We can set the type of icon to be shown on our marker with this property. We can define the same properties of this property on leaflet ([documented here](http://leafletjs.com/reference.html#icon)), and furthermore we can define a special type of icon _awesomeMarker_, which makes use of the [Awesome Markers project](https://github.com/lvoogdt/Leaflet.awesome-markers) to customize the icon based on the _icon_ and _markerColor_ properties. Let's see some examples:
@@ -99,12 +99,12 @@ Every marker you add to the map is watched for changes by default, so a change i
 <leaflet markers="markers" watch-markers="false"></leaflet>
 ```
 
-By default the markers will be watched, so we can change its properties dinamically, like in [this demo](http://tombatossals.github.io/angular-leaflet-directive/examples/markers-update-example.html).
+By default the markers will be watched, so we can change its properties dynamically, like in [this demo](http://tombatossals.github.io/angular-leaflet-directive/examples/markers-update-example.html).
 
 
 Markers inside overlays
 -----------------------
-We can group the markers inside a layer overlay, so the layer switch selector control will appear and we could activate/deactive overlays with their markers.
+We can group the markers inside a layer overlay, so the layer switch selector control will appear and we could activate/deactivate overlays with their markers.
 
 Let's see an example of this feature on [this demo](http://tombatossals.github.io/angular-leaflet-directive/examples/markers-groups-example.html).
 

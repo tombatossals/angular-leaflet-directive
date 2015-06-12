@@ -44,6 +44,9 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
 
     // Get the _defaults dictionary, and override the properties defined by the user
     return {
+        reset: function () {
+           defaults = {};
+        },
         getDefaults: function (scopeId) {
             var mapId = obtainEffectiveMapId(defaults, scopeId);
             return defaults[mapId];

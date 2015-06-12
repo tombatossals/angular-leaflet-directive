@@ -67,6 +67,34 @@ describe 'Directive: leaflet', ->
             expect(leafletMainMarker.getLatLng().lat).toBeCloseTo 0.966
             expect(leafletMainMarker.getLatLng().lng).toBeCloseTo 2.02
 
+
+    describe 'handles common markers correctly', ->
+        xit 'markers count should be correct post update with no dupes', ->
+            markers1 = [
+                {lat: 0.966,lng: 2.02}
+                {lat: 0.10, lng: 5.02}
+                {lat: 0.11, lng: 6.02}
+            ]
+
+            markers2 =  markers1.concat [
+                {lat: 26.966, lng: 100.02}
+                {lat: -50.10, lng: 101.02}
+            ]
+
+            angular.extend $rootScope, markers: markers1
+
+            element = angular.element('<leaflet markers="markers"></leaflet>')
+            element = $compile(element)($rootScope)
+            @digest $rootScope
+            leafletData.getMarkers().then (leafletMarkers) =>
+                expect(Object.keys(leafletMarkers).length).toBe(markers1.length)
+            .then =>
+                $rootScope.markers = markers2
+                @digest $rootScope
+                leafletData.getMarkers().then (leafletMarkers) ->
+                    expect(Object.keys(leafletMarkers).length).toBe(markers2.length)
+
+
     describe 'isNested', ->
         beforeEach ->
             main_marker =
@@ -132,14 +160,14 @@ describe 'Directive: leaflet', ->
             color: 'blue'
         element = angular.element('<leaflet markers="markers"></leaflet>')
         element = $compile(element)($rootScope)
-        $rootScope.$digest()
+        @digest $rootScope
         leafletMainMarker = undefined
         leafletData.getMarkers().then (leafletMarkers) ->
             leafletMainMarker = leafletMarkers.marker
 
-        $rootScope.$digest()
+        @digest $rootScope
         leafletMainMarker.openPopup()
-        $rootScope.$digest()
+        @digest $rootScope
         expect(leafletMainMarker._popup._contentNode.innerHTML).toEqual '<p class="ng-binding">blue</p>'
 
     it 'message should be compiled in specified scope', ->
@@ -157,13 +185,13 @@ describe 'Directive: leaflet', ->
             marker: marker
         element = angular.element('<leaflet markers="markers"></leaflet>')
         element = $compile(element)($rootScope)
-        $rootScope.$digest()
+        @digest $rootScope
         leafletMainMarker = undefined
         leafletData.getMarkers().then (leafletMarkers) ->
             leafletMainMarker = leafletMarkers.marker
-        $rootScope.$digest()
+        @digest $rootScope
         leafletMainMarker.openPopup()
-        $rootScope.$digest()
+        @digest $rootScope
         expect(leafletMainMarker._popup._contentNode.innerHTML).toEqual '<p class="ng-binding">angular</p>'
 
     it 'should bind label to main marker if message is given', ->

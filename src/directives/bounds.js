@@ -32,7 +32,8 @@ angular.module("leaflet-directive").directive('bounds', function ($log, $timeout
                         southWest: {
                             lat: bounds._southWest.lat,
                             lng: bounds._southWest.lng
-                        }
+                        },
+                        options: bounds.options
                     };
                     if (!angular.equals(scope.bounds, newScopeBounds)) {
                         //$log.debug('Need to update scope bounds.');
@@ -49,7 +50,7 @@ angular.module("leaflet-directive").directive('bounds', function ($log, $timeout
                     if (leafletBounds && !map.getBounds().equals(leafletBounds)) {
                         //$log.debug('Need to update map bounds.');
                         scope.settingBoundsFromScope = true;
-                        map.fitBounds(leafletBounds);
+                        map.fitBounds(leafletBounds, bounds.options);
                         $timeout( function() {
                             //$log.debug('Allow bound updates.');
                             scope.settingBoundsFromScope = false;
