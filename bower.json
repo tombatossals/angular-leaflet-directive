@@ -42,7 +42,8 @@
     "Leaflet.ExtraMarkers": "https://github.com/coryasilva/Leaflet.ExtraMarkers/archive/v1.0.1.tar.gz",
     "Leaflet.fullscreen": "http://github.com/Leaflet/Leaflet.fullscreen/archive/v0.0.4.tar.gz",
     "Leaflet.PolylineDecorator": "bbecquet/Leaflet.PolylineDecorator",
-    "ionrangeslider": "~1.9.3"
+    "ionrangeslider": "~1.9.3",
+    "leaflet-minimap": "~2.2.0"
   },
   "overrides": {
     "Leaflet.utfgrid": {

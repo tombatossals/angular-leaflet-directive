@@ -198,6 +198,12 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
             }
         },
 
+        MiniMapControlPlugin: {
+            isLoaded: function() {
+                return angular.isDefined(L.Control.MiniMap);
+            }
+        },
+
         AwesomeMarkersPlugin: {
             isLoaded: function() {
                 return angular.isDefined(L.AwesomeMarkers) && angular.isDefined(L.AwesomeMarkers.Icon);

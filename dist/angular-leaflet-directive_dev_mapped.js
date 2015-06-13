@@ -711,6 +711,12 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
             }
         },
 
+        MiniMapControlPlugin: {
+            isLoaded: function() {
+                return angular.isDefined(L.Control.MiniMap);
+            }
+        },
+
         AwesomeMarkersPlugin: {
             isLoaded: function() {
                 return angular.isDefined(L.AwesomeMarkers) && angular.isDefined(L.AwesomeMarkers.Icon);
@@ -1204,10 +1210,10 @@ angular.module("leaflet-directive")
         utfgrid.on('click', function(e) {
             $rootScope.$broadcast('leafletDirectiveMap.utfgridClick', e);
         });
-        
+
         utfgrid.on('mousemove', function(e) {
             $rootScope.$broadcast('leafletDirectiveMap.utfgridMousemove', e);
-        });        
+        });
 
         return utfgrid;
     };
@@ -1222,7 +1228,13 @@ angular.module("leaflet-directive")
         mapbox: {
             mustHaveKey: true,
             createLayer: function(params) {
-                var url = '//{s}.tiles.mapbox.com/v3/' + params.key + '/{z}/{x}/{y}.png';
+                var version = 3;
+                if(isDefined(params.options.version) && params.options.version === 4) {
+                    version = params.options.version;
+                }
+                var url = version === 3?
+                    '//{s}.tiles.mapbox.com/v3/' + params.key + '/{z}/{x}/{y}.png':
+                    '//api.tiles.mapbox.com/v4/' + params.key + '/{z}/{x}/{y}.png?access_token=' + params.apiKey;
                 return L.tileLayer(url, params.options);
             }
         },
@@ -1522,6 +1534,7 @@ angular.module("leaflet-directive")
             type: layerDefinition.layerType,
             bounds: layerDefinition.bounds,
             key: layerDefinition.key,
+            apiKey: layerDefinition.apiKey,
             pluginOptions: layerDefinition.pluginOptions,
             user: layerDefinition.user
         };
@@ -2817,7 +2830,7 @@ angular.module("leaflet-directive").directive('center',
     };
 });
 
-angular.module("leaflet-directive").directive('controls', function ($log, leafletHelpers) {
+angular.module("leaflet-directive").directive('controls', function ($log, leafletHelpers, leafletLayerHelpers) {
     return {
         restrict: "A",
         scope: false,
@@ -2830,6 +2843,7 @@ angular.module("leaflet-directive").directive('controls', function ($log, leafle
             }
 
             var isDefined = leafletHelpers.isDefined,
+                createLayer = leafletLayerHelpers.createLayer,
                 leafletScope  = controller.getLeafletScope(),
                 controls = leafletScope.controls;
 
@@ -2856,6 +2870,35 @@ angular.module("leaflet-directive").directive('controls', function ($log, leafle
                         map.addControl(fullscreenControl);
                     } else {
                         $log.error('[AngularJS - Leaflet] Fullscreen plugin is not loaded.');
+                    }
+                }
+
+                if(isDefined(controls.minimap)) {
+                    if (leafletHelpers.MiniMapControlPlugin.isLoaded()) {
+                        if(isDefined(controls.minimap.layer)) {
+                            var layer = createLayer(controls.minimap.layer);
+                            delete controls.minimap.layer;
+
+                            if(isDefined(layer)) {
+                                if(isDefined(leafletScope.center)) {
+                                    var moveend = function(/* event */) {
+                                        var minimapControl = new L.Control.MiniMap(layer, controls.minimap);
+                                        map.addControl(minimapControl);
+                                        map.off('moveend', moveend);
+                                    };
+                                    map.on('moveend', moveend);
+                                } else {
+                                    var minimapControl = new L.Control.MiniMap(layer, controls.minimap);
+                                    map.addControl(minimapControl);
+                                }
+                            } else {
+                                $log.warn('[AngularJS - Leaflet] Layer could not be created.');
+                            }
+                        } else {
+                            $log.warn('[AngularJS - Leaflet] Layer option should be defined.');
+                        }
+                    } else {
+                        $log.error('[AngularJS - Leaflet] Minimap plugin is not loaded.');
                     }
                 }
 
