@@ -104,3 +104,6 @@ bump-@-major:
 examples:
  - 'shell:examples'
  - 'concat:examples'
+
+graph:
+ - 'angular_architecture_graph'
