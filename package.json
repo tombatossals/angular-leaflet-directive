@@ -16,6 +16,7 @@
   "license": "MIT",
   "devDependencies": {
     "grunt": "^0.4.5",
+    "grunt-angular-modules-graph": "^0.3.1-1",
     "grunt-bower-task": "^0.4.0",
     "grunt-bump": "^0.3.0",
     "grunt-concurrent": "^1.0.0",
@@ -25,6 +26,8 @@
     "grunt-contrib-jshint": "^0.11.2",
     "grunt-contrib-uglify": "^0.9.1",
     "grunt-contrib-watch": "^0.6.1",
+    "grunt-conventional-changelog": "^1.2.2",
+    "grunt-graphviz": "^0.1.1",
     "grunt-karma": "^0.10.1",
     "grunt-karma-coveralls": "^2.5.3",
     "grunt-ng-annotate": "^0.10.0",
@@ -58,9 +61,5 @@
     "karmaChrome": "grunt test-unit-chrome",
     "karmaChromeOnce": "grunt karma:unit-chrome-once"
   },
-  "main": "dist/angular-leaflet-directive",
-  "dependencies": {
-    "grunt-conventional-changelog": "^1.2.2",
-    "karma-jasmine": "^0.3.5"
-  }
+  "main": "dist/angular-leaflet-directive"
 }

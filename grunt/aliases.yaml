@@ -104,3 +104,7 @@ bump-@-major:
 examples:
  - 'shell:examples'
  - 'concat:examples'
+
+graph:
+ - 'modules-graph'
+ - 'graphviz'

@@ -1,0 +1,6 @@
+digraph dependencies{
+  node[shape="record"]
+  "leaflet-directive"[label="{leaflet-directive|bounds\ncenter\ncontrols\ndecorations\neventBroadcast\ngeojson\nlayercontrol\nlayers\nleaflet\nlegend\nmarkers\nmaxbounds\npaths\ntiles\nmarkersWatchOptions\ngeojsonWatchOptions\nleafletEventsHelpersFactory\nleafletEventsHelpers\nleafletGeoJsonEvents\nleafletLabelEvents\nleafletMapEvents\nleafletMarkerEvents\nleafletPathEvents\nleafletBoundsHelpers\nleafletControlHelpers\nleafletData\nleafletDirectiveControlsHelpers\nleafletEvents\nleafletGeoJsonHelpers\nleafletHelpers\nleafletIterators\nleafletLayerHelpers\nleafletLegendHelpers\nleafletMapDefaults\nleafletMarkersHelpers\nleafletPathsHelpers\nleafletWatchHelpers}"] 
+
+
+ }
