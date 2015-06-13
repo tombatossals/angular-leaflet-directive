@@ -1,7 +1,7 @@
 angular.module("leaflet-directive").directive('markers',
     function ($log, $rootScope, $q, leafletData, leafletHelpers, leafletMapDefaults,
-      leafletMarkersHelpers, leafletMarkerEvents, leafletIterators, leafletWatchHelpers,
-      leafletDirectiveControlsHelpers) {
+              leafletMarkersHelpers, leafletMarkerEvents, leafletIterators, leafletWatchHelpers,
+              leafletDirectiveControlsHelpers) {
     //less terse vars to helpers
     var isDefined = leafletHelpers.isDefined,
         errorHeader = leafletHelpers.errorHeader,
@@ -45,7 +45,7 @@ angular.module("leaflet-directive").directive('markers',
         // The marker is automatically added to the map depending on the visibility
         // of the layer, so we only have to open the popup if the marker is in the map
         if (!doIndividualWatch && map.hasLayer(marker) && model.focus === true) {
-            leafletMarkersHelpers.manageOpenPopup(marker, model);
+            leafletMarkersHelpers.manageOpenPopup(marker, model, map);
         }
         return true;
     };
@@ -102,7 +102,7 @@ angular.module("leaflet-directive").directive('markers',
                     // We do not have a layer attr, so the marker goes to the map layer
                     map.addLayer(marker);
                     if (!watchOptions.individual.doWatch && model.focus === true) {
-                        leafletMarkersHelpers.manageOpenPopup(marker, model);
+                        leafletMarkersHelpers.manageOpenPopup(marker, model, map);
                     }
                 }
                 var pathToMarker = Helpers.getObjectDotPath(maybeLayerName? [maybeLayerName, newName]: [newName]);
@@ -111,16 +111,16 @@ angular.module("leaflet-directive").directive('markers',
                         watchOptions.individual.doWatch);
                 }
 
-                listenMarkerEvents(marker, model, leafletScope, watchOptions.individual.doWatch);
+                listenMarkerEvents(marker, model, leafletScope, watchOptions.individual.doWatch, map);
                 leafletMarkerEvents.bindEvents(marker, pathToMarker, model, leafletScope, layerName);
             }
         }
     };
     var _seeWhatWeAlreadyHave = function(markerModels, oldMarkerModels, lMarkers, isEqual, cb){
         var hasLogged = false,
-          equals = false,
-          oldMarker,
-          newMarker;
+            equals = false,
+            oldMarker,
+            newMarker;
 
         var doCheckOldModel =  isDefined(oldMarkerModels);
         for (var name in lMarkers) {
@@ -130,19 +130,19 @@ angular.module("leaflet-directive").directive('markers',
             }
 
             if(doCheckOldModel){
-              //might want to make the option (in watch options) to disable deep checking
-              //ie the options to only check !== (reference check) instead of angular.equals (slow)
-              newMarker = markerModels[name];
-              oldMarker = oldMarkerModels[name];
-              equals = angular.equals(newMarker,oldMarker) && isEqual;
+                //might want to make the option (in watch options) to disable deep checking
+                //ie the options to only check !== (reference check) instead of angular.equals (slow)
+                newMarker = markerModels[name];
+                oldMarker = oldMarkerModels[name];
+                equals = angular.equals(newMarker,oldMarker) && isEqual;
             }
             if (!isDefined(markerModels) ||
                 !Object.keys(markerModels).length ||
                 !isDefined(markerModels[name]) ||
                 !Object.keys(markerModels[name]).length ||
                 equals) {
-                    if(cb && Helpers.isFunction(cb))
-                        cb(newMarker, oldMarker, name);
+                if(cb && Helpers.isFunction(cb))
+                    cb(newMarker, oldMarker, name);
             }
         }
     };
@@ -152,7 +152,7 @@ angular.module("leaflet-directive").directive('markers',
                 $log.debug(errorHeader + '[marker] is deleting marker: ' + lMarkerName);
                 deleteMarker(lMarkers[lMarkerName], map, layers);
                 delete lMarkers[lMarkerName];
-        });
+            });
     };
 
     var _getNewModelsToSkipp =  function(newModels, oldModels, lMarkers){
@@ -161,7 +161,7 @@ angular.module("leaflet-directive").directive('markers',
             function(newMarker, oldMarker, lMarkerName){
                 $log.debug(errorHeader + '[marker] is already rendered, marker: ' + lMarkerName);
                 skips[lMarkerName] = newMarker;
-        });
+            });
         return skips;
     };
 
@@ -193,7 +193,7 @@ angular.module("leaflet-directive").directive('markers',
 
                 // backwards compat
                 if(isDefined(attrs.watchMarkers))
-                  watchOptions.doWatch = watchOptions.individual.doWatch =
+                    watchOptions.doWatch = watchOptions.individual.doWatch =
                         (!isDefined(attrs.watchMarkers) || Helpers.isTruthy(attrs.watchMarkers));
 
                 var isNested = (isDefined(attrs.markersNested) && Helpers.isTruthy(attrs.markersNested));

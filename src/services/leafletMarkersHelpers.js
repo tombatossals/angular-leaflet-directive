@@ -1,7 +1,4 @@
-angular.module("leaflet-directive")
-.service('leafletMarkersHelpers', function ($rootScope, $timeout, leafletHelpers, $log, $compile,
-                                            leafletGeoJsonHelpers) {
-
+angular.module("leaflet-directive").service('leafletMarkersHelpers', function ($rootScope, $timeout, leafletHelpers, $log, $compile, leafletGeoJsonHelpers) {
     var isDefined = leafletHelpers.isDefined,
         defaultTo = leafletHelpers.defaultTo,
         MarkerClusterPlugin = leafletHelpers.MarkerClusterPlugin,
@@ -119,47 +116,59 @@ angular.module("leaflet-directive")
         }
     };
 
-    var _manageOpenPopup = function (marker, markerData) {
-        marker.openPopup();
+    var adjustPopupPan = function(marker, map) {
+        var containerHeight = marker._popup._container.offsetHeight,
+            layerPos = new L.Point(marker._popup._containerLeft, -containerHeight - marker._popup._containerBottom),
+            containerPos = map.layerPointToContainerPoint(layerPos);
+        if (containerPos !== null) {
+            marker._popup._adjustPan();
+        }
+    };
 
+    var compilePopup = function(marker, markerScope) {
+        $compile(marker._popup._contentNode)(markerScope);
+    };
+
+    var updatePopup = function (marker, markerScope, map) {
+        //The innerText should be more than 1 once angular has compiled.
+        //We need to keep trying until angular has compiled before we _updateLayout and _updatePosition
+        //This should take care of any scenario , eg ngincludes, whatever.
+        //Is there a better way to check for this?
+        if (marker._popup._contentNode.innerText.length < 1) {
+            $timeout(function () {
+                updatePopup(marker, markerScope, map);
+            });
+        }
+
+        //cause a reflow - this is also very important - if we don't do this then the widths are from before $compile
+        var reflow = marker._popup._contentNode.offsetWidth;
+
+        marker._popup._updateLayout();
+        marker._popup._updatePosition();
+
+        if (marker._popup.options.autoPan) {
+            adjustPopupPan(marker, map);
+        }
+
+        //using / returning reflow so jshint doesn't moan
+        return reflow;
+    };
+
+    var _manageOpenPopup = function (marker, markerData, map) {
         // The marker may provide a scope returning function used to compile the message
         // default to $rootScope otherwise
         var markerScope = angular.isFunction(markerData.getMessageScope) ? markerData.getMessageScope() : $rootScope,
             compileMessage = isDefined(markerData.compileMessage) ? markerData.compileMessage : true;
 
-        var compileAndUpdatePopup = function (popup) {
-            if (!isDefined(popup) || !isDefined(popup._contentNode)) {
-                return;
+        if (compileMessage) {
+            if (!isDefined(marker._popup) || !isDefined(marker._popup._contentNode)) {
+                $log.error(errorHeader + 'Popup is invalid or does not have any content.');
+                return false;
             }
 
-            var updatePopup = function (popup) {
-                popup._updateLayout();
-                popup._updatePosition();
-                if (popup.options.autoPan) {
-                    popup._adjustPan();
-                }
-            };
-
-            $compile(popup._contentNode)(markerScope);
-
-            // In case of an ng-include, we need to update the content after template load
-            if (popup._contentNode.innerHTML.indexOf("ngInclude") > -1) {
-                var unregister = markerScope.$on('$includeContentLoaded', function () {
-                    $timeout(function () {
-                        updatePopup(popup);
-                        unregister();
-                    });
-                });
-            }
-            else {
-                // We need to wait until after the next draw in order to get the correct width
-                $timeout(function () {
-                    updatePopup(popup);
-                });
-            }
-        };
-        if (compileMessage)
-            compileAndUpdatePopup(marker.getPopup());
+            compilePopup(marker, markerScope);
+            updatePopup(marker, markerData, map);
+        }
     };
 
     var _manageOpenLabel = function (marker, markerData) {
@@ -242,13 +251,15 @@ angular.module("leaflet-directive")
             groups[groupName].addLayer(marker);
         },
 
-        listenMarkerEvents: function (marker, markerData, leafletScope) {
+        listenMarkerEvents: function (marker, markerData, leafletScope, doWatch, map) {
             //these should be deregistered on destroy .. possible leake
             //handles should not be closures since they will need to be removed
             marker.on("popupopen", function (/* event */) {
                 safeApply(leafletScope, function () {
-                    markerData.focus = true;
-                    _manageOpenPopup(marker, markerData);//needed since markerData is now a copy
+                    if (isDefined(marker._popup) || isDefined(marker._popup._contentNode)) {
+                        markerData.focus = true;
+                        _manageOpenPopup(marker, markerData, map);//needed since markerData is now a copy
+                    }
                 });
             });
             marker.on("popupclose", function (/* event */) {
@@ -344,7 +355,7 @@ angular.module("leaflet-directive")
                     // The marker is automatically added to the map depending on the visibility
                     // of the layer, so we only have to open the popup if the marker is in the map
                     if (map.hasLayer(marker) && markerData.focus === true) {
-                        _manageOpenPopup(marker, markerData);
+                        _manageOpenPopup(marker, markerData, map);
                     }
                 }
 
@@ -442,7 +453,7 @@ angular.module("leaflet-directive")
                 // The markerData.focus property must be true so we update if there wasn't a previous value or it wasn't true
                 if (markerData.focus === true && ( !isDefined(oldMarkerData.focus) || oldMarkerData.focus === false) || (isInitializing && markerData.focus === true)) {
                     // Reopen the popup when focus is still true
-                    _manageOpenPopup(marker, markerData);
+                    _manageOpenPopup(marker, markerData, map);
                     updatedFocus = true;
                 }
 
