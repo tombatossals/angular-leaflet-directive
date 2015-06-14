@@ -1,5 +1,5 @@
 /*!
-*  angular-leaflet-directive 0.8.3 2015-06-14
+*  angular-leaflet-directive 0.8.4 2015-06-14
 *  angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps
 *  git: https://github.com/tombatossals/angular-leaflet-directive
 */
