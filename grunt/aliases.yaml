@@ -87,20 +87,29 @@ travis:
  - 'test-unit'
 
 bump-@:
+ - 'changelog'
  - 'bump-only'
  - 'default'
+ - 'graph'
  - 'bump-commit'
 
 bump-@-minor:
+ - 'changelog'
  - 'bump-only:minor'
  - 'default'
+ - 'graph'
  - 'bump-commit'
 
 bump-@-major:
+ - 'changelog'
  - 'bump-only:major'
  - 'default'
+ - 'graph'
  - 'bump-commit'
 
 examples:
  - 'shell:examples'
  - 'concat:examples'
+
+graph:
+ - 'angular_architecture_graph'

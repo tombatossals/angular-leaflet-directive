@@ -1,3 +1,17 @@
+<a name"0.8.4"></a>
+### 0.8.4 (2015-06-14)
+
+
+#### Bug Fixes
+
+* **popups position markers:** POST BUILD/MERGE popups position after being compiled. Refactored open popup fun ([0b885666](https://github.com/tombatossals/angular-leaflet-directive/commit/0b885666))
+
+
+#### Features
+
+* **graphs:** architecture png graphs in dist/architecture/** ([f00fcd3d](https://github.com/tombatossals/angular-leaflet-directive/commit/f00fcd3d))
+
+
 <a name"0.8.3"></a>
 ### 0.8.3 (2015-06-11)
 
