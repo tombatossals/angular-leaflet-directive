@@ -13,7 +13,8 @@ angular.module("leaflet-directive").directive('controls', function ($log, leafle
             var isDefined = leafletHelpers.isDefined,
                 createLayer = leafletLayerHelpers.createLayer,
                 leafletScope  = controller.getLeafletScope(),
-                controls = leafletScope.controls;
+                controls = leafletScope.controls,
+                errorHeader = leafletHelpers.errorHeader + ' [Controls] ';
 
             controller.getMap().then(function(map) {
                 if (isDefined(L.Control.Draw) && isDefined(controls.draw)) {
@@ -37,7 +38,7 @@ angular.module("leaflet-directive").directive('controls', function ($log, leafle
                         var fullscreenControl = new L.Control.Fullscreen(controls.fullscreen);
                         map.addControl(fullscreenControl);
                     } else {
-                        $log.error('[AngularJS - Leaflet] Fullscreen plugin is not loaded.');
+                        $log.error(errorHeader + ' Fullscreen plugin is not loaded.');
                     }
                 }
 
@@ -60,13 +61,13 @@ angular.module("leaflet-directive").directive('controls', function ($log, leafle
                                     map.addControl(minimapControl);
                                 }
                             } else {
-                                $log.warn('[AngularJS - Leaflet] Layer could not be created.');
+                                $log.warn(errorHeader + ' Layer could not be created.');
                             }
                         } else {
-                            $log.warn('[AngularJS - Leaflet] Layer option should be defined.');
+                            $log.warn(errorHeader +' Layer option should be defined.');
                         }
                     } else {
-                        $log.error('[AngularJS - Leaflet] Minimap plugin is not loaded.');
+                        $log.error(errorHeader + ' Minimap plugin is not loaded.');
                     }
                 }
 
