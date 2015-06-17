@@ -381,6 +381,18 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
                 }
             }
         },
+        AGSBaseLayerPlugin: {
+            isLoaded: function() {
+                return L.esri !== undefined && L.esri.basemapLayer !== undefined;
+            },
+            is: function (layer) {
+                if (this.isLoaded()) {
+                    return layer instanceof L.esri.basemapLayer;
+                } else {
+                    return false;
+                }
+            }
+        },
         AGSLayerPlugin: {
             isLoaded: function() {
                 return lvector !== undefined && lvector.AGS !== undefined;

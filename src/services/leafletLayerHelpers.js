@@ -155,6 +155,15 @@ angular.module("leaflet-directive")
                 return L.tileLayer.chinaProvider(type, params.options);
             }
         },
+        agsBase: {
+            mustHaveLayer : true,
+            createLayer: function (params) {
+                if (!Helpers.AGSBaseLayerPlugin.isLoaded()) {
+                    return;
+                }
+                return L.esri.basemapLayer(params.layer, params.options);
+            }
+        },
         ags: {
             mustHaveUrl: true,
             createLayer: function(params) {

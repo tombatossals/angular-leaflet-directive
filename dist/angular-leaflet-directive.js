@@ -1,5 +1,5 @@
 /*!
-*  angular-leaflet-directive 0.8.4 2015-06-16
+*  angular-leaflet-directive 0.8.4 2015-06-17
 *  angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps
 *  git: https://github.com/tombatossals/angular-leaflet-directive
 */
@@ -894,6 +894,18 @@ angular.module("leaflet-directive").factory('leafletHelpers', ["$q", "$log", fun
                 }
             }
         },
+        AGSBaseLayerPlugin: {
+            isLoaded: function() {
+                return L.esri !== undefined && L.esri.basemapLayer !== undefined;
+            },
+            is: function (layer) {
+                if (this.isLoaded()) {
+                    return layer instanceof L.esri.basemapLayer;
+                } else {
+                    return false;
+                }
+            }
+        },
         AGSLayerPlugin: {
             isLoaded: function() {
                 return lvector !== undefined && lvector.AGS !== undefined;
@@ -1338,6 +1350,15 @@ angular.module("leaflet-directive")
                     return;
                 }
                 return L.tileLayer.chinaProvider(type, params.options);
+            }
+        },
+        agsBase: {
+            mustHaveLayer : true,
+            createLayer: function (params) {
+                if (!Helpers.AGSBaseLayerPlugin.isLoaded()) {
+                    return;
+                }
+                return L.esri.basemapLayer(params.layer, params.options);
             }
         },
         ags: {
