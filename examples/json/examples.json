@@ -409,6 +409,14 @@
             "id": "/layers/esri-image-layer-example",
             "extUrl": "0227-layers-esri-image-layer-example.html",
             "title": "Esri ArcGIS Image Layer"
+        },
+        {
+            "date": "2015-06-18T20:41:21.801Z",
+            "section": "layers",
+            "onlyStandAlone": false,
+            "id": "/layers/esri-clustered-layer-example",
+            "extUrl": "0228-layers-esri-clustered-layer-example.html",
+            "title": "Esri ArcGIS Clustered Layer"
         }
     ],
     "paths": [

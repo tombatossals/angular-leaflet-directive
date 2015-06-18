@@ -43,7 +43,8 @@
     "Leaflet.fullscreen": "http://github.com/Leaflet/Leaflet.fullscreen/archive/v0.0.4.tar.gz",
     "Leaflet.PolylineDecorator": "bbecquet/Leaflet.PolylineDecorator",
     "ionrangeslider": "~1.9.3",
-    "leaflet-minimap": "~2.2.0"
+    "leaflet-minimap": "~2.2.0",
+    "esri-leaflet-clustered-feature-layer": "~1.0.0-rc.4"
   },
   "overrides": {
     "Leaflet.utfgrid": {
