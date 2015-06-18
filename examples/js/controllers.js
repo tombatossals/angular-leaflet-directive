@@ -1557,7 +1557,7 @@ var app = angular.module('webapp');
                 }
             });
         }]);
-        app.controller("LayersEsriTileMapLayerController", [ "$scope", function($scope) {
+        app.controller("LayersEsriTiledMapLayerController", [ "$scope", function($scope) {
             angular.extend($scope, {
                 center: {
 	            	lat: 30.70,
@@ -1568,13 +1568,13 @@ var app = angular.module('webapp');
                     baselayers: {
 				    	historic: {
 					    	name: "Historic Topographic Maps",
-					        type: "agsTile",
+					        type: "agsTiled",
 					        url: "http://services.arcgisonline.com/ArcGIS/rest/services/USA_Topo_Maps/MapServer",
 					        visible: false
 				    	},
                         navigation: {
 					    	name: "World Navigation Charts",
-					        type: "agsTile",
+					        type: "agsTiled",
 					        url: "http://services.arcgisonline.com/ArcGIS/rest/services/Specialty/World_Navigation_Charts/MapServer",
 					        visible: false
 				    	}

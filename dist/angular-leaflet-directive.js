@@ -930,7 +930,7 @@ angular.module("leaflet-directive").factory('leafletHelpers', ["$q", "$log", fun
                 }
             }
         },
-        AGSTileMapLayerPlugin: {
+        AGSTiledMapLayerPlugin: {
             isLoaded: function() {
                 return L.esri !== undefined && L.esri.tiledMapLayer !== undefined;
             },
@@ -1415,10 +1415,10 @@ angular.module("leaflet-directive")
                 return L.esri.featureLayer(params.url, params.options);
             }
         },
-        agsTile: {
+        agsTiled: {
             mustHaveUrl: true,
             createLayer: function(params) {
-                if (!Helpers.AGSTileMapLayerPlugin.isLoaded()) {
+                if (!Helpers.AGSTiledMapLayerPlugin.isLoaded()) {
                     return;
                 }
                 return L.esri.tiledMapLayer(params.url, params.options);

@@ -395,12 +395,12 @@
             "title": "Esri ArcGIS Feature Layer"
         },
         {
-            "date": "2015-06-18T16:56:48.557Z",
+            "date": "2015-06-18T17:25:44.179Z",
             "section": "layers",
             "onlyStandAlone": false,
-            "id": "/layers/esri-tile-map-layer-example",
-            "extUrl": "0226-layers-esri-tile-map-layer-example.html",
-            "title": "Esri ArcGIS Tile Map Layer"
+            "id": "/layers/esri-tiled-map-layer-example",
+            "extUrl": "0226-layers-esri-tiled-map-layer-example.html",
+            "title": "Esri ArcGIS Tiled Map Layer"
         }
     ],
     "paths": [

@@ -417,7 +417,7 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
                 }
             }
         },
-        AGSTileMapLayerPlugin: {
+        AGSTiledMapLayerPlugin: {
             isLoaded: function() {
                 return L.esri !== undefined && L.esri.tiledMapLayer !== undefined;
             },

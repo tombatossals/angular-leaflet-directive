@@ -194,10 +194,10 @@ angular.module("leaflet-directive")
                 return L.esri.featureLayer(params.url, params.options);
             }
         },
-        agsTile: {
+        agsTiled: {
             mustHaveUrl: true,
             createLayer: function(params) {
-                if (!Helpers.AGSTileMapLayerPlugin.isLoaded()) {
+                if (!Helpers.AGSTiledMapLayerPlugin.isLoaded()) {
                     return;
                 }
                 return L.esri.tiledMapLayer(params.url, params.options);
