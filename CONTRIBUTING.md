@@ -17,6 +17,9 @@ Code style
 * We use a [editorconfig](http://editorconfig.org/) file to define indentation, codification, and type of end of line of the archives.
 * The style guide we try to use is the [Airbnb Javascript Style Guide](https://github.com/airbnb/javascript).
 
+Commit Messages
+----------
+* We use the [AngularJS Git Commit Guidelines](https://github.com/angular/angular.js/blob/master/CONTRIBUTING.md#-git-commit-guidelines) - please adhere to these in all commit messages
 
 Software development life-cycle
 -------------------------------
