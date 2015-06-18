@@ -954,6 +954,18 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
                 }
             }
         },
+        AGSImageMapLayerPlugin: {
+            isLoaded: function () {
+                return L.esri !== undefined && L.esri.imageMapLayer !== undefined;
+            },
+            is: function (layer) {
+                if (this.isLoaded()) {
+                    return layer instanceof L.esri.imageMapLayer;
+                } else {
+                    return false;
+                }
+            }
+        },
         YandexLayerPlugin: {
             isLoaded: function() {
                 return angular.isDefined(L.Yandex);
@@ -1431,6 +1443,15 @@ angular.module("leaflet-directive")
                     return;
                 }
                 return L.esri.dynamicMapLayer(params.url, params.options);
+            }
+        },
+        agsImage: {
+            mustHaveUrl: true,
+            createLayer: function(params) {
+                if (!Helpers.AGSImageMapLayerPlugin.isLoaded()) {
+                    return;
+                }
+                return L.esri.imageMapLayer(params.url, params.options);
             }
         },
         markercluster: {

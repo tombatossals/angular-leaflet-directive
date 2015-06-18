@@ -212,6 +212,15 @@ angular.module("leaflet-directive")
                 return L.esri.dynamicMapLayer(params.url, params.options);
             }
         },
+        agsImage: {
+            mustHaveUrl: true,
+            createLayer: function(params) {
+                if (!Helpers.AGSImageMapLayerPlugin.isLoaded()) {
+                    return;
+                }
+                return L.esri.imageMapLayer(params.url, params.options);
+            }
+        },
         markercluster: {
             mustHaveUrl: false,
             createLayer: function(params) {

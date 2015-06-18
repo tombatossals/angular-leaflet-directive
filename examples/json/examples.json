@@ -401,6 +401,14 @@
             "id": "/layers/esri-tiled-map-layer-example",
             "extUrl": "0226-layers-esri-tiled-map-layer-example.html",
             "title": "Esri ArcGIS Tiled Map Layer"
+        },
+        {
+            "date": "2015-06-18T17:39:19.817Z",
+            "section": "layers",
+            "onlyStandAlone": false,
+            "id": "/layers/esri-image-layer-example",
+            "extUrl": "0227-layers-esri-image-layer-example.html",
+            "title": "Esri ArcGIS Image Layer"
         }
     ],
     "paths": [
