@@ -429,6 +429,18 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
                 }
             }
         },
+        AGSDynamicMapLayerPlugin: {
+            isLoaded: function () {
+                return L.esri !== undefined && L.esri.dynamicMapLayer !== undefined;
+            },
+            is: function (layer) {
+                if (this.isLoaded()) {
+                    return layer instanceof L.esri.dynamicMapLayer;
+                } else {
+                    return false;
+                }
+            }
+        },
         YandexLayerPlugin: {
             isLoaded: function() {
                 return angular.isDefined(L.Yandex);
@@ -436,18 +448,6 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
             is: function(layer) {
                 if (this.isLoaded()) {
                     return layer instanceof L.Yandex;
-                } else {
-                    return false;
-                }
-            }
-        },
-        DynamicMapLayerPlugin: {
-            isLoaded: function () {
-                return L.esri !== undefined && L.esri.dynamicMapLayer !== undefined;
-            },
-            is: function (layer) {
-                if (this.isLoaded()) {
-                    return layer instanceof L.esri.dynamicMapLayer;
                 } else {
                     return false;
                 }

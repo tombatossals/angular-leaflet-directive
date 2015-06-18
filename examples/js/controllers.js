@@ -1323,7 +1323,7 @@ var app = angular.module('webapp');
                     baselayers: {
 				    	world: {
 					    	name: "Imagery",
-					        type: "dynamic",
+					        type: "agsDynamic",
 					        url: "http://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer",
 					        visible: false,
 					        layerOptions: {
@@ -1334,7 +1334,7 @@ var app = angular.module('webapp');
 				    	},
 				    	topo: {
 					    	name: "World Topographic",
-					        type: "dynamic",
+					        type: "agsDynamic",
 					        url: "http://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer",
 					        visible: false,
 					        layerOptions: {

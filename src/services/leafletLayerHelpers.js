@@ -203,10 +203,10 @@ angular.module("leaflet-directive")
                 return L.esri.tiledMapLayer(params.url, params.options);
             }
         },
-        dynamic: {
+        agsDynamic: {
             mustHaveUrl: true,
             createLayer: function(params) {
-                if (!Helpers.DynamicMapLayerPlugin.isLoaded()) {
+                if (!Helpers.AGSDynamicMapLayerPlugin.isLoaded()) {
                     return;
                 }
                 return L.esri.dynamicMapLayer(params.url, params.options);

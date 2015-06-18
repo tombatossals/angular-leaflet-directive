@@ -942,6 +942,18 @@ angular.module("leaflet-directive").factory('leafletHelpers', ["$q", "$log", fun
                 }
             }
         },
+        AGSDynamicMapLayerPlugin: {
+            isLoaded: function () {
+                return L.esri !== undefined && L.esri.dynamicMapLayer !== undefined;
+            },
+            is: function (layer) {
+                if (this.isLoaded()) {
+                    return layer instanceof L.esri.dynamicMapLayer;
+                } else {
+                    return false;
+                }
+            }
+        },
         YandexLayerPlugin: {
             isLoaded: function() {
                 return angular.isDefined(L.Yandex);
@@ -949,18 +961,6 @@ angular.module("leaflet-directive").factory('leafletHelpers', ["$q", "$log", fun
             is: function(layer) {
                 if (this.isLoaded()) {
                     return layer instanceof L.Yandex;
-                } else {
-                    return false;
-                }
-            }
-        },
-        DynamicMapLayerPlugin: {
-            isLoaded: function () {
-                return L.esri !== undefined && L.esri.dynamicMapLayer !== undefined;
-            },
-            is: function (layer) {
-                if (this.isLoaded()) {
-                    return layer instanceof L.esri.dynamicMapLayer;
                 } else {
                     return false;
                 }
@@ -1424,10 +1424,10 @@ angular.module("leaflet-directive")
                 return L.esri.tiledMapLayer(params.url, params.options);
             }
         },
-        dynamic: {
+        agsDynamic: {
             mustHaveUrl: true,
             createLayer: function(params) {
-                if (!Helpers.DynamicMapLayerPlugin.isLoaded()) {
+                if (!Helpers.AGSDynamicMapLayerPlugin.isLoaded()) {
                     return;
                 }
                 return L.esri.dynamicMapLayer(params.url, params.options);
