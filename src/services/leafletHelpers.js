@@ -198,6 +198,12 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
             }
         },
 
+        MiniMapControlPlugin: {
+            isLoaded: function() {
+                return angular.isDefined(L.Control.MiniMap);
+            }
+        },
+
         AwesomeMarkersPlugin: {
             isLoaded: function() {
                 return angular.isDefined(L.AwesomeMarkers) && angular.isDefined(L.AwesomeMarkers.Icon);
@@ -370,6 +376,18 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
             is: function(layer) {
                 if (this.isLoaded()) {
                     return layer instanceof L.GeoJSON.WFS;
+                } else {
+                    return false;
+                }
+            }
+        },
+        AGSBaseLayerPlugin: {
+            isLoaded: function() {
+                return L.esri !== undefined && L.esri.basemapLayer !== undefined;
+            },
+            is: function (layer) {
+                if (this.isLoaded()) {
+                    return layer instanceof L.esri.basemapLayer;
                 } else {
                     return false;
                 }

@@ -25,10 +25,10 @@ angular.module("leaflet-directive")
         utfgrid.on('click', function(e) {
             $rootScope.$broadcast('leafletDirectiveMap.utfgridClick', e);
         });
-        
+
         utfgrid.on('mousemove', function(e) {
             $rootScope.$broadcast('leafletDirectiveMap.utfgridMousemove', e);
-        });        
+        });
 
         return utfgrid;
     };
@@ -43,7 +43,13 @@ angular.module("leaflet-directive")
         mapbox: {
             mustHaveKey: true,
             createLayer: function(params) {
-                var url = '//{s}.tiles.mapbox.com/v3/' + params.key + '/{z}/{x}/{y}.png';
+                var version = 3;
+                if(isDefined(params.options.version) && params.options.version === 4) {
+                    version = params.options.version;
+                }
+                var url = version === 3?
+                    '//{s}.tiles.mapbox.com/v3/' + params.key + '/{z}/{x}/{y}.png':
+                    '//api.tiles.mapbox.com/v4/' + params.key + '/{z}/{x}/{y}.png?access_token=' + params.apiKey;
                 return L.tileLayer(url, params.options);
             }
         },
@@ -147,6 +153,15 @@ angular.module("leaflet-directive")
                     return;
                 }
                 return L.tileLayer.chinaProvider(type, params.options);
+            }
+        },
+        agsBase: {
+            mustHaveLayer : true,
+            createLayer: function (params) {
+                if (!Helpers.AGSBaseLayerPlugin.isLoaded()) {
+                    return;
+                }
+                return L.esri.basemapLayer(params.layer, params.options);
             }
         },
         ags: {
@@ -343,6 +358,7 @@ angular.module("leaflet-directive")
             type: layerDefinition.layerType,
             bounds: layerDefinition.bounds,
             key: layerDefinition.key,
+            apiKey: layerDefinition.apiKey,
             pluginOptions: layerDefinition.pluginOptions,
             user: layerDefinition.user
         };

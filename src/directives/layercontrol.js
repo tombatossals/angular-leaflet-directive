@@ -1,7 +1,85 @@
-angular.module("leaflet-directive").directive('layercontrol', function ($log, leafletData, leafletHelpers) {
+angular.module("leaflet-directive").directive('opacityControl', function($log, leafletData, leafletHelpers) {
+    return {
+        scope: false,
+        restrict: 'A',
+        require: '^layercontrol',
+        transclude: false,
+        replace: false,
+        link: function(scope, element) {
+            var isDefined = leafletHelpers.isDefined,
+                op;
+
+            scope.$watch(function() {
+                return scope.layerProperties[scope.layer.name];
+            }, function(layerProperties) {
+                if(!isDefined(layerProperties)) {
+                    return;
+                }
+
+                op = layerProperties.opacity;
+
+                if(isDefined(element.ionRangeSlider)) {
+                    var input = '<input type="text" class="lf-opacity-control" data-key="' + scope.layer.index + '" value="' + op + '"/>';
+                    input = angular.element(input).appendTo(element);
+
+                    input.ionRangeSlider({
+                        min: 0,
+                        step: 1,
+                        max: 100,
+                        prettify: false,
+                        hasGrid: false,
+                        hideMinMax: false
+                    });
+                    scope.$watch(function() {
+                        return scope.layerProperties[scope.layer.name].opacityControl;
+                    }, function() {
+                        if(scope.layer.visible && layerProperties.opacityControl) {
+                            element.show();
+                            input.ionRangeSlider('update', {
+                                from: op,
+                                onChange: function(val) {
+                                    leafletData.getMap().then(function(map) {
+                                        leafletData.getLayers().then(function(leafletLayers) {
+                                            var key = val.input.data().key;
+                                            var ly;
+                                            for(var k in scope.layers.overlays) {
+                                                if(scope.layers.overlays[k].index === key) {
+                                                    ly = leafletLayers.overlays[k];
+                                                    break;
+                                                }
+                                            }
+                                            if(map.hasLayer(ly)) {
+                                                layerProperties.opacity = val.input.val();
+                                                if(ly.setOpacity) {
+                                                    ly.setOpacity(val.input.val()/100);
+                                                }
+                                                if(ly.getLayers && ly.eachLayer) {
+                                                    ly.eachLayer(function(lay) {
+                                                        if(lay.setOpacity) {
+                                                            lay.setOpacity(val.input.val()/100);
+                                                        }
+                                                    });
+                                                }
+                                            }
+                                        });
+                                    });
+                                }
+                            });
+                        } else {
+                            element.hide();
+                        }
+                    });
+                } else {
+                    $log.warn('[AngularJS - Leaflet] Ion Slide Range Plugin is not loaded');
+                }
+            });
+        }
+    };
+}).directive('layercontrol', function ($filter, $log, leafletData, leafletHelpers) {
   return {
     restrict: "E",
     scope: {
+        setIcons: '='
     },
     replace: true,
     transclude: false,
@@ -12,15 +90,17 @@ angular.module("leaflet-directive").directive('layercontrol', function ($log, le
         isDefined = leafletHelpers.isDefined;
       angular.extend($scope, {
         baselayer: '',
+        layerProperties: {},
         icons: {
-          uncheck: 'fa fa-check-square-o',
-          check: 'fa fa-square-o',
+          uncheck: 'fa fa-square-o',
+          check: 'fa fa-check-square-o',
           radio: 'fa fa-dot-circle-o',
           unradio: 'fa fa-circle-o',
           up: 'fa fa-angle-up',
           down: 'fa fa-angle-down',
           open: 'fa fa-angle-double-down',
-          close: 'fa fa-angle-double-up'
+          close: 'fa fa-angle-double-up',
+          toggleLegend: 'fa fa-pencil-square-o'
         },
         changeBaseLayer: function(key, e) {
           leafletHelpers.safeApply($scope, function(scp) {
@@ -68,19 +148,21 @@ angular.module("leaflet-directive").directive('layercontrol', function ($log, le
             layer.index = isDefined(layer.index)? layer.index:idx+delta+1;
         },
         toggleOpacity: function(e, layer) {
-            $log.debug('Event', e);
             if(layer.visible) {
                 var el = angular.element(e.currentTarget);
                 el.toggleClass($scope.icons.close + ' ' + $scope.icons.open);
                 el = el.parents('.lf-row').find('.lf-opacity');
-                el.toggle('fast', function() {
-                    safeApply($scope, function() {
-                        layer.opacityControl = !layer.opacityControl;
-                    });
-                });
+                //el.toggle();
+                $scope.layerProperties[layer.name].opacityControl = !$scope.layerProperties[layer.name].opacityControl;
             }
             e.stopPropagation();
             e.preventDefault();
+        },
+        toggleLegend: function(layer) {
+            $scope.layerProperties[layer.name].showLegend = !$scope.layerProperties[layer.name].showLegend;
+        },
+        showLegend: function(layer) {
+            return layer.legend && $scope.layerProperties[layer.name].showLegend;
         },
         unsafeHTML: function(html) {
           return $sce.trustAsHtml(html);
@@ -114,15 +196,15 @@ angular.module("leaflet-directive").directive('layercontrol', function ($log, le
                         '<input class="lf-control-layers-selector" type="checkbox" ng-show="false" ng-model="layer.visible"/> ' +
                         '<i class="lf-icon lf-icon-check" ng-class="layer.icon"></i>' +
                         '<div class="lf-text">{{layer.name}}</div>' +
-                        '<div class="lf-icons">' +
-                            '<i class="lf-icon lf-up" ng-class="icons.up" ng-click="moveLayer(layer, layer.index - orderNumber, $event)"></i> ' +
-                            '<i class="lf-icon lf-down" ng-class="icons.down" ng-click="moveLayer(layer, layer.index + orderNumber, $event)"></i> ' +
-                            '<i class="lf-icon lf-open" ng-class="layer.opacityControl? icons.close:icons.open" ng-click="toggleOpacity($event, layer)"></i>' +
-                        '</div>' +
                     '</label>'+
-                    '<div class="lf-legend" ng-if="layer.legend" ng-bind-html="unsafeHTML(layer.legend)"></div>' +
-                    '<div class="lf-opacity" ng-show="layer.visible &amp;&amp; layer.opacityControl">' +
-                        '<input type="text" class="lf-opacity-control" name="lf-opacity-control" data-key="{{layer.index}}" />' +
+                    '<div class="lf-icons">' +
+                        '<i class="lf-icon lf-up" ng-class="icons.up" ng-click="moveLayer(layer, layer.index - orderNumber, $event)"></i> ' +
+                        '<i class="lf-icon lf-down" ng-class="icons.down" ng-click="moveLayer(layer, layer.index + orderNumber, $event)"></i> ' +
+                        '<i class="lf-icon lf-toggle-legend" ng-class="icons.toggleLegend" ng-if="layer.legend" ng-click="toggleLegend(layer)"></i> ' +
+                        '<i class="lf-icon lf-open" ng-class="layer.opacityControl? icons.close:icons.open" ng-click="toggleOpacity($event, layer)"></i>' +
+                    '</div>' +
+                    '<div class="lf-legend" ng-if="showLegend(layer)" ng-bind-html="unsafeHTML(layer.legend)"></div>' +
+                    '<div class="lf-opacity" opacity-control>' +
                     '</div>' +
                 '</div>' +
             '</div>' +
@@ -158,80 +240,26 @@ angular.module("leaflet-directive").directive('layercontrol', function ($log, le
                 var overlaysArray = [];
                 leafletData.getLayers().then(function(leafletLayers) {
                     for(var key in newOverlayLayers) {
-                        newOverlayLayers[key].icon = scope.icons[(newOverlayLayers[key].visible? 'uncheck':'check')];
+                        newOverlayLayers[key].icon = scope.icons[(newOverlayLayers[key].visible? 'check':'uncheck')];
                         overlaysArray.push(newOverlayLayers[key]);
+                        if(!isDefined(scope.layerProperties[newOverlayLayers[key].name])) {
+                            scope.layerProperties[newOverlayLayers[key].name] = {
+                                opacity: isDefined(newOverlayLayers[key].layerOptions.opacity)? newOverlayLayers[key].layerOptions.opacity*100:100,
+                                opacityControl: false,
+                                showLegend: true
+                            };
+                        }
                         if(isDefined(newOverlayLayers[key].index) && leafletLayers.overlays[key].setZIndex) {
                             leafletLayers.overlays[key].setZIndex(newOverlayLayers[key].index);
                         }
                     }
                 });
-
-                var unreg = scope.$watch(function() {
-                    if(element.children().size() > 1) {
-                        element.find('.lf-overlays').trigger('resize');
-                        return element.find('.lf-opacity').size() === Object.keys(layers.overlays).length;
-                    }
-                }, function(el) {
-                    if(el === true) {
-                        if(isDefined(element.find('.lf-opacity-control').ionRangeSlider)) {
-                            element.find('.lf-opacity-control').each(function(idx, inp) {
-                                var delta =  Object.keys(layers.baselayers).length,
-                                    lyAux;
-                                for(var key in scope.overlaysArray) {
-                                    if(scope.overlaysArray[key].index === idx+delta+1) {
-                                        lyAux = scope.overlaysArray[key];
-                                    }
-                                }
-
-                                var input = angular.element(inp),
-                                    op = isDefined(lyAux) && isDefined(lyAux.layerOptions)?
-                                        lyAux.layerOptions.opacity:undefined;
-                                input.ionRangeSlider({
-                                    min: 0,
-                                    from: isDefined(op)? Math.ceil(op*100):100,
-                                    step: 1,
-                                    max: 100,
-                                    prettify: false,
-                                    hasGrid: false,
-                                    hideMinMax: true,
-                                    onChange: function(val) {
-                                        leafletData.getLayers().then(function(leafletLayers) {
-                                            var key = val.input.data().key;
-                                            var ly, layer;
-                                            for(var k in layers.overlays) {
-                                                if(layers.overlays[k].index === key) {
-                                                    ly = leafletLayers.overlays[k];
-                                                    layer = layers.overlays[k];
-                                                    break;
-                                                }
-                                            }
-                                            if(map.hasLayer(ly)) {
-                                                layer.layerOptions = isDefined(layer.layerOptions)? layer.layerOptions:{};
-                                                layer.layerOptions.opacity = val.input.val()/100;
-                                                if(ly.setOpacity) {
-                                                    ly.setOpacity(val.input.val()/100);
-                                                }
-                                                if(ly.getLayers && ly.eachLayer) {
-                                                    ly.eachLayer(function(lay) {
-                                                        if(lay.setOpacity) {
-                                                            lay.setOpacity(val.input.val()/100);
-                                                        }
-                                                    });
-                                                }
-                                            }
-                                        });
-                                    }
-                                });
-                            });
-                        } else {
-                            $log.warn('[AngularJS - Leaflet] Ion Slide Range Plugin is not loaded');
-                        }
-                        unreg();
-                    }
-                });
-
                 scope.overlaysArray = overlaysArray;
             }, true);
+        });
+
+        scope.$watch('setIcons', function(newIcons) {
+            angular.extend(scope.icons, newIcons);
         });
     }
   };
