@@ -393,6 +393,14 @@
             "id": "/layers/esri-feature-layer-example",
             "extUrl": "0225-layers-esri-feature-layer-example.html",
             "title": "Esri ArcGIS Feature Layer"
+        },
+        {
+            "date": "2015-06-18T16:56:48.557Z",
+            "section": "layers",
+            "onlyStandAlone": false,
+            "id": "/layers/esri-tile-map-layer-example",
+            "extUrl": "0226-layers-esri-tile-map-layer-example.html",
+            "title": "Esri ArcGIS Tile Map Layer"
         }
     ],
     "paths": [

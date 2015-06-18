@@ -417,6 +417,18 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
                 }
             }
         },
+        AGSTileMapLayerPlugin: {
+            isLoaded: function() {
+                return L.esri !== undefined && L.esri.tiledMapLayer !== undefined;
+            },
+            is: function (layer) {
+                if (this.isLoaded()) {
+                    return layer instanceof L.esri.tiledMapLayer;
+                } else {
+                    return false;
+                }
+            }
+        },
         YandexLayerPlugin: {
             isLoaded: function() {
                 return angular.isDefined(L.Yandex);
