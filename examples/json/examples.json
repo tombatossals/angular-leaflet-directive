@@ -411,12 +411,20 @@
             "title": "Esri ArcGIS Image Layer"
         },
         {
-            "date": "2015-06-18T20:41:21.801Z",
+            "date": "2015-06-18T21:34:46.359Z",
             "section": "layers",
             "onlyStandAlone": false,
             "id": "/layers/esri-clustered-layer-example",
             "extUrl": "0228-layers-esri-clustered-layer-example.html",
             "title": "Esri ArcGIS Clustered Layer"
+        },
+        {
+            "date": "2015-06-18T21:39:54.350Z",
+            "section": "layers",
+            "onlyStandAlone": false,
+            "id": "/layers/esri-heatmap-layer-example",
+            "extUrl": "0229-layers-esri-heatmap-layer-example.html",
+            "title": "Esri ArcGIS Heatmap Layer"
         }
     ],
     "paths": [

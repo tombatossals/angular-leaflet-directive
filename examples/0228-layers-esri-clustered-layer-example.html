@@ -5,13 +5,13 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <script src="../bower_components/angular/angular.min.js"></script>
     <script src="../bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="../bower_components/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
     <script src="../bower_components/esri-leaflet/dist/esri-leaflet.js"></script>
+    <script src="../bower_components/esri-leaflet-clustered-feature-layer/dist/esri-leaflet-clustered-feature-layer.js"></script>
     <script src="../dist/angular-leaflet-directive.min.js"></script>
     <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
-    <script src="../bower_components/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
     <link rel="stylesheet" href="../bower_components/leaflet.markercluster/dist/MarkerCluster.css" />
     <link rel="stylesheet" href="../bower_components/leaflet.markercluster/dist/MarkerCluster.Default.css" />
-    <script src="../bower_components/esri-leaflet-clustered-feature-layer/dist/esri-leaflet-clustered-feature-layer.js"></script>
     <script>
         var app = angular.module("demoapp", ["leaflet-directive"]);
         app.controller("LayersEsriClusteredLayerController", [ "$scope", function($scope) {

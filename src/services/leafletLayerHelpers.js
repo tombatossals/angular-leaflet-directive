@@ -226,7 +226,7 @@ angular.module("leaflet-directive")
             mustHaveUrl: true,
             createLayer: function(params) {
                 if (!Helpers.AGSClusteredLayerPlugin.isLoaded()) {
-                    $log.error(errorHeader + ' The esri plugins is not loaded.');
+                    $log.error(errorHeader + ' The esri clustered layer plugin is not loaded.');
                     return;
                 }
 
@@ -235,6 +235,21 @@ angular.module("leaflet-directive")
                     return;
                 }
                 return L.esri.clusteredFeatureLayer(params.url, params.options);
+            }
+        },
+        agsHeatmap: {
+            mustHaveUrl: true,
+            createLayer: function(params) {
+                if (!Helpers.AGSHeatmapLayerPlugin.isLoaded()) {
+                    $log.error(errorHeader + ' The esri heatmap layer plugin is not loaded.');
+                    return;
+                }
+
+                if(!Helpers.HeatLayerPlugin.isLoaded()) {
+                    $log.error(errorHeader + ' The heatlayer plugin is not loaded.');
+                    return;
+                }
+                return L.esri.heatmapFeatureLayer(params.url, params.options);
             }
         },
         markercluster: {
