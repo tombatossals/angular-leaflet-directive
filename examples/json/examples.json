@@ -385,6 +385,14 @@
             "id": "/layers/esri-base-layer-example",
             "extUrl": "0224-layers-esri-base-layer-example.html",
             "title": "Esri ArcGIS Basemap Layer"
+        },
+        {
+            "date": "2015-06-18T16:34:29.457Z",
+            "section": "layers",
+            "onlyStandAlone": false,
+            "id": "/layers/esri-feature-layer-example",
+            "extUrl": "0225-layers-esri-feature-layer-example.html",
+            "title": "Esri ArcGIS Feature Layer"
         }
     ],
     "paths": [

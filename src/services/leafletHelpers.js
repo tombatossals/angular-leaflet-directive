@@ -405,6 +405,18 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
                 }
             }
         },
+        AGSFeatureLayerPlugin: {
+            isLoaded: function() {
+                return L.esri !== undefined && L.esri.featureLayer !== undefined;
+            },
+            is: function (layer) {
+                if (this.isLoaded()) {
+                    return layer instanceof L.esri.featureLayer;
+                } else {
+                    return false;
+                }
+            }
+        },
         YandexLayerPlugin: {
             isLoaded: function() {
                 return angular.isDefined(L.Yandex);

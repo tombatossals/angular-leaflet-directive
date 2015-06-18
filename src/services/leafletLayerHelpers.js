@@ -185,6 +185,15 @@ angular.module("leaflet-directive")
                 return layer;
             }
         },
+        agsFeature: {
+            mustHaveUrl: true,
+            createLayer: function(params) {
+                if (!Helpers.AGSFeatureLayerPlugin.isLoaded()) {
+                    return;
+                }
+                return L.esri.featureLayer(params.url, params.options);
+            }
+        },
         dynamic: {
             mustHaveUrl: true,
             createLayer: function(params) {

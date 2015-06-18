@@ -1,5 +1,5 @@
 /*!
-*  angular-leaflet-directive 0.8.4 2015-06-17
+*  angular-leaflet-directive 0.8.4 2015-06-18
 *  angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps
 *  git: https://github.com/tombatossals/angular-leaflet-directive
 */
@@ -918,6 +918,18 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
                 }
             }
         },
+        AGSFeatureLayerPlugin: {
+            isLoaded: function() {
+                return L.esri !== undefined && L.esri.featureLayer !== undefined;
+            },
+            is: function (layer) {
+                if (this.isLoaded()) {
+                    return layer instanceof L.esri.featureLayer;
+                } else {
+                    return false;
+                }
+            }
+        },
         YandexLayerPlugin: {
             isLoaded: function() {
                 return angular.isDefined(L.Yandex);
@@ -1380,6 +1392,15 @@ angular.module("leaflet-directive")
                     this.setMap(null);
                 };
                 return layer;
+            }
+        },
+        agsFeature: {
+            mustHaveUrl: true,
+            createLayer: function(params) {
+                if (!Helpers.AGSFeatureLayerPlugin.isLoaded()) {
+                    return;
+                }
+                return L.esri.featureLayer(params.url, params.options);
             }
         },
         dynamic: {
