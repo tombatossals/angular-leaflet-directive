@@ -1,5 +1,5 @@
 /*!
-*  angular-leaflet-directive 0.8.4 2015-06-18
+*  angular-leaflet-directive 0.8.4 2015-06-19
 *  angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps
 *  git: https://github.com/tombatossals/angular-leaflet-directive
 */
@@ -2063,7 +2063,7 @@ angular.module("leaflet-directive").service('leafletMarkersHelpers', function ($
                 // The marker is automatically added to the map depending on the visibility
                 // of the layer, so we only have to open the popup if the marker is in the map
                 if (map.hasLayer(marker) && markerData.focus === true) {
-                    _manageOpenPopup(marker, markerData, map);
+                    marker.openPopup();
                 }
             }
 
@@ -2161,7 +2161,7 @@ angular.module("leaflet-directive").service('leafletMarkersHelpers', function ($
             // The markerData.focus property must be true so we update if there wasn't a previous value or it wasn't true
             if (markerData.focus === true && ( !isDefined(oldMarkerData.focus) || oldMarkerData.focus === false) || (isInitializing && markerData.focus === true)) {
                 // Reopen the popup when focus is still true
-                _manageOpenPopup(marker, markerData, map);
+                marker.openPopup();
                 updatedFocus = true;
             }
 
@@ -3816,7 +3816,7 @@ angular.module("leaflet-directive").directive('markers',
         // The marker is automatically added to the map depending on the visibility
         // of the layer, so we only have to open the popup if the marker is in the map
         if (!doIndividualWatch && map.hasLayer(marker) && model.focus === true) {
-            leafletMarkersHelpers.manageOpenPopup(marker, model, map);
+            marker.openPopup();
         }
         return true;
     };
@@ -3874,7 +3874,7 @@ angular.module("leaflet-directive").directive('markers',
                     // We do not have a layer attr, so the marker goes to the map layer
                     map.addLayer(marker);
                     if (!watchOptions.individual.doWatch && model.focus === true) {
-                        leafletMarkersHelpers.manageOpenPopup(marker, model, map);
+                        marker.openPopup();
                     }
                 }
 
