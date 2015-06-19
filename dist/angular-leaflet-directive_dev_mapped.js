@@ -1,5 +1,5 @@
 /*!
-*  angular-leaflet-directive 0.8.4 2015-06-18
+*  angular-leaflet-directive 0.8.4 2015-06-19
 *  angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps
 *  git: https://github.com/tombatossals/angular-leaflet-directive
 */
@@ -968,7 +968,6 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
         },
         AGSClusteredLayerPlugin: {
             isLoaded: function () {
-                $log.debug('Esri', L.esri);
                 return L.esri !== undefined && L.esri.clusteredFeatureLayer !== undefined;
             },
             is: function (layer) {
@@ -981,7 +980,6 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
         },
         AGSHeatmapLayerPlugin: {
             isLoaded: function () {
-                $log.debug('Esri', L.esri);
                 return L.esri !== undefined && L.esri.heatmapFeatureLayer !== undefined;
             },
             is: function (layer) {
@@ -1449,6 +1447,7 @@ angular.module("leaflet-directive")
             mustHaveUrl: true,
             createLayer: function(params) {
                 if (!Helpers.AGSFeatureLayerPlugin.isLoaded()) {
+                    $log.warn(errorHeader + ' The esri plugin is not loaded.');
                     return;
                 }
                 return L.esri.featureLayer(params.url, params.options);
@@ -1458,6 +1457,7 @@ angular.module("leaflet-directive")
             mustHaveUrl: true,
             createLayer: function(params) {
                 if (!Helpers.AGSTiledMapLayerPlugin.isLoaded()) {
+                    $log.warn(errorHeader + ' The esri plugin is not loaded.');
                     return;
                 }
                 return L.esri.tiledMapLayer(params.url, params.options);
@@ -1467,6 +1467,7 @@ angular.module("leaflet-directive")
             mustHaveUrl: true,
             createLayer: function(params) {
                 if (!Helpers.AGSDynamicMapLayerPlugin.isLoaded()) {
+                    $log.warn(errorHeader + ' The esri plugin is not loaded.');
                     return;
                 }
                 return L.esri.dynamicMapLayer(params.url, params.options);
@@ -1476,6 +1477,7 @@ angular.module("leaflet-directive")
             mustHaveUrl: true,
             createLayer: function(params) {
                 if (!Helpers.AGSImageMapLayerPlugin.isLoaded()) {
+                    $log.warn(errorHeader + ' The esri plugin is not loaded.');
                     return;
                 }
                 return L.esri.imageMapLayer(params.url, params.options);
@@ -1485,12 +1487,12 @@ angular.module("leaflet-directive")
             mustHaveUrl: true,
             createLayer: function(params) {
                 if (!Helpers.AGSClusteredLayerPlugin.isLoaded()) {
-                    $log.error(errorHeader + ' The esri clustered layer plugin is not loaded.');
+                    $log.warn(errorHeader + ' The esri clustered layer plugin is not loaded.');
                     return;
                 }
 
                 if(!Helpers.MarkerClusterPlugin.isLoaded()) {
-                    $log.error(errorHeader + ' The markercluster plugin is not loaded.');
+                    $log.warn(errorHeader + ' The markercluster plugin is not loaded.');
                     return;
                 }
                 return L.esri.clusteredFeatureLayer(params.url, params.options);
@@ -1500,12 +1502,12 @@ angular.module("leaflet-directive")
             mustHaveUrl: true,
             createLayer: function(params) {
                 if (!Helpers.AGSHeatmapLayerPlugin.isLoaded()) {
-                    $log.error(errorHeader + ' The esri heatmap layer plugin is not loaded.');
+                    $log.warn(errorHeader + ' The esri heatmap layer plugin is not loaded.');
                     return;
                 }
 
                 if(!Helpers.HeatLayerPlugin.isLoaded()) {
-                    $log.error(errorHeader + ' The heatlayer plugin is not loaded.');
+                    $log.warn(errorHeader + ' The heatlayer plugin is not loaded.');
                     return;
                 }
                 return L.esri.heatmapFeatureLayer(params.url, params.options);
@@ -1515,7 +1517,7 @@ angular.module("leaflet-directive")
             mustHaveUrl: false,
             createLayer: function(params) {
                 if (!Helpers.MarkerClusterPlugin.isLoaded()) {
-                    $log.error(errorHeader + ' The markercluster plugin is not loaded.');
+                    $log.warn(errorHeader + ' The markercluster plugin is not loaded.');
                     return;
                 }
                 return new L.MarkerClusterGroup(params.options);

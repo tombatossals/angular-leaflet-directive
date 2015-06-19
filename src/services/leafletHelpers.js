@@ -455,7 +455,6 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
         },
         AGSClusteredLayerPlugin: {
             isLoaded: function () {
-                $log.debug('Esri', L.esri);
                 return L.esri !== undefined && L.esri.clusteredFeatureLayer !== undefined;
             },
             is: function (layer) {
@@ -468,7 +467,6 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
         },
         AGSHeatmapLayerPlugin: {
             isLoaded: function () {
-                $log.debug('Esri', L.esri);
                 return L.esri !== undefined && L.esri.heatmapFeatureLayer !== undefined;
             },
             is: function (layer) {
