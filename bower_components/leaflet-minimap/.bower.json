@@ -1,0 +1,14 @@
+{
+  "name": "leaflet-minimap",
+  "homepage": "https://github.com/Norkart/Leaflet-MiniMap",
+  "version": "2.2.0",
+  "_release": "2.2.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "v2.2.0",
+    "commit": "56543fc0cb1f23cd3242b14785d8daadc6aba942"
+  },
+  "_source": "git://github.com/Norkart/Leaflet-MiniMap.git",
+  "_target": "~2.2.0",
+  "_originalSource": "leaflet-minimap"
+}

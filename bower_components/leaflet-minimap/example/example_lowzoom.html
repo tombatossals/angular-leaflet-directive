@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>MiniMap Test - Same zoom limits</title>
+	<meta charset="utf-8" />
+
+	<link rel="stylesheet" href="./fullscreen.css" />
+
+	<!-- Leaflet -->
+	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+	<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet-src.js" type="text/javascript"></script>
+
+	<!-- Leaflet Plugins -->
+	<link rel="stylesheet" href="../src/Control.MiniMap.css" />
+	<script src="../src/Control.MiniMap.js" type="text/javascript"></script>
+
+</head>
+<body>
+		<div id="map" ></div>
+
+	<script type="text/javascript">
+	
+		var map = new L.Map('map');
+		var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+		var osmAttrib='Map data &copy; OpenStreetMap contributors';
+		var osm = new L.TileLayer(osmUrl, {minZoom: 0, maxZoom: 18, attribution: osmAttrib});
+
+		map.addLayer(osm);
+		map.setView(new L.LatLng(59.92448055859924, 10.758276373601069),2);
+		
+		//Plugin magic goes here! Note that you cannot use the same layer object again, as that will confuse the two map controls
+		var osm2 = new L.TileLayer(osmUrl, {minZoom: 0, maxZoom: 18, attribution: osmAttrib });
+		var miniMap = new L.Control.MiniMap(osm2, { toggleDisplay: true }).addTo(map);
+	</script>
+</body>
+</html>
