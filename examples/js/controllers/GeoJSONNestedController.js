@@ -13,6 +13,19 @@
             },
             geojson:{}
         });
+        // Mouse over function, called from the Leaflet Map Events
+        var countryMouseover = function (feature, leafletEvent) {
+            var layer = leafletEvent.target;
+            layer.setStyle({
+                weight: 2,
+                color: '#666',
+                fillColor: 'white'
+            });
+            layer.bringToFront();
+        };
+        $scope.$on("leafletDirectiveGeoJson.mouseover", function(ev, leafletPayload) {
+            countryMouseover(leafletPayload.leafletObject.feature, leafletPayload.leafletEvent);
+        });
         $scope.centerJSON = function(name) {
             leafletData.getMap().then(function(map) {
                 window.leafletMap = map;
@@ -34,6 +47,7 @@
             angular.extend($scope.geojson, {
                 japan: {
                     data: data,
+                    resetStyleOnMouseout: true,
                     style: {
                         fillColor: "green",
                         weight: 2,
@@ -49,6 +63,7 @@
             angular.extend($scope.geojson, {
                 usa:{
                     data: data,
+                    resetStyleOnMouseout: true,
                     style: {
                         fillColor: "blue",
                         weight: 2,

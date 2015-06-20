@@ -736,6 +736,38 @@ var app = angular.module('webapp');
                 }
            });
        }]);
+        app.controller("ControlsMinimapController", [ "$scope", function($scope) {
+            angular.extend($scope, {
+                bogota: {
+                    lat: 4.649,
+                    lng: -74.086,
+                    zoom: 5
+                },
+                tiles: {
+                    name: 'Mapbox Comic',
+                    url: 'http://api.tiles.mapbox.com/v4/{mapid}/{z}/{x}/{y}.png?access_token={apikey}',
+                    type: 'xyz',
+                    options: {
+                        apikey: 'pk.eyJ1IjoiYnVmYW51dm9scyIsImEiOiJLSURpX0pnIn0.2_9NrLz1U9bpwMQBhVk97Q',
+                        mapid: 'bufanuvols.lpa06kfg'
+                    }
+                },
+                controls: {
+                    minimap: {
+                        layer: {
+                            name: 'Mapbox Comic',
+                            key: 'bufanuvols.lpa06kfg',
+                            apiKey: 'pk.eyJ1IjoiYnVmYW51dm9scyIsImEiOiJLSURpX0pnIn0.2_9NrLz1U9bpwMQBhVk97Q',
+                            type: 'mapbox',
+                            layerParams: {
+                                version: 4
+                            }
+                        },
+                        toggleDisplay: true
+                    }
+                }
+           });
+       }]);
         app.controller("ControlsScaleController", [ "$scope", function($scope) {
             angular.extend($scope, {
                 london: {
@@ -834,6 +866,19 @@ var app = angular.module('webapp');
             },
             geojson:{}
         });
+        // Mouse over function, called from the Leaflet Map Events
+        var countryMouseover = function (feature, leafletEvent) {
+            var layer = leafletEvent.target;
+            layer.setStyle({
+                weight: 2,
+                color: '#666',
+                fillColor: 'white'
+            });
+            layer.bringToFront();
+        };
+        $scope.$on("leafletDirectiveGeoJson.mouseover", function(ev, leafletPayload) {
+            countryMouseover(leafletPayload.leafletObject.feature, leafletPayload.leafletEvent);
+        });
         $scope.centerJSON = function(name) {
             leafletData.getMap().then(function(map) {
                 window.leafletMap = map;
@@ -855,6 +900,7 @@ var app = angular.module('webapp');
             angular.extend($scope.geojson, {
                 japan: {
                     data: data,
+                    resetStyleOnMouseout: true,
                     style: {
                         fillColor: "green",
                         weight: 2,
@@ -870,6 +916,7 @@ var app = angular.module('webapp');
             angular.extend($scope.geojson, {
                 usa:{
                     data: data,
+                    resetStyleOnMouseout: true,
                     style: {
                         fillColor: "blue",
                         weight: 2,
@@ -1185,6 +1232,79 @@ var app = angular.module('webapp');
                     overlays[overlayName] = $scope.definedOverlays[overlayName];
                 }
             };
+        }]);
+        app.controller("LayersEsriBaseMapLayerController", [ "$scope", function($scope) {
+            angular.extend($scope, {
+                bogota: {
+	            	lat: 4.649,
+	                lng: -74.086,
+	                zoom: 5
+	            },
+                markers: {
+                    m1: {
+                        lat: 4.649,
+	                	lng: -74.086,
+                    }
+                },
+                layers: {
+                    baselayers: {
+				    	streets: {
+					    	name: "Streets",
+					        type: "agsBase",
+					        layer: "Streets",
+					        visible: false
+				    	},
+				    	topo: {
+					    	name: "World Topographic",
+					        type: "agsBase",
+					        layer: "Topographic",
+					        visible: false
+				    	},
+                        national: {
+                            name: "National Geographic",
+					        type: "agsBase",
+					        layer: "NationalGeographic",
+					        visible: false
+                        },
+                        oceans: {
+                            name: "Oceans",
+					        type: "agsBase",
+					        layer: "Oceans",
+					        visible: false
+                        },
+                        gray: {
+                            name: "Gray",
+					        type: "agsBase",
+					        layer: "Gray",
+					        visible: false
+                        },
+                        darkgray: {
+                            name: "DarkGray",
+					        type: "agsBase",
+					        layer: "DarkGray",
+					        visible: false
+                        },
+                        imagery: {
+                            name: "Imagery",
+					        type: "agsBase",
+					        layer: "Imagery",
+					        visible: false
+                        },
+                        shadedrelief: {
+                            name: "ShadedRelief",
+					        type: "agsBase",
+					        layer: "ShadedRelief",
+					        visible: false
+                        },
+                        terrain: {
+                            name: "Terrain",
+					        type: "agsBase",
+					        layer: "Terrain",
+					        visible: false
+                        }
+                    },
+                },
+            });
         }]);
         app.controller("LayersEsriDynamicLayerController", [ "$scope", function($scope) {
             angular.extend($scope, {
@@ -2912,11 +3032,11 @@ var app = angular.module('webapp');
             });
         }]);
         app.controller('MixedGeoJSONEventsController', [ "$scope", "$http", function($scope, $http) {
-            $scope.$on("leafletDirectiveMap.geojsonMouseover", function(ev, feature, leafletEvent) {
-                countryMouseover(feature, leafletEvent);
+            $scope.$on("leafletDirectiveGeoJson.mouseover", function(ev, leafletPayload) {
+                countryMouseover(leafletPayload.leafletObject.feature, leafletPayload.leafletEvent);
             });
-            $scope.$on("leafletDirectiveMap.geojsonClick", function(ev, featureSelected, leafletEvent) {
-                countryClick(featureSelected, leafletEvent);
+            $scope.$on("leafletDirectiveGeoJson.click", function(ev, leafletPayload) {
+                countryClick(leafletPayload.leafletObject, leafletPayload.leafletEvent);
             });
             var continentProperties= {
                     "009": {
@@ -2952,6 +3072,7 @@ var app = angular.module('webapp');
                 }
             });
             function countryClick(country, event) {
+                country = country.feature;
                 console.log(country.properties.name);
             }
             // Get a country paint color from the continents array of colors

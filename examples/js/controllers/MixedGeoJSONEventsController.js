@@ -1,9 +1,9 @@
         app.controller('MixedGeoJSONEventsController', [ "$scope", "$http", function($scope, $http) {
-            $scope.$on("leafletDirectiveMap.geojsonMouseover", function(ev, feature, leafletEvent) {
-                countryMouseover(feature, leafletEvent);
+            $scope.$on("leafletDirectiveGeoJson.mouseover", function(ev, leafletPayload) {
+                countryMouseover(leafletPayload.leafletObject.feature, leafletPayload.leafletEvent);
             });
-            $scope.$on("leafletDirectiveMap.geojsonClick", function(ev, featureSelected, leafletEvent) {
-                countryClick(featureSelected, leafletEvent);
+            $scope.$on("leafletDirectiveGeoJson.click", function(ev, leafletPayload) {
+                countryClick(leafletPayload.leafletObject, leafletPayload.leafletEvent);
             });
             var continentProperties= {
                     "009": {
@@ -39,6 +39,7 @@
                 }
             });
             function countryClick(country, event) {
+                country = country.feature;
                 console.log(country.properties.name);
             }
             // Get a country paint color from the continents array of colors
