@@ -5,6 +5,7 @@ angular.module("leaflet-directive")
     var isObject = leafletHelpers.isObject;
     var isArray = leafletHelpers.isArray;
     var isDefined = leafletHelpers.isDefined;
+    var errorHeader = leafletHelpers.errorHeader;
     var $it = leafletIterators;
 
     var utfGridCreateLayer = function(params) {
@@ -185,20 +186,81 @@ angular.module("leaflet-directive")
                 return layer;
             }
         },
-        dynamic: {
+        agsFeature: {
             mustHaveUrl: true,
             createLayer: function(params) {
-                if (!Helpers.DynamicMapLayerPlugin.isLoaded()) {
+                if (!Helpers.AGSFeatureLayerPlugin.isLoaded()) {
+                    $log.warn(errorHeader + ' The esri plugin is not loaded.');
+                    return;
+                }
+                return L.esri.featureLayer(params.url, params.options);
+            }
+        },
+        agsTiled: {
+            mustHaveUrl: true,
+            createLayer: function(params) {
+                if (!Helpers.AGSTiledMapLayerPlugin.isLoaded()) {
+                    $log.warn(errorHeader + ' The esri plugin is not loaded.');
+                    return;
+                }
+                return L.esri.tiledMapLayer(params.url, params.options);
+            }
+        },
+        agsDynamic: {
+            mustHaveUrl: true,
+            createLayer: function(params) {
+                if (!Helpers.AGSDynamicMapLayerPlugin.isLoaded()) {
+                    $log.warn(errorHeader + ' The esri plugin is not loaded.');
                     return;
                 }
                 return L.esri.dynamicMapLayer(params.url, params.options);
+            }
+        },
+        agsImage: {
+            mustHaveUrl: true,
+            createLayer: function(params) {
+                if (!Helpers.AGSImageMapLayerPlugin.isLoaded()) {
+                    $log.warn(errorHeader + ' The esri plugin is not loaded.');
+                    return;
+                }
+                return L.esri.imageMapLayer(params.url, params.options);
+            }
+        },
+        agsClustered: {
+            mustHaveUrl: true,
+            createLayer: function(params) {
+                if (!Helpers.AGSClusteredLayerPlugin.isLoaded()) {
+                    $log.warn(errorHeader + ' The esri clustered layer plugin is not loaded.');
+                    return;
+                }
+
+                if(!Helpers.MarkerClusterPlugin.isLoaded()) {
+                    $log.warn(errorHeader + ' The markercluster plugin is not loaded.');
+                    return;
+                }
+                return L.esri.clusteredFeatureLayer(params.url, params.options);
+            }
+        },
+        agsHeatmap: {
+            mustHaveUrl: true,
+            createLayer: function(params) {
+                if (!Helpers.AGSHeatmapLayerPlugin.isLoaded()) {
+                    $log.warn(errorHeader + ' The esri heatmap layer plugin is not loaded.');
+                    return;
+                }
+
+                if(!Helpers.HeatLayerPlugin.isLoaded()) {
+                    $log.warn(errorHeader + ' The heatlayer plugin is not loaded.');
+                    return;
+                }
+                return L.esri.heatmapFeatureLayer(params.url, params.options);
             }
         },
         markercluster: {
             mustHaveUrl: false,
             createLayer: function(params) {
                 if (!Helpers.MarkerClusterPlugin.isLoaded()) {
-                    $log.error('[AngularJS - Leaflet] The markercluster plugin is not loaded.');
+                    $log.warn(errorHeader + ' The markercluster plugin is not loaded.');
                     return;
                 }
                 return new L.MarkerClusterGroup(params.options);
