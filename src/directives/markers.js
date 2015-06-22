@@ -18,6 +18,27 @@ angular.module("leaflet-directive").directive('markers',
         maybeWatch = leafletWatchHelpers.maybeWatch,
         extendDirectiveControls = leafletDirectiveControlsHelpers.extend;
 
+    var _getLMarker = function(leafletMarkers, name, maybeLayerName){
+        if(!Object.keys(leafletMarkers).length) return;
+        if(maybeLayerName && isString(maybeLayerName)){
+            if(!leafletMarkers[maybeLayerName] || !Object.keys(leafletMarkers[maybeLayerName]).length)
+                return;
+            return leafletMarkers[maybeLayerName][name];
+        }
+        return leafletMarkers[name];
+    };
+
+    var _setLMarker = function(lObject, leafletMarkers, name, maybeLayerName){
+        if(maybeLayerName && isString(maybeLayerName)){
+            if(!isDefined(leafletMarkers[maybeLayerName]))
+                leafletMarkers[maybeLayerName] = {};
+            leafletMarkers[maybeLayerName][name] = lObject;
+        }
+        else
+            leafletMarkers[name] = lObject;
+        return lObject;
+    };
+
     var _maybeAddMarkerToLayer = function(layerName, layers, model, marker, doIndividualWatch, map){
 
         if (!isString(layerName)) {
@@ -64,7 +85,8 @@ angular.module("leaflet-directive").directive('markers',
 
             var model = Helpers.copy(markersToRender[newName]);
             var pathToMarker = Helpers.getObjectDotPath(maybeLayerName? [maybeLayerName, newName]: [newName]);
-            if (!isDefined(leafletMarkers[newName])) {
+            var maybeLMarker = _getLMarker(leafletMarkers,newName, maybeLayerName);
+            if (!isDefined(maybeLMarker)) {
                 //(nmccready) very important to not have model changes when lObject is changed
                 //this might be desirable in some cases but it causes two-way binding to lObject which is not ideal
                 //if it is left as the reference then all changes from oldModel vs newModel are ignored
@@ -75,7 +97,7 @@ angular.module("leaflet-directive").directive('markers',
                     $log.error(errorHeader + ' Received invalid data on the marker ' + newName + '.');
                     continue;
                 }
-                leafletMarkers[newName] = marker;
+                _setLMarker(marker, leafletMarkers, newName, maybeLayerName);
 
                 // Bind message
                 if (isDefined(model.message)) {
@@ -117,7 +139,7 @@ angular.module("leaflet-directive").directive('markers',
                 leafletMarkerEvents.bindEvents(marker, pathToMarker, model, leafletScope, layerName);
             }
             else {
-                updateMarker(model, oldModels[newName], leafletMarkers[newName], pathToMarker, leafletScope, layers, map);
+                updateMarker(model, oldModels[newName], maybeLMarker, pathToMarker, leafletScope, layers, map);
             }
         }
     };
@@ -205,19 +227,27 @@ angular.module("leaflet-directive").directive('markers',
 
                 getLayers().then(function(layers) {
                     var _clean = function(models, oldModels){
+                        if(isNested) {
+                            $it.each(models, function(markerToMaybeDel, layerName) {
+                                _destroy(markerToMaybeDel, oldModels[layerName], leafletMarkers[layerName], map, layers);
+                            });
+                            return;
+                        }
                         _destroy(models, oldModels, leafletMarkers, map, layers);
                     };
 
                     var _create = function(models, oldModels){
                         _clean(models, oldModels);
-                        var skips = _getNewModelsToSkipp(models, oldModels, leafletMarkers);
+                        var skips = null;
                         if(isNested) {
                             $it.each(models, function(markersToAdd, layerName) {
+                                skips = _getNewModelsToSkipp(models[layerName], oldModels[layerName], leafletMarkers[layerName]);
                                 _addMarkers(markersToAdd, oldModels, map, layers, leafletMarkers, leafletScope,
                                     watchOptions, layerName, skips);
                             });
                             return;
                         }
+                        skips = _getNewModelsToSkipp(models, oldModels, leafletMarkers);
                         _addMarkers(models, oldModels, map, layers, leafletMarkers, leafletScope,
                             watchOptions, undefined, skips);
                     };
