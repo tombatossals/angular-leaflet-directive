@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html ng-app="demoApp">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../bower_components/angular/angular.js"></script>
+    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="../bower_components/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+    <script src="../dist/angular-leaflet-directive_dev_mapped.js"></script>
+    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="../bower_components/leaflet.markercluster/dist/MarkerCluster.Default.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        var app = angular.module('demoapp', ['leaflet-directive']);
+
+        app.controller('Ctrl', ['$scope', 'leafletData', function($scope, leafletData) {
+            angular.extend($scope, {
+                center: {
+                    lat: 48.879633,
+                    lng: 2.331717,
+                    zoom: 15
+                },
+                layers: {
+                    baselayers: {
+                        osm: {
+                            name: 'OpenStreetMap',
+                            url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                            type: 'xyz'
+                        }
+                    },
+                    overlays: {
+                        mapdescription: {
+                            name: 'Markers added',
+                            type: 'group',
+                            visible: true
+                        },
+                        points: {
+                            name: 'Points of interest',
+                            type: 'group',
+                            visible: true
+                        }
+                    }
+                },
+                defaultIcon: {},
+                markers: {
+                    "mapdescription": [],
+                    "points": [{
+                        "layer": "points",
+                        "lat": 48.879633,
+                        "lng": 2.331717,
+                        "message": "MALL 1"
+                    }, {
+                        "layer": "points",
+                        "lat": 48.879318,
+                        "lng": 2.33151,
+                        "message": "MALL 2"
+                    }]
+                }
+            });
+
+            $scope.$on("leafletDirectiveMap.click", function(event, args) {
+                var leafEvent = args.leafletEvent;
+                // console.log("before", $scope.markers.mapdescription, $scope.markers.points);
+                $scope.markers.mapdescription.push({
+                    layer: 'mapdescription',
+                    lat: leafEvent.latlng.lat,
+                    lng: leafEvent.latlng.lng,
+                    draggable: true,
+                    icon: ''
+                });
+                // console.log("after", $scope.markers.mapdescription, $scope.markers.points);
+
+            });
+
+            $scope.$on("leafletDirectiveMarker.contextmenu", function(event, args) {
+                var marker_index = parseInt(args.modelName.replace('mapdescription.', ''));
+                $scope.markers.mapdescription.splice(marker_index, 1);
+
+            });
+
+
+        }]);
+    </script>
+</head>
+
+<body ng-controller="Ctrl">
+    <leaflet center="center" markers="markers" markers-nested="true" layers="layers"></leaflet>
+</body>
+
+</html>
