@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html ng-app="demoapp">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="../bower_components/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+    <script src="../bower_components/esri-leaflet/dist/esri-leaflet.js"></script>
+    <script src="../bower_components/esri-leaflet-clustered-feature-layer/dist/esri-leaflet-clustered-feature-layer.js"></script>
+    <script src="../dist/angular-leaflet-directive.min.js"></script>
+    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="../bower_components/leaflet.markercluster/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="../bower_components/leaflet.markercluster/dist/MarkerCluster.Default.css" />
+    <script>
+        var app = angular.module("demoapp", ["leaflet-directive"]);
+        app.controller("LayersEsriClusteredLayerController", [ "$scope", function($scope) {
+            angular.extend($scope, {
+                porland: {
+	            	lat: 45.526,
+	                lng: -122.667,
+	                zoom: 15
+	            },
+                layers: {
+                    baselayers: {
+				    	streets: {
+					    	name: "Streets",
+					        type: "agsBase",
+					        layer: "Streets",
+					        visible: false
+				    	}
+                    },
+                    overlays: {
+                        simple: {
+                            name: "Simple",
+                            type: "agsClustered",
+                            url: "https://services.arcgis.com/rOo16HdIMeOBI4Mb/arcgis/rest/services/Trimet_Transit_Stops/FeatureServer/0",
+                            visible: true
+                        }
+                    }
+                }
+            });
+        }]);
+    </script>
+</head>
+<body ng-controller="LayersEsriClusteredLayerController">
+    <leaflet center="porland" layers="layers" width="100%" height="480px"></leaflet>
+    <h1>Esri ArcGIS Clustered Layer</h1>
+    <p>
+        Visualize dense services as clusters of points with the
+        <a href="https://github.com/Leaflet/Leaflet.markercluster" target="_blank">L.markercluster</a>
+        plugin.
+    </p>
+</body>
+</html>
