@@ -600,9 +600,9 @@ var app = angular.module('webapp');
                       check: "fa fa-toggle-on"
                     }
                 },
-                ripoll: {
-                    lat: 42.20133,
-                    lng: 2.19110,
+                madrid: {
+                    lat: 40.415363,
+                    lng: -3.707398,
                     zoom: 11
                 },
                 markers: {
@@ -646,16 +646,28 @@ var app = angular.module('webapp');
                                 opacity: 0.25,
                                 attribution: "Hillshade layer by GIScience http://www.osm-wms.de",
                                 crs: L.CRS.EPSG900913
-                            }
+                            },
+                            group: "Raster"
                         },
                         fire: {
-                            name: "OpenFireMap",
+                            name: "Fire Stations",
                             type: "xyz",
                             url: "http://openfiremap.org/hytiles/{z}/{x}/{y}.png",
                             layerOptions: {
                                 attribution: "&copy; <a href=\"http://www.openfiremap.org\">OpenFireMap</a> contributors - &copy; <a href=\"http://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors",
                                 continuousWorld: true
-                            }
+                            },
+                            group: "Open Fire Map"
+                        },
+                        em: {
+                            name: "Emergency Rooms",
+                            type: "xyz",
+                            url: "http://openfiremap.org/eytiles/{z}/{x}/{y}.png",
+                            layerOptions: {
+                                attribution: "&copy; <a href=\"http://www.openfiremap.org\">OpenFireMap</a> contributors - &copy; <a href=\"http://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors",
+                                continuousWorld: true
+                            },
+                            group: "Open Fire Map"
                         }
                     }
                 },
@@ -664,7 +676,7 @@ var app = angular.module('webapp');
                 },
                 addFireLayer: function() {
                     this.layers.overlays.fire = {
-                        name: "OpenFireMap",
+                        name: "Fire Stations",
                         type: "xyz",
                         url: "http://openfiremap.org/hytiles/{z}/{x}/{y}.png",
                         layerOptions: {
@@ -675,6 +687,23 @@ var app = angular.module('webapp');
                 },
                 existsFireLayer: function() {
                     return ("fire" in this.layers.overlays);
+                },
+                removeEmergencyRooms: function() {
+                    delete this.layers.overlays.em;
+                },
+                addEmergencyRooms: function() {
+                    this.layers.overlays.em = {
+                        name: "Emergency Rooms",
+                        type: "xyz",
+                        url: "http://openfiremap.org/eytiles/{z}/{x}/{y}.png",
+                        layerOptions: {
+                            attribution: "&copy; <a href=\"http://www.openfiremap.org\">OpenFireMap</a> contributors - &copy; <a href=\"http://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors",
+                            continuousWorld: true
+                        }
+                    };
+                },
+                existsEmergencyRooms: function() {
+                    return ("em" in this.layers.overlays);
                 },
                 removeHillshadeLayer: function() {
                     delete this.layers.overlays.hillshade;

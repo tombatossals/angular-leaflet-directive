@@ -4,6 +4,7 @@ angular.module("leaflet-directive").directive('layercontrol', function ($filter,
         scope: {
             icons: '=?',
             autoHideOpacity: '=?', // Hide other opacity controls when one is activated.
+            showGroups: '=?', // Hide other opacity controls when one is activated.
             title: '@',
             baseTitle: '@',
             overlaysTitle: '@'
@@ -17,6 +18,7 @@ angular.module("leaflet-directive").directive('layercontrol', function ($filter,
             isDefined = leafletHelpers.isDefined;
             angular.extend($scope, {
                 baselayer: '',
+                oldGroup: '',
                 layerProperties: {},
                 rangeIsSupported: leafletHelpers.rangeIsSupported(),
                 changeBaseLayer: function(key, e) {
@@ -143,7 +145,8 @@ angular.module("leaflet-directive").directive('layercontrol', function ($filter,
             '<div class="lf-overlays">' +
                 '<h5 class="lf-title" ng-if="overlaysTitle">{{ overlaysTitle }}</h5>' +
                 '<div class="lf-container">' +
-                    '<div class="lf-row" ng-repeat="layer in overlaysArray | orderBy:\'index\':order" ng-init="initIndex(layer, $index)">' +
+                    '<div class="lf-row" ng-repeat="layer in (o = (overlaysArray | orderBy:\'index\':order))" ng-init="initIndex(layer, $index)">' +
+                        '<h6 ng-if="showGroups &amp;&amp; layer.group &amp;&amp; layer.group != o[$index-1].group">{{ layer.group }}</h6>' +
                         '<label class="lf-icon-ol">' +
                             '<input class="lf-control-layers-selector" type="checkbox" ng-show="false" ng-model="layer.visible"/> ' +
                             '<i class="lf-icon lf-icon-check" ng-class="layer.icon"></i>' +
