@@ -3330,64 +3330,15 @@ angular.module("leaflet-directive")
     };
 }]);
 
-angular.module("leaflet-directive").directive('opacityControl', ["$log", "leafletData", "leafletHelpers", function($log, leafletData, leafletHelpers) {
-    return {
-        scope: false,
-        restrict: 'EA',
-        require: '^layercontrol',
-        transclude: false,
-        replace: true,
-        controller: ["$scope", function($scope) {
-            angular.extend($scope, {
-                rangeIsSupported: leafletHelpers.rangeIsSupported()
-            });
-        }],
-        template:
-            '<div class="clearfix" ng-if="layerProperties[layer.name].opacityControl">' +
-                '<label ng-if="rangeIsSupported" class="pull-left" style="width: 50%">0</label>' +
-                '<label ng-if="rangeIsSupported" class="pull-left text-right" style="width: 50%">100</label>' +
-                '<input ng-if="rangeIsSupported" class="clearfix" type="range" min="0" max="100" class="lf-opacity-control" ' +
-                    'ng-model="layerProperties[layer.name].opacity"/>' +
-                '<h6 ng-if="!rangeIsSupported">Range is not supported in this browser</h6>' +
-            '</div>',
-        link: function(scope /*, element*/) {
-            scope.$watch(function() {
-                return scope.layerProperties[scope.layer.name].opacity;
-            }, function(op) {
-                leafletData.getMap().then(function(map) {
-                    leafletData.getLayers().then(function(leafletLayers) {
-                        var ly;
-                        for(var k in scope.layers.overlays) {
-                            if(scope.layers.overlays[k] === scope.layer) {
-                                ly = leafletLayers.overlays[k];
-                                break;
-                            }
-                        }
-
-                        if(map.hasLayer(ly)) {
-                            if(ly.setOpacity) {
-                                ly.setOpacity(op/100);
-                            }
-                            if(ly.getLayers && ly.eachLayer) {
-                                ly.eachLayer(function(lay) {
-                                    if(lay.setOpacity) {
-                                        lay.setOpacity(op/100);
-                                    }
-                                });
-                            }
-                        }
-                    });
-                });
-            });
-        }
-    };
-}]);
-
 angular.module("leaflet-directive").directive('layercontrol', ["$filter", "$log", "leafletData", "leafletHelpers", function ($filter, $log, leafletData, leafletHelpers) {
     return {
         restrict: "E",
         scope: {
-            icons: '=?'
+            icons: '=?',
+            autoHideOpacity: '=?', // Hide other opacity controls when one is activated.
+            title: '@',
+            baseTitle: '@',
+            overlaysTitle: '@'
         },
         replace: true,
         transclude: false,
@@ -3399,6 +3350,7 @@ angular.module("leaflet-directive").directive('layercontrol', ["$filter", "$log"
             angular.extend($scope, {
                 baselayer: '',
                 layerProperties: {},
+                rangeIsSupported: leafletHelpers.rangeIsSupported(),
                 changeBaseLayer: function(key, e) {
                     leafletHelpers.safeApply($scope, function(scp) {
                         scp.baselayer = key;
@@ -3446,6 +3398,11 @@ angular.module("leaflet-directive").directive('layercontrol', ["$filter", "$log"
                 },
                 toggleOpacity: function(e, layer) {
                     if(layer.visible) {
+                        if($scope.autoHideOpacity && !$scope.layerProperties[layer.name].opacityControl) {
+                            for(var k in $scope.layerProperties) {
+                                $scope.layerProperties[k].opacityControl = false;
+                            }
+                        }
                         $scope.layerProperties[layer.name].opacityControl = !$scope.layerProperties[layer.name].opacityControl;
                     }
                     e.stopPropagation();
@@ -3461,7 +3418,35 @@ angular.module("leaflet-directive").directive('layercontrol', ["$filter", "$log"
                     return $sce.trustAsHtml(html);
                 },
                 getOpacityIcon: function(layer) {
-                    return $scope.layerProperties[layer.name].opacityControl? $scope.icons.close:$scope.icons.open;
+                    return layer.visible && $scope.layerProperties[layer.name].opacityControl? $scope.icons.close:$scope.icons.open;
+                },
+
+                changeOpacity: function(layer) {
+                    var op = $scope.layerProperties[layer.name].opacity;
+                    leafletData.getMap().then(function(map) {
+                        leafletData.getLayers().then(function(leafletLayers) {
+                            var ly;
+                            for(var k in $scope.layers.overlays) {
+                                if($scope.layers.overlays[k] === layer) {
+                                    ly = leafletLayers.overlays[k];
+                                    break;
+                                }
+                            }
+
+                            if(map.hasLayer(ly)) {
+                                if(ly.setOpacity) {
+                                    ly.setOpacity(op/100);
+                                }
+                                if(ly.getLayers && ly.eachLayer) {
+                                    ly.eachLayer(function(lay) {
+                                        if(lay.setOpacity) {
+                                            lay.setOpacity(op/100);
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    });
                 }
             });
 
@@ -3475,7 +3460,9 @@ angular.module("leaflet-directive").directive('layercontrol', ["$filter", "$log"
         }],
         template:
         '<div class="angular-leaflet-control-layers" ng-show="overlaysArray.length">' +
+            '<h4 ng-if="title">{{ title }}</h4>' +
             '<div class="lf-baselayers">' +
+                '<h5 class="lf-title" ng-if="baseTitle">{{ baseTitle }}</h5>' +
                 '<div class="lf-row" ng-repeat="(key, layer) in layers.baselayers">' +
                     '<label class="lf-icon-bl" ng-click="changeBaseLayer(key, $event)">' +
                         '<input class="leaflet-control-layers-selector" type="radio" name="lf-radio" ' +
@@ -3486,6 +3473,7 @@ angular.module("leaflet-directive").directive('layercontrol', ["$filter", "$log"
                 '</div>' +
             '</div>' +
             '<div class="lf-overlays">' +
+                '<h5 class="lf-title" ng-if="overlaysTitle">{{ overlaysTitle }}</h5>' +
                 '<div class="lf-container">' +
                     '<div class="lf-row" ng-repeat="layer in overlaysArray | orderBy:\'index\':order" ng-init="initIndex(layer, $index)">' +
                         '<label class="lf-icon-ol">' +
@@ -3500,7 +3488,13 @@ angular.module("leaflet-directive").directive('layercontrol', ["$filter", "$log"
                             '<i class="lf-icon lf-open" ng-class="getOpacityIcon(layer)" ng-click="toggleOpacity($event, layer)"></i>' +
                         '</div>' +
                         '<div class="lf-legend" ng-if="showLegend(layer)" ng-bind-html="unsafeHTML(layer.legend)"></div>' +
-                        '<div class="lf-opacity" opacity-control></div>' +
+                        '<div class="lf-opacity clearfix" ng-if="layer.visible &amp;&amp; layerProperties[layer.name].opacityControl">' +
+                            '<label ng-if="rangeIsSupported" class="pull-left" style="width: 50%">0</label>' +
+                            '<label ng-if="rangeIsSupported" class="pull-left text-right" style="width: 50%">100</label>' +
+                            '<input ng-if="rangeIsSupported" class="clearfix" type="range" min="0" max="100" class="lf-opacity-control" ' +
+                                'ng-model="layerProperties[layer.name].opacity" ng-change="changeOpacity(layer)"/>' +
+                            '<h6 ng-if="!rangeIsSupported">Range is not supported in this browser</h6>' +
+                        '</div>' +
                     '</div>' +
                 '</div>' +
             '</div>' +

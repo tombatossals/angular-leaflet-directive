@@ -155,7 +155,8 @@
       }
     </style>
     <leaflet center="ripoll" layers="layers" height="480px" width="100%">
-        <layercontrol order="normal" icons="layercontrol.icons"></layercontrol>
+        <layercontrol order="normal" icons="layercontrol.icons" auto-hide-opacity="true"
+            title="Layer Manager" base-title="Base Layers" overlays-title="Overlays Layers"></layercontrol>
     </leaflet>
     <h1>Dynamic addition and deletion of Overlays control</h1>
     <button type="button" class="btn btn-default" ng-click="removeHillshadeLayer()" ng-disabled="!existsHillshadeLayer()">Remove Hillshade Overlay</button>
