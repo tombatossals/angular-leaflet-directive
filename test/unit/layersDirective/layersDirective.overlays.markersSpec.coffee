@@ -73,8 +73,9 @@ describe 'Directive: leaflet: layers.overlays.markers', ->
     #                    console.debug("TESTTTTTT!!!")
     #                    leafletMarkersHelper.log markers.m1, true
 
-                    expect(Object.keys(markers).length).toEqual 2
-                    markerToCheck = markers.m1
+                    expect(Object.keys(markers).length).toEqual 1
+                    expect(Object.keys(markers.cars).length).toEqual 2
+                    markerToCheck = markers.cars.m1
                     expect(markerToCheck instanceof L.Marker).toBe true
                     expect(map.hasLayer(markerToCheck)).toBe true
                     expect(layers.overlays.cars.hasLayer(markerToCheck)).toBe true

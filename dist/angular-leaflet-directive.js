@@ -46,6 +46,7 @@ angular.module("leaflet-directive", []).directive('leaflet',
                 genDispatchMapEvent = leafletEvents.genDispatchMapEvent,
                 mapEvents = leafletEvents.getAvailableMapEvents();
 
+            scope.mapId =  attrs.id;
             leafletData.setDirectiveControls({}, attrs.id);
 
             // Set width and height utility functions
@@ -2422,7 +2423,7 @@ angular.module("leaflet-directive").service('leafletMarkersHelpers', ["$rootScop
         addMarkerWatcher: function (marker, name, leafletScope, layers, map, isDeepWatch) {
             var markerWatchPath = Helpers.getObjectArrayPath("markers." + name);
             isDeepWatch = defaultTo(isDeepWatch, true);
-            //TODO:break up this 200 line function to be readable (nmccready)
+
             var clearWatch = leafletScope.$watch(markerWatchPath, function(markerData, oldMarkerData) {
                 if (!isDefined(markerData)) {
                     _deleteMarker(marker, map, layers);
@@ -3910,6 +3911,27 @@ angular.module("leaflet-directive").directive('markers',
         maybeWatch = leafletWatchHelpers.maybeWatch,
         extendDirectiveControls = leafletDirectiveControlsHelpers.extend;
 
+    var _getLMarker = function(leafletMarkers, name, maybeLayerName){
+        if(!Object.keys(leafletMarkers).length) return;
+        if(maybeLayerName && isString(maybeLayerName)){
+            if(!leafletMarkers[maybeLayerName] || !Object.keys(leafletMarkers[maybeLayerName]).length)
+                return;
+            return leafletMarkers[maybeLayerName][name];
+        }
+        return leafletMarkers[name];
+    };
+
+    var _setLMarker = function(lObject, leafletMarkers, name, maybeLayerName){
+        if(maybeLayerName && isString(maybeLayerName)){
+            if(!isDefined(leafletMarkers[maybeLayerName]))
+                leafletMarkers[maybeLayerName] = {};
+            leafletMarkers[maybeLayerName][name] = lObject;
+        }
+        else
+            leafletMarkers[name] = lObject;
+        return lObject;
+    };
+
     var _maybeAddMarkerToLayer = function(layerName, layers, model, marker, doIndividualWatch, map){
 
         if (!isString(layerName)) {
@@ -3956,7 +3978,8 @@ angular.module("leaflet-directive").directive('markers',
 
             var model = Helpers.copy(markersToRender[newName]);
             var pathToMarker = Helpers.getObjectDotPath(maybeLayerName? [maybeLayerName, newName]: [newName]);
-            if (!isDefined(leafletMarkers[newName])) {
+            var maybeLMarker = _getLMarker(leafletMarkers,newName, maybeLayerName);
+            if (!isDefined(maybeLMarker)) {
                 //(nmccready) very important to not have model changes when lObject is changed
                 //this might be desirable in some cases but it causes two-way binding to lObject which is not ideal
                 //if it is left as the reference then all changes from oldModel vs newModel are ignored
@@ -3967,7 +3990,7 @@ angular.module("leaflet-directive").directive('markers',
                     $log.error(errorHeader + ' Received invalid data on the marker ' + newName + '.');
                     continue;
                 }
-                leafletMarkers[newName] = marker;
+                _setLMarker(marker, leafletMarkers, newName, maybeLayerName);
 
                 // Bind message
                 if (isDefined(model.message)) {
@@ -4009,7 +4032,7 @@ angular.module("leaflet-directive").directive('markers',
                 leafletMarkerEvents.bindEvents(marker, pathToMarker, model, leafletScope, layerName);
             }
             else {
-                updateMarker(model, oldModels[newName], leafletMarkers[newName], pathToMarker, leafletScope, layers, map);
+                updateMarker(model, oldModels[newName], maybeLMarker, pathToMarker, leafletScope, layers, map);
             }
         }
     };
@@ -4097,19 +4120,27 @@ angular.module("leaflet-directive").directive('markers',
 
                 getLayers().then(function(layers) {
                     var _clean = function(models, oldModels){
+                        if(isNested) {
+                            $it.each(models, function(markerToMaybeDel, layerName) {
+                                _destroy(markerToMaybeDel, oldModels[layerName], leafletMarkers[layerName], map, layers);
+                            });
+                            return;
+                        }
                         _destroy(models, oldModels, leafletMarkers, map, layers);
                     };
 
                     var _create = function(models, oldModels){
                         _clean(models, oldModels);
-                        var skips = _getNewModelsToSkipp(models, oldModels, leafletMarkers);
+                        var skips = null;
                         if(isNested) {
                             $it.each(models, function(markersToAdd, layerName) {
+                                skips = _getNewModelsToSkipp(models[layerName], oldModels[layerName], leafletMarkers[layerName]);
                                 _addMarkers(markersToAdd, oldModels, map, layers, leafletMarkers, leafletScope,
                                     watchOptions, layerName, skips);
                             });
                             return;
                         }
+                        skips = _getNewModelsToSkipp(models, oldModels, leafletMarkers);
                         _addMarkers(models, oldModels, map, layers, leafletMarkers, leafletScope,
                             watchOptions, undefined, skips);
                     };
@@ -4723,8 +4754,11 @@ angular.module("leaflet-directive")
     };
 
     var _genDispatchMapEvent = function(scope, eventName, logic) {
+        // (nmccready) We should consider passing mapId as an argument or using it from scope
         return function(e) {
             // Put together broadcast name
+            // (nmccready) We should consider passing mapId joining mapId to the broadcastName to keep the event unique. Same should be done for all directives so we know what map it comes from.
+            // problem with this is it will cause a minor bump and break backwards compat
             var broadcastName = 'leafletDirectiveMap.' + eventName;
             // Safely broadcast the event
             fire(scope, broadcastName, logic, e, e.target, scope)

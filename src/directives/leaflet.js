@@ -39,6 +39,7 @@ angular.module("leaflet-directive", []).directive('leaflet',
                 genDispatchMapEvent = leafletEvents.genDispatchMapEvent,
                 mapEvents = leafletEvents.getAvailableMapEvents();
 
+            scope.mapId =  attrs.id;
             leafletData.setDirectiveControls({}, attrs.id);
 
             // Set width and height utility functions
