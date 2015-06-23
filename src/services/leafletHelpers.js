@@ -192,6 +192,12 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
             d[id].resolvedDefer = true;
         },
 
+        rangeIsSupported: function() {
+            var testrange = document.createElement('input');
+            testrange.setAttribute('type', 'range');
+            return testrange.type === 'range';
+        },
+
         FullScreenControlPlugin: {
             isLoaded: function() {
                 return angular.isDefined(L.Control.Fullscreen);
