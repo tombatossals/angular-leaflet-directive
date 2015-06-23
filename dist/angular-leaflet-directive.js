@@ -1,5 +1,5 @@
 /*!
-*  angular-leaflet-directive 0.8.4 2015-06-22
+*  angular-leaflet-directive 0.8.4 2015-06-23
 *  angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps
 *  git: https://github.com/tombatossals/angular-leaflet-directive
 */
@@ -2249,7 +2249,7 @@ angular.module("leaflet-directive").service('leafletMarkersHelpers', ["$rootScop
                 if (isDefined(markerData.label) && isDefined(markerData.label.message)) {
                     if ('label' in oldMarkerData && 'message' in oldMarkerData.label && !angular.equals(markerData.label.message, oldMarkerData.label.message)) {
                         marker.updateLabelContent(markerData.label.message);
-                    } else if (!angular.isFunction(marker.getLabel)) {
+                    } else if (!angular.isFunction(marker.getLabel) || angular.isFunction(marker.getLabel) && !isDefined(marker.getLabel())) {
                         marker.bindLabel(markerData.label.message, markerData.label.options);
                         _manageOpenLabel(marker, markerData);
                     } else {
