@@ -1,5 +1,5 @@
 /*!
-*  angular-leaflet-directive 0.8.4 2015-06-23
+*  angular-leaflet-directive 0.8.4 2015-06-24
 *  angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps
 *  git: https://github.com/tombatossals/angular-leaflet-directive
 */
@@ -3352,6 +3352,7 @@ angular.module("leaflet-directive").directive('layercontrol', ["$filter", "$log"
                 baselayer: '',
                 oldGroup: '',
                 layerProperties: {},
+                groupProperties: {},
                 rangeIsSupported: leafletHelpers.rangeIsSupported(),
                 changeBaseLayer: function(key, e) {
                     leafletHelpers.safeApply($scope, function(scp) {
@@ -3398,6 +3399,9 @@ angular.module("leaflet-directive").directive('layercontrol', ["$filter", "$log"
                     var delta = Object.keys($scope.layers.baselayers).length;
                     layer.index = isDefined(layer.index)? layer.index:idx+delta+1;
                 },
+                initGroup: function(groupName) {
+                    $scope.groupProperties[groupName] = $scope.groupProperties[groupName]? $scope.groupProperties[groupName]:{};
+                },
                 toggleOpacity: function(e, layer) {
                     if(layer.visible) {
                         if($scope.autoHideOpacity && !$scope.layerProperties[layer.name].opacityControl) {
@@ -3422,7 +3426,9 @@ angular.module("leaflet-directive").directive('layercontrol', ["$filter", "$log"
                 getOpacityIcon: function(layer) {
                     return layer.visible && $scope.layerProperties[layer.name].opacityControl? $scope.icons.close:$scope.icons.open;
                 },
-
+                getGroupIcon: function(group) {
+                    return group.visible? $scope.icons.check:$scope.icons.uncheck;
+                },
                 changeOpacity: function(layer) {
                     var op = $scope.layerProperties[layer.name].opacity;
                     leafletData.getMap().then(function(map) {
@@ -3449,6 +3455,18 @@ angular.module("leaflet-directive").directive('layercontrol', ["$filter", "$log"
                             }
                         });
                     });
+                },
+                changeGroupVisibility: function(groupName) {
+                    if(!isDefined($scope.groupProperties[groupName])) {
+                        return;
+                    }
+                    var visible = $scope.groupProperties[groupName].visible;
+                    for(var k in $scope.layers.overlays) {
+                        var layer = $scope.layers.overlays[k];
+                        if(layer.group === groupName) {
+                            layer.visible = visible;
+                        }
+                    }
                 }
             });
 
@@ -3478,7 +3496,12 @@ angular.module("leaflet-directive").directive('layercontrol', ["$filter", "$log"
                 '<h5 class="lf-title" ng-if="overlaysTitle">{{ overlaysTitle }}</h5>' +
                 '<div class="lf-container">' +
                     '<div class="lf-row" ng-repeat="layer in (o = (overlaysArray | orderBy:\'index\':order))" ng-init="initIndex(layer, $index)">' +
-                        '<h6 ng-if="showGroups &amp;&amp; layer.group &amp;&amp; layer.group != o[$index-1].group">{{ layer.group }}</h6>' +
+                        '<label class="lf-icon-ol-group" ng-if="showGroups &amp;&amp; layer.group &amp;&amp; layer.group != o[$index-1].group">' +
+                            '<input class="lf-control-layers-selector" type="checkbox" ng-show="false" ' +
+                                'ng-change="changeGroupVisibility(layer.group)" ng-model="groupProperties[layer.group].visible"/> ' +
+                            '<i class="lf-icon lf-icon-check" ng-class="getGroupIcon(groupProperties[layer.group])"></i>' +
+                            '<div class="lf-text">{{ layer.group }}</div>' +
+                        '</label>'+
                         '<label class="lf-icon-ol">' +
                             '<input class="lf-control-layers-selector" type="checkbox" ng-show="false" ng-model="layer.visible"/> ' +
                             '<i class="lf-icon lf-icon-check" ng-class="layer.icon"></i>' +
@@ -3550,20 +3573,42 @@ angular.module("leaflet-directive").directive('layercontrol', ["$filter", "$log"
 
                 leafletScope.$watch('layers.overlays', function(newOverlayLayers) {
                     var overlaysArray = [];
+                    var groupVisibleCount = {};
                     leafletData.getLayers().then(function(leafletLayers) {
-                        for(var key in newOverlayLayers) {
-                            newOverlayLayers[key].icon = scope.icons[(newOverlayLayers[key].visible? 'check':'uncheck')];
-                            overlaysArray.push(newOverlayLayers[key]);
-                            if(!isDefined(scope.layerProperties[newOverlayLayers[key].name])) {
-                                scope.layerProperties[newOverlayLayers[key].name] = {
-                                    opacity: isDefined(newOverlayLayers[key].layerOptions.opacity)? newOverlayLayers[key].layerOptions.opacity*100:100,
+                        var key;
+                        for(key in newOverlayLayers) {
+                            var layer = newOverlayLayers[key];
+                            layer.icon = scope.icons[(layer.visible? 'check':'uncheck')];
+                            overlaysArray.push(layer);
+                            if(!isDefined(scope.layerProperties[layer.name])) {
+                                scope.layerProperties[layer.name] = {
+                                    opacity: isDefined(layer.layerOptions.opacity)? layer.layerOptions.opacity*100:100,
                                     opacityControl: false,
                                     showLegend: true
                                 };
                             }
-                            if(isDefined(newOverlayLayers[key].index) && leafletLayers.overlays[key].setZIndex) {
+                            if(isDefined(layer.group)) {
+                                if(!isDefined(scope.groupProperties[layer.group])) {
+                                    scope.groupProperties[layer.group] = {
+                                        visible: false
+                                    };
+                                }
+                                groupVisibleCount[layer.group] = isDefined(groupVisibleCount[layer.group])? groupVisibleCount[layer.group]:{
+                                    count: 0,
+                                    visibles: 0
+                                };
+                                groupVisibleCount[layer.group].count++;
+                                if(layer.visible) {
+                                    groupVisibleCount[layer.group].visibles++;
+                                }
+                            }
+                            if(isDefined(layer.index) && leafletLayers.overlays[key].setZIndex) {
                                 leafletLayers.overlays[key].setZIndex(newOverlayLayers[key].index);
                             }
+                        }
+
+                        for(key in groupVisibleCount) {
+                            scope.groupProperties[key].visible = groupVisibleCount[key].visibles === groupVisibleCount[key].count;
                         }
                     });
                     scope.overlaysArray = overlaysArray;
