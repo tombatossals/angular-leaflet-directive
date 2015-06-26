@@ -150,5 +150,5 @@ angular.module("leaflet-directive")
         return EventsHelper;
 })
 .service('leafletEventsHelpers', function(leafletEventsHelpersFactory){
-  return new leafletEventsHelpersFactory();
+    return new leafletEventsHelpersFactory();
 });

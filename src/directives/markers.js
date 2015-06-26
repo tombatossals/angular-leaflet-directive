@@ -139,7 +139,8 @@ angular.module("leaflet-directive").directive('markers',
                 leafletMarkerEvents.bindEvents(marker, pathToMarker, model, leafletScope, layerName);
             }
             else {
-                updateMarker(model, oldModels[newName], maybeLMarker, pathToMarker, leafletScope, layers, map);
+                var oldModel = isDefined(oldModel)? oldModels[newName] : undefined;
+                updateMarker(model, oldModel, maybeLMarker, pathToMarker, leafletScope, layers, map);
             }
         }
     };
@@ -229,7 +230,8 @@ angular.module("leaflet-directive").directive('markers',
                     var _clean = function(models, oldModels){
                         if(isNested) {
                             $it.each(models, function(markerToMaybeDel, layerName) {
-                                _destroy(markerToMaybeDel, oldModels[layerName], leafletMarkers[layerName], map, layers);
+                                var oldModel = isDefined(oldModel)? oldModels[layerName] : undefined;
+                                _destroy(markerToMaybeDel, oldModel, leafletMarkers[layerName], map, layers);
                             });
                             return;
                         }
@@ -241,7 +243,8 @@ angular.module("leaflet-directive").directive('markers',
                         var skips = null;
                         if(isNested) {
                             $it.each(models, function(markersToAdd, layerName) {
-                                skips = _getNewModelsToSkipp(models[layerName], oldModels[layerName], leafletMarkers[layerName]);
+                                var oldModel = isDefined(oldModel)? oldModels[layerName] : undefined;
+                                skips = _getNewModelsToSkipp(models[layerName], oldModel, leafletMarkers[layerName]);
                                 _addMarkers(markersToAdd, oldModels, map, layers, leafletMarkers, leafletScope,
                                     watchOptions, layerName, skips);
                             });

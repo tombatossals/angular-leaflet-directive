@@ -1,4 +1,4 @@
-angular.module("leaflet-directive").directive('eventBroadcast', function ($log, $rootScope, leafletHelpers, leafletEvents) {
+angular.module("leaflet-directive").directive('eventBroadcast', function ($log, $rootScope, leafletHelpers, leafletEvents, leafletIterators) {
     return {
         restrict: "A",
         scope: false,
@@ -11,14 +11,12 @@ angular.module("leaflet-directive").directive('eventBroadcast', function ($log, 
                 leafletScope  = controller.getLeafletScope(),
                 eventBroadcast = leafletScope.eventBroadcast,
                 availableMapEvents = leafletEvents.getAvailableMapEvents(),
-                genDispatchMapEvent = leafletEvents.genDispatchMapEvent;
+                addEvents = leafletEvents.addEvents;
 
             controller.getMap().then(function(map) {
 
-                var mapEvents = [];
-                var i;
-                var eventName;
-                var logic = "broadcast";
+                var mapEvents = [],
+                    logic = "broadcast";
 
                 // We have a possible valid object
                 if (!isDefined(eventBroadcast.map)) {
@@ -41,23 +39,18 @@ angular.module("leaflet-directive").directive('eventBroadcast', function ($log, 
                         $log.warn("[AngularJS - Leaflet] event-broadcast.map.enable must be an object check your model.");
                     } else {
                         // Enable events
-                        for (i = 0; i < eventBroadcast.map.enable.length; i++) {
-                            eventName = eventBroadcast.map.enable[i];
+                        leafletIterators.each(eventBroadcast.map.enable, function(eventName) {
                             // Do we have already the event enabled?
                             if (mapEvents.indexOf(eventName) === -1 && availableMapEvents.indexOf(eventName) !== -1) {
                                 mapEvents.push(eventName);
                             }
-                        }
+                        });
                     }
 
                 }
-
-                for (i = 0; i < mapEvents.length; i++) {
-                    eventName = mapEvents[i];
-                    map.on(eventName, genDispatchMapEvent(leafletScope, eventName, logic), {
-                        eventName: eventName
-                    });
-                }
+                // as long as the map is removed in the root leaflet directive we
+                // do not need ot clean up the events as leaflet does it itself
+                addEvents(map, mapEvents, "eventName", leafletScope, logic);
             });
         }
     };
