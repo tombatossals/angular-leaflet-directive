@@ -1,5 +1,5 @@
 /*!
-*  angular-leaflet-directive 0.8.4 2015-06-23
+*  angular-leaflet-directive 0.8.4 2015-06-26
 *  angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps
 *  git: https://github.com/tombatossals/angular-leaflet-directive
 */
@@ -709,6 +709,12 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
         FullScreenControlPlugin: {
             isLoaded: function() {
                 return angular.isDefined(L.Control.Fullscreen);
+            }
+        },
+
+        SearchControlPlugin: {
+            isLoaded: function() {
+                return angular.isDefined(L.Control.Search);
             }
         },
 
@@ -3031,6 +3037,15 @@ angular.module("leaflet-directive").directive('controls', function ($log, leafle
                         map.addControl(fullscreenControl);
                     } else {
                         $log.error(errorHeader + ' Fullscreen plugin is not loaded.');
+                    }
+                }
+
+                if (isDefined(controls.search)) {
+                    if (leafletHelpers.SearchControlPlugin.isLoaded()) {
+                        var searchControl = new L.Control.Search(controls.search);
+                        map.addControl(searchControl);
+                    } else {
+                        $log.error(errorHeader + ' Search plugin is not loaded.');
                     }
                 }
 
