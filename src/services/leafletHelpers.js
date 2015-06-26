@@ -198,6 +198,12 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
             }
         },
 
+        SearchControlPlugin: {
+            isLoaded: function() {
+                return angular.isDefined(L.Control.Search);
+            }
+        },
+
         MiniMapControlPlugin: {
             isLoaded: function() {
                 return angular.isDefined(L.Control.MiniMap);
