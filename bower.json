@@ -45,7 +45,8 @@
     "ionrangeslider": "~1.9.3",
     "leaflet-minimap": "~2.2.0",
     "esri-leaflet-clustered-feature-layer": "~1.0.0-rc.4",
-    "esri-leaflet-heatmap-feature-layer": "~1.0.0-rc.4"
+    "esri-leaflet-heatmap-feature-layer": "~1.0.0-rc.4",
+    "leaflet-search": "~1.5.8"
   },
   "overrides": {
     "Leaflet.utfgrid": {

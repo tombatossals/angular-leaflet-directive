@@ -718,6 +718,12 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
             }
         },
 
+        SearchControlPlugin: {
+            isLoaded: function() {
+                return angular.isDefined(L.Control.Search);
+            }
+        },
+
         MiniMapControlPlugin: {
             isLoaded: function() {
                 return angular.isDefined(L.Control.MiniMap);
@@ -3037,6 +3043,15 @@ angular.module("leaflet-directive").directive('controls', function ($log, leafle
                         map.addControl(fullscreenControl);
                     } else {
                         $log.error(errorHeader + ' Fullscreen plugin is not loaded.');
+                    }
+                }
+
+                if (isDefined(controls.search)) {
+                    if (leafletHelpers.SearchControlPlugin.isLoaded()) {
+                        var searchControl = new L.Control.Search(controls.search);
+                        map.addControl(searchControl);
+                    } else {
+                        $log.error(errorHeader + ' Search plugin is not loaded.');
                     }
                 }
 

@@ -42,6 +42,15 @@ angular.module("leaflet-directive").directive('controls', function ($log, leafle
                     }
                 }
 
+                if (isDefined(controls.search)) {
+                    if (leafletHelpers.SearchControlPlugin.isLoaded()) {
+                        var searchControl = new L.Control.Search(controls.search);
+                        map.addControl(searchControl);
+                    } else {
+                        $log.error(errorHeader + ' Search plugin is not loaded.');
+                    }
+                }
+
                 if(isDefined(controls.minimap)) {
                     if (leafletHelpers.MiniMapControlPlugin.isLoaded()) {
                         if(isDefined(controls.minimap.layer)) {
