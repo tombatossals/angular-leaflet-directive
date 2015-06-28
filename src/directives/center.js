@@ -41,12 +41,6 @@ angular.module("leaflet-directive").directive('center',
                     map.fitBounds(leafletBoundsHelpers.createLeafletBounds(leafletScope.bounds), leafletScope.bounds.options);
                     centerModel = map.getCenter();
                     safeApply(leafletScope, function (scope) {
-                        scope.center = {
-                            lat: map.getCenter().lat,
-                            lng: map.getCenter().lng,
-                            zoom: map.getZoom(),
-                            autoDiscover: false
-                        };
                         angular.extend(scope.center,{
                            lat: map.getCenter().lat,
                            lng: map.getCenter().lng,
@@ -96,11 +90,11 @@ angular.module("leaflet-directive").directive('center',
                         var urlCenter = extractCenterFromUrl();
                         if (isDefined(urlCenter) && !isSameCenterOnMap(urlCenter, map)) {
                             //$log.debug("updating center model...", urlCenter);
-                            scope.center = {
+                            angular.extend(scope.center, {
                                 lat: urlCenter.lat,
                                 lng: urlCenter.lng,
                                 zoom: urlCenter.zoom
-                            };
+                            });
                         }
                     });
                 }
