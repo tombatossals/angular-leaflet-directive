@@ -7,7 +7,7 @@ app.controller("BoundsController", [ '$scope', 'leafletBoundsHelpers', function(
 
     angular.extend($scope, {
         bounds: bounds,
-        center: { lat: 1, lng: 1, zoom: 1 },
+        center: {},
         defaults: {
             scrollWheelZoom: false
         }
