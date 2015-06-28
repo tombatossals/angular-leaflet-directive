@@ -1,0 +1,11 @@
+{
+  "name": "esri-leaflet-clustered-feature-layer",
+  "version": "v1.0.0-rc.4",
+  "main": "dist/esri-leaflet-clustered-feature-layer.js",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "components",
+    "spec"
+  ]
+}
