@@ -1,5 +1,5 @@
 /*!
-*  angular-leaflet-directive 0.8.4 2015-06-26
+*  angular-leaflet-directive 0.8.4 2015-06-29
 *  angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps
 *  git: https://github.com/tombatossals/angular-leaflet-directive
 */
@@ -2407,8 +2407,6 @@ angular.module("leaflet-directive").service('leafletMarkersHelpers', function ($
         },
 
         listenMarkerEvents: function (marker, markerData, leafletScope, doWatch, map) {
-            //these should be deregistered on destroy .. possible leake
-            //handles should not be closures since they will need to be removed
             marker.on("popupopen", function (/* event */) {
                 safeApply(leafletScope, function () {
                     if (isDefined(marker._popup) || isDefined(marker._popup._contentNode)) {
@@ -2851,12 +2849,6 @@ angular.module("leaflet-directive").directive('center',
                     map.fitBounds(leafletBoundsHelpers.createLeafletBounds(leafletScope.bounds), leafletScope.bounds.options);
                     centerModel = map.getCenter();
                     safeApply(leafletScope, function (scope) {
-                        scope.center = {
-                            lat: map.getCenter().lat,
-                            lng: map.getCenter().lng,
-                            zoom: map.getZoom(),
-                            autoDiscover: false
-                        };
                         angular.extend(scope.center,{
                            lat: map.getCenter().lat,
                            lng: map.getCenter().lng,
@@ -2906,11 +2898,11 @@ angular.module("leaflet-directive").directive('center',
                         var urlCenter = extractCenterFromUrl();
                         if (isDefined(urlCenter) && !isSameCenterOnMap(urlCenter, map)) {
                             //$log.debug("updating center model...", urlCenter);
-                            scope.center = {
+                            angular.extend(scope.center, {
                                 lat: urlCenter.lat,
                                 lng: urlCenter.lng,
                                 zoom: urlCenter.zoom
-                            };
+                            });
                         }
                     });
                 }
