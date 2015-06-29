@@ -34,7 +34,7 @@
     "grunt-shell": "^1.1.2",
     "grunt-shell-spawn": "^0.3.2",
     "jasmine-core": "^2.2.0",
-    "jsdom": "^5.0.1",
+    "jsdom": ">= 0.1.23 < 4.0.0",
     "karma": "0.12.32",
     "karma-chrome-launcher": "^0.1.8",
     "karma-coffee-preprocessor": "^0.2.1",
