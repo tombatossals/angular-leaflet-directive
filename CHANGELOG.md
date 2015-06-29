@@ -4,6 +4,10 @@
 
 #### Bug Fixes
 
+* **leafletMarkersHelper, markers:** Fix updating markers and managing popups. Lots of logic for marker updating was contained in the addMarkerWatch callback. If you didn't watch individual markers, then markers weren't getting updated properly. This used to work because the directive simply replaced markers on update, but with recent refactors, this is no longer the case. The addMarkerWatch watch callback is now _updateMarker and made available to the marker directive. It is used to update markers in _addMarkers. Before this commit, _addMarkers just ignored markers that already exists, now it updates.
+We now use marker.popupOpen() to handle popup logic (when focus is set to true, ensure popup gets opened). When the popup event is fired, manageOpenPopup will be used to compile the popup if necessary.
+([360401243f3f6d645860355b2c0067db6c55218a](https://github.com/tombatossals/angular-leaflet-directive/commit/360401243f3f6d645860355b2c0067db6c55218a))
+
 * **build:** grunt-graphviz added to devDeps ([b2236acc](https://github.com/tombatossals/angular-leaflet-directive/commit/b2236acc))
 * **center:** cleanup some center code, based on this issue by @pieterjandesmedt: ([ea1d52a5](https://github.com/tombatossals/angular-leaflet-directive/commit/ea1d52a5))
 * **labels:** labels added to existing markers are now bound ([f464f9c1](https://github.com/tombatossals/angular-leaflet-directive/commit/f464f9c1))
