@@ -1,5 +1,5 @@
 /*!
-*  angular-leaflet-directive 0.8.4 2015-06-28
+*  angular-leaflet-directive 0.8.5 2015-06-29
 *  angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps
 *  git: https://github.com/tombatossals/angular-leaflet-directive
 */
@@ -2407,8 +2407,6 @@ angular.module("leaflet-directive").service('leafletMarkersHelpers', function ($
         },
 
         listenMarkerEvents: function (marker, markerData, leafletScope, doWatch, map) {
-            //these should be deregistered on destroy .. possible leake
-            //handles should not be closures since they will need to be removed
             marker.on("popupopen", function (/* event */) {
                 safeApply(leafletScope, function () {
                     if (isDefined(marker._popup) || isDefined(marker._popup._contentNode)) {
