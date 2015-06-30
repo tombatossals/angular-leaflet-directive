@@ -1,5 +1,5 @@
 /*!
-*  angular-leaflet-directive 0.8.5 2015-06-29
+*  angular-leaflet-directive 0.8.5 2015-06-30
 *  angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps
 *  git: https://github.com/tombatossals/angular-leaflet-directive
 */
@@ -3022,6 +3022,11 @@ angular.module("leaflet-directive").directive('controls', function ($log, leafle
 
                     var drawControl = new L.Control.Draw(controls);
                     map.addControl(drawControl);
+                }
+
+                if (isDefined(controls.routingMachine) && isDefined(controls.routingMachine.waypoints)) {
+                    var routingMachine = new L.Routing.control(controls.routingMachine);
+                    map.addControl(routingMachine);
                 }
 
                 if (isDefined(controls.scale)) {
