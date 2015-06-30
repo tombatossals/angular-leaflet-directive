@@ -34,6 +34,7 @@
     "Leaflet.awesome-markers": "*",
     "webgl-heatmap-leaflet": "*",
     "leaflet-plugins": "*",
+    "leaflet-routing-machine": "*",
     "esri-leaflet": "*",
     "proj4": "*",
     "proj4leaflet": "*",
