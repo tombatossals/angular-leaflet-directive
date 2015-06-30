@@ -110,10 +110,42 @@
 					}
 				}
 			}
+		},
 
-			this.scale = function(zoom) {
+		scale: function(zoom) {
+			var iZoom = Math.floor(zoom),
+				baseScale,
+				nextScale,
+				scaleDiff,
+				zDiff;
+			if (zoom === iZoom) {
 				return this._scales[zoom];
-			};
+			} else {
+				// Non-integer zoom, interpolate
+				baseScale = this._scales[iZoom];
+				nextScale = this._scales[iZoom + 1];
+				scaleDiff = nextScale - baseScale;
+				zDiff = (zoom - iZoom);
+				return baseScale + scaleDiff * zDiff;
+			}
+		},
+
+		getSize: function(zoom) {
+			var b = this.options.bounds,
+			    s,
+			    min,
+			    max;
+
+			if (b) {
+				s = this.scale(zoom);
+				min = this.transformation.transform(b.min, s);
+				max = this.transformation.transform(b.max, s);
+				return L.point(Math.abs(max.x - min.x), Math.abs(max.y - min.y));
+			} else {
+				// Backwards compatibility with Leaflet < 0.7
+				s = 256 * Math.pow(2, zoom);
+				return L.point(s, s);
+			}
 		}
 	});
 
@@ -151,17 +183,21 @@
 
 		_calculateSizes: function() {
 			var sizes = [],
-				crsBounds = this.projectedBounds,
-				projectedTileSize,
-				upperY,
-				i;
+			    crsBounds = this.projectedBounds,
+			    projectedTileSize,
+			    i,
+			    x,
+			    y;
 			for (i = this._scales.length - 1; i >= 0; i--) {
 				if (this._scales[i]) {
 					projectedTileSize = this.options.tileSize / this._scales[i];
-					upperY = crsBounds[1] + Math.ceil((crsBounds[3] - crsBounds[1]) /
-											projectedTileSize) * projectedTileSize;
-					sizes[i] = L.point((crsBounds[2] - crsBounds[0]) / this._scales[i],
-						(upperY - crsBounds[1]) * this._scales[i]);
+					// to prevent very small rounding errors from causing us to round up,
+					// cut any decimals after 3rd before rounding up.
+					x = Math.ceil(parseFloat((crsBounds[2] - crsBounds[0]) / projectedTileSize).toPrecision(3)) *
+					    projectedTileSize * this._scales[i];
+					y = Math.ceil(parseFloat((crsBounds[3] - crsBounds[1]) / projectedTileSize).toPrecision(3)) *
+					    projectedTileSize * this._scales[i];
+					sizes[i] = L.point(x, y);
 				}
 			}
 
@@ -193,6 +229,10 @@
 			}
 
 			L.TileLayer.prototype.initialize.call(this, urlTemplate, options);
+			// Enabling tms will cause Leaflet to also try to do TMS, which will
+			// break (at least prior to 0.7.0). Actively disable it, to prevent
+			// well-meaning users from shooting themselves in the foot.
+			this.options.tms = false;
 			this.crs = crs;
 			crsBounds = this.crs.projectedBounds;
 
@@ -237,20 +277,99 @@
 
 	L.Proj.GeoJSON = L.GeoJSON.extend({
 		initialize: function(geojson, options) {
-			if (geojson.crs && geojson.crs.type === 'name') {
-				var crs = new L.Proj.CRS(geojson.crs.properties.name);
-				options = options || {};
-				options.coordsToLatLng = function(coords) {
-					var point = L.point(coords[0], coords[1]);
-					return crs.projection.unproject(point);
-				};
+			this._callLevel = 0;
+			L.GeoJSON.prototype.initialize.call(this, null, options);
+			if (geojson) {
+				this.addData(geojson);
 			}
-			L.GeoJSON.prototype.initialize.call(this, geojson, options);
+		},
+
+		addData: function(geojson) {
+			var crs;
+
+			if (geojson) {
+				if (geojson.crs && geojson.crs.type === 'name') {
+					crs = new L.Proj.CRS(geojson.crs.properties.name);
+				} else if (geojson.crs && geojson.crs.type) {
+					crs = new L.Proj.CRS(geojson.crs.type + ':' + geojson.crs.properties.code);
+				}
+
+				if (crs !== undefined) {
+					this.options.coordsToLatLng = function(coords) {
+						var point = L.point(coords[0], coords[1]);
+						return crs.projection.unproject(point);
+					};
+				}
+			}
+
+			// Base class' addData might call us recursively, but
+			// CRS shouldn't be cleared in that case, since CRS applies
+			// to the whole GeoJSON, inluding sub-features.
+			this._callLevel++;
+			try {
+				L.GeoJSON.prototype.addData.call(this, geojson);
+			} finally {
+				this._callLevel--;
+				if (this._callLevel === 0) {
+					delete this.options.coordsToLatLng;
+				}
+			}
 		}
 	});
 
 	L.Proj.geoJson = function(geojson, options) {
 		return new L.Proj.GeoJSON(geojson, options);
+	};
+
+	L.Proj.ImageOverlay = L.ImageOverlay.extend({
+		initialize: function(url, bounds, options) {
+			L.ImageOverlay.prototype.initialize.call(this, url, null, options);
+			this._projBounds = bounds;
+		},
+
+		/* Danger ahead: overriding internal methods in Leaflet.
+		   I've decided to do this rather than making a copy of L.ImageOverlay
+		   and making very tiny modifications to it. Future will tell if this
+		   was wise or not. */
+		_animateZoom: function (e) {
+			var northwest = L.point(this._projBounds.min.x, this._projBounds.max.y),
+				southeast =  L.point(this._projBounds.max.x, this._projBounds.min.y),
+				topLeft = this._projectedToNewLayerPoint(northwest, e.zoom, e.center),
+			    size = this._projectedToNewLayerPoint(southeast, e.zoom, e.center).subtract(topLeft),
+			    origin = topLeft.add(size._multiplyBy((1 - 1 / e.scale) / 2));
+
+			this._image.style[L.DomUtil.TRANSFORM] =
+		        L.DomUtil.getTranslateString(origin) + ' scale(' + this._map.getZoomScale(e.zoom) + ') ';
+		},
+
+		_reset: function() {
+			var zoom = this._map.getZoom(),
+				pixelOrigin = this._map.getPixelOrigin(),
+				bounds = L.bounds(this._transform(this._projBounds.min, zoom)._subtract(pixelOrigin),
+					this._transform(this._projBounds.max, zoom)._subtract(pixelOrigin)),
+				size = bounds.getSize(),
+				image = this._image;
+
+			L.DomUtil.setPosition(image, bounds.min);
+			image.style.width  = size.x + 'px';
+			image.style.height = size.y + 'px';
+		},
+
+		_projectedToNewLayerPoint: function (point, newZoom, newCenter) {
+			var topLeft = this._map._getNewTopLeftPoint(newCenter, newZoom).add(this._map._getMapPanePos());
+			return this._transform(point, newZoom)._subtract(topLeft);
+		},
+
+		_transform: function(p, zoom) {
+			var crs = this._map.options.crs,
+				transformation = crs.transformation,
+				scale = crs.scale(zoom);
+			return transformation.transform(p, scale);
+		}
+	});
+
+	L.Proj.imageOverlay = function(url, bounds, options) {
+		return new L.Proj.ImageOverlay(url, bounds, options);
 	};
 
 	if (typeof L.CRS !== 'undefined') {

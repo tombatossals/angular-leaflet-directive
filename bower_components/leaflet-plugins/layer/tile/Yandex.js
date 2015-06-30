@@ -3,7 +3,6 @@
  */
 
 /* global ymaps: true */
-/* global console: true */
 
 L.Yandex = L.Class.extend({
 	includes: L.Mixin.Events,
@@ -16,11 +15,37 @@ L.Yandex = L.Class.extend({
 		traffic: false
 	},
 
-	// Possible types: map, satellite, hybrid, publicMap, publicMapHybrid
+	possibleShortMapTypes: {
+		schemaMap: 'map',
+		satelliteMap: 'satellite',
+		hybridMap: 'hybrid',
+		publicMap: 'publicMap',
+		publicMapInHybridView: 'publicMapHybrid'
+	},
+	
+	_getPossibleMapType: function (mapType) {
+		var result = 'yandex#map';
+		if (typeof mapType !== 'string') {
+			return result;
+		}
+		for (var key in this.possibleShortMapTypes) {
+			if (mapType === this.possibleShortMapTypes[key]) {
+				result = 'yandex#' + mapType;
+				break;
+			}
+			if (mapType === ('yandex#' + this.possibleShortMapTypes[key])) {
+				result = mapType;
+			}
+		}
+		return result;
+	},
+	
+	// Possible types: yandex#map, yandex#satellite, yandex#hybrid, yandex#publicMap, yandex#publicMapHybrid
+	// Or their short names: map, satellite, hybrid, publicMap, publicMapHybrid
 	initialize: function(type, options) {
 		L.Util.setOptions(this, options);
-
-		this._type = 'yandex#' + (type || 'map');
+		//Assigning an initial map type for the Yandex layer
+		this._type = this._getPossibleMapType(type);
 	},
 
 	onAdd: function(map, insertAtTheBottom) {
@@ -97,9 +122,6 @@ L.Yandex = L.Class.extend({
 
 		// Check that ymaps.Map is ready
 		if (ymaps.Map === undefined) {
-			if (console) {
-				console.debug('L.Yandex: Waiting on ymaps.load("package.map")');
-			}
 			return ymaps.load(['package.map'], this._initMapObject, this);
 		}
 
@@ -107,14 +129,11 @@ L.Yandex = L.Class.extend({
 		if (this.options.traffic)
 			if (ymaps.control === undefined ||
 					ymaps.control.TrafficControl === undefined) {
-				if (console) {
-					console.debug('L.Yandex: loading traffic and controls');
-				}
 				return ymaps.load(['package.traffic', 'package.controls'],
 					this._initMapObject, this);
 			}
-
-		var map = new ymaps.Map(this._container, {center: [0,0], zoom: 0, behaviors: []});
+		//Creating ymaps map-object without any default controls on it
+		var map = new ymaps.Map(this._container, { center: [0, 0], zoom: 0, behaviors: [], controls: [] });
 
 		if (this.options.traffic)
 			map.controls.add(new ymaps.control.TrafficControl({shown: true}));
@@ -127,6 +146,9 @@ L.Yandex = L.Class.extend({
 
 		this._yandex = map;
 		this._update(true);
+		
+		//Reporting that map-object was initialized
+		this.fire('MapObjectInitialized', { mapObject: map });
 	},
 
 	_resetCallback: function(e) {

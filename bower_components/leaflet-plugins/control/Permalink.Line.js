@@ -13,7 +13,6 @@ L.Control.Permalink.include({
 	},
 
 	_onadd_line: function(e) {
-		//console.info("onAdd::line", e);
 		if (!this.options.line) return;
 		this.options.line.on('edit', this._update_line, this);
 		this._update_line();
@@ -32,7 +31,6 @@ L.Control.Permalink.include({
 	},
 
 	_set_line: function(e) {
-		//console.info("Set line", e.params.line);
 		var p = e.params, l = this.options.line;
 		if (!l || !p.line) return;
 		var coords = [], text = p.line.split(';');

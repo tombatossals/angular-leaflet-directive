@@ -1,16 +1,18 @@
 # Esri Leaflet
 
-Leaflet plugin for [Esri ArcGIS Online Services](http://resources.arcgis.com/en/help/arcgis-rest-api/#/The_ArcGIS_REST_API/02r300000054000000/). Currently only supports loading Esri [basemaps](http://resources.arcgis.com/en/help/arcgis-rest-api/#/Basemaps/02r3000001mt000000/) and [feature services](http://resources.arcgis.com/en/help/arcgis-rest-api/#/Feature_Service/02r3000000z2000000/), as well as [map services](http://resources.arcgis.com/en/help/arcgis-rest-api/#/Map_Service/02r3000000w2000000/).
+[![Build Status](https://travis-ci.org/Esri/esri-leaflet.svg)](https://travis-ci.org/Esri/esri-leaflet)
 
-The goal of Esri Leaflet is not to replace the [ArcGIS API for JavaScript](https://developers.arcgis.com/en/javascript/), but rather to provide small components to allow developers to build simple lightweight mapping applications. It pairs well with [Terraformer](https://github.com/Esri/Terraformer) for converting data and [geoservices-js](https://github.com/Esri/geoservices-js) for making advanced request to [ArcGIS REST services](http://resources.arcgis.com/en/help/arcgis-rest-api/#/The_ArcGIS_REST_API/02r300000054000000/), for example place finding and reverse geocoding.
+Leaflet plugins for [ArcGIS Services](http://developers.arcgis.com). Currently Esri Leaflet supports loading Esri [basemaps](http://esri.github.io/esri-leaflet/examples/switching-basemaps.html) and [feature services](http://esri.github.io/esri-leaflet/examples/simple-feature-layer.html), as well as [tiled](http://esri.github.io/esri-leaflet/examples/tile-layer-2.html) map, [dynamic](http://esri.github.io/esri-leaflet/examples/simple-dynamic-map-layer.html) map and [image](http://esri.github.io/esri-leaflet/examples/simple-image-map-layer.html)  services.
 
-**Currently Esri Leaflet is in development but is open to contributions. It should be thought of as a beta or preview.**
+The goal of Esri Leaflet is **not** to replace the [ArcGIS API for JavaScript](https://developers.arcgis.com/en/javascript/), but rather to provide small components to allow developers to build mapping applications with Leaflet.
+
+**Currently Esri Leaflet is in development and should be thought of as a beta or preview.**
 
 ### Demos
-There are [loads of demos](http://esri.github.io/esri-leaflet/) showing the features of Esri Leaflet as well as how it might integrate with [geoservices-js](https://github.com/Esri/geoservices-js) and [Terraformer](https://github.com/esri/Terraformer) libraries. [Check out the demos.](http://esri.github.io/esri-leaflet/)
+We've written [loads of demos](http://esri.github.io/esri-leaflet/examples/) showing many of the features of Esri Leaflet.
 
-### Quick Example
-Here is a quick example to get you started. Just change the paths to point to the proper libraries and go.
+### Example
+Here is a quick example to get you started. Just copy/paste into your own `.html` file and run.
 
 ![App](https://raw.github.com/Esri/esri-leaflet/master/esri-leaflet.png)
 
@@ -18,255 +20,135 @@ Here is a quick example to get you started. Just change the paths to point to th
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Esri Leaflet</title>
-    <link rel="stylesheet" href="/the/path/to/leaflet.css" />
+     <!-- Load Leaflet from CDN-->
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+    <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+
+    <!-- we encourage you to replace 'latest' with a hardcode version number (like '1.0.0-rc.7') in production applications -->
+    <script src="//cdn.jsdelivr.net/leaflet.esri/latest/esri-leaflet.js"></script>
+
     <style>
       html, body,  #map {
         width : 100%;
         height : 100%;
       }
     </style>
-    <script src="/the/path/to.leaflet.js"></script>
-    <script src="/the/path/to/esri-leaflet.min.js"></script>
-    <!--[if lte IE 8]><link rel="stylesheet" href="/the/path/to/leaflet.ie.css" /><![endif]-->
-    <script src="/the/path/to.leaflet.js"></script>
-    <script src="/the/path/to/esri-leaflet.js"></script>
   </head>
   <body>
     <div id="map"></div>
     <script>
-      var map = L.map('map');
-      
-      // ArcGIS Online Basemaps - Streets, Topographic, Gray, GrayLabels, Oceans, NationalGeographic, Imagery, ImageryLabels
-      L.esri.basemapLayer("Streets").addTo(map);
+      var map = L.map('map').setView([45.528, -122.680], 13);
 
-      function onLocationFound(e) {
-        var radius = e.accuracy / 2;
-        L.marker(e.latlng).addTo(map).bindPopup("You are within " + radius + " meters from this point").openPopup();
-        L.circle(e.latlng, radius).addTo(map);
-      }
+      L.esri.basemapLayer("Gray").addTo(map);
 
-      function onLocationError(e) {
-        alert(e.message);
-      }
+      var parks = new L.esri.FeatureLayer("http://services.arcgis.com/rOo16HdIMeOBI4Mb/arcgis/rest/services/Portland_Parks/FeatureServer/0", {
+       style: function () {
+          return { color: "#70ca49", weight: 2 };
+        }
+      }).addTo(map);
 
-      map.on('locationfound', onLocationFound);
-      map.on('locationerror', onLocationError);
+      var popupTemplate = "<h3>{NAME}</h3>{ACRES} Acres<br><small>Property ID: {PROPERTYID}<small>";
 
-      map.locate({setView: true, maxZoom: 16});
+      parks.bindPopup(function(feature){
+        return L.Util.template(popupTemplate, feature.properties)
+      });
     </script>
   </body>
 </html>
 ```
 
-## Features
+### Documentation & Examples
 
-### Basemaps
+A full [API Reference](http://esri.github.io/esri-leaflet/api-reference/) and plenty of [sample code](http://esri.github.io/esri-leaflet/examples/) can be found at the [Esri Leaflet](http://esri.github.io/esri-leaflet/) website.
 
-You can quickly access ArcGIS base maps with the `L.esri.BasemapLayer(key, options)` layer. The `key` parameter should be one of the following keys.
+### Development Roadmap
 
-* `Streets`
-* `Topographic`
-* `Oceans`
-* `NationalGeographic`
-* `Gray`
-* `GrayLabels`
-* `Imagery`
-* `ImageryLabels`
+If you are interested in contributing to Esri Leaflet or seeing what is coming up next check out the [development roadmap](https://github.com/Esri/esri-leaflet/wiki/Roadmap).
 
-The `options` parameter can accept the same [options as](http://leafletjs.com/reference.html#tilelayer) `L.TileLayer`.
+### Issues
 
-```js
-var map = L.map('map').setView([37.75,-122.45], 12);
-L.esri.basemapLayer("Topographic").addTo(map);
-```
+Find a bug or want to request a new feature?  Please let us know by submitting an [issue](https://github.com/Esri/esri-leaflet/issues).
 
-### FeatureLayer
+Please take a look at [previously logged issues](https://github.com/Esri/esri-leaflet/issues?labels=FAQ&milestone=&page=1&state=closed) that resolve common problems.
 
-Esri Leaflet has support for FeatureLayers via `L.esri.FeatureLayer(url, options)`. The `url` parameter is the url to the FeatureLayer you should like to display.
+You can also post issues on [GIS Stackexchange](http://gis.stackexchange.com/questions/ask?tags=esri-leaflet,leaflet) an/or the [Esri Leaflet place](https://geonet.esri.com/discussion/create.jspa?sr=pmenu&containerID=1841&containerType=700&tags=esri-leaflet,leaflet) on GeoNet.
 
-```js
-var map = L.map('map').setView([45.52963623111275,-122.67389774322508], 12);
-L.esri.basemapLayer("Topographic").addTo(map);
-L.esri.featureLayer('http://services.arcgis.com/rOo16HdIMeOBI4Mb/arcgis/rest/services/stops/FeatureServer/0/');
-```
+### Frequently Asked Questions
 
-The options parameter can accept anything that `L.GeoJSON` can accept. This means you can apply popups, custom styles and filters. See [Leaflet GeoJSON](http://leafletjs.com/reference.html#geojson) for more information.
+* [What exactly is Esri Leaflet?  Is it a replacement for Leaflet?](https://github.com/Esri/esri-leaflet/wiki/FAQ#what-is-esri-leaflet)
+* [Will Esri Leaflet replace the ArcGIS API for JavaScript?](https://github.com//Esri/esri-leaflet/wiki/FAQ#will-esri-leaflet-replace-the-arcgis-api-for-javascript)
+* [What is the benefit of using Esri Leaflet over using Leaflet all by itself?](https://github.com//Esri/esri-leaflet/wiki/FAQ#why-use-esri-leaflet)
+* [What are the goals of Esri Leaflet?](https://github.com//Esri/esri-leaflet/wiki/FAQ#what-are-the-goals-of-esri-leaflet)
+* [When will Esri Leaflet leave beta?](https://github.com//Esri/esri-leaflet/wiki/FAQ#when-will-esri-leaflet-leave-beta)
+* [How do you decide what features get included in Esri Leaflet?](https://github.com//Esri/esri-leaflet/wiki/FAQ#how-do-you-decide-what-features-get-included-in-esri-leaflet)
+* [I have an idea! What should I do?](https://github.com//Esri/esri-leaflet/wiki/FAQ#i-have-an-idea-what-should-i-do)
+* [When will you support "x"?](https://github.com//Esri/esri-leaflet/wiki/FAQ#when-will-you-support-x)
+* [Can you implement feature "x"?](https://github.com//Esri/esri-leaflet/wiki/FAQ#can-you-implement-feature-x)
+* [When will feature "x" get done?](https://github.com//Esri/esri-leaflet/wiki/FAQ#when-will-feature-x-get-done)
+* [I want to contribute. How can I help?](https://github.com//Esri/esri-leaflet/wiki/FAQ#i-want-to-contribute-how-can-i-help)
+* [I built something with Esri Leaflet can I show you?](https://github.com//Esri/esri-leaflet/wiki/FAQ#i-built-something-with-esri-leaflet-can-i-show-you)
+* [I built a reusable component (layer type, api wrapper, ui control ect...) can I contribute it to Esri Leaflet?](https://github.com//Esri/esri-leaflet/wiki/FAQ#i-built-a-reusable-component-layer-type-api-wrapper-ui-control-ect-can-i-contribute-it-to-esri-leaflet)
+* [What are the terms of use for Esri map tiles?](https://github.com//Esri/esri-leaflet/wiki/FAQ#what-are-the-terms-of-use-for-esri-map-tiles)
+* [Which services require authentication?](https://github.com//Esri/esri-leaflet/wiki/FAQ#which-services-require-authentication)
+* [What are some good Leaflet Plugins?](https://github.com//Esri/esri-leaflet/wiki/FAQ#what-are-some-good-leaflet-plugins)
+* [What browsers does Esri Leaflet support?](https://github.com//Esri/esri-leaflet/wiki/FAQ#what-browsers-does-esri-leaflet-support)
+* [What versions of ArcGIS Server does Esri Leaflet support?](https://github.com//Esri/esri-leaflet/wiki/FAQ#what-versions-of-arcgis-server-does-esri-leaflet-support)
 
-### DynamicMapLayer
+### Projects Using Esri Leaflet
 
-If you have a MapService you and use `L.esri.DynamicMapLayer(url, options)` to render it over a map. It takes a `url` to a MapService and options.
+* [Geotrigger Editor](https://github.com/Esri/geotrigger-editor)
+* [Geotrigger Faker](https://github.com/Esri/geotrigger-faker)
+* [ArcGIS for Developers](https://developers.arcgis.com/en/)
 
-```js
-var map = L.map('map').setView([ 38.24788726821097,-85.71807861328125], 13 );
-L.esri.basemapLayer("Gray").addTo(map);
+Feel free to add your own project to this list!
 
-L.esri.dynamicMapLayer("http://sampleserver1.arcgisonline.com/ArcGIS/rest/services/PublicSafety/PublicSafetyHazardsandRisks/MapServer", {
-  opacity : 0.25
-}).addTo(map);
+### Development Instructions
 
-L.esri.basemapLayer("GrayLabels").addTo(map);
-```
+In order to compile the API yourself and/or run the tests, make sure you have the [Grunt CLI](http://gruntjs.com/getting-started) installed.
 
-It is possible to show/hide specific layers and set layer definitions within `options` like so...
-
-```js
-L.esri.dynamicMapLayer("http://sampleserver1.arcgisonline.com/ArcGIS/rest/services/Demographics/ESRI_Census_USA/MapServer", {
-  opacity : 0.5,
-  layers:[5,4,3],
-  layerDefs: {
-    5: "STATE_NAME='Kansas'",
-    4: "STATE_NAME='Kansas' and POP2007>25000",
-    3: "STATE_NAME='Kansas' and POP2007>25000"
-  }
-}).addTo(map);
-```
-
-You can identify features from MapService using `L.esri.DynamicMapLayer.identify(latLng, options, callback)`.
-
-```js
-dynLayer.identify(e.latlng, {
-  sr: '4265', //default is '4326'
-  tolerance: 5, //default is 3
-  imageDisplay: '801,601,97', // default is '800,600,96' (height by width in pixels and DPI)
-} , callback)
-
-```
-Take a look at [this](http://esri.github.io/esri-leaflet/dynamicmapservice.html) sample for a demonstration.
-
-### TiledMapLayer
-
-Esri Leaflet can work with tiled map services as well. You can use `L.esri.TiledMapLayer(url, options)` to use tiled map services. The `url` parameter is the url to the MapServer and options is identical to the [options you can pass](http://leafletjs.com/reference.html#tilelayer) to `L.TileLayer`.
-
-```js
-var map = L.map('map').setView([ 37.761487048570935, -122.39112854003905], 12 );
-
-L.esri.basemapLayer("Gray", {
-  zIndex:1
-}).addTo(map);
-
-L.esri.tiledMapLayer("http://server.arcgisonline.com/ArcGIS/rest/services/Demographics/USA_Median_Household_Income/MapServer", {
-  opacity: 0.25,
-  zIndex:2
-}).addTo(map);
-
-L.esri.basemapLayer("GrayLabels", {
-  zIndex:3
-}).addTo(map);
-```
-
-### ClusteredFeatureLayer
-
-`L.esri.ClusteredFeatureLayer` provides integration for Feature Layers with the [Leaflet.markercluster plugin](https://github.com/Leaflet/Leaflet.markercluster). Because of the extra Dependency on Leaflet.markercluster we do not include `L.esri.ClusteredFeatureLayer` in the default build of Esri Leaflet. It lives in /dist/extras/clustered-feature-layer.js. You will also need to include your own copy of the [Leaflet.markercluster plugin](https://github.com/Leaflet/Leaflet.markercluster).
-
-##### Usage
-
-```js
-L.esri.clusteredFeatureLayer(featureLayerUrl, {
-
-  // this should be an instance of L.MarkerClusterGroup
-  // https://github.com/Leaflet/Leaflet.markercluster#usage
-  cluster: new L.MarkerClusterGroup(),
-
-  // this function should return a new L.Marker
-  // that will be added to the cluster.
-  createMarker: function(geojson, latlng){},
-
-  // this optional function will be run against 
-  // every marker before it is added to the cluster
-  // this is a great place to define custom popups
-  // or other behaviors.
-  onEachMarker: function(geojson, marker){
-
-  }
-}).addTo(map);
-```
-
-#### Example
-
-```js
-L.esri.clusteredFeatureLayer("http://services.arcgis.com/rOo16HdIMeOBI4Mb/arcgis/rest/services/stops/FeatureServer/0", {
-  cluster: new L.MarkerClusterGroup({
-    spiderfyOnMaxZoom:false,
-    disableClusteringAtZoom: 16,
-    polygonOptions: {
-      color: "#2d84c8",
-      weight: 4,
-      opacity: 1,
-      fillOpacity: 0.5
-    },
-    iconCreateFunction: function(cluster) {
-      var count = cluster.getChildCount();
-      var digits = (count+"").length;
-      return new L.DivIcon({
-        html: count,
-        className:"cluster digits-"+digits,
-        iconSize: null
-      });
-    }
-  }),
-  marker: function (geojson, latlng) {
-    return L.marker(latlng, {
-      icon: icons[geojson.properties.direction.toLowerCase()]
-    });
-  },
-  eachMarker: function(geojson, marker) {
-    marker.bindPopup("<h3>"+geojson.properties.stop_name+"</h3><p>Stop ID: "+geojson.properties.stop_id+"</p><p>"+geojson.properties.stop_desc+"</p>")
-  }
-}).addTo(map);
-```
-
-## Development Instructions
-
-1. `git clone https://github.com/Esri/esri-leaflet`
-2. `cd esri-leaflet`
-3. `git submodule init`
-4. `git submodule update`
-
-## Requirements
-
-* All services that Esri Leaflet accesses must be publicly available. Support for private services will be included in a future release.
-* MapServices that you wish to use for `L.esri.TiledMapLayer` must be published in [Web Mercator](http://spatialreference.org/ref/sr-org/6928/).
+1. [Fork and clone Esri Leaflet](https://help.github.com/articles/fork-a-repo)
+2. `cd` into the `esri-leaflet` folder
+5. Install the dependencies with `npm install`
+5. run `grunt` from the command line. This will start the web server locally at [http://localhost:8001](http://localhost:8001) and start watching the source files and running linting and testing commands.
+6. Make your changes and create a [pull request](https://help.github.com/articles/creating-a-pull-request) if you'd like to contribute
 
 ### Dependencies
 
-* [Terraformer](https://github.com/esri/Terraformer) - base library for other dependencies
-* [Terraformer ArcGIS](https://github.com/esri/Terraformer) - for converting geometries
-* [Terraformer RTree](https://github.com/esri/Terraformer) - client side RTree index for optimizations
+* [Leaflet](http://leafletjs.com) version 0.7 or higher is required but the latest version is recommended.
 
-These are currently included in `/vendor` as submodules and are built into the `dist/esri-leaflet.js` file.
+### Versioning
 
-### Custom Builds
+For transparency into the release cycle and in striving to maintain backward compatibility, Esri Leaflet is maintained under the Semantic Versioning guidelines and will adhere to these rules whenever possible.
 
-It is possible to build a custom version of Esri Leaflet by customizing the Gruntfile. To do this add a new entry to the `concat` and the `uglify` configurations. More detailed directions will be added here later.
+Releases will be numbered with the following format:
 
-## Resources
+`<major>.<minor>.<patch>`
 
-* [ArcGIS for Developers](http://developers.arcgis.com)
-* [ArcGIS REST Services](http://resources.arcgis.com/en/help/arcgis-rest-api/)
-* [ArcGIS for JavaScript API Resource Center](http://help.arcgis.com/en/webapi/javascript/arcgis/index.html)
-* [twitter@esri](http://twitter.com/esri)
+And constructed with the following guidelines:
 
-## Issues
+* Breaking backward compatibility **bumps the major** while resetting minor and patch
+* New additions without breaking backward compatibility **bumps the minor** while resetting the patch
+* Bug fixes and misc changes **bumps only the patch**
 
-Find a bug or want to request a new feature?  Please let us know by submitting an issue.
+For more information on SemVer, please visit <http://semver.org/>.
 
-## Contributing
+### Contributing
 
-Esri welcomes contributions from anyone and everyone. Please see our [guidelines for contributing](https://github.com/esri/contributing).
+Esri welcomes contributions from anyone and everyone. Please see our [guidelines for contributing](https://github.com/Esri/esri-leaflet/blob/master/CONTRIBUTING.md).
 
-## Credit
+### Credit
 
-Dymanic Map Layer code is based on code from https://github.com/sanborn/leaflet-ags/blob/master/src/AGS.Layer.Dynamic.js
+* `L.esri.Layers.DynamicMapLayer` originally used code from https://github.com/sanborn/leaflet-ags/blob/master/src/AGS.Layer.Dynamic.js
+* `L.esri.Layers.TiledMapLayer` adapts some code from https://github.com/gisinc/arcgis-level-fixer
 
-## Licensing
-Copyright 2013 Esri
+### Licensing
+Copyright 2015 Esri
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-   http://www.apache.org/licenses/LICENSE-2.0
+> http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -274,7 +156,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-A copy of the license is available in the repository's [license.txt]( https://raw.github.com/Esri/esri-leaflet/master/license.txt) file.
+A copy of the license is available in the repository's [LICENSE](./LICENSE) file.
 
 [](Esri Tags: ArcGIS Web Mapping Leaflet)
 [](Esri Language: JavaScript)

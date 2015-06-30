@@ -4,7 +4,7 @@ Renders GeoJSON tiles on an L.GeoJSON layer.
 ## Docs
 
 ### Usage example
-The following example shows how to render a GeoJSON Tile Layer for US state GeoJSON tiles. [See demo](http://bl.ocks.org/glenrobertson/6203331).
+The following example shows how to render a GeoJSON Tile Layer for US road line GeoJSON tiles (borrowed from http://openstreetmap.us/~migurski/vector-datasource/). [See demo](http://bl.ocks.org/glenrobertson/6203331).
 
         var style = {
             "clickable": true,

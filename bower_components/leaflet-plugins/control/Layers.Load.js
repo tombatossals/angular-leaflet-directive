@@ -9,7 +9,6 @@ L.Control.Layers.include({
 		c = L.Control.Layers._script_cache[s];
 		if (c === undefined) {
 			c = {url: s, wait: []};
-			//console.info("Load " + s);
 			var script = document.createElement('script');
 			script.src = s;
 			script.type = 'text/javascript';

@@ -1,5 +1,5 @@
 /*!
- * # Semantic UI 1.11.6 - Tab
+ * # Semantic UI 1.12.3 - Tab
  * http://github.com/semantic-org/semantic-ui/
  *
  *

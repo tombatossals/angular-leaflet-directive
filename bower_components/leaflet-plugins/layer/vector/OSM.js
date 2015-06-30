@@ -1,5 +1,3 @@
-/* global console: true */
-
 L.OSM = L.FeatureGroup.extend({
 	options: {
 		async: true,
@@ -92,8 +90,6 @@ L.OSM = L.FeatureGroup.extend({
 	},
 
 	parse_name: function(layer, obj, obj_name) {
-		console.info('parse name');
-		console.info(this.options);
 		if (!this.options.forceAll)
 			if (!obj.tags || !obj.tags.length) return;
 		var i, txt = '<table>';
@@ -154,11 +150,9 @@ L.OSM = L.FeatureGroup.extend({
 			var mt = el[i].getAttribute('type'), ref = el[i].getAttribute('ref');
 			if (mt !== 'way') continue;
 			var w = ways[ref];
-			console.info('Way: ' + ref + ' ' + w);
 			if (!w) return;
 			coords.push(w);
 		}
-		console.info('Coords: ' + coords.length);
 		if (!coords.length) return;
 		var layer = new L.MultiPolyline(coords, options);
 		layer.tags = this.parse_tags(line);

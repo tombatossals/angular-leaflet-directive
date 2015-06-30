@@ -68,7 +68,6 @@ L.GPX.include({
 			p = ll[i + chunk - 1];
 			t = (gpx2time(p.meta.time) - t) / (3600 * 1000);
 			var speed = 0.001 * d / t;
-			//console.info('Dist: ' + d + '; Speed: ' + speed);
 			var color = gradient(speed / this.options.maxSpeed);
 			var poly = new L.Polyline(ll.slice(i, i+chunk+1), {color: color, weight: 2, opacity: 1});
 			poly.bindPopup('Dist: ' + d.toFixed() + 'm; Speed: ' + speed.toFixed(2) + ' km/h');

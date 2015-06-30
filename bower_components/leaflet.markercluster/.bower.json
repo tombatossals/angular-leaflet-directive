@@ -9,6 +9,6 @@
     "commit": "20cf8edd0dfc51ace1db1eee0cf34cf0533a2fb9"
   },
   "_source": "git://github.com/Leaflet/Leaflet.markercluster.git",
-  "_target": "~0.4",
+  "_target": "*",
   "_originalSource": "leaflet.markercluster"
 }

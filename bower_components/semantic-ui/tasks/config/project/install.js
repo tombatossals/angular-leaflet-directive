@@ -228,7 +228,7 @@ module.exports = {
     siteVariable: /@siteFolder .*\'(.*)/mg
   },
 
-  // source paths (relative to tasks/install.js )
+  // source paths (when installing)
   source: {
     config       : './semantic.json.example',
     definitions  : './src/definitions',
@@ -239,6 +239,7 @@ module.exports = {
     themeConfig  : './src/theme.config.example',
     themeImport  : './src/theme.less',
     themes       : './src/themes',
+    defaultTheme : './src/themes/default',
     userGulpFile : './tasks/config/npm/gulpfile.js'
   },
 
@@ -253,15 +254,17 @@ module.exports = {
 
   // folder paths to files relative to root
   folders: {
-    config      : './',
-    definitions : 'src/definitions/',
-    lessImport  : 'src/',
-    modules     : 'node_modules/',
-    site        : 'src/site/',
-    tasks       : 'tasks/',
-    themeConfig : 'src/',
-    themeImport : 'src/',
-    themes      : 'src/themes/'
+    config       : './',
+    definitions  : 'src/definitions/',
+    lessImport   : 'src/',
+    modules      : 'node_modules/',
+    site         : 'src/site/',
+    tasks        : 'tasks/',
+    themeConfig  : 'src/',
+    themeImport  : 'src/',
+    themes       : 'src/themes/',
+
+    defaultTheme : 'default/' // only path that is relative to another directory and not root
   },
 
   // questions asked during install
@@ -729,33 +732,20 @@ module.exports = {
     /* Copy Install Folders */
     wrench: {
 
-      // copy during npm update (default theme / definition)
-      update: {
+      // overwrite existing files update & install (default theme / definition)
+      overwrite: {
         forceDelete       : true,
         excludeHiddenUnix : true,
         preserveFiles     : false
       },
 
-      // copy during first npm install
-      install: {
-        forceDelete       : true,
-        excludeHiddenUnix : true,
-        preserveFiles     : false
-      },
-
-      // copy for node_modules
-      modules: {
-        forceDelete       : true,
-        excludeHiddenUnix : true,
-        preserveFiles     : false
-      },
-
-      // copy for site theme
-      site: {
+      // only create files that don't exist (site theme update)
+      merge: {
         forceDelete       : false,
         excludeHiddenUnix : true,
         preserveFiles     : true
       }
+
     }
   }
 

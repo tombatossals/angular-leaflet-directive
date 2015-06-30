@@ -31,8 +31,9 @@
 			_old__setPos.apply(this,[pos]);
 
 			if (this.options.iconAngle) {
-				var a = this.options.icon.options.iconAnchor;
-				var s = this.options.icon.options.iconSize;
+				var defaultIcon = new L.Icon.Default;
+				var a = this.options.icon.options.iconAnchor || defaultIcon.options.iconAnchor;
+				var s = this.options.icon.options.iconSize || defaultIcon.options.iconSize;
 				var i;
 				if (this._icon) {
 					i = this._icon;

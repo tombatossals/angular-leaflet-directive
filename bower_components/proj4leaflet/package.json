@@ -1,6 +1,6 @@
 {
   "name": "proj4leaflet",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "Smooth Proj4js integration with Leaflet",
   "main": "src/proj4leaflet.js",
   "directories": {
@@ -36,7 +36,7 @@
     "url": "https://github.com/kartena/Proj4Leaflet/issues"
   },
   "dependencies": {
-    "leaflet": "~0.6.4",
-    "proj4": "~1.4.0"
+    "leaflet": "~0.7.0",
+    "proj4": "~2.0.0"
   }
 }

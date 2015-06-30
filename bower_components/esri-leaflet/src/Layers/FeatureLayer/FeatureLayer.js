@@ -47,8 +47,43 @@ EsriLeaflet.Layers.FeatureLayer = EsriLeaflet.Layers.FeatureManager.extend({
     return L.GeoJSON.geometryToLayer(geojson, this.options.pointToLayer, L.GeoJSON.coordsToLatLng, this.options);
   },
 
+  _updateLayer: function(layer, geojson){
+    // convert the geojson coordinates into a Leaflet LatLng array/nested arrays
+    // pass it to setLatLngs to update layer geometries
+    var latlngs = [];
+    var coordsToLatLng = this.options.coordsToLatLng || L.GeoJSON.coordsToLatLng;
+
+    // copy new attributes, if present
+    if (geojson.properties) {
+      layer.feature.properties = geojson.properties;
+    }
+
+    switch(geojson.geometry.type){
+      case 'Point':
+        latlngs = L.GeoJSON.coordsToLatLng(geojson.geometry.coordinates);
+        layer.setLatLng(latlngs);
+        break;
+      case 'LineString':
+        latlngs = L.GeoJSON.coordsToLatLngs(geojson.geometry.coordinates, 0, coordsToLatLng);
+        layer.setLatLngs(latlngs);
+        break;
+      case 'MultiLineString':
+        latlngs = L.GeoJSON.coordsToLatLngs(geojson.geometry.coordinates, 1, coordsToLatLng);
+        layer.setLatLngs(latlngs);
+        break;
+      case 'Polygon':
+        latlngs = L.GeoJSON.coordsToLatLngs(geojson.geometry.coordinates, 1, coordsToLatLng);
+        layer.setLatLngs(latlngs);
+        break;
+      case 'MultiPolygon':
+        latlngs = L.GeoJSON.coordsToLatLngs(geojson.geometry.coordinates, 2, coordsToLatLng);
+        layer.setLatLngs(latlngs);
+        break;
+    }
+  },
+
   /**
-   * Feature Managment Methods
+   * Feature Management Methods
    */
 
   createLayers: function(features){
@@ -63,21 +98,25 @@ EsriLeaflet.Layers.FeatureLayer = EsriLeaflet.Layers.FeatureManager.extend({
         this._map.addLayer(layer);
       }
 
-      if (layer && layer.setLatLngs) {
-        // @TODO Leaflet 0.8
-        //newLayer = L.GeoJSON.geometryToLayer(geojson, this.options);
-
-        var updateGeo = this.createNewLayer(geojson);
-        layer.setLatLngs(updateGeo.getLatLngs());
+      // update geomerty if neccessary
+      if (layer && (layer.setLatLngs || layer.setLatLng)) {
+        this._updateLayer(layer, geojson);
       }
 
-      if(!layer){
-        // @TODO Leaflet 0.8
-        //newLayer = L.GeoJSON.geometryToLayer(geojson, this.options);
 
+      if(!layer){
         newLayer =  this.createNewLayer(geojson);
         newLayer.feature = geojson;
-        newLayer.defaultOptions = newLayer.options;
+
+        if (this.options.style) {
+          newLayer._originalStyle = this.options.style;
+        }
+
+        // circleMarker check
+        else if (newLayer.setStyle) {
+          newLayer._originalStyle = newLayer.options;
+        }
+
         newLayer._leaflet_id = this._key + '_' + geojson.id;
 
         this._leafletIds[newLayer._leaflet_id] = geojson.id;
@@ -196,8 +235,7 @@ EsriLeaflet.Layers.FeatureLayer = EsriLeaflet.Layers.FeatureManager.extend({
     var layer = this._layers[id];
 
     if(layer){
-      layer.options = layer.defaultOptions;
-      this.setFeatureStyle(layer.feature.id, this.options.style);
+      this.setFeatureStyle(layer.feature.id, layer._originalStyle);
     }
 
     return this;
@@ -218,17 +256,16 @@ EsriLeaflet.Layers.FeatureLayer = EsriLeaflet.Layers.FeatureManager.extend({
       style = style(layer.feature);
     }
 
-    /*trap inability to access default style options from MultiLine/MultiPolygon
-    please revisit at Leaflet 1.0*/
-    else if (!style && !layer.defaultOptions) {
-      var dummyPath = new L.Path();
+    if (!style && !layer.defaultOptions) {
       style = L.Path.prototype.options;
       style.fill = true; //not set by default
     }
 
-    if (layer.setStyle) {
+    if (layer && layer.setStyle) {
       layer.setStyle(style);
     }
+
+    return this;
   },
 
   /**
@@ -276,6 +313,40 @@ EsriLeaflet.Layers.FeatureLayer = EsriLeaflet.Layers.FeatureManager.extend({
 
   getFeature: function (id) {
     return this._layers[id];
+  },
+
+  redraw: function (id) {
+    if (id) {
+      this._redraw(id);
+    }
+    return this;
+  },
+
+  _redraw: function(id) {
+    var layer = this._layers[id];
+    var geojson = layer.feature;
+
+    // if this looks like a marker
+    if (layer && layer.setIcon && this.options.pointToLayer) {
+      // update custom symbology, if necessary
+      if (this.options.pointToLayer){
+        var getIcon = this.options.pointToLayer(geojson, L.latLng(geojson.geometry.coordinates[1], geojson.geometry.coordinates[0]));
+        var updatedIcon = getIcon.options.icon;
+        layer.setIcon(updatedIcon);
+      }
+    }
+
+    // looks like a vector marker (circleMarker)
+    if (layer && layer.setStyle && this.options.pointToLayer) {
+      var getStyle = this.options.pointToLayer(geojson, L.latLng(geojson.geometry.coordinates[1], geojson.geometry.coordinates[0]));
+      var updatedStyle = getStyle.options;
+      this.setFeatureStyle(geojson.id, updatedStyle);
+    }
+
+    // looks like a path (polygon/polyline)
+    if(layer && layer.setStyle && this.options.style) {
+      this.resetStyle(geojson.id);
+    }
   },
 
   // from https://github.com/Leaflet/Leaflet/blob/v0.7.2/src/layer/FeatureGroup.js

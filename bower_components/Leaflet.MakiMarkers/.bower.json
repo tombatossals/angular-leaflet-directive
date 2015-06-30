@@ -28,6 +28,6 @@
     "commit": "48d958176a706cd9be0d7ac8611c24e4d7b3bd25"
   },
   "_source": "git://github.com/jseppi/Leaflet.MakiMarkers.git",
-  "_target": "~1.0.1",
+  "_target": "*",
   "_originalSource": "Leaflet.MakiMarkers"
 }

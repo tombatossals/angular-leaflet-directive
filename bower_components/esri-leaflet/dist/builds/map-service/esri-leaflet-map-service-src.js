@@ -1,4 +1,4 @@
-/*! esri-leaflet - v1.0.0-rc.6 - 2015-03-05
+/*! esri-leaflet - v1.0.0-rc.8 - 2015-06-01
 *   Copyright (c) 2015 Environmental Systems Research Institute, Inc.
 *   Apache License*/
 (function (factory) {
@@ -17,7 +17,7 @@
   }
 }(function (L) {
 var EsriLeaflet = { //jshint ignore:line
-  VERSION: '1.0.0-rc.5',
+  VERSION: '1.0.0-rc.8',
   Layers: {},
   Services: {},
   Controls: {},
@@ -422,9 +422,10 @@ if(typeof window !== 'undefined' && window.L){
     return featureCollection;
   };
 
-    // trim whitespace and add a tailing slash is needed to a url
+    // trim url whitespace and add a trailing slash if needed
   EsriLeaflet.Util.cleanUrl = function(url){
-    url = url.replace(/\s\s*/g, '');
+    //trim leading and trailing spaces, but not spaces inside the url
+    url = url.replace(/^\s+|\s+$|\A\s+|\s+\z/g, '');
 
     //add a trailing slash to the url if the user omitted it
     if(url[url.length-1] !== '/'){
@@ -435,7 +436,10 @@ if(typeof window !== 'undefined' && window.L){
   };
 
   EsriLeaflet.Util.isArcgisOnline = function(url){
-    return (/\.arcgis\.com/g).test(url);
+    /* hosted feature services can emit geojson natively.
+    our check for 'geojson' support will need to be revisted
+    once the functionality makes its way to ArcGIS Server*/
+    return (/\.arcgis\.com.*?FeatureServer/g).test(url);
   };
 
   EsriLeaflet.Util.geojsonTypeToArcGIS = function (geoJsonType) {
@@ -464,6 +468,12 @@ if(typeof window !== 'undefined' && window.L){
   };
 
   EsriLeaflet.Util.requestAnimationFrame = L.Util.bind(raf, window);
+
+  EsriLeaflet.Util.warn = function (message) {
+    if(console && console.warn) {
+      console.warn(message);
+    }
+  };
 
 })(EsriLeaflet);
 
@@ -572,14 +582,13 @@ if(typeof window !== 'undefined' && window.L){
 
       // request is longer then 2000 characters and the browser does not support CORS, log a warning
       } else {
-        if(console && console.warn){
-          console.warn('a request to ' + url + ' was longer then 2000 characters and this browser cannot make a cross-domain post request. Please use a proxy http://esri.github.io/esri-leaflet/api-reference/request.html');
-          return;
-        }
+        EsriLeaflet.Util.warn('a request to ' + url + ' was longer then 2000 characters and this browser cannot make a cross-domain post request. Please use a proxy http://esri.github.io/esri-leaflet/api-reference/request.html');
+        return;
       }
 
       return httpRequest;
     },
+
     post: {
       XMLHTTP: function (url, params, callback, context) {
         var httpRequest = createRequest(callback, context);
@@ -924,20 +933,23 @@ EsriLeaflet.Tasks.IdentifyFeatures = EsriLeaflet.Tasks.Identify.extend({
 
   run: function (callback, context){
     return this.request(function(error, response){
-      var featureCollection = EsriLeaflet.Util.responseToFeatureCollection(response);
-      var count = featureCollection.features.length;
-      // tag each feature with the Id of its parent layer
-      if(!error && count > 0){
+      // immediately invoke with an error
+      if(error) {
+        callback.call(context, error, undefined, response);
+        return;
+
+      // ok no error lets just assume we have features...
+      } else {
+        var featureCollection = EsriLeaflet.Util.responseToFeatureCollection(response);
         response.results = response.results.reverse();
-        for (var i = 0; i < count; i++) {
+        for (var i = 0; i < featureCollection.features.length; i++) {
           var feature = featureCollection.features[i];
           feature.layerId = response.results[i].layerId;
         }
+        callback.call(context, undefined, featureCollection, response);
       }
-      callback.call(context, error, (response && featureCollection), response);
-    }, context);
+    });
   }
-
 });
 
 EsriLeaflet.Tasks.identifyFeatures = function(params){
@@ -1013,7 +1025,8 @@ EsriLeaflet.Tasks.Query = EsriLeaflet.Tasks.Task.extend({
   },
 
   where: function(string){
-    this.params.where = string.replace(/"/g, "\'"); // jshint ignore:line
+    // instead of converting double-quotes to single quotes, pass as is, and provide a more informative message if a 400 is encountered
+    this.params.where = string;
     return this;
   },
 
@@ -1043,14 +1056,16 @@ EsriLeaflet.Tasks.Query = EsriLeaflet.Tasks.Task.extend({
       this.params.f = 'geojson';
 
       return this.request(function(error, response){
+        this._trapSQLerrors(error);
         callback.call(context, error, response, response);
-      }, context);
+      }, this);
 
     // otherwise convert it in the callback then pass it on
     } else {
       return this.request(function(error, response){
+        this._trapSQLerrors(error);
         callback.call(context, error, (response && EsriLeaflet.Util.responseToFeatureCollection(response)), response);
-      }, context);
+      }, this);
     }
   },
 
@@ -1090,6 +1105,14 @@ EsriLeaflet.Tasks.Query = EsriLeaflet.Tasks.Task.extend({
   layer: function(layer){
     this.path = layer + '/query';
     return this;
+  },
+
+  _trapSQLerrors: function(error){
+    if (error){
+      if (error.code === '400'){
+        EsriLeaflet.Util.warn('one common syntax error in query requests is encasing string values in double quotes instead of single quotes');
+      }
+    }
   },
 
   _cleanParams: function(){
@@ -1150,9 +1173,7 @@ EsriLeaflet.Tasks.Query = EsriLeaflet.Tasks.Task.extend({
 
     // warn the user if we havn't found a
     /* global console */
-    if(console && console.warn) {
-      console.warn('invalid geometry passed to spatial query. Should be an L.LatLng, L.LatLngBounds or L.Marker or a GeoJSON Point Line or Polygon object');
-    }
+    EsriLeaflet.Util.warn('invalid geometry passed to spatial query. Should be an L.LatLng, L.LatLngBounds or L.Marker or a GeoJSON Point Line or Polygon object');
 
     return;
   }
@@ -1365,10 +1386,10 @@ EsriLeaflet.Layers.RasterLayer =  L.Class.extend({
         var oldImage = this._currentImage;
 
         // if the bounds of this image matches the bounds that
-        // _renderImage was called with and we have a map
+        // _renderImage was called with and we have a map with the same bounds
         // hide the old image if there is one and set the opacity
         // of the new image otherwise remove the new image
-        if(newImage._bounds.equals(bounds)){
+        if(newImage._bounds.equals(bounds) && newImage._bounds.equals(this._map.getBounds())){
           this._currentImage = newImage;
 
           if(this.options.position === 'front'){
@@ -1466,7 +1487,8 @@ EsriLeaflet.Layers.DynamicMapLayer = EsriLeaflet.Layers.RasterLayer.extend({
     layerDefs: false,
     timeOptions: false,
     format: 'png24',
-    transparent: true
+    transparent: true,
+    f: 'json'
   },
 
   initialize: function (url, options) {
@@ -1474,7 +1496,7 @@ EsriLeaflet.Layers.DynamicMapLayer = EsriLeaflet.Layers.RasterLayer.extend({
     options.url = EsriLeaflet.Util.cleanUrl(url);
     this._service = new EsriLeaflet.Services.MapService(options);
     this._service.on('authenticationrequired requeststart requestend requesterror requestsuccess', this._propagateEvent, this);
-    if (options.proxy){
+    if ((options.proxy || options.token) && options.f !== 'json'){
       options.f = 'json';
     }
     L.Util.setOptions(this, options);
@@ -1550,6 +1572,14 @@ EsriLeaflet.Layers.DynamicMapLayer = EsriLeaflet.Layers.RasterLayer.extend({
     var ne = this._map.options.crs.project(bounds._northEast);
     var sw = this._map.options.crs.project(bounds._southWest);
 
+    //ensure that we don't ask ArcGIS Server for a taller image than we have actual map displaying
+    var top = this._map.latLngToLayerPoint(bounds._northEast);
+    var bottom = this._map.latLngToLayerPoint(bounds._southWest);
+
+    if (top.y > 0 || bottom.y < size.y){
+      size.y = bottom.y - top.y;
+    }
+
     var params = {
       bbox: [sw.x, sw.y, ne.x, ne.y].join(','),
       size: size.x + ',' + size.y,
@@ -1606,6 +1636,40 @@ EsriLeaflet.dynamicMapLayer = function(url, options){
 };
 
 EsriLeaflet.Layers.TiledMapLayer = L.TileLayer.extend({
+  options: {
+    zoomOffsetAllowance: 0.1,
+    correctZoomLevels: true
+  },
+
+  statics: {
+    MercatorZoomLevels: {
+      '0':156543.03392799999,
+      '1':78271.516963999893,
+      '2':39135.758482000099,
+      '3':19567.879240999901,
+      '4':9783.9396204999593,
+      '5':4891.9698102499797,
+      '6':2445.9849051249898,
+      '7':1222.9924525624899,
+      '8':611.49622628138002,
+      '9':305.74811314055802,
+      '10':152.874056570411,
+      '11':76.437028285073197,
+      '12':38.218514142536598,
+      '13':19.109257071268299,
+      '14':9.5546285356341496,
+      '15':4.7773142679493699,
+      '16':2.38865713397468,
+      '17':1.1943285668550501,
+      '18':0.59716428355981699,
+      '19':0.29858214164761698,
+      '20':0.14929107082381,
+      '21':0.07464553541191,
+      '22':0.0373227677059525,
+      '23':0.0186613838529763
+    }
+  },
+
   initialize: function(url, options){
     options = options || {};
     options.url = EsriLeaflet.Util.cleanUrl(url);
@@ -1629,6 +1693,50 @@ EsriLeaflet.Layers.TiledMapLayer = L.TileLayer.extend({
 
     // init layer by calling TileLayers initialize method
     L.TileLayer.prototype.initialize.call(this, this.tileUrl, options);
+  },
+
+  getTileUrl: function (tilePoint) {
+    return L.Util.template(this.tileUrl, L.extend({
+      s: this._getSubdomain(tilePoint),
+      z: this._lodMap[tilePoint.z] || tilePoint.z, // try lod map first, then just defualt to zoom level
+      x: tilePoint.x,
+      y: tilePoint.y
+    }, this.options));
+  },
+
+  onAdd: function(map){
+    if (!this._lodMap && this.options.correctZoomLevels) {
+      this._lodMap = {}; // make sure we always have an lod map even if its empty
+      this.metadata(function(error, metadata) {
+        if(!error) {
+          var sr = metadata.spatialReference.latestWkid || metadata.spatialReference.wkid;
+
+          if (sr === 102100 || sr === 3857) {
+            //create the zoom level data
+            var arcgisLODs = metadata.tileInfo.lods;
+            var correctResolutions = EsriLeaflet.Layers.TiledMapLayer.MercatorZoomLevels;
+
+            for(var i = 0; i < arcgisLODs.length; i++) {
+              var arcgisLOD = arcgisLODs[i];
+              for(var ci in correctResolutions) {
+                var correctRes = correctResolutions[ci];
+
+                if(this._withinPercentage(arcgisLOD.resolution, correctRes, this.options.zoomOffsetAllowance)) {
+                  this._lodMap[ci] = arcgisLOD.level;
+                  break;
+                }
+              }
+            }
+          } else {
+            EsriLeaflet.Util.warn('L.esri.TiledMapLayer is using a non-mercator spatial reference. Support may be available through Proj4Leaflet http://esri.github.io/esri-leaflet/examples/non-mercator-projection.html');
+          }
+        }
+
+        L.TileLayer.prototype.onAdd.call(this, map);
+      }, this);
+    } else {
+      L.TileLayer.prototype.onAdd.call(this, map);
+    }
   },
 
   metadata: function(callback, context){
@@ -1656,6 +1764,11 @@ EsriLeaflet.Layers.TiledMapLayer = L.TileLayer.extend({
       target: this
     }, e);
     this.fire(e.type, e);
+  },
+
+  _withinPercentage: function (a, b, percentage) {
+    var diff = Math.abs((a/b) - 1);
+    return diff < percentage;
   }
 });
 

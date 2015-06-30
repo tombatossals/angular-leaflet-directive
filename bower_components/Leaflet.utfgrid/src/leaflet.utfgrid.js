@@ -28,7 +28,7 @@ L.Util.ajax = function (url, cb) {
 	request.send();
 	return request;
 };
-L.UtfGrid = L.Class.extend({
+L.UtfGrid = (L.Layer || L.Class).extend({
 	includes: L.Mixin.Events,
 	options: {
 		subdomains: 'abc',
@@ -100,6 +100,16 @@ L.UtfGrid = L.Class.extend({
 		if (this.options.pointerCursor) {
 			this._container.style.cursor = '';
 		}
+	},
+
+	setUrl: function (url, noRedraw) {
+		this._url = url;
+		
+		if (!noRedraw) {
+			this.redraw();
+		}
+		
+		return this;
 	},
 
 	redraw: function () {

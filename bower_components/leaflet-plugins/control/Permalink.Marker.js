@@ -9,12 +9,10 @@ L.Control.Permalink.include({
 	*/
 
 	initialize_marker: function() {
-		//console.info("Initialize marker");
 		this.on('update', this._set_marker, this);
 	},
 
 	_set_marker: function(e) {
-		//console.info("Set marker", e);
 		var p = e.params;
 		//if (!this.options.useMarker) return;
 		if (this._marker) return;

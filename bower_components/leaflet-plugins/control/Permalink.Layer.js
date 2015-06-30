@@ -9,13 +9,11 @@ L.Control.Permalink.include({
 	*/
 
 	initialize_layer: function() {
-		//console.info("Initialize layer");
 		this.on('update', this._set_layer, this);
 		this.on('add', this._onadd_layer, this);
 	},
 
 	_onadd_layer: function(e) {
-		//console.info("onAdd::layer", e);
 		this._map.on('layeradd', this._update_layer, this);
 		this._map.on('layerremove', this._update_layer, this);
 		this._update_layer();
@@ -23,14 +21,12 @@ L.Control.Permalink.include({
 
 	_update_layer: function() {
 		if (!this.options.layers) return;
-		//console.info(this.options.layers);
 		var layer = this.options.layers.currentBaseLayer();
 		if (layer)
 			this._update({layer: layer.name});
 	},
 
 	_set_layer: function(e) {
-		//console.info("Set layer", e);
 		var p = e.params;
 		if (!this.options.layers || !p.layer) return;
 		this.options.layers.chooseBaseLayer(p.layer);
@@ -66,7 +62,6 @@ L.Control.Layers.include({
 			if (!this._layers.hasOwnProperty(i))
 				continue;
 			var obj = this._layers[i];
-			//console.info("Layer: ", obj.name, obj);
 			if (obj.overlay) continue;
 			if (!obj.overlay && this._map.hasLayer(obj.layer))
 				return obj;

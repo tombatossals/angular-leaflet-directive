@@ -39,8 +39,8 @@
             oidCheck = true;
           }
         }
-        if (oidCheck === false && console && console.warn){
-          console.warn('no known esriFieldTypeOID field detected in fields Array.  Please add an attribute field containing unique IDs to ensure the layer can be drawn correctly.');
+        if (oidCheck === false) {
+          EsriLeaflet.Util.warn('no known esriFieldTypeOID field detected in fields Array.  Please add an attribute field containing unique IDs to ensure the layer can be drawn correctly.');
         }
       }
 
@@ -104,25 +104,25 @@
           this.fire('drawlimitexceeded');
         }
 
-        //deincriment the request counter
+        //deincriment the request counter now that we have created features
         this._activeRequests--;
 
         if(!error && featureCollection.features.length){
           // schedule adding features until the next animation frame
           EsriLeaflet.Util.requestAnimationFrame(L.Util.bind(function(){
             this._addFeatures(featureCollection.features, coords);
+
+            // if there are no more active requests fire a load event for this view
+            if(this._activeRequests <= 0){
+              this.fire('load', {
+                bounds: bounds
+              });
+            }
           }, this));
         }
 
         if(callback){
           callback.call(this, error, featureCollection);
-        }
-
-        // if there are no more active requests fire a load event for this view
-        if(this._activeRequests <= 0){
-          this.fire('load', {
-            bounds: bounds
-          });
         }
       }, this);
     },
@@ -139,6 +139,12 @@
         var id = features[i].id;
         this._currentSnapshot.push(id);
         this._cache[key].push(id);
+        /*
+        should we refactor the code in FeatureManager.setWhere()
+        so that we can reuse it to make sure that we remove features
+        on the client that are removed from the service?
+        */
+
       }
 
       if(this.options.timeField){
@@ -176,7 +182,7 @@
       this.options.where = (where && where.length) ? where : '1=1';
 
       var oldSnapshot = [];
-      var newShapshot = [];
+      var newSnapshot = [];
       var pendingRequests = 0;
       var requestError = null;
       var requestCallback = L.Util.bind(function(error, featureCollection){
@@ -186,18 +192,18 @@
 
         if(featureCollection){
           for (var i = featureCollection.features.length - 1; i >= 0; i--) {
-            newShapshot.push(featureCollection.features[i].id);
+            newSnapshot.push(featureCollection.features[i].id);
           }
         }
 
         pendingRequests--;
 
         if(pendingRequests <= 0){
-          this._currentSnapshot = newShapshot;
+          this._currentSnapshot = newSnapshot;
           // schedule adding features until the next animation frame
           EsriLeaflet.Util.requestAnimationFrame(L.Util.bind(function(){
             this.removeLayers(oldSnapshot);
-            this.addLayers(newShapshot);
+            this.addLayers(newSnapshot);
             if(callback) {
               callback.call(context, requestError);
             }
@@ -270,6 +276,14 @@
         var coords = this._keyToCellCoords(key);
         var bounds = this._cellCoordsToBounds(coords);
         this._requestFeatures(bounds, key);
+      }
+
+      if(this.redraw){
+        this.once('load', function(){
+          this.eachFeature(function(layer){
+            this._redraw(layer.feature.id);
+          }, this);
+        }, this);
       }
     },
 
@@ -383,23 +397,44 @@
       return this._service.query();
     },
 
+    _getMetadata: function(callback){
+      if(this._metadata){
+        var error;
+        callback(error, this._metadata);
+      } else {
+        this.metadata(L.Util.bind(function(error, response) {
+          this._metadata = response;
+          callback(error, this._metadata);
+        }, this));
+      }
+    },
+
     addFeature: function(feature, callback, context){
-      this._service.addFeature(feature, function(error, response){
-        if(!error){
-          this.refresh();
-        }
-        if(callback){
-          callback.call(context, error, response);
-        }
-      }, this);
-      return this;
+      this._getMetadata(L.Util.bind(function(error, metadata){
+        this._service.addFeature(feature, L.Util.bind(function(error, response){
+          if(!error){
+            // assign ID from result to appropriate objectid field from service metadata
+            feature.properties[metadata.objectIdField] = response.objectId;
+
+            // we also need to update the geojson id for createLayers() to function
+            feature.id = response.objectId;
+            this.createLayers([feature]);
+          }
+
+          if(callback){
+            callback.call(context, error, response);
+          }
+        }, this));
+      }, this));
     },
 
     updateFeature: function(feature, callback, context){
-      return this._service.updateFeature(feature, function(error, response){
+      this._service.updateFeature(feature, function(error, response){
         if(!error){
-          this.refresh();
+          this.removeLayers([feature.id], true);
+          this.createLayers([feature]);
         }
+
         if(callback){
           callback.call(context, error, response);
         }
@@ -407,7 +442,7 @@
     },
 
     deleteFeature: function(id, callback, context){
-      return this._service.deleteFeature(id, function(error, response){
+      this._service.deleteFeature(id, function(error, response){
         if(!error && response.objectId){
           this.removeLayers([response.objectId], true);
         }
@@ -415,7 +450,21 @@
           callback.call(context, error, response);
         }
       }, this);
+    },
+
+    deleteFeatures: function(ids, callback, context){
+      return this._service.deleteFeatures(ids, function(error, response){
+        if(!error && response.length > 0){
+          for (var i=0; i<response.length; i++){
+            this.removeLayers([response[i].objectId], true);
+          }
+        }
+        if(callback){
+          callback.call(context, error, response);
+        }
+      }, this);
     }
+
   });
 
   /**

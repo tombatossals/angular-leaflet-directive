@@ -1,11 +1,11 @@
 {
   "name": "Leaflet.utfgrid",
   "homepage": "https://github.com/danzel/Leaflet.utfgrid",
-  "_release": "0fe25764e8",
+  "_release": "78c0139d90",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "0fe25764e83a60a37672e334fdd05c0a9b4cb95c"
+    "commit": "78c0139d908afc5d043cb465f8914b663052e7b8"
   },
   "_source": "git://github.com/danzel/Leaflet.utfgrid.git",
   "_target": "*",

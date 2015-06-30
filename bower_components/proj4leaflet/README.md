@@ -4,11 +4,16 @@ Proj4Leaflet [![NPM version](https://badge.fury.io/js/proj4leaflet.png)](http://
 This [Leaflet](http://leafletjs.com) plugin adds support for using projections supported by
 [Proj4js](https://github.com/proj4js/proj4js).
 
+## Features
+
+* Use tiles in any projection supported by Proj4js
+* Use GeoJSON in CRSs' other than WGS84
+
 Leaflet comes with built in support for tiles in [Spherical Mercator](http://wiki.openstreetmap.org/wiki/EPSG:3857). If you need support for tile layers in other projections, the Proj4Leaflet plugin lets you use tiles in any projection supported by Proj4js, which means support for just about any projection commonly used.
 
 Proj4Leaflet also adds support for GeoJSON in any projection, while Leaflet by itself assumes GeoJSON to always use WGS84 as its projection.
 
-For more details, see this blog post on [tiling and projections](http://blog.kartena.se/local-projections-in-a-world-of-spherical-mercator/).
+For more details, see [tiling and projections](http://blog.kartena.se/local-projections-in-a-world-of-spherical-mercator/).
 
 ## Usage
 
@@ -67,7 +72,7 @@ new L.Proj.CRS.TMS('EPSG:102012',
 L.tileLayer('http://tile.example.com/example/{z}/{x}/{y}.png', {tms: true}).addTo(map);
 ```
 
-(See reference for L.CRS.TMS for details on TMS and Leaflet versions before 0.7.)
+(See reference for [L.CRS.TMS](#lprojcrstms) for details on TMS and Leaflet versions before 0.7.)
 
 ## Proj4js compatibility notice
 Proj4js has breaking changes introduced after version 1.1.0. The current version of Proj4Leaflet
@@ -111,6 +116,7 @@ L.Proj.CRS(code, proj4def, options)
   * ```transformation```: an [L.Transformation](http://leafletjs.com/reference.html#transformation) that is used to transform the projected coordinates to pixel coordinates; default is ```L.Transformation(1, 0, -1, 0)```
   * ```scales```: an array of scales (pixels per projected coordinate unit) for each corresponding zoom level; default is to use Leaflet's native scales. You should use ```scales``` _or_ ```resolutions```, not both.
   * ```resolutions```: an array of resolutions (projected coordinate units per pixel) for each corresponding zoom level; default is to use Leaflet's native resolutions. You should use ```scales``` _or_ ```resolutions```, not both.
+  * ```bounds```: An [L.bounds](http://leafletjs.com/reference.html#bounds) providing the bounds of CRS in projected coordinates. If defined, Proj4Leaflet will use this in the ```getSize``` method, otherwise reverting to Leaflet's default size for spherical Mercator.
 
 ###L.Proj.CRS.TMS
 ICRS implementation to work with a Proj4 projection that will be used together with a [TMS](http://en.wikipedia.org/wiki/Tile_Map_Service) tile server. Since TMS has its y axis in the opposite direction of Leaflet (and OpenStreetMap/Google Maps), this requires some extra work.
@@ -146,7 +152,8 @@ L.Proj.CRS.TMS(code, proj4def, projectedBounds, options)
 * ```code``` is the projection's SRS code (only used internally by the Proj4js library).
 * ```proj4def``` is the Proj4 definition for the projection to use
 * ```projectedBounds``` the bounds of the TMS tile grid in projected coordinates. The bounds need to be properly specified and align to the grid on all provided zoom levels, or markers and/or tiles will not align properly with the corresponding WGS84 coordinate.
-* ```options``` is an options object with the same keys as ```L.Proj.CRS```.
+* ```options``` is an options object with the same keys as ```L.Proj.CRS```. It also accepts one extra option:
+  * ```tileSize```: sets the tile size (in pixels) which the CRS should align to; in case the projected bounds do not align with the tile grid, CRS will align it using this tile size. Default is 256.
 
 ###L.Proj.TileLayer.TMS
 *Deprecated since version 0.7, since Leaflet 0.7 does not need this class.*
@@ -187,7 +194,6 @@ Extends [L.GeoJSON](http://leafletjs.com/reference.html#geojson) to add CRS supp
 
 **Note:** The relevant Proj4 definition should be defined directly via `proj4.defs` before loading the GeoJSON object.  If it is not, proj4leaflet will throw an error.
 
-Also, note that future versions of the GeoJSON spec may not include explicit CRS support.  See https://github.com/GeoJSONWG/draft-geojson/pull/6 for more information.
 
 ####Usage Example
 ```javascript
@@ -208,4 +214,20 @@ var geojson = {
 var map = L.map('map');
 // ...
 L.Proj.geoJson(geojson).addTo(map);
+```
+
+###L.Proj.ImageOverlay
+
+Works like [L.ImageOverlay](http://leafletjs.com/reference.html#imageoverlay), but accepts bounds in the map's
+projected coordinate system instead of latitudes and longitudes. This is useful when the projected coordinate systems
+axis do not align with the latitude and longitudes, which results in distortion with the default image overlay in Leaflet.
+
+####Usage Example
+```javascript
+// Coordinate system is EPSG:28992 / Amersfoort / RD New
+var imageBounds = L.bounds(
+  [145323.20011251318, 475418.56045463786],
+  [175428.80013969325, 499072.9604685671]);
+L.Proj.imageOverlay('http://geo.flevoland.nl/arcgis/rest/services/Groen_Natuur/Agrarische_Natuur/MapServer/export?format=png24&transparent=true&f=image&bboxSR=28992&imageSR=28992&layers=show%3A0&bbox=145323.20011251318%2C475418.56045463786%2C175428.80013969325%2C499072.9604685671&size=560%2C440',
+  imageBounds);
 ```

@@ -64,7 +64,7 @@ module.exports = function () {
 
   console.clear();
 
-  /* Test NPM
+  /* Test NPM install
   manager = {
     name : 'NPM',
     root : path.normalize(__dirname + '/../')
@@ -87,12 +87,13 @@ module.exports = function () {
     var
       updateFolder = path.join(manager.root, currentConfig.base),
       updatePaths  = {
-        config      : path.join(manager.root, files.config),
-        tasks       : path.join(updateFolder, folders.tasks),
-        themeImport : path.join(updateFolder, folders.themeImport),
-        definition  : path.join(currentConfig.paths.source.definitions),
-        site        : path.join(currentConfig.paths.source.site),
-        theme       : path.join(currentConfig.paths.source.themes)
+        config       : path.join(manager.root, files.config),
+        tasks        : path.join(updateFolder, folders.tasks),
+        themeImport  : path.join(updateFolder, folders.themeImport),
+        definition   : path.join(currentConfig.paths.source.definitions),
+        site         : path.join(currentConfig.paths.source.site),
+        theme        : path.join(currentConfig.paths.source.themes),
+        defaultTheme : path.join(currentConfig.paths.source.themes, folders.defaultTheme)
       }
     ;
 
@@ -104,13 +105,14 @@ module.exports = function () {
         console.log('Updating Semantic UI from ' + currentConfig.version + ' to ' + release.version);
 
         console.info('Updating ui definitions...');
-        wrench.copyDirSyncRecursive(source.definitions, updatePaths.definition, settings.wrench.update);
+        wrench.copyDirSyncRecursive(source.definitions, updatePaths.definition, settings.wrench.overwrite);
 
         console.info('Updating default theme...');
-        wrench.copyDirSyncRecursive(source.themes, updatePaths.theme, settings.wrench.update);
+        wrench.copyDirSyncRecursive(source.themes, updatePaths.theme, settings.wrench.merge);
+        wrench.copyDirSyncRecursive(source.defaultTheme, updatePaths.defaultTheme, settings.wrench.overwrite);
 
         console.info('Updating tasks...');
-        wrench.copyDirSyncRecursive(source.tasks, updatePaths.tasks, settings.wrench.update);
+        wrench.copyDirSyncRecursive(source.tasks, updatePaths.tasks, settings.wrench.overwrite);
 
         console.info('Updating gulpfile.js');
         gulp.src(source.userGulpFile)
@@ -126,7 +128,7 @@ module.exports = function () {
         ;
 
         console.info('Adding new site theme files...');
-        wrench.copyDirSyncRecursive(source.site, updatePaths.site, settings.wrench.site);
+        wrench.copyDirSyncRecursive(source.site, updatePaths.site, settings.wrench.merge);
 
         console.info('Updating version...');
 
@@ -233,11 +235,12 @@ module.exports = function () {
 
         // special install paths only for PM install
         installPaths = extend(false, {}, installPaths, {
-          definition  : folders.definitions,
-          lessImport  : folders.lessImport,
-          tasks       : folders.tasks,
-          theme       : folders.themes,
-          themeImport : folders.themeImport
+          definition   : folders.definitions,
+          lessImport   : folders.lessImport,
+          tasks        : folders.tasks,
+          theme        : folders.themes,
+          defaultTheme : path.join(folders.themes, folders.defaultTheme),
+          themeImport  : folders.themeImport
         });
 
         // add project root to semantic root
@@ -268,11 +271,14 @@ module.exports = function () {
         console.log('Installing to \033[92m' + answers.semanticRoot + '\033[0m');
 
         console.info('Copying UI definitions');
-        wrench.copyDirSyncRecursive(source.definitions, installPaths.definition, settings.wrench.install);
-        wrench.copyDirSyncRecursive(source.themes, installPaths.theme, settings.wrench.install);
+        wrench.copyDirSyncRecursive(source.definitions, installPaths.definition, settings.wrench.overwrite);
+
+        console.info('Copying UI themes');
+        wrench.copyDirSyncRecursive(source.themes, installPaths.theme, settings.wrench.merge);
+        wrench.copyDirSyncRecursive(source.defaultTheme, installPaths.defaultTheme, settings.wrench.overwrite);
 
         console.info('Copying gulp tasks');
-        wrench.copyDirSyncRecursive(source.tasks, installPaths.tasks, settings.wrench.install);
+        wrench.copyDirSyncRecursive(source.tasks, installPaths.tasks, settings.wrench.overwrite);
 
         // copy theme import
         console.info('Adding theme files');
@@ -305,7 +311,7 @@ module.exports = function () {
       else {
         console.info('Creating site theme folder', installPaths.site);
       }
-      wrench.copyDirSyncRecursive(source.site, installPaths.site, settings.wrench.site);
+      wrench.copyDirSyncRecursive(source.site, installPaths.site, settings.wrench.merge);
 
       /*--------------
         Theme Config

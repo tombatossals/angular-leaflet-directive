@@ -1,5 +1,40 @@
 # Changelog
 
+## Releace Candidate 8
+
+#### Breaking Changes
+
+* 
+
+#### Changes
+
+* Non standard scale levels from tile services published in web mercator are now remapped to the standard scale levels https://github.com/Esri/esri-leaflet/pull/548 https://github.com/Esri/esri-leaflet/issues/530
+* Fixed a bug introduced in RC 7 where features would sometimes not draw https://github.com/Esri/esri-leaflet/issues/546 https://github.com/Esri/esri-leaflet/issues/536
+* `load` event is now fired after all features are created, rather then when they are all recived something from the server https://github.com/Esri/esri-leaflet/issues/545
+* Properly handle using `L.CricleMarker` with `L.esri.Layers.FeatureLayer` https://github.com/Esri/esri-leaflet/issues/534
+* New `redraw` method on `L.esri.Layers.FeatureLayer` for programatically redrawing features with their latest symbology. https://github.com/Esri/esri-leaflet/pull/550
+
+## Release Candidate 7
+
+#### Breaking Changes
+
+* DynamicMapLayer will now request `json` by default to better expose the authentication process. If you are using ArcGIS Server 10.0 or have disabled CORS on your server you will need to add `useCors: false` to your options.
+
+#### Changes
+* refactor of `FeatureLayer.resetStyle()` behavior. https://github.com/Esri/esri-leaflet/issues/488
+* improvement of `DynamicMapLayer` image loading logic. https://github.com/Esri/esri-leaflet/issues/498
+* Fixed bug in display of dynamic map services at world scale. https://github.com/Esri/esri-leaflet/issues/450
+* Switched to protocol relative urls for google fonts https://github.com/Esri/esri-leaflet/pull/501 (thanks @whymarrh!)
+* Added an `alt` tag to the Esri logo https://github.com/Esri/esri-leaflet/issues/490
+* Improved a few regexes https://github.com/Esri/esri-leaflet/pull/494 & https://github.com/Esri/esri-leaflet/pull/487
+* Trap error when `identifyFeatures.run()` doesn't return any results. https://github.com/Esri/esri-leaflet/issues/512
+* Dynamically switch to a smaller Esri logo in smaller maps. https://github.com/Esri/esri-leaflet/issues/505
+* Added a `deleteFeatures()` method to both `L.esri.Layers.FeatureLayer` and `L.esri.Services.FeatureLayer` for dropping records in bulk. https://github.com/Esri/esri-leaflet/pull/510
+* Improve logic of rendering simplified features with `L.esri.FeatureLayer`. https://github.com/Esri/esri-leaflet/issues/320 and https://github.com/Esri/esri-leaflet/pull/518
+* Various doc improvements.  https://github.com/Esri/esri-leaflet/pull/511 & https://github.com/Esri/esri-leaflet/pull/507 & https://github.com/Esri/esri-leaflet/pull/506 & https://github.com/Esri/esri-leaflet/issues/495
+* DynamicMapLayer will now request `json` by default to better expose authentication helpers
+* Attribution for basemaps is now always requested with JSONP
+
 ## Release Candidate 6
 
 #### Breaking Changes

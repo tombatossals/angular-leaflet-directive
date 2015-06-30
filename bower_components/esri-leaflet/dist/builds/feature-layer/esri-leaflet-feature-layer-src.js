@@ -1,4 +1,4 @@
-/*! esri-leaflet - v1.0.0-rc.6 - 2015-03-05
+/*! esri-leaflet - v1.0.0-rc.8 - 2015-06-01
 *   Copyright (c) 2015 Environmental Systems Research Institute, Inc.
 *   Apache License*/
 (function (factory) {
@@ -17,7 +17,7 @@
   }
 }(function (L) {
 var EsriLeaflet = { //jshint ignore:line
-  VERSION: '1.0.0-rc.5',
+  VERSION: '1.0.0-rc.8',
   Layers: {},
   Services: {},
   Controls: {},
@@ -422,9 +422,10 @@ if(typeof window !== 'undefined' && window.L){
     return featureCollection;
   };
 
-    // trim whitespace and add a tailing slash is needed to a url
+    // trim url whitespace and add a trailing slash if needed
   EsriLeaflet.Util.cleanUrl = function(url){
-    url = url.replace(/\s\s*/g, '');
+    //trim leading and trailing spaces, but not spaces inside the url
+    url = url.replace(/^\s+|\s+$|\A\s+|\s+\z/g, '');
 
     //add a trailing slash to the url if the user omitted it
     if(url[url.length-1] !== '/'){
@@ -435,7 +436,10 @@ if(typeof window !== 'undefined' && window.L){
   };
 
   EsriLeaflet.Util.isArcgisOnline = function(url){
-    return (/\.arcgis\.com/g).test(url);
+    /* hosted feature services can emit geojson natively.
+    our check for 'geojson' support will need to be revisted
+    once the functionality makes its way to ArcGIS Server*/
+    return (/\.arcgis\.com.*?FeatureServer/g).test(url);
   };
 
   EsriLeaflet.Util.geojsonTypeToArcGIS = function (geoJsonType) {
@@ -464,6 +468,12 @@ if(typeof window !== 'undefined' && window.L){
   };
 
   EsriLeaflet.Util.requestAnimationFrame = L.Util.bind(raf, window);
+
+  EsriLeaflet.Util.warn = function (message) {
+    if(console && console.warn) {
+      console.warn(message);
+    }
+  };
 
 })(EsriLeaflet);
 
@@ -572,14 +582,13 @@ if(typeof window !== 'undefined' && window.L){
 
       // request is longer then 2000 characters and the browser does not support CORS, log a warning
       } else {
-        if(console && console.warn){
-          console.warn('a request to ' + url + ' was longer then 2000 characters and this browser cannot make a cross-domain post request. Please use a proxy http://esri.github.io/esri-leaflet/api-reference/request.html');
-          return;
-        }
+        EsriLeaflet.Util.warn('a request to ' + url + ' was longer then 2000 characters and this browser cannot make a cross-domain post request. Please use a proxy http://esri.github.io/esri-leaflet/api-reference/request.html');
+        return;
       }
 
       return httpRequest;
     },
+
     post: {
       XMLHTTP: function (url, params, callback, context) {
         var httpRequest = createRequest(callback, context);
@@ -806,7 +815,7 @@ EsriLeaflet.Services.FeatureLayer = EsriLeaflet.Services.Service.extend({
     }, function(error, response){
       var result = (response && response.addResults) ? response.addResults[0] : undefined;
       if(callback){
-        callback.call(this, error || response.addResults[0].error, result);
+        callback.call(context, error || response.addResults[0].error, result);
       }
     }, context);
   },
@@ -833,8 +842,19 @@ EsriLeaflet.Services.FeatureLayer = EsriLeaflet.Services.Service.extend({
         callback.call(context, error || response.deleteResults[0].error, result);
       }
     }, context);
-  }
+  },
 
+  deleteFeatures: function(ids, callback, context) {
+    return this.post('deleteFeatures', {
+      objectIds: ids
+    }, function(error, response){
+      // pass back the entire array
+      var result = (response && response.deleteResults) ? response.deleteResults : undefined;
+      if(callback){
+        callback.call(context, error || response.deleteResults[0].error, result);
+      }
+    }, context);
+  }
 });
 
 EsriLeaflet.Services.featureLayer = function(options) {
@@ -974,7 +994,8 @@ EsriLeaflet.Tasks.Query = EsriLeaflet.Tasks.Task.extend({
   },
 
   where: function(string){
-    this.params.where = string.replace(/"/g, "\'"); // jshint ignore:line
+    // instead of converting double-quotes to single quotes, pass as is, and provide a more informative message if a 400 is encountered
+    this.params.where = string;
     return this;
   },
 
@@ -1004,14 +1025,16 @@ EsriLeaflet.Tasks.Query = EsriLeaflet.Tasks.Task.extend({
       this.params.f = 'geojson';
 
       return this.request(function(error, response){
+        this._trapSQLerrors(error);
         callback.call(context, error, response, response);
-      }, context);
+      }, this);
 
     // otherwise convert it in the callback then pass it on
     } else {
       return this.request(function(error, response){
+        this._trapSQLerrors(error);
         callback.call(context, error, (response && EsriLeaflet.Util.responseToFeatureCollection(response)), response);
-      }, context);
+      }, this);
     }
   },
 
@@ -1051,6 +1074,14 @@ EsriLeaflet.Tasks.Query = EsriLeaflet.Tasks.Task.extend({
   layer: function(layer){
     this.path = layer + '/query';
     return this;
+  },
+
+  _trapSQLerrors: function(error){
+    if (error){
+      if (error.code === '400'){
+        EsriLeaflet.Util.warn('one common syntax error in query requests is encasing string values in double quotes instead of single quotes');
+      }
+    }
   },
 
   _cleanParams: function(){
@@ -1111,9 +1142,7 @@ EsriLeaflet.Tasks.Query = EsriLeaflet.Tasks.Task.extend({
 
     // warn the user if we havn't found a
     /* global console */
-    if(console && console.warn) {
-      console.warn('invalid geometry passed to spatial query. Should be an L.LatLng, L.LatLngBounds or L.Marker or a GeoJSON Point Line or Polygon object');
-    }
+    EsriLeaflet.Util.warn('invalid geometry passed to spatial query. Should be an L.LatLng, L.LatLngBounds or L.Marker or a GeoJSON Point Line or Polygon object');
 
     return;
   }
@@ -1491,8 +1520,8 @@ EsriLeaflet.Layers.FeatureGrid = L.Class.extend({
             oidCheck = true;
           }
         }
-        if (oidCheck === false && console && console.warn){
-          console.warn('no known esriFieldTypeOID field detected in fields Array.  Please add an attribute field containing unique IDs to ensure the layer can be drawn correctly.');
+        if (oidCheck === false) {
+          EsriLeaflet.Util.warn('no known esriFieldTypeOID field detected in fields Array.  Please add an attribute field containing unique IDs to ensure the layer can be drawn correctly.');
         }
       }
 
@@ -1556,25 +1585,25 @@ EsriLeaflet.Layers.FeatureGrid = L.Class.extend({
           this.fire('drawlimitexceeded');
         }
 
-        //deincriment the request counter
+        //deincriment the request counter now that we have created features
         this._activeRequests--;
 
         if(!error && featureCollection.features.length){
           // schedule adding features until the next animation frame
           EsriLeaflet.Util.requestAnimationFrame(L.Util.bind(function(){
             this._addFeatures(featureCollection.features, coords);
+
+            // if there are no more active requests fire a load event for this view
+            if(this._activeRequests <= 0){
+              this.fire('load', {
+                bounds: bounds
+              });
+            }
           }, this));
         }
 
         if(callback){
           callback.call(this, error, featureCollection);
-        }
-
-        // if there are no more active requests fire a load event for this view
-        if(this._activeRequests <= 0){
-          this.fire('load', {
-            bounds: bounds
-          });
         }
       }, this);
     },
@@ -1591,6 +1620,12 @@ EsriLeaflet.Layers.FeatureGrid = L.Class.extend({
         var id = features[i].id;
         this._currentSnapshot.push(id);
         this._cache[key].push(id);
+        /*
+        should we refactor the code in FeatureManager.setWhere()
+        so that we can reuse it to make sure that we remove features
+        on the client that are removed from the service?
+        */
+
       }
 
       if(this.options.timeField){
@@ -1628,7 +1663,7 @@ EsriLeaflet.Layers.FeatureGrid = L.Class.extend({
       this.options.where = (where && where.length) ? where : '1=1';
 
       var oldSnapshot = [];
-      var newShapshot = [];
+      var newSnapshot = [];
       var pendingRequests = 0;
       var requestError = null;
       var requestCallback = L.Util.bind(function(error, featureCollection){
@@ -1638,18 +1673,18 @@ EsriLeaflet.Layers.FeatureGrid = L.Class.extend({
 
         if(featureCollection){
           for (var i = featureCollection.features.length - 1; i >= 0; i--) {
-            newShapshot.push(featureCollection.features[i].id);
+            newSnapshot.push(featureCollection.features[i].id);
           }
         }
 
         pendingRequests--;
 
         if(pendingRequests <= 0){
-          this._currentSnapshot = newShapshot;
+          this._currentSnapshot = newSnapshot;
           // schedule adding features until the next animation frame
           EsriLeaflet.Util.requestAnimationFrame(L.Util.bind(function(){
             this.removeLayers(oldSnapshot);
-            this.addLayers(newShapshot);
+            this.addLayers(newSnapshot);
             if(callback) {
               callback.call(context, requestError);
             }
@@ -1722,6 +1757,14 @@ EsriLeaflet.Layers.FeatureGrid = L.Class.extend({
         var coords = this._keyToCellCoords(key);
         var bounds = this._cellCoordsToBounds(coords);
         this._requestFeatures(bounds, key);
+      }
+
+      if(this.redraw){
+        this.once('load', function(){
+          this.eachFeature(function(layer){
+            this._redraw(layer.feature.id);
+          }, this);
+        }, this);
       }
     },
 
@@ -1835,23 +1878,44 @@ EsriLeaflet.Layers.FeatureGrid = L.Class.extend({
       return this._service.query();
     },
 
+    _getMetadata: function(callback){
+      if(this._metadata){
+        var error;
+        callback(error, this._metadata);
+      } else {
+        this.metadata(L.Util.bind(function(error, response) {
+          this._metadata = response;
+          callback(error, this._metadata);
+        }, this));
+      }
+    },
+
     addFeature: function(feature, callback, context){
-      this._service.addFeature(feature, function(error, response){
-        if(!error){
-          this.refresh();
-        }
-        if(callback){
-          callback.call(context, error, response);
-        }
-      }, this);
-      return this;
+      this._getMetadata(L.Util.bind(function(error, metadata){
+        this._service.addFeature(feature, L.Util.bind(function(error, response){
+          if(!error){
+            // assign ID from result to appropriate objectid field from service metadata
+            feature.properties[metadata.objectIdField] = response.objectId;
+
+            // we also need to update the geojson id for createLayers() to function
+            feature.id = response.objectId;
+            this.createLayers([feature]);
+          }
+
+          if(callback){
+            callback.call(context, error, response);
+          }
+        }, this));
+      }, this));
     },
 
     updateFeature: function(feature, callback, context){
-      return this._service.updateFeature(feature, function(error, response){
+      this._service.updateFeature(feature, function(error, response){
         if(!error){
-          this.refresh();
+          this.removeLayers([feature.id], true);
+          this.createLayers([feature]);
         }
+
         if(callback){
           callback.call(context, error, response);
         }
@@ -1859,7 +1923,7 @@ EsriLeaflet.Layers.FeatureGrid = L.Class.extend({
     },
 
     deleteFeature: function(id, callback, context){
-      return this._service.deleteFeature(id, function(error, response){
+      this._service.deleteFeature(id, function(error, response){
         if(!error && response.objectId){
           this.removeLayers([response.objectId], true);
         }
@@ -1867,7 +1931,21 @@ EsriLeaflet.Layers.FeatureGrid = L.Class.extend({
           callback.call(context, error, response);
         }
       }, this);
+    },
+
+    deleteFeatures: function(ids, callback, context){
+      return this._service.deleteFeatures(ids, function(error, response){
+        if(!error && response.length > 0){
+          for (var i=0; i<response.length; i++){
+            this.removeLayers([response[i].objectId], true);
+          }
+        }
+        if(callback){
+          callback.call(context, error, response);
+        }
+      }, this);
     }
+
   });
 
   /**
@@ -1981,8 +2059,43 @@ EsriLeaflet.Layers.FeatureLayer = EsriLeaflet.Layers.FeatureManager.extend({
     return L.GeoJSON.geometryToLayer(geojson, this.options.pointToLayer, L.GeoJSON.coordsToLatLng, this.options);
   },
 
+  _updateLayer: function(layer, geojson){
+    // convert the geojson coordinates into a Leaflet LatLng array/nested arrays
+    // pass it to setLatLngs to update layer geometries
+    var latlngs = [];
+    var coordsToLatLng = this.options.coordsToLatLng || L.GeoJSON.coordsToLatLng;
+
+    // copy new attributes, if present
+    if (geojson.properties) {
+      layer.feature.properties = geojson.properties;
+    }
+
+    switch(geojson.geometry.type){
+      case 'Point':
+        latlngs = L.GeoJSON.coordsToLatLng(geojson.geometry.coordinates);
+        layer.setLatLng(latlngs);
+        break;
+      case 'LineString':
+        latlngs = L.GeoJSON.coordsToLatLngs(geojson.geometry.coordinates, 0, coordsToLatLng);
+        layer.setLatLngs(latlngs);
+        break;
+      case 'MultiLineString':
+        latlngs = L.GeoJSON.coordsToLatLngs(geojson.geometry.coordinates, 1, coordsToLatLng);
+        layer.setLatLngs(latlngs);
+        break;
+      case 'Polygon':
+        latlngs = L.GeoJSON.coordsToLatLngs(geojson.geometry.coordinates, 1, coordsToLatLng);
+        layer.setLatLngs(latlngs);
+        break;
+      case 'MultiPolygon':
+        latlngs = L.GeoJSON.coordsToLatLngs(geojson.geometry.coordinates, 2, coordsToLatLng);
+        layer.setLatLngs(latlngs);
+        break;
+    }
+  },
+
   /**
-   * Feature Managment Methods
+   * Feature Management Methods
    */
 
   createLayers: function(features){
@@ -1997,21 +2110,25 @@ EsriLeaflet.Layers.FeatureLayer = EsriLeaflet.Layers.FeatureManager.extend({
         this._map.addLayer(layer);
       }
 
-      if (layer && layer.setLatLngs) {
-        // @TODO Leaflet 0.8
-        //newLayer = L.GeoJSON.geometryToLayer(geojson, this.options);
-
-        var updateGeo = this.createNewLayer(geojson);
-        layer.setLatLngs(updateGeo.getLatLngs());
+      // update geomerty if neccessary
+      if (layer && (layer.setLatLngs || layer.setLatLng)) {
+        this._updateLayer(layer, geojson);
       }
 
-      if(!layer){
-        // @TODO Leaflet 0.8
-        //newLayer = L.GeoJSON.geometryToLayer(geojson, this.options);
 
+      if(!layer){
         newLayer =  this.createNewLayer(geojson);
         newLayer.feature = geojson;
-        newLayer.defaultOptions = newLayer.options;
+
+        if (this.options.style) {
+          newLayer._originalStyle = this.options.style;
+        }
+
+        // circleMarker check
+        else if (newLayer.setStyle) {
+          newLayer._originalStyle = newLayer.options;
+        }
+
         newLayer._leaflet_id = this._key + '_' + geojson.id;
 
         this._leafletIds[newLayer._leaflet_id] = geojson.id;
@@ -2130,8 +2247,7 @@ EsriLeaflet.Layers.FeatureLayer = EsriLeaflet.Layers.FeatureManager.extend({
     var layer = this._layers[id];
 
     if(layer){
-      layer.options = layer.defaultOptions;
-      this.setFeatureStyle(layer.feature.id, this.options.style);
+      this.setFeatureStyle(layer.feature.id, layer._originalStyle);
     }
 
     return this;
@@ -2152,17 +2268,16 @@ EsriLeaflet.Layers.FeatureLayer = EsriLeaflet.Layers.FeatureManager.extend({
       style = style(layer.feature);
     }
 
-    /*trap inability to access default style options from MultiLine/MultiPolygon
-    please revisit at Leaflet 1.0*/
-    else if (!style && !layer.defaultOptions) {
-      var dummyPath = new L.Path();
+    if (!style && !layer.defaultOptions) {
       style = L.Path.prototype.options;
       style.fill = true; //not set by default
     }
 
-    if (layer.setStyle) {
+    if (layer && layer.setStyle) {
       layer.setStyle(style);
     }
+
+    return this;
   },
 
   /**
@@ -2210,6 +2325,40 @@ EsriLeaflet.Layers.FeatureLayer = EsriLeaflet.Layers.FeatureManager.extend({
 
   getFeature: function (id) {
     return this._layers[id];
+  },
+
+  redraw: function (id) {
+    if (id) {
+      this._redraw(id);
+    }
+    return this;
+  },
+
+  _redraw: function(id) {
+    var layer = this._layers[id];
+    var geojson = layer.feature;
+
+    // if this looks like a marker
+    if (layer && layer.setIcon && this.options.pointToLayer) {
+      // update custom symbology, if necessary
+      if (this.options.pointToLayer){
+        var getIcon = this.options.pointToLayer(geojson, L.latLng(geojson.geometry.coordinates[1], geojson.geometry.coordinates[0]));
+        var updatedIcon = getIcon.options.icon;
+        layer.setIcon(updatedIcon);
+      }
+    }
+
+    // looks like a vector marker (circleMarker)
+    if (layer && layer.setStyle && this.options.pointToLayer) {
+      var getStyle = this.options.pointToLayer(geojson, L.latLng(geojson.geometry.coordinates[1], geojson.geometry.coordinates[0]));
+      var updatedStyle = getStyle.options;
+      this.setFeatureStyle(geojson.id, updatedStyle);
+    }
+
+    // looks like a path (polygon/polyline)
+    if(layer && layer.setStyle && this.options.style) {
+      this.resetStyle(geojson.id);
+    }
   },
 
   // from https://github.com/Leaflet/Leaflet/blob/v0.7.2/src/layer/FeatureGroup.js

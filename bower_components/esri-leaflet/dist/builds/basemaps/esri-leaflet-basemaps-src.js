@@ -1,4 +1,4 @@
-/*! esri-leaflet - v1.0.0-rc.6 - 2015-03-05
+/*! esri-leaflet - v1.0.0-rc.8 - 2015-06-01
 *   Copyright (c) 2015 Environmental Systems Research Institute, Inc.
 *   Apache License*/
 (function (factory) {
@@ -17,7 +17,7 @@
   }
 }(function (L) {
 var EsriLeaflet = { //jshint ignore:line
-  VERSION: '1.0.0-rc.5',
+  VERSION: '1.0.0-rc.8',
   Layers: {},
   Services: {},
   Controls: {},
@@ -139,14 +139,13 @@ if(typeof window !== 'undefined' && window.L){
 
       // request is longer then 2000 characters and the browser does not support CORS, log a warning
       } else {
-        if(console && console.warn){
-          console.warn('a request to ' + url + ' was longer then 2000 characters and this browser cannot make a cross-domain post request. Please use a proxy http://esri.github.io/esri-leaflet/api-reference/request.html');
-          return;
-        }
+        EsriLeaflet.Util.warn('a request to ' + url + ' was longer then 2000 characters and this browser cannot make a cross-domain post request. Please use a proxy http://esri.github.io/esri-leaflet/api-reference/request.html');
+        return;
       }
 
       return httpRequest;
     },
+
     post: {
       XMLHTTP: function (url, params, callback, context) {
         var httpRequest = createRequest(callback, context);
@@ -379,7 +378,7 @@ if(typeof window !== 'undefined' && window.L){
             minZoom: 1,
             maxZoom: 13,
             subdomains: ['server', 'services'],
-            attribution: 'ESRI, NAVTEQ, DeLorme'
+            attribution: 'Esri, NAVTEQ, DeLorme'
           }
         },
         ShadedReliefLabels: {
@@ -480,8 +479,9 @@ if(typeof window !== 'undefined' && window.L){
     //   }
     // },
     _getAttributionData: function(url){
-      EsriLeaflet.get(url, {}, function(error, attributions){
+      L.esri.Request.get.JSONP(url, {}, L.Util.bind(function(error, attributions){
         this._attributions = [];
+
         for (var c = 0; c < attributions.contributors.length; c++) {
           var contributor = attributions.contributors[c];
           for (var i = 0; i < contributor.coverageAreas.length; i++) {
@@ -503,7 +503,7 @@ if(typeof window !== 'undefined' && window.L){
         });
 
         this._updateMapAttribution();
-      }, this);
+      }, this));
     },
     _updateMapAttribution: function(){
       if(this._map && this._map.attributionControl && this._attributions){
@@ -549,15 +549,31 @@ EsriLeaflet.Controls.Logo = L.Control.extend({
     marginBottom: 0,
     marginRight: 0
   },
+
   onAdd: function () {
     var div = L.DomUtil.create('div', 'esri-leaflet-logo');
     div.style.marginTop = this.options.marginTop;
     div.style.marginLeft = this.options.marginLeft;
     div.style.marginBottom = this.options.marginBottom;
     div.style.marginRight = this.options.marginRight;
-    div.innerHTML = '<a href="https://developers.arcgis.com" style="border: none;"><img src="https://js.arcgis.com/3.11/esri/images/map/logo-med.png" style="border: none;"></a>';
+    div.innerHTML = this._adjustLogo(this._map._size);
+
+    this._map.on('resize', function(e){
+      div.innerHTML = this._adjustLogo(e.newSize);
+    }, this);
+
     return div;
+  },
+
+  _adjustLogo: function (mapSize) {
+    if (mapSize.x <= 600 || mapSize.y <= 600){
+      return '<a href="https://developers.arcgis.com" style="border: none;"><img src="https://js.arcgis.com/3.13/esri/images/map/logo-sm.png" alt="Powered by Esri" style="border: none;"></a>';
+    }
+    else {
+      return '<a href="https://developers.arcgis.com" style="border: none;"><img src="https://js.arcgis.com/3.13/esri/images/map/logo-med.png" alt="Powered by Esri" style="border: none;"></a>';
+    }
   }
+
 });
 
 EsriLeaflet.Controls.logo = function(options){

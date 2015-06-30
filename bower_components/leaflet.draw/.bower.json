@@ -1,14 +1,68 @@
 {
-  "name": "leaflet.draw",
+  "name": "leaflet-draw",
+  "description": "Vector drawing plugin for Leaflet",
+  "version": "0.2.4",
+  "main": [
+    "dist/leaflet.draw-src.js",
+    "dist/leaflet.draw.css",
+    "dist/images/spritesheet-2x.png",
+    "dist/images/spritesheet.png"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "src",
+    "doc",
+    "examples",
+    "test",
+    "build",
+    "spec",
+    "*.md",
+    "Gruntfile.js",
+    "Jakefile.js",
+    "package.json",
+    "bower.json"
+  ],
+  "keywords": [
+    "javascript",
+    "leaflet",
+    "maps",
+    "client",
+    "vector",
+    "drawing",
+    "draw"
+  ],
+  "authors": [
+    {
+      "name": "Jacob Toye"
+    }
+  ],
   "homepage": "https://github.com/Leaflet/Leaflet.draw",
-  "version": "0.2.3",
-  "_release": "0.2.3",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Leaflet/Leaflet.draw.git"
+  },
+  "dependencies": {
+    "leaflet-dist": "0.7.x"
+  },
+  "devDependencies": {
+    "leaflet": "~0.7.0",
+    "jshint": "~2.3.0",
+    "uglify-js": "~2.4.3",
+    "jake": "~0.7.4",
+    "mocha": "~1.14.0",
+    "happen": "~0.1.3",
+    "karma": "^0.12.19",
+    "karma-mocha": "~0.1.0",
+    "karma-coverage": "~0.1.3"
+  },
+  "_release": "0.2.4",
   "_resolution": {
     "type": "version",
-    "tag": "0.2.3",
-    "commit": "21a911a8e733ef1be2b11fc8c779182689a7f60d"
+    "tag": "v0.2.4",
+    "commit": "07b1448f4eba33982f662398988f0337ee55cc02"
   },
   "_source": "git://github.com/Leaflet/Leaflet.draw.git",
-  "_target": "~0.2.3",
+  "_target": "*",
   "_originalSource": "leaflet.draw"
 }

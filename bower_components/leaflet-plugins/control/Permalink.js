@@ -81,7 +81,6 @@ L.Control.Permalink = L.Control.extend({
 	},
 
 	_update: function(obj, source) {
-		//console.info('Update', obj, this._params);
 		for(var i in obj) {
 			if (!obj.hasOwnProperty(i)) continue;
 			if (obj[i] !== null && obj[i] !== undefined)
@@ -119,7 +118,6 @@ L.Control.Permalink = L.Control.extend({
 
 	_set_center: function(e)
 	{
-		//console.info('Update center', e);
 		var params = e.params;
 		if (params.zoom === undefined ||
 		    params.lat === undefined ||

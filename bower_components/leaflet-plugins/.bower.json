@@ -1,14 +1,56 @@
 {
   "name": "leaflet-plugins",
-  "homepage": "https://github.com/shramov/leaflet-plugins",
-  "version": "1.1.2",
-  "_release": "1.1.2",
+  "version": "1.3.6",
+  "homepage": "https://github.com/shramov/leaflet-plugins/",
+  "license": "MIT",
+  "authors": [
+    "brunob <brunobergot@gmail.com>",
+    "Pavel Shramov"
+  ],
+  "description": "Miscellaneous plugins for Leaflet library",
+  "main": [
+    "control/Distance.js",
+    "control/Layers.Load.js",
+    "control/Permalink.js",
+    "control/Permalink.Layer.js",
+    "control/Permalink.Line.js",
+    "control/Permalink.Marker.js",
+    "layer/Icon.Canvas.js",
+    "layer/Layer.Deferred.js",
+    "layer/Marker.Rotate.js",
+    "layer/Marker.Text.js",
+    "layer/OpenStreetBugs.js",
+    "layer/vector/GPX.js",
+    "layer/vector/GPX.Speed.js",
+    "layer/vector/KML.js",
+    "layer/vector/OSM.js",
+    "layer/tile/Bing.js",
+    "layer/tile/Google.js",
+    "layer/tile/Yandex.js"
+  ],
+  "devDependencies": {
+    "jshint": "2.5.0"
+  },
+  "keywords": [
+    "leaflet",
+    "plugins",
+    "map",
+    "google",
+    "bing",
+    "yandex",
+    "kml",
+    "gpx"
+  ],
+  "ignore": [
+    "build"
+  ],
+  "_release": "1.3.6",
   "_resolution": {
     "type": "version",
-    "tag": "v1.1.2",
-    "commit": "de2380a9efa24b3b43fb780219363f171f9f3140"
+    "tag": "1.3.6",
+    "commit": "d3cd6214506d906646ff8a99f82e23c82b5cd2f5"
   },
   "_source": "git://github.com/shramov/leaflet-plugins.git",
-  "_target": "~1.1.2",
+  "_target": "*",
   "_originalSource": "leaflet-plugins"
 }
