@@ -1,0 +1,23 @@
+html {
+    font-family: sans-serif;
+    font-size: 11pt;
+}
+
+.map {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.results {
+    background-color: white;
+    opacity: 0.8;
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 320px;
+    height: 480px;
+    overflow-y: scroll;
+}

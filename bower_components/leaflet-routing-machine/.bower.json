@@ -1,0 +1,35 @@
+{
+  "name": "leaflet-routing-machine",
+  "version": "2.3.0",
+  "homepage": "https://github.com/perliedman/leaflet-routing-machine",
+  "authors": [
+    "Per Liedman <per@liedman.net> (http://www.liedman.net/)"
+  ],
+  "description": "Find the way from A to B on a Leaflet map, using OSRM as backend.",
+  "keywords": [
+    "leaflet",
+    "route"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "src",
+    "css",
+    "Gruntfile.js",
+    "package.json",
+    "build.sh"
+  ],
+  "_release": "2.3.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "2.3.0",
+    "commit": "ba627bb7949280a3da777287aed061f241b04a2b"
+  },
+  "_source": "git://github.com/perliedman/leaflet-routing-machine.git",
+  "_target": "*",
+  "_originalSource": "leaflet-routing-machine"
+}
