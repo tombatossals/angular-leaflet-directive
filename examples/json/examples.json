@@ -1,7 +1,7 @@
 {
     "basic": [
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-21T06:31:29.000Z",
             "section": "basic",
             "onlyStandAlone": false,
             "id": "/basic/first-example",
@@ -9,7 +9,7 @@
             "title": "First steps, basic example"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-21T06:31:29.000Z",
             "section": "basic",
             "onlyStandAlone": false,
             "id": "/basic/center-example",
@@ -17,7 +17,7 @@
             "title": "Center map example"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-21T06:31:29.000Z",
             "section": "basic",
             "onlyStandAlone": false,
             "id": "/basic/center-autodiscover-example",
@@ -25,7 +25,7 @@
             "title": "Center autodiscover example"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-06-30T07:10:06.880Z",
             "section": "basic",
             "onlyStandAlone": false,
             "id": "/basic/center-url-hash-example",
@@ -33,7 +33,7 @@
             "title": "Center map with URL synchronization example"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-21T06:31:29.000Z",
             "section": "basic",
             "onlyStandAlone": false,
             "id": "/basic/custom-parameters-example",
@@ -41,7 +41,7 @@
             "title": "Using custom default parameters"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-21T06:31:29.000Z",
             "section": "basic",
             "onlyStandAlone": false,
             "id": "/basic/bounds-example",
@@ -49,7 +49,7 @@
             "title": "Map bounds example"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-21T06:31:29.000Z",
             "section": "basic",
             "onlyStandAlone": false,
             "id": "/basic/maxbounds-example",
@@ -57,7 +57,7 @@
             "title": "Setting MaxBounds in a map"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-21T06:31:29.000Z",
             "section": "basic",
             "onlyStandAlone": false,
             "id": "/basic/tiles-example",
@@ -65,7 +65,7 @@
             "title": "Changing tiles example"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-21T06:31:29.000Z",
             "section": "basic",
             "onlyStandAlone": false,
             "id": "/basic/tiles-zoom-changer-example",
@@ -73,7 +73,7 @@
             "title": "Dynamic tile changer based on zoom level"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-21T06:31:29.000Z",
             "section": "basic",
             "onlyStandAlone": false,
             "id": "/basic/center-geoip-example",
@@ -81,7 +81,7 @@
             "title": "Center by IP (GeoIP) example"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-22T06:06:11.000Z",
             "section": "basic",
             "onlyStandAlone": false,
             "id": "/basic/map-without-animations-example",
@@ -89,7 +89,7 @@
             "title": "Map with disabled animations example"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-21T06:31:29.000Z",
             "section": "basic",
             "onlyStandAlone": false,
             "id": "/basic/legend-example",
@@ -97,7 +97,7 @@
             "title": "Legend example"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-21T06:31:29.000Z",
             "section": "basic",
             "onlyStandAlone": false,
             "id": "/basic/maxbounds-pad-example",
@@ -105,7 +105,7 @@
             "title": "Extend Maxbounds with Pad"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-21T06:31:29.000Z",
             "section": "basic",
             "onlyStandAlone": false,
             "id": "/basic/geojson-simple-example",
@@ -113,7 +113,7 @@
             "title": "Simple GeoJSON example"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-21T06:31:29.000Z",
             "section": "basic",
             "onlyStandAlone": false,
             "id": "/basic/geojson-center-example",
@@ -121,7 +121,7 @@
             "title": "Center to GeoJSON example"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-21T06:31:29.000Z",
             "section": "basic",
             "onlyStandAlone": false,
             "id": "/basic/events-example",
@@ -129,7 +129,7 @@
             "title": "Events example"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-21T06:31:29.000Z",
             "section": "basic",
             "onlyStandAlone": false,
             "id": "/basic/access-leaflet-object-example",
@@ -137,7 +137,7 @@
             "title": "Direct access to the Leaflet Map Object"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-21T06:31:29.000Z",
             "section": "basic",
             "onlyStandAlone": true,
             "id": "/basic/routing-show-hide-map-example",
@@ -145,7 +145,7 @@
             "title": "Angular routing show/hide map example"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-21T06:31:29.000Z",
             "section": "basic",
             "onlyStandAlone": false,
             "id": "/basic/double-map-events-example",
@@ -153,7 +153,7 @@
             "title": "Different map events broadcasting"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-21T06:31:29.000Z",
             "section": "basic",
             "onlyStandAlone": false,
             "id": "/basic/double-map-access-map-object-example",
@@ -161,7 +161,7 @@
             "title": "Accesing the map object with two (or more) maps on screen"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-21T06:31:29.000Z",
             "section": "basic",
             "onlyStandAlone": false,
             "id": "/basic/double-map-sharing-attributes-example",
@@ -169,7 +169,7 @@
             "title": "Two maps sharing center example"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-21T06:31:29.000Z",
             "section": "basic",
             "onlyStandAlone": false,
             "id": "/basic/double-map-toggle-example",
@@ -177,7 +177,7 @@
             "title": "Toggle between two maps on screen"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-21T06:31:29.000Z",
             "section": "basic",
             "onlyStandAlone": false,
             "id": "/basic/geojson-update-example",
@@ -185,7 +185,7 @@
             "title": "GeoJSON update example"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-21T06:31:29.000Z",
             "section": "basic",
             "onlyStandAlone": false,
             "id": "/basic/hide-show-map-example",
@@ -193,7 +193,7 @@
             "title": "Hide/Show map example"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-22T06:06:11.000Z",
             "section": "basic",
             "onlyStandAlone": false,
             "id": "/basic/geojson-non-nested-example",
@@ -201,7 +201,7 @@
             "title": "GeoJSON non nested example"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-06-30T07:10:06.880Z",
             "section": "basic",
             "onlyStandAlone": false,
             "id": "/basic/geojson-nested-example",
@@ -211,7 +211,7 @@
     ],
     "layers": [
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-21T06:31:29.000Z",
             "section": "layers",
             "onlyStandAlone": false,
             "id": "/layers/simple-example",
@@ -219,7 +219,7 @@
             "title": "Layers simple example"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-21T06:31:29.000Z",
             "section": "layers",
             "onlyStandAlone": false,
             "id": "/layers/overlays-simple-example",
@@ -227,7 +227,7 @@
             "title": "Baselayer with overlays"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-22T06:06:11.000Z",
             "section": "layers",
             "onlyStandAlone": false,
             "id": "/layers/imageoverlay-example",
@@ -235,7 +235,7 @@
             "title": "Layer with image overlay and maxBounds"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-21T06:31:29.000Z",
             "section": "layers",
             "onlyStandAlone": false,
             "id": "/layers/dynamic-addition-example",
@@ -243,7 +243,7 @@
             "title": "Dynamic addition/removal of layers"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-20T06:18:23.000Z",
             "section": "layers",
             "onlyStandAlone": false,
             "id": "/layers/googlemaps-example",
@@ -251,7 +251,7 @@
             "title": "Google maps example"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-20T06:18:23.000Z",
             "section": "layers",
             "onlyStandAlone": false,
             "id": "/layers/googlemaps-fullsize-example",
@@ -259,7 +259,7 @@
             "title": "Google Maps fullsize example"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-21T06:31:29.000Z",
             "section": "layers",
             "onlyStandAlone": false,
             "id": "/layers/hide-baselayer-on-selector-example",
@@ -267,7 +267,7 @@
             "title": "Baselayer hidden on switch selector to show only overlay"
         },
         {
-            "date": "2015-06-18T17:06:23.841Z",
+            "date": "2015-06-30T07:10:59.124Z",
             "section": "layers",
             "onlyStandAlone": false,
             "id": "/layers/esri-dynamic-layer-example",
@@ -275,7 +275,7 @@
             "title": "Esri ArcGIS Dynamic Map Layer"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-20T06:18:23.000Z",
             "section": "layers",
             "onlyStandAlone": false,
             "id": "/layers/esri-legend-service-example",
@@ -283,7 +283,7 @@
             "title": "Esri ArcGIS Legend Service"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-21T06:31:29.000Z",
             "section": "layers",
             "onlyStandAlone": false,
             "id": "/layers/webgl-heatmap-example",
@@ -291,7 +291,7 @@
             "title": "HeatMap WebGL overlay example"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-21T06:31:29.000Z",
             "section": "layers",
             "onlyStandAlone": false,
             "id": "/layers/layergroup-simple-example",
@@ -299,7 +299,7 @@
             "title": "Layer Groups with nested layer definitions"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-22T06:06:11.000Z",
             "section": "layers",
             "onlyStandAlone": false,
             "id": "/layers/hide-overlays-on-selector-example",
@@ -307,7 +307,7 @@
             "title": "Overlay not shown in selector"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-20T06:18:23.000Z",
             "section": "layers",
             "onlyStandAlone": false,
             "id": "/layers/bingmaps-example",
@@ -315,7 +315,7 @@
             "title": "Bing maps"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-21T06:31:29.000Z",
             "section": "layers",
             "onlyStandAlone": false,
             "id": "/layers/utfgrid-example",
@@ -323,7 +323,7 @@
             "title": "Baselayer with UTFGrid interactivity in Overlay"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-22T06:06:11.000Z",
             "section": "layers",
             "onlyStandAlone": false,
             "id": "/layers/overlays-markercluster-example",
@@ -331,7 +331,7 @@
             "title": "This is a map with overlays and a markercluster"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-21T06:31:29.000Z",
             "section": "layers",
             "onlyStandAlone": false,
             "id": "/layers/overlays-markers-nested-example",
@@ -339,7 +339,7 @@
             "title": "Layers and overlays with nested markers example"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-22T06:06:11.000Z",
             "section": "layers",
             "onlyStandAlone": false,
             "id": "/layers/overlays-paths-example",
@@ -347,7 +347,7 @@
             "title": "Different overlays for paths"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-22T06:06:11.000Z",
             "section": "layers",
             "onlyStandAlone": false,
             "id": "/layers/wms-with-different-projection-example",
@@ -355,7 +355,7 @@
             "title": "Load a map in non standard projection"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-21T06:31:29.000Z",
             "section": "layers",
             "onlyStandAlone": false,
             "id": "/layers/heatmap-example",
@@ -363,7 +363,7 @@
             "title": "HeatMap example"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-21T06:31:29.000Z",
             "section": "layers",
             "onlyStandAlone": false,
             "id": "/layers/overlays-hide-on-zoomout-example",
@@ -371,7 +371,7 @@
             "title": "Baselayer with overlay which is hidden on Zoom less than 4 "
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-06-30T07:10:06.880Z",
             "section": "layers",
             "onlyStandAlone": false,
             "id": "/layers/refresh-overlay-every-minute-example",
@@ -379,7 +379,7 @@
             "title": "Refreshable overlays example"
         },
         {
-            "date": "2015-06-17T22:15:13.900Z",
+            "date": "2015-06-30T07:10:06.880Z",
             "section": "layers",
             "onlyStandAlone": false,
             "id": "/layers/esri-base-layer-example",
@@ -387,7 +387,7 @@
             "title": "Esri ArcGIS Basemap Layer"
         },
         {
-            "date": "2015-06-18T16:34:29.457Z",
+            "date": "2015-06-30T07:10:59.124Z",
             "section": "layers",
             "onlyStandAlone": false,
             "id": "/layers/esri-feature-layer-example",
@@ -395,7 +395,7 @@
             "title": "Esri ArcGIS Feature Layer"
         },
         {
-            "date": "2015-06-18T17:25:44.179Z",
+            "date": "2015-06-30T07:10:59.124Z",
             "section": "layers",
             "onlyStandAlone": false,
             "id": "/layers/esri-tiled-map-layer-example",
@@ -403,7 +403,7 @@
             "title": "Esri ArcGIS Tiled Map Layer"
         },
         {
-            "date": "2015-06-18T17:39:19.817Z",
+            "date": "2015-06-30T07:10:59.124Z",
             "section": "layers",
             "onlyStandAlone": false,
             "id": "/layers/esri-image-layer-example",
@@ -411,7 +411,7 @@
             "title": "Esri ArcGIS Image Layer"
         },
         {
-            "date": "2015-06-18T21:34:46.359Z",
+            "date": "2015-06-30T07:10:59.124Z",
             "section": "layers",
             "onlyStandAlone": false,
             "id": "/layers/esri-clustered-layer-example",
@@ -419,7 +419,7 @@
             "title": "Esri ArcGIS Clustered Layer"
         },
         {
-            "date": "2015-06-18T21:39:54.350Z",
+            "date": "2015-06-30T07:10:59.124Z",
             "section": "layers",
             "onlyStandAlone": false,
             "id": "/layers/esri-heatmap-layer-example",
@@ -429,7 +429,7 @@
     ],
     "paths": [
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-21T06:31:29.000Z",
             "section": "paths",
             "onlyStandAlone": false,
             "id": "/paths/simple-example",
@@ -437,7 +437,7 @@
             "title": "Paths simple example"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-21T06:31:29.000Z",
             "section": "paths",
             "onlyStandAlone": false,
             "id": "/paths/types-example",
@@ -445,7 +445,7 @@
             "title": "Types of paths"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-21T06:31:29.000Z",
             "section": "paths",
             "onlyStandAlone": false,
             "id": "/paths/ajax-load-example",
@@ -453,7 +453,7 @@
             "title": "Load remote paths example"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-21T06:31:29.000Z",
             "section": "paths",
             "onlyStandAlone": false,
             "id": "/paths/3000-items-example",
@@ -461,7 +461,7 @@
             "title": "3000 items in a map performance"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-21T06:31:29.000Z",
             "section": "paths",
             "onlyStandAlone": false,
             "id": "/paths/advanced-example",
@@ -469,7 +469,7 @@
             "title": "Advanced Paths Example"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-21T06:31:29.000Z",
             "section": "paths",
             "onlyStandAlone": false,
             "id": "/paths/change-in-group-layer-example",
@@ -477,7 +477,7 @@
             "title": "Path change in group layer"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-22T06:06:11.000Z",
             "section": "paths",
             "onlyStandAlone": false,
             "id": "/paths/decorations-simple-example",
@@ -487,7 +487,7 @@
     ],
     "controls": [
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-21T06:31:29.000Z",
             "section": "controls",
             "onlyStandAlone": false,
             "id": "/controls/custom-layer-control-example",
@@ -495,7 +495,7 @@
             "title": "Dynamic addition and deletion of Overlays control"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-21T06:31:29.000Z",
             "section": "controls",
             "onlyStandAlone": false,
             "id": "/controls/draw-example",
@@ -503,7 +503,7 @@
             "title": "Draw control example"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-21T06:31:29.000Z",
             "section": "controls",
             "onlyStandAlone": false,
             "id": "/controls/scale-example",
@@ -511,7 +511,7 @@
             "title": "Scale control example"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-21T06:31:29.000Z",
             "section": "controls",
             "onlyStandAlone": false,
             "id": "/controls/fullscreen-example",
@@ -519,7 +519,7 @@
             "title": "Fullscreen control example"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-06-30T07:10:06.880Z",
             "section": "controls",
             "onlyStandAlone": false,
             "id": "/controls/minimap-example",
@@ -529,7 +529,7 @@
     ],
     "markers": [
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-06-30T07:10:59.124Z",
             "section": "markers",
             "onlyStandAlone": false,
             "id": "/markers/simple-example",
@@ -537,7 +537,7 @@
             "title": "Markers simple example"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-21T06:31:29.000Z",
             "section": "markers",
             "onlyStandAlone": false,
             "id": "/markers/events-add-example",
@@ -545,7 +545,7 @@
             "title": "Markers with events example"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-21T06:31:29.000Z",
             "section": "markers",
             "onlyStandAlone": false,
             "id": "/markers/add-remove-example",
@@ -553,7 +553,7 @@
             "title": "Add/remove markers easily example"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-06-30T07:10:06.880Z",
             "section": "markers",
             "onlyStandAlone": false,
             "id": "/markers/icons-example",
@@ -561,7 +561,7 @@
             "title": "Changing the marker icons"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-06-30T07:10:59.124Z",
             "section": "markers",
             "onlyStandAlone": false,
             "id": "/markers/popup-example",
@@ -569,7 +569,7 @@
             "title": "Marker Popup properties"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-22T06:06:11.000Z",
             "section": "markers",
             "onlyStandAlone": false,
             "id": "/markers/label-example",
@@ -577,7 +577,7 @@
             "title": "Marker with label example"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-22T06:06:11.000Z",
             "section": "markers",
             "onlyStandAlone": false,
             "id": "/markers/groups-example",
@@ -585,7 +585,7 @@
             "title": "This is a map with two hidden marker groups"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-21T06:31:29.000Z",
             "section": "markers",
             "onlyStandAlone": false,
             "id": "/markers/rotation-example",
@@ -593,7 +593,7 @@
             "title": "Changing Icon Rotation"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-21T06:31:29.000Z",
             "section": "markers",
             "onlyStandAlone": false,
             "id": "/markers/change-opacity-example",
@@ -601,7 +601,7 @@
             "title": "Change icon opacity"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-21T06:31:29.000Z",
             "section": "markers",
             "onlyStandAlone": false,
             "id": "/markers/clustering-example",
@@ -609,7 +609,7 @@
             "title": "Marker clustering example"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-21T06:31:29.000Z",
             "section": "markers",
             "onlyStandAlone": false,
             "id": "/markers/clustering-without-overlays-example",
@@ -617,7 +617,7 @@
             "title": "Marker clustering example without layers"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-21T06:31:29.000Z",
             "section": "markers",
             "onlyStandAlone": false,
             "id": "/markers/modal-markercluster-example",
@@ -625,7 +625,7 @@
             "title": "Markercluster in a SemanticUI modal"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-06-30T07:10:06.880Z",
             "section": "markers",
             "onlyStandAlone": false,
             "id": "/markers/clustering-10000-markers-example",
@@ -633,7 +633,7 @@
             "title": "Marker clustering example (10000 markers)"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-06-30T07:10:06.880Z",
             "section": "markers",
             "onlyStandAlone": false,
             "id": "/markers/events-example",
@@ -641,7 +641,7 @@
             "title": "Marker Events example"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-21T06:31:29.000Z",
             "section": "markers",
             "onlyStandAlone": false,
             "id": "/markers/delayed-events",
@@ -649,7 +649,7 @@
             "title": "Markers delayed events example"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-04-21T06:31:29.000Z",
             "section": "markers",
             "onlyStandAlone": false,
             "id": "/markers/angular-template-example",
@@ -657,7 +657,7 @@
             "title": "Markers angular template example"
         },
         {
-            "date": "2015-06-16T19:58:11.782Z",
+            "date": "2015-06-30T07:10:06.880Z",
             "section": "markers",
             "onlyStandAlone": false,
             "id": "/markers/two-maps-events-example",
@@ -665,7 +665,7 @@
             "title": "Two maps with markers and events"
         },
         {
-            "date": "2015-06-16T19:58:11.782Z",
+            "date": "2015-06-30T07:10:06.880Z",
             "section": "markers",
             "onlyStandAlone": false,
             "id": "/markers/cluster-issue",
@@ -674,7 +674,7 @@
     ],
     "mixed": [
         {
-            "date": "2015-06-16T19:58:11.782Z",
+            "date": "2015-04-22T06:06:11.000Z",
             "section": "mixed",
             "onlyStandAlone": false,
             "id": "/mixed/image-legend-example",
@@ -682,7 +682,7 @@
             "title": "Image Legend Service"
         },
         {
-            "date": "2015-06-16T19:58:11.782Z",
+            "date": "2015-06-30T07:10:06.880Z",
             "section": "mixed",
             "onlyStandAlone": false,
             "id": "/mixed/geojson-events-example",
@@ -690,7 +690,7 @@
             "title": "World map flags example"
         },
         {
-            "date": "2015-06-16T19:58:11.782Z",
+            "date": "2015-04-21T06:31:29.000Z",
             "section": "mixed",
             "onlyStandAlone": false,
             "id": "/mixed/mapbox-tiles-geojson-example",
@@ -698,7 +698,7 @@
             "title": "Mapbox tiles and Mapbox GeoJSON loading"
         },
         {
-            "date": "2015-06-16T19:58:11.782Z",
+            "date": "2015-04-21T06:31:29.000Z",
             "section": "mixed",
             "onlyStandAlone": false,
             "id": "/mixed/layers-overlays-geojson-example",
@@ -706,7 +706,7 @@
             "title": "\t\t GeoJSON TileLayers"
         },
         {
-            "date": "2015-06-16T19:58:11.782Z",
+            "date": "2015-04-21T06:31:29.000Z",
             "section": "mixed",
             "onlyStandAlone": false,
             "id": "/mixed/markers-nested-events-example",
@@ -714,7 +714,7 @@
             "title": "Marker Events example"
         },
         {
-            "date": "2015-06-16T19:58:11.782Z",
+            "date": "2015-04-21T06:31:29.000Z",
             "section": "mixed",
             "onlyStandAlone": false,
             "id": "/mixed/overlays-markers-nested-no-watch-example",
