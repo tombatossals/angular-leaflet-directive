@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html ng-app="demoapp">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="../bower_components/leaflet-routing-machine/dist/leaflet-routing-machine.min.js"></script>
+    <script src="../dist/angular-leaflet-directive.min.js"></script>
+    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="../bower_components/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
+
+    <script>
+        var app = angular.module("demoapp", ["leaflet-directive"]);
+        app.controller("ControlsRoutingMachineController", [ "$scope", function($scope) {
+            angular.extend($scope, {
+                bogota: {
+                    lat: 57.74,
+                    lng: 11.94,
+                    zoom: 10
+                },
+                tiles: {
+                    name: 'Mapbox Satellite Streets',
+                    url: 'http://api.tiles.mapbox.com/v4/{mapid}/{z}/{x}/{y}.png?access_token={apikey}',
+                    type: 'xyz',
+                    options: {
+                        apikey: 'pk.eyJ1IjoiYnVmYW51dm9scyIsImEiOiJLSURpX0pnIn0.2_9NrLz1U9bpwMQBhVk97Q',
+                        mapid: 'bufanuvols.mjd596lo'
+                    }
+                },
+                controls: {
+                    routingMachine: {
+                        waypoints: [
+                    		L.latLng(57.74, 11.94),
+                    		L.latLng(57.6792, 11.949)
+                    	]
+                    }
+                }
+           });
+       }]);
+    </script>
+  </head>
+  <body ng-controller="ControlsRoutingMachineController">
+    <leaflet center="bogota" controls="controls" tiles="tiles" width="100%" height="480px"></leaflet>
+    <h1>Minimap control example</h1>
+    <p>Minimap control with the <a href="https://github.com/Norkart/Leaflet-MiniMap">Leaflet minimap</a> plugin.</p>
+  </body>
+</html>

@@ -28,6 +28,11 @@ angular.module("leaflet-directive").directive('controls', function ($log, leafle
                     map.addControl(drawControl);
                 }
 
+                if (isDefined(controls.routingMachine) && isDefined(controls.routingMachine.waypoints)) {
+                    var routingMachine = new L.Routing.control(controls.routingMachine);
+                    map.addControl(routingMachine);
+                }
+
                 if (isDefined(controls.scale)) {
                     var scaleControl = new L.control.scale(controls.scale);
                     map.addControl(scaleControl);
