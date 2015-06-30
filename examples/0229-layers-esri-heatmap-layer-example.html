@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html ng-app="demoapp">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="../bower_components/Leaflet.heat/dist/leaflet-heat.js"></script>
+    <script src="../bower_components/esri-leaflet/dist/esri-leaflet.js"></script>
+    <script src="../bower_components/esri-leaflet-heatmap-feature-layer/dist/esri-leaflet-heatmap-feature-layer.js"></script>
+    <script src="../dist/angular-leaflet-directive.min.js"></script>
+    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
+    <script>
+        var app = angular.module("demoapp", ["leaflet-directive"]);
+        app.controller("LayersEsriHeatmapLayerController", [ "$scope", function($scope) {
+            angular.extend($scope, {
+                center: {
+	            	lat:  40.706,
+	                lng: -73.926,
+	                zoom: 14
+	            },
+                layers: {
+                    baselayers: {
+				    	streets: {
+					    	name: "Gray",
+					        type: "agsBase",
+					        layer: "Gray",
+					        visible: false
+				    	}
+                    },
+                    overlays: {
+                        simple: {
+                            name: "Simple",
+                            type: "agsHeatmap",
+                            url: "https://services.arcgis.com/rOo16HdIMeOBI4Mb/ArcGIS/rest/services/Graffiti_Reports/FeatureServer/0",
+                            visible: true,
+                            layerOptions: {
+                                radius: 14,
+                                gradient: {
+                                    0.2: "#ffffb2",
+                                    0.4: "#fd8d3c",
+                                    0.6: "#fd8d3c",
+                                    0.8: "#f03b20",
+                                    1: "#bd0026"
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }]);
+    </script>
+</head>
+<body ng-controller="LayersEsriHeatmapLayerController">
+    <leaflet center="center" layers="layers" width="100%" height="480px"></leaflet>
+    <h1>Esri ArcGIS Heatmap Layer</h1>
+    <p>
+        Displaying point data as a heatmap using the L.heat plugin with custom styling of heatmap gradients with the L.heat options.
+    </p>
+</body>
+</html>

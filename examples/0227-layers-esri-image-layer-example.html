@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html ng-app="demoapp">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="../bower_components/esri-leaflet/dist/esri-leaflet.js"></script>
+    <script src="../dist/angular-leaflet-directive.min.js"></script>
+    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
+    <script>
+        var app = angular.module("demoapp", ["leaflet-directive"]);
+        app.controller("LayersEsriImageLayerController", [ "$scope", function($scope) {
+            angular.extend($scope, {
+                center: {
+	            	lat: 43.415,
+	                lng: -124.228,
+	                zoom: 13
+	            },
+                layers: {
+                    baselayers: {
+                        gray: {
+                            name: "Gray",
+					        type: "agsBase",
+					        layer: "Gray",
+					        visible: false
+                        }
+                    },
+                    overlays: {
+                        infrared: {
+					    	name: "Infrared Imagery",
+					        type: "agsImage",
+					        url: "http://imagery.oregonexplorer.info/arcgis/rest/services/NAIP_2011/NAIP_2011_Dynamic/ImageServer",
+					        visible: true,
+                            layerOptions: {
+                                bandIds: "3,0,1"
+                            }
+				    	}
+                    }
+                },
+
+            });
+        }]);
+    </script>
+</head>
+<body ng-controller="LayersEsriImageLayerController">
+    <leaflet center="center" layers="layers" width="100%" height="480px"></leaflet>
+    <h1>Esri ArcGIS Image Layer</h1>
+    <p>
+        Display NAIP imagery from an ArcGIS image service and use the band IDs parameter to show the near infrared band in a
+        false color composite. Vegetated areas are highlighted in red.
+    </p>
+</body>
+</html>

@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="../bower_components/angular/angular.min.js"></script>
     <script src="../bower_components/leaflet/dist/leaflet.js"></script>
-    <script src="../dist/angular-leaflet-directive.min.js"></script>
+    <script src="../dist/angular-leaflet-directive_dev_mapped.js"></script>
     <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
     <script>
         var app = angular.module("demoapp", ["leaflet-directive"]);
@@ -30,8 +30,11 @@
                     lat: 51,
                     lng: 0
                 },
-                events: {
-                    markers: [ 'dragend' ]
+                events: { // or just {} //all events
+                    markers:{
+                      enable: [ 'dragend' ]
+                      //logic: 'emit'
+                    }
                 }
             });
 
@@ -44,6 +47,8 @@
     </script>
   </head>
   <body ng-controller="MarkersSimpleController">
+    <!-- <leaflet center="london" markers="markers" height="480px" width="100%"></leaflet> EVENTS WILL STILL FIRE but all will for each directive--> 
+    <!-- NOTICE events attribute is optional it is more for options in whitelisting (enable), blacklisting (disable), and logic (emit or broadcast)  -->
     <leaflet center="london" event-broadcast="events" markers="markers" height="480px" width="100%"></leaflet>
     <h1>Markers simple example</h1>
     <p>Initial marker position (lat/lng): <strong ng-bind="markers.mainMarker.lat"></strong> / <strong ng-bind="markers.mainMarker.lng"></strong></p>
