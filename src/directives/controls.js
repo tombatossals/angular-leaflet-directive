@@ -10,20 +10,49 @@ angular.module("leaflet-directive").directive('controls', function ($log, leafle
                 return;
             }
 
-            var createControl = leafletControlHelpers.createControl,
-                leafletScope  = controller.getLeafletScope(),
-                controls = leafletScope.controls;
+            var createControl = leafletControlHelpers.createControl;
+            var isValidControlType = leafletControlHelpers.isValidControlType;
+            var leafletScope  = controller.getLeafletScope();
+            var isDefined = leafletHelpers.isDefined;
+            var leafletControls = {};
+            var errorHeader = leafletHelpers.errorHeader + ' [Controls] ';
 
             controller.getMap().then(function(map) {
-                for (var controlType in controls) {
-                    var control;
-                    if (controlType !== 'custom') {
-                        control = createControl(controlType, controls[controlType]);
-                    } else {
-                        control = controls[controlType];
+
+                leafletScope.$watchCollection('controls', function(newControls) {
+
+                    // Delete controls from the array
+                    for (var name in leafletControls) {
+                        if (!isDefined(newControls[name])) {
+                            if (map.hasControl(leafletControls[name])) {
+                                map.removeControl(leafletControls[name]);
+                            }
+                            delete leafletControls[name];
+                        }
                     }
-                    map.addControl(control);
-                }
+
+                    for (var newName in newControls) {
+                        var control;
+
+                        var controlType = isDefined(newControls[newName].type) ? newControls[newName].type : newName;
+
+                        if (!isValidControlType(controlType)) {
+                            $log.error(errorHeader + ' Invalid control type: ' + controlType + '.');
+                            return;
+                        }
+
+                        if (controlType !== 'custom') {
+                            control = createControl(controlType, newControls[newName]);
+                        } else {
+                            control = newControls[newName];
+                        }
+                        map.addControl(control);
+
+                        leafletControls[newName] = control;
+                    }
+
+                });
+
             });
         }
     };

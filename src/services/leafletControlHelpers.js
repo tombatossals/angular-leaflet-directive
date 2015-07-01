@@ -123,8 +123,9 @@ angular.module("leaflet-directive").factory('leafletControlHelpers', function ($
             checkValidParams: function(params) {
                 if(!isDefined(params.layer)) {
                     $log.warn(errorHeader +' minimap "layer" option should be defined.');
-                    return;
+                    return false;
                 }
+                return true;
             },
             createControl: function(params) {
                 var layer = createLayer(params.layer);
@@ -141,6 +142,10 @@ angular.module("leaflet-directive").factory('leafletControlHelpers', function ($
 
     return {
         layersControlMustBeVisible: _controlLayersMustBeVisible,
+
+        isValidControlType: function(type) {
+            return Object.keys(controlTypes).indexOf(type) !== -1;
+        },
 
         createControl: function (type, params) {
             if (!controlTypes[type].checkValidParams(params)) {

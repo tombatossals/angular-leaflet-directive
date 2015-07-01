@@ -10,7 +10,7 @@ angular.module("leaflet-directive").directive('tiles', function ($log, leafletDa
                 leafletScope  = controller.getLeafletScope(),
                 tiles = leafletScope.tiles;
 
-            if (!isDefined(tiles) && !isDefined(tiles.url)) {
+            if (!isDefined(tiles) ||  !isDefined(tiles.url)) {
                 $log.warn("[AngularJS - Leaflet] The 'tiles' definition doesn't have the 'url' property.");
                 return;
             }
