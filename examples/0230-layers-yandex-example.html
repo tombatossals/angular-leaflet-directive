@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
     <script>
         var app = angular.module("demoapp", ["leaflet-directive"]);
-        app.controller("GoogleMapsController", [ "$scope", function($scope) {
+        app.controller("LayersYandexController", [ "$scope", function($scope) {
             angular.extend($scope, {
                 berlin: {
                     lat: 52.52,
@@ -49,7 +49,7 @@
         }]);
     </script>
 </head>
-<body ng-controller="GoogleMapsController">
+<body ng-controller="LayersYandexController">
     <leaflet center="berlin" layers="layers" markers="markers" height="480px" width="100%"></leaflet>
     <h1>Yandex layer example</h1>
     <p>Use the Layer Switch Control on the top rigth of the map to select another Yandex Layer.</p>
