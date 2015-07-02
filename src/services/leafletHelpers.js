@@ -192,24 +192,6 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
             d[id].resolvedDefer = true;
         },
 
-        FullScreenControlPlugin: {
-            isLoaded: function() {
-                return angular.isDefined(L.Control.Fullscreen);
-            }
-        },
-
-        SearchControlPlugin: {
-            isLoaded: function() {
-                return angular.isDefined(L.Control.Search);
-            }
-        },
-
-        MiniMapControlPlugin: {
-            isLoaded: function() {
-                return angular.isDefined(L.Control.MiniMap);
-            }
-        },
-
         AwesomeMarkersPlugin: {
             isLoaded: function() {
                 return angular.isDefined(L.AwesomeMarkers) && angular.isDefined(L.AwesomeMarkers.Icon);

@@ -1,4 +1,4 @@
-angular.module("leaflet-directive").directive('controls', function ($log, leafletHelpers, leafletLayerHelpers) {
+angular.module("leaflet-directive").directive('controls', function ($log, leafletHelpers, leafletControlHelpers) {
     return {
         restrict: "A",
         scope: false,
@@ -10,81 +10,49 @@ angular.module("leaflet-directive").directive('controls', function ($log, leafle
                 return;
             }
 
-            var isDefined = leafletHelpers.isDefined,
-                createLayer = leafletLayerHelpers.createLayer,
-                leafletScope  = controller.getLeafletScope(),
-                controls = leafletScope.controls,
-                errorHeader = leafletHelpers.errorHeader + ' [Controls] ';
+            var createControl = leafletControlHelpers.createControl;
+            var isValidControlType = leafletControlHelpers.isValidControlType;
+            var leafletScope  = controller.getLeafletScope();
+            var isDefined = leafletHelpers.isDefined;
+            var leafletControls = {};
+            var errorHeader = leafletHelpers.errorHeader + ' [Controls] ';
 
             controller.getMap().then(function(map) {
-                if (isDefined(L.Control.Draw) && isDefined(controls.draw)) {
 
-                    if (!isDefined(controls.edit)) {
-                        controls.edit = { featureGroup: new L.FeatureGroup() };
-                        map.addLayer(controls.edit.featureGroup);
-                    }
+                leafletScope.$watchCollection('controls', function(newControls) {
 
-                    var drawControl = new L.Control.Draw(controls);
-                    map.addControl(drawControl);
-                }
-
-                if (isDefined(controls.scale)) {
-                    var scaleControl = new L.control.scale(controls.scale);
-                    map.addControl(scaleControl);
-                }
-
-                if (isDefined(controls.fullscreen)) {
-                    if (leafletHelpers.FullScreenControlPlugin.isLoaded()) {
-                        var fullscreenControl = new L.Control.Fullscreen(controls.fullscreen);
-                        map.addControl(fullscreenControl);
-                    } else {
-                        $log.error(errorHeader + ' Fullscreen plugin is not loaded.');
-                    }
-                }
-
-                if (isDefined(controls.search)) {
-                    if (leafletHelpers.SearchControlPlugin.isLoaded()) {
-                        var searchControl = new L.Control.Search(controls.search);
-                        map.addControl(searchControl);
-                    } else {
-                        $log.error(errorHeader + ' Search plugin is not loaded.');
-                    }
-                }
-
-                if(isDefined(controls.minimap)) {
-                    if (leafletHelpers.MiniMapControlPlugin.isLoaded()) {
-                        if(isDefined(controls.minimap.layer)) {
-                            var layer = createLayer(controls.minimap.layer);
-                            delete controls.minimap.layer;
-
-                            if(isDefined(layer)) {
-                                if(isDefined(leafletScope.center)) {
-                                    var moveend = function(/* event */) {
-                                        var minimapControl = new L.Control.MiniMap(layer, controls.minimap);
-                                        map.addControl(minimapControl);
-                                        map.off('moveend', moveend);
-                                    };
-                                    map.on('moveend', moveend);
-                                } else {
-                                    var minimapControl = new L.Control.MiniMap(layer, controls.minimap);
-                                    map.addControl(minimapControl);
-                                }
-                            } else {
-                                $log.warn(errorHeader + ' Layer could not be created.');
+                    // Delete controls from the array
+                    for (var name in leafletControls) {
+                        if (!isDefined(newControls[name])) {
+                            if (map.hasControl(leafletControls[name])) {
+                                map.removeControl(leafletControls[name]);
                             }
-                        } else {
-                            $log.warn(errorHeader +' Layer option should be defined.');
+                            delete leafletControls[name];
                         }
-                    } else {
-                        $log.error(errorHeader + ' Minimap plugin is not loaded.');
                     }
-                }
 
-                if (isDefined(controls.custom)) {
-                    for(var i in controls.custom) {
-                        map.addControl(controls.custom[i]);
+                    for (var newName in newControls) {
+                        var control;
+
+                        var controlType = isDefined(newControls[newName].type) ? newControls[newName].type : newName;
+
+                        if (!isValidControlType(controlType)) {
+                            $log.error(errorHeader + ' Invalid control type: ' + controlType + '.');
+                            return;
+                        }
+
+                        if (controlType !== 'custom') {
+                            control = createControl(controlType, newControls[newName]);
+                        } else {
+                            control = newControls[newName];
+                        }
+                        map.addControl(control);
+
+                        leafletControls[newName] = control;
                     }
-                }
+
+                });
+
             });
         }
     };
