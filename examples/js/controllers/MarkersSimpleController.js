@@ -19,11 +19,8 @@
                     lat: 51,
                     lng: 0
                 },
-                events: { // or just {} //all events
-                    markers:{
-                      enable: [ 'dragend' ]
-                      //logic: 'emit'
-                    }
+                events: {
+                    markers: [ 'dragend' ]
                 }
             });
             $scope.$on("leafletDirectiveMarker.dragend", function(event, args){
