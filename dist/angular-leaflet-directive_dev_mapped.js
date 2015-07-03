@@ -1,5 +1,5 @@
 /*!
-*  angular-leaflet-directive 0.8.5 2015-06-30
+*  angular-leaflet-directive 0.8.5 2015-07-03
 *  angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps
 *  git: https://github.com/tombatossals/angular-leaflet-directive
 */
@@ -225,10 +225,12 @@ angular.module("leaflet-directive").factory('leafletBoundsHelpers', function ($l
     };
 });
 
-angular.module("leaflet-directive").factory('leafletControlHelpers', function ($rootScope, $log, leafletHelpers, leafletMapDefaults) {
+angular.module("leaflet-directive").factory('leafletControlHelpers', function ($rootScope, $log, leafletHelpers, leafletLayerHelpers, leafletMapDefaults) {
     var isDefined = leafletHelpers.isDefined;
     var isObject = leafletHelpers.isObject;
+    var createLayer = leafletLayerHelpers.createLayer;
     var _controls = {};
+    var errorHeader = leafletHelpers.errorHeader + ' [Controls] ';
 
     var _controlLayersMustBeVisible = function(baselayers, overlays, mapId) {
         var defaults = leafletMapDefaults.getDefaults(mapId);
@@ -279,8 +281,106 @@ angular.module("leaflet-directive").factory('leafletControlHelpers', function ($
         return control;
     };
 
+    var controlTypes = {
+        draw: {
+            isPluginLoaded: function() {
+                if (!angular.isDefined(L.Control.Draw)) {
+                    $log.error(errorHeader + ' Draw plugin is not loaded.');
+                    return false;
+                }
+                return true;
+            },
+            checkValidParams: function(/* params */) {
+                return true;
+            },
+            createControl: function(params) {
+                return new L.Control.Draw(params);
+            }
+        },
+        scale: {
+            isPluginLoaded: function() {
+                return true;
+            },
+            checkValidParams: function(/* params */) {
+                return true;
+            },
+            createControl: function(params) {
+                return new L.control.scale(params);
+            }
+        },
+        fullscreen: {
+            isPluginLoaded: function() {
+                if (!angular.isDefined(L.Control.Fullscreen)) {
+                    $log.error(errorHeader + ' Fullscreen plugin is not loaded.');
+                    return false;
+                }
+                return true;
+            },
+            checkValidParams: function(/* params */) {
+                return true;
+            },
+            createControl: function(params) {
+                return new L.Control.Fullscreen(params);
+            }
+        },
+        search: {
+            isPluginLoaded: function() {
+                if (!angular.isDefined(L.Control.Search)) {
+                    $log.error(errorHeader + ' Search plugin is not loaded.');
+                    return false;
+                }
+                return true;
+            },
+            checkValidParams: function(/* params */) {
+                return true;
+            },
+            createControl: function(params) {
+                return new L.Control.Search(params);
+            }
+        },
+        minimap: {
+            isPluginLoaded: function() {
+                if (!angular.isDefined(L.Control.MiniMap)) {
+                    $log.error(errorHeader + ' Minimap plugin is not loaded.');
+                    return false;
+                }
+
+                return true;
+            },
+            checkValidParams: function(params) {
+                if(!isDefined(params.layer)) {
+                    $log.warn(errorHeader +' minimap "layer" option should be defined.');
+                    return false;
+                }
+                return true;
+            },
+            createControl: function(params) {
+                var layer = createLayer(params.layer);
+
+                if (!isDefined(layer)) {
+                    $log.warn(errorHeader + ' minimap control "layer" could not be created.');
+                    return;
+                }
+
+                return new L.Control.MiniMap(layer, params);
+            }
+        }
+    };
+
     return {
         layersControlMustBeVisible: _controlLayersMustBeVisible,
+
+        isValidControlType: function(type) {
+            return Object.keys(controlTypes).indexOf(type) !== -1;
+        },
+
+        createControl: function (type, params) {
+            if (!controlTypes[type].checkValidParams(params)) {
+                return;
+            }
+
+            return controlTypes[type].createControl(params);
+        },
 
         updateLayersControl: function(map, mapId, loaded, baselayers, overlays, leafletLayers) {
             var i;
@@ -710,24 +810,6 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
         setResolvedDefer: function(d, mapId) {
             var id = _obtainEffectiveMapId(d, mapId);
             d[id].resolvedDefer = true;
-        },
-
-        FullScreenControlPlugin: {
-            isLoaded: function() {
-                return angular.isDefined(L.Control.Fullscreen);
-            }
-        },
-
-        SearchControlPlugin: {
-            isLoaded: function() {
-                return angular.isDefined(L.Control.Search);
-            }
-        },
-
-        MiniMapControlPlugin: {
-            isLoaded: function() {
-                return angular.isDefined(L.Control.MiniMap);
-            }
         },
 
         AwesomeMarkersPlugin: {
@@ -2994,7 +3076,7 @@ angular.module("leaflet-directive").directive('center',
     };
 });
 
-angular.module("leaflet-directive").directive('controls', function ($log, leafletHelpers, leafletLayerHelpers) {
+angular.module("leaflet-directive").directive('controls', function ($log, leafletHelpers, leafletControlHelpers) {
     return {
         restrict: "A",
         scope: false,
@@ -3006,86 +3088,49 @@ angular.module("leaflet-directive").directive('controls', function ($log, leafle
                 return;
             }
 
-            var isDefined = leafletHelpers.isDefined,
-                createLayer = leafletLayerHelpers.createLayer,
-                leafletScope  = controller.getLeafletScope(),
-                controls = leafletScope.controls,
-                errorHeader = leafletHelpers.errorHeader + ' [Controls] ';
+            var createControl = leafletControlHelpers.createControl;
+            var isValidControlType = leafletControlHelpers.isValidControlType;
+            var leafletScope  = controller.getLeafletScope();
+            var isDefined = leafletHelpers.isDefined;
+            var leafletControls = {};
+            var errorHeader = leafletHelpers.errorHeader + ' [Controls] ';
 
             controller.getMap().then(function(map) {
-                if (isDefined(L.Control.Draw) && isDefined(controls.draw)) {
 
-                    if (!isDefined(controls.edit)) {
-                        controls.edit = { featureGroup: new L.FeatureGroup() };
-                        map.addLayer(controls.edit.featureGroup);
-                    }
+                leafletScope.$watchCollection('controls', function(newControls) {
 
-                    var drawControl = new L.Control.Draw(controls);
-                    map.addControl(drawControl);
-                }
-
-                if (isDefined(controls.routingMachine) && isDefined(controls.routingMachine.waypoints)) {
-                    var routingMachine = new L.Routing.control(controls.routingMachine);
-                    map.addControl(routingMachine);
-                }
-
-                if (isDefined(controls.scale)) {
-                    var scaleControl = new L.control.scale(controls.scale);
-                    map.addControl(scaleControl);
-                }
-
-                if (isDefined(controls.fullscreen)) {
-                    if (leafletHelpers.FullScreenControlPlugin.isLoaded()) {
-                        var fullscreenControl = new L.Control.Fullscreen(controls.fullscreen);
-                        map.addControl(fullscreenControl);
-                    } else {
-                        $log.error(errorHeader + ' Fullscreen plugin is not loaded.');
-                    }
-                }
-
-                if (isDefined(controls.search)) {
-                    if (leafletHelpers.SearchControlPlugin.isLoaded()) {
-                        var searchControl = new L.Control.Search(controls.search);
-                        map.addControl(searchControl);
-                    } else {
-                        $log.error(errorHeader + ' Search plugin is not loaded.');
-                    }
-                }
-
-                if(isDefined(controls.minimap)) {
-                    if (leafletHelpers.MiniMapControlPlugin.isLoaded()) {
-                        if(isDefined(controls.minimap.layer)) {
-                            var layer = createLayer(controls.minimap.layer);
-                            delete controls.minimap.layer;
-
-                            if(isDefined(layer)) {
-                                if(isDefined(leafletScope.center)) {
-                                    var moveend = function(/* event */) {
-                                        var minimapControl = new L.Control.MiniMap(layer, controls.minimap);
-                                        map.addControl(minimapControl);
-                                        map.off('moveend', moveend);
-                                    };
-                                    map.on('moveend', moveend);
-                                } else {
-                                    var minimapControl = new L.Control.MiniMap(layer, controls.minimap);
-                                    map.addControl(minimapControl);
-                                }
-                            } else {
-                                $log.warn(errorHeader + ' Layer could not be created.');
+                    // Delete controls from the array
+                    for (var name in leafletControls) {
+                        if (!isDefined(newControls[name])) {
+                            if (map.hasControl(leafletControls[name])) {
+                                map.removeControl(leafletControls[name]);
                             }
-                        } else {
-                            $log.warn(errorHeader +' Layer option should be defined.');
+                            delete leafletControls[name];
                         }
-                    } else {
-                        $log.error(errorHeader + ' Minimap plugin is not loaded.');
                     }
-                }
 
-                if (isDefined(controls.custom)) {
-                    for(var i in controls.custom) {
-                        map.addControl(controls.custom[i]);
+                    for (var newName in newControls) {
+                        var control;
+
+                        var controlType = isDefined(newControls[newName].type) ? newControls[newName].type : newName;
+
+                        if (!isValidControlType(controlType)) {
+                            $log.error(errorHeader + ' Invalid control type: ' + controlType + '.');
+                            return;
+                        }
+
+                        if (controlType !== 'custom') {
+                            control = createControl(controlType, newControls[newName]);
+                        } else {
+                            control = newControls[newName];
+                        }
+                        map.addControl(control);
+
+                        leafletControls[newName] = control;
                     }
-                }
+
+                });
+
             });
         }
     };
@@ -4368,7 +4413,7 @@ angular.module("leaflet-directive").directive('tiles', function ($log, leafletDa
                 leafletScope  = controller.getLeafletScope(),
                 tiles = leafletScope.tiles;
 
-            if (!isDefined(tiles) && !isDefined(tiles.url)) {
+            if (!isDefined(tiles) ||  !isDefined(tiles.url)) {
                 $log.warn("[AngularJS - Leaflet] The 'tiles' definition doesn't have the 'url' property.");
                 return;
             }
