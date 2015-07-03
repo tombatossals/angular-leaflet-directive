@@ -134,7 +134,8 @@ angular.module("leaflet-directive").service('leafletMarkersHelpers', function ($
         //We need to keep trying until angular has compiled before we _updateLayout and _updatePosition
         //This should take care of any scenario , eg ngincludes, whatever.
         //Is there a better way to check for this?
-        if (marker._popup._contentNode.innerText.length < 1) {
+        var innerText = marker._popup._contentNode.innerText || marker._popup._contentNode.textContent;
+        if (innerText.length < 1) {
             $timeout(function () {
                 updatePopup(marker, markerScope, map);
             });
