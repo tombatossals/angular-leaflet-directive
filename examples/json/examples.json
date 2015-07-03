@@ -267,7 +267,7 @@
             "title": "Baselayer hidden on switch selector to show only overlay"
         },
         {
-            "date": "2015-06-29T07:25:40.163Z",
+            "date": "2015-06-30T18:37:41.236Z",
             "section": "layers",
             "onlyStandAlone": false,
             "id": "/layers/esri-dynamic-layer-example",
@@ -387,7 +387,7 @@
             "title": "Esri ArcGIS Basemap Layer"
         },
         {
-            "date": "2015-06-29T07:25:40.163Z",
+            "date": "2015-06-30T18:37:41.236Z",
             "section": "layers",
             "onlyStandAlone": false,
             "id": "/layers/esri-feature-layer-example",
@@ -395,7 +395,7 @@
             "title": "Esri ArcGIS Feature Layer"
         },
         {
-            "date": "2015-06-29T07:25:40.166Z",
+            "date": "2015-06-30T18:37:41.236Z",
             "section": "layers",
             "onlyStandAlone": false,
             "id": "/layers/esri-tiled-map-layer-example",
@@ -403,7 +403,7 @@
             "title": "Esri ArcGIS Tiled Map Layer"
         },
         {
-            "date": "2015-06-29T07:25:40.166Z",
+            "date": "2015-06-30T18:37:41.236Z",
             "section": "layers",
             "onlyStandAlone": false,
             "id": "/layers/esri-image-layer-example",
@@ -411,7 +411,7 @@
             "title": "Esri ArcGIS Image Layer"
         },
         {
-            "date": "2015-06-29T07:25:40.166Z",
+            "date": "2015-06-30T18:37:41.236Z",
             "section": "layers",
             "onlyStandAlone": false,
             "id": "/layers/esri-clustered-layer-example",
@@ -419,12 +419,20 @@
             "title": "Esri ArcGIS Clustered Layer"
         },
         {
-            "date": "2015-06-29T07:25:40.166Z",
+            "date": "2015-06-30T18:37:41.236Z",
             "section": "layers",
             "onlyStandAlone": false,
             "id": "/layers/esri-heatmap-layer-example",
             "extUrl": "0229-layers-esri-heatmap-layer-example.html",
             "title": "Esri ArcGIS Heatmap Layer"
+        },
+        {
+            "date": "2015-07-03T15:09:34.896Z",
+            "section": "layers",
+            "onlyStandAlone": false,
+            "id": "/layers/yandex-example",
+            "extUrl": "0230-layers-yandex-example.html",
+            "title": "Yandex layer example"
         }
     ],
     "paths": [
@@ -485,7 +493,7 @@
             "title": "Path decoration example"
         },
         {
-            "date": "2015-06-29T20:26:06.756Z",
+            "date": "2015-07-03T15:09:34.896Z",
             "section": "paths",
             "onlyStandAlone": false,
             "id": "/paths/events-example",
@@ -503,7 +511,7 @@
             "title": "Dynamic addition and deletion of Overlays control"
         },
         {
-            "date": "2015-06-11T20:20:50.916Z",
+            "date": "2015-07-03T15:09:34.896Z",
             "section": "controls",
             "onlyStandAlone": false,
             "id": "/controls/draw-example",
@@ -527,17 +535,25 @@
             "title": "Fullscreen control example"
         },
         {
-            "date": "2015-06-20T16:07:14.606Z",
+            "date": "2015-07-03T15:09:34.896Z",
             "section": "controls",
             "onlyStandAlone": false,
             "id": "/controls/minimap-example",
             "extUrl": "0404-controls-minimap-example.html",
             "title": "Minimap control example"
+        },
+        {
+            "date": "2015-07-03T15:09:34.896Z",
+            "section": "controls",
+            "onlyStandAlone": false,
+            "id": "/controls/search-example",
+            "extUrl": "0405-controls-search-example.html",
+            "title": "Search control example"
         }
     ],
     "markers": [
         {
-            "date": "2015-06-11T20:20:50.916Z",
+            "date": "2015-07-03T14:36:16.246Z",
             "section": "markers",
             "onlyStandAlone": false,
             "id": "/markers/simple-example",
@@ -569,7 +585,7 @@
             "title": "Changing the marker icons"
         },
         {
-            "date": "2015-06-20T16:07:14.606Z",
+            "date": "2015-06-30T18:37:41.236Z",
             "section": "markers",
             "onlyStandAlone": false,
             "id": "/markers/popup-example",
