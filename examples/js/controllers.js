@@ -702,15 +702,43 @@ var app = angular.module('webapp');
                 },
                 controls: {
                     draw: {}
+                },
+                layers: {
+                    baselayers: {
+                        mapbox_light: {
+                            name: 'Mapbox Light',
+                            url: 'http://api.tiles.mapbox.com/v4/{mapid}/{z}/{x}/{y}.png?access_token={apikey}',
+                            type: 'xyz',
+                            layerOptions: {
+                                apikey: 'pk.eyJ1IjoiYnVmYW51dm9scyIsImEiOiJLSURpX0pnIn0.2_9NrLz1U9bpwMQBhVk97Q',
+                                mapid: 'bufanuvols.lia22g09'
+                            },
+                            layerParams: {
+                                showOnSelector: false
+                            }
+                        }
+                    },
+                    overlays: {
+                        draw: {
+                            name: 'draw',
+                            type: 'group',
+                            visible: true,
+                            layerParams: {
+                                showOnSelector: false
+                            }
+                        }
+                    }
                 }
            });
            leafletData.getMap().then(function(map) {
-              var drawnItems = $scope.controls.edit.featureGroup;
-              map.on('draw:created', function (e) {
-                var layer = e.layer;
-                drawnItems.addLayer(layer);
-                console.log(JSON.stringify(layer.toGeoJSON()));
-              });
+               leafletData.getLayers().then(function(baselayers) {
+                  var drawnItems = baselayers.overlays.draw;
+                  map.on('draw:created', function (e) {
+                    var layer = e.layer;
+                    drawnItems.addLayer(layer);
+                    console.log(JSON.stringify(layer.toGeoJSON()));
+                  });
+               });
            });
        }]);
         app.controller("ControlsFullscreenController", [ "$scope", function($scope) {
@@ -736,7 +764,7 @@ var app = angular.module('webapp');
                 }
            });
        }]);
-        app.controller("ControlsMinimapController", [ "$scope", function($scope) {
+        app.controller("ControlsMinimapController", [ "$scope", "leafletData", function($scope, leafletData) {
             angular.extend($scope, {
                 bogota: {
                     lat: 4.649,
@@ -752,20 +780,21 @@ var app = angular.module('webapp');
                         mapid: 'bufanuvols.lpa06kfg'
                     }
                 },
-                controls: {
-                    minimap: {
-                        layer: {
-                            name: 'Mapbox Comic',
-                            key: 'bufanuvols.lpa06kfg',
-                            apiKey: 'pk.eyJ1IjoiYnVmYW51dm9scyIsImEiOiJLSURpX0pnIn0.2_9NrLz1U9bpwMQBhVk97Q',
-                            type: 'mapbox',
-                            layerParams: {
-                                version: 4
-                            }
-                        },
-                        toggleDisplay: true
-                    }
-                }
+                controls: {}
+           });
+           // Wait for center to be stablished
+           leafletData.getMap().then(function() {
+               angular.extend($scope.controls, {
+                   minimap: {
+                       type: 'minimap',
+                       layer: {
+                           name: 'OpenStreetMap',
+                           url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                           type: 'xyz'
+                       },
+                       toggleDisplay: true
+                   }
+               });
            });
        }]);
         app.controller("ControlsScaleController", [ "$scope", function($scope) {
@@ -778,6 +807,87 @@ var app = angular.module('webapp');
                 controls: {
                     scale: true
                 }
+           });
+       }]);
+        app.controller("ControlsSearchController", [ "$scope", "leafletData", function($scope, leafletData) {
+            var markersData = [
+                {"loc":[41.575330,13.102411], "title":"aquamarine"},
+                {"loc":[41.575730,13.002411], "title":"black"},
+                {"loc":[41.807149,13.162994], "title":"blue"},
+                {"loc":[41.507149,13.172994], "title":"chocolate"},
+                {"loc":[41.847149,14.132994], "title":"coral"},
+                {"loc":[41.219190,13.062145], "title":"cyan"},
+                {"loc":[41.344190,13.242145], "title":"darkblue"},
+                {"loc":[41.679190,13.122145], "title":"darkred"},
+                {"loc":[41.329190,13.192145], "title":"darkgray"},
+                {"loc":[41.379290,13.122545], "title":"dodgerblue"},
+                {"loc":[41.409190,13.362145], "title":"gray"},
+                {"loc":[41.794008,12.583884], "title":"green"},
+                {"loc":[41.805008,12.982884], "title":"greenyellow"},
+                {"loc":[41.536175,13.273590], "title":"red"},
+                {"loc":[41.516175,13.373590], "title":"rosybrown"},
+                {"loc":[41.506175,13.173590], "title":"royalblue"},
+                {"loc":[41.836175,13.673590], "title":"salmon"},
+                {"loc":[41.796175,13.570590], "title":"seagreen"},
+                {"loc":[41.436175,13.573590], "title":"seashell"},
+                {"loc":[41.336175,13.973590], "title":"silver"},
+                {"loc":[41.236175,13.273590], "title":"skyblue"},
+                {"loc":[41.546175,13.473590], "title":"yellow"},
+                {"loc":[41.239190,13.032145], "title":"white"}
+            ];
+            angular.extend($scope, {
+                center: {
+                    lat: 41.575330,
+                    lng: 13.102411,
+                    zoom: 8
+                },
+                layers: {
+                    baselayers: {
+                        mapbox_light: {
+                            name: 'Mapbox Light',
+                            url: 'http://api.tiles.mapbox.com/v4/{mapid}/{z}/{x}/{y}.png?access_token={apikey}',
+                            type: 'xyz',
+                            layerOptions: {
+                                apikey: 'pk.eyJ1IjoiYnVmYW51dm9scyIsImEiOiJLSURpX0pnIn0.2_9NrLz1U9bpwMQBhVk97Q',
+                                mapid: 'bufanuvols.lia22g09'
+                            },
+                            layerParams: {
+                                showOnSelector: false
+                            }
+                        }
+                    },
+                    overlays: {
+                        search: {
+                            name: 'search',
+                            type: 'group',
+                            visible: true,
+                            layerParams: {
+                                showOnSelector: false
+                            }
+                        }
+                    }
+                },
+                controls: {},
+                markers: {}
+           });
+           markersData.filter(function(data) {
+               $scope.markers[data.title] = {
+                   title: data.title,
+                   lat: data.loc[0],
+                   lng: data.loc[1],
+                   layer: 'search',
+                   label: {
+                       message: data.title
+                   }
+               };
+           });
+           leafletData.getLayers().then(function(baselayers) {
+               console.log(baselayers.overlays.search);
+               angular.extend($scope.controls, {
+                   search: {
+                       layer: baselayers.overlays.search
+                   }
+               });
            });
        }]);
       app.controller("GeoJSONCenterController", [ '$scope', '$http', 'leafletData', function($scope, $http, leafletData) {
@@ -2507,6 +2617,40 @@ var app = angular.module('webapp');
                 }
             });
         }]);
+        app.controller("LayersYandexController", [ "$scope", function($scope) {
+            angular.extend($scope, {
+                berlin: {
+                    lat: 52.52,
+                    lng: 13.40,
+                    zoom: 14
+                },
+                markers: {
+                    m1: {
+                        lat: 52.52,
+                        lng: 13.40
+                    }
+                },
+                layers: {
+                    baselayers: {
+                      yandex: {
+                        name: 'Yandex',
+                        type: 'yandex',
+                        layerOptions: {
+                          layerType: 'map',
+                        }
+                      },
+                      yandexTraffic: {
+                        name: 'Yandex Traffic',
+                        type: 'yandex',
+                        layerOptions: {
+                          layerType: 'map',
+                          traffic: true,
+                        }
+                      }
+                    }
+                }
+            });
+        }]);
         app.controller('MarkersAddRemoveController', [ '$scope', function($scope) {
             angular.extend($scope, {
                 london: {
@@ -3116,7 +3260,10 @@ var app = angular.module('webapp');
                     }
                 },
                 events: {
-                    markers: [ 'dragend' ]
+                    markers: {
+                      enable: [ 'dragend' ]
+                      //logic: 'emit'
+                    }
                 }
             });
             $scope.$on("leafletDirectiveMarker.dragend", function(event, args){
@@ -3186,8 +3333,11 @@ var app = angular.module('webapp');
                     lat: 51,
                     lng: 0
                 },
-                events: {
-                    markers: [ 'dragend' ]
+                events: { // or just {} //all events
+                    markers:{
+                      enable: [ 'dragend' ]
+                      //logic: 'emit'
+                    }
                 }
             });
             $scope.$on("leafletDirectiveMarker.dragend", function(event, args){

@@ -16,7 +16,10 @@
                     }
                 },
                 events: {
-                    markers: [ 'dragend' ]
+                    markers: {
+                      enable: [ 'dragend' ]
+                      //logic: 'emit'
+                    }
                 }
             });
             $scope.$on("leafletDirectiveMarker.dragend", function(event, args){
