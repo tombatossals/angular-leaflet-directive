@@ -1,4 +1,4 @@
-angular.module("leaflet-directive").directive('bounds', function ($log, $timeout, $http, leafletMapDefaults, leafletHelpers, leafletBoundsHelpers) {
+angular.module("leaflet-directive").directive('bounds', function ($log, $timeout, $http, leafletHelpers, nominatimService, leafletBoundsHelpers) {
     return {
         restrict: "A",
         scope: false,
@@ -10,7 +10,7 @@ angular.module("leaflet-directive").directive('bounds', function ($log, $timeout
             var createLeafletBounds = leafletBoundsHelpers.createLeafletBounds;
             var leafletScope = controller[0].getLeafletScope();
             var mapController = controller[0];
-            var errorHeader = leafletHelpers.errorHeader + ' [Controls] ';
+            var errorHeader = leafletHelpers.errorHeader + ' [Bounds] ';
 
             var emptyBounds = function(bounds) {
                 return (bounds._southWest.lat === 0 && bounds._southWest.lng === 0 &&
@@ -18,8 +18,6 @@ angular.module("leaflet-directive").directive('bounds', function ($log, $timeout
             };
 
             mapController.getMap().then(function (map) {
-                var defaults = leafletMapDefaults.getDefaults(attrs.id);
-
                 leafletScope.$on('boundsChanged', function (event) {
                     var scope = event.currentScope;
                     var bounds = map.getBounds();
@@ -43,22 +41,20 @@ angular.module("leaflet-directive").directive('bounds', function ($log, $timeout
                     }
                 });
 
+                var lastNominatimQuery;
                 leafletScope.$watch('bounds', function (bounds) {
-                    if (isDefined(bounds.address)) {
+                    if (isDefined(bounds.address) && bounds.address !== lastNominatimQuery) {
                         scope.settingBoundsFromScope = true;
-                        var url = defaults.nominatim.server;
-                        $http.get(url, { params: { format: 'json', limit: 1, q: bounds.address } }).success(function(data) {
-                            if (data.length > 0 && isDefined(data[0].boundingbox)) {
-                                var b = data[0].boundingbox;
-                                var newBounds = [ [ b[0], b[2]], [ b[1], b[3]] ];
-                                map.fitBounds(newBounds);
-                            } else {
-                                $log.error(errorHeader + ' Invalid Nominatim address.');
-                            }
-
-                            $timeout( function() {
-                                scope.settingBoundsFromScope = false;
-                            });
+                        nominatimService.query(bounds.address, attrs.id).then(function(data) {
+                            var b = data.boundingbox;
+                            var newBounds = [ [ b[0], b[2]], [ b[1], b[3]] ];
+                            map.fitBounds(newBounds);
+                        }, function(errMsg) {
+                            $log.error(errorHeader + ' ' + errMsg + '.');
+                        });
+                        lastNominatimQuery = bounds.address;
+                        $timeout( function() {
+                            scope.settingBoundsFromScope = false;
                         });
                         return;
                     }
