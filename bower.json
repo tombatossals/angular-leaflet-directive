@@ -14,7 +14,7 @@
     "dist/angular-leaflet-directive.js"
   ],
   "dependencies": {
-    "angular": "1.4.x",
+    "angular": "1.x",
     "leaflet": "0.7.x",
     "font-awesome": "~4.3.x"
   },
@@ -23,9 +23,9 @@
     "semantic-ui": "*",
     "bootstrap": "*",
     "prism": "*",
-    "angular-route": "1.4.x",
-    "angular-animate": "1.4.x",
-    "angular-mocks": "1.4.x",
+    "angular-route": "1.x",
+    "angular-animate": "1.x",
+    "angular-mocks": "1.x",
     "leaflet.markercluster": "*",
     "leaflet.draw": "*",
     "Leaflet.label": "*",
