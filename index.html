@@ -1,51 +1,73 @@
 <!DOCTYPE html>
-<html ng-app="mainPage" lang="en">
-<head>
-    <meta charset="UTF-8">
-    <!--<meta name="fragment" content="!">-->
-    <meta name="keywords" content="angularjs,leaflet,openstreetmap,javascript,directive,plugin,google maps">
-    <meta name="description" content="Leaflet directive for AngularJS">
-    <title>Leaflet directive for AngularJS</title>
-    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="bower_components/leaflet/dist/leaflet.css" />
-    <link rel="stylesheet" href="bower_components/highlightjs/styles/github.css" />
-    <link rel="stylesheet" type="text/css" href="http://cloud.github.com/downloads/lafeber/world-flags-sprite/flags32.css" />
-    <link rel="stylesheet" href="css/style.css" />
-</head>
+<html ng-app="webapp" lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="keywords" content="angularjs,leaflet,openstreetmap,javascript,directive,plugin,google maps">
+        <meta name="description" content="Leaflet directive for AngularJS">
+        <title>Leaflet directive for AngularJS</title>
+        <link href='http://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="bower_components/semantic-ui/dist/semantic.min.css">
+        <link rel="stylesheet" href="bower_components/leaflet/dist/leaflet.css" />
+        <link rel="stylesheet" href="bower_components/highlightjs/styles/github.css" />
+        <link rel="stylesheet" href="bower_components/highlightjs/styles/github.css" />
+        <link rel="stylesheet" type="text/css" href="http://cloud.github.com/downloads/lafeber/world-flags-sprite/flags32.css" />
+        <link rel="stylesheet" href="css/style.css" />
+    </head>
 
 <body ng-cloak ng-controller="MainController">
-    <div class="container" ng-controller="HeaderController">
-        <header class="navbar navbar-default" role="navigation">
-            <div class="navbar-header">
-                <a href="#!/" class="navbar-brand">angular-leaflet-directive</a>
+    <div class="ui grid">
+        <div class="three wide column"></div>
+        <div class="ten wide column">
+            <div class="ui header">
+                <div class="ui large pointing menu" ng-controller="HeaderController">
+                    <a href="#!/" class="item" ng-class="{ active: activeTab == '' }">angular-leaflet-directive</a>
+                    <div class="right menu">
+                        <a class="item" ng-class="{ active: activeTab == 'getting-started' }" href="#!/documentation">Documentation</a>
+                        <a class="item"  ng-class="{ active: activeTab == 'examples' }" ng-href="#!/examples/simple-map">Examples</a>
+                        <a class="item" ng-class="{ active: activeTab == 'howto-extend' }" ng-href="#!/howto-extend">How to extend</a>
+                        <a class="item" href="http://github.com/tombatossals/angular-leaflet-directive">Github repository</a>
+                    </div>
+                </div>
             </div>
-            <ul class="nav navbar-nav navbar-right">
-                <li ng-class="{ active: activeTab == 'getting-started' || activeTab == '' }"><a href="#!/getting-started">Getting started</a></li>
-                <li ng-class="{ active: activeTab == 'examples' }"><a ng-href="#!/examples/simple-map">Examples</a></li>
-                <li ng-class="{ active: activeTab == 'howto-extend' }"><a ng-href="#!/howto-extend">How to extend</a></li>
-                <li><a href="http://github.com/tombatossals/angular-leaflet-directive">Github repository</a></li>
-            </ul>
-        </header>
-        <div class="banner">
-            <a class="forkme" href="https://github.com/tombatossals/angular-leaflet-directive" rel="external">
-                <img src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub">
-            </a>
-            <leaflet center="center" defaults="defaults" events="events" id="header"></leaflet>
+            <div class="ui header banner">
+                <a class="forkme" href="https://github.com/tombatossals/angular-leaflet-directive" rel="external">
+                    <img src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub">
+                </a>
+                <leaflet center="center" defaults="defaults" events="events" id="header"></leaflet>
+            </div>
+            <div class="ui bottom attached">
+                <div class="container">
+                    Simple to use directive for easy embedding and interacting with a map managed with the <a href="http://leafletjs.com/">leaflet map library</a> on an <a href="http://angularjs.org">AngularJS</a> application.
+                </div>
+            </div>
         </div>
-        <div class="bottom-banner">
-            <div class="container">
-                Simple to use directive for easy embedding and interacting with a map managed with the <a href="http://leafletjs.com/">leaflet map library</a> on an <a href="http://angularjs.org">AngularJS</a> application.
+        <div class="three wide column"></div>
+    </div>
+
+    <div class="ui basic segment" style="background: #EFEFEF; border-bottom: 1px solid #AAA; border-top: 1px solid #AAA;">
+        <div class="ui grid">
+            <div class="three wide column"></div>
+            <div class="ten wide column">
+                <h1>Getting started</h1>
             </div>
+            <div class="three wide column"></div>
         </div>
     </div>
 
-    <div class="container content">
-        <ng-view></ng-view>
+    <div class="ui basic segment">
+        <div class="ui grid">
+            <div class="three wide column"></div>
+            <div class="ten wide column">
+                <ng-view></ng-view>
+            </div>
+            <div class="three wide column"></div>
+        </div>
     </div>
+
 
     <div class="container footer">
         <footer role="contentinfo">
-            <p class="pull-right">Page built with <a href="http://leafletjs.com">LeafletJS</a>, <a href="http://angularjs.org/">AngularJS</a> and <a href="http://getbootstrap.com/">Bootstrap</a></p>
+            <p class="pull-right">Page built with <a href="http://leafletjs.com">LeafletJS</a>, <a href="http://angularjs.org/">AngularJS</a> and <a href="http://semantic-ui.com/">Semantic UI</a></p>
         </footer>
     </div>
 
@@ -54,7 +76,6 @@
     <script src="bower_components/leaflet/dist/leaflet.js"></script>
     <script src="bower_components/leaflet-plugins/layer/tile/Google.js"></script>
     <script src="bower_components/highlightjs/highlight.pack.js"></script>
-    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="bower_components/angular/angular.min.js"></script>
     <script src="bower_components/angular-route/angular-route.min.js"></script>
     <script src="bower_components/angular-highlightjs/angular-highlightjs.min.js"></script>
