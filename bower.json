@@ -22,7 +22,7 @@
     "jquery": "*",
     "semantic-ui": "*",
     "prism": "*",
-    "angular-route": "1.x",
+    "angular-new-router": "*",
     "angular-animate": "1.x",
     "angular-mocks": "1.x",
     "leaflet.markercluster": "*",

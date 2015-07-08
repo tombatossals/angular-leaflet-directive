@@ -1,0 +1,220 @@
+import {Grammar} from './grammar';
+import {Pipeline} from './pipeline';
+
+/**
+ * @name Router
+ * @where shared
+ * @description
+ * The router is responsible for mapping URLs to components.
+ *
+ * You can see the state of the router by inspecting the read-only field `router.navigating`.
+ * This may be useful for showing a spinner, for instance.
+ */
+class Router {
+  constructor(grammar:Grammar, pipeline:Pipeline, parent, name) {
+    this.name = name;
+    this.parent = parent || null;
+    this.navigating = false;
+    this.ports = {};
+    this.children = {};
+    this.registry = grammar;
+    this.pipeline = pipeline;
+  }
+
+
+  /**
+   * @description
+   * Constructs a child router.
+   * You probably don't need to use this unless you're writing a reusable component.
+   */
+  childRouter(name = 'default') {
+    if (!this.children[name]) {
+      this.children[name] = new ChildRouter(this, name);
+    }
+    return this.children[name];
+  }
+
+
+  /**
+   * @description
+   * Register an object to notify of route changes.
+   * You probably don't need to use this unless you're writing a reusable component.
+   */
+  registerViewport(view, name = 'default') {
+    this.ports[name] = view;
+    return this.renavigate();
+  }
+
+
+  /**
+   * @description
+   * Update the routing configuation and trigger a navigation.
+   *
+   * ```js
+   * router.config({ path: '/', component: '/user' });
+   * ```
+   *
+   * For more, see the [configuration](configuration) guide.
+   */
+  config(mapping) {
+    this.registry.config(this.name, mapping);
+    return this.renavigate();
+  }
+
+
+  /**
+   * @description Navigate to a URL.
+   * Returns the cannonical URL for the route navigated to.
+   */
+  navigate(url) {
+    if (this.navigating) {
+      return Promise.resolve();
+    }
+
+    this.lastNavigationAttempt = url;
+
+    var instruction = this.recognize(url);
+
+    if (!instruction) {
+      return Promise.reject();
+    }
+
+    this._startNavigating();
+
+    instruction.router = this;
+    return this.pipeline.process(instruction)
+        .then(() => this._finishNavigating(), () => this._finishNavigating())
+        .then(() => instruction.canonicalUrl);
+  }
+
+  _startNavigating() {
+    this.navigating = true;
+  }
+
+  _finishNavigating() {
+    this.navigating = false;
+  }
+
+
+  makeDescendantRouters(instruction) {
+    this.traverseInstructionSync(instruction, (instruction, childInstruction) => {
+      childInstruction.router = instruction.router.childRouter(childInstruction.component);
+    });
+  }
+
+
+  traverseInstructionSync(instruction, fn) {
+    forEach(instruction.viewports,
+        (childInstruction, viewportName) => fn(instruction, childInstruction));
+    forEach(instruction.viewports,
+        (childInstruction) => this.traverseInstructionSync(childInstruction, fn));
+  }
+
+
+  traverseInstruction(instruction, fn) {
+    if (!instruction) {
+      return Promise.resolve();
+    }
+    return mapObjAsync(instruction.viewports,
+      (childInstruction, viewportName) => boolToPromise(fn(childInstruction, viewportName)))
+      .then(() => mapObjAsync(instruction.viewports, (childInstruction, viewportName) => {
+        return childInstruction.router.traverseInstruction(childInstruction, fn);
+      }));
+  }
+
+
+  /*
+   * given a instruction obj
+   * update viewports accordingly
+   */
+  activatePorts(instruction) {
+    return this.queryViewports((port, name) => {
+      return port.activate(instruction.viewports[name]);
+    })
+    .then(() => mapObjAsync(instruction.viewports, (instruction) => {
+      return instruction.router.activatePorts(instruction);
+    }));
+  }
+
+
+  /*
+   * given a instruction obj
+   * update viewports accordingly
+   */
+  canDeactivatePorts(instruction) {
+    return this.traversePorts((port, name) => {
+      return boolToPromise(port.canDeactivate(instruction.viewports[name]));
+    });
+  }
+
+  traversePorts(fn) {
+    return this.queryViewports(fn)
+        .then(() => mapObjAsync(this.children, (child) => child.traversePorts(fn)));
+  }
+
+  queryViewports(fn) {
+    return mapObjAsync(this.ports, fn);
+  }
+
+
+  recognize(url) {
+    return this.registry.recognize(url);
+  }
+
+
+
+  /**
+   * @description Navigates to either the last URL successfully naviagted to,
+   * or the last URL requested if the router has yet to successfully navigate.
+   * You shouldn't need to use this API very often.
+   */
+  renavigate() {
+    var renavigateDestination = this.previousUrl || this.lastNavigationAttempt;
+    if (!this.navigating && renavigateDestination) {
+      return this.navigate(renavigateDestination);
+    } else {
+      return Promise.resolve();
+    }
+  }
+
+
+  /**
+   * @description generate a URL from a component name and optional map of parameters.
+   * The URL is relative to the app's base href.
+   */
+  generate(name:string, params) {
+    return this.registry.generate(name, params);
+  }
+
+}
+
+export class RootRouter extends Router {
+  constructor(grammar:Grammar, pipeline:Pipeline) {
+    super(grammar, pipeline, null, '/');
+  }
+}
+
+class ChildRouter extends Router {
+  constructor(parent, name) {
+    super(parent.registry, parent.pipeline, parent, name);
+    this.parent = parent;
+  }
+}
+
+function forEach(obj, fn) {
+  Object.keys(obj).forEach(key => fn(obj[key], key));
+}
+
+function mapObjAsync(obj, fn) {
+  return Promise.all(mapObj(obj, fn));
+}
+
+function mapObj(obj, fn) {
+  var result = [];
+  Object.keys(obj).forEach(key => result.push(fn(obj[key], key)));
+  return result;
+}
+
+function boolToPromise (value) {
+  return value ? Promise.resolve(value) : Promise.reject();
+}

@@ -61,7 +61,7 @@ module.exports = function(grunt) {
                 footer: '})(window.angular);'
             },
             dist: {
-                src: ['src/app.js', 'src/controllers/*.js'],
+                src: ['src/app.js', 'src/controllers/*.js', 'components/home/*.js'],
                 dest: 'js/angular-leaflet-directive-webpage.js',
             }
         },

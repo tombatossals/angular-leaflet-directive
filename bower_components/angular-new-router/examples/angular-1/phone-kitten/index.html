@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <base href="/examples/angular-1/phone-kitten/">
+
+  <title>Google Phone Gallery</title>
+
+  <link rel="stylesheet" href="css/bootstrap.css">
+  <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="css/animations.css">
+
+  <script src="/node_modules/angular/angular.js"></script>
+  <script src="/dist/router.es5.js"></script>
+  <script src="/node_modules/angular-animate/angular-animate.js"></script>
+  <script src="/node_modules/angular-resource/angular-resource.js"></script>
+
+  <script src="./app.js"></script>
+  <script src="./components/phone-detail/phone-detail.js"></script>
+  <script src="./components/phone-list/phone-list.js"></script>
+
+  <script src="./js/filters.js"></script>
+  <script src="./js/services.js"></script>
+</head>
+<body ng-app="phoneKitten" ng-strict-di ng-controller="AppController as app">
+  <div class="view-container">
+    <div ng-viewport class="view-frame"></div>
+  </div>
+</body>
+</html>

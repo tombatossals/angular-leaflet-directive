@@ -1,0 +1,9 @@
+node_modules
+bower_components
+compiled
+dist
+sauce_connect.log
+.idea
+.DS_STORE
+temp
+npm-debug.log

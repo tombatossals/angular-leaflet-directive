@@ -1,0 +1,6 @@
+<h1>Editing post "{{editPost.post.title}}"</h1>
+<a ng-link="index">Back</a>
+<form>
+  <textarea ng-model="editPost.newContent" cols="30" rows="3"></textarea><br>
+  <button ng-click="editPost.save()" ng-disabled="editPost.contentUnchanged()">Save</button>
+</form>

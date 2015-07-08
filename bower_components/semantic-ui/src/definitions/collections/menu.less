@@ -498,6 +498,7 @@ Floated Menu / Item
 
 .ui.vertical.menu {
   display: block;
+  flex-direction: column;
   background: @verticalBackground;
   box-shadow: @verticalBoxShadow;
 }
@@ -1530,6 +1531,9 @@ Floated Menu / Item
   margin: 0em;
   vertical-align: middle;
 }
+.ui.compact.vertical.menu {
+  display: inline-block;
+}
 .ui.compact.menu .item:last-child {
   border-radius: 0em @borderRadius @borderRadius 0em;
 }
@@ -1622,13 +1626,13 @@ Floated Menu / Item
 
 .ui.fixed.menu,
 .ui[class*="top fixed"].menu {
-  border-top: none;
   top: 0px;
   left: 0px;
   right: auto;
   bottom: auto;
 }
 .ui[class*="top fixed"].menu {
+  border-top: none;
   border-left: none;
   border-right: none;
 }

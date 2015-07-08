@@ -1,0 +1,14 @@
+{
+  "name": "angular-new-router",
+  "homepage": "https://github.com/angular/router",
+  "version": "0.5.3",
+  "_release": "0.5.3",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.5.3",
+    "commit": "c7b6b498c551754cc07d4b56a74fd951cbe2a483"
+  },
+  "_source": "git://github.com/angular/router.git",
+  "_target": "*",
+  "_originalSource": "angular-new-router"
+}

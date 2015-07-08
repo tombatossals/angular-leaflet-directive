@@ -1,0 +1,9 @@
+<h1>Post Index</h1>
+
+<ul>
+  <li ng-repeat="(id, item) in index.posts">
+    <a ng-link="editPost({ id: id })">
+      Edit {{item.title}}
+    </a>
+  </li>
+</ul>

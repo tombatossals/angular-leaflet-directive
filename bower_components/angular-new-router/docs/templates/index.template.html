@@ -1,0 +1,17 @@
+{% extends "layout/base.template.html" %}
+
+{% block body %}
+
+<h1>Angular New Router</h1>
+<p>{$ doc.description | marked $}</p>
+
+{%- for docType, docs in doc.docTypes %}
+  <h2>{$ docType | docTypeLabel $}</h2>
+  <ul>
+    {% for childDoc in docs -%}
+    <li>{$ childDoc | relativeLink(doc) $}{%- if childDoc.description %} - {$ childDoc.description | firstLine $}{% endif -%}{%- if childDoc.summary %} - {$ childDoc.summary $}{% endif -%}</li>
+    {% endfor -%}
+  </ul>
+{%- endfor %}
+
+{% endblock %}

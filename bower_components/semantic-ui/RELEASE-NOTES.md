@@ -1,5 +1,54 @@
 ## RELEASE NOTES
 
+### Version 2.0.2 - July 7, 2015
+
+**[Reported Bugs](https://github.com/Semantic-Org/Semantic-UI/issues?q=is%3Aissue+milestone%3A2.0.2+is%3Aclosed)**
+
+- **Dropdown** - Fixed regression in `2.0.1` causing search dropdown not to clear values correctly [#2533](https://github.com/Semantic-Org/Semantic-UI/issues/2533)
+- **Site** - Sizing variables now are relative to `@emSize` adjusting all sizing variationss proportionately as `@emSize` changes [#2538](https://github.com/Semantic-Org/Semantic-UI/issues/2538)
+- **Dropdown** - Dropdown icon will now always toggle menu visibility [#2510](https://github.com/Semantic-Org/Semantic-UI/issues/2510)
+- **Dropdown** -  Pressing same key on dropdown with multiple choices with same first letter will now cycle selections. For example "California" then "Colorado" when pressing C [#2516](https://github.com/Semantic-Org/Semantic-UI/issues/2516)
+- **Dropdown** - Dropdown now changes text before calling `onChange` callback so that callback reflects new dropdown conditions [#2539](https://github.com/Semantic-Org/Semantic-UI/issues/2539)
+
+**Additional Bugs**
+- **Dropdown** - Clicking on label, or deleting a label will no longer trigger dropdown menu toggling
+- **Dropdown** - Multiselect that do use text labels (e.g. "5 selected") will now remove filters on selection and scroll to last selected value
+
+### Version 2.0.1 - July 6, 2015
+
+**[Reported Bugs](https://github.com/Semantic-Org/Semantic-UI/issues?q=is%3Aissue+milestone%3A2.0.1+is%3Aclosed)**
+- **Label** - Attached labels now use a border-radius for corner-edges that matches more closely [#2500](https://github.com/Semantic-Org/Semantic-UI/issues/2500)
+- **Label** - Fixes incorrect label sizing for `large` and bigger sizes [#2486](https://github.com/Semantic-Org/Semantic-UI/issues/2486)
+- **Segment** - Fixed incorrect margin set on `attached segment` [#2503](https://github.com/Semantic-Org/Semantic-UI/issues/2503)
+- **Card** - `centered cards` variation now works similar to `centered card`. [#2520](https://github.com/Semantic-Org/Semantic-UI/issues/2520)
+- **Checkbox** - Fixed issue in chrome where radio checkbox would appear incorrectly when no default value was selected [#2505](https://github.com/Semantic-Org/Semantic-UI/issues/2505)
+- **Dropdown** - Fixed transparent tap color not being set correctly. Removed toggle behavior from touch events on multiple dropdown. [#2524](https://github.com/Semantic-Org/Semantic-UI/issues/2524)
+- **Checkbox** - Fixed issue where radio checkbox were not properly receiving `checked` class [#2506](https://github.com/Semantic-Org/Semantic-UI/issues/2506)
+- **Tab** - Tab now correctly obeys `cache` setting. Removed use of API's local caching by default. [#2493](https://github.com/Semantic-Org/Semantic-UI/issues/2493)
+- **Form** - `reset` will no longer clear values if no default value is found [#2504](https://github.com/Semantic-Org/Semantic-UI/issues/2504)
+
+**Additional Bugs**
+- **Dimmer** - Dimmer now removes variations like `blurring` and `inverted` when `destroy` is called.
+- **Dropdown** - `restore defaults` in dropdown when used with multiple will now correctly clear other values selected that were not there on page load.
+- **Dropdown** - Removes accidental console.log statement in dropdown
+- **Dropdown** - Dropdown no longer closes after max selections reached and enter key used for selection.
+- **Dropdown** - Dropdown will now show correctly when menu only includes a message with no other items
+- **Menu** - Fixed `pointing menu` arrow color slightly off
+- **Progress** - Progress included `debug: true` by default. This has been now correctly set to `false`
+- **Modal** - `scrolling modal` now correctly inherits rules so that it appears at top of screen on mobile
+- **Menu** - Inverted menu no longer includes a 1px transparent border.
+- **Menu** - Fixes `compact vertical menu` using `flex` style incorrectly
+- **Menu** - Fixes `border-top` not appearing on `bottom fixed` menu
+- **Tab** - Fixed bug where remote loaded tab content would not show `loading tab` on first load.
+
+**Docs**
+- **Form** - Clarified usage for `reset` in form docs [#2504](https://github.com/Semantic-Org/Semantic-UI/issues/2504)
+- **Docs** - `1.0` docs are now available at [http://1.semantic-ui.com](http://1.semantic-ui.com) Link in footer has been fixed.
+- **Image** - Fixed `mini image` having wrong pixel size in docs [#2521](https://github.com/Semantic-Org/Semantic-UI/issues/2521)
+- **Image** - Added docs for missing `fluid image` variation
+- **Modal** - Removed legacy JS animation settings still accidentally in docs
+- **Tab** - Added new examples for `evaluateScripts` and HTML5 state tabs
+
 ### Version 2.0.0 - June 30, 2015
 
 **Migration Guide**

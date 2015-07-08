@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <base href="/examples/angular-1/sibbling-routes/">
+  <link rel="stylesheet" href="./app.css">
+</head>
+<body ng-app="myApp" ng-strict-di ng-controller="AppController">
+
+  <nav>
+    <a href="./users/posts">users then posts</a>
+    <a href="./posts/users">posts then users</a>
+  </nav>
+  <div class="container">
+    <div ng-viewport="left"></div>
+    <div ng-viewport="right"></div>
+  </div>
+
+  <script src="/node_modules/angular/angular.js"></script>
+  <script src="/dist/router.es5.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="webapp" lang="en">
+<html ng-app="myApp" lang="en">
     <head>
         <meta charset="UTF-8">
         <meta name="keywords" content="angularjs,leaflet,openstreetmap,javascript,directive,plugin,google maps">
@@ -14,7 +14,7 @@
         <link rel="stylesheet" href="css/style.css" />
     </head>
 
-<body ng-cloak ng-controller="MainController">
+<body ng-cloak ng-controller="AppController as app">
     <div class="ui grid">
         <div class="three wide column"></div>
         <div class="ten wide column">
@@ -29,7 +29,7 @@
                     </div>
                 </div>
             </div>
-            <div class="ui fluid card banner">
+            <div class="ui header banner">
                 <a class="forkme" href="https://github.com/tombatossals/angular-leaflet-directive" rel="external">
                     <img src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub">
                 </a>
@@ -77,7 +77,7 @@
     <script src="bower_components/leaflet-plugins/layer/tile/Google.js"></script>
     <script src="bower_components/highlightjs/highlight.pack.js"></script>
     <script src="bower_components/angular/angular.min.js"></script>
-    <script src="bower_components/angular-route/angular-route.min.js"></script>
+    <script src="bower_components/angular-new-router/dist/router.es5.min.js"></script>
     <script src="bower_components/angular-highlightjs/angular-highlightjs.min.js"></script>
     <script src="dist/angular-leaflet-directive.min.js"></script>
     <script src="js/angular-leaflet-directive-webpage.min.js"></script>
