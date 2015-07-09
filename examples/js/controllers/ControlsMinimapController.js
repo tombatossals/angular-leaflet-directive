@@ -1,4 +1,4 @@
-        app.controller("ControlsMinimapController", [ "$scope", function($scope) {
+        app.controller("ControlsMinimapController", [ "$scope", "leafletData", function($scope, leafletData) {
             angular.extend($scope, {
                 bogota: {
                     lat: 4.649,
@@ -14,19 +14,20 @@
                         mapid: 'bufanuvols.lpa06kfg'
                     }
                 },
-                controls: {
-                    minimap: {
-                        layer: {
-                            name: 'Mapbox Comic',
-                            key: 'bufanuvols.lpa06kfg',
-                            apiKey: 'pk.eyJ1IjoiYnVmYW51dm9scyIsImEiOiJLSURpX0pnIn0.2_9NrLz1U9bpwMQBhVk97Q',
-                            type: 'mapbox',
-                            layerParams: {
-                                version: 4
-                            }
-                        },
-                        toggleDisplay: true
-                    }
-                }
+                controls: {}
+           });
+           // Wait for center to be stablished
+           leafletData.getMap().then(function() {
+               angular.extend($scope.controls, {
+                   minimap: {
+                       type: 'minimap',
+                       layer: {
+                           name: 'OpenStreetMap',
+                           url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                           type: 'xyz'
+                       },
+                       toggleDisplay: true
+                   }
+               });
            });
        }]);

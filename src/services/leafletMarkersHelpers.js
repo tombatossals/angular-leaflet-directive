@@ -134,7 +134,8 @@ angular.module("leaflet-directive").service('leafletMarkersHelpers', function ($
         //We need to keep trying until angular has compiled before we _updateLayout and _updatePosition
         //This should take care of any scenario , eg ngincludes, whatever.
         //Is there a better way to check for this?
-        if (marker._popup._contentNode.innerText.length < 1) {
+        var innerText = marker._popup._contentNode.innerText || marker._popup._contentNode.textContent;
+        if (innerText.length < 1) {
             $timeout(function () {
                 updatePopup(marker, markerScope, map);
             });
@@ -320,7 +321,7 @@ angular.module("leaflet-directive").service('leafletMarkersHelpers', function ($
                 if (isDefined(markerData.label) && isDefined(markerData.label.message)) {
                     if ('label' in oldMarkerData && 'message' in oldMarkerData.label && !angular.equals(markerData.label.message, oldMarkerData.label.message)) {
                         marker.updateLabelContent(markerData.label.message);
-                    } else if (!angular.isFunction(marker.getLabel)) {
+                    } else if (!angular.isFunction(marker.getLabel) || angular.isFunction(marker.getLabel) && !isDefined(marker.getLabel())) {
                         marker.bindLabel(markerData.label.message, markerData.label.options);
                         _manageOpenLabel(marker, markerData);
                     } else {
@@ -466,8 +467,6 @@ angular.module("leaflet-directive").service('leafletMarkersHelpers', function ($
         },
 
         listenMarkerEvents: function (marker, markerData, leafletScope, doWatch, map) {
-            //these should be deregistered on destroy .. possible leake
-            //handles should not be closures since they will need to be removed
             marker.on("popupopen", function (/* event */) {
                 safeApply(leafletScope, function () {
                     if (isDefined(marker._popup) || isDefined(marker._popup._contentNode)) {
@@ -494,7 +493,7 @@ angular.module("leaflet-directive").service('leafletMarkersHelpers', function ($
         addMarkerWatcher: function (marker, name, leafletScope, layers, map, isDeepWatch) {
             var markerWatchPath = Helpers.getObjectArrayPath("markers." + name);
             isDeepWatch = defaultTo(isDeepWatch, true);
-            //TODO:break up this 200 line function to be readable (nmccready)
+
             var clearWatch = leafletScope.$watch(markerWatchPath, function(markerData, oldMarkerData) {
                 if (!isDefined(markerData)) {
                     _deleteMarker(marker, map, layers);

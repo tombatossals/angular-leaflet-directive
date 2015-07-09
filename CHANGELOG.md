@@ -1,3 +1,32 @@
+<a name"0.8.5"></a>
+### 0.8.5 (2015-06-29)
+
+
+#### Bug Fixes
+
+* **leafletMarkersHelper, markers:** Fix updating markers and managing popups. Lots of logic for marker updating was contained in the addMarkerWatch callback. If you didn't watch individual markers, then markers weren't getting updated properly. This used to work because the directive simply replaced markers on update, but with recent refactors, this is no longer the case. The addMarkerWatch watch callback is now _updateMarker and made available to the marker directive. It is used to update markers in _addMarkers. Before this commit, _addMarkers just ignored markers that already exists, now it updates.
+We now use marker.popupOpen() to handle popup logic (when focus is set to true, ensure popup gets opened). When the popup event is fired, manageOpenPopup will be used to compile the popup if necessary.
+([360401243f3f6d645860355b2c0067db6c55218a](https://github.com/tombatossals/angular-leaflet-directive/commit/360401243f3f6d645860355b2c0067db6c55218a))
+
+* **build:** grunt-graphviz added to devDeps ([b2236acc](https://github.com/tombatossals/angular-leaflet-directive/commit/b2236acc))
+* **center:** cleanup some center code, based on this issue by @pieterjandesmedt: ([ea1d52a5](https://github.com/tombatossals/angular-leaflet-directive/commit/ea1d52a5))
+* **labels:** labels added to existing markers are now bound ([f464f9c1](https://github.com/tombatossals/angular-leaflet-directive/commit/f464f9c1))
+* **markers oldModels undefined:** - markers fix with nested logic. oldModels isDefined checks ([94429544](https://github.com/tombatossals/angular-leaflet-directive/commit/94429544))
+* **markers updates:** Marker Clean up and storage was incorrect on how it's leafletMarkers (leafletDat ([6fc72b47](https://github.com/tombatossals/angular-leaflet-directive/commit/6fc72b47))
+
+
+#### Features
+
+* **control:** Add minimap control option ([d25962d1](https://github.com/tombatossals/angular-leaflet-directive/commit/d25962d1))
+* **layers:**
+  * Add Esri heatmap layer ([8e9f7fa9](https://github.com/tombatossals/angular-leaflet-directive/commit/8e9f7fa9))
+  * Add Esri clustered layer ([103af26d](https://github.com/tombatossals/angular-leaflet-directive/commit/103af26d))
+  * Add Esri image layer ([6bad236a](https://github.com/tombatossals/angular-leaflet-directive/commit/6bad236a))
+  * Add Esri tile map layer ([831d2ae7](https://github.com/tombatossals/angular-leaflet-directive/commit/831d2ae7))
+  * Add Esri feature layer ([8e2c2c9d](https://github.com/tombatossals/angular-leaflet-directive/commit/8e2c2c9d))
+  * Add Esri basemap layer ([267f2a9d](https://github.com/tombatossals/angular-leaflet-directive/commit/267f2a9d))
+
+
 <a name"0.8.4"></a>
 ### 0.8.4 (2015-06-14)
 

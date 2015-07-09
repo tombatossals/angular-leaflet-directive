@@ -56,8 +56,11 @@ angular.module("leaflet-directive")
     };
 
     var _genDispatchMapEvent = function(scope, eventName, logic) {
+        // (nmccready) We should consider passing mapId as an argument or using it from scope
         return function(e) {
             // Put together broadcast name
+            // (nmccready) We should consider passing mapId joining mapId to the broadcastName to keep the event unique. Same should be done for all directives so we know what map it comes from.
+            // problem with this is it will cause a minor bump and break backwards compat
             var broadcastName = 'leafletDirectiveMap.' + eventName;
             // Safely broadcast the event
             fire(scope, broadcastName, logic, e, e.target, scope)

@@ -207,6 +207,14 @@
             "id": "/basic/geojson-nested-example",
             "extUrl": "0125-basic-geojson-nested-example.html",
             "title": "GeoJSON nested example"
+        },
+        {
+            "date": "2015-07-09T22:57:30.029Z",
+            "section": "basic",
+            "onlyStandAlone": false,
+            "id": "/basic/bounds-nominatim-example",
+            "extUrl": "0126-basic-bounds-nominatim-example.html",
+            "title": "Bounds Nominatim map example"
         }
     ],
     "layers": [
@@ -425,6 +433,14 @@
             "id": "/layers/esri-heatmap-layer-example",
             "extUrl": "0229-layers-esri-heatmap-layer-example.html",
             "title": "Esri ArcGIS Heatmap Layer"
+        },
+        {
+            "date": "2015-07-09T22:57:30.029Z",
+            "section": "layers",
+            "onlyStandAlone": false,
+            "id": "/layers/yandex-example",
+            "extUrl": "0230-layers-yandex-example.html",
+            "title": "Yandex layer example"
         }
     ],
     "paths": [
@@ -483,6 +499,14 @@
             "id": "/paths/decorations-simple-example",
             "extUrl": "0306-paths-decorations-simple-example.html",
             "title": "Path decoration example"
+        },
+        {
+            "date": "2015-07-09T22:57:30.029Z",
+            "section": "paths",
+            "onlyStandAlone": false,
+            "id": "/paths/events-example",
+            "extUrl": "0307-paths-events-example.html",
+            "title": "Paths specific events propagation exampl"
         }
     ],
     "controls": [
@@ -495,7 +519,7 @@
             "title": "Dynamic addition and deletion of Overlays control"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-07-09T22:57:30.029Z",
             "section": "controls",
             "onlyStandAlone": false,
             "id": "/controls/draw-example",
@@ -519,17 +543,25 @@
             "title": "Fullscreen control example"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-07-09T22:57:30.029Z",
             "section": "controls",
             "onlyStandAlone": false,
             "id": "/controls/minimap-example",
             "extUrl": "0404-controls-minimap-example.html",
             "title": "Minimap control example"
+        },
+        {
+            "date": "2015-07-09T22:57:30.029Z",
+            "section": "controls",
+            "onlyStandAlone": false,
+            "id": "/controls/search-example",
+            "extUrl": "0405-controls-search-example.html",
+            "title": "Search control example"
         }
     ],
     "markers": [
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-07-09T22:57:30.029Z",
             "section": "markers",
             "onlyStandAlone": false,
             "id": "/markers/simple-example",
@@ -561,7 +593,7 @@
             "title": "Changing the marker icons"
         },
         {
-            "date": "2015-06-16T19:58:11.778Z",
+            "date": "2015-07-09T22:57:30.029Z",
             "section": "markers",
             "onlyStandAlone": false,
             "id": "/markers/popup-example",

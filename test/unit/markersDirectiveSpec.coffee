@@ -112,7 +112,8 @@ describe 'Directive: leaflet', ->
                 element = $compile(element)($rootScope)
                 $rootScope.$digest()
                 leafletData.getMarkers().then (leafletMarkers) ->
-                    leafletMainMarker = leafletMarkers.main_marker
+                    # console.log leafletMarkers
+                    leafletMainMarker = leafletMarkers.layer1.main_marker
                     if postRunnerCb
                         postRunnerCb main_marker, leafletMainMarker
         afterEach ->
