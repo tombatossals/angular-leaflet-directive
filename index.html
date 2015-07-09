@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="myApp" lang="en">
+<html lang="en">
     <head>
         <meta charset="UTF-8">
         <meta name="keywords" content="angularjs,leaflet,openstreetmap,javascript,directive,plugin,google maps">
@@ -14,12 +14,12 @@
         <link rel="stylesheet" href="css/style.css" />
     </head>
 
-<body ng-cloak ng-controller="AppController as app">
-    <div class="ui grid">
+<body ng-cloak ng-app="app" ng-controller="AppController as app">
+    <div class="ui grid"  ng-controller="HeaderController">
         <div class="three wide column"></div>
         <div class="ten wide column">
             <div class="ui header">
-                <div class="ui large pointing menu" ng-controller="HeaderController">
+                <div class="ui large pointing menu">
                     <a href="#!/" class="item" ng-class="{ active: activeTab == '' }">angular-leaflet-directive</a>
                     <div class="right menu">
                         <a class="item" ng-class="{ active: activeTab == 'getting-started' }" href="#!/documentation">Documentation</a>
@@ -58,7 +58,7 @@
         <div class="ui grid">
             <div class="three wide column"></div>
             <div class="ten wide column">
-                <ng-view></ng-view>
+                <div ng-viewport></div>
             </div>
             <div class="three wide column"></div>
         </div>

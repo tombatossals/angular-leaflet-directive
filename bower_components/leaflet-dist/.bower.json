@@ -19,6 +19,6 @@
     "commit": "2ec7a0846eaecdce1321d92b3c45c74f4fd08dd3"
   },
   "_source": "git://github.com/vperron/leaflet-dist.git",
-  "_target": "0.7.x",
+  "_target": "~0.7.2",
   "_originalSource": "leaflet-dist"
 }
