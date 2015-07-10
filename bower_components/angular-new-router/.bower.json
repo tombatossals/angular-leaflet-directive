@@ -9,7 +9,6 @@
     "commit": "c7b6b498c551754cc07d4b56a74fd951cbe2a483"
   },
   "_source": "git://github.com/angular/router.git",
-  "_target": "~0.5.3",
-  "_originalSource": "angular-new-router",
-  "_direct": true
+  "_target": "*",
+  "_originalSource": "angular-new-router"
 }

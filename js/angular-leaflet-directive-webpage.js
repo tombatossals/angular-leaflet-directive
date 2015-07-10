@@ -1,5 +1,5 @@
 (function (angular) {
-var app = angular.module('app', ['ngNewRouter', 'leaflet-directive', 'hljs', 'app.home']);
+var app = angular.module('app', ['ngNewRouter', 'app.home']);
 var controller = app.controller('AppController', [ '$router', AppController ]);
 
 AppController.$routeConfig = [
@@ -8,22 +8,13 @@ AppController.$routeConfig = [
 
 function AppController ($router) {}
 
-app.controller('BasicCenterController', [ '$scope', function($scope) {
-    angular.extend($scope, {
-        center: {
-            lat: 51.505,
-            lng: -0.09,
-            zoom: 4
-        },
-        tiles: {
-            url: "http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png"
-        }
-    });
-}]);
+var home = angular.module('app.home', ['leaflet-directive', 'hljs']);
 
-app.controller("HeaderController", [ '$scope', '$location', function($scope, $location) {
+home.controller('HomeController', [ '$scope', '$location', HomeController ]);
+home.controller('BasicCenterController', [ '$scope', BasicCenterController ]);
 
-    angular.extend($scope, {
+function HomeController($location) {
+    angular.extend(this, {
         center: {
             lat: 40.095,
             lng: -3.823,
@@ -40,9 +31,21 @@ app.controller("HeaderController", [ '$scope', '$location', function($scope, $lo
             }
         }
     });
-}]);
+}
 
-angular.module('app.home', []).controller('HomeController', [function () {
-    this.name = 'Friend';
- }]);
+function BasicCenterController($scope) {
+    angular.extend($scope, {
+        center: {
+            lat: 51.505,
+            lng: -0.09,
+            zoom: 4
+        },
+        tiles: {
+            url: "http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png"
+        },
+        defaults: {
+            scrollWheelZoom: false
+        }
+    });
+}
 })(window.angular);

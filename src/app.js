@@ -1,4 +1,4 @@
-var app = angular.module('app', ['ngNewRouter', 'leaflet-directive', 'hljs', 'app.home']);
+var app = angular.module('app', ['ngNewRouter', 'app.home']);
 var controller = app.controller('AppController', [ '$router', AppController ]);
 
 AppController.$routeConfig = [

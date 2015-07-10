@@ -14,13 +14,13 @@
         <link rel="stylesheet" href="css/style.css" />
     </head>
 
-<body ng-cloak ng-app="app" ng-controller="AppController as app">
-    <div class="ui grid"  ng-controller="HeaderController">
+<body ng-cloak ng-app="app" ng-controller="HomeController as home">
+    <div class="ui grid">
         <div class="three wide column"></div>
         <div class="ten wide column">
             <div class="ui header">
                 <div class="ui large pointing menu">
-                    <a href="#!/" class="item" ng-class="{ active: activeTab == '' }">angular-leaflet-directive</a>
+                    <a href="#!/" class="item" ng-class="{ active: activeTab == '' }"><i class="green large leaf icon"></i> angular-leaflet-directive</a>
                     <div class="right menu">
                         <a class="item" ng-class="{ active: activeTab == 'getting-started' }" href="#!/documentation">Documentation</a>
                         <a class="item"  ng-class="{ active: activeTab == 'examples' }" ng-href="#!/examples/simple-map">Examples</a>
@@ -33,7 +33,7 @@
                 <a class="forkme" href="https://github.com/tombatossals/angular-leaflet-directive" rel="external">
                     <img src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub">
                 </a>
-                <leaflet center="center" defaults="defaults" events="events" id="header"></leaflet>
+                <leaflet center="home.center" defaults="home.defaults" broadcast-events="home.events" id="header"></leaflet>
             </div>
             <div class="ui bottom attached">
                 <div class="container">

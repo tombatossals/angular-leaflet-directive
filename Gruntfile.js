@@ -38,7 +38,7 @@ module.exports = function(grunt) {
                 }
             },
             source: {
-                src: ['src/app.js', 'src/controllers/*.js']
+                src: ['src/**/*.js']
             },
             grunt: {
                 src: ['Gruntfile.js']
@@ -61,14 +61,14 @@ module.exports = function(grunt) {
                 footer: '})(window.angular);'
             },
             dist: {
-                src: ['src/app.js', 'src/controllers/*.js', 'components/home/*.js'],
+                src: ['src/app.js', 'components/home/home.js', 'components/home/basic-center-controller.js'],
                 dest: 'js/angular-leaflet-directive-webpage.js',
             }
         },
 
         watch: {
             source: {
-                files: ['src/app.js', 'src/controllers/*.js'],
+                files: ['src/**/*.js'],
                 tasks: ['jshint', 'concat', 'ngmin', 'uglify']
             },
             grunt: {
