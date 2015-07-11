@@ -17,8 +17,17 @@ function HomeController($location) {
     angular.extend(this, {
         center: {
             lat: 40.095,
-            lng: -3.823,
-            zoom: 8
+            lng: 23.823,
+            zoom: 4
+        },
+        tiles: {
+            name: 'Mapbox Outdoors',
+            url: 'http://api.tiles.mapbox.com/v4/{mapid}/{z}/{x}/{y}.png?access_token={apikey}',
+            type: 'xyz',
+            options: {
+                apikey: 'pk.eyJ1IjoiYnVmYW51dm9scyIsImEiOiJLSURpX0pnIn0.2_9NrLz1U9bpwMQBhVk97Q',
+                mapid: 'bufanuvols.lia3no0m'
+            }
         },
         defaults: {
             scrollWheelZoom: false,

@@ -1,9 +1,8 @@
-var home = angular.module('app.home', ['leaflet-directive', 'hljs']);
+var home = angular.module('app.documentation', ['leaflet-directive', 'hljs']);
 
-home.controller('HomeController', [ '$scope', '$location', HomeController ]);
-home.controller('BasicCenterController', [ '$scope', BasicCenterController ]);
+home.controller('DocumentationController', [ '$scope', '$location', DocumentationController ]);
 
-function HomeController($location) {
+function DocumentationController($location) {
     angular.extend(this, {
         center: {
             lat: 40.095,
