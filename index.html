@@ -10,34 +10,39 @@
         <link rel="stylesheet" href="bower_components/leaflet/dist/leaflet.css" />
         <link rel="stylesheet" href="bower_components/highlightjs/styles/github.css" />
         <link rel="stylesheet" href="bower_components/highlightjs/styles/github.css" />
+        <link rel="stylesheet" href="bower_components/Leaflet.label/dist/leaflet.label.css" />
         <link rel="stylesheet" type="text/css" href="http://cloud.github.com/downloads/lafeber/world-flags-sprite/flags32.css" />
         <link rel="stylesheet" href="css/style.css" />
     </head>
 
-<body ng-cloak ng-app="app" ng-controller="HomeController as home">
+<body ng-cloak ng-app="app" ng-controller="AppController as header">
     <div class="ui grid">
         <div class="three wide column"></div>
         <div class="ten wide column">
             <div class="ui header">
-                <div class="ui large pointing menu">
-                    <a href="#!/" class="item" ng-class="{ active: activeTab == '' }"><i class="green large leaf icon"></i> angular-leaflet-directive</a>
-                    <div class="right menu">
-                        <a class="item" ng-class="{ active: activeTab == 'getting-started' }" href="#!/documentation">Documentation</a>
-                        <a class="item"  ng-class="{ active: activeTab == 'examples' }" ng-href="#!/examples/simple-map">Examples</a>
-                        <a class="item" ng-class="{ active: activeTab == 'howto-extend' }" ng-href="#!/howto-extend">How to extend</a>
-                        <a class="item" href="http://github.com/tombatossals/angular-leaflet-directive">Github repository</a>
+                <div class="ui grid">
+                    <div class="five wide column">
+                        <a ng-link="home()" style="line-height: 2.5em;" ng-class="{ active: activeTab == '' }"><i class="green large leaf icon"></i> angular-leaflet-directive</a>
+                    </div>
+                    <div class="eleven wide column">
+                        <div class="ui right four item pointing menu">
+                            <a class="item" ng-class="{ active: activeTab == 'getting-started' }" href="#/documentation">Documentation</a>
+                            <a class="item"  ng-class="{ active: activeTab == 'examples' }" ng-href="#/examples/simple-map">Examples</a>
+                            <a class="item" ng-class="{ active: activeTab == 'howto-extend' }" ng-href="#/howto-extend">How to extend</a>
+                            <a class="item" href="http://github.com/tombatossals/angular-leaflet-directive"><i class="github icon"></i> Github repo</a>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="ui header banner">
+            <div class="ui banner">
                 <a class="forkme" href="https://github.com/tombatossals/angular-leaflet-directive" rel="external">
                     <img src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub">
                 </a>
-                <leaflet center="home.center" defaults="home.defaults" tiles="home.tiles" broadcast-events="home.events" id="header"></leaflet>
+                <leaflet center="header.center" defaults="header.defaults" tiles="header.tiles" markers="header.markers" broadcast-events="header.events" id="header"></leaflet>
             </div>
             <div class="ui bottom attached">
                 <div class="container">
-                    Simple to use directive for easy embedding and interacting with a map managed with the <a href="http://leafletjs.com/">leaflet map library</a> on an <a href="http://angularjs.org">AngularJS</a> application.
+                    Simple to use <a href="http://angularjs.org">AngularJS</a> directive for easy embedding and interacting with a map managed with the <a href="http://leafletjs.com/">leaflet map library</a>.
                 </div>
             </div>
         </div>
@@ -74,6 +79,7 @@
     <script src="https://maps.googleapis.com/maps/api/js?libraries=geometry&sensor=false"></script>
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
     <script src="bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="bower_components/Leaflet.label/dist/leaflet.label.js"></script>
     <script src="bower_components/leaflet-plugins/layer/tile/Google.js"></script>
     <script src="bower_components/highlightjs/highlight.pack.js"></script>
     <script src="bower_components/angular/angular.min.js"></script>

@@ -1,3 +1,5 @@
-angular.module('app.home', []).controller('HomeController', [function () {
-    this.name = 'Friend';
- }]);
+var home = angular.module('app.examples', ['ngNewRouter', 'leaflet-directive', 'hljs']);
+
+home.controller('ExamplesController', [ '$scope', ExamplesController ]);
+
+function ExamplesController() {}
