@@ -11,18 +11,34 @@ AppController.$routeConfig = [
 
 function AppController($location, $scope) {
     var scope = this;
-    var locationMarkers = {
+    var locationData = {
         home: {
+            name: 'Getting started',
             lat: 41.9,
             lng: 12.48,
             zoom: 4,
-            name: 'Rome'
+            markerName: 'Rome, Italy'
         },
         documentation: {
+            name: 'Documentation',
             lat: 48.85,
             lng: 2.29,
             zoom: 3,
-            name: 'Paris'
+            markerName: 'Paris, France'
+        },
+        examples: {
+            name: 'Examples',
+            lat: 41.015,
+            lng: 28.98,
+            zoom: 5,
+            markerName: 'Istanbul, Turkey'
+        },
+        extend: {
+            name: 'How to extend',
+            lat: -18.91,
+            lng: 47.53,
+            zoom: 8,
+            markerName: 'Antananarivo, Madagascar'
         }
     };
 
@@ -32,20 +48,21 @@ function AppController($location, $scope) {
         }
 
         return {
+            name: locationData[loc].name,
             marker: {
-                lat: locationMarkers[loc].lat,
-                lng: locationMarkers[loc].lng,
+                lat: locationData[loc].lat,
+                lng: locationData[loc].lng,
                 label: {
-                    message: locationMarkers[loc].name,
+                    message: locationData[loc].markerName,
                     options: {
                         noHide: true
                     }
                 }
             },
             center: {
-                lat: locationMarkers[loc].lat,
-                lng: locationMarkers[loc].lng,
-                zoom: locationMarkers[loc].zoom,
+                lat: locationData[loc].lat,
+                lng: locationData[loc].lng,
+                zoom: locationData[loc].zoom,
             }
         };
     }
@@ -55,6 +72,7 @@ function AppController($location, $scope) {
         var data = getMapData(section);
         scope.markers.marker = data.marker;
         scope.center = data.center;
+        scope.name = data.name;
     });
 
     angular.extend(this, {

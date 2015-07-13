@@ -26,9 +26,9 @@
                     </div>
                     <div class="eleven wide column">
                         <div class="ui right four item pointing menu">
-                            <a class="item" ng-class="{ active: activeTab == 'getting-started' }" href="#/documentation">Documentation</a>
-                            <a class="item"  ng-class="{ active: activeTab == 'examples' }" ng-href="#/examples/simple-map">Examples</a>
-                            <a class="item" ng-class="{ active: activeTab == 'howto-extend' }" ng-href="#/howto-extend">How to extend</a>
+                            <a class="item" ng-class="{ active: activeTab == 'getting-started' }" ng-link="documentation()">Documentation</a>
+                            <a class="item"  ng-class="{ active: activeTab == 'examples' }" ng-link="examples()">Examples</a>
+                            <a class="item" ng-class="{ active: activeTab == 'howto-extend' }" ng-link="extend()">How to extend</a>
                             <a class="item" href="http://github.com/tombatossals/angular-leaflet-directive"><i class="github icon"></i> Github repo</a>
                         </div>
                     </div>
@@ -53,7 +53,7 @@
         <div class="ui grid">
             <div class="three wide column"></div>
             <div class="ten wide column">
-                <h1>Getting started</h1>
+                <h1 ng-bind="header.name"</h1>
             </div>
             <div class="three wide column"></div>
         </div>
