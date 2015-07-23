@@ -193,7 +193,10 @@ angular.module("leaflet-directive")
                     $log.warn(errorHeader + ' The esri plugin is not loaded.');
                     return;
                 }
-                return L.esri.featureLayer(params.url, params.options);
+                
+                params.options.url = params.url;
+                
+                return L.esri.featureLayer(params.options);
             }
         },
         agsTiled: {
@@ -203,7 +206,10 @@ angular.module("leaflet-directive")
                     $log.warn(errorHeader + ' The esri plugin is not loaded.');
                     return;
                 }
-                return L.esri.tiledMapLayer(params.url, params.options);
+                
+                params.options.url = params.url;
+                
+                return L.esri.tiledMapLayer(params.options);
             }
         },
         agsDynamic: {
@@ -213,7 +219,10 @@ angular.module("leaflet-directive")
                     $log.warn(errorHeader + ' The esri plugin is not loaded.');
                     return;
                 }
-                return L.esri.dynamicMapLayer(params.url, params.options);
+                
+                params.options.url = params.url;
+                
+                return L.esri.dynamicMapLayer(params.options);
             }
         },
         agsImage: {
@@ -223,7 +232,9 @@ angular.module("leaflet-directive")
                     $log.warn(errorHeader + ' The esri plugin is not loaded.');
                     return;
                 }
-                return L.esri.imageMapLayer(params.url, params.options);
+                 params.options.url = params.url;
+                
+                return L.esri.imageMapLayer(params.options);
             }
         },
         agsClustered: {
