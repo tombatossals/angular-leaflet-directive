@@ -86,7 +86,7 @@ angular.module("leaflet-directive").directive('paths', function ($log, $q, leafl
 
                                 // bind popup if defined
                                 if (isDefined(newPath) && isDefined(pathData.message)) {
-                                    newPath.bindPopup(pathData.message);
+                                    newPath.bindPopup(pathData.message, pathData.popupOptions);
                                 }
 
                                 // Show label if defined
