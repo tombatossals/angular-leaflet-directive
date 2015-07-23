@@ -1,5 +1,5 @@
 /*!
-*  angular-leaflet-directive 0.8.5 2015-07-09
+*  angular-leaflet-directive 0.8.5 2015-07-23
 *  angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps
 *  git: https://github.com/tombatossals/angular-leaflet-directive
 */
@@ -1563,7 +1563,10 @@ angular.module("leaflet-directive")
                     $log.warn(errorHeader + ' The esri plugin is not loaded.');
                     return;
                 }
-                return L.esri.featureLayer(params.url, params.options);
+                
+                params.options.url = params.url;
+                
+                return L.esri.featureLayer(params.options);
             }
         },
         agsTiled: {
@@ -1573,7 +1576,10 @@ angular.module("leaflet-directive")
                     $log.warn(errorHeader + ' The esri plugin is not loaded.');
                     return;
                 }
-                return L.esri.tiledMapLayer(params.url, params.options);
+                
+                params.options.url = params.url;
+                
+                return L.esri.tiledMapLayer(params.options);
             }
         },
         agsDynamic: {
@@ -1583,7 +1589,10 @@ angular.module("leaflet-directive")
                     $log.warn(errorHeader + ' The esri plugin is not loaded.');
                     return;
                 }
-                return L.esri.dynamicMapLayer(params.url, params.options);
+                
+                params.options.url = params.url;
+                
+                return L.esri.dynamicMapLayer(params.options);
             }
         },
         agsImage: {
@@ -1593,7 +1602,9 @@ angular.module("leaflet-directive")
                     $log.warn(errorHeader + ' The esri plugin is not loaded.');
                     return;
                 }
-                return L.esri.imageMapLayer(params.url, params.options);
+                 params.options.url = params.url;
+                
+                return L.esri.imageMapLayer(params.options);
             }
         },
         agsClustered: {
@@ -4157,7 +4168,7 @@ angular.module("leaflet-directive").directive('markers',
 
                 if (watchOptions.individual.doWatch) {
                     addMarkerWatcher(marker, pathToMarker, leafletScope, layers, map,
-                        watchOptions.individual.doWatch);
+                        watchOptions.individual.isDeep);
                 }
 
                 listenMarkerEvents(marker, model, leafletScope, watchOptions.individual.doWatch, map);
