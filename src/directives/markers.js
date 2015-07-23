@@ -132,7 +132,7 @@ angular.module("leaflet-directive").directive('markers',
 
                 if (watchOptions.individual.doWatch) {
                     addMarkerWatcher(marker, pathToMarker, leafletScope, layers, map,
-                        watchOptions.individual.doWatch);
+                        watchOptions.individual.isDeep);
                 }
 
                 listenMarkerEvents(marker, model, leafletScope, watchOptions.individual.doWatch, map);
