@@ -3600,7 +3600,7 @@ angular.module("leaflet-directive").directive('layercontrol', function ($filter,
             '<h4 ng-if="title">{{ title }}</h4>' +
             '<div class="lf-baselayers">' +
                 '<h5 class="lf-title" ng-if="baseTitle">{{ baseTitle }}</h5>' +
-                '<div class="lf-row" ng-repeat="(key, layer) in layers.baselayers">' +
+                '<div class="lf-row" ng-repeat="(key, layer) in baselayersArray">' +
                     '<label class="lf-icon-bl" ng-click="changeBaseLayer(key, $event)">' +
                         '<input class="leaflet-control-layers-selector" type="radio" name="lf-radio" ' +
                             'ng-show="false" ng-checked="baselayer === key" ng-value="key" /> ' +
@@ -3674,17 +3674,16 @@ angular.module("leaflet-directive").directive('layercontrol', function ($filter,
 
             scope.layers = layers;
             controller.getMap().then(function(map) {
-
                 leafletScope.$watch('layers.baselayers', function(newBaseLayers) {
+                    var baselayersArray = {};
                     leafletData.getLayers().then(function(leafletLayers) {
                         var key;
                         for(key in newBaseLayers) {
-                            if(map.hasLayer(leafletLayers.baselayers[key])) {
-                                newBaseLayers[key].icon = scope.icons.radio;
-                            } else {
-                                newBaseLayers[key].icon = scope.icons.unradio;
-                            }
+                            var layer = newBaseLayers[key];
+                            layer.icon = scope.icons[map.hasLayer(leafletLayers.baselayers[key])? 'radio':'unradio'];
+                            baselayersArray[key] = layer;
                         }
+                        scope.baselayersArray = baselayersArray;
                     });
                 });
 
@@ -3727,8 +3726,8 @@ angular.module("leaflet-directive").directive('layercontrol', function ($filter,
                         for(key in groupVisibleCount) {
                             scope.groupProperties[key].visible = groupVisibleCount[key].visibles === groupVisibleCount[key].count;
                         }
+                        scope.overlaysArray = overlaysArray;
                     });
-                    scope.overlaysArray = overlaysArray;
                 }, true);
             });
         }
