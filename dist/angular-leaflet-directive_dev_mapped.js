@@ -1,5 +1,5 @@
 /*!
-*  angular-leaflet-directive 0.8.5 2015-07-03
+*  angular-leaflet-directive 0.8.5 2015-07-23
 *  angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps
 *  git: https://github.com/tombatossals/angular-leaflet-directive
 */
@@ -812,6 +812,24 @@ angular.module("leaflet-directive").factory('leafletHelpers', function ($q, $log
             d[id].resolvedDefer = true;
         },
 
+        rangeIsSupported: function() {
+            var testrange = document.createElement('input');
+            testrange.setAttribute('type', 'range');
+            return testrange.type === 'range';
+        },
+
+        FullScreenControlPlugin: {
+            isLoaded: function() {
+                return angular.isDefined(L.Control.Fullscreen);
+            }
+        },
+
+        MiniMapControlPlugin: {
+            isLoaded: function() {
+                return angular.isDefined(L.Control.MiniMap);
+            }
+        },
+
         AwesomeMarkersPlugin: {
             isLoaded: function() {
                 return angular.isDefined(L.AwesomeMarkers) && angular.isDefined(L.AwesomeMarkers.Icon);
@@ -1545,7 +1563,10 @@ angular.module("leaflet-directive")
                     $log.warn(errorHeader + ' The esri plugin is not loaded.');
                     return;
                 }
-                return L.esri.featureLayer(params.url, params.options);
+                
+                params.options.url = params.url;
+                
+                return L.esri.featureLayer(params.options);
             }
         },
         agsTiled: {
@@ -1555,7 +1576,10 @@ angular.module("leaflet-directive")
                     $log.warn(errorHeader + ' The esri plugin is not loaded.');
                     return;
                 }
-                return L.esri.tiledMapLayer(params.url, params.options);
+                
+                params.options.url = params.url;
+                
+                return L.esri.tiledMapLayer(params.options);
             }
         },
         agsDynamic: {
@@ -1565,7 +1589,10 @@ angular.module("leaflet-directive")
                     $log.warn(errorHeader + ' The esri plugin is not loaded.');
                     return;
                 }
-                return L.esri.dynamicMapLayer(params.url, params.options);
+                
+                params.options.url = params.url;
+                
+                return L.esri.dynamicMapLayer(params.options);
             }
         },
         agsImage: {
@@ -1575,7 +1602,9 @@ angular.module("leaflet-directive")
                     $log.warn(errorHeader + ' The esri plugin is not loaded.');
                     return;
                 }
-                return L.esri.imageMapLayer(params.url, params.options);
+                 params.options.url = params.url;
+                
+                return L.esri.imageMapLayer(params.options);
             }
         },
         agsClustered: {
@@ -1871,6 +1900,9 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
                     collapsed: true
                 }
             },
+            nominatim: {
+                server: ' http://nominatim.openstreetmap.org/search'
+            },
             crs: L.CRS.EPSG3857,
             tileLayer: '//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
             tileLayerOptions: {
@@ -2008,7 +2040,7 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
                 if (isDefined(userDefaults.map)) {
                     newDefaults.map = userDefaults.map;
                 }
-                
+
                 if (isDefined(userDefaults.path)) {
                     newDefaults.path = userDefaults.path;
                 }
@@ -2157,7 +2189,8 @@ angular.module("leaflet-directive").service('leafletMarkersHelpers', function ($
         //We need to keep trying until angular has compiled before we _updateLayout and _updatePosition
         //This should take care of any scenario , eg ngincludes, whatever.
         //Is there a better way to check for this?
-        if (marker._popup._contentNode.innerText.length < 1) {
+        var innerText = marker._popup._contentNode.innerText || marker._popup._contentNode.textContent;
+        if (innerText.length < 1) {
             $timeout(function () {
                 updatePopup(marker, markerScope, map);
             });
@@ -2824,18 +2857,41 @@ angular.module("leaflet-directive")
   };
 });
 
-angular.module("leaflet-directive").directive('bounds', function ($log, $timeout, leafletHelpers, leafletBoundsHelpers) {
+angular.module("leaflet-directive").factory('nominatimService', function ($q, $http, leafletHelpers, leafletMapDefaults) {
+    var isDefined = leafletHelpers.isDefined;
+
+    return {
+        query: function(address, mapId) {
+            var defaults = leafletMapDefaults.getDefaults(mapId);
+            var url = defaults.nominatim.server;
+            var df = $q.defer();
+
+            $http.get(url, { params: { format: 'json', limit: 1, q: address } }).success(function(data) {
+                if (data.length > 0 && isDefined(data[0].boundingbox)) {
+                    df.resolve(data[0]);
+                } else {
+                    df.reject('[Nominatim] Invalid address');
+                }
+            });
+
+            return df.promise;
+        }
+    };
+});
+
+angular.module("leaflet-directive").directive('bounds', function ($log, $timeout, $http, leafletHelpers, nominatimService, leafletBoundsHelpers) {
     return {
         restrict: "A",
         scope: false,
         replace: false,
-        require: [ 'leaflet', 'center' ],
+        require: [ 'leaflet' ],
 
         link: function(scope, element, attrs, controller) {
-            var isDefined = leafletHelpers.isDefined,
-                createLeafletBounds = leafletBoundsHelpers.createLeafletBounds,
-                leafletScope = controller[0].getLeafletScope(),
-                mapController = controller[0];
+            var isDefined = leafletHelpers.isDefined;
+            var createLeafletBounds = leafletBoundsHelpers.createLeafletBounds;
+            var leafletScope = controller[0].getLeafletScope();
+            var mapController = controller[0];
+            var errorHeader = leafletHelpers.errorHeader + ' [Bounds] ';
 
             var emptyBounds = function(bounds) {
                 return (bounds._southWest.lat === 0 && bounds._southWest.lng === 0 &&
@@ -2846,7 +2902,7 @@ angular.module("leaflet-directive").directive('bounds', function ($log, $timeout
                 leafletScope.$on('boundsChanged', function (event) {
                     var scope = event.currentScope;
                     var bounds = map.getBounds();
-                    //$log.debug('updated map bounds...', bounds);
+
                     if (emptyBounds(bounds) || scope.settingBoundsFromScope) {
                         return;
                     }
@@ -2862,23 +2918,33 @@ angular.module("leaflet-directive").directive('bounds', function ($log, $timeout
                         options: bounds.options
                     };
                     if (!angular.equals(scope.bounds, newScopeBounds)) {
-                        //$log.debug('Need to update scope bounds.');
                         scope.bounds = newScopeBounds;
                     }
                 });
+
+                var lastNominatimQuery;
                 leafletScope.$watch('bounds', function (bounds) {
-                    //$log.debug('updated bounds...', bounds);
-                    if (!isDefined(bounds)) {
-                        $log.error('[AngularJS - Leaflet] Invalid bounds');
+                    if (isDefined(bounds.address) && bounds.address !== lastNominatimQuery) {
+                        scope.settingBoundsFromScope = true;
+                        nominatimService.query(bounds.address, attrs.id).then(function(data) {
+                            var b = data.boundingbox;
+                            var newBounds = [ [ b[0], b[2]], [ b[1], b[3]] ];
+                            map.fitBounds(newBounds);
+                        }, function(errMsg) {
+                            $log.error(errorHeader + ' ' + errMsg + '.');
+                        });
+                        lastNominatimQuery = bounds.address;
+                        $timeout( function() {
+                            scope.settingBoundsFromScope = false;
+                        });
                         return;
                     }
+
                     var leafletBounds = createLeafletBounds(bounds);
                     if (leafletBounds && !map.getBounds().equals(leafletBounds)) {
-                        //$log.debug('Need to update map bounds.');
                         scope.settingBoundsFromScope = true;
                         map.fitBounds(leafletBounds, bounds.options);
                         $timeout( function() {
-                            //$log.debug('Allow bound updates.');
                             scope.settingBoundsFromScope = false;
                         });
                     }
@@ -2924,7 +2990,7 @@ angular.module("leaflet-directive").directive('center',
                 var defaults = leafletMapDefaults.getDefaults(attrs.id);
 
                 if (attrs.center.search("-") !== -1) {
-                    $log.error(errorHeader + ' The "center" variable can\'t use a "-" on his key name: "' + attrs.center + '".');
+                    $log.error(errorHeader + ' The "center" variable can\'t use a "-" on its key name: "' + attrs.center + '".');
                     map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
                     return;
                 } else if (shouldInitializeMapWithBounds(leafletScope.bounds, centerModel)) {
@@ -3381,271 +3447,291 @@ angular.module("leaflet-directive")
     };
 });
 
-angular.module("leaflet-directive").directive('opacityControl', function($log, leafletData, leafletHelpers) {
+angular.module("leaflet-directive").directive('layercontrol', function ($filter, $log, leafletData, leafletHelpers) {
     return {
-        scope: false,
-        restrict: 'A',
-        require: '^layercontrol',
+        restrict: "E",
+        scope: {
+            icons: '=?',
+            autoHideOpacity: '=?', // Hide other opacity controls when one is activated.
+            showGroups: '=?', // Hide other opacity controls when one is activated.
+            title: '@',
+            baseTitle: '@',
+            overlaysTitle: '@'
+        },
+        replace: true,
         transclude: false,
-        replace: false,
-        link: function(scope, element) {
-            var isDefined = leafletHelpers.isDefined,
-                op;
-
-            scope.$watch(function() {
-                return scope.layerProperties[scope.layer.name];
-            }, function(layerProperties) {
-                if(!isDefined(layerProperties)) {
-                    return;
-                }
-
-                op = layerProperties.opacity;
-
-                if(isDefined(element.ionRangeSlider)) {
-                    var input = '<input type="text" class="lf-opacity-control" data-key="' + scope.layer.index + '" value="' + op + '"/>';
-                    input = angular.element(input).appendTo(element);
-
-                    input.ionRangeSlider({
-                        min: 0,
-                        step: 1,
-                        max: 100,
-                        prettify: false,
-                        hasGrid: false,
-                        hideMinMax: false
+        require: '^leaflet',
+        controller: function ($scope, $element, $sce) {
+            $log.debug('[Angular Directive - Layers] layers', $scope, $element);
+            var safeApply = leafletHelpers.safeApply,
+            isDefined = leafletHelpers.isDefined;
+            angular.extend($scope, {
+                baselayer: '',
+                oldGroup: '',
+                layerProperties: {},
+                groupProperties: {},
+                rangeIsSupported: leafletHelpers.rangeIsSupported(),
+                changeBaseLayer: function(key, e) {
+                    leafletHelpers.safeApply($scope, function(scp) {
+                        scp.baselayer = key;
+                        leafletData.getMap().then(function(map) {
+                            leafletData.getLayers().then(function(leafletLayers) {
+                                if(map.hasLayer(leafletLayers.baselayers[key])) {
+                                    return;
+                                }
+                                for(var i in scp.layers.baselayers) {
+                                    scp.layers.baselayers[i].icon = scp.icons.unradio;
+                                    if(map.hasLayer(leafletLayers.baselayers[i])) {
+                                        map.removeLayer(leafletLayers.baselayers[i]);
+                                    }
+                                }
+                                map.addLayer(leafletLayers.baselayers[key]);
+                                scp.layers.baselayers[key].icon = $scope.icons.radio;
+                            });
+                        });
                     });
-                    scope.$watch(function() {
-                        return scope.layerProperties[scope.layer.name].opacityControl;
-                    }, function() {
-                        if(scope.layer.visible && layerProperties.opacityControl) {
-                            element.show();
-                            input.ionRangeSlider('update', {
-                                from: op,
-                                onChange: function(val) {
-                                    leafletData.getMap().then(function(map) {
-                                        leafletData.getLayers().then(function(leafletLayers) {
-                                            var key = val.input.data().key;
-                                            var ly;
-                                            for(var k in scope.layers.overlays) {
-                                                if(scope.layers.overlays[k].index === key) {
-                                                    ly = leafletLayers.overlays[k];
-                                                    break;
-                                                }
-                                            }
-                                            if(map.hasLayer(ly)) {
-                                                layerProperties.opacity = val.input.val();
-                                                if(ly.setOpacity) {
-                                                    ly.setOpacity(val.input.val()/100);
-                                                }
-                                                if(ly.getLayers && ly.eachLayer) {
-                                                    ly.eachLayer(function(lay) {
-                                                        if(lay.setOpacity) {
-                                                            lay.setOpacity(val.input.val()/100);
-                                                        }
-                                                    });
-                                                }
-                                            }
-                                        });
+                    e.preventDefault();
+                },
+                moveLayer: function(ly, newIndex, e) {
+                    var delta = Object.keys($scope.layers.baselayers).length;
+                    if(newIndex >= (1+delta) && newIndex <= ($scope.overlaysArray.length+delta)) {
+                        var oldLy;
+                        for(var key in $scope.layers.overlays) {
+                            if($scope.layers.overlays[key].index === newIndex) {
+                                oldLy = $scope.layers.overlays[key];
+                                break;
+                            }
+                        }
+                        if(oldLy) {
+                            safeApply($scope, function() {
+                                oldLy.index = ly.index;
+                                ly.index = newIndex;
+                            });
+                        }
+                    }
+                    e.stopPropagation();
+                    e.preventDefault();
+                },
+                initIndex: function(layer, idx) {
+                    var delta = Object.keys($scope.layers.baselayers).length;
+                    layer.index = isDefined(layer.index)? layer.index:idx+delta+1;
+                },
+                initGroup: function(groupName) {
+                    $scope.groupProperties[groupName] = $scope.groupProperties[groupName]? $scope.groupProperties[groupName]:{};
+                },
+                toggleOpacity: function(e, layer) {
+                    if(layer.visible) {
+                        if($scope.autoHideOpacity && !$scope.layerProperties[layer.name].opacityControl) {
+                            for(var k in $scope.layerProperties) {
+                                $scope.layerProperties[k].opacityControl = false;
+                            }
+                        }
+                        $scope.layerProperties[layer.name].opacityControl = !$scope.layerProperties[layer.name].opacityControl;
+                    }
+                    e.stopPropagation();
+                    e.preventDefault();
+                },
+                toggleLegend: function(layer) {
+                    $scope.layerProperties[layer.name].showLegend = !$scope.layerProperties[layer.name].showLegend;
+                },
+                showLegend: function(layer) {
+                    return layer.legend && $scope.layerProperties[layer.name].showLegend;
+                },
+                unsafeHTML: function(html) {
+                    return $sce.trustAsHtml(html);
+                },
+                getOpacityIcon: function(layer) {
+                    return layer.visible && $scope.layerProperties[layer.name].opacityControl? $scope.icons.close:$scope.icons.open;
+                },
+                getGroupIcon: function(group) {
+                    return group.visible? $scope.icons.check:$scope.icons.uncheck;
+                },
+                changeOpacity: function(layer) {
+                    var op = $scope.layerProperties[layer.name].opacity;
+                    leafletData.getMap().then(function(map) {
+                        leafletData.getLayers().then(function(leafletLayers) {
+                            var ly;
+                            for(var k in $scope.layers.overlays) {
+                                if($scope.layers.overlays[k] === layer) {
+                                    ly = leafletLayers.overlays[k];
+                                    break;
+                                }
+                            }
+
+                            if(map.hasLayer(ly)) {
+                                if(ly.setOpacity) {
+                                    ly.setOpacity(op/100);
+                                }
+                                if(ly.getLayers && ly.eachLayer) {
+                                    ly.eachLayer(function(lay) {
+                                        if(lay.setOpacity) {
+                                            lay.setOpacity(op/100);
+                                        }
                                     });
                                 }
-                            });
-                        } else {
-                            element.hide();
-                        }
+                            }
+                        });
                     });
-                } else {
-                    $log.warn('[AngularJS - Leaflet] Ion Slide Range Plugin is not loaded');
-                }
-            });
-        }
-    };
-}).directive('layercontrol', function ($filter, $log, leafletData, leafletHelpers) {
-  return {
-    restrict: "E",
-    scope: {
-        setIcons: '='
-    },
-    replace: true,
-    transclude: false,
-    require: '^leaflet',
-    controller: function ($scope, $element, $sce) {
-      $log.debug('[Angular Directive - Layers] layers', $scope, $element);
-      var safeApply = leafletHelpers.safeApply,
-        isDefined = leafletHelpers.isDefined;
-      angular.extend($scope, {
-        baselayer: '',
-        layerProperties: {},
-        icons: {
-          uncheck: 'fa fa-square-o',
-          check: 'fa fa-check-square-o',
-          radio: 'fa fa-dot-circle-o',
-          unradio: 'fa fa-circle-o',
-          up: 'fa fa-angle-up',
-          down: 'fa fa-angle-down',
-          open: 'fa fa-angle-double-down',
-          close: 'fa fa-angle-double-up',
-          toggleLegend: 'fa fa-pencil-square-o'
-        },
-        changeBaseLayer: function(key, e) {
-          leafletHelpers.safeApply($scope, function(scp) {
-            scp.baselayer = key;
-            leafletData.getMap().then(function(map) {
-              leafletData.getLayers().then(function(leafletLayers) {
-                if(map.hasLayer(leafletLayers.baselayers[key])) {
-                  return;
-                }
-                for(var i in scp.layers.baselayers) {
-                  scp.layers.baselayers[i].icon = scp.icons.unradio;
-                  if(map.hasLayer(leafletLayers.baselayers[i])) {
-                    map.removeLayer(leafletLayers.baselayers[i]);
-                  }
-                }
-                map.addLayer(leafletLayers.baselayers[key]);
-                scp.layers.baselayers[key].icon = $scope.icons.radio;
-              });
-            });
-          });
-          e.preventDefault();
-        },
-        moveLayer: function(ly, newIndex, e) {
-            var delta = Object.keys($scope.layers.baselayers).length;
-            if(newIndex >= (1+delta) && newIndex <= ($scope.overlaysArray.length+delta)) {
-                var oldLy;
-                for(var key in $scope.layers.overlays) {
-                    if($scope.layers.overlays[key].index === newIndex) {
-                        oldLy = $scope.layers.overlays[key];
-                        break;
+                },
+                changeGroupVisibility: function(groupName) {
+                    if(!isDefined($scope.groupProperties[groupName])) {
+                        return;
+                    }
+                    var visible = $scope.groupProperties[groupName].visible;
+                    for(var k in $scope.layers.overlays) {
+                        var layer = $scope.layers.overlays[k];
+                        if(layer.group === groupName) {
+                            layer.visible = visible;
+                        }
                     }
                 }
-                if(oldLy) {
-                    safeApply($scope, function() {
-                        oldLy.index = ly.index;
-                        ly.index = newIndex;
-                    });
-                }
-            }
-            e.stopPropagation();
-            e.preventDefault();
-        },
-        initIndex: function(layer, idx) {
-            var delta = Object.keys($scope.layers.baselayers).length;
-            layer.index = isDefined(layer.index)? layer.index:idx+delta+1;
-        },
-        toggleOpacity: function(e, layer) {
-            if(layer.visible) {
-                var el = angular.element(e.currentTarget);
-                el.toggleClass($scope.icons.close + ' ' + $scope.icons.open);
-                el = el.parents('.lf-row').find('.lf-opacity');
-                //el.toggle();
-                $scope.layerProperties[layer.name].opacityControl = !$scope.layerProperties[layer.name].opacityControl;
-            }
-            e.stopPropagation();
-            e.preventDefault();
-        },
-        toggleLegend: function(layer) {
-            $scope.layerProperties[layer.name].showLegend = !$scope.layerProperties[layer.name].showLegend;
-        },
-        showLegend: function(layer) {
-            return layer.legend && $scope.layerProperties[layer.name].showLegend;
-        },
-        unsafeHTML: function(html) {
-          return $sce.trustAsHtml(html);
-        }
-      });
+            });
 
-      var div = $element.get(0);
-      if (!L.Browser.touch) {
-          L.DomEvent.disableClickPropagation(div);
-          L.DomEvent.on(div, 'mousewheel', L.DomEvent.stopPropagation);
-      } else {
-          L.DomEvent.on(div, 'click', L.DomEvent.stopPropagation);
-      }
-    },
-    template:
-      '<div class="angular-leaflet-control-layers" ng-show="overlaysArray.length">' +
-        '<div class="lf-baselayers">' +
-            '<div class="lf-row" ng-repeat="(key, layer) in layers.baselayers">' +
-                '<label class="lf-icon-bl" ng-click="changeBaseLayer(key, $event)">' +
-                    '<input class="leaflet-control-layers-selector" type="radio" name="lf-radio" ' +
-                        'ng-show="false" ng-checked="baselayer === key" ng-value="key" /> ' +
-                    '<i class="lf-icon lf-icon-radio" ng-class="layer.icon"></i>' +
-                    '<div class="lf-text">{{layer.name}}</div>' +
-                '</label>' +
-            '</div>' +
-        '</div>' +
-        '<div class="lf-overlays">' +
-            '<div class="lf-container">' +
-                '<div class="lf-row" ng-repeat="layer in overlaysArray | orderBy:\'index\':order" ng-init="initIndex(layer, $index)">' +
-                    '<label class="lf-icon-ol">' +
-                        '<input class="lf-control-layers-selector" type="checkbox" ng-show="false" ng-model="layer.visible"/> ' +
-                        '<i class="lf-icon lf-icon-check" ng-class="layer.icon"></i>' +
+            var div = $element.get(0);
+            if (!L.Browser.touch) {
+                L.DomEvent.disableClickPropagation(div);
+                L.DomEvent.on(div, 'mousewheel', L.DomEvent.stopPropagation);
+            } else {
+                L.DomEvent.on(div, 'click', L.DomEvent.stopPropagation);
+            }
+        },
+        template:
+        '<div class="angular-leaflet-control-layers" ng-show="overlaysArray.length">' +
+            '<h4 ng-if="title">{{ title }}</h4>' +
+            '<div class="lf-baselayers">' +
+                '<h5 class="lf-title" ng-if="baseTitle">{{ baseTitle }}</h5>' +
+                '<div class="lf-row" ng-repeat="(key, layer) in baselayersArray">' +
+                    '<label class="lf-icon-bl" ng-click="changeBaseLayer(key, $event)">' +
+                        '<input class="leaflet-control-layers-selector" type="radio" name="lf-radio" ' +
+                            'ng-show="false" ng-checked="baselayer === key" ng-value="key" /> ' +
+                        '<i class="lf-icon lf-icon-radio" ng-class="layer.icon"></i>' +
                         '<div class="lf-text">{{layer.name}}</div>' +
-                    '</label>'+
-                    '<div class="lf-icons">' +
-                        '<i class="lf-icon lf-up" ng-class="icons.up" ng-click="moveLayer(layer, layer.index - orderNumber, $event)"></i> ' +
-                        '<i class="lf-icon lf-down" ng-class="icons.down" ng-click="moveLayer(layer, layer.index + orderNumber, $event)"></i> ' +
-                        '<i class="lf-icon lf-toggle-legend" ng-class="icons.toggleLegend" ng-if="layer.legend" ng-click="toggleLegend(layer)"></i> ' +
-                        '<i class="lf-icon lf-open" ng-class="layer.opacityControl? icons.close:icons.open" ng-click="toggleOpacity($event, layer)"></i>' +
-                    '</div>' +
-                    '<div class="lf-legend" ng-if="showLegend(layer)" ng-bind-html="unsafeHTML(layer.legend)"></div>' +
-                    '<div class="lf-opacity" opacity-control>' +
+                    '</label>' +
+                '</div>' +
+            '</div>' +
+            '<div class="lf-overlays">' +
+                '<h5 class="lf-title" ng-if="overlaysTitle">{{ overlaysTitle }}</h5>' +
+                '<div class="lf-container">' +
+                    '<div class="lf-row" ng-repeat="layer in (o = (overlaysArray | orderBy:\'index\':order))" ng-init="initIndex(layer, $index)">' +
+                        '<label class="lf-icon-ol-group" ng-if="showGroups &amp;&amp; layer.group &amp;&amp; layer.group != o[$index-1].group">' +
+                            '<input class="lf-control-layers-selector" type="checkbox" ng-show="false" ' +
+                                'ng-change="changeGroupVisibility(layer.group)" ng-model="groupProperties[layer.group].visible"/> ' +
+                            '<i class="lf-icon lf-icon-check" ng-class="getGroupIcon(groupProperties[layer.group])"></i>' +
+                            '<div class="lf-text">{{ layer.group }}</div>' +
+                        '</label>'+
+                        '<label class="lf-icon-ol">' +
+                            '<input class="lf-control-layers-selector" type="checkbox" ng-show="false" ng-model="layer.visible"/> ' +
+                            '<i class="lf-icon lf-icon-check" ng-class="layer.icon"></i>' +
+                            '<div class="lf-text">{{layer.name}}</div>' +
+                        '</label>'+
+                        '<div class="lf-icons">' +
+                            '<i class="lf-icon lf-up" ng-class="icons.up" ng-click="moveLayer(layer, layer.index - orderNumber, $event)"></i> ' +
+                            '<i class="lf-icon lf-down" ng-class="icons.down" ng-click="moveLayer(layer, layer.index + orderNumber, $event)"></i> ' +
+                            '<i class="lf-icon lf-toggle-legend" ng-class="icons.toggleLegend" ng-if="layer.legend" ng-click="toggleLegend(layer)"></i> ' +
+                            '<i class="lf-icon lf-open" ng-class="getOpacityIcon(layer)" ng-click="toggleOpacity($event, layer)"></i>' +
+                        '</div>' +
+                        '<div class="lf-legend" ng-if="showLegend(layer)" ng-bind-html="unsafeHTML(layer.legend)"></div>' +
+                        '<div class="lf-opacity clearfix" ng-if="layer.visible &amp;&amp; layerProperties[layer.name].opacityControl">' +
+                            '<label ng-if="rangeIsSupported" class="pull-left" style="width: 50%">0</label>' +
+                            '<label ng-if="rangeIsSupported" class="pull-left text-right" style="width: 50%">100</label>' +
+                            '<input ng-if="rangeIsSupported" class="clearfix" type="range" min="0" max="100" class="lf-opacity-control" ' +
+                                'ng-model="layerProperties[layer.name].opacity" ng-change="changeOpacity(layer)"/>' +
+                            '<h6 ng-if="!rangeIsSupported">Range is not supported in this browser</h6>' +
+                        '</div>' +
                     '</div>' +
                 '</div>' +
             '</div>' +
-        '</div>' +
-      '</div>',
-    link: function(scope, element, attrs, controller) {
-        var isDefined = leafletHelpers.isDefined,
-        leafletScope = controller.getLeafletScope(),
-        layers = leafletScope.layers;
+        '</div>',
+        link: function(scope, element, attrs, controller) {
+            var isDefined = leafletHelpers.isDefined,
+            leafletScope = controller.getLeafletScope(),
+            layers = leafletScope.layers;
 
-        // Setting layer stack order.
-        attrs.order = (isDefined(attrs.order) && (attrs.order === 'normal' || attrs.order === 'reverse'))? attrs.order:'normal';
-        scope.order = attrs.order === 'normal';
-        scope.orderNumber = attrs.order === 'normal'? -1:1;
-
-        scope.layers = layers;
-        controller.getMap().then(function(map) {
-
-            leafletScope.$watch('layers.baselayers', function(newBaseLayers) {
-                leafletData.getLayers().then(function(leafletLayers) {
-                    var key;
-                    for(key in newBaseLayers) {
-                      if(map.hasLayer(leafletLayers.baselayers[key])) {
-                        newBaseLayers[key].icon = scope.icons.radio;
-                      } else {
-                        newBaseLayers[key].icon = scope.icons.unradio;
-                      }
-                    }
-                });
+            scope.$watch('icons', function() {
+                var defaultIcons = {
+                    uncheck: 'fa fa-square-o',
+                    check: 'fa fa-check-square-o',
+                    radio: 'fa fa-dot-circle-o',
+                    unradio: 'fa fa-circle-o',
+                    up: 'fa fa-angle-up',
+                    down: 'fa fa-angle-down',
+                    open: 'fa fa-angle-double-down',
+                    close: 'fa fa-angle-double-up',
+                    toggleLegend: 'fa fa-pencil-square-o'
+                };
+                if(isDefined(scope.icons)) {
+                    angular.extend(defaultIcons, scope.icons);
+                    angular.extend(scope.icons, defaultIcons);
+                } else {
+                    scope.icons = defaultIcons;
+                }
             });
 
-            leafletScope.$watch('layers.overlays', function(newOverlayLayers) {
-                var overlaysArray = [];
-                leafletData.getLayers().then(function(leafletLayers) {
-                    for(var key in newOverlayLayers) {
-                        newOverlayLayers[key].icon = scope.icons[(newOverlayLayers[key].visible? 'check':'uncheck')];
-                        overlaysArray.push(newOverlayLayers[key]);
-                        if(!isDefined(scope.layerProperties[newOverlayLayers[key].name])) {
-                            scope.layerProperties[newOverlayLayers[key].name] = {
-                                opacity: isDefined(newOverlayLayers[key].layerOptions.opacity)? newOverlayLayers[key].layerOptions.opacity*100:100,
-                                opacityControl: false,
-                                showLegend: true
-                            };
-                        }
-                        if(isDefined(newOverlayLayers[key].index) && leafletLayers.overlays[key].setZIndex) {
-                            leafletLayers.overlays[key].setZIndex(newOverlayLayers[key].index);
-                        }
-                    }
-                });
-                scope.overlaysArray = overlaysArray;
-            }, true);
-        });
+            // Setting layer stack order.
+            attrs.order = (isDefined(attrs.order) && (attrs.order === 'normal' || attrs.order === 'reverse'))? attrs.order:'normal';
+            scope.order = attrs.order === 'normal';
+            scope.orderNumber = attrs.order === 'normal'? -1:1;
 
-        scope.$watch('setIcons', function(newIcons) {
-            angular.extend(scope.icons, newIcons);
-        });
-    }
-  };
+            scope.layers = layers;
+            controller.getMap().then(function(map) {
+                leafletScope.$watch('layers.baselayers', function(newBaseLayers) {
+                    var baselayersArray = {};
+                    leafletData.getLayers().then(function(leafletLayers) {
+                        var key;
+                        for(key in newBaseLayers) {
+                            var layer = newBaseLayers[key];
+                            layer.icon = scope.icons[map.hasLayer(leafletLayers.baselayers[key])? 'radio':'unradio'];
+                            baselayersArray[key] = layer;
+                        }
+                        scope.baselayersArray = baselayersArray;
+                    });
+                });
+
+                leafletScope.$watch('layers.overlays', function(newOverlayLayers) {
+                    var overlaysArray = [];
+                    var groupVisibleCount = {};
+                    leafletData.getLayers().then(function(leafletLayers) {
+                        var key;
+                        for(key in newOverlayLayers) {
+                            var layer = newOverlayLayers[key];
+                            layer.icon = scope.icons[(layer.visible? 'check':'uncheck')];
+                            overlaysArray.push(layer);
+                            if(!isDefined(scope.layerProperties[layer.name])) {
+                                scope.layerProperties[layer.name] = {
+                                    opacity: isDefined(layer.layerOptions.opacity)? layer.layerOptions.opacity*100:100,
+                                    opacityControl: false,
+                                    showLegend: true
+                                };
+                            }
+                            if(isDefined(layer.group)) {
+                                if(!isDefined(scope.groupProperties[layer.group])) {
+                                    scope.groupProperties[layer.group] = {
+                                        visible: false
+                                    };
+                                }
+                                groupVisibleCount[layer.group] = isDefined(groupVisibleCount[layer.group])? groupVisibleCount[layer.group]:{
+                                    count: 0,
+                                    visibles: 0
+                                };
+                                groupVisibleCount[layer.group].count++;
+                                if(layer.visible) {
+                                    groupVisibleCount[layer.group].visibles++;
+                                }
+                            }
+                            if(isDefined(layer.index) && leafletLayers.overlays[key].setZIndex) {
+                                leafletLayers.overlays[key].setZIndex(newOverlayLayers[key].index);
+                            }
+                        }
+
+                        for(key in groupVisibleCount) {
+                            scope.groupProperties[key].visible = groupVisibleCount[key].visibles === groupVisibleCount[key].count;
+                        }
+                        scope.overlaysArray = overlaysArray;
+                    });
+                }, true);
+            });
+        }
+    };
 });
 
 angular.module("leaflet-directive").directive('layers', function ($log, $q, leafletData, leafletHelpers, leafletLayerHelpers, leafletControlHelpers) {
@@ -4081,7 +4167,7 @@ angular.module("leaflet-directive").directive('markers',
 
                 if (watchOptions.individual.doWatch) {
                     addMarkerWatcher(marker, pathToMarker, leafletScope, layers, map,
-                        watchOptions.individual.doWatch);
+                        watchOptions.individual.isDeep);
                 }
 
                 listenMarkerEvents(marker, model, leafletScope, watchOptions.individual.doWatch, map);
