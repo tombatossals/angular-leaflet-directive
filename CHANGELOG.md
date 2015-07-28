@@ -1,3 +1,32 @@
+<a name"0.8.6"></a>
+### 0.8.6 (2015-07-28)
+
+
+#### Bug Fixes
+
+* **dependencies:**
+  * Require any AngularJS library between the 1.x major versions ([ad7d402a](https://github.com/tombatossals/angular-leaflet-directive/commit/ad7d402a))
+  * JSDOM must be version below 4.x to be able to work with NodeJS ([45f706bb](https://github.com/tombatossals/angular-leaflet-directive/commit/45f706bb))
+  * JSDOM must be version below 4.x to be able to work with NodeJS ([575bd06f](https://github.com/tombatossals/angular-leaflet-directive/commit/575bd06f))
+* **libraries:** Updated bower.json with AngularJS latest stable version: https://github.com/tomb ([50ec972c](https://github.com/tombatossals/angular-leaflet-directive/commit/50ec972c))
+* **marker:** use correct individual isDeep watch parameter ([17fb090c](https://github.com/tombatossals/angular-leaflet-directive/commit/17fb090c))
+
+
+#### Features
+
+* **bounds:**
+  * Extracted the nominatim functionality as a service, to be able to use it from ce ([11e9e31c](https://github.com/tombatossals/angular-leaflet-directive/commit/11e9e31c))
+  * Added the nominatim address way of setting bounds, as requested by @stefan-niede ([6e16cad0](https://github.com/tombatossals/angular-leaflet-directive/commit/6e16cad0))
+* **controls:**
+  * Reworked and cleaned up "controls" code. Now is possible to add/remove controls  ([2d008cc4](https://github.com/tombatossals/angular-leaflet-directive/commit/2d008cc4))
+  * Added new example of the search-plugin ([18597cb9](https://github.com/tombatossals/angular-leaflet-directive/commit/18597cb9))
+* **examples:** Added a new example of setting bounds with Nominatim feature. ([48986290](https://github.com/tombatossals/angular-leaflet-directive/commit/48986290))
+* **layercontrol:**
+  * Add groups for layers ([6c35d448](https://github.com/tombatossals/angular-leaflet-directive/commit/6c35d448))
+  * Add group option ([93e33971](https://github.com/tombatossals/angular-leaflet-directive/commit/93e33971))
+  * New layer control ([27677059](https://github.com/tombatossals/angular-leaflet-directive/commit/27677059))
+
+
 <a name"0.8.5"></a>
 ### 0.8.5 (2015-06-29)
 
