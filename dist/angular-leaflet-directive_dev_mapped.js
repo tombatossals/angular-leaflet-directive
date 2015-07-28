@@ -1,5 +1,5 @@
 /*!
-*  angular-leaflet-directive 0.8.5 2015-07-23
+*  angular-leaflet-directive 0.8.5 2015-07-28
 *  angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps
 *  git: https://github.com/tombatossals/angular-leaflet-directive
 */
@@ -4425,7 +4425,7 @@ angular.module("leaflet-directive").directive('paths', function ($log, $q, leafl
 
                                 // bind popup if defined
                                 if (isDefined(newPath) && isDefined(pathData.message)) {
-                                    newPath.bindPopup(pathData.message);
+                                    newPath.bindPopup(pathData.message, pathData.popupOptions);
                                 }
 
                                 // Show label if defined
