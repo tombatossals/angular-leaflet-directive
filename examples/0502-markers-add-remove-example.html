@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html ng-app="demoapp">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="../dist/angular-leaflet-directive.min.js"></script>
+    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
+    <script>
+        var app = angular.module("demoapp", ["leaflet-directive"]);
+        app.controller('MarkersAddRemoveController', [ '$scope', function($scope) {
+            angular.extend($scope, {
+                london: {
+                    lat: 51.505,
+                    lng: -0.09,
+                    zoom: 8
+                },
+                markers: {}
+            });
+
+            $scope.addMarkers = function() {
+                angular.extend($scope, {
+                    markers: {
+                        m1: {
+                            lat: 51.505,
+                            lng: -0.09,
+                            message: "I'm a static marker",
+                        },
+                        m2: {
+                            lat: 51,
+                            lng: 0,
+                            focus: true,
+                            message: "Hey, drag me if you want",
+                            draggable: true
+                        }
+                    }
+                });
+            };
+
+            $scope.removeMarkers = function() {
+                $scope.markers = {};
+            }
+
+            $scope.addMarkers();
+        } ]);
+    </script>
+  </head>
+  <body ng-controller="MarkersAddRemoveController">
+      <leaflet center="london" markers="markers" height="480px" width="100%"></leaflet>
+      <h1>Add/remove markers easily example</h1>
+      <button ng-click="removeMarkers()">Remove markers</button>
+      <button ng-click="addMarkers()">Add markers</button>
+  </body>
+</html>

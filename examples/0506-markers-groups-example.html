@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html ng-app="demoapp">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="../dist/angular-leaflet-directive.min.js"></script>
+    <script src="../bower_components/jquery/dist/jquery.min.js"></script>
+    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
+    <script>
+        var app = angular.module("demoapp", ["leaflet-directive"]);
+
+        app.controller('MarkersGroupController', [ '$scope', function($scope) {
+
+            var icons = {
+                blue: {
+                    type: 'div',
+                    iconSize: [10, 10],
+                    className: 'blue',
+                    iconAnchor:  [5, 5]
+                },
+                red: {
+                    type: 'div',
+                    iconSize: [10, 10],
+                    className: 'red',
+                    iconAnchor:  [5, 5]
+                }
+            }
+
+            angular.extend($scope, {
+                london: {
+                    lat: 51.505,
+                    lng: -0.09,
+                    zoom: 11
+                },
+
+                layers: {
+                    baselayers: {
+                        openStreetMap: {
+                            name: 'OpenStreetMap',
+                            type: 'xyz',
+                            url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+                        }
+                    },
+                    overlays: {
+                        red: {
+                            type: 'group',
+                            name: 'red',
+                            visible: false
+                        },
+
+                        blue: {
+                            type: 'group',
+                            name: 'blue',
+                            visible: false
+                        }
+                    }
+                },
+
+                markers: {
+
+                    stoke: {
+                        layer: 'blue',
+                        lat: 51.5615,
+                        lng: -0.0731,
+                        icon: icons.blue
+                    },
+
+                    dalston: {
+                        layer: 'blue',
+                        lat: 51.545,
+                        lng: -0.070,
+                        icon: icons.blue
+                    },
+
+                    wandsworth: {
+                      layer: 'red',
+                        lat: 51.4644,
+                        lng:-0.1924,
+                        icon: icons.red
+                    },
+
+                    battersea: {
+                        layer: 'red',
+                        lat: 51.4638,
+                        lng: -0.1677,
+                        icon: icons.red
+                    }
+                },
+
+                toggleLayer: function(type)
+                {
+                    $scope.layers.overlays[type].visible = !$scope.layers.overlays[type].visible;
+                }
+            });
+        } ]);
+    </script>
+    <style>
+        .red {
+            border-radius: 120px;
+            opacity: .75;
+            background-color: #FF0000;
+        }
+
+        .blue {
+            border-radius: 120px;
+            opacity: .75;
+            background-color: #0000FF;
+        }
+    </style>
+</head>
+<body ng-controller="MarkersGroupController">
+    <leaflet center="london" markers="markers" layers="layers" height="480px" width="100%"></leaflet>
+    <h1>This is a map with two hidden marker groups</h1>
+    <p>Click here to hide or show the groups:</p>
+    <button type="button" ng-click="toggleLayer('red')" class="btn btn-default">Red</button>
+    <button type="button" ng-click="toggleLayer('blue')" class="btn btn-default">blue</button>
+</body>
+</html>

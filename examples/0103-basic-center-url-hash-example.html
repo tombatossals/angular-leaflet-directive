@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html ng-app="demoapp">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="../dist/angular-leaflet-directive.min.js"></script>
+    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
+    <script>
+        var app = angular.module('demoapp', ['leaflet-directive']);
+        app.controller('BasicCenterUrlHashController', [ '$scope', '$location', function($scope, $location) {
+            angular.extend($scope, {
+                london: {
+                    lat: 51.505,
+                    lng: -0.09,
+                    zoom: 4
+                }
+            });
+            $scope.$on("centerUrlHash", function(event, centerHash) {
+                console.log("url", centerHash);
+                $location.search({ c: centerHash });
+            });
+
+            $scope.changeLocation = function(centerHash) {
+                $location.search({ c: centerHash });
+            }
+
+        }]);
+    </script>
+    <style>
+        input {
+            width: 120px;
+            margin-right: 10px;
+        }
+    </style>
+  </head>
+  <body ng-controller="BasicCenterUrlHashController">
+      <leaflet center="london" url-hash-center="yes" width="100%" height="480px"></leaflet>
+      <h1>Center map with URL synchronization example</h1>
+      <p>This demo syncs the map center position with the URL, and vice versa, using the <strong>center-url-params</strong> property.</p>
+      <ul>
+          <li><input type="number" step="any" ng-model="london.lat" /> Latitude</li>
+          <li><input type="number" step="any" ng-model="london.lng" /> Longitude</li>
+          <li><input type="number" step="any" ng-model="london.zoom" /> Zoom</li>
+      </ul>
+      <h2>Direct locations</h2>
+      <ul>
+        <li><a href="" ng-click="changeLocation('36.8899:-121.8008:12')">Watsonville</a>
+        <li><a href="" ng-click="changeLocation('34.0078:-118.8060:14')">Malibu</a>
+        <li><a href="" ng-click="changeLocation('33.7717:-117.9458:12')">Garden Grove</a>
+        <li><a href="" ng-click="changeLocation('32.5290:-117.0442:13')">Tijuana</a>
+      </ul>
+  </body>
+</html>

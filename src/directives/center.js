@@ -7,7 +7,8 @@ angular.module("leaflet-directive").directive('center',
         safeApply     = leafletHelpers.safeApply,
         isValidCenter = leafletHelpers.isValidCenter,
         isValidBounds = leafletBoundsHelpers.isValidBounds,
-        isUndefinedOrEmpty = leafletHelpers.isUndefinedOrEmpty;
+        isUndefinedOrEmpty = leafletHelpers.isUndefinedOrEmpty,
+        errorHeader   = leafletHelpers.errorHeader;
 
     var shouldInitializeMapWithBounds = function(bounds, center) {
         return isDefined(bounds) && isValidBounds(bounds) && isUndefinedOrEmpty(center);
@@ -33,19 +34,13 @@ angular.module("leaflet-directive").directive('center',
                 var defaults = leafletMapDefaults.getDefaults(attrs.id);
 
                 if (attrs.center.search("-") !== -1) {
-                    $log.error('The "center" variable can\'t use a "-" on his key name: "' + attrs.center + '".');
+                    $log.error(errorHeader + ' The "center" variable can\'t use a "-" on its key name: "' + attrs.center + '".');
                     map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
                     return;
                 } else if (shouldInitializeMapWithBounds(leafletScope.bounds, centerModel)) {
-                    map.fitBounds(leafletBoundsHelpers.createLeafletBounds(leafletScope.bounds));
+                    map.fitBounds(leafletBoundsHelpers.createLeafletBounds(leafletScope.bounds), leafletScope.bounds.options);
                     centerModel = map.getCenter();
                     safeApply(leafletScope, function (scope) {
-                        scope.center = {
-                            lat: map.getCenter().lat,
-                            lng: map.getCenter().lng,
-                            zoom: map.getZoom(),
-                            autoDiscover: false
-                        };
                         angular.extend(scope.center,{
                            lat: map.getCenter().lat,
                            lng: map.getCenter().lng,
@@ -67,7 +62,7 @@ angular.module("leaflet-directive").directive('center',
                         };
                     });
                 } else if (!isDefined(centerModel)) {
-                    $log.error('The "center" property is not defined in the main scope');
+                    $log.error(errorHeader + ' The "center" property is not defined in the main scope');
                     map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
                     return;
                 } else if (!(isDefined(centerModel.lat) && isDefined(centerModel.lng)) && !isDefined(centerModel.autoDiscover)) {
@@ -95,11 +90,11 @@ angular.module("leaflet-directive").directive('center',
                         var urlCenter = extractCenterFromUrl();
                         if (isDefined(urlCenter) && !isSameCenterOnMap(urlCenter, map)) {
                             //$log.debug("updating center model...", urlCenter);
-                            scope.center = {
+                            angular.extend(scope.center, {
                                 lat: urlCenter.lat,
                                 lng: urlCenter.lng,
                                 zoom: urlCenter.zoom
-                            };
+                            });
                         }
                     });
                 }
@@ -113,7 +108,7 @@ angular.module("leaflet-directive").directive('center',
                     }
 
                     if (!isValidCenter(center) && center.autoDiscover !== true) {
-                        $log.warn("[AngularJS - Leaflet] invalid 'center'");
+                        $log.warn(errorHeader + " invalid 'center'");
                         //map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
                         return;
                     }
@@ -151,7 +146,7 @@ angular.module("leaflet-directive").directive('center',
                     mapReady = true;
                 });
 
-                map.on("moveend", function(/* event */) {
+                map.on('moveend', function(/* event */) {
                     // Resolve the center after the first map position
                     _leafletCenter.resolve();
                     leafletEvents.notifyCenterUrlHashChanged(leafletScope, map, attrs, $location.search());
@@ -163,12 +158,11 @@ angular.module("leaflet-directive").directive('center',
                     safeApply(leafletScope, function(scope) {
                         if (!leafletScope.settingCenterFromScope) {
                             //$log.debug("updating center model...", map.getCenter(), map.getZoom());
-                            
                             angular.extend(scope.center,{
-                               lat: map.getCenter().lat,
-                               lng: map.getCenter().lng,
-                               zoom: map.getZoom(),
-                               autoDiscover: false
+                                lat: map.getCenter().lat,
+                                lng: map.getCenter().lng,
+                                zoom: map.getZoom(),
+                                autoDiscover: false
                             });
                         }
                         leafletEvents.notifyCenterChangedToBounds(leafletScope, map);
@@ -176,8 +170,8 @@ angular.module("leaflet-directive").directive('center',
                 });
 
                 if (centerModel.autoDiscover === true) {
-                    map.on("locationerror", function() {
-                        $log.warn("[AngularJS - Leaflet] The Geolocation API is unauthorized on this page.");
+                    map.on('locationerror',  function() {
+                        $log.warn(errorHeader + " The Geolocation API is unauthorized on this page.");
                         if (isValidCenter(centerModel)) {
                             map.setView([centerModel.lat, centerModel.lng], centerModel.zoom);
                             leafletEvents.notifyCenterChangedToBounds(leafletScope, map);

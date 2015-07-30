@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html ng-app="demoapp">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script src="http://maps.google.com/maps/api/js?v=3.2&sensor=false"></script>
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="../bower_components/leaflet-plugins/layer/tile/Google.js"></script>
+    <script src="../dist/angular-leaflet-directive.min.js"></script>
+    <link href='http://fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
+
+    <script>
+        var app = angular.module("demoapp", ["leaflet-directive"]);
+        app.controller("ImageLegendServiceController", [ "$scope", function($scope) {
+            angular.extend($scope, {
+            	options: {
+            		controls: {
+            			layers: {
+            				visible: false
+            			}
+            		}
+            	},
+                usa: {
+	            	lat: 39.931486,
+	                lng: -101.406250,
+	                zoom: 3
+	            },
+                markers: {
+                    m1: {
+                        lat: 39.931486,
+	                	lng: -101.406250,
+                    }
+                },
+                layers: {
+					baselayers: {
+						googleTerrain: {
+						    name: 'Google Terrain',
+						    layerType: 'TERRAIN',
+						    type: 'google'
+						}
+                   },
+                   overlays: {
+                        sst: {
+                            name: 'Analyses - Sea Surface Temperature',
+                            type: 'wms',
+                            url: 'http://nowcoast.noaa.gov/wms/com.esri.wms.Esrimap/analyses',
+                            visible: true,
+                            layerOptions: {
+                                layers: 'NCEP_RAS_ANAL_RTG_SST,NCEP_POLY_ANAL_RTG_SST',
+                                format: 'image/png',
+                                transparent: true,
+                                attribution: 'NOAA/NOS nowCOAST',
+                            }
+                        },
+				    	wave: {
+                            name: 'Forecasts - Wave height',
+                            type: 'wms',
+                            url: 'http://nowcoast.noaa.gov/wms/com.esri.wms.Esrimap/forecasts',
+                            visible: false,
+                            layerOptions: {
+                                layers: 'NDFD_RAS_WAVEH_3_00,NDFD_POLY_WAVEH_3_00',
+                                format: 'image/png',
+                                transparent: true,
+                                attribution: 'NOAA/NOS nowCOAST',
+                            }
+                        }
+                    }
+                },
+
+                legend: {
+                	url: "http://nowcoast.noaa.gov/LayerInfo?layer=NCEP_RAS_ANAL_RTG_SST&data=legend",
+                	legendClass: "info legend",
+					position: "bottomleft",
+                    type: "image"
+                },
+
+                legendURL1: "http://nowcoast.noaa.gov/LayerInfo?layer=NCEP_RAS_ANAL_RTG_SST&data=legend",
+                legendURL2: "http://nowcoast.noaa.gov/LayerInfo?layer=NDFD_RAS_WAVEH_3_00&data=legend",
+                switchLegend: function() {
+
+                        $scope.layers.overlays.sst.visible = !$scope.layers.overlays.sst.visible;
+                        $scope.layers.overlays.wave.visible = !$scope.layers.overlays.wave.visible;
+                        $scope.legend.url == $scope.legendURL1? $scope.legendURL2:$scope.legendURL1;
+                }
+            });
+        }]);
+    </script>
+</head>
+<body ng-controller="ImageLegendServiceController">
+    <h1>Image Legend Service</h1>
+    <p>Use the button to switch another Layer with different legend.</p>
+    <leaflet center="usa" layers="layers" markers="markers" height="480px" width="100%"
+    	legend="legend" defaults="options"></leaflet>
+    <br/>
+    <button ng-click="switchLegend()">Switch Legend</button>
+</body>
+</html>

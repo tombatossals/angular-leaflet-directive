@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html ng-app="demoapp">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="../dist/angular-leaflet-directive.min.js"></script>
+    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
+    <script>
+        var app = angular.module('demoapp', ['leaflet-directive']);
+        app.controller('BasicCenterGeoIPController', [ '$scope', '$http', function($scope, $http) {
+            angular.extend($scope, {
+                center: {
+                    lat: 0,
+                    lng: 0,
+                    zoom: 2
+                }
+            });
+
+            $scope.searchIP = function(ip) {
+                var url = "http://freegeoip.net/json/" + ip;
+                $http.get(url).success(function(res) {
+                    $scope.center = {
+                        lat: res.latitude,
+                        lng: res.longitude,
+                        zoom: 10
+                    }
+                    $scope.ip = res.ip;
+                })
+            };
+
+            $scope.searchIP("");
+
+       }]);
+    </script>
+    <style>
+        input {
+            width: 120px;
+            margin-right: 10px;
+        }
+    </style>
+  </head>
+  <body ng-controller="BasicCenterGeoIPController">
+    <leaflet center="center" width="100%" height="480px"></leaflet>
+    <h1>Center by IP (GeoIP) example</h1>
+    <p>Insert the IP you want to know its location:</p>
+    <form>
+        Insert the IP: <input type="input"  ng-model="ip" /> <input type="button" ng-click="searchIP(ip)" value="Search" />
+    </form>
+  </body>
+</html>

@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function (grunt, options) {
+module.exports = function(grunt, options) {
     return {
         options: {
             stdout: true
@@ -17,6 +17,9 @@ module.exports = function (grunt, options) {
         },
         npm_install: {
             command: 'npm install'
+        },
+        examples: {
+            command: 'node generate-examples.js'
         }
     };
 };

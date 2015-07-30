@@ -1,6 +1,9 @@
 {
   "name": "angular-leaflet-directive",
-  "description": "AngularJS directive to embed an interact with maps managed by Leaflet library",
+  "author": "https://github.com/tombatossals/angular-leaflet-directive/graphs/contributors",
+  "description": "angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps",
+  "version": "0.8.6",
+  "homepage": "http://tombatossals.github.io/angular-leaflet-directive/",
   "keywords": [
     "angularjs",
     "javascript",
@@ -11,16 +14,18 @@
     "dist/angular-leaflet-directive.js"
   ],
   "dependencies": {
-    "angular": "1.3.x",
+    "angular": "1.x",
     "leaflet": "0.7.x",
     "font-awesome": "~4.3.x"
   },
   "devDependencies": {
     "jquery": "*",
+    "semantic-ui": "*",
     "bootstrap": "*",
-    "angular-route": "1.3.x",
-    "angular-animate": "1.3.x",
-    "angular-mocks": "1.3.x",
+    "prism": "*",
+    "angular-route": "1.x",
+    "angular-animate": "1.x",
+    "angular-mocks": "1.x",
     "leaflet.markercluster": "*",
     "leaflet.draw": "*",
     "Leaflet.label": "*",
@@ -33,9 +38,15 @@
     "proj4": "*",
     "proj4leaflet": "*",
     "Leaflet.MakiMarkers": "*",
-    "Leaflet.ExtraMarkers": "git://github.com/coryasilva/Leaflet.ExtraMarkers#master",
+    "Leaflet.heat": "https://github.com/Leaflet/Leaflet.heat/archive/gh-pages.tar.gz",
+    "Leaflet.ExtraMarkers": "https://github.com/coryasilva/Leaflet.ExtraMarkers/archive/v1.0.1.tar.gz",
+    "Leaflet.fullscreen": "http://github.com/Leaflet/Leaflet.fullscreen/archive/v0.0.4.tar.gz",
     "Leaflet.PolylineDecorator": "bbecquet/Leaflet.PolylineDecorator",
-    "ionrangeslider": "~1.9.3"
+    "ionrangeslider": "~1.9.3",
+    "leaflet-minimap": "~2.2.0",
+    "esri-leaflet-clustered-feature-layer": "~1.0.x",
+    "esri-leaflet-heatmap-feature-layer": "~1.0.x",
+    "leaflet-search": "~1.5.8"
   },
   "overrides": {
     "Leaflet.utfgrid": {

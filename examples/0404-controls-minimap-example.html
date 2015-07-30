@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html ng-app="demoapp">
+  <head>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+    <meta content="utf-8" http-equiv="encoding">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="../bower_components/leaflet-minimap/dist/Control.MiniMap.min.js"></script>
+    <script src="../dist/angular-leaflet-directive.js"></script>
+    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="../bower_components/leaflet-minimap/dist/Control.MiniMap.min.css" />
+
+    <script>
+        var app = angular.module("demoapp", ["leaflet-directive"]);
+        app.controller("ControlsMinimapController", [ "$scope", "leafletData", function($scope, leafletData) {
+            angular.extend($scope, {
+                bogota: {
+                    lat: 4.649,
+                    lng: -74.086,
+                    zoom: 5
+                },
+                tiles: {
+                    name: 'Mapbox Comic',
+                    url: 'http://api.tiles.mapbox.com/v4/{mapid}/{z}/{x}/{y}.png?access_token={apikey}',
+                    type: 'xyz',
+                    options: {
+                        apikey: 'pk.eyJ1IjoiYnVmYW51dm9scyIsImEiOiJLSURpX0pnIn0.2_9NrLz1U9bpwMQBhVk97Q',
+                        mapid: 'bufanuvols.lpa06kfg'
+                    }
+                },
+                controls: {}
+           });
+
+           // Wait for center to be stablished
+           leafletData.getMap().then(function() {
+               angular.extend($scope.controls, {
+                   minimap: {
+                       type: 'minimap',
+                       layer: {
+                           name: 'OpenStreetMap',
+                           url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                           type: 'xyz'
+                       },
+                       toggleDisplay: true
+                   }
+               });
+
+           });
+       }]);
+    </script>
+  </head>
+  <body ng-controller="ControlsMinimapController">
+    <leaflet center="bogota" controls="controls" tiles="tiles" width="100%" height="480px"></leaflet>
+    <h1>Minimap control example</h1>
+    <p>Minimap control with the <a href="https://github.com/Norkart/Leaflet-MiniMap">Leaflet minimap</a> plugin.</p>
+  </body>
+</html>

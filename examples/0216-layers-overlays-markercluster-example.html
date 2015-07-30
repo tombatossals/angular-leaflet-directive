@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html ng-app="demoapp">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="../dist/angular-leaflet-directive.min.js"></script>
+    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
+    <script src="../bower_components/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+    <link rel="stylesheet" href="../bower_components/leaflet.markercluster/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="../bower_components/leaflet.markercluster/dist/MarkerCluster.Default.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        var app = angular.module("demoapp", ["leaflet-directive"]);
+        app.controller('LayersOverlaysMarkerclusterController', [ '$scope', function($scope) {
+            angular.extend($scope, {
+                ripoll: {
+                    lat: 42.20133,
+                    lng: 2.19110,
+                    zoom: 8
+                },
+                layers: {
+                    baselayers: {
+                        osm: {
+                            name: 'OpenStreetMap',
+                            type: 'xyz',
+                            url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                            layerOptions: {
+                                subdomains: ['a', 'b', 'c'],
+                                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                                continuousWorld: true
+                            }
+                        },
+                        cycle: {
+                            name: 'OpenCycleMap',
+                            type: 'xyz',
+                            url: 'http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png',
+                            layerOptions: {
+                                subdomains: ['a', 'b', 'c'],
+                                attribution: '&copy; <a href="http://www.opencyclemap.org/copyright">OpenCycleMap</a> contributors - &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                                continuousWorld: true
+                            }
+                        }
+                    },
+                    overlays: {
+                        hillshade: {
+                            name: 'Hillshade Europa',
+                            type: 'wms',
+                            url: 'http://129.206.228.72/cached/hillshade',
+                            visible: true,
+                            layerOptions: {
+                                layers: 'europe_wms:hs_srtm_europa',
+                                format: 'image/png',
+                                opacity: 0.25,
+                                attribution: 'Hillshade layer by GIScience http://www.osm-wms.de',
+                                crs: L.CRS.EPSG900913
+                            }
+                        },
+                        cars: {
+                            name: 'Cars',
+                            type: 'markercluster',
+                            visible: true
+                        }
+                    }
+                },
+                markers: {
+                    m1: {
+                        lat: 42.20133,
+                        lng: 2.19110,
+                        layer: 'cars',
+                        message: "I'm a moving car"
+                    },
+                    m2: {
+                        lat: 42.21133,
+                        lng: 2.18110,
+                        layer: 'cars',
+                        message: "I'm a car"
+                    },
+                    m3: {
+                        lat: 42.19133,
+                        lng: 2.18110,
+                        layer: 'cars',
+                        message: 'A bike!!'
+                    },
+                    m4: {
+                        lat: 42.3,
+                        lng: 2.16110,
+                        layer: 'cars'
+                    },
+                    m5: {
+                        lat: 42.1,
+                        lng: 2.16910,
+                        layer: 'cars'
+                    },
+                    m6: {
+                        lat: 42.15,
+                        lng: 2.17110,
+                        layer: 'cars'
+                    }
+                }
+            });
+            $scope.move = function() {
+                $scope.markers.m1.lng = $scope.markers.m1.lng + 0.1;
+            }
+        } ]);
+    </script>
+</head>
+<body ng-controller="LayersOverlaysMarkerclusterController">
+    <leaflet center="ripoll" markers="markers" layers="layers" height="480px" width="100%"></leaflet>
+    <h1>This is a map with overlays and a markercluster</h1>
+    <p>
+    In this example we use a <a href="https://github.com/Leaflet/Leaflet.markercluster">MarkerCluster</a> overlay to group the markers instead of a LayerGroup.
+    The layer is defined as any other overlay. The possible options can be found in the <a href="https://github.com/Leaflet/Leaflet.markercluster">MarkerCluster docs</a>
+    </p>
+    <p>
+    Layer definition:
+    </p>
+	<p>
+	    <pre>
+cars: {
+    name: 'Cars',
+    type: 'markercluster',
+    visible: true
+}
+        </pre>
+	</p>
+    <p>
+        <div class="alert alert-warning">
+            The MarkerCluster, at this moment, does not support the location change of the markers and they have to be
+            removed and added again to the cluster. So, as we remove & add markers when the model is changed, you can
+            experience a slight glitch during this operation. You can test it clicking the button below.
+        </div>
+    </p>
+    <p>
+        <button ng-click="move()" class="btn">Move a car!</button>
+    </p>
+</body>
+</html>

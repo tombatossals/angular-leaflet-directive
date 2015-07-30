@@ -124,4 +124,33 @@ describe('Directive: bounds', function() {
         expect(scopeBounds.southWest.lat).toBe(mapBounds._southWest.lat);
         expect(scopeBounds.southWest.lng).toBe(mapBounds._southWest.lng);
     });
+
+    it('updates the map bounds with options if bounds are provided', function() {
+        bounds.options = {
+            padding: [50, 50]
+        };
+        angular.extend(scope, {
+            bounds: bounds,
+            center: {}
+        });
+        var element = angular.element('<leaflet bounds="bounds" center="center"></leaflet>');
+        element = $compile(element)(scope);
+
+        var map;
+        leafletData.getMap().then(function(leafletMap) {
+            map = leafletMap;
+        });
+
+        scope.$digest();
+        var mapBounds = map.getBounds();
+        /* Since there is no clean way to verify if the options have been used by leaflet,
+           we just verify that the bounds we provided to the directive are different from the map's bounds.
+           Other tests already ensure, that the bounds are correct without the options...
+         */
+        expect(mapBounds.getSouthWest().lat).not.toEqual(bounds.southWest.lat);
+        expect(mapBounds.getSouthWest().lng).not.toEqual(bounds.southWest.lng);
+        expect(mapBounds.getNorthEast().lat).not.toEqual(bounds.northEast.lat);
+        expect(mapBounds.getNorthEast().lng).not.toEqual(bounds.northEast.lng);
+    });
+
 });

@@ -70,15 +70,23 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                 }
 
                 // Watch for the base layers
-                leafletScope.$watch('layers.baselayers', function(newBaseLayers) {
+                leafletScope.$watch('layers.baselayers', function(newBaseLayers, oldBaseLayers) {
+                    if(angular.equals(newBaseLayers, oldBaseLayers)) {
+                        isLayersControlVisible = updateLayersControl(map, mapId, isLayersControlVisible, newBaseLayers, layers.overlays, leafletLayers);
+                        return true;
+                    }
                     // Delete layers from the array
                     for (var name in leafletLayers.baselayers) {
-                        if (!isDefined(newBaseLayers[name])) {
+                        if (!isDefined(newBaseLayers[name]) || newBaseLayers[name].doRefresh) {
                             // Remove from the map if it's on it
                             if (map.hasLayer(leafletLayers.baselayers[name])) {
                                 map.removeLayer(leafletLayers.baselayers[name]);
                             }
                             delete leafletLayers.baselayers[name];
+
+                            if (newBaseLayers[name] && newBaseLayers[name].doRefresh) {
+                                newBaseLayers[name].doRefresh = false;
+                            }
                         }
                     }
                     // add new layers
@@ -111,8 +119,8 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                         }
                     }
                     // If there is no active layer make one active
-                    if (!found && Object.keys(layers.baselayers).length > 0) {
-                        map.addLayer(leafletLayers.baselayers[Object.keys(layers.baselayers)[0]]);
+                    if (!found && Object.keys(leafletLayers.baselayers).length > 0) {
+                        map.addLayer(leafletLayers.baselayers[Object.keys(leafletLayers.baselayers)[0]]);
                     }
 
                     // Only show the layers switch selector control if we have more than one baselayer + overlay
@@ -120,16 +128,24 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                 }, true);
 
                 // Watch for the overlay layers
-                leafletScope.$watch('layers.overlays', function(newOverlayLayers) {
+                leafletScope.$watch('layers.overlays', function(newOverlayLayers, oldOverlayLayers) {
+                    if(angular.equals(newOverlayLayers, oldOverlayLayers)) {
+                        isLayersControlVisible = updateLayersControl(map, mapId, isLayersControlVisible, layers.baselayers, newOverlayLayers, leafletLayers);
+                        return true;
+                    }
                     // Delete layers from the array
                     for (var name in leafletLayers.overlays) {
-                        if (!isDefined(newOverlayLayers[name])) {
+                        if (!isDefined(newOverlayLayers[name]) || newOverlayLayers[name].doRefresh) {
                             // Remove from the map if it's on it
                             if (map.hasLayer(leafletLayers.overlays[name])) {
                                 map.removeLayer(leafletLayers.overlays[name]);
                             }
                             // TODO: Depending on the layer type we will have to delete what's included on it
                             delete leafletLayers.overlays[name];
+
+                            if (newOverlayLayers[name] && newOverlayLayers[name].doRefresh) {
+                                newOverlayLayers[name].doRefresh = false;
+                            }
                         }
                     }
 
@@ -137,11 +153,13 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                     for (var newName in newOverlayLayers) {
                         if (!isDefined(leafletLayers.overlays[newName])) {
                             var testOverlayLayer = createLayer(newOverlayLayers[newName]);
-                            if (isDefined(testOverlayLayer)) {
-                                leafletLayers.overlays[newName] = testOverlayLayer;
-                                if (newOverlayLayers[newName].visible === true) {
-                                    map.addLayer(leafletLayers.overlays[newName]);
-                                }
+                            if (!isDefined(testOverlayLayer)) {
+                                // If the layer creation fails, continue to the next overlay
+                                continue;
+                            }
+                            leafletLayers.overlays[newName] = testOverlayLayer;
+                            if (newOverlayLayers[newName].visible === true) {
+                                map.addLayer(leafletLayers.overlays[newName]);
                             }
                         }
 

@@ -1,7 +1,7 @@
 'defaults' Attribute Documentation
 ==================================
 
-This sub-directive needs the **leaflet** main directive, so it is normaly used as an attribute of the *leaflet* tag, like this:
+This sub-directive needs the **leaflet** main directive, so it is normally used as an attribute of the *leaflet* tag, like this:
 
 ```
 <leaflet defaults="defaults"></leaflet>
@@ -27,7 +27,7 @@ We can define some specific parameters that apply to the Leaflet map creation. O
 * [crs](http://leafletjs.com/reference.html#map-crs). *String*. Coordinate reference system. Here we will use four possible values: [ "EPSG3857", "EPSG4326", "EPSG3395", "Simple" ]. [More information](http://leafletjs.com/reference.html#defined-crs-l.crs.epsg3857).
 
 
-We can define also some other defaults, like the default tileLayer url where the tiles will be fetched, or the zoom control position on the map. You can see the list of all the default paramameters [here](https://github.com/tombatossals/angular-leaflet-directive/blob/master/src/services/leafletMapDefaults.js#L2).
+We can define also some other defaults, like the default tileLayer url where the tiles will be fetched, or the zoom control position on the map. You can see the list of all the default parameters [here](https://github.com/tombatossals/angular-leaflet-directive/blob/master/src/services/leafletMapDefaults.js#L2).
 
 Let's see an example of how to use this. First of all, in our controller, we will create a new object *defaults* inside the *$scope* where we will set the parameters that we want to change.
 

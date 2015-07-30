@@ -1,5 +1,5 @@
-angular.module("leaflet-directive", []).directive('leaflet', function ($q, leafletData, leafletMapDefaults, leafletHelpers, leafletEvents) {
-    var _leafletMap;
+angular.module("leaflet-directive", []).directive('leaflet',
+    function ($q, leafletData, leafletMapDefaults, leafletHelpers, leafletEvents) {
     return {
         restrict: "EA",
         replace: true,
@@ -16,14 +16,16 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($q, leafl
             layers         : '=',
             controls       : '=',
             decorations    : '=',
-            eventBroadcast : '='
+            eventBroadcast : '=',
+            markersWatchOptions : '=',
+            geojsonWatchOptions : '='
         },
         transclude: true,
         template: '<div class="angular-leaflet-map"><div ng-transclude></div></div>',
         controller: function ($scope) {
-            _leafletMap = $q.defer();
+            this._leafletMap = $q.defer();
             this.getMap = function () {
-                return _leafletMap.promise;
+                return this._leafletMap.promise;
             };
 
             this.getLeafletScope = function() {
@@ -31,11 +33,14 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($q, leafl
             };
         },
 
-        link: function(scope, element, attrs) {
+        link: function(scope, element, attrs, ctrl) {
             var isDefined = leafletHelpers.isDefined,
                 defaults = leafletMapDefaults.setDefaults(scope.defaults, attrs.id),
-                genDispatchMapEvent = leafletEvents.genDispatchMapEvent,
-                mapEvents = leafletEvents.getAvailableMapEvents();
+                mapEvents = leafletEvents.getAvailableMapEvents(),
+                addEvents = leafletEvents.addEvents;
+
+            scope.mapId =  attrs.id;
+            leafletData.setDirectiveControls({}, attrs.id);
 
             // Set width and height utility functions
             function updateWidth() {
@@ -86,7 +91,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($q, leafl
 
             // Create the Leaflet Map Object with the options
             var map = new L.Map(element[0], leafletMapDefaults.getMapCreationDefaults(attrs.id));
-            _leafletMap.resolve(map);
+            ctrl._leafletMap.resolve(map);
 
             if (!isDefined(attrs.center)) {
                 map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
@@ -120,12 +125,7 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($q, leafl
             // if no event-broadcast attribute, all events are broadcasted
             if (!isDefined(attrs.eventBroadcast)) {
                 var logic = "broadcast";
-                for (var i = 0; i < mapEvents.length; i++) {
-                    var eventName = mapEvents[i];
-                    map.on(eventName, genDispatchMapEvent(scope, eventName, logic), {
-                        eventName: eventName
-                    });
-                }
+                addEvents(map, mapEvents, "eventName", scope, logic);
             }
 
             // Resolve the map object to the promises
@@ -134,13 +134,14 @@ angular.module("leaflet-directive", []).directive('leaflet', function ($q, leafl
             });
 
             scope.$on('$destroy', function () {
+                leafletMapDefaults.reset();
                 map.remove();
                 leafletData.unresolveMap(attrs.id);
             });
 
             //Handle request to invalidate the map size
-	        //Up scope using $scope.$emit('invalidateSize')
-	        //Down scope using $scope.$broadcast('invalidateSize')
+            //Up scope using $scope.$emit('invalidateSize')
+            //Down scope using $scope.$broadcast('invalidateSize')
             scope.$on('invalidateSize', function() {
                 map.invalidateSize();
             });

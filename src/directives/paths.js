@@ -86,7 +86,7 @@ angular.module("leaflet-directive").directive('paths', function ($log, $q, leafl
 
                                 // bind popup if defined
                                 if (isDefined(newPath) && isDefined(pathData.message)) {
-                                    newPath.bindPopup(pathData.message);
+                                    newPath.bindPopup(pathData.message, pathData.popupOptions);
                                 }
 
                                 // Show label if defined
@@ -107,12 +107,12 @@ angular.module("leaflet-directive").directive('paths', function ($log, $q, leafl
                                     }
 
                                     if (!isDefined(layers.overlays) || !isDefined(layers.overlays[pathData.layer])) {
-                                        $log.error('[AngularJS - Leaflet] A marker can only be added to a layer of type "group"');
+                                        $log.error('[AngularJS - Leaflet] A path can only be added to a layer of type "group"');
                                         continue;
                                     }
                                     var layerGroup = layers.overlays[pathData.layer];
                                     if (!(layerGroup instanceof L.LayerGroup || layerGroup instanceof L.FeatureGroup)) {
-                                        $log.error('[AngularJS - Leaflet] Adding a marker to an overlay needs a overlay of the type "group" or "featureGroup"');
+                                        $log.error('[AngularJS - Leaflet] Adding a path to an overlay needs a overlay of the type "group" or "featureGroup"');
                                         continue;
                                     }
 

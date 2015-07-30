@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html ng-app="demoApp">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/angular-route/angular-route.min.js"></script>
+    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="../dist/angular-leaflet-directive.min.js"></script>
+    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
+    <script>
+        var app  = angular.module('demoApp',['ngRoute', 'leaflet-directive']);
+
+        app.config(function ($routeProvider) {
+            $routeProvider.when('/map', {
+                template: '<leaflet width="100%" height="480px"></leaflet>',
+                controller: 'BasicDynamicAddRemoveMapExample'
+            });
+        });
+
+        app.controller('BasicDynamicAddRemoveMapExample', [ '$scope', 'leafletData', function($scope, leafletData) {
+        } ]);
+        </script>
+  </head>
+  <body ng-controller="BasicDynamicAddRemoveMapExample">
+    <ng-view></ng-view>
+    <h1>Angular routing show/hide map example</h1>
+    <p><a href="#/map">Show map</a> / <a href="#/">Hide map</a></p>
+  </body>
+</html>

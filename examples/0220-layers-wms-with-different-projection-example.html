@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html ng-app="demoapp">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="../bower_components/proj4/dist/proj4.js"></script>
+    <script src="../bower_components/proj4leaflet/src/proj4leaflet.js"></script>
+    <script src="../dist/angular-leaflet-directive.js"></script>
+    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
+    <script>
+        // For more info take a look at https://github.com/kartena/Proj4Leaflet proj4leaflet.js
+        var app = angular.module('demoapp', ['leaflet-directive']);
+        app.controller('LayersWMSWithDifferentProjectionController', [ '$scope', '$location', function($scope) {
+            $scope.map = {
+                defaults: {
+                    crs: new L.Proj.CRS('EPSG:3006', '+proj=utm +zone=33 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs',
+                    {
+                        resolutions: [
+                            8192, 4096, 2048, 1024, 512, 256, 128,
+                            64, 32, 16, 8, 4, 2, 1, 0.5
+                        ],
+                        origin: [0, 0]
+                    }),
+                    continuousWorld: true
+                },
+                malmo: {
+                    lat: 55.5902,
+                    lng: 12.9956,
+                    zoom: 3
+                },
+                layers: {
+                    baselayers: {
+                        malmo: {
+                            name: 'Fishery',
+                            type: 'wms',
+                            url: 'http://geodatatest.havochvatten.se/geoservices/ows',
+                            visible: true,
+                            layerOptions: {
+                                layers: 'hav-fisketsgeografier:havet-ostersjons-delomraden',
+                                format: 'image/png',
+                                maxZoom: 14,
+                                minZoom: 0,
+                                continuousWorld: true,
+                                attribution: '&copy; <a href="https://www.havochvatten.se/kunskap-om-vara-vatten/kartor-och-geografisk-information/karttjanster.html">Havs- och vattenmyndigheten (Swedish Agency for Marine and Water Management)</a>'
+
+                            }
+                        }
+                    }
+                }
+            };
+        }]);
+    </script>
+  </head>
+  <body ng-controller="LayersWMSWithDifferentProjectionController">
+    <h1>Load a map in non standard projection</h1>
+    <leaflet center="map.malmo" defaults="map.defaults" layers="map.layers" width="100%" height="400px"></leaflet>
+  </body>
+</html>

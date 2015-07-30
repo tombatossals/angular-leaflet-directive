@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+        <title>Angular Leaflet Directive: Examples viewer</title>
+
+        <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700|Open+Sans:300italic,400,300,700' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" type="text/css" href="../bower_components/semantic-ui/dist/semantic.min.css">
+        <link rel="stylesheet" type="text/css" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="../bower_components/prism/themes/prism.css">
+        <link rel="stylesheet" type="text/css" href="../bower_components/leaflet/dist/leaflet.css">
+        <link rel="stylesheet" href="../bower_components/Leaflet.label/dist/leaflet.label.css" />
+        <link rel="stylesheet" href="../bower_components/leaflet.draw/dist/leaflet.draw.css" />
+        <link rel="stylesheet" href="../bower_components/leaflet.markercluster/dist/MarkerCluster.css" />
+        <link rel="stylesheet" href="../bower_components/leaflet.markercluster/dist/MarkerCluster.Default.css" />
+        <link rel="stylesheet" type="text/css" href="css/viewer.css">
+        <link rel="stylesheet" type="text/css" href="http://cloud.github.com/downloads/lafeber/world-flags-sprite/flags32.css" />
+        <link rel="stylesheet" href="../bower_components/font-awesome/css/font-awesome.min.css">
+        <link rel="stylesheet" href="../bower_components/Leaflet.awesome-markers/dist/leaflet.awesome-markers.css">
+        <link rel="stylesheet" href="../bower_components/Leaflet.ExtraMarkers/src/leaflet.extra-markers.css">
+        <link rel="stylesheet" href="../bower_components/Leaflet.fullscreen/dist/leaflet.fullscreen.css" />
+        <link rel="stylesheet" href="../bower_components/leaflet-minimap/dist/Control.MiniMap.min.css" />
+
+        <script src="http://maps.google.com/maps/api/js?v=3&sensor=false"></script>
+        <script src="../bower_components/leaflet/dist/leaflet.js"></script>
+        <script src="../bower_components/proj4/dist/proj4.js"></script>
+        <script src="../bower_components/proj4leaflet/src/proj4leaflet.js"></script>
+        <script src="../bower_components/leaflet-plugins/layer/tile/Google.js"></script>
+        <script src="../bower_components/esri-leaflet/dist/esri-leaflet.js"></script>
+        <script src="../bower_components/webgl-heatmap-leaflet/js/webgl-heatmap.js"></script>
+        <script src="../bower_components/webgl-heatmap-leaflet/js/webgl-heatmap-leaflet.js"></script>
+        <script src="../bower_components/Leaflet.utfgrid/dist/leaflet.utfgrid.js"></script>
+        <script src="../bower_components/Leaflet.label/dist/leaflet.label.js"></script>
+        <script src="../bower_components/leaflet-plugins/layer/tile/Bing.js"></script>
+        <script src="../bower_components/leaflet.draw/dist/leaflet.draw.js"></script>
+        <script src="../bower_components/leaflet-plugins/layer/Marker.Rotate.js"></script>
+        <script src="../bower_components/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+        <script src="../bower_components/esri-leaflet-clustered-feature-layer/dist/esri-leaflet-clustered-feature-layer.js"></script>
+        <script src="../bower_components/Leaflet.PolylineDecorator/leaflet.polylineDecorator.min.js"></script>
+        <script src="../bower_components/Leaflet.awesome-markers/dist/leaflet.awesome-markers.js"></script>
+        <script src="../bower_components/Leaflet.MakiMarkers/Leaflet.MakiMarkers.js"></script>
+        <script src="../bower_components/Leaflet.ExtraMarkers/src/leaflet.extra-markers.js"></script>
+        <script src="../bower_components/Leaflet.heat/dist/leaflet-heat.js"></script>
+        <script src="../bower_components/esri-leaflet-heatmap-feature-layer/dist/esri-leaflet-heatmap-feature-layer.js"></script>
+        <script src="../bower_components/Leaflet.fullscreen/dist/Leaflet.fullscreen.min.js"></script>
+        <script src="../bower_components/leaflet-minimap/dist/Control.MiniMap.min.js"></script>
+
+        <script src="../bower_components/jquery/dist/jquery.min.js"></script>
+
+        <script src="../bower_components/prism/prism.js"></script>
+        <script src="../bower_components/semantic-ui/dist/semantic.min.js"></script>
+        <script src="../bower_components/angular/angular.min.js"></script>
+        <script src="../bower_components/angular-route/angular-route.min.js"></script>
+        <script src="../dist/angular-leaflet-directive.min.js"></script>
+        <script src="js/viewer.js"></script>
+        <script src="js/controllers.js"></script>
+    </head>
+
+    <body ng-app="webapp" ng-controller="MainController">
+        <div class="ui divided equal height padded grid leftside">
+            <div class="seven wide middle column">
+                <a class="ui right floated blue launch button" href="http://github.com/tombatossals/angular-leaflet-directive">
+                    <i class="social github icon"></i> Github
+                </a>
+
+                <h2 class="ui header"><a href="http://tombatossals.github.io/angular-leaflet-directive">angular-leaflet-directive</a></h2>
+                <div class="ui tabular filter menu">
+                    <a class="item" ng-repeat="s in sections" ng-class="{ active: s.active }" ng-click="setActiveSection(s.id)" ng-bind="s.name"></a>
+                </div>
+                <div class="ui selection list">
+                    <a class="item" ng-class="{ active: example.id === e.id }" ng-href="#{{ e.id }}" ng-repeat="e in getExamplesFromActiveSection()">
+                        <i class="map marker icon"></i>
+                        <div class="content">
+                            <div ng-bind="($index +1) + '. ' + e.title"></div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div class="nine wide right column rightside">
+                <ng-view></ng-view>
+            </div>
+        </div>
+    </body>
+
+</html>

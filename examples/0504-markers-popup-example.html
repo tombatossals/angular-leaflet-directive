@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html ng-app="demoapp">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="../dist/angular-leaflet-directive_dev_mapped.js"></script>
+    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
+    <script>
+        var app = angular.module("demoapp", ["leaflet-directive"]);
+        app.controller('MarkersPopupController', [ '$scope', function($scope) {
+            angular.extend($scope, {
+                london: {
+                    lat: 51.505,
+                    lng: -0.09,
+                    zoom: 8
+                },
+                markers: {
+                    m1: {
+                        lat: 51.505,
+                        lng: -0.09,
+                        focus: true,
+                        draggable: false,
+                        message: "Hi there!",
+                        icon: {}
+                    }
+                },
+                events: {
+                    markers: {
+                      enable: [ 'dragend' ]
+                      //logic: 'emit'
+                    }
+                }
+
+            });
+
+            $scope.$on("leafletDirectiveMarker.dragend", function(event, args){
+                console.log('hola');
+                $scope.markers.m1.lat = args.model.lat;
+                $scope.markers.m1.lng = args.model.lng;
+            });
+        } ]);
+    </script>
+  </head>
+  <body ng-controller="MarkersPopupController">
+    <leaflet center="london" markers="markers" event-broadcast="events" height="480px" width="100%"></leaflet>
+    <h1>Marker Popup properties</h1>
+    <h3>Marker position</h3>
+        Latitude: <input ng-model="markers.m1.lat" type="number" />
+        Longitue: <input ng-model="markers.m1.lng" type="number" />
+
+    <h3>Marker focus</h3>
+    <button ng-click="markers.m1.focus=true;" />Focus</button>
+    <button ng-click="markers.m1.focus=false;" />Not focus</button>
+    <h3>Popup message</h3>
+    <input ng-model="markers.m1.message" type="text" />
+
+    <h3>Draggable marker</h3>
+    <input type="radio" name="draggable" ng-model="markers.m1.draggable" ng-value="true" />Draggable
+    <input type="radio" name="draggable" ng-model="markers.m1.draggable" ng-value="false" />Not draggable
+  </body>
+</html>

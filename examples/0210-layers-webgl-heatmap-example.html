@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html ng-app="demoapp">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="../dist/angular-leaflet-directive.min.js"></script>
+    <script src="../bower_components/webgl-heatmap-leaflet/js/webgl-heatmap.js"></script>
+    <script src="../bower_components/webgl-heatmap-leaflet/js/webgl-heatmap-leaflet.js"></script>
+    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
+    <script>
+        var app = angular.module("demoapp", ["leaflet-directive"]);
+        app.controller("LayersWebGLHeatmapController", [ "$scope", function($scope) {
+            var dataPoints = [
+                [44.651144316,-63.586260171, 0.5],
+                [44.75, -63.5, 0.8] ];
+
+            angular.extend($scope, {
+                center: {
+                    lat: 44.8091,
+                    lng: -63.3636,
+                    zoom: 9
+                },
+                layers: {
+                    baselayers: {
+                        osm: {
+                            name: 'OpenStreetMap',
+                            url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                            type: 'xyz'
+                        }
+                    },
+                    overlays: {
+                        heatmap: {
+                            name: 'Heat Map',
+                            type: 'webGLHeatmap',
+                            data: dataPoints,
+                            visible: true
+                        }
+                    }
+                }
+            });
+        }]);
+    </script>
+</head>
+<body ng-controller="LayersWebGLHeatmapController">
+    <leaflet center="center" layers="layers" width="100%" height="480px"></leaflet>
+    <h1>HeatMap WebGL overlay example</h1>
+    <p>You can use the <a href="https://github.com/ursudio/webgl-heatmap-leaflet">WebGL HeatMap overlay plugin</a>, like this. Please read the heatmap plugin documentation to use it.</p>
+    <pre ng-bind="layers | json"></pre>
+</body>
+</html>

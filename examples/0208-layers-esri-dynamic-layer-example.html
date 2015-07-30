@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html ng-app="demoapp">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="../bower_components/esri-leaflet/dist/esri-leaflet.js"></script>
+    <script src="../dist/angular-leaflet-directive.min.js"></script>
+    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
+    <script>
+        var app = angular.module("demoapp", ["leaflet-directive"]);
+        app.controller("LayersEsriDynamicLayerController", [ "$scope", function($scope) {
+            angular.extend($scope, {
+                bogota: {
+	            	lat: 4.649,
+	                lng: -74.086,
+	                zoom: 15
+	            },
+                markers: {
+                    m1: {
+                        lat: 4.649,
+	                	lng: -74.086,
+                    }
+                },
+                layers: {
+                    baselayers: {
+				    	world: {
+					    	name: "Imagery",
+					        type: "agsDynamic",
+					        url: "http://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer",
+					        visible: false,
+					        layerOptions: {
+					            layers: [0, 1, 2, 3],
+				                opacity: 1,
+				                attribution: "Copyright:© 2014 Esri, DeLorme, HERE, TomTom"
+					        }
+				    	},
+				    	topo: {
+					    	name: "World Topographic",
+					        type: "agsDynamic",
+					        url: "http://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer",
+					        visible: false,
+					        layerOptions: {
+					            layers: [0],
+				                opacity: 0.9,
+				                attribution: "Copyright:© 2014 Esri, FAO, NOAA"
+					        }
+				    	},
+                    },
+                },
+            });
+        }]);
+    </script>
+</head>
+<body ng-controller="LayersEsriDynamicLayerController">
+    <leaflet center="bogota" layers="layers" markers="markers" width="100%" height="480px"></leaflet>
+    <h1>Esri ArcGIS Dynamic Map Layer</h1>
+    <p>Use the Layer Switch Control on the top rigth of the map to select another Esri Layer.</p>
+</body>
+</html>

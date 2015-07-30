@@ -1,4 +1,4 @@
-+angular.module("leaflet-directive").directive('controls', function ($log, leafletHelpers) {
+angular.module("leaflet-directive").directive('controls', function ($log, leafletHelpers, leafletControlHelpers) {
     return {
         restrict: "A",
         scope: false,
@@ -10,45 +10,49 @@
                 return;
             }
 
-            var isDefined = leafletHelpers.isDefined,
-                leafletScope  = controller.getLeafletScope(),
-                controls = leafletScope.controls;
+            var createControl = leafletControlHelpers.createControl;
+            var isValidControlType = leafletControlHelpers.isValidControlType;
+            var leafletScope  = controller.getLeafletScope();
+            var isDefined = leafletHelpers.isDefined;
+            var leafletControls = {};
+            var errorHeader = leafletHelpers.errorHeader + ' [Controls] ';
 
             controller.getMap().then(function(map) {
-                if (isDefined(L.Control.Draw) && isDefined(controls.draw)) {
 
-                    if (!isDefined(controls.edit)) {
-                        controls.edit = { featureGroup: new L.FeatureGroup() };
-                        map.addLayer(controls.edit.featureGroup);
+                leafletScope.$watchCollection('controls', function(newControls) {
+
+                    // Delete controls from the array
+                    for (var name in leafletControls) {
+                        if (!isDefined(newControls[name])) {
+                            if (map.hasControl(leafletControls[name])) {
+                                map.removeControl(leafletControls[name]);
+                            }
+                            delete leafletControls[name];
+                        }
                     }
 
-                    var drawControl = new L.Control.Draw(controls);
-                    map.addControl(drawControl);
-                }
+                    for (var newName in newControls) {
+                        var control;
 
-                if (isDefined(controls.scale)) {
-                    var scaleControl = new L.control.scale(controls.scale);
-                    map.addControl(scaleControl);
-                }
+                        var controlType = isDefined(newControls[newName].type) ? newControls[newName].type : newName;
 
-                if (isDefined(controls.custom)) {
-                    for(var i in controls.custom) {
-                        map.addControl(controls.custom[i]);
+                        if (!isValidControlType(controlType)) {
+                            $log.error(errorHeader + ' Invalid control type: ' + controlType + '.');
+                            return;
+                        }
+
+                        if (controlType !== 'custom') {
+                            control = createControl(controlType, newControls[newName]);
+                        } else {
+                            control = newControls[newName];
+                        }
+                        map.addControl(control);
+
+                        leafletControls[newName] = control;
                     }
-                }
-            });
 
-            leafletScope.$watch("controls.edit", function(editOpts) {
-                    // test for suitability here
-                    if ("featureGroup" in editOpts) {
-                        controller.getMap().then(function(map) {
-                        map.addLayer(editOpts.featureGroup);
+                });
 
-                        var drawControl = new L.Control.Draw({edit:
-                            {featureGroup:editOpts.featureGroup,edit:{}}});
-                        map.addControl(drawControl);
-                    });
-                    }
             });
         }
     };

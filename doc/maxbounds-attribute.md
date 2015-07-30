@@ -1,13 +1,13 @@
 'maxbounds' Attribute Documentation
 ===================================
 
-This sub-directive needs the **leaflet** main directive, so it is normaly used as an attribute of the *leaflet* tag, like this:
+This sub-directive needs the **leaflet** main directive, so it is normally used as an attribute of the *leaflet* tag, like this:
 
 ```
 <leaflet maxbounds="maxbounds"></leaflet>
 ```
 
-It will map an object _maxbounds_ of our controller scope with the corresponding object on our leaflet directive isolated scope. It's not a bidirectional relationship, only the changes made to our _maxbounds_ object on the controller scope will affect the map, but no viceversa.
+It will map an object _maxbounds_ of our controller scope with the corresponding object on our leaflet directive isolated scope. It's not a bidirectional relationship, only the changes made to our _maxbounds_ object on the controller scope will affect the map, but no vice versa.
 
 ```
 $scope.maxbounds = {
@@ -17,7 +17,7 @@ $scope.maxbounds = {
     },
     northEast: {
         lat:51.508742458803326,
-       lng:-0.087890625
+        lng:-0.087890625
     }
 
 }

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html ng-app="demoapp">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="../dist/angular-leaflet-directive.min.js"></script>
+    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
+    <script>
+        var app = angular.module("demoapp", ["leaflet-directive"]);
+        app.controller("LayersOverlaysHideOnZoomOutController", [ "$scope", function($scope) {
+            angular.extend($scope, {
+                center: {
+                    lat: 39,
+                    lng: -100,
+                    zoom: 4
+                },
+                layers: {
+                    baselayers: {
+                        xyz: {
+                            name: 'OpenStreetMap (XYZ)',
+                            url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                            type: 'xyz'
+                        }
+                    },
+                    overlays: {
+                        wms: {
+                            name: 'EEUU States (WMS)',
+                            type: 'wms',
+                            visible: true,
+                            url: 'http://suite.opengeo.org/geoserver/usa/wms',
+                            layerParams: {
+                                layers: 'usa:states',
+                                format: 'image/png',
+                                transparent: true
+                            }
+                        }
+                    }
+                }
+            });
+
+            $scope.$watch('center.zoom', function(newValue){
+                $scope.layers.overlays.wms.visible = newValue >= 4;
+            });
+        }]);
+    </script>
+</head>
+<body ng-controller="LayersOverlaysHideOnZoomOutController">
+    <leaflet center="center" layers="layers" width="100%" height="480px"></leaflet>
+    <h1>Baselayer with overlay which is hidden on Zoom less than 4 </h1>
+    <p>
+      zoom: {{center.zoom}}
+    </p>
+</body>
+</html>

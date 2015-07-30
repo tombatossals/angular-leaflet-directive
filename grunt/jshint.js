@@ -7,7 +7,7 @@ module.exports = function (grunt, options) {
             browser: true,
             esnext: true,
             bitwise: true,
-            curly: true,
+            curly: false,
             eqeqeq: true,
             immed: true,
             indent: 4,
@@ -51,7 +51,7 @@ module.exports = function (grunt, options) {
             src: ['src/directives/*.js', 'src/services/*.js']
         },
         tests: {
-            src: ['test/unit/*.js', 'test/e2e/*.js'],
+            src: ['test/unit/*.js', 'test/e2e/*.js']
         },
         grunt: {
             src: ['Gruntfile.js']

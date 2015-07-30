@@ -1,21 +1,37 @@
-angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($rootScope, leafletHelpers, $log, $compile) {
-
+angular.module("leaflet-directive").service('leafletMarkersHelpers', function ($rootScope, $timeout, leafletHelpers, $log, $compile, leafletGeoJsonHelpers) {
     var isDefined = leafletHelpers.isDefined,
+        defaultTo = leafletHelpers.defaultTo,
         MarkerClusterPlugin = leafletHelpers.MarkerClusterPlugin,
         AwesomeMarkersPlugin = leafletHelpers.AwesomeMarkersPlugin,
         MakiMarkersPlugin = leafletHelpers.MakiMarkersPlugin,
         ExtraMarkersPlugin = leafletHelpers.ExtraMarkersPlugin,
-        safeApply     = leafletHelpers.safeApply,
+        safeApply = leafletHelpers.safeApply,
         Helpers = leafletHelpers,
         isString = leafletHelpers.isString,
-        isNumber  = leafletHelpers.isNumber,
+        isNumber = leafletHelpers.isNumber,
         isObject = leafletHelpers.isObject,
-        groups = {};
+        groups = {},
+        geoHlp = leafletGeoJsonHelpers,
+        errorHeader = leafletHelpers.errorHeader;
 
-    var createLeafletIcon = function(iconData) {
+
+    var _string = function (marker) {
+        //this exists since JSON.stringify barfs on cyclic
+        var retStr = '';
+        ['_icon', '_latlng', '_leaflet_id', '_map', '_shadow'].forEach(function (prop) {
+            retStr += prop + ': ' + defaultTo(marker[prop], 'undefined') + ' \n';
+        });
+        return '[leafletMarker] : \n' + retStr;
+    };
+    var _log = function (marker, useConsole) {
+        var logger = useConsole ? console : $log;
+        logger.debug(_string(marker));
+    };
+
+    var createLeafletIcon = function (iconData) {
         if (isDefined(iconData) && isDefined(iconData.type) && iconData.type === 'awesomeMarker') {
             if (!AwesomeMarkersPlugin.isLoaded()) {
-                $log.error('[AngularJS - Leaflet] The AwesomeMarkers Plugin is not loaded.');
+                $log.error(errorHeader + ' The AwesomeMarkers Plugin is not loaded.');
             }
 
             return new L.AwesomeMarkers.icon(iconData);
@@ -23,7 +39,7 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
 
         if (isDefined(iconData) && isDefined(iconData.type) && iconData.type === 'makiMarker') {
             if (!MakiMarkersPlugin.isLoaded()) {
-                $log.error('[AngularJS - Leaflet] The MakiMarkers Plugin is not loaded.');
+                $log.error(errorHeader + 'The MakiMarkers Plugin is not loaded.');
             }
 
             return new L.MakiMarkers.icon(iconData);
@@ -31,7 +47,7 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
 
         if (isDefined(iconData) && isDefined(iconData.type) && iconData.type === 'extraMarker') {
             if (!ExtraMarkersPlugin.isLoaded()) {
-                $log.error('[AngularJS - Leaflet] The ExtraMarkers Plugin is not loaded.');
+                $log.error(errorHeader + 'The ExtraMarkers Plugin is not loaded.');
             }
             return new L.ExtraMarkers.icon(iconData);
         }
@@ -62,17 +78,17 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
         return new L.Icon(iconData);
     };
 
-    var _resetMarkerGroup = function(groupName) {
-      if (isDefined(groups[groupName])) {
-        groups.splice(groupName, 1);
-      }
+    var _resetMarkerGroup = function (groupName) {
+        if (isDefined(groups[groupName])) {
+            groups.splice(groupName, 1);
+        }
     };
 
-    var _resetMarkerGroups = function() {
-      groups = {};
+    var _resetMarkerGroups = function () {
+        groups = {};
     };
 
-    var _deleteMarker = function(marker, map, layers) {
+    var _deleteMarker = function (marker, map, layers) {
         marker.closePopup();
         // There is no easy way to know if a marker is added to a layer, so we search for it
         // if there are overlays
@@ -100,44 +116,291 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
         }
     };
 
-    var _manageOpenPopup = function(marker, markerData) {
-        marker.openPopup();
-
-        //the marker may have angular templates to compile
-        var popup = marker.getPopup(),
-            //the marker may provide a scope returning function used to compile the message
-            //default to $rootScope otherwise
-            markerScope = angular.isFunction(markerData.getMessageScope) ? markerData.getMessageScope() : $rootScope,
-            compileMessage = isDefined(markerData.compileMessage) ? markerData.compileMessage : true;
-
-        if (isDefined(popup)) {
-            var updatePopup = function(popup) {
-                popup._updateLayout();
-                popup._updatePosition();
-            };
-
-            if (compileMessage) {
-                $compile(popup._contentNode)(markerScope);
-                //in case of an ng-include, we need to update the content after template load
-                if (isDefined(popup._contentNode) && popup._contentNode.innerHTML.indexOf("ngInclude") > -1) {
-                    var unregister = markerScope.$on('$includeContentLoaded', function() {
-                        updatePopup(popup);
-                        unregister();
-                    });
-                }
-                else {
-                    updatePopup(popup);
-                }
-            }
-        }
-        if (Helpers.LabelPlugin.isLoaded() && isDefined(markerData.label) && isDefined(markerData.label.options) && markerData.label.options.noHide === true) {
-            if (compileMessage) {
-                $compile(marker.label._container)(markerScope);
-            }
-            marker.showLabel();
+    var adjustPopupPan = function(marker, map) {
+        var containerHeight = marker._popup._container.offsetHeight,
+            layerPos = new L.Point(marker._popup._containerLeft, -containerHeight - marker._popup._containerBottom),
+            containerPos = map.layerPointToContainerPoint(layerPos);
+        if (containerPos !== null) {
+            marker._popup._adjustPan();
         }
     };
 
+    var compilePopup = function(marker, markerScope) {
+        $compile(marker._popup._contentNode)(markerScope);
+    };
+
+    var updatePopup = function (marker, markerScope, map) {
+        //The innerText should be more than 1 once angular has compiled.
+        //We need to keep trying until angular has compiled before we _updateLayout and _updatePosition
+        //This should take care of any scenario , eg ngincludes, whatever.
+        //Is there a better way to check for this?
+        var innerText = marker._popup._contentNode.innerText || marker._popup._contentNode.textContent;
+        if (innerText.length < 1) {
+            $timeout(function () {
+                updatePopup(marker, markerScope, map);
+            });
+        }
+
+        //cause a reflow - this is also very important - if we don't do this then the widths are from before $compile
+        var reflow = marker._popup._contentNode.offsetWidth;
+
+        marker._popup._updateLayout();
+        marker._popup._updatePosition();
+
+        if (marker._popup.options.autoPan) {
+            adjustPopupPan(marker, map);
+        }
+
+        //using / returning reflow so jshint doesn't moan
+        return reflow;
+    };
+
+    var _manageOpenPopup = function (marker, markerData, map) {
+        // The marker may provide a scope returning function used to compile the message
+        // default to $rootScope otherwise
+        var markerScope = angular.isFunction(markerData.getMessageScope) ? markerData.getMessageScope() : $rootScope,
+            compileMessage = isDefined(markerData.compileMessage) ? markerData.compileMessage : true;
+
+        if (compileMessage) {
+            if (!isDefined(marker._popup) || !isDefined(marker._popup._contentNode)) {
+                $log.error(errorHeader + 'Popup is invalid or does not have any content.');
+                return false;
+            }
+
+            compilePopup(marker, markerScope);
+            updatePopup(marker, markerData, map);
+        }
+    };
+
+
+    var _manageOpenLabel = function (marker, markerData) {
+        var markerScope = angular.isFunction(markerData.getMessageScope) ? markerData.getMessageScope() : $rootScope,
+            labelScope = angular.isFunction(markerData.getLabelScope) ? markerData.getLabelScope() : markerScope,
+            compileMessage = isDefined(markerData.compileMessage) ? markerData.compileMessage : true;
+
+        if (Helpers.LabelPlugin.isLoaded() && isDefined(markerData.label)) {
+            if (isDefined(markerData.label.options) && markerData.label.options.noHide === true) {
+                marker.showLabel();
+            }
+            if (compileMessage && isDefined(marker.label)) {
+                $compile(marker.label._container)(labelScope);
+            }
+        }
+    };
+
+    var _updateMarker = function (markerData, oldMarkerData, marker, name, leafletScope, layers, map) {
+            if (!isDefined(oldMarkerData)) {
+                return;
+            }
+
+            // Update the lat-lng property (always present in marker properties)
+            if (!geoHlp.validateCoords(markerData)) {
+                $log.warn('There are problems with lat-lng data, please verify your marker model');
+                _deleteMarker(marker, map, layers);
+                return;
+            }
+
+            // watch is being initialized if old and new object is the same
+            var isInitializing = markerData === oldMarkerData;
+
+            // Update marker rotation
+            if (isDefined(markerData.iconAngle) && oldMarkerData.iconAngle !== markerData.iconAngle) {
+                marker.setIconAngle(markerData.iconAngle);
+            }
+
+            // It is possible that the layer has been removed or the layer marker does not exist
+            // Update the layer group if present or move it to the map if not
+            if (!isString(markerData.layer)) {
+                // There is no layer information, we move the marker to the map if it was in a layer group
+                if (isString(oldMarkerData.layer)) {
+                    // Remove from the layer group that is supposed to be
+                    if (isDefined(layers.overlays[oldMarkerData.layer]) && layers.overlays[oldMarkerData.layer].hasLayer(marker)) {
+                        layers.overlays[oldMarkerData.layer].removeLayer(marker);
+                        marker.closePopup();
+                    }
+                    // Test if it is not on the map and add it
+                    if (!map.hasLayer(marker)) {
+                        map.addLayer(marker);
+                    }
+                }
+            }
+
+            if ((isNumber(markerData.opacity) || isNumber(parseFloat(markerData.opacity))) && markerData.opacity !== oldMarkerData.opacity) {
+                // There was a different opacity so we update it
+                marker.setOpacity(markerData.opacity);
+            }
+
+            if (isString(markerData.layer) && oldMarkerData.layer !== markerData.layer) {
+                // If it was on a layer group we have to remove it
+                if (isString(oldMarkerData.layer) && isDefined(layers.overlays[oldMarkerData.layer]) && layers.overlays[oldMarkerData.layer].hasLayer(marker)) {
+                    layers.overlays[oldMarkerData.layer].removeLayer(marker);
+                }
+                marker.closePopup();
+
+                // Remove it from the map in case the new layer is hidden or there is an error in the new layer
+                if (map.hasLayer(marker)) {
+                    map.removeLayer(marker);
+                }
+
+                // The markerData.layer is defined so we add the marker to the layer if it is different from the old data
+                if (!isDefined(layers.overlays[markerData.layer])) {
+                    $log.error(errorHeader + 'You must use a name of an existing layer');
+                    return;
+                }
+                // Is a group layer?
+                var layerGroup = layers.overlays[markerData.layer];
+                if (!(layerGroup instanceof L.LayerGroup || layerGroup instanceof L.FeatureGroup)) {
+                    $log.error(errorHeader + 'A marker can only be added to a layer of type "group" or "featureGroup"');
+                    return;
+                }
+                // The marker goes to a correct layer group, so first of all we add it
+                layerGroup.addLayer(marker);
+                // The marker is automatically added to the map depending on the visibility
+                // of the layer, so we only have to open the popup if the marker is in the map
+                if (map.hasLayer(marker) && markerData.focus === true) {
+                    marker.openPopup();
+                }
+            }
+
+            // Update the draggable property
+            if (markerData.draggable !== true && oldMarkerData.draggable === true && (isDefined(marker.dragging))) {
+                marker.dragging.disable();
+            }
+
+            if (markerData.draggable === true && oldMarkerData.draggable !== true) {
+                // The markerData.draggable property must be true so we update if there wasn't a previous value or it wasn't true
+                if (marker.dragging) {
+                    marker.dragging.enable();
+                } else {
+                    if (L.Handler.MarkerDrag) {
+                        marker.dragging = new L.Handler.MarkerDrag(marker);
+                        marker.options.draggable = true;
+                        marker.dragging.enable();
+                    }
+                }
+            }
+
+            // Update the icon property
+            if (!isObject(markerData.icon)) {
+                // If there is no icon property or it's not an object
+                if (isObject(oldMarkerData.icon)) {
+                    // If there was an icon before restore to the default
+                    marker.setIcon(createLeafletIcon());
+                    marker.closePopup();
+                    marker.unbindPopup();
+                    if (isString(markerData.message)) {
+                        marker.bindPopup(markerData.message, markerData.popupOptions);
+                    }
+                }
+            }
+
+            if (isObject(markerData.icon) && isObject(oldMarkerData.icon) && !angular.equals(markerData.icon, oldMarkerData.icon)) {
+                var dragG = false;
+                if (marker.dragging) {
+                    dragG = marker.dragging.enabled();
+                }
+                marker.setIcon(createLeafletIcon(markerData.icon));
+                if (dragG) {
+                    marker.dragging.enable();
+                }
+                marker.closePopup();
+                marker.unbindPopup();
+                if (isString(markerData.message)) {
+                    marker.bindPopup(markerData.message, markerData.popupOptions);
+                }
+            }
+
+            // Update the Popup message property
+            if (!isString(markerData.message) && isString(oldMarkerData.message)) {
+                marker.closePopup();
+                marker.unbindPopup();
+            }
+
+            // Update the label content or bind a new label if the old one has been removed.
+            if (Helpers.LabelPlugin.isLoaded()) {
+                if (isDefined(markerData.label) && isDefined(markerData.label.message)) {
+                    if ('label' in oldMarkerData && 'message' in oldMarkerData.label && !angular.equals(markerData.label.message, oldMarkerData.label.message)) {
+                        marker.updateLabelContent(markerData.label.message);
+                    } else if (!angular.isFunction(marker.getLabel) || angular.isFunction(marker.getLabel) && !isDefined(marker.getLabel())) {
+                        marker.bindLabel(markerData.label.message, markerData.label.options);
+                        _manageOpenLabel(marker, markerData);
+                    } else {
+                        _manageOpenLabel(marker, markerData);
+                    }
+                } else if (!('label' in markerData && !('message' in markerData.label))) {
+                    if (angular.isFunction(marker.unbindLabel)) {
+                        marker.unbindLabel();
+                    }
+                }
+            }
+
+            // There is some text in the popup, so we must show the text or update existing
+            if (isString(markerData.message) && !isString(oldMarkerData.message)) {
+                // There was no message before so we create it
+                marker.bindPopup(markerData.message, markerData.popupOptions);
+            }
+
+            if (isString(markerData.message) && isString(oldMarkerData.message) && markerData.message !== oldMarkerData.message) {
+                // There was a different previous message so we update it
+                marker.setPopupContent(markerData.message);
+            }
+
+            // Update the focus property
+            var updatedFocus = false;
+            if (markerData.focus !== true && oldMarkerData.focus === true) {
+                // If there was a focus property and was true we turn it off
+                marker.closePopup();
+                updatedFocus = true;
+            }
+
+            // The markerData.focus property must be true so we update if there wasn't a previous value or it wasn't true
+            if (markerData.focus === true && ( !isDefined(oldMarkerData.focus) || oldMarkerData.focus === false) || (isInitializing && markerData.focus === true)) {
+                // Reopen the popup when focus is still true
+                marker.openPopup();
+                updatedFocus = true;
+            }
+
+            // zIndexOffset adjustment
+            if (oldMarkerData.zIndexOffset !== markerData.zIndexOffset) {
+                marker.setZIndexOffset(markerData.zIndexOffset);
+            }
+
+            var markerLatLng = marker.getLatLng();
+            var isCluster = (isString(markerData.layer) && Helpers.MarkerClusterPlugin.is(layers.overlays[markerData.layer]));
+            // If the marker is in a cluster it has to be removed and added to the layer when the location is changed
+            if (isCluster) {
+                // The focus has changed even by a user click or programatically
+                if (updatedFocus) {
+                    // We only have to update the location if it was changed programatically, because it was
+                    // changed by a user drag the marker data has already been updated by the internal event
+                    // listened by the directive
+                    if ((markerData.lat !== oldMarkerData.lat) || (markerData.lng !== oldMarkerData.lng)) {
+                        layers.overlays[markerData.layer].removeLayer(marker);
+                        marker.setLatLng([markerData.lat, markerData.lng]);
+                        layers.overlays[markerData.layer].addLayer(marker);
+                    }
+                } else {
+                    // The marker has possibly moved. It can be moved by a user drag (marker location and data are equal but old
+                    // data is diferent) or programatically (marker location and data are diferent)
+                    if ((markerLatLng.lat !== markerData.lat) || (markerLatLng.lng !== markerData.lng)) {
+                        // The marker was moved by a user drag
+                        layers.overlays[markerData.layer].removeLayer(marker);
+                        marker.setLatLng([markerData.lat, markerData.lng]);
+                        layers.overlays[markerData.layer].addLayer(marker);
+                    } else if ((markerData.lat !== oldMarkerData.lat) || (markerData.lng !== oldMarkerData.lng)) {
+                        // The marker was moved programatically
+                        layers.overlays[markerData.layer].removeLayer(marker);
+                        marker.setLatLng([markerData.lat, markerData.lng]);
+                        layers.overlays[markerData.layer].addLayer(marker);
+                    } else if (isObject(markerData.icon) && isObject(oldMarkerData.icon) && !angular.equals(markerData.icon, oldMarkerData.icon)) {
+                        layers.overlays[markerData.layer].removeLayer(marker);
+                        layers.overlays[markerData.layer].addLayer(marker);
+                    }
+                }
+            } else if (markerLatLng.lat !== markerData.lat || markerLatLng.lng !== markerData.lng) {
+                marker.setLatLng([markerData.lat, markerData.lng]);
+            }
+        };
     return {
         resetMarkerGroup: _resetMarkerGroup,
 
@@ -147,9 +410,17 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
 
         manageOpenPopup: _manageOpenPopup,
 
-        createMarker: function(markerData) {
-            if (!isDefined(markerData)) {
-                $log.error('[AngularJS - Leaflet] The marker definition is not valid.');
+        manageOpenLabel: _manageOpenLabel,
+
+        createMarker: function (markerData) {
+            if (!isDefined(markerData) || !geoHlp.validateCoords(markerData)) {
+                $log.error(errorHeader + 'The marker definition is not valid.');
+                return;
+            }
+            var coords = geoHlp.getCoords(markerData);
+
+            if (!isDefined(coords)) {
+                $log.error(errorHeader + 'Unable to get coordinates from markerData.');
                 return;
             }
 
@@ -169,7 +440,7 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
                 }
             }
 
-            var marker = new L.marker(markerData, markerOptions);
+            var marker = new L.marker(coords, markerOptions);
 
             if (!isString(markerData.message)) {
                 marker.unbindPopup();
@@ -178,14 +449,14 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
             return marker;
         },
 
-        addMarkerToGroup: function(marker, groupName, groupOptions, map) {
+        addMarkerToGroup: function (marker, groupName, groupOptions, map) {
             if (!isString(groupName)) {
-                $log.error('[AngularJS - Leaflet] The marker group you have specified is invalid.');
+                $log.error(errorHeader + 'The marker group you have specified is invalid.');
                 return;
             }
 
             if (!MarkerClusterPlugin.isLoaded()) {
-                $log.error("[AngularJS - Leaflet] The MarkerCluster plugin is not loaded.");
+                $log.error(errorHeader + "The MarkerCluster plugin is not loaded.");
                 return;
             }
             if (!isDefined(groups[groupName])) {
@@ -195,232 +466,44 @@ angular.module("leaflet-directive").factory('leafletMarkersHelpers', function ($
             groups[groupName].addLayer(marker);
         },
 
-        listenMarkerEvents: function(marker, markerData, leafletScope, watching) {
-            marker.on("popupopen", function(/* event */) {
-                if (watching) {
-                    safeApply(leafletScope, function() {
+        listenMarkerEvents: function (marker, markerData, leafletScope, doWatch, map) {
+            marker.on("popupopen", function (/* event */) {
+                safeApply(leafletScope, function () {
+                    if (isDefined(marker._popup) || isDefined(marker._popup._contentNode)) {
                         markerData.focus = true;
-                    });
-                } else {
-                    _manageOpenPopup(marker, markerData);
-                }
+                        _manageOpenPopup(marker, markerData, map);//needed since markerData is now a copy
+                    }
+                });
             });
-            marker.on("popupclose", function(/* event */) {
-                if (watching) {
-                    safeApply(leafletScope, function() {
-                        markerData.focus = false;
-                    });
-                }
+            marker.on("popupclose", function (/* event */) {
+                safeApply(leafletScope, function () {
+                    markerData.focus = false;
+                });
+            });
+            marker.on("add", function (/* event */) {
+                safeApply(leafletScope, function () {
+                    if ('label' in markerData)
+                        _manageOpenLabel(marker, markerData);
+                });
             });
         },
 
-        addMarkerWatcher: function(marker, name, leafletScope, layers, map) {
-            var clearWatch = leafletScope.$watch("markers[\""+name+"\"]", function(markerData, oldMarkerData) {
+        updateMarker: _updateMarker,
+
+        addMarkerWatcher: function (marker, name, leafletScope, layers, map, isDeepWatch) {
+            var markerWatchPath = Helpers.getObjectArrayPath("markers." + name);
+            isDeepWatch = defaultTo(isDeepWatch, true);
+
+            var clearWatch = leafletScope.$watch(markerWatchPath, function(markerData, oldMarkerData) {
                 if (!isDefined(markerData)) {
                     _deleteMarker(marker, map, layers);
                     clearWatch();
                     return;
                 }
-
-                if (!isDefined(oldMarkerData)) {
-                    return;
-                }
-
-                // Update the lat-lng property (always present in marker properties)
-                if (!(isNumber(markerData.lat) && isNumber(markerData.lng))) {
-                    $log.warn('There are problems with lat-lng data, please verify your marker model');
-                    _deleteMarker(marker, map, layers);
-                    return;
-                }
-
-                // watch is being initialized if old and new object is the same
-                var isInitializing = markerData === oldMarkerData;
-
-                // Update marker rotation
-                if (isDefined(markerData.iconAngle) && oldMarkerData.iconAngle !== markerData.iconAngle) {
-                    marker.setIconAngle(markerData.iconAngle);
-                }
-
-                // It is possible that the layer has been removed or the layer marker does not exist
-                // Update the layer group if present or move it to the map if not
-                if (!isString(markerData.layer)) {
-                    // There is no layer information, we move the marker to the map if it was in a layer group
-                    if (isString(oldMarkerData.layer)) {
-                        // Remove from the layer group that is supposed to be
-                        if (isDefined(layers.overlays[oldMarkerData.layer]) && layers.overlays[oldMarkerData.layer].hasLayer(marker)) {
-                            layers.overlays[oldMarkerData.layer].removeLayer(marker);
-                            marker.closePopup();
-                        }
-                        // Test if it is not on the map and add it
-                        if (!map.hasLayer(marker)) {
-                            map.addLayer(marker);
-                        }
-                    }
-                }
-
-                if ((isNumber(markerData.opacity) || isNumber(parseFloat(markerData.opacity))) && markerData.opacity !== oldMarkerData.opacity) {
-                    // There was a different opacity so we update it
-                    marker.setOpacity(markerData.opacity);
-                }
-
-                if (isString(markerData.layer) && oldMarkerData.layer !== markerData.layer) {
-                    // If it was on a layer group we have to remove it
-                    if (isString(oldMarkerData.layer) && isDefined(layers.overlays[oldMarkerData.layer]) && layers.overlays[oldMarkerData.layer].hasLayer(marker)) {
-                        layers.overlays[oldMarkerData.layer].removeLayer(marker);
-                    }
-                    marker.closePopup();
-
-                    // Remove it from the map in case the new layer is hidden or there is an error in the new layer
-                    if (map.hasLayer(marker)) {
-                        map.removeLayer(marker);
-                    }
-
-                    // The markerData.layer is defined so we add the marker to the layer if it is different from the old data
-                    if (!isDefined(layers.overlays[markerData.layer])) {
-                        $log.error('[AngularJS - Leaflet] You must use a name of an existing layer');
-                        return;
-                    }
-                    // Is a group layer?
-                    var layerGroup = layers.overlays[markerData.layer];
-                    if (!(layerGroup instanceof L.LayerGroup || layerGroup instanceof L.FeatureGroup)) {
-                        $log.error('[AngularJS - Leaflet] A marker can only be added to a layer of type "group" or "featureGroup"');
-                        return;
-                    }
-                    // The marker goes to a correct layer group, so first of all we add it
-                    layerGroup.addLayer(marker);
-                    // The marker is automatically added to the map depending on the visibility
-                    // of the layer, so we only have to open the popup if the marker is in the map
-                    if (map.hasLayer(marker) && markerData.focus === true) {
-                        _manageOpenPopup(marker, markerData);
-                    }
-                }
-
-                // Update the draggable property
-                if (markerData.draggable !== true && oldMarkerData.draggable === true && (isDefined(marker.dragging))) {
-                    marker.dragging.disable();
-                }
-
-                if (markerData.draggable === true && oldMarkerData.draggable !== true) {
-                    // The markerData.draggable property must be true so we update if there wasn't a previous value or it wasn't true
-                    if (marker.dragging) {
-                        marker.dragging.enable();
-                    } else {
-                        if (L.Handler.MarkerDrag) {
-                            marker.dragging = new L.Handler.MarkerDrag(marker);
-                            marker.options.draggable = true;
-                            marker.dragging.enable();
-                        }
-                    }
-                }
-
-                // Update the icon property
-                if (!isObject(markerData.icon)) {
-                    // If there is no icon property or it's not an object
-                    if (isObject(oldMarkerData.icon)) {
-                        // If there was an icon before restore to the default
-                        marker.setIcon(createLeafletIcon());
-                        marker.closePopup();
-                        marker.unbindPopup();
-                        if (isString(markerData.message)) {
-                            marker.bindPopup(markerData.message, markerData.popupOptions);
-                        }
-                    }
-                }
-
-                if (isObject(markerData.icon) && isObject(oldMarkerData.icon) && !angular.equals(markerData.icon, oldMarkerData.icon)) {
-                    var dragG = false;
-                    if (marker.dragging) {
-                        dragG = marker.dragging.enabled();
-                    }
-                    marker.setIcon(createLeafletIcon(markerData.icon));
-                    if (dragG) {
-                        marker.dragging.enable();
-                    }
-                    marker.closePopup();
-                    marker.unbindPopup();
-                    if (isString(markerData.message)) {
-                        marker.bindPopup(markerData.message, markerData.popupOptions);
-                    }
-                }
-
-                // Update the Popup message property
-                if (!isString(markerData.message) && isString(oldMarkerData.message)) {
-                    marker.closePopup();
-                    marker.unbindPopup();
-                }
-
-                // Update the label content
-                if (Helpers.LabelPlugin.isLoaded() && isDefined(markerData.label) && isDefined(markerData.label.message) && !angular.equals(markerData.label.message, oldMarkerData.label.message)) {
-                    marker.updateLabelContent(markerData.label.message);
-                }
-
-                // There is some text in the popup, so we must show the text or update existing
-                if (isString(markerData.message) && !isString(oldMarkerData.message)) {
-                    // There was no message before so we create it
-                    marker.bindPopup(markerData.message, markerData.popupOptions);
-                }
-
-                if (isString(markerData.message) && isString(oldMarkerData.message) && markerData.message !== oldMarkerData.message) {
-                    // There was a different previous message so we update it
-                    marker.setPopupContent(markerData.message);
-                }
-
-                // Update the focus property
-                var updatedFocus = false;
-                if (markerData.focus !== true && oldMarkerData.focus === true) {
-                    // If there was a focus property and was true we turn it off
-                    marker.closePopup();
-                    updatedFocus = true;
-                }
-
-                // The markerData.focus property must be true so we update if there wasn't a previous value or it wasn't true
-                if (markerData.focus === true && ( !isDefined(oldMarkerData.focus) || oldMarkerData.focus === false) || (isInitializing && markerData.focus === true)) {
-                    // Reopen the popup when focus is still true
-                    _manageOpenPopup(marker, markerData);
-                    updatedFocus = true;
-                }
-
-                // zIndexOffset adjustment
-                if (oldMarkerData.zIndexOffset !== markerData.zIndexOffset) {
-                    marker.setZIndexOffset(markerData.zIndexOffset);
-                }
-
-                var markerLatLng = marker.getLatLng();
-                var isCluster = (isString(markerData.layer) && Helpers.MarkerClusterPlugin.is(layers.overlays[markerData.layer]));
-                // If the marker is in a cluster it has to be removed and added to the layer when the location is changed
-                if (isCluster) {
-                    // The focus has changed even by a user click or programatically
-                    if (updatedFocus) {
-                        // We only have to update the location if it was changed programatically, because it was
-                        // changed by a user drag the marker data has already been updated by the internal event
-                        // listened by the directive
-                        if ((markerData.lat !== oldMarkerData.lat) || (markerData.lng !== oldMarkerData.lng)) {
-                            layers.overlays[markerData.layer].removeLayer(marker);
-                            marker.setLatLng([markerData.lat, markerData.lng]);
-                            layers.overlays[markerData.layer].addLayer(marker);
-                        }
-                    } else {
-                        // The marker has possibly moved. It can be moved by a user drag (marker location and data are equal but old
-                        // data is diferent) or programatically (marker location and data are diferent)
-                        if ((markerLatLng.lat !== markerData.lat) || (markerLatLng.lng !== markerData.lng)) {
-                            // The marker was moved by a user drag
-                            layers.overlays[markerData.layer].removeLayer(marker);
-                            marker.setLatLng([markerData.lat, markerData.lng]);
-                            layers.overlays[markerData.layer].addLayer(marker);
-                        } else if ((markerData.lat !== oldMarkerData.lat) || (markerData.lng !== oldMarkerData.lng)) {
-                            // The marker was moved programatically
-                            layers.overlays[markerData.layer].removeLayer(marker);
-                            marker.setLatLng([markerData.lat, markerData.lng]);
-                            layers.overlays[markerData.layer].addLayer(marker);
-                        } else if (isObject(markerData.icon) && isObject(oldMarkerData.icon) && !angular.equals(markerData.icon, oldMarkerData.icon)) {
-                            layers.overlays[markerData.layer].removeLayer(marker);
-                            layers.overlays[markerData.layer].addLayer(marker);
-                        }
-                    }
-                } else if (markerLatLng.lat !== markerData.lat || markerLatLng.lng !== markerData.lng) {
-                    marker.setLatLng([markerData.lat, markerData.lng]);
-                }
-            }, true);
-        }
+                _updateMarker(markerData, oldMarkerData, marker, name, leafletScope, layers, map);
+            } , isDeepWatch);
+        },
+        string: _string,
+        log: _log
     };
 });

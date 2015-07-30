@@ -1,13 +1,13 @@
 'tiles' Attribute Documentation
 ===================================
 
-This sub-directive needs the **leaflet** main directive, so it is normaly used as an attribute of the *leaflet* tag, like this:
+This sub-directive needs the **leaflet** main directive, so it is normally used as an attribute of the *leaflet* tag, like this:
 
 ```
 <leaflet tiles="tiles"></leaflet>
 ```
 
-It will map an object _tiles_ of our controller scope with the corresponding object on our leaflet directive isolated scope. It's not a bidirectional relationship, only the changes made to our _tiles_ object on the controller scope will affect the map, but no viceversa.
+It will map an object _tiles_ of our controller scope with the corresponding object on our leaflet directive isolated scope. It's not a bidirectional relationship, only the changes made to our _tiles_ object on the controller scope will affect the map, but no vice versa.
 
 This object is basically composed of two attributes: **url** and **options**. Let's see them in an example definition:
 ```

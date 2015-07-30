@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html ng-app="demoapp">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="../dist/angular-leaflet-directive.min.js"></script>
+    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
+    <script>
+        var app = angular.module("demoapp", ["leaflet-directive"]);
+        app.controller("LayersHideOverlaysOnSelectorController", [ "$scope", function($scope) {
+            angular.extend($scope, {
+                center: {
+                    lat: 39,
+                    lng: -100,
+                    zoom: 4
+                },
+                defaults: {
+                    scrollWheelZoom: false
+                },
+                layers: {
+                    baselayers: {
+                        xyz: {
+                            name: 'Mapbox Streets',
+                            url: 'http://a.tiles.mapbox.com/v3/examples.map-i86nkdio/{z}/{x}/{y}.png',
+                            type: 'xyz',
+                            layerOptions: {
+                                showOnSelector: true,
+                                apikey: 'pk.eyJ1IjoiYnVmYW51dm9scyIsImEiOiJLSURpX0pnIn0.2_9NrLz1U9bpwMQBhVk97Q',
+                                mapid: 'bufanuvols.ll5em372'
+                            }
+                        }
+                    },
+                    overlays: {
+                        wms: {
+                            name: 'EEUU States (WMS)',
+                            type: 'wms',
+                            visible: true,
+                            url: 'http://suite.opengeo.org/geoserver/usa/wms',
+                            layerParams: {
+                                showOnSelector: false,
+                                layers: 'usa:states',
+                                format: 'image/png',
+                                transparent: true
+                            }
+                        }
+                    }
+                }
+            });
+        }]);
+    </script>
+</head>
+<body ng-controller="LayersHideOverlaysOnSelectorController">
+    <leaflet center="center" defaults="defaults" layers="layers" width="100%" height="480px"></leaflet>
+    <h1>Overlay not shown in selector</h1>
+    <button ng-click="layers.overlays.wms.layerParams.showOnSelector = !layers.overlays.wms.layerParams.showOnSelector">Toggle Overlay visibility on Selector</button>
+    <button ng-click="layers.baselayers.xyz.layerOptions.showOnSelector = !layers.baselayers.xyz.layerOptions.showOnSelector">Toggle BaseLayer visibility on Selector</button>
+    <p>You can hide the enable/disable functionality of the overlay in the selector, using this attribute in the layerOptions object:</p>
+    <pre>layerOptions: {
+    showOnSelector: false
+}</pre>
+    <pre ng-bind="layers|json"></pre>
+</body>
+</html>

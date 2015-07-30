@@ -19,6 +19,9 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
                     collapsed: true
                 }
             },
+            nominatim: {
+                server: ' http://nominatim.openstreetmap.org/search'
+            },
             crs: L.CRS.EPSG3857,
             tileLayer: '//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
             tileLayerOptions: {
@@ -44,6 +47,9 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
 
     // Get the _defaults dictionary, and override the properties defined by the user
     return {
+        reset: function () {
+           defaults = {};
+        },
         getDefaults: function (scopeId) {
             var mapId = obtainEffectiveMapId(defaults, scopeId);
             return defaults[mapId];
@@ -153,7 +159,7 @@ angular.module("leaflet-directive").factory('leafletMapDefaults', function ($q, 
                 if (isDefined(userDefaults.map)) {
                     newDefaults.map = userDefaults.map;
                 }
-                
+
                 if (isDefined(userDefaults.path)) {
                     newDefaults.path = userDefaults.path;
                 }

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html ng-app="demoapp">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="../bower_components/esri-leaflet/dist/esri-leaflet.js"></script>
+    <script src="../dist/angular-leaflet-directive.min.js"></script>
+    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
+    <script>
+        var app = angular.module("demoapp", ["leaflet-directive"]);
+        app.controller("LayersEsriBaseMapLayerController", [ "$scope", function($scope) {
+            angular.extend($scope, {
+                bogota: {
+	            	lat: 4.649,
+	                lng: -74.086,
+	                zoom: 5
+	            },
+                markers: {
+                    m1: {
+                        lat: 4.649,
+	                	lng: -74.086,
+                    }
+                },
+                layers: {
+                    baselayers: {
+				    	streets: {
+					    	name: "Streets",
+					        type: "agsBase",
+					        layer: "Streets",
+					        visible: false
+				    	},
+				    	topo: {
+					    	name: "World Topographic",
+					        type: "agsBase",
+					        layer: "Topographic",
+					        visible: false
+				    	},
+                        national: {
+                            name: "National Geographic",
+					        type: "agsBase",
+					        layer: "NationalGeographic",
+					        visible: false
+                        },
+                        oceans: {
+                            name: "Oceans",
+					        type: "agsBase",
+					        layer: "Oceans",
+					        visible: false
+                        },
+                        gray: {
+                            name: "Gray",
+					        type: "agsBase",
+					        layer: "Gray",
+					        visible: false
+                        },
+                        darkgray: {
+                            name: "DarkGray",
+					        type: "agsBase",
+					        layer: "DarkGray",
+					        visible: false
+                        },
+                        imagery: {
+                            name: "Imagery",
+					        type: "agsBase",
+					        layer: "Imagery",
+					        visible: false
+                        },
+                        shadedrelief: {
+                            name: "ShadedRelief",
+					        type: "agsBase",
+					        layer: "ShadedRelief",
+					        visible: false
+                        },
+                        terrain: {
+                            name: "Terrain",
+					        type: "agsBase",
+					        layer: "Terrain",
+					        visible: false
+                        }
+                    },
+                },
+            });
+        }]);
+    </script>
+</head>
+<body ng-controller="LayersEsriBaseMapLayerController">
+    <leaflet center="bogota" layers="layers" markers="markers" width="100%" height="480px"></leaflet>
+    <h1>Esri ArcGIS Basemap Layer</h1>
+    <p>Use the Layer Switch Control on the top rigth of the map to select another Esri Basemap Layer.</p>
+</body>
+</html>

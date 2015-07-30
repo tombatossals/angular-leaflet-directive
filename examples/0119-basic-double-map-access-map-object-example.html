@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html ng-app="demoapp">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="../dist/angular-leaflet-directive.min.js"></script>
+    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
+    <style>
+        .map {
+            float: left;
+            margin-right: 1em;
+        }
+    </style>
+    <script>
+        var app = angular.module("demoapp", ["leaflet-directive"]);
+        app.controller("BasicDoubleMapAccessMapObjectController", [ "$scope", "$log", "leafletData", function($scope, $log, leafletData) {
+            angular.extend($scope, {
+                london: {
+                    lat: 51.505,
+                    lng: -0.09,
+                    zoom: 4
+                },
+                markers: {
+                    london: {
+                        lat: 51.505,
+                        lng: -0.09,
+                        draggable: true
+                    }
+                },
+                defaults: {
+                     tileLayer: "http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png",
+                }
+            });
+            $scope.logLeafletData = function(name) {
+                leafletData.getMap(name).then(function(map) {
+                    $log.info(map);
+                });
+            };
+        }]);
+
+    </script>
+  </head>
+  <body ng-controller="BasicDoubleMapAccessMapObjectController">
+    <div style="float:left; width: 50%;">
+      <leaflet center="london" markers="markers" width="100%" height="300px" defaults="defaults" id="map1"></leaflet>
+    </div>
+    <div style="float:left; width: 50%;">
+      <leaflet center="london" markers="markers" width="100%" height="300px" id="map2"></leaflet>
+    </div>
+
+    <h1>Accesing the map object with two (or more) maps on screen</h1>
+    <p>The <strong>leafletData service</strong> allows us to access the internals of the leaflet library (map object, markers, layers, etc.). If two or more maps are on screen we need to pass an <strong>id</strong> to the map, so we can retrieve the leaflet object of the map specified by that id.</p>
+    <input type="button" value="$log.info leafletData object" ng-click="logLeafletData('map1')" />
+    <input type="button" value="$log.info leafletData object" ng-click="logLeafletData('map2')" />
+    <br style="clear: both;" />
+  </body>
+</html>

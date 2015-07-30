@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html ng-app="demoapp">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="../bower_components/Leaflet.label/dist/leaflet.label.js"></script>
+    <script src="../dist/angular-leaflet-directive.js"></script>
+    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="../bower_components/Leaflet.label/dist/leaflet.label.css" />
+    <script>
+        var app = angular.module("demoapp", ["leaflet-directive"]);
+        app.controller("PathsAjaxLoadController", [ "$scope", "$http", function($scope, $http) {
+            angular.extend($scope, {
+                london: {
+                    lat: 51.505,
+                    lng: -0.09,
+                    zoom: 4
+                },
+                europeanPaths: {}
+            });
+
+            $scope.loadPaths = function loadPaths() {
+                $http.get('json/paths.json').success(function(data) {
+                    $scope.europeanPaths = data;
+                });
+            };
+
+            $scope.changePaths = function changePaths() {
+                console.log($scope.europeanPaths);
+                $scope.europeanPaths.p1.latlngs[0] = {
+                    lat: 53,
+                    lng: -0.1
+                };
+            };
+
+        }]);
+    </script>
+  </head>
+  <body ng-controller="PathsAjaxLoadController">
+    <leaflet center="london" paths="europeanPaths" width="100%" height="480px"></leaflet>
+    <h1>Load remote paths example</h1>
+    <p>Click on red route (Popup) or hover over green route (Label) to get more information</p>
+    <button ng-click="loadPaths()">Load Paths data!</button>
+    <button ng-click="changePaths()" ng-disabled="!europeanPaths.p1">Change Paths!</button>
+  </body>
+</html>
