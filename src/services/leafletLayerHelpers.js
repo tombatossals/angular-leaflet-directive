@@ -63,6 +63,23 @@ angular.module("leaflet-directive")
                 return new L.TileLayer.GeoJSON(params.url, params.pluginOptions, params.options);
             }
         },
+        geoJSONShape: {
+            mustHaveUrl: false,
+            createLayer: function(params) {
+                        return new L.GeoJSON(params.data,
+                            params.options);
+            }
+        },
+        geoJSONAwesomeMarker: {
+            mustHaveUrl: false,
+            createLayer: function(params) {
+                    return new L.geoJson(params.data, {
+                        pointToLayer: function (feature, latlng) {
+                            return L.marker(latlng, {icon: L.AwesomeMarkers.icon(params.icon)});
+                    }
+                });
+            }
+        },
         utfGrid: {
             mustHaveUrl: true,
             createLayer: utfGridCreateLayer
@@ -428,6 +445,7 @@ angular.module("leaflet-directive")
             data: layerDefinition.data,
             options: layerDefinition.layerOptions,
             layer: layerDefinition.layer,
+            icon: layerDefinition.icon,
             type: layerDefinition.layerType,
             bounds: layerDefinition.bounds,
             key: layerDefinition.key,
