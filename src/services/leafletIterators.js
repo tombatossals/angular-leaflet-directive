@@ -143,7 +143,9 @@ angular.module('leaflet-directive').service('leafletIterators', function ($log, 
     }
     if(!_hasErrors(collection, externalCb)){
       for(var key in collection){
-        internalCb(collection[key], key);
+          if (collection.hasOwnProperty(key)) {
+              internalCb(collection[key], key);
+          }
       }
     }
   };
