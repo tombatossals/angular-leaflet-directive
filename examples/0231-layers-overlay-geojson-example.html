@@ -34,10 +34,10 @@
                 }
             });
 
-        $http.get("https://raw.githubusercontent.com/yooper/open-model/master/geodata/geojson/united_states/Florida.geo.json").success(function(data, status) {
+        $http.get("json/countries.geo.json").success(function(data, status) {
             angular.extend($scope.layers.overlays, {
-                myShape: {
-                    name:'Shape',
+                countires: {
+                    name:'World Country Boundaries',
                     type: 'geoJSONShape',
                     data: data,
                     layerOptions: {
@@ -53,10 +53,10 @@
             });
         });
 
-        $http.get("https://web.fulcrumapp.com/shares/b711f907a8d42665.geojson").success(function(data, status) {
+        $http.get("json/major_cities.json").success(function(data, status) {
                     angular.extend($scope.layers.overlays, {
-                        fitness: {
-                            name:'Awesome Marker Points',
+                        cities: {
+                            name:'Major Cities (Awesome Markers)',
                             type: 'geoJSONAwesomeMarker',
                             data: data,
                             icon: {
@@ -73,7 +73,8 @@
 </head>
 <body ng-controller="LayersOverlayGeoJSONController">
     <leaflet center="tampa" layers="layers" height="480px" width="100%"></leaflet>
-    <h1>Yandex layer example</h1>
-    <p>Use the Layer Switch Control on the top rigth of the map to select another Yandex Layer.</p>
+    <h1>GeoJSON Layer</h1>
+    <p>Use the layer control to add a geoJSON shape layer. This is different from a GeoJSON layer, which is a Tile Layer</p>
+    <p>The example also includes a geoJSON Awesome Markers layer, which you can use to customise marker icons easily.</p>
 </body>
 </html>
