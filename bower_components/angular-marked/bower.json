@@ -1,0 +1,35 @@
+{
+  "name": "angular-marked",
+  "version": "0.0.18",
+  "authors": [
+    "J. Harshbarger"
+  ],
+  "description": "AngularJS Markdown using marked.",
+  "main": "angular-marked.js",
+  "keywords": [
+    "angularjs",
+    "markdown",
+    "marked",
+    "directive",
+    "filter"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    ".grunt",
+    "test",
+    "tests",
+    "docs",
+    "docs-template",
+    "example"
+  ],
+  "dependencies": {
+    "angular": ">= 1.2.5",
+    "marked": "~0.3.1"
+  },
+  "devDependencies": {
+    "angular-mocks": ">= 1.2.5"
+  }
+}
