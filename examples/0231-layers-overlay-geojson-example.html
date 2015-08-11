@@ -5,7 +5,6 @@
     <meta content="utf-8" http-equiv="encoding">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <script src="http://api-maps.yandex.ru/2.0/?load=package.map&lang=ru-RU" type="text/javascript"></script>
     <script src="../bower_components/angular/angular.min.js"></script>
     <script src="../bower_components/leaflet/dist/leaflet.js"></script>
     <script src="../bower_components/Leaflet.awesome-markers/dist/leaflet.awesome-markers.js"></script>
@@ -13,14 +12,15 @@
     <script src="../dist/angular-leaflet-directive.js"></script>
     <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="../bower_components/Leaflet.awesome-markers/dist/leaflet.awesome-markers.css" />
+    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.css" />
     <script>
         var app = angular.module("demoapp", ["leaflet-directive"]);
         app.controller("LayersOverlayGeoJSONController", [ "$scope", '$http', function($scope, $http) {
             angular.extend($scope, {
-                tampa: {
-                    lat: 27.9482,
-                    lng: -82.4566,
-                    zoom: 14
+                world: {
+                    lat: 0,
+                    lng: 0,
+                    zoom: 3
                 },
                 layers: {
                     baselayers: {
@@ -36,7 +36,7 @@
 
         $http.get("json/countries.geo.json").success(function(data, status) {
             angular.extend($scope.layers.overlays, {
-                countires: {
+                countries: {
                     name:'World Country Boundaries',
                     type: 'geoJSONShape',
                     data: data,
@@ -72,7 +72,7 @@
     </script>
 </head>
 <body ng-controller="LayersOverlayGeoJSONController">
-    <leaflet center="tampa" layers="layers" height="480px" width="100%"></leaflet>
+    <leaflet center="world" layers="layers" height="480px" width="100%"></leaflet>
     <h1>GeoJSON Layer</h1>
     <p>Use the layer control to add a geoJSON shape layer. This is different from a GeoJSON layer, which is a Tile Layer</p>
     <p>The example also includes a geoJSON Awesome Markers layer, which you can use to customise marker icons easily.</p>
