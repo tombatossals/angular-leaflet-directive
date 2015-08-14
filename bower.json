@@ -15,8 +15,7 @@
   ],
   "dependencies": {
     "angular": "1.x",
-    "leaflet": "0.7.x",
-    "font-awesome": "~4.3.x"
+    "leaflet": "0.7.x"
   },
   "devDependencies": {
     "jquery": "*",
