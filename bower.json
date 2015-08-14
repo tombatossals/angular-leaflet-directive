@@ -48,11 +48,6 @@
     "esri-leaflet-heatmap-feature-layer": "~1.0.x",
     "leaflet-search": "~1.5.8"
   },
-  "overrides": {
-    "Leaflet.utfgrid": {
-      "main": "dist/leaflet.utfgrid.js"
-    }
-  },
   "ignore": [
     "**/.*",
     "src",
