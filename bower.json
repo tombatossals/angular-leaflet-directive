@@ -35,6 +35,7 @@
     "leaflet-plugins": "*",
     "esri-leaflet": "*",
     "proj4": "*",
+    "font-awesome": "~4.3.x",
     "proj4leaflet": "*",
     "Leaflet.MakiMarkers": "*",
     "Leaflet.heat": "https://github.com/Leaflet/Leaflet.heat/archive/gh-pages.tar.gz",
