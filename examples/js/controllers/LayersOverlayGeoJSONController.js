@@ -1,20 +1,3 @@
-<!DOCTYPE html>
-<html ng-app="demoapp">
-<head>
-    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
-    <meta content="utf-8" http-equiv="encoding">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <script src="../bower_components/angular/angular.min.js"></script>
-    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
-    <script src="../bower_components/Leaflet.awesome-markers/dist/leaflet.awesome-markers.js"></script>
-    <script src="../bower_components/leaflet-plugins/layer/Icon.Canvas.js"></script>
-    <script src="../dist/angular-leaflet-directive.js"></script>
-    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
-    <link rel="stylesheet" href="../bower_components/Leaflet.awesome-markers/dist/leaflet.awesome-markers.css" />
-    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.css" />
-    <script>
-        var app = angular.module("demoapp", ["leaflet-directive"]);
         app.controller("LayersOverlayGeoJSONController", [ "$scope", '$http', function($scope, $http) {
             angular.extend($scope, {
                 world: {
@@ -33,7 +16,6 @@
                     overlays:{}
                 }
             });
-
         $http.get("json/countries.geo.json").success(function(data, status) {
             angular.extend($scope.layers.overlays, {
                 countries: {
@@ -52,7 +34,6 @@
                 }
             });
         });
-
         $http.get("json/major_cities.json").success(function(data, status) {
                     angular.extend($scope.layers.overlays, {
                         cities: {
@@ -67,14 +48,4 @@
                         }
                     });
                 });
-
         }]);
-    </script>
-</head>
-<body ng-controller="LayersOverlayGeoJSONController">
-    <leaflet center="world" layers="layers" height="480px" width="100%"></leaflet>
-    <h1>GeoJSON Shape Layer and GeoJSON Awesome Marker Layer</h1>
-    <p>Use the layer control to add a geoJSON shape layer. This is different from a GeoJSON layer, which is a Tile Layer</p>
-    <p>The example also includes a geoJSON Awesome Markers layer, which you can use to customise marker icons easily.</p>
-</body>
-</html>
