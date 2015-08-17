@@ -173,5 +173,36 @@ describe("Directive: leaflet: layers.watch", function () {
         expect(Object.keys(layers.overlays).length).toEqual(2);
         expect(typeof layers.overlays.hillshade).toBe('object');
         expect(typeof layers.overlays.fire).toBe('object');
+
+        // geoJSON Shape Type
+
+        // Added a good layer.. Data is normally geojson file but not testing this
+            scope.layers.overlays.countries = {
+                name: 'Countries',
+                type: 'geoJSONShape',
+                data: {"type": "FeatureCollection",
+                    "features": [{
+                    "type":"Feature",
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [[[22.65715,44.234923],[22.944832,43.823785],[22.65715,44.234923]]]
+                    },
+                }]
+        },
+                layerOptions: {
+                    style: {
+                            color: '#00D',
+                            fillColor: 'red',
+                            weight: 2.0,
+                            opacity: 0.6,
+                            fillOpacity: 0.2
+                    }
+                }
+            };
+
+        scope.$digest();
+        expect(Object.keys(layers.overlays).length).toEqual(3);
+        expect(typeof layers.overlays.countries).toBe('object');
+        
     });
 });
