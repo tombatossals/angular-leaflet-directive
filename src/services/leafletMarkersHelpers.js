@@ -5,6 +5,7 @@ angular.module("leaflet-directive").service('leafletMarkersHelpers', function ($
         AwesomeMarkersPlugin = leafletHelpers.AwesomeMarkersPlugin,
         MakiMarkersPlugin = leafletHelpers.MakiMarkersPlugin,
         ExtraMarkersPlugin = leafletHelpers.ExtraMarkersPlugin,
+        DomMarkersPlugin = leafletHelpers.DomMarkersPlugin,
         safeApply = leafletHelpers.safeApply,
         Helpers = leafletHelpers,
         isString = leafletHelpers.isString,
@@ -54,6 +55,17 @@ angular.module("leaflet-directive").service('leafletMarkersHelpers', function ($
 
         if (isDefined(iconData) && isDefined(iconData.type) && iconData.type === 'div') {
             return new L.divIcon(iconData);
+        }
+
+        if (isDefined(iconData) && isDefined(iconData.type) && iconData.type === 'dom') {
+            if (!DomMarkersPlugin.isLoaded()) {
+                $log.error(errorHeader + 'The DomMarkers Plugin is not loaded.');
+            }
+            var markerScope = angular.isFunction(iconData.getMarkerScope) ? iconData.getMarkerScope() : $rootScope,
+                template = $compile(iconData.template)(markerScope),
+                iconDataCopy = angular.copy(iconData);
+            iconDataCopy.element = template[0];
+            return new L.DomMarkers.icon(iconDataCopy);
         }
 
         // allow for any custom icon to be used... assumes the icon has already been initialized
