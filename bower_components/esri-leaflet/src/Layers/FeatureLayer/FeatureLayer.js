@@ -12,8 +12,8 @@ EsriLeaflet.Layers.FeatureLayer = EsriLeaflet.Layers.FeatureManager.extend({
    * Constructor
    */
 
-  initialize: function (url, options) {
-    EsriLeaflet.Layers.FeatureManager.prototype.initialize.call(this, url, options);
+  initialize: function (options) {
+    EsriLeaflet.Layers.FeatureManager.prototype.initialize.call(this, options);
 
     options = L.setOptions(this, options);
 
@@ -315,6 +315,22 @@ EsriLeaflet.Layers.FeatureLayer = EsriLeaflet.Layers.FeatureManager.extend({
     return this._layers[id];
   },
 
+  bringToBack: function () {
+    this.eachFeature(function (layer) {
+      if(layer.bringToBack) {
+        layer.bringToBack();
+      }
+    });
+  },
+
+  bringToFront: function () {
+    this.eachFeature(function (layer) {
+      if(layer.bringToFront) {
+        layer.bringToFront();
+      }
+    });
+  },
+
   redraw: function (id) {
     if (id) {
       this._redraw(id);
@@ -360,10 +376,10 @@ EsriLeaflet.Layers.FeatureLayer = EsriLeaflet.Layers.FeatureManager.extend({
 
 EsriLeaflet.FeatureLayer = EsriLeaflet.Layers.FeatureLayer;
 
-EsriLeaflet.Layers.featureLayer = function(url, options){
-  return new EsriLeaflet.Layers.FeatureLayer(url, options);
+EsriLeaflet.Layers.featureLayer = function(options){
+  return new EsriLeaflet.Layers.FeatureLayer(options);
 };
 
-EsriLeaflet.featureLayer = function(url, options){
-  return new EsriLeaflet.Layers.FeatureLayer(url, options);
+EsriLeaflet.featureLayer = function(options){
+  return new EsriLeaflet.Layers.FeatureLayer(options);
 };

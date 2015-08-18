@@ -1,0 +1,324 @@
+// defaults
+
+$gfm-body-font-size:      16px !default;
+$gfm-code-font-size:      12px !default;
+$gfm-body-color:          #333;
+$gfm-link-color:          #4183c4;
+$gfm-body-font-family:    'Helvetica Neue',
+                          Helvetica,
+                          'Segoe UI',
+                          Arial,
+                          freesans,
+                          sans-serif !default;
+$gfm-code-font-family:    Consolas,
+                          'Liberation Mono',
+                          Menlo,
+                          Courier,
+                          monospace !default;
+$gfm-input-font-family:   Helvetica,
+                          Arial,
+                          freesans,
+                          clean,
+                          sans-serif,
+                          'Segoe UI Emoji',
+                          'Segoe UI Symbol' !default;
+$gfm-header-font-family:  $gfm-body-font-family !default;
+$gfm-header-border:       'true' !default;
+
+// all styles scoped to `.markdown-body`
+
+.markdown-body {
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  color: $gfm-body-color;
+  overflow: hidden;
+  font-family: $gfm-body-font-family;
+  font-size: $gfm-body-font-size;
+  line-height: 1.6;
+  word-wrap: break-word;
+
+  * {
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+  }
+
+  >*:first-child { margin-top: 0 !important; }
+  >*:last-child { margin-bottom: 0 !important; }
+
+  /* anchor tag */
+
+  a {
+    background: transparent;
+    color: $gfm-link-color;
+    text-decoration: none;
+
+    &:active,
+    &:hover { outline: 0; }
+
+    &:hover,
+    &:focus,
+    &:active { text-decoration: underline; }
+  }
+
+  /* defaults for strong/em, just in case */
+
+  strong { font-weight: bold; }
+  em { font-style: italic; }
+
+  /* same margins for all typographic block elements */
+
+  p,
+  blockquote,
+  ul,
+  ol,
+  dl,
+  table,
+  pre {
+    margin-top: 0;
+    margin-bottom: $gfm-body-font-size;
+  }
+
+  /* headers */
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: $gfm-header-font-family;
+    position: relative;
+    margin-top: 1em;
+    margin-bottom: $gfm-body-font-size;
+    font-weight: bold;
+    line-height: 1.4;
+  }
+
+  h1,
+  h2 {
+    padding-bottom: 0.3em;
+    @if $gfm-header-border == 'true' {
+      border-bottom: 1px solid #eee;
+    }
+  }
+
+  h1 { font-size: 2.25em; line-height: 1.2; }
+  h2 { font-size: 1.75em; line-height: 1.225; }
+  h3 { font-size: 1.5em; }
+  h4 { font-size: 1.25em; }
+  h5 { font-size: 1em; }
+  h6 { font-size: 1em; color: #777; }
+
+  /* pre/code */
+
+  code,
+  pre,
+  kbd {
+    font-family: $gfm-code-font-family;
+    font-size: $gfm-code-font-size;
+  }
+
+  code {
+    padding: .2em 0;
+    margin: 0;
+    font-size: 85%;
+    background-color: rgba(0,0,0,0.04);
+    border-radius: 3px;
+
+    &:before,
+    &:after {
+      letter-spacing: -0.2em;
+      content: '\00a0';
+    }
+  }
+
+  pre {
+    overflow: auto;
+    word-wrap: normal;
+    padding: $gfm-body-font-size;
+    overflow: auto;
+    font-size: 85%;
+    line-height: 1.45;
+    background-color: #f7f7f7;
+    border-radius: 3px;
+
+    code {
+      display: inline;
+      max-width: initial;
+      padding: 0;
+      margin: 0;
+      overflow: initial;
+      line-height: inherit;
+      word-wrap: normal;
+      background: transparent;
+
+      &:before,
+      &:after { content: normal; }
+    }
+
+    >code {
+      font-size: 1em;
+      word-break: normal;
+      white-space: pre;
+      border: 0;
+    }
+  }
+
+  kbd {
+    background-color: #e7e7e7;
+    background-image: -webkit-linear-gradient(#fefefe, #e7e7e7);
+    background-image: linear-gradient(#fefefe, #e7e7e7);
+    background-repeat: repeat-x;
+    display: inline-block;
+    padding: 5px 5px 1px;
+    margin: 0 1px;
+    font-size: 11px;
+    line-height: 10px;
+    color: #000;
+    border: 1px solid #cfcfcf;
+    border-radius: 2px;
+    box-shadow: 0 1px 0 #ccc;
+  }
+
+  /* forms */
+
+  input {
+    color: inherit;
+    font: inherit;
+    margin: 0;
+    line-height: normal;
+    font-size: 13px;
+    line-height: 1.4;
+    font-family: $gfm-input-font-family;
+
+    &[disabled] {
+      cursor: default;
+    }
+
+    &[type='checkbox'] {
+      -moz-box-sizing: border-box;
+      box-sizing: border-box;
+      padding: 0;
+    }
+  }
+
+  /* blockquotes */
+
+  blockquote {
+    margin: 0 0 $gfm-body-font-size;
+    padding: 0 15px;
+    color: #777;
+    border-left: 4px solid #ddd;
+
+    &>:first-child { margin-top: 0; }
+    &>:last-child { margin-bottom: 0; }
+  }
+
+  /* images */
+
+  img {
+    border: 0;
+    max-width: 100%;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+  }
+
+  /* horizontal rules */
+
+  hr {
+    -moz-box-sizing: content-box;
+    box-sizing: content-box;
+    height: 0;
+    overflow: hidden;
+    background: transparent;
+    height: 4px;
+    padding: 0;
+    margin: $gfm-body-font-size 0;
+    background-color: #e7e7e7;
+    border: 0 none;
+
+    &:before {
+      display: table;
+      content: '';
+    }
+
+    &:after {
+      display: table;
+      clear: both;
+      content: '';
+    }
+  }
+
+  /* tables */
+
+  td,
+  th { padding: 0; }
+
+  table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    display: block;
+    width: 100%;
+    overflow: auto;
+    word-break: normal;
+    word-break: keep-all;
+
+    th,
+    td {
+      padding: 6px 13px;
+      border: 1px solid #ddd;
+    }
+
+    th { font-weight: bold; }
+
+    tr {
+      background-color: #fff;
+      border-top: 1px solid #ccc;
+
+      &:nth-child(2n) { background-color: #f8f8f8; }
+    }
+  }
+
+  /* lists */
+
+  ul,
+  ol {
+    padding: 0;
+    padding-left: 2em;
+
+    ol { list-style-type: lower-roman; }
+
+    ul,
+    ol {
+      margin-top: 0;
+      margin-bottom: 0;
+
+      ol { list-style-type: lower-alpha; }
+    }
+  }
+
+  li>p { margin-top: $gfm-body-font-size; }
+
+  /* definitions */
+
+  dd {
+    margin-left: 0;
+  }
+
+  dl {
+    padding: 0;
+
+    dt {
+      padding: 0;
+      margin-top: $gfm-body-font-size;
+      font-size: 1em;
+      font-style: italic;
+      font-weight: bold;
+    }
+
+    dd {
+      padding: 0 $gfm-body-font-size;
+      margin-bottom: $gfm-body-font-size;
+    }
+  }
+}

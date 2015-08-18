@@ -1,5 +1,27 @@
-var home = angular.module('app.examples', ['ngNewRouter', 'leaflet-directive', 'hljs']);
+var app = angular.module('app.examples', [ 'ngNewRouter']);
 
-home.controller('ExamplesController', [ '$scope', ExamplesController ]);
+app.controller('ExamplesController', [ '$router', '$scope', '$timeout', ExamplesController ]);
 
-function ExamplesController() {}
+function ExamplesController($router, $scope, $timeout) {
+    $router.config([
+        {
+            path: '/:section/:example',
+            component: 'BasicFirstController'
+
+        }
+    ]);
+
+    $timeout(function() {
+        $('.ui.menu .browse')
+          .popup({
+            inline   : true,
+            hoverable: true,
+            position : 'bottom left',
+            delay: {
+              show: 300,
+              hide: 800
+            }
+          })
+        ;
+    }, 200);
+}

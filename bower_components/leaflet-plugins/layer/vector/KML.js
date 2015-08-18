@@ -18,15 +18,33 @@ L.KML = L.FeatureGroup.extend({
 		if (options === undefined) options = this.options;
 
 		var req = new window.XMLHttpRequest();
-		req.open('GET', url, async);
-		try {
-			req.overrideMimeType('text/xml'); // unsupported by IE
-		} catch(e) {}
-		req.onreadystatechange = function() {
-			if (req.readyState !== 4) return;
-			if (req.status === 200) cb(req.responseXML, options);
-		};
-		req.send(null);
+		
+		// Check for IE8 and IE9 Fix Cors for those browsers
+		if (req.withCredentials === undefined && typeof window.XDomainRequest !== 'undefined') {
+			var xdr = new window.XDomainRequest();
+			xdr.open('GET', url, async);
+			xdr.onprogress = function () { };
+			xdr.ontimeout = function () { };
+			xdr.onerror = function () { };
+			xdr.onload = function () {
+				if (xdr.responseText) {
+					var xml = new window.ActiveXObject('Microsoft.XMLDOM');
+					xml.loadXML(xdr.responseText);
+					cb(xml, options);
+				}
+			};
+			setTimeout(function () { xdr.send(); }, 0);
+		} else {
+			req.open('GET', url, async);
+			try {
+				req.overrideMimeType('text/xml'); // unsupported by IE
+			} catch (e) { }
+			req.onreadystatechange = function () {
+				if (req.readyState !== 4) return;
+				if (req.status === 200) cb(req.responseXML, options);
+			};
+			req.send(null);
+		}
 	},
 
 	addKML: function(url, options, async) {
@@ -54,7 +72,7 @@ L.KML = L.FeatureGroup.extend({
 L.Util.extend(L.KML, {
 
 	parseKML: function (xml) {
-		var style = this.parseStyle(xml);
+		var style = this.parseStyles(xml);
 		this.parseStyleMap(xml, style);
 		var el = xml.getElementsByTagName('Folder');
 		var layers = [], l;
@@ -88,9 +106,21 @@ L.Util.extend(L.KML, {
 		return !e || e === folder;
 	},
 
-	parseStyle: function (xml) {
-		var style = {};
+	parseStyles: function(xml) {
+		var styles = {};
 		var sl = xml.getElementsByTagName('Style');
+		for (var i=0, len=sl.length; i<len; i++) {
+			var style = this.parseStyle(sl[i]);
+			if (style) {
+				var styleName = '#' + style.id;
+				styles[styleName] = style;
+			}
+		}
+		return styles;
+	},
+
+	parseStyle: function (xml) {
+		var style = {}, poptions = {}, ioptions = {}, el, id;
 
 		var attributes = { color: true, width: true, Icon: true, href: true, hotSpot: true };
 
@@ -123,27 +153,28 @@ L.Util.extend(L.KML, {
 			return options;
 		}
 
-		for (var i = 0; i < sl.length; i++) {
-			var e = sl[i], el;
-			var options = {}, poptions = {}, ioptions = {};
-			el = e.getElementsByTagName('LineStyle');
-			if (el && el[0]) { options = _parse(el[0]); }
-			el = e.getElementsByTagName('PolyStyle');
-			if (el && el[0]) { poptions = _parse(el[0]); }
-			if (poptions.color) { options.fillColor = poptions.color; }
-			if (poptions.opacity) { options.fillOpacity = poptions.opacity; }
-			el = e.getElementsByTagName('IconStyle');
-			if (el && el[0]) { ioptions = _parse(el[0]); }
-			if (ioptions.href) {
-				options.icon = new L.KMLIcon({
-					iconUrl: ioptions.href,
-					shadowUrl: null,
-					anchorRef: {x: ioptions.x, y: ioptions.y},
-					anchorType:	{x: ioptions.xunits, y: ioptions.yunits}
-				});
-			}
-			style['#' + e.getAttribute('id')] = options;
+		el = xml.getElementsByTagName('LineStyle');
+		if (el && el[0]) { style = _parse(el[0]); }
+		el = xml.getElementsByTagName('PolyStyle');
+		if (el && el[0]) { poptions = _parse(el[0]); }
+		if (poptions.color) { style.fillColor = poptions.color; }
+		if (poptions.opacity) { style.fillOpacity = poptions.opacity; }
+		el = xml.getElementsByTagName('IconStyle');
+		if (el && el[0]) { ioptions = _parse(el[0]); }
+		if (ioptions.href) {
+			style.icon = new L.KMLIcon({
+				iconUrl: ioptions.href,
+				shadowUrl: null,
+				anchorRef: {x: ioptions.x, y: ioptions.y},
+				anchorType:	{x: ioptions.xunits, y: ioptions.yunits}
+			});
 		}
+		
+		id = xml.getAttribute('id');
+		if (id && style) {
+			style.id = id;
+		}
+		
 		return style;
 	},
 	
@@ -194,7 +225,7 @@ L.Util.extend(L.KML, {
 	},
 
 	parsePlacemark: function (place, xml, style) {
-		var h, i, j, el, options = {};
+		var h, i, j, k, el, il, options = {};
 
 		var multi = ['MultiGeometry', 'MultiTrack', 'gx:MultiTrack'];
 		for (h in multi) {
@@ -211,6 +242,17 @@ L.Util.extend(L.KML, {
 				options[a] = style[url][a];
 			}
 		}
+		
+		il = place.getElementsByTagName('Style')[0];
+		if (il) {
+			var inlineStyle = this.parseStyle(place);
+			if (inlineStyle) {
+				for (k in inlineStyle) {
+					options[k] = inlineStyle[k];
+				}
+			}
+		}
+		
 		var layers = [];
 
 		var parse = ['LineString', 'Polygon', 'Point', 'Track', 'gx:Track'];

@@ -1,5 +1,5 @@
-/*! esri-leaflet-clustered-feature-layer - v1.0.0-rc.4 - 2014-11-10
-*   Copyright (c) 2014 Environmental Systems Research Institute, Inc.
+/*! esri-leaflet-clustered-feature-layer - v1.0.2 - 2015-07-11
+*   Copyright (c) 2015 Environmental Systems Research Institute, Inc.
 *   Apache License*/
 (function (factory) {
   // define an AMD module that relies on 'leaflet'
@@ -19,16 +19,14 @@
 
     window.L.esri.Layers.ClusteredFeatureLayer = ClusteredFeatureLayer;
 
-    window.L.esri.Layers.clusteredFeatureLayer = function(url, options){
-      return new ClusteredFeatureLayer(url, options);
+    window.L.esri.Layers.clusteredFeatureLayer = function(options){
+      return new ClusteredFeatureLayer(options);
     };
 
-    window.L.esri.clusteredFeatureLayer = function(url, options){
-      return new ClusteredFeatureLayer(url, options);
-    };
+    window.L.esri.ClusteredFeatureLayer = ClusteredFeatureLayer;
 
-    window.L.esri.clusteredFeatureLayer = function(url, options){
-      return new ClusteredFeatureLayer(url, options);
+    window.L.esri.clusteredFeatureLayer = function(options){
+      return new ClusteredFeatureLayer(options);
     };
   }
 }(function (L, Esri) {
@@ -44,8 +42,8 @@
      * Constructor
      */
 
-    initialize: function (url, options) {
-      Esri.Layers.FeatureManager.prototype.initialize.call(this, url, options);
+    initialize: function (options) {
+      Esri.Layers.FeatureManager.prototype.initialize.call(this, options);
 
       options = L.setOptions(this, options);
 
@@ -247,4 +245,5 @@
 
   return ClusteredFeatureLayer;
 }));
+
 //# sourceMappingURL=esri-leaflet-clustered-feature-layer-src.js.map

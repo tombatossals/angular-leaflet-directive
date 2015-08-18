@@ -1,0 +1,13 @@
+{
+  "name": "geodata",
+  "homepage": "https://github.com/mahemoff/geodata",
+  "_release": "9b7e4fab6e",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "9b7e4fab6eb37b76428329ec9ffc4b841446c9ec"
+  },
+  "_source": "git://github.com/mahemoff/geodata.git",
+  "_target": "*",
+  "_originalSource": "mahemoff/geodata"
+}

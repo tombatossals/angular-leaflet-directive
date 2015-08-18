@@ -1,6 +1,6 @@
 {
   "name": "semantic-ui",
-  "version": "2.0.2",
+  "version": "2.0.8",
   "title": "Semantic UI",
   "description": "Semantic empowers designers and developers by creating a shared vocabulary for UI.",
   "homepage": "http://www.semantic-ui.com",
@@ -57,7 +57,7 @@
     "gulp-concat": "^2.6.0",
     "gulp-concat-css": "^2.2.0",
     "gulp-copy": "0.0.2",
-    "gulp-flatten": "0.0.4",
+    "gulp-flatten": "^0.1.0",
     "gulp-header": "^1.2.2",
     "gulp-help": "^1.6.0",
     "gulp-if": "^1.2.5",
@@ -73,21 +73,21 @@
     "gulp-rtlcss": "^0.1.4",
     "gulp-uglify": "^1.2.0",
     "gulp-util": "^3.0.6",
-    "gulp-watch": "^4.2.4",
+    "gulp-watch": "^4.3.1",
     "jquery": "^2.1.4",
     "map-stream": "^0.1.0",
     "mkdirp": "^0.5.1",
     "require-dot-file": "^0.4.0",
+    "run-sequence": "^1.1.0",
     "wrench": "https://github.com/derekslife/wrench-js/tarball/156eaceed68ed31ffe2a3ecfbcb2be6ed1417fb2",
     "yamljs": "^0.2.3"
   },
   "devDependencies": {
     "github": "^0.2.4",
-    "gulp-concat-filenames": "0.0.3",
+    "gulp-concat-filenames": "^1.0.0",
     "gulp-debug": "^2.0.1",
     "gulp-git": "^1.2.4",
     "gulp-tap": "^0.1.3",
-    "merge-stream": "^0.1.7",
-    "run-sequence": "^1.1.0"
+    "merge-stream": "^0.1.7"
   }
 }

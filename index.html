@@ -12,6 +12,7 @@
         <link rel="stylesheet" href="bower_components/highlightjs/styles/github.css" />
         <link rel="stylesheet" href="bower_components/Leaflet.label/dist/leaflet.label.css" />
         <link rel="stylesheet" type="text/css" href="http://cloud.github.com/downloads/lafeber/world-flags-sprite/flags32.css" />
+        <link rel="stylesheet" href="bower_components/gfm.css/gfm.css" />
         <link rel="stylesheet" href="css/style.css" />
     </head>
 
@@ -34,14 +35,12 @@
                     </div>
                 </div>
             </div>
-            <div class="ui banner">
+            <div class="ui fluid card">
                 <a class="forkme" href="https://github.com/tombatossals/angular-leaflet-directive" rel="external">
                     <img src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub">
                 </a>
-                <leaflet center="header.center" defaults="header.defaults" tiles="header.tiles" markers="header.markers" broadcast-events="header.events" id="header"></leaflet>
-            </div>
-            <div class="ui bottom attached">
-                <div class="container">
+                <leaflet center="header.center" defaults="header.defaults" tiles="header.tiles" markers="header.markers" broadcast-events="header.events" id="header" height="160px"></leaflet>
+                <div class="content">
                     Simple to use <a href="http://angularjs.org">AngularJS</a> directive for easy embedding and interacting with a map managed with the <a href="http://leafletjs.com/">leaflet map library</a>.
                 </div>
             </div>
@@ -49,7 +48,7 @@
         <div class="three wide column"></div>
     </div>
 
-    <div class="ui basic segment" style="background: #EFEFEF; border-bottom: 1px solid #AAA; border-top: 1px solid #AAA;">
+    <div class="ui basic segment" style="background: #EEE; border-bottom: 2px solid #DDD; border-top: 2px solid #DDD;">
         <div class="ui grid">
             <div class="three wide column"></div>
             <div class="ten wide column">
@@ -70,15 +69,21 @@
     </div>
 
 
-    <div class="container footer">
-        <footer role="contentinfo">
-            <p class="pull-right">Page built with <a href="http://leafletjs.com">LeafletJS</a>, <a href="http://angularjs.org/">AngularJS</a> and <a href="http://semantic-ui.com/">Semantic UI</a></p>
-        </footer>
+    <div class="ui basic segment">
+        <div class="ui grid">
+            <div class="three wide column"></div>
+            <div class="ten wide column">
+                <footer>
+                    Page built with <a href="http://leafletjs.com">LeafletJS</a>, <a href="http://angularjs.org/">AngularJS</a> and <a href="http://semantic-ui.com/">Semantic UI</a>.
+                </footer>
+            </div>
+        </div>
     </div>
 
     <script src="https://maps.googleapis.com/maps/api/js?libraries=geometry&sensor=false"></script>
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
     <script src="bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="bower_components/semantic-ui/dist/semantic.min.js"></script>
     <script src="bower_components/Leaflet.label/dist/leaflet.label.js"></script>
     <script src="bower_components/leaflet-plugins/layer/tile/Google.js"></script>
     <script src="bower_components/highlightjs/highlight.pack.js"></script>

@@ -1,8 +1,9 @@
-<p>This directive allows you to embed a map on your <strong>AngularJS</strong> application and interact bi-directionally with it via the <a href="http://docs.angularjs.org/api/ng.$rootScope.Scope">AngularJS scope</a> and the <a href="http://leafletjs.com/reference.html">leaflet map library API</a>. Easy to use and extend, it's evolvedand improved by lot of <a href="https://github.com/tombatossals/angular-leaflet-directive/graphs/contributors">community contributors</a>.</p>
+<p>This directive allows you to embed a map on your <strong>AngularJS</strong> application and interact bidirectionally with it via the <a href="http://docs.angularjs.org/api/ng.$rootScope.Scope">AngularJS scope</a> and the <a href="http://leafletjs.com/reference.html">leaflet map library API</a>. Easy to use and extend, it's being evolved and improved constantly by a bunch of <a href="https://github.com/tombatossals/angular-leaflet-directive/graphs/contributors">community contributors</a>.</p>
 
-<h2 class="ui basic segment" style="background: #EFEFEF; border-bottom: 1px solid #EEE; border-top: 1px solid #EEE;">1. Loading the libraries</n2>
+<p style="margin-top: 2em;">Let's see an step-by-step example of how to use it:</p>
 
-<h2></h2>
+<h2>1. Loading the libraries</h2>
+
 <p>Before using <strong>angular-leaflet-directive</strong>, you
 must include these javascript libraries to your main HTML:</p>
 <div class="ui list">
@@ -37,9 +38,9 @@ must include these javascript libraries to your main HTML:</p>
 </div>
 
 <h2>2. Setting the controller scope attributes</h2>
-<p>Interaction between your angular controller and the map is accomplished stablishing some attributes in the scope of your controller. In a basic example, you would like a map centered in some specific coordinates, and with some custom tiles. This would be your scope and your directive HTML in this case:</p>
+<p>Interaction between your angular controller and the map is accomplished stablishing some attributes in the scope of your controller. In a basic example, you would like a map centered in some specific coordinates, and with some custom tiles. This code shows how you would need to declare the required attributes to acomplish it:</p>
 <div class="ui top attached tabular menu" ng-init="activeTab2 = ''">
-    <a class="item" ng-class="{ active: activeTab2 == 'controller' || activeTab2 == '' }" ng-click="activeTab2='javascript'">Angular controller</a>
+    <a class="item" ng-class="{ active: activeTab2 == 'controller' || activeTab2 == '' }" ng-click="activeTab2='controller'">Angular controller</a>
     <a class="item" ng-class="{ active: activeTab2 == 'html' }" ng-click="activeTab2='html'">HTML markup</a>
 </div>
 <div class="ui bottom attached segment" ng-switch on="activeTab2">
@@ -48,7 +49,7 @@ must include these javascript libraries to your main HTML:</p>
 </div>
 
 <h2>3. Rendering the resulting map</h2>
-<p>Your resulting HTML document will render the map like you can see below, and you could also continue interacting with it via the controller attributes and the events that it generates. Take a look at the <a ng-href="#!/examples">examples</a> to learn how to do it.</p>
+<p>Your resulting HTML document will render the map like you can see below, and you could also continue interacting with it via the controller attributes and the events that it generates. Take a look at some of the <a ng-href="#!/examples">examples</a> to learn how to do it.</p>
 <div class="ui fluid card">
     <div ng-controller="BasicCenterController" ng-include="'components/home/basic-center-controller.html'"></div>
     <div class="content">

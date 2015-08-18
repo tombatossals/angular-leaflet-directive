@@ -47,7 +47,8 @@ Here is a quick example to get you started. Just change the paths to point to th
   var map = L.map('map').setView([ 40.706, -73.926], 14);
 
   L.esri.basemapLayer('Gray').addTo(map);
-  L.esri.heatmapFeatureLayer('http://services.arcgis.com/rOo16HdIMeOBI4Mb/ArcGIS/rest/services/Graffiti_Reports/FeatureServer/0', {
+  L.esri.heatmapFeatureLayer({
+    url: 'http://services.arcgis.com/rOo16HdIMeOBI4Mb/ArcGIS/rest/services/Graffiti_Reports/FeatureServer/0',
     radius: 12
   }).addTo(map);
 </script>

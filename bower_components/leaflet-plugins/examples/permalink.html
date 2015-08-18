@@ -13,8 +13,10 @@
 var map = new L.Map('map', {center: new L.LatLng(67.6755, 33.936), zoom: 10});
 var osm = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
 map.addLayer(osm);
-var kosm = new L.TileLayer('http://{s}.tile.osmosnimki.ru/kosmo/{z}/{x}/{y}.png', {attribution:'Tiles Courtesy of <a href="http://kosmosnimki.ru/" target="_blank">kosmosnimki.ru</a>'});
-var layers = new L.Control.Layers({'OSM':osm, "Kosmo":kosm});
+var hydda = L.tileLayer('http://{s}.tile.openstreetmap.se/hydda/full/{z}/{x}/{y}.png', {
+	attribution: 'Tiles courtesy of <a href="http://openstreetmap.se/" target="_blank">OpenStreetMap Sweden</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+});
+var layers = new L.Control.Layers({'OSM':osm, "Hydda":hydda});
 map.addControl(layers);
 map.addControl(new L.Control.Permalink({text: 'Permalink', layers: layers}));
 </script>

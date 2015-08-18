@@ -103,6 +103,6 @@ module.exports = function(grunt){
   grunt.registerTask('default', ['test', 'build']);
   grunt.registerTask('build', ['jshint', 'uglify', 'ngdocs']);
   grunt.registerTask('test', ['karma:once']);
-  grunt.registerTask('publish', ['test','bump-only','uglify','bump-commit','gh-pages']);
+  grunt.registerTask('publish', ['test','bump-only','build','bump-commit','gh-pages']);
 
 };

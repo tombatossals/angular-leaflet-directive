@@ -1,13 +1,12 @@
 {
   "name": "esri-leaflet-heatmap-feature-layer",
-  "version": "1.0.0-rc.4",
+  "version": "1.0.2",
   "description": "Esri Leaflet plugin for visualizing Feature Layers as heatmaps with L.heat.",
   "main": "dist/esri-leaflet-heatmap-feature-layer.js",
   "devDependencies": {
     "grunt": "^0.4.2",
     "grunt-karma": "^0.8.3",
     "grunt-gh-pages": "^0.8.1",
-    "grunt-s3": "^0.2.0-alpha.3",
     "grunt-releaseable": "0.0.12",
     "grunt-contrib-jshint": "^0.4.3",
     "grunt-contrib-uglify": "^0.6.0",
@@ -25,9 +24,9 @@
     "load-grunt-tasks": "^0.4.0"
   },
   "scripts": {
-    "prepublish": "node -e \"require('grunt').tasks(['prepublish']);\"",
-    "start": "node -e \"require('grunt').tasks(['default']);\"",
-    "test": "node -e \"require('grunt').tasks(['test']);\""
+    "prepublish": "grunt prepublish",
+    "start": "grunt default",
+    "test": "grunt test"
   },
   "author": "Patrick Arlt <parlt@esri.com> (http://patrickarlt.com)",
   "contributors": [
@@ -36,8 +35,8 @@
   "license": "Apache",
   "readmeFilename": "README.md",
   "dependencies": {
-    "leaflet": "^0.7.0",
-    "esri-leaflet": "1.0.0-rc.4",
-    "leaflet.heat": "^0.1.0"
+    "leaflet": "^0.7.3",
+    "esri-leaflet": "^1.0.0",
+    "leaflet.heat": "^0.1.3"
   }
 }

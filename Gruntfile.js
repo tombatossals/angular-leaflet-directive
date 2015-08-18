@@ -34,6 +34,7 @@ module.exports = function(grunt) {
                     angular: true,
                     module: true,
                     console: true,
+                    hljs: true,
                     L: true,
                 }
             },
@@ -61,7 +62,7 @@ module.exports = function(grunt) {
                 footer: '})(window.angular);'
             },
             dist: {
-                src: ['src/app.js', 'components/home/home.js', 'components/home/basic-center-controller.js'],
+                src: ['src/app.js', 'components/**/*.js'],
                 dest: 'js/angular-leaflet-directive-webpage.js',
             }
         },

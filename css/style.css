@@ -26,6 +26,11 @@ body {
     box-shadow: 0 0 5px -1px rgba(0, 0, 0, 1);
 }
 
+footer {
+    border-top: 2px solid #EEE;
+    padding-top: 1em;
+    text-align: right;
+}
 .banner {
     position: relative;
 }
@@ -52,13 +57,6 @@ body {
 
 .bottom-banner strong {
     color: #555;
-}
-
-.footer {
-    border-top: 1px solid #AAA;
-    padding-top: 12px;
-    margin-top: 2em;
-    margin-bottom: 2em;
 }
 
 .jumbotron {

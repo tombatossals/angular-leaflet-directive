@@ -1,5 +1,5 @@
-var home = angular.module('app.documentation', ['ngNewRouter', 'leaflet-directive', 'hljs']);
+var app = angular.module('app.documentation', []);
 
-home.controller('DocumentationController', [ '$scope', DocumentationController ]);
+app.controller('DocumentationController', [ DocumentationController ]);
 
 function DocumentationController() {}

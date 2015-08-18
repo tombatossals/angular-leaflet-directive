@@ -1,19 +1,17 @@
 <p>You can extend the functionality of this library easily with a basic knowledge of the <a href="http://docs.angularjs.org/guide/directive">AngularJS directives development</a> and the <a href="http://leafletjs.com/reference.html">Leaflet library API</a>. The code is modular enough and easy to read, so feel free to add code or modify it to fit the library to your own needs. Furthermore, if you would like to merge your changes to the main development branch send a pull request via <a href="http://github.com">Github</a>.</p>
 
-<h3>Building, testing and developing</h3>
-<p><strong>Coding style:</strong></p>
-<ul>
-    <li>We use <a href="https://raw.github.com/tombatossals/angular-leaflet-directive/master/.editorconfig">this .editorconfig file</a> to define our coding style between IDE's. You can find more info about this on <a href="http://editorconfig.org/">http://editorconfig.org</a>.</li>
-    <li>The style guide we try to use is the <a href="https://github.com/airbnb/javascript">Airbnb Javascript Style Guide</a>.</li>
+<h2>Building, testing and developing</h2>
+<p><strong>Coding style:</strong> The style guide we try to use is the <a href="https://github.com/airbnb/javascript">Airbnb Javascript Style Guide</a>.</li>
 </ul>
-<p><strong>Grunt:</strong> We use <a href="http://gruntjs.com/">Grunt</a> as a tool to automate building, linting, testing and minifying the code. You can see the development utilities used on the <a href="https://github.com/tombatossals/angular-leaflet-directive/blob/master/package.json">package.json</a> file, and the grunt tasks on the <a href="https://raw.github.com/tombatossals/angular-leaflet-directive/master/Gruntfile.js">Gruntfile.js file</a>. Before we can use Grunt, we must install the required packages via npm, let's see an example of how to install the project dependencies. First, make sure you have npm and grunt-cli installed globally. See how to install the Grunt tools below.</p>
-<p><strong>Bower:</strong> And we must install the client library dependencies with bower too. </p>
+<p><strong>Build system:</strong> We use <a href="http://gruntjs.com/">Grunt</a> as a tool to automate building, linting, testing and minifying the code. You can see the development utilities used on the <a href="https://github.com/tombatossals/angular-leaflet-directive/blob/master/package.json">package.json</a> file, and the grunt tasks on the <a href="https://raw.github.com/tombatossals/angular-leaflet-directive/master/Gruntfile.js">Gruntfile.js file</a>. Before we can use Grunt, we must install the required packages via npm, let's see an example of how to install the project dependencies. First, make sure you have npm and grunt-cli installed globally. See how to install the Grunt tools below.</p>
+<p><strong>Dependency system:</strong> We use <a href="http://bowerjs.com">Bower</a> for the dependency resolution of libraries. </p>
 <div class="ui top attached tabular menu" ng-init="buildTab = 'grunt'">
     <a class="item" ng-class="{active: !buildTab || buildTab === 'grunt'}" ng-click="buildTab = 'grunt'">Command line example of how to install tools</a>
     <a class="item" ng-class="{active: buildTab === 'bower'}" ng-click="buildTab = 'bower'">Command line example of how to install dependencies</a>
 </div>
 <div class="ui bottom attached segment" ng-show="!buildTab || buildTab === 'grunt'" hljs>
 # Inside the project dir, install the dependencies
+$ cd angular-leaflet-directive
 $ npm install
 npm http GET https://registry.npmjs.org/protractor/0.14.0
 npm http GET https://registry.npmjs.org/matchdep
@@ -34,7 +32,7 @@ npm http GET https://registry.npmjs.org/grunt-ngmin
 $
 </div>
 <div ng-show="buildTab === 'bower'" hljs>
-[you@localhost angular-leaflet-directive]$ bower install
+$ bower install
 bower angular#1.2.x             cached git://gith...
 bower angular#1.2.x           validate 1.2.6-buil...
 ...
@@ -49,7 +47,7 @@ $
 </div>
 
 <br />
-<h4>Defined Grunt tasks</h4>
+<h2>Using the Grunt tasks</h2>
 <p>Once you have the development dependencies installed, we can use our predefined grunt tasks. For example:</p>
 <ul>
     <li><strong>grunt test.</strong> Executes the karma unitary tests and the protractor e2e tests, reporting the actual state of the project.</li>

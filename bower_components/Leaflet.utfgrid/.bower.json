@@ -1,11 +1,21 @@
 {
   "name": "Leaflet.utfgrid",
+  "main": "dist/leaflet.utfgrid.js",
+  "ignore": [
+    "build",
+    "src",
+    ".gitignore",
+    "Jakefile.js"
+  ],
+  "dependencies": {
+    "leaflet": "~0.7.3"
+  },
   "homepage": "https://github.com/danzel/Leaflet.utfgrid",
-  "_release": "78c0139d90",
+  "_release": "5117481b5a",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "78c0139d908afc5d043cb465f8914b663052e7b8"
+    "commit": "5117481b5a466ae310f85ed8079786461ca049ba"
   },
   "_source": "git://github.com/danzel/Leaflet.utfgrid.git",
   "_target": "*",

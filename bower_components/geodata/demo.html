@@ -1,0 +1,32 @@
+<html>
+  <head>
+    <title>cities demo</title>
+  </head>
+  <body>
+
+    <input id='cityname' value='munich' />
+    <button>Visit City</button>
+
+    <p>Source code and more info at <a href='https://github.com/mahemoff/geodata'>https://github.com/mahemoff/geodata</a></p>
+
+    <script>
+      var cities;
+      function citiesCallback(_cities) { cities = _cities; }
+    </script>
+    <script src='http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'></script>
+    <script src='cities.jsonp'></script>
+    <script>
+      $(function() {
+        $('button').click(function() {
+          var key = $('#cityname').val().replace(/[ _-]/,'').toLowerCase();
+          var city = cities[key];
+          $('#cityname').css('background', city ? '#fff' : '#fbb');
+          if (city)
+            window.open('http://maps.google.com/maps?q=' + city.lat + ',' + city.lon);
+        });
+      });
+      $('#cityname').keyup(function(ev) { if (ev.keyCode==13) $('button').click(); });
+    </script>
+
+  </body>
+</html>

@@ -1,4 +1,4 @@
-/*! esri-leaflet - v1.0.0-rc.8 - 2015-06-01
+/*! esri-leaflet - v1.0.0 - 2015-07-10
 *   Copyright (c) 2015 Environmental Systems Research Institute, Inc.
 *   Apache License*/
 (function (factory) {
@@ -17,7 +17,7 @@
   }
 }(function (L) {
 var EsriLeaflet = { //jshint ignore:line
-  VERSION: '1.0.0-rc.8',
+  VERSION: '1.0.0',
   Layers: {},
   Services: {},
   Controls: {},
@@ -739,44 +739,46 @@ EsriLeaflet.Services.Service = L.Class.extend({
   },
 
   _createServiceCallback: function(method, path, params, callback, context){
-    var request = [method, path, params, callback, context];
-
     return L.Util.bind(function(error, response){
 
       if (error && (error.code === 499 || error.code === 498)) {
         this._authenticating = true;
 
-        this._requestQueue.push(request);
+        this._requestQueue.push([method, path, params, callback, context]);
 
+        // fire an event for users to handle and re-authenticate
         this.fire('authenticationrequired', {
           authenticate: L.Util.bind(this.authenticate, this)
         });
-      } else {
-        callback.call(context, error, response);
 
-        if(error) {
-          this.fire('requesterror', {
-            url: this.options.url + path,
-            params: params,
-            message: error.message,
-            code: error.code,
-            method: method
-          });
-        } else {
-          this.fire('requestsuccess', {
-            url: this.options.url + path,
-            params: params,
-            response: response,
-            method: method
-          });
-        }
+        // if the user has access to a callback they can handle the auth error
+        error.authenticate = L.Util.bind(this.authenticate, this);
+      }
 
-        this.fire('requestend', {
+      callback.call(context, error, response);
+
+      if(error) {
+        this.fire('requesterror', {
           url: this.options.url + path,
           params: params,
+          message: error.message,
+          code: error.code,
+          method: method
+        });
+      } else {
+        this.fire('requestsuccess', {
+          url: this.options.url + path,
+          params: params,
+          response: response,
           method: method
         });
       }
+
+      this.fire('requestend', {
+        url: this.options.url + path,
+        params: params,
+        method: method
+      });
     }, this);
   },
 
@@ -795,7 +797,8 @@ EsriLeaflet.Services.service = function(params){
   return new EsriLeaflet.Services.Service(params);
 };
 
-EsriLeaflet.Services.FeatureLayer = EsriLeaflet.Services.Service.extend({
+
+EsriLeaflet.Services.FeatureLayerService = EsriLeaflet.Services.Service.extend({
 
   options: {
     idAttribute: 'OBJECTID'
@@ -857,9 +860,10 @@ EsriLeaflet.Services.FeatureLayer = EsriLeaflet.Services.Service.extend({
   }
 });
 
-EsriLeaflet.Services.featureLayer = function(options) {
-  return new EsriLeaflet.Services.FeatureLayer(options);
+EsriLeaflet.Services.featureLayerService = function(options) {
+  return new EsriLeaflet.Services.FeatureLayerService(options);
 };
+
 
 EsriLeaflet.Tasks.Task = L.Class.extend({
 
@@ -1502,14 +1506,13 @@ EsriLeaflet.Layers.FeatureGrid = L.Class.extend({
      * Constructor
      */
 
-    initialize: function (url, options) {
+    initialize: function (options) {
       EsriLeaflet.Layers.FeatureGrid.prototype.initialize.call(this, options);
 
-      options = options || {};
-      options.url = EsriLeaflet.Util.cleanUrl(url);
+      options.url = EsriLeaflet.Util.cleanUrl(options.url);
       options = L.setOptions(this, options);
 
-      this._service = new EsriLeaflet.Services.FeatureLayer(options);
+      this._service = new EsriLeaflet.Services.FeatureLayerService(options);
 
       //use case insensitive regex to look for common fieldnames used for indexing
       /*global console */
@@ -1580,32 +1583,41 @@ EsriLeaflet.Layers.FeatureGrid = L.Class.extend({
         });
       }
 
-      return this._buildQuery(bounds).run(function(error, featureCollection, response){
+      this._buildQuery(bounds).run(function(error, featureCollection, response){
         if(response && response.exceededTransferLimit){
           this.fire('drawlimitexceeded');
         }
 
-        //deincriment the request counter now that we have created features
-        this._activeRequests--;
-
-        if(!error && featureCollection.features.length){
+        // no error, features
+        if(!error && featureCollection && featureCollection.features.length){
           // schedule adding features until the next animation frame
           EsriLeaflet.Util.requestAnimationFrame(L.Util.bind(function(){
             this._addFeatures(featureCollection.features, coords);
-
-            // if there are no more active requests fire a load event for this view
-            if(this._activeRequests <= 0){
-              this.fire('load', {
-                bounds: bounds
-              });
-            }
+            this._postProcessFeatures(bounds);
           }, this));
+        }
+
+        // no error, no features
+        if (!error && featureCollection && !featureCollection.features.length) {
+          this._postProcessFeatures(bounds);
         }
 
         if(callback){
           callback.call(this, error, featureCollection);
         }
       }, this);
+    },
+
+    _postProcessFeatures: function (bounds) {
+      //deincriment the request counter now that we have processed features
+      this._activeRequests--;
+
+      // if there are no more active requests fire a load event for this view
+      if(this._activeRequests <= 0){
+        this.fire('load', {
+          bounds: bounds
+        });
+      }
     },
 
     _cacheKey: function (coords){
@@ -1641,7 +1653,11 @@ EsriLeaflet.Layers.FeatureGrid = L.Class.extend({
     },
 
     _buildQuery: function(bounds){
-      var query = this._service.query().intersects(bounds).where(this.options.where).fields(this.options.fields).precision(this.options.precision);
+      var query = this._service.query()
+                      .intersects(bounds)
+                      .where(this.options.where)
+                      .fields(this.options.fields)
+                      .precision(this.options.precision);
 
       if(this.options.simplifyFactor){
         query.simplify(this._map, this.options.simplifyFactor);
@@ -1665,10 +1681,12 @@ EsriLeaflet.Layers.FeatureGrid = L.Class.extend({
       var oldSnapshot = [];
       var newSnapshot = [];
       var pendingRequests = 0;
-      var requestError = null;
+      var mostRecentError = null;
       var requestCallback = L.Util.bind(function(error, featureCollection){
-        if(error){
-          requestError = error;
+        pendingRequests--;
+
+        if(error) {
+          mostRecentError = error;
         }
 
         if(featureCollection){
@@ -1677,19 +1695,16 @@ EsriLeaflet.Layers.FeatureGrid = L.Class.extend({
           }
         }
 
-        pendingRequests--;
-
-        if(pendingRequests <= 0){
+        if(pendingRequests <= 0) {
           this._currentSnapshot = newSnapshot;
-          // schedule adding features until the next animation frame
-          EsriLeaflet.Util.requestAnimationFrame(L.Util.bind(function(){
+          // delay adding features until the next animation frame
+          EsriLeaflet.Util.requestAnimationFrame(L.Util.bind(function() {
             this.removeLayers(oldSnapshot);
             this.addLayers(newSnapshot);
             if(callback) {
-              callback.call(context, requestError);
+              callback.call(context, mostRecentError);
             }
           }, this));
-
         }
       }, this);
 
@@ -1723,17 +1738,18 @@ EsriLeaflet.Layers.FeatureGrid = L.Class.extend({
       var oldFrom = this.options.from;
       var oldTo = this.options.to;
       var pendingRequests = 0;
-      var requestError = null;
+      var mostRecentError = null;
       var requestCallback = L.Util.bind(function(error){
         if(error){
-          requestError = error;
+          mostRecentError = error;
         }
+
         this._filterExistingFeatures(oldFrom, oldTo, from, to);
 
         pendingRequests--;
 
         if(callback && pendingRequests <= 0){
-          callback.call(context, requestError);
+          callback.call(context, mostRecentError);
         }
       }, this);
 
@@ -1927,6 +1943,7 @@ EsriLeaflet.Layers.FeatureGrid = L.Class.extend({
         if(!error && response.objectId){
           this.removeLayers([response.objectId], true);
         }
+
         if(callback){
           callback.call(context, error, response);
         }
@@ -1940,12 +1957,12 @@ EsriLeaflet.Layers.FeatureGrid = L.Class.extend({
             this.removeLayers([response[i].objectId], true);
           }
         }
+
         if(callback){
           callback.call(context, error, response);
         }
       }, this);
     }
-
   });
 
   /**
@@ -2010,6 +2027,7 @@ EsriLeaflet.Layers.FeatureGrid = L.Class.extend({
 
 })(EsriLeaflet);
 
+
 EsriLeaflet.Layers.FeatureLayer = EsriLeaflet.Layers.FeatureManager.extend({
 
   statics: {
@@ -2024,8 +2042,8 @@ EsriLeaflet.Layers.FeatureLayer = EsriLeaflet.Layers.FeatureManager.extend({
    * Constructor
    */
 
-  initialize: function (url, options) {
-    EsriLeaflet.Layers.FeatureManager.prototype.initialize.call(this, url, options);
+  initialize: function (options) {
+    EsriLeaflet.Layers.FeatureManager.prototype.initialize.call(this, options);
 
     options = L.setOptions(this, options);
 
@@ -2327,6 +2345,22 @@ EsriLeaflet.Layers.FeatureLayer = EsriLeaflet.Layers.FeatureManager.extend({
     return this._layers[id];
   },
 
+  bringToBack: function () {
+    this.eachFeature(function (layer) {
+      if(layer.bringToBack) {
+        layer.bringToBack();
+      }
+    });
+  },
+
+  bringToFront: function () {
+    this.eachFeature(function (layer) {
+      if(layer.bringToFront) {
+        layer.bringToFront();
+      }
+    });
+  },
+
   redraw: function (id) {
     if (id) {
       this._redraw(id);
@@ -2372,13 +2406,14 @@ EsriLeaflet.Layers.FeatureLayer = EsriLeaflet.Layers.FeatureManager.extend({
 
 EsriLeaflet.FeatureLayer = EsriLeaflet.Layers.FeatureLayer;
 
-EsriLeaflet.Layers.featureLayer = function(url, options){
-  return new EsriLeaflet.Layers.FeatureLayer(url, options);
+EsriLeaflet.Layers.featureLayer = function(options){
+  return new EsriLeaflet.Layers.FeatureLayer(options);
 };
 
-EsriLeaflet.featureLayer = function(url, options){
-  return new EsriLeaflet.Layers.FeatureLayer(url, options);
+EsriLeaflet.featureLayer = function(options){
+  return new EsriLeaflet.Layers.FeatureLayer(options);
 };
+
 
   return EsriLeaflet;
 }));

@@ -18,12 +18,12 @@
 
     window.L.esri.HeatmapFeatureLayer = HeatmapFeatureLayer;
 
-    window.L.esri.Layers.heatmapFeatureLayer = function(url, options){
-      return new HeatmapFeatureLayer(url, options);
+    window.L.esri.Layers.heatmapFeatureLayer = function(options){
+      return new HeatmapFeatureLayer(options);
     };
 
-    window.L.esri.heatmapFeatureLayer = function(url, options){
-      return new HeatmapFeatureLayer(url, options);
+    window.L.esri.heatmapFeatureLayer = function(options){
+      return new HeatmapFeatureLayer(options);
     };
   }
 }(function (L, Esri) {
@@ -33,8 +33,8 @@
      * Constructor
      */
 
-    initialize: function (url, options) {
-      Esri.Layers.FeatureManager.prototype.initialize.call(this, url, options);
+    initialize: function (options) {
+      Esri.Layers.FeatureManager.prototype.initialize.call(this, options);
 
       options = L.setOptions(this, options);
 

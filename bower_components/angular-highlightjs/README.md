@@ -35,8 +35,13 @@ Add `hljs` to your app module's dependency.
 angular.module('myApp', ['hljs']);
 ```
 
-## Install with Bower
+## Install with npm
 
+```sh
+npm install angular-highlightjs
+```
+
+## Install with Bower
 
 ```sh
 # install angular-highlightjs & highlightjs

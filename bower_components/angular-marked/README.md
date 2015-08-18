@@ -67,7 +67,7 @@ Bind the markdown input to a scope variable:
 Include a markdown file:
 
 ```html
-    <div marked ng-include="'README.md'">
+    <div marked src="'README.md'">
     </div>
     <!-- Uses markdown content from README.md -->
 ```

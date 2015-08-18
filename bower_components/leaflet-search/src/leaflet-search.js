@@ -183,7 +183,7 @@ L.Control.Search = L.Control.extend({
 		toggle = toggle || true;
 		this._input.style.display = 'block';
 		L.DomUtil.addClass(this._container, 'search-exp');
-		if ( toggle != false ) {
+		if ( toggle !== false ) {
 			this._input.focus();
 			this._map.on('dragstart click', this.collapse, this);
 		}
@@ -484,7 +484,7 @@ L.Control.Search = L.Control.extend({
 
 			if(layer instanceof SearchMarker) return;
 
-			if(layer instanceof L.Marker || L.CircleMarker)
+			if(layer instanceof L.Marker || layer instanceof L.CircleMarker)
 			{
 				if(that._getPath(layer.options,propName))
 				{

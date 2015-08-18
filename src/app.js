@@ -1,81 +1,99 @@
-var app = angular.module('app', ['ngNewRouter', 'app.home']);
-var controller = app.controller('AppController', [ '$router', '$scope', AppController ]);
+var app = angular.module('app', ['ngNewRouter', 'leaflet-directive', 'hljs', 'hc.marked', 'app.home', 'app.documentation', 'app.examples', 'app.extend']);
+var controller = app.controller('AppController', [ '$router', '$scope', '$http', '$q', '$interval', '$rootScope', '$window', AppController ]);
 
-AppController.$routeConfig = [
-    { path: '/', redirectTo: '/home' },
-    { path: '/home', component: 'home' },
-    { path: '/documentation', component: 'documentation' },
-    { path: '/examples', component: 'examples' },
-    { path: '/extend', component: 'extend' }
-];
-
-function AppController($location, $scope) {
-    var scope = this;
-    var locationData = {
-        home: {
-            name: 'Getting started',
-            lat: 41.9,
-            lng: 12.48,
-            zoom: 4,
-            markerName: 'Rome, Italy'
-        },
-        documentation: {
-            name: 'Documentation',
-            lat: 48.85,
-            lng: 2.29,
-            zoom: 3,
-            markerName: 'Paris, France'
-        },
-        examples: {
-            name: 'Examples',
-            lat: 41.015,
-            lng: 28.98,
-            zoom: 5,
-            markerName: 'Istanbul, Turkey'
-        },
-        extend: {
-            name: 'How to extend',
-            lat: -18.91,
-            lng: 47.53,
-            zoom: 8,
-            markerName: 'Antananarivo, Madagascar'
+app.config(['markedProvider', function(markedProvider) {
+    markedProvider.setOptions({
+        gfm: true,
+        tables: true,
+        highlight: function (code) {
+            return hljs.highlightAuto(code).value;
         }
+    });
+}]);
+
+function AppController($router, $scope, $http, $q, $interval, $rootScope, $window) {
+    var scope = this;
+
+    $router.config([
+        { path: '/', redirectTo: '/home' },
+        { path: '/home', component: 'home' },
+        { path: '/documentation', component: 'documentation' },
+        { path: '/examples', component: 'examples' },
+        { path: '/extend', component: 'extend' }
+    ]);
+
+    var locationData = {
+        home: 'Getting started',
+        documentation: 'Documentation',
+        examples: 'Examples',
+        extend: 'How to extend'
     };
 
-    function getMapData(loc) {
-        if (!loc || loc === '') {
-            loc = 'home';
-        }
+    function getCities() {
+        var df = $q.defer();
 
-        return {
-            name: locationData[loc].name,
-            marker: {
-                lat: locationData[loc].lat,
-                lng: locationData[loc].lng,
-                label: {
-                    message: locationData[loc].markerName,
-                    options: {
-                        noHide: true
-                    }
-                }
-            },
-            center: {
-                lat: locationData[loc].lat,
-                lng: locationData[loc].lng,
-                zoom: locationData[loc].zoom,
-            }
+        $http.jsonp('bower_components/geodata/cities.jsonp');
+
+        window.citiesCallback = function(data) {
+            df.resolve(data);
         };
+
+        return df.promise;
+    }
+
+    function getSectionFromUrl(url) {
+        var section = url.split(/[\/]+/).pop();
+        return locationData[section];
+    }
+
+    function randomProperty(obj) {
+        var keys = Object.keys(obj);
+        return obj[keys[ keys.length * Math.random() << 0]];
     }
 
     $scope.$on('$locationChangeSuccess', function(event, url) {
-        var section = url.split(/[\/]+/).pop();
-        var data = getMapData(section);
-        scope.markers.marker = data.marker;
-        scope.center = data.center;
-        scope.name = data.name;
+        scope.name = getSectionFromUrl(url);
     });
 
-    angular.extend(this, {
+    function loadCity() {
+        getCities().then(function(data) {
+            var city = randomProperty(data);
+            scope.center = {
+                lat: city.lat,
+                lng: city.lon,
+                zoom: getRandomInt(3, 8)
+            };
+
+            scope.markers = {
+                city: {
+                    lat: city.lat,
+                    lng: city.lon,
+                    wikipedia: city.wikipedia,
+                    label: {
+                        message: city.city,
+                        options: {
+                            noHide: true
+                        }
+                    }
+                }
+            };
+        });
+    }
+
+    loadCity();
+
+    $interval(loadCity, 15000);
+
+    function getRandomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    $rootScope.$on('leafletDirectiveMarker.click', function (e, args) {
+        var marker = args.model;
+        $window.location.href = 'http://en.wikipedia.org/wiki/' + marker.wikipedia;
+    });
+
+    angular.extend(scope, {
         center: {
             lat: 40.095,
             lng: 23.823,

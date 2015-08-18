@@ -21,14 +21,13 @@
      * Constructor
      */
 
-    initialize: function (url, options) {
+    initialize: function (options) {
       EsriLeaflet.Layers.FeatureGrid.prototype.initialize.call(this, options);
 
-      options = options || {};
-      options.url = EsriLeaflet.Util.cleanUrl(url);
+      options.url = EsriLeaflet.Util.cleanUrl(options.url);
       options = L.setOptions(this, options);
 
-      this._service = new EsriLeaflet.Services.FeatureLayer(options);
+      this._service = new EsriLeaflet.Services.FeatureLayerService(options);
 
       //use case insensitive regex to look for common fieldnames used for indexing
       /*global console */
@@ -99,32 +98,41 @@
         });
       }
 
-      return this._buildQuery(bounds).run(function(error, featureCollection, response){
+      this._buildQuery(bounds).run(function(error, featureCollection, response){
         if(response && response.exceededTransferLimit){
           this.fire('drawlimitexceeded');
         }
 
-        //deincriment the request counter now that we have created features
-        this._activeRequests--;
-
-        if(!error && featureCollection.features.length){
+        // no error, features
+        if(!error && featureCollection && featureCollection.features.length){
           // schedule adding features until the next animation frame
           EsriLeaflet.Util.requestAnimationFrame(L.Util.bind(function(){
             this._addFeatures(featureCollection.features, coords);
-
-            // if there are no more active requests fire a load event for this view
-            if(this._activeRequests <= 0){
-              this.fire('load', {
-                bounds: bounds
-              });
-            }
+            this._postProcessFeatures(bounds);
           }, this));
+        }
+
+        // no error, no features
+        if (!error && featureCollection && !featureCollection.features.length) {
+          this._postProcessFeatures(bounds);
         }
 
         if(callback){
           callback.call(this, error, featureCollection);
         }
       }, this);
+    },
+
+    _postProcessFeatures: function (bounds) {
+      //deincriment the request counter now that we have processed features
+      this._activeRequests--;
+
+      // if there are no more active requests fire a load event for this view
+      if(this._activeRequests <= 0){
+        this.fire('load', {
+          bounds: bounds
+        });
+      }
     },
 
     _cacheKey: function (coords){
@@ -160,7 +168,11 @@
     },
 
     _buildQuery: function(bounds){
-      var query = this._service.query().intersects(bounds).where(this.options.where).fields(this.options.fields).precision(this.options.precision);
+      var query = this._service.query()
+                      .intersects(bounds)
+                      .where(this.options.where)
+                      .fields(this.options.fields)
+                      .precision(this.options.precision);
 
       if(this.options.simplifyFactor){
         query.simplify(this._map, this.options.simplifyFactor);
@@ -184,10 +196,12 @@
       var oldSnapshot = [];
       var newSnapshot = [];
       var pendingRequests = 0;
-      var requestError = null;
+      var mostRecentError = null;
       var requestCallback = L.Util.bind(function(error, featureCollection){
-        if(error){
-          requestError = error;
+        pendingRequests--;
+
+        if(error) {
+          mostRecentError = error;
         }
 
         if(featureCollection){
@@ -196,19 +210,16 @@
           }
         }
 
-        pendingRequests--;
-
-        if(pendingRequests <= 0){
+        if(pendingRequests <= 0) {
           this._currentSnapshot = newSnapshot;
-          // schedule adding features until the next animation frame
-          EsriLeaflet.Util.requestAnimationFrame(L.Util.bind(function(){
+          // delay adding features until the next animation frame
+          EsriLeaflet.Util.requestAnimationFrame(L.Util.bind(function() {
             this.removeLayers(oldSnapshot);
             this.addLayers(newSnapshot);
             if(callback) {
-              callback.call(context, requestError);
+              callback.call(context, mostRecentError);
             }
           }, this));
-
         }
       }, this);
 
@@ -242,17 +253,18 @@
       var oldFrom = this.options.from;
       var oldTo = this.options.to;
       var pendingRequests = 0;
-      var requestError = null;
+      var mostRecentError = null;
       var requestCallback = L.Util.bind(function(error){
         if(error){
-          requestError = error;
+          mostRecentError = error;
         }
+
         this._filterExistingFeatures(oldFrom, oldTo, from, to);
 
         pendingRequests--;
 
         if(callback && pendingRequests <= 0){
-          callback.call(context, requestError);
+          callback.call(context, mostRecentError);
         }
       }, this);
 
@@ -446,6 +458,7 @@
         if(!error && response.objectId){
           this.removeLayers([response.objectId], true);
         }
+
         if(callback){
           callback.call(context, error, response);
         }
@@ -459,12 +472,12 @@
             this.removeLayers([response[i].objectId], true);
           }
         }
+
         if(callback){
           callback.call(context, error, response);
         }
       }, this);
     }
-
   });
 
   /**

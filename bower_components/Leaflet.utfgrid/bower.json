@@ -1,0 +1,13 @@
+{
+  "name": "Leaflet.utfgrid",
+  "main": "dist/leaflet.utfgrid.js",
+  "ignore": [
+    "build",
+    "src",
+    ".gitignore",
+    "Jakefile.js"
+  ],
+  "dependencies": {
+    "leaflet": "~0.7.3"
+  }
+}

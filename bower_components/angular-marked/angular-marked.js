@@ -259,7 +259,7 @@
 
        <example module="hc.marked">
          <file name="exampleC.html">
-           <div marked ng-include="'include.html'" />
+           <div marked src="'include.html'" />
          </file>
          * <file name="include.html">
          * *This* **is** [markdown](https://daringfireball.net/projects/markdown/) in a include file.
@@ -267,16 +267,29 @@
        </example>
    */
 
-  .directive('marked', ['marked', function (marked) {
+  .directive('marked', ['marked', '$templateRequest', function (marked, $templateRequest) {
     return {
       restrict: 'AE',
       replace: true,
       scope: {
         opts: '=',
-        marked: '='
+        marked: '=',
+        src: '='
       },
       link: function (scope, element, attrs) {
         set(scope.marked || element.text() || '');
+
+        if (attrs.marked) {
+          scope.$watch('marked', set);
+        }
+
+        if (attrs.src) {
+          scope.$watch('src', function(src) {
+            $templateRequest(src, true).then(function(response) {
+              set(response);
+            });
+          });
+        }
 
         function unindent(text) {
           if (!text) return text;
@@ -304,10 +317,6 @@
         function set(text) {
           text = unindent(text || '');
           element.html(marked(text, scope.opts || null));
-        }
-
-        if (attrs.marked) {
-          scope.$watch('marked', set);
         }
 
       }

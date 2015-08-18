@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>gfm.css</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.1/normalize.min.css">
+  <link rel="stylesheet" href="./gfm.css">
+  <style>
+    .container {
+      margin: 2rem auto 4rem;
+      max-width: 666px;
+      padding: 13px;
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/github.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+</head>
+<body>
+<main class="container markdown-body">
+<strong>readme • <a href="style-guide.html">style guide</a> • <a href="https://github.com/ngoldman/gfm.css">source</a></strong><h1>gfm.css</h1>
+<p><a href="https://www.npmjs.com/package/gfm.css"><img src="https://img.shields.io/npm/v/gfm.css.svg?style=flat-square" alt=""></a>
+<a href="https://travis-ci.org/ngoldman/gfm.css"><img src="https://img.shields.io/travis/ngoldman/gfm.css.svg?style=flat-square" alt=""></a></p>
+<p>Styles for <a href="https://help.github.com/articles/github-flavored-markdown/">github flavored markdown</a>.</p>
+<h2>Usage</h2>
+<pre><code>npm install gfm.css
+</code></pre>
+<p><em>…do whatever you’re into, then…</em></p>
+<pre><code class="language-html">&lt;html&gt;
+...
+&lt;link rel=&quot;stylesheet&quot; href=&quot;path/to/gfm.css&quot;&gt;
+...
+&lt;article class=&quot;markdown-body&quot;&gt;
+  &lt;h1&gt;rendered markdown content&lt;/h1&gt;
+  &lt;p&gt;wow&lt;/p&gt;
+&lt;/article&gt;
+...
+&lt;/html&gt;
+</code></pre>
+<p>All styles are scoped to <code>.markdown-body</code>, as on github.</p>
+<h3>Sass</h3>
+<p>You can also use this as a <a href="http://sass-lang.com/">Sass</a> library.</p>
+<pre><code class="language-scss">@import '../node_modules/gfm.css/source/gfm.scss'
+</code></pre>
+<h4>Bonus</h4>
+<p>You can take <code>gfm.scss</code> as a base set of styles and go bananas with your own style flavor. Note that you need to set any variables you want to override <em>before</em> the import statement. Here are all the defaults that can be overridden:</p>
+<pre><code class="language-scss">$gfm-body-font-size:      16px !default;
+$gfm-code-font-size:      12px !default;
+$gfm-body-color:          #333;
+$gfm-link-color:          #4183c4;
+$gfm-body-font-family:    'Helvetica Neue',
+                          Helvetica,
+                          'Segoe UI',
+                          Arial,
+                          freesans,
+                          sans-serif !default;
+$gfm-code-font-family:    Consolas,
+                          'Liberation Mono',
+                          Menlo,
+                          Courier,
+                          monospace !default;
+$gfm-input-font-family:   Helvetica,
+                          Arial,
+                          freesans,
+                          clean,
+                          sans-serif,
+                          'Segoe UI Emoji',
+                          'Segoe UI Symbol' !default;
+$gfm-header-font-family:  $gfm-body-font-family !default;
+$gfm-header-border:       'true' !default;
+</code></pre>
+<h3>Extra</h3>
+<p>Github’s octicon anchors (for header links) and syntax highlighting styles are not included in the default build, but they’re available in <code>source/</code> as <code>gfm-octicon-anchors.scss</code> and <code>gfm-syntax.scss</code> respectively if you need them.</p>
+<h2>Development</h2>
+<h3>Install</h3>
+<p>Install dependencies with <code>npm install</code>.</p>
+<h3>Develop</h3>
+<p>Edit <code>scss</code> source files in <code>source/</code>.</p>
+<h3>Build</h3>
+<p>Build <code>gfm.css</code> from <code>source/</code> by running <code>npm run build</code>.</p>
+<h2>Contributing</h2>
+<p><code>gfm.css</code> is an <strong>OPEN Open Source Project</strong>. This means that:</p>
+<blockquote>
+<p>Individuals making significant and valuable contributions are given commit-access to the project to contribute as they see fit. This project is more like an open wiki than a standard guarded open source project.</p>
+</blockquote>
+<p>See the <a href="CONTRIBUTING.md">CONTRIBUTING.md</a> file for more details.</p>
+<h2>License</h2>
+<p><a href="LICENSE.md">ISC</a></p>
+<h3>Credit</h3>
+<p>The source is a cleaned and modified version of <a href="https://github.com/sindresorhus/github-markdown-css">github-markdown-css</a> which was scraped by <a href="https://github.com/sindresorhus">sindresorhus</a>. Original credit for the style itself is of course due to github.</p>
+</main>
+<a href="https://github.com/ngoldman/gfm.css"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
+</body>
+</html>

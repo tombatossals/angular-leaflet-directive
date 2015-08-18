@@ -1,5 +1,5 @@
-var home = angular.module('app.extend', ['ngNewRouter', 'leaflet-directive', 'hljs']);
+var app = angular.module('app.extend', []);
 
-home.controller('ExtendController', [ '$scope', ExtendController ]);
+app.controller('ExtendController', [ ExtendController ]);
 
 function ExtendController() {}
