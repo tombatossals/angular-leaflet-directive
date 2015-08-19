@@ -44,14 +44,14 @@ must include these javascript libraries to your main HTML:</p>
     <a class="item" ng-class="{ active: activeTab2 == 'html' }" ng-click="activeTab2='html'">HTML markup</a>
 </div>
 <div class="ui bottom attached segment" ng-switch on="activeTab2">
-    <div hljs ng-switch-default include="'components/home/basic-center-controller.js'"></div>
-    <div hljs ng-switch-when="html" include="'components/home/basic-center-controller.html'" /></div>
+    <div hljs ng-switch-default include="'components/home/home-first-example-controller.js'"></div>
+    <div hljs ng-switch-when="html" include="'components/home/home-first-example-controller.html'" /></div>
 </div>
 
 <h2>3. Rendering the resulting map</h2>
 <p>Your resulting HTML document will render the map like you can see below, and you could also continue interacting with it via the controller attributes and the events that it generates. Take a look at some of the <a ng-href="#!/examples">examples</a> to learn how to do it.</p>
 <div class="ui fluid card">
-    <div ng-controller="BasicCenterController" ng-include="'components/home/basic-center-controller.html'"></div>
+    <div ng-controller="HomeFirstExampleController as controller" ng-include="'components/home/home-first-example-controller.html'"></div>
     <div class="content">
       <p class="description"><strong>Opencyclemap</strong> tiles centered in London</p>
     </div>

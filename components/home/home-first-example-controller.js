@@ -1,4 +1,4 @@
-function BasicCenterController($scope) {
+function HomeFirstExampleController($scope) {
     angular.extend($scope, {
         center: {
             lat: 51.505,

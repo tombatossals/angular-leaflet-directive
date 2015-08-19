@@ -1,0 +1,6 @@
+<div ng-repeat="s in exlist.sections">
+    <div class="ui link list">
+        <h3 class="ui header" >{{ s.name }}</h3>
+        <a class="item" ng-href="#/examples{{ e.id }}" ng-repeat="e in exlist.examples[s.id]">{{ e.title }}</a>
+    </div>
+</div>

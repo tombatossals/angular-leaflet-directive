@@ -1,6 +1,6 @@
 (function (angular) {
-var app = angular.module('app', ['ngNewRouter', 'leaflet-directive', 'hljs', 'hc.marked', 'app.home', 'app.documentation', 'app.examples', 'app.extend']);
-var controller = app.controller('AppController', [ '$router', '$scope', '$http', '$q', '$interval', '$rootScope', '$window', AppController ]);
+var app = angular.module('app', ['ngNewRouter', 'leaflet-directive', 'hljs', 'hc.marked', 'app.directives', 'app.services', 'app.home', 'app.void', 'app.exlist', 'app.documentation', 'app.examples', 'app.extend']);
+var controller = app.controller('AppController', [ '$router', '$scope', '$location', '$http', '$q', '$interval', '$rootScope', '$window', AppController ]);
 
 app.config(['markedProvider', function(markedProvider) {
     markedProvider.setOptions({
@@ -12,15 +12,15 @@ app.config(['markedProvider', function(markedProvider) {
     });
 }]);
 
-function AppController($router, $scope, $http, $q, $interval, $rootScope, $window) {
+function AppController($router, $scope, $location, $http, $q, $interval, $rootScope, $window) {
     var scope = this;
 
     $router.config([
         { path: '/', redirectTo: '/home' },
-        { path: '/home', component: 'home' },
-        { path: '/documentation', component: 'documentation' },
-        { path: '/examples', component: 'examples' },
-        { path: '/extend', component: 'extend' }
+        { path: '/home', components: { main: 'home', left: 'void', right: 'void' }, as: 'home' },
+        { path: '/documentation', components: { main: 'documentation', left: 'void', right: 'void' }, as: 'documentation' },
+        { path: '/examples/:section/:example', components: { main: 'examples', left: 'exlist', right: 'void' } },
+        { path: '/extend', components: { main: 'extend', left: 'void', right: 'void' }, as: 'extend' }
     ]);
 
     var locationData = {
@@ -43,7 +43,7 @@ function AppController($router, $scope, $http, $q, $interval, $rootScope, $windo
     }
 
     function getSectionFromUrl(url) {
-        var section = url.split(/[\/]+/).pop();
+        var section = url.split('/')[1];
         return locationData[section];
     }
 
@@ -53,7 +53,7 @@ function AppController($router, $scope, $http, $q, $interval, $rootScope, $windo
     }
 
     $scope.$on('$locationChangeSuccess', function(event, url) {
-        scope.name = getSectionFromUrl(url);
+        scope.name = getSectionFromUrl($location.path());
     });
 
     function loadCity() {
@@ -123,41 +123,183 @@ function AppController($router, $scope, $http, $q, $interval, $rootScope, $windo
     });
 }
 
-        app.controller("BasicFirstController", [ "$scope", function($scope) {
-            // Nothing here!
-        }]);
+var app = angular.module('app.directives', []);
+
+app.directive('ngExample', [ '$http', '$compile', function($http, $compile) {
+    return {
+        restrict: 'A',
+        scope: {
+            source: '='
+        },
+        replace: true,
+        template: '<div></div>',
+        link: function(scope, element, attrs) {
+            scope.$watch('source', function(source) {
+                if (!source) {
+                    return;
+                }
+                var $doc = new DOMParser().parseFromString(source, "text/html");
+                var body = $doc.body;
+                var ctlr = $doc.body.getAttribute('ng-controller');
+                var compiled = $compile('<div ng-controller="' + ctlr + '">' + body.innerHTML + '</div>')(scope);
+                element.append(compiled);
+            });
+
+        }
+    };
+}]);
+
+
+var app = angular.module('app.services', []);
+
+app.factory('Examples', [ '$http', '$q', Examples]);
+
+function Examples($http, $q) {
+    var df = $q.defer();
+
+    $http.get('examples/json/examples.json').success(function(data) {
+        df.resolve(data);
+    });
+
+    return {
+        getExamples: function() {
+            return df.promise.then(function(examples) {
+                return examples;
+            });
+        },
+        getExample: function(location) {
+            return df.promise.then(function(examples) {
+
+                if (!examples[location.section]) {
+                    return;
+                }
+
+                var found = {};
+                angular.forEach(examples[location.section], function(example) {
+                    if (example.id === '/' + location.section + '/' + location.example) {
+                        found = example;
+                    }
+                });
+
+                return found;
+            });
+        },
+        getSections: function() {
+            return df.promise.then(function(examples) {
+                return Object.keys(examples).map(function(section) {
+                    return {
+                        id: section,
+                        name: section.charAt(0).toUpperCase() + section.slice(1),
+                        active: false
+                    };
+                });
+            });
+        }
+    };
+}
+
 var app = angular.module('app.documentation', []);
 
 app.controller('DocumentationController', [ DocumentationController ]);
 
 function DocumentationController() {}
 
-var app = angular.module('app.examples', [ 'ngNewRouter']);
+var app = angular.module('app.examples', []);
 
-app.controller('ExamplesController', [ '$router', '$scope', '$timeout', ExamplesController ]);
+app.controller('ExamplesController', [ '$routeParams', '$http', 'Examples', ExamplesController ]);
 
-function ExamplesController($router, $scope, $timeout) {
-    $router.config([
-        {
-            path: '/:section/:example',
-            component: 'BasicFirstController'
+function ExamplesController($routeParams, $http, Examples) {
 
+    console.log('ye');
+    var self = this;
+
+    if (!$routeParams.section) {
+        return;
+    }
+
+    Examples.getExample($routeParams).then(function(example) {
+        self.example = example;
+
+        $http.get('examples/' + self.example.extUrl).success(function(data) {
+            self.example.source = data;
+        });
+    });
+}
+
+app.controller("BasicFirstController", [ "$scope", function($scope) {
+    // Nothing here!
+}]);
+
+app.controller('BasicCenterAutodiscoverController', [ '$scope', function($scope) {
+    angular.extend($scope, {
+        center: {
+            autoDiscover: true
         }
-    ]);
-
-    $timeout(function() {
-        $('.ui.menu .browse')
-          .popup({
-            inline   : true,
-            hoverable: true,
-            position : 'bottom left',
-            delay: {
-              show: 300,
-              hide: 800
+    });
+}]);
+app.controller('BasicCenterController', [ '$scope', function($scope) {
+    angular.extend($scope, {
+        london: {
+            lat: 51.505,
+            lng: -0.09,
+            zoom: 4
+        }
+    });
+}]);
+app.controller('BasicCenterGeoIPController', [ '$scope', '$http', function($scope, $http) {
+    angular.extend($scope, {
+        center: {
+            lat: 0,
+            lng: 0,
+            zoom: 2
+        }
+    });
+    $scope.searchIP = function(ip) {
+        var url = "http://freegeoip.net/json/" + ip;
+        $http.get(url).success(function(res) {
+            $scope.center = {
+                lat: res.latitude,
+                lng: res.longitude,
+                zoom: 10
             }
-          })
-        ;
-    }, 200);
+            $scope.ip = res.ip;
+        })
+    };
+    $scope.searchIP("");
+}]);
+app.controller('BasicCenterUrlHashController', [ '$scope', '$location', function($scope, $location) {
+    angular.extend($scope, {
+        london: {
+            lat: 51.505,
+            lng: -0.09,
+            zoom: 4
+        }
+    });
+    $scope.$on("centerUrlHash", function(event, centerHash) {
+        console.log("url", centerHash);
+        $location.search({ c: centerHash });
+    });
+    $scope.changeLocation = function(centerHash) {
+        $location.search({ c: centerHash });
+    }
+}]);
+
+var app = angular.module('app.exlist', []);
+
+app.controller('ExlistController', [ '$q', '$http', 'Examples', ExlistController ]);
+
+function ExlistController($q, $http, Examples) {
+
+    var self = this;
+
+    Examples.getSections().then(function(sections) {
+        self.sections = sections;
+    });
+
+    Examples.getExamples().then(function(examples) {
+        self.examples = examples;
+    });
+
 }
 
 var app = angular.module('app.extend', []);
@@ -166,7 +308,7 @@ app.controller('ExtendController', [ ExtendController ]);
 
 function ExtendController() {}
 
-function BasicCenterController($scope) {
+function HomeFirstExampleController($scope) {
     angular.extend($scope, {
         center: {
             lat: 51.505,
@@ -182,10 +324,32 @@ function BasicCenterController($scope) {
     });
 }
 
-var home = angular.module('app.home', []);
+var app = angular.module('app.home', []);
 
-home.controller('HomeController', [ HomeController ]);
-home.controller('BasicCenterController', [ '$scope', BasicCenterController ]);
+app.controller('HomeController', [ HomeController ]);
+app.controller('HomeFirstExampleController', [ '$scope', HomeFirstExampleController ]);
 
 function HomeController() {}
+
+function HomeFirstExampleController($scope) {
+    angular.extend($scope, {
+        center: {
+            lat: 51.505,
+            lng: -0.09,
+            zoom: 4
+        },
+        tiles: {
+            url: "http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png"
+        },
+        defaults: {
+            scrollWheelZoom: false
+        }
+    });
+}
+
+var app = angular.module('app.void', []);
+
+app.controller('VoidController', [ VoidController ]);
+
+function VoidController() {}
 })(window.angular);

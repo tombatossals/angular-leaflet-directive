@@ -1,13 +1,13 @@
 Leaflet directive Documentation
 ===============================
 
-This directive acts as an intermediary between the AngularJS framework and the Leaflet map management library. It's composed of a main directive **&lt;leaflet&gt;** and attributes (coded as sub-directives) of the main directive. For example, we could add to our HTML code:
+This directive acts as an intermediary between the AngularJS framework and the Leaflet map management library. It's composed of a main directive "**leaflet**" and attributes which gives us the required functionality. For example, we could add to our HTML code:
 
 ```
 &lt;leaflet center="center" width="640px" height="480px">
 ```
 
-Here we have the main **leaflet** directive, with the attribute **center** and two more attributes (without bi-directional binding) **width** and **height**.
+Here we have the main "**leaflet**" directive, with the attribute "**center**" and two more attributes (without bi-directional binding) **width** and **height**.
 
 Before detailing how to use the directive and its attributes, let's talk about initializing our web page to be able to work with the directive. We must load the required JS libraries and CSS in our HTML:
 

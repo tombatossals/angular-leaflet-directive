@@ -1,5 +1,5 @@
-var app = angular.module('app', ['ngNewRouter', 'leaflet-directive', 'hljs', 'hc.marked', 'app.home', 'app.documentation', 'app.examples', 'app.extend']);
-var controller = app.controller('AppController', [ '$router', '$scope', '$http', '$q', '$interval', '$rootScope', '$window', AppController ]);
+var app = angular.module('app', ['ngNewRouter', 'leaflet-directive', 'hljs', 'hc.marked', 'app.directives', 'app.services', 'app.home', 'app.void', 'app.exlist', 'app.documentation', 'app.examples', 'app.extend']);
+var controller = app.controller('AppController', [ '$router', '$scope', '$location', '$http', '$q', '$interval', '$rootScope', '$window', AppController ]);
 
 app.config(['markedProvider', function(markedProvider) {
     markedProvider.setOptions({
@@ -11,15 +11,15 @@ app.config(['markedProvider', function(markedProvider) {
     });
 }]);
 
-function AppController($router, $scope, $http, $q, $interval, $rootScope, $window) {
+function AppController($router, $scope, $location, $http, $q, $interval, $rootScope, $window) {
     var scope = this;
 
     $router.config([
         { path: '/', redirectTo: '/home' },
-        { path: '/home', component: 'home' },
-        { path: '/documentation', component: 'documentation' },
-        { path: '/examples', component: 'examples' },
-        { path: '/extend', component: 'extend' }
+        { path: '/home', components: { main: 'home', left: 'void', right: 'void' }, as: 'home' },
+        { path: '/documentation', components: { main: 'documentation', left: 'void', right: 'void' }, as: 'documentation' },
+        { path: '/examples/:section/:example', components: { main: 'examples', left: 'exlist', right: 'void' } },
+        { path: '/extend', components: { main: 'extend', left: 'void', right: 'void' }, as: 'extend' }
     ]);
 
     var locationData = {
@@ -42,7 +42,7 @@ function AppController($router, $scope, $http, $q, $interval, $rootScope, $windo
     }
 
     function getSectionFromUrl(url) {
-        var section = url.split(/[\/]+/).pop();
+        var section = url.split('/')[1];
         return locationData[section];
     }
 
@@ -52,7 +52,7 @@ function AppController($router, $scope, $http, $q, $interval, $rootScope, $windo
     }
 
     $scope.$on('$locationChangeSuccess', function(event, url) {
-        scope.name = getSectionFromUrl(url);
+        scope.name = getSectionFromUrl($location.path());
     });
 
     function loadCity() {
