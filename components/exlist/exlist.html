@@ -1,6 +1,11 @@
-<div ng-repeat="s in exlist.sections">
-    <div class="ui link list">
-        <h3 class="ui header" >{{ s.name }}</h3>
-        <a class="item" ng-href="#/examples{{ e.id }}" ng-repeat="e in exlist.examples[s.id]">{{ e.title }}</a>
+
+<div class="ui vertical menu">
+  <h3 class="item">By section</h3>
+  <div class="ui simple left pointing dropdown link item" ng-repeat="s in exlist.sections">
+    <i class="dropdown icon"></i>
+    {{ s.name }}
+    <div class="menu">
+      <a class="item" ng-repeat="e in exlist.examples[s.id]" ng-href="#/examples{{ e.id }}" ng-bind="e.title"></a>
     </div>
+  </div>
 </div>

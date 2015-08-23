@@ -1,5 +1,6 @@
 body {
     font-family: 'Roboto Slab', serif;
+    font-size: 16px;
     overflow-y: scroll;
 }
 
@@ -28,7 +29,7 @@ body {
 
 footer {
     border-top: 2px solid #EEE;
-    padding-top: 1em;
+    padding: 1em;
     text-align: right;
 }
 .banner {
@@ -154,4 +155,10 @@ div.mainPageDemo {
   border: 1px solid #eee;
   border-left-width: 5px;
   border-radius: 3px;
+}
+
+.section {
+    background: #EEE;
+    border-bottom: 2px solid #DDD;
+    border-top: 2px solid #DDD;
 }

@@ -15,8 +15,8 @@ app.directive('ngExample', [ '$http', '$compile', function($http, $compile) {
                 }
                 var $doc = new DOMParser().parseFromString(source, "text/html");
                 var body = $doc.body;
-                var ctlr = $doc.body.getAttribute('ng-controller');
-                var compiled = $compile('<div ng-controller="' + ctlr + '">' + body.innerHTML + '</div>')(scope);
+                var ctlr = body.getAttribute('ng-controller');
+                var compiled = $compile('<div ng-controller="' + ctlr + '">' + body.innerHTML.replace('height="480px"', 'height="240px"') + '</div>')(scope);
                 element.append(compiled);
             });
 

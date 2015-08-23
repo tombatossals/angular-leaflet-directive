@@ -17,10 +17,10 @@ function AppController($router, $scope, $location, $http, $q, $interval, $rootSc
 
     $router.config([
         { path: '/', redirectTo: '/home' },
-        { path: '/home', components: { main: 'home', left: 'void', right: 'void' }, as: 'home' },
-        { path: '/documentation', components: { main: 'documentation', left: 'void', right: 'void' }, as: 'documentation' },
-        { path: '/examples/:section/:example', components: { main: 'examples', left: 'exlist', right: 'void' } },
-        { path: '/extend', components: { main: 'extend', left: 'void', right: 'void' }, as: 'extend' }
+        { path: '/home', components: { main: 'home' }, as: 'home' },
+        { path: '/documentation', components: { main: 'documentation' }, as: 'documentation' },
+        { path: '/examples/:section/:example', components: { main: 'examples', left: 'exlist' } },
+        { path: '/extend', components: { main: 'extend' }, as: 'extend' }
     ]);
 
     var locationData = {
@@ -43,8 +43,7 @@ function AppController($router, $scope, $location, $http, $q, $interval, $rootSc
     }
 
     function getSectionFromUrl(url) {
-        var section = url.split('/')[1];
-        return locationData[section];
+        return url.split('/')[1];
     }
 
     function randomProperty(obj) {
@@ -53,7 +52,8 @@ function AppController($router, $scope, $location, $http, $q, $interval, $rootSc
     }
 
     $scope.$on('$locationChangeSuccess', function(event, url) {
-        scope.name = getSectionFromUrl($location.path());
+        scope.section = getSectionFromUrl($location.path());
+        scope.name = locationData[scope.section];
     });
 
     function loadCity() {
@@ -62,7 +62,7 @@ function AppController($router, $scope, $location, $http, $q, $interval, $rootSc
             scope.center = {
                 lat: city.lat,
                 lng: city.lon,
-                zoom: getRandomInt(3, 8)
+                zoom: 3
             };
 
             scope.markers = {
@@ -83,7 +83,7 @@ function AppController($router, $scope, $location, $http, $q, $interval, $rootSc
 
     loadCity();
 
-    $interval(loadCity, 15000);
+    $interval(loadCity, 5000);
 
     function getRandomInt(min, max) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -140,8 +140,8 @@ app.directive('ngExample', [ '$http', '$compile', function($http, $compile) {
                 }
                 var $doc = new DOMParser().parseFromString(source, "text/html");
                 var body = $doc.body;
-                var ctlr = $doc.body.getAttribute('ng-controller');
-                var compiled = $compile('<div ng-controller="' + ctlr + '">' + body.innerHTML + '</div>')(scope);
+                var ctlr = body.getAttribute('ng-controller');
+                var compiled = $compile('<div ng-controller="' + ctlr + '">' + body.innerHTML.replace('height="480px"', 'height="240px"') + '</div>')(scope);
                 element.append(compiled);
             });
 
@@ -210,7 +210,6 @@ app.controller('ExamplesController', [ '$routeParams', '$http', 'Examples', Exam
 
 function ExamplesController($routeParams, $http, Examples) {
 
-    console.log('ye');
     var self = this;
 
     if (!$routeParams.section) {
@@ -276,7 +275,6 @@ app.controller('BasicCenterUrlHashController', [ '$scope', '$location', function
         }
     });
     $scope.$on("centerUrlHash", function(event, centerHash) {
-        console.log("url", centerHash);
         $location.search({ c: centerHash });
     });
     $scope.changeLocation = function(centerHash) {

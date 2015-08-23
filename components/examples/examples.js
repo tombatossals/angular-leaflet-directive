@@ -69,7 +69,6 @@ app.controller('BasicCenterUrlHashController', [ '$scope', '$location', function
         }
     });
     $scope.$on("centerUrlHash", function(event, centerHash) {
-        console.log("url", centerHash);
         $location.search({ c: centerHash });
     });
     $scope.changeLocation = function(centerHash) {

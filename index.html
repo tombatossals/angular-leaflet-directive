@@ -15,10 +15,10 @@
         <link rel="stylesheet" href="css/style.css" />
     </head>
 
-<body ng-cloak ng-app="app" ng-controller="AppController as header">
+<body ng-cloak ng-app="app" ng-controller="AppController as main">
     <div class="ui grid">
-        <div class="three wide column"></div>
-        <div class="ten wide column">
+        <div class="two wide column"></div>
+        <div class="twelve wide column">
             <div class="ui header">
                 <div class="ui grid">
                     <div class="five wide column">
@@ -38,46 +38,48 @@
                 <a class="forkme" href="https://github.com/tombatossals/angular-leaflet-directive" rel="external">
                     <img src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub">
                 </a>
-                <leaflet center="header.center" defaults="header.defaults" tiles="header.tiles" markers="header.markers" broadcast-events="header.events" id="header" height="160px"></leaflet>
+                <leaflet center="main.center" defaults="main.defaults" tiles="main.tiles" markers="main.markers" broadcast-events="main.events" id="header" height="160px"></leaflet>
                 <div class="content">
                     Simple to use <a href="http://angularjs.org">AngularJS</a> directive for easy embedding and interacting with a map managed with the <a href="http://leafletjs.com/">leaflet map library</a>.
                 </div>
             </div>
-        </div>
-        <div class="three wide column"></div>
-    </div>
 
-    <div class="ui basic segment" style="background: #EEE; border-bottom: 2px solid #DDD; border-top: 2px solid #DDD;">
-        <div class="ui grid">
-            <div class="three wide column"></div>
-            <div class="ten wide column">
-                <h1 ng-bind="header.name"</h1>
-            </div>
-            <div class="three wide column"></div>
+            <div ng-include src="'components/breadcrumb/breadcrumb.html'"></div>
         </div>
     </div>
 
-    <div class="ui basic segment">
-        <div class="ui grid">
-            <div class="three wide column">
-                <div ng-viewport="left"></div>
-            </div>
-            <div class="ten wide column">
-                <div ng-viewport="main"></div>
-            </div>
-            <div class="three wide column"></div>
+    <div class="ui grid">
+        <div class="two wide column"></div>
+        <div class="seven wide column" ng-if="main.section === 'examples'">
+            <div ng-viewport="left"></div>
+        </div>
+
+        <div class="five wide column" ng-if="main.section === 'examples'">
+            <div ng-viewport="main"></div>
+        </div>
+
+        <div class="twelve wide column" ng-if="main.section !== 'examples'">
+            <div ng-viewport="main"></div>
+        </div>
+
+    </div>
+
+    <div class="ui grid" ng-if="main.section === 'examples'">
+        <div class="two wide column"></div>
+        <div class="twelve wide column">
+            <hr />
+            <p><a ng-href="{{ example.extUrl }}">View this example as a stand-alone page</a></p>
+            <h3 class="ui header">Source code of this example</h3>
+            <div ng-code url="example.extUrl"></div>
         </div>
     </div>
 
-
-    <div class="ui basic segment">
-        <div class="ui grid">
-            <div class="three wide column"></div>
-            <div class="ten wide column">
-                <footer>
-                    Page built with <a href="http://leafletjs.com">LeafletJS</a>, <a href="http://angularjs.org/">AngularJS</a> and <a href="http://semantic-ui.com/">Semantic UI</a>.
-                </footer>
-            </div>
+    <div class="ui grid">
+        <div class="two wide column"></div>
+        <div class="twelve wide column">
+            <footer>
+                Page built with <a href="http://leafletjs.com">LeafletJS</a>, <a href="http://angularjs.org/">AngularJS</a> and <a href="http://semantic-ui.com/">Semantic UI</a>.
+            </footer>
         </div>
     </div>
 
