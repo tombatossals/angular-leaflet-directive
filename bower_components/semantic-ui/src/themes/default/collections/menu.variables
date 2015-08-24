@@ -2,21 +2,14 @@
              Menu
 *******************************/
 
-
-/*-------------------
-    Globals Used
---------------------*/
-
-// @textColor
-// @borderColor
-// @invertedUnselectedTextColor
-
 /*-------------------
       Collection
 --------------------*/
 
 /* Menu */
-@margin: 1em 0rem;
+@verticalMargin: @medium;
+@horizontalMargin: 0em;
+@margin: @verticalMargin @horizontalMargin;
 @background: #FFFFFF;
 @fontFamily: @pageFont;
 @itemBackground: none;
@@ -90,8 +83,8 @@
 @arrowTransition: background @defaultDuration @defaultEasing;
 @arrowZIndex: 2;
 
-@arrowHoverColor: #F4F4F4;
-@arrowActiveColor: #F4F4F4;
+@arrowHoverColor: #F2F2F2;
+@arrowActiveColor: @arrowHoverColor;
 @arrowActiveHoverColor: @arrowActiveColor;
 
 @arrowVerticalHoverColor: @arrowHoverColor;
@@ -370,7 +363,7 @@
 /* Inverted */
 @invertedBackground: @black;
 @invertedBoxShadow: none;
-@invertedBorder: 1px solid transparent;
+@invertedBorder: 0px solid transparent;
 @invertedHeaderBackground: transparent;
 
 @invertedItemBackground: transparent;
@@ -419,8 +412,16 @@
 @floatedDistance: 0.5rem;
 
 /* Attached */
+@attachedTopOffset: 0px;
+@attachedBottomOffset: 0px;
+@attachedHorizontalOffset: -@borderWidth;
+@attachedWidth: ~"calc(100% + "-@attachedHorizontalOffset * 2~")";
 @attachedBoxShadow: none;
-@attachedWidth: ~"calc(100% + "@borderWidth * 2~")";
+@attachedBorder: @borderWidth solid @solidBorderColor;
+@attachedBottomBoxShadow:
+  @boxShadow,
+  @attachedBoxShadow
+;
 
 /* Sizes */
 @smallWidth: 13rem;

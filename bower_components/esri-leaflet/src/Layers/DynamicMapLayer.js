@@ -10,15 +10,24 @@ EsriLeaflet.Layers.DynamicMapLayer = EsriLeaflet.Layers.RasterLayer.extend({
     f: 'json'
   },
 
-  initialize: function (url, options) {
-    options = options || {};
-    options.url = EsriLeaflet.Util.cleanUrl(url);
+  initialize: function (options) {
+    options.url = EsriLeaflet.Util.cleanUrl(options.url);
     this._service = new EsriLeaflet.Services.MapService(options);
     this._service.on('authenticationrequired requeststart requestend requesterror requestsuccess', this._propagateEvent, this);
     if ((options.proxy || options.token) && options.f !== 'json'){
       options.f = 'json';
     }
     L.Util.setOptions(this, options);
+  },
+
+  getDynamicLayers: function(){
+    return this.options.dynamicLayers;
+  },
+
+  setDynamicLayers: function(dynamicLayers){
+    this.options.dynamicLayers = dynamicLayers;
+    this._update();
+    return this;
   },
 
   getLayers: function(){
@@ -65,6 +74,7 @@ EsriLeaflet.Layers.DynamicMapLayer = EsriLeaflet.Layers.RasterLayer.extend({
 
   _getPopupData: function(e){
     var callback = L.Util.bind(function(error, featureCollection, response) {
+      if(error) { return; } // we really can't do anything here but authenticate or requesterror will fire
       setTimeout(L.Util.bind(function(){
         this._renderPopup(e.latlng, error, featureCollection, response);
       }, this), 300);
@@ -109,6 +119,10 @@ EsriLeaflet.Layers.DynamicMapLayer = EsriLeaflet.Layers.RasterLayer.extend({
       imageSR: this.options.imageSR
     };
 
+    if(this.options.dynamicLayers){
+      params.dynamicLayers = this.options.dynamicLayers;
+    }
+
     if(this.options.layers){
       params.layers = 'show:' + this.options.layers.join(',');
     }
@@ -134,7 +148,8 @@ EsriLeaflet.Layers.DynamicMapLayer = EsriLeaflet.Layers.RasterLayer.extend({
 
   _requestExport: function (params, bounds) {
     if(this.options.f === 'json'){
-      this._service.get('export', params, function(error, response){
+      this._service.request('export', params, function(error, response){
+        if(error) { return; } // we really can't do anything here but authenticate or requesterror will fire
         this._renderImage(response.href, bounds);
       }, this);
     } else {
@@ -146,10 +161,10 @@ EsriLeaflet.Layers.DynamicMapLayer = EsriLeaflet.Layers.RasterLayer.extend({
 
 EsriLeaflet.DynamicMapLayer = EsriLeaflet.Layers.DynamicMapLayer;
 
-EsriLeaflet.Layers.dynamicMapLayer = function(url, options){
-  return new EsriLeaflet.Layers.DynamicMapLayer(url, options);
+EsriLeaflet.Layers.dynamicMapLayer = function(options){
+  return new EsriLeaflet.Layers.DynamicMapLayer(options);
 };
 
-EsriLeaflet.dynamicMapLayer = function(url, options){
-  return new EsriLeaflet.Layers.DynamicMapLayer(url, options);
+EsriLeaflet.dynamicMapLayer = function(options){
+  return new EsriLeaflet.Layers.DynamicMapLayer(options);
 };

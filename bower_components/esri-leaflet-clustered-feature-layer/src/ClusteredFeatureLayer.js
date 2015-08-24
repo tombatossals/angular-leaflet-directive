@@ -16,16 +16,14 @@
 
     window.L.esri.Layers.ClusteredFeatureLayer = ClusteredFeatureLayer;
 
-    window.L.esri.Layers.clusteredFeatureLayer = function(url, options){
-      return new ClusteredFeatureLayer(url, options);
+    window.L.esri.Layers.clusteredFeatureLayer = function(options){
+      return new ClusteredFeatureLayer(options);
     };
 
-    window.L.esri.clusteredFeatureLayer = function(url, options){
-      return new ClusteredFeatureLayer(url, options);
-    };
+    window.L.esri.ClusteredFeatureLayer = ClusteredFeatureLayer;
 
-    window.L.esri.clusteredFeatureLayer = function(url, options){
-      return new ClusteredFeatureLayer(url, options);
+    window.L.esri.clusteredFeatureLayer = function(options){
+      return new ClusteredFeatureLayer(options);
     };
   }
 }(function (L, Esri) {
@@ -41,8 +39,8 @@
      * Constructor
      */
 
-    initialize: function (url, options) {
-      Esri.Layers.FeatureManager.prototype.initialize.call(this, url, options);
+    initialize: function (options) {
+      Esri.Layers.FeatureManager.prototype.initialize.call(this, options);
 
       options = L.setOptions(this, options);
 

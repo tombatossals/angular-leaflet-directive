@@ -1,4 +1,4 @@
-/*! esri-leaflet - v1.0.0-rc.8 - 2015-06-01
+/*! esri-leaflet - v1.0.0 - 2015-07-10
 *   Copyright (c) 2015 Environmental Systems Research Institute, Inc.
 *   Apache License*/
 (function (factory) {
@@ -17,7 +17,7 @@
   }
 }(function (L) {
 var EsriLeaflet = { //jshint ignore:line
-  VERSION: '1.0.0-rc.8',
+  VERSION: '1.0.0',
   Layers: {},
   Services: {},
   Controls: {},
@@ -739,44 +739,46 @@ EsriLeaflet.Services.Service = L.Class.extend({
   },
 
   _createServiceCallback: function(method, path, params, callback, context){
-    var request = [method, path, params, callback, context];
-
     return L.Util.bind(function(error, response){
 
       if (error && (error.code === 499 || error.code === 498)) {
         this._authenticating = true;
 
-        this._requestQueue.push(request);
+        this._requestQueue.push([method, path, params, callback, context]);
 
+        // fire an event for users to handle and re-authenticate
         this.fire('authenticationrequired', {
           authenticate: L.Util.bind(this.authenticate, this)
         });
-      } else {
-        callback.call(context, error, response);
 
-        if(error) {
-          this.fire('requesterror', {
-            url: this.options.url + path,
-            params: params,
-            message: error.message,
-            code: error.code,
-            method: method
-          });
-        } else {
-          this.fire('requestsuccess', {
-            url: this.options.url + path,
-            params: params,
-            response: response,
-            method: method
-          });
-        }
+        // if the user has access to a callback they can handle the auth error
+        error.authenticate = L.Util.bind(this.authenticate, this);
+      }
 
-        this.fire('requestend', {
+      callback.call(context, error, response);
+
+      if(error) {
+        this.fire('requesterror', {
           url: this.options.url + path,
           params: params,
+          message: error.message,
+          code: error.code,
+          method: method
+        });
+      } else {
+        this.fire('requestsuccess', {
+          url: this.options.url + path,
+          params: params,
+          response: response,
           method: method
         });
       }
+
+      this.fire('requestend', {
+        url: this.options.url + path,
+        params: params,
+        method: method
+      });
     }, this);
   },
 
@@ -794,6 +796,7 @@ EsriLeaflet.Services.Service = L.Class.extend({
 EsriLeaflet.Services.service = function(params){
   return new EsriLeaflet.Services.Service(params);
 };
+
 
 EsriLeaflet.Services.ImageService = EsriLeaflet.Services.Service.extend({
 
@@ -1355,12 +1358,14 @@ EsriLeaflet.Layers.RasterLayer =  L.Class.extend({
   }
 });
 
+
 EsriLeaflet.Layers.ImageMapLayer = EsriLeaflet.Layers.RasterLayer.extend({
 
   options: {
     updateInterval: 150,
     format: 'jpgpng',
-    transparent: true
+    transparent: true,
+    f: 'json'
   },
 
   query: function(){
@@ -1371,9 +1376,8 @@ EsriLeaflet.Layers.ImageMapLayer = EsriLeaflet.Layers.RasterLayer.extend({
     return this._service.identify();
   },
 
-  initialize: function (url, options) {
-    options = options || {};
-    options.url = EsriLeaflet.Util.cleanUrl(url);
+  initialize: function (options) {
+    options.url = EsriLeaflet.Util.cleanUrl(options.url);
     this._service = new EsriLeaflet.Services.ImageService(options);
     this._service.on('authenticationrequired requeststart requestend requesterror requestsuccess', this._propagateEvent, this);
     L.Util.setOptions(this, options);
@@ -1444,6 +1448,7 @@ EsriLeaflet.Layers.ImageMapLayer = EsriLeaflet.Layers.RasterLayer.extend({
 
   _getPopupData: function(e){
     var callback = L.Util.bind(function(error, results, response) {
+      if(error) { return; } // we really can't do anything here but authenticate or requesterror will fire
       setTimeout(L.Util.bind(function(){
         this._renderPopup(e.latlng, error, results, response);
       }, this), 300);
@@ -1530,7 +1535,8 @@ EsriLeaflet.Layers.ImageMapLayer = EsriLeaflet.Layers.RasterLayer.extend({
 
   _requestExport: function (params, bounds) {
     if (this.options.f === 'json') {
-      this._service.get('exportImage', params, function(error, response){
+      this._service.request('exportImage', params, function(error, response){
+        if(error) { return; } // we really can't do anything here but authenticate or requesterror will fire
         this._renderImage(response.href, bounds);
       }, this);
     } else {
@@ -1542,12 +1548,12 @@ EsriLeaflet.Layers.ImageMapLayer = EsriLeaflet.Layers.RasterLayer.extend({
 
 EsriLeaflet.ImageMapLayer = EsriLeaflet.Layers.ImageMapLayer;
 
-EsriLeaflet.Layers.imageMapLayer = function (url, options) {
-  return new EsriLeaflet.Layers.ImageMapLayer(url, options);
+EsriLeaflet.Layers.imageMapLayer = function (options) {
+  return new EsriLeaflet.Layers.ImageMapLayer(options);
 };
 
-EsriLeaflet.imageMapLayer = function (url, options) {
-  return new EsriLeaflet.Layers.ImageMapLayer(url, options);
+EsriLeaflet.imageMapLayer = function (options) {
+  return new EsriLeaflet.Layers.ImageMapLayer(options);
 };
 
 

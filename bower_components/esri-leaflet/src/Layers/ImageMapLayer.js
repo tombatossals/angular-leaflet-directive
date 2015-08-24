@@ -3,7 +3,8 @@ EsriLeaflet.Layers.ImageMapLayer = EsriLeaflet.Layers.RasterLayer.extend({
   options: {
     updateInterval: 150,
     format: 'jpgpng',
-    transparent: true
+    transparent: true,
+    f: 'json'
   },
 
   query: function(){
@@ -14,9 +15,8 @@ EsriLeaflet.Layers.ImageMapLayer = EsriLeaflet.Layers.RasterLayer.extend({
     return this._service.identify();
   },
 
-  initialize: function (url, options) {
-    options = options || {};
-    options.url = EsriLeaflet.Util.cleanUrl(url);
+  initialize: function (options) {
+    options.url = EsriLeaflet.Util.cleanUrl(options.url);
     this._service = new EsriLeaflet.Services.ImageService(options);
     this._service.on('authenticationrequired requeststart requestend requesterror requestsuccess', this._propagateEvent, this);
     L.Util.setOptions(this, options);
@@ -87,6 +87,7 @@ EsriLeaflet.Layers.ImageMapLayer = EsriLeaflet.Layers.RasterLayer.extend({
 
   _getPopupData: function(e){
     var callback = L.Util.bind(function(error, results, response) {
+      if(error) { return; } // we really can't do anything here but authenticate or requesterror will fire
       setTimeout(L.Util.bind(function(){
         this._renderPopup(e.latlng, error, results, response);
       }, this), 300);
@@ -173,7 +174,8 @@ EsriLeaflet.Layers.ImageMapLayer = EsriLeaflet.Layers.RasterLayer.extend({
 
   _requestExport: function (params, bounds) {
     if (this.options.f === 'json') {
-      this._service.get('exportImage', params, function(error, response){
+      this._service.request('exportImage', params, function(error, response){
+        if(error) { return; } // we really can't do anything here but authenticate or requesterror will fire
         this._renderImage(response.href, bounds);
       }, this);
     } else {
@@ -185,10 +187,10 @@ EsriLeaflet.Layers.ImageMapLayer = EsriLeaflet.Layers.RasterLayer.extend({
 
 EsriLeaflet.ImageMapLayer = EsriLeaflet.Layers.ImageMapLayer;
 
-EsriLeaflet.Layers.imageMapLayer = function (url, options) {
-  return new EsriLeaflet.Layers.ImageMapLayer(url, options);
+EsriLeaflet.Layers.imageMapLayer = function (options) {
+  return new EsriLeaflet.Layers.ImageMapLayer(options);
 };
 
-EsriLeaflet.imageMapLayer = function (url, options) {
-  return new EsriLeaflet.Layers.ImageMapLayer(url, options);
+EsriLeaflet.imageMapLayer = function (options) {
+  return new EsriLeaflet.Layers.ImageMapLayer(options);
 };

@@ -47,7 +47,7 @@ L.Control.Permalink = L.Control.extend({
 		if (!this._map) return;
 
 		var center = this._round_point(this._map.getCenter());
-		this._update({zoom: this._map.getZoom(), lat: center.lat, lon: center.lng});
+		this._update({zoom: String(this._map.getZoom()), lat: String(center.lat), lon: String(center.lng)});
 	},
 
 	_update_href: function() {

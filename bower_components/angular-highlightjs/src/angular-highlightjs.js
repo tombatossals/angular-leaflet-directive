@@ -1,4 +1,4 @@
-/*global angular*/
+/*global angular, hljs*/
 
 function shouldHighlightStatics(attrs) {
   var should = true;
@@ -11,7 +11,6 @@ function shouldHighlightStatics(attrs) {
   });
   return should;
 }
-
 
 var ngModule = angular.module('hljs', []);
 
@@ -28,10 +27,10 @@ ngModule.provider('hljsService', function () {
     getOptions: function () {
       return angular.copy(_hljsOptions);
     },
-    $get: ['$window', function ($window) {
-      ($window.hljs.configure || angular.noop)(_hljsOptions);
-      return $window.hljs;
-    }]
+    $get: function () {
+      (hljs.configure || angular.noop)(_hljsOptions);
+      return hljs;
+    }
   };
 });
 

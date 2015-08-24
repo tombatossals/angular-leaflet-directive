@@ -83,18 +83,18 @@
 --------------------*/
 
 /*
-  This ensures all relative sizes are exact pixels
-  expressed in em
+  Sizes are all expressed in terms of 14px/em (default em)
+  This ensures these "ratios" remain constant despite changes in EM
 */
 
-@miniSize        : (10 / unit(@emSize));
-@tinySize        : (12 / unit(@emSize));
-@smallSize       : (13 / unit(@emSize));
-@mediumSize      : (14 / unit(@emSize));
-@largeSize       : (16 / unit(@emSize));
-@bigSize         : (18 / unit(@emSize));
-@hugeSize        : (20 / unit(@emSize));
-@massiveSize     : (24 / unit(@emSize));
+@miniSize        : (10 / 14);
+@tinySize        : (12 / 14);
+@smallSize       : (13 / 14);
+@mediumSize      : (14 / 14);
+@largeSize       : (16 / 14);
+@bigSize         : (18 / 14);
+@hugeSize        : (20 / 14);
+@massiveSize     : (24 / 14);
 
 
 /*-------------------
@@ -330,7 +330,10 @@
        Em Sizes
 --------------------*/
 
-/* Exact pixel values expressed in em */
+/*
+  This rounds @size values to the closest pixel then expresses that value in (r)em.
+  This ensures all size values round to exact pixels
+*/
 @mini            : unit( round(@miniSize * @emSize) / @emSize, rem);
 @tiny            : unit( round(@tinySize * @emSize) / @emSize, rem);
 @small           : unit( round(@smallSize * @emSize) / @emSize, rem);
@@ -340,6 +343,7 @@
 @huge            : unit( round(@hugeSize * @emSize) / @emSize, rem);
 @massive         : unit( round(@massiveSize * @emSize) / @emSize, rem);
 
+/* em */
 @relativeMini    : unit( round(@miniSize * @emSize) / @emSize, em);
 @relativeTiny    : unit( round(@tinySize * @emSize) / @emSize, em);
 @relativeSmall   : unit( round(@smallSize * @emSize) / @emSize, em);
@@ -349,13 +353,24 @@
 @relativeHuge    : unit( round(@hugeSize * @emSize) / @emSize, em);
 @relativeMassive : unit( round(@massiveSize * @emSize) / @emSize, em);
 
+/* rem */
+@absoluteMini    : unit( round(@miniSize * @emSize) / @emSize, rem);
+@absoluteTiny    : unit( round(@tinySize * @emSize) / @emSize, rem);
+@absoluteSmall   : unit( round(@smallSize * @emSize) / @emSize, rem);
+@absoluteMedium  : unit( round(@mediumSize * @emSize) / @emSize, rem);
+@absoluteLarge   : unit( round(@largeSize * @emSize) / @emSize, rem);
+@absoluteBig     : unit( round(@bigSize * @emSize) / @emSize, rem);
+@absoluteHuge    : unit( round(@hugeSize * @emSize) / @emSize, rem);
+@absoluteMassive : unit( round(@massiveSize * @emSize) / @emSize, rem);
+
 
 /*-------------------
   Exact Pixel Values
 --------------------*/
 /*
   These are used to specify exact pixel values in em
-  for things like borders
+  for things like borders that remain constantly
+  sized as emSize adjusts
 
   Since there are many more sizes than names for sizes,
   these are named by their original pixel values.
@@ -441,15 +456,16 @@
 
 @circularRadius                : 500rem;
 
-@borderColor                   : rgba(34, 36, 38, 0.15);
-@strongBorderColor             : rgba(34, 36, 38, 0.22);
-@internalBorderColor           : rgba(34, 36, 38, 0.1);
-@selectedBorderColor           : rgba(34, 36, 38, 0.35);
-@disabledBorderColor           : rgba(34, 36, 38, 0.5);
+@borderColor               : rgba(34, 36, 38, 0.15);
+@strongBorderColor         : rgba(34, 36, 38, 0.22);
+@internalBorderColor       : rgba(34, 36, 38, 0.1);
+@selectedBorderColor       : rgba(34, 36, 38, 0.35);
+@strongSelectedBorderColor : rgba(34, 36, 38, 0.5);
+@disabledBorderColor       : rgba(34, 36, 38, 0.5);
 
-@solidInternalBorderColor      : #FAFAFA;
-@solidBorderColor              : #D4D4D5;
-@solidSelectedBorderColor      : #BCBDBD;
+@solidInternalBorderColor  : #FAFAFA;
+@solidBorderColor          : #D4D4D5;
+@solidSelectedBorderColor  : #BCBDBD;
 
 @whiteBorderColor              : rgba(255, 255, 255, 0.1);
 @selectedWhiteBorderColor      : rgba(255, 255, 255, 0.8);

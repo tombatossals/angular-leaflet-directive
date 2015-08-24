@@ -49,7 +49,9 @@ Here is a quick example to get you started. Just change the paths to point to th
   var map = L.map('map').setView([45.526, -122.667], 15);
 
   L.esri.basemapLayer('Streets').addTo(map);
-  L.esri.clusteredFeatureLayer('http://services.arcgis.com/rOo16HdIMeOBI4Mb/arcgis/rest/services/Trimet_Transit_Stops/FeatureServer/0').addTo(map);
+  L.esri.clusteredFeatureLayer({
+    url: 'http://services.arcgis.com/rOo16HdIMeOBI4Mb/arcgis/rest/services/Trimet_Transit_Stops/FeatureServer/0'
+  }).addTo(map);
 </script>
 
 </body>

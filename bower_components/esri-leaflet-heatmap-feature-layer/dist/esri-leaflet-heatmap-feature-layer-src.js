@@ -1,5 +1,5 @@
-/*! esri-leaflet-heatmap-feature-layer - v1.0.0-rc.4 - 2014-11-10
-*   Copyright (c) 2014 Environmental Systems Research Institute, Inc.
+/*! esri-leaflet-heatmap-feature-layer - v1.0.2 - 2015-07-11
+*   Copyright (c) 2015 Environmental Systems Research Institute, Inc.
 *   Apache License*/
 (function (factory) {
   // define an AMD module that relies on 'leaflet'
@@ -21,12 +21,12 @@
 
     window.L.esri.HeatmapFeatureLayer = HeatmapFeatureLayer;
 
-    window.L.esri.Layers.heatmapFeatureLayer = function(url, options){
-      return new HeatmapFeatureLayer(url, options);
+    window.L.esri.Layers.heatmapFeatureLayer = function(options){
+      return new HeatmapFeatureLayer(options);
     };
 
-    window.L.esri.heatmapFeatureLayer = function(url, options){
-      return new HeatmapFeatureLayer(url, options);
+    window.L.esri.heatmapFeatureLayer = function(options){
+      return new HeatmapFeatureLayer(options);
     };
   }
 }(function (L, Esri) {
@@ -36,8 +36,8 @@
      * Constructor
      */
 
-    initialize: function (url, options) {
-      Esri.Layers.FeatureManager.prototype.initialize.call(this, url, options);
+    initialize: function (options) {
+      Esri.Layers.FeatureManager.prototype.initialize.call(this, options);
 
       options = L.setOptions(this, options);
 
@@ -117,4 +117,5 @@
 
   return HeatmapFeatureLayer;
 }));
+
 //# sourceMappingURL=esri-leaflet-heatmap-feature-layer-src.js.map

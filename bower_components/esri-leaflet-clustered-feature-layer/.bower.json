@@ -1,6 +1,6 @@
 {
   "name": "esri-leaflet-clustered-feature-layer",
-  "version": "1.0.0-rc.4",
+  "version": "1.0.2",
   "main": "dist/esri-leaflet-clustered-feature-layer.js",
   "ignore": [
     "**/.*",
@@ -9,11 +9,11 @@
     "spec"
   ],
   "homepage": "https://github.com/Esri/esri-leaflet-clustered-feature-layer",
-  "_release": "1.0.0-rc.4",
+  "_release": "1.0.2",
   "_resolution": {
     "type": "version",
-    "tag": "v1.0.0-rc.4",
-    "commit": "e64aa0ab68b232116692b0b92401bdb4a860c2d5"
+    "tag": "v1.0.2",
+    "commit": "512e9672a22cc459ba79216b5c2716c8bb8c6922"
   },
   "_source": "git://github.com/Esri/esri-leaflet-clustered-feature-layer.git",
   "_target": "~1.0.0-rc.4",
