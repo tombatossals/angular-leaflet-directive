@@ -33,7 +33,7 @@
             "title": "Center map with URL synchronization example"
         },
         {
-            "date": "2015-06-11T20:20:50.916Z",
+            "date": "2015-07-05T14:30:13.670Z",
             "section": "basic",
             "onlyStandAlone": false,
             "id": "/basic/custom-parameters-example",
@@ -207,6 +207,14 @@
             "id": "/basic/geojson-nested-example",
             "extUrl": "0125-basic-geojson-nested-example.html",
             "title": "GeoJSON nested example"
+        },
+        {
+            "date": "2015-08-11T15:36:47.966Z",
+            "section": "basic",
+            "onlyStandAlone": false,
+            "id": "/basic/bounds-nominatim-example",
+            "extUrl": "0126-basic-bounds-nominatim-example.html",
+            "title": "Bounds Nominatim map example"
         }
     ],
     "layers": [
@@ -433,6 +441,14 @@
             "id": "/layers/yandex-example",
             "extUrl": "0230-layers-yandex-example.html",
             "title": "Yandex layer example"
+        },
+        {
+            "date": "2015-08-17T07:37:17.489Z",
+            "section": "layers",
+            "onlyStandAlone": false,
+            "id": "/layers/overlay-geojson-example",
+            "extUrl": "0231-layers-overlay-geojson-example.html",
+            "title": "GeoJSON Shape Layer and GeoJSON Awesome Marker Layer"
         }
     ],
     "paths": [
@@ -493,7 +509,7 @@
             "title": "Path decoration example"
         },
         {
-            "date": "2015-07-03T15:09:34.896Z",
+            "date": "2015-08-11T15:36:44.656Z",
             "section": "paths",
             "onlyStandAlone": false,
             "id": "/paths/events-example",
@@ -503,7 +519,7 @@
     ],
     "controls": [
         {
-            "date": "2015-06-11T20:20:50.916Z",
+            "date": "2015-08-11T15:36:47.970Z",
             "section": "controls",
             "onlyStandAlone": false,
             "id": "/controls/custom-layer-control-example",
@@ -689,7 +705,7 @@
             "title": "Two maps with markers and events"
         },
         {
-            "date": "2015-06-20T16:07:14.606Z",
+            "date": "2015-07-04T13:23:05.266Z",
             "section": "markers",
             "onlyStandAlone": false,
             "id": "/markers/cluster-issue",

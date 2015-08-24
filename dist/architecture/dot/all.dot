@@ -51,6 +51,8 @@ digraph dependencies {
       
         "leafletPathsHelpers"[label="leafletPathsHelpers", color=6]
       
+        "nominatimService"[label="nominatimService", color=6]
+      
         "leafletEventsHelpersFactory"[label="leafletEventsHelpersFactory", color=6]
       
         "leafletGeoJsonEvents"[label="leafletGeoJsonEvents", color=6]
@@ -83,8 +85,6 @@ digraph dependencies {
         "eventBroadcast"[label="eventBroadcast", color=3]
       
         "geojson"[label="geojson", color=3]
-      
-        "opacityControl"[label="opacityControl", color=3]
       
         "layercontrol"[label="layercontrol", color=3]
       
@@ -126,8 +126,6 @@ digraph dependencies {
         "leaflet-directive" -> "eventBroadcast"
       
         "leaflet-directive" -> "geojson"
-      
-        "leaflet-directive" -> "opacityControl"
       
         "leaflet-directive" -> "layercontrol"
       
@@ -183,6 +181,8 @@ digraph dependencies {
       
         "leaflet-directive" -> "leafletPathsHelpers"
       
+        "leaflet-directive" -> "nominatimService"
+      
         "leaflet-directive" -> "leafletEventsHelpersFactory"
       
         "leaflet-directive" -> "leafletGeoJsonEvents"
@@ -230,6 +230,9 @@ digraph dependencies {
           "leafletHelpers"[label="leafletHelpers"]
           "leafletHelpers" -> "bounds"
         
+          "nominatimService"[label="nominatimService"]
+          "nominatimService" -> "bounds"
+        
           "leafletBoundsHelpers"[label="leafletBoundsHelpers"]
           "leafletBoundsHelpers" -> "bounds"
         
@@ -252,8 +255,8 @@ digraph dependencies {
           "leafletHelpers"[label="leafletHelpers"]
           "leafletHelpers" -> "controls"
         
-          "leafletLayerHelpers"[label="leafletLayerHelpers"]
-          "leafletLayerHelpers" -> "controls"
+          "leafletControlHelpers"[label="leafletControlHelpers"]
+          "leafletControlHelpers" -> "controls"
         
       
         
@@ -290,14 +293,6 @@ digraph dependencies {
         
           "leafletGeoJsonEvents"[label="leafletGeoJsonEvents"]
           "leafletGeoJsonEvents" -> "geojson"
-        
-      
-        
-          "leafletData"[label="leafletData"]
-          "leafletData" -> "opacityControl"
-        
-          "leafletHelpers"[label="leafletHelpers"]
-          "leafletHelpers" -> "opacityControl"
         
       
         
@@ -467,6 +462,9 @@ digraph dependencies {
           "leafletHelpers"[label="leafletHelpers"]
           "leafletHelpers" -> "leafletControlHelpers"
         
+          "leafletLayerHelpers"[label="leafletLayerHelpers"]
+          "leafletLayerHelpers" -> "leafletControlHelpers"
+        
           "leafletMapDefaults"[label="leafletMapDefaults"]
           "leafletMapDefaults" -> "leafletControlHelpers"
         
@@ -505,6 +503,14 @@ digraph dependencies {
         
           "leafletHelpers"[label="leafletHelpers"]
           "leafletHelpers" -> "leafletPathsHelpers"
+        
+      
+        
+          "leafletHelpers"[label="leafletHelpers"]
+          "leafletHelpers" -> "nominatimService"
+        
+          "leafletMapDefaults"[label="leafletMapDefaults"]
+          "leafletMapDefaults" -> "nominatimService"
         
       
         

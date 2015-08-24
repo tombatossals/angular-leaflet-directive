@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html ng-app="demoapp">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="../dist/angular-leaflet-directive.min.js"></script>
+    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
+    <script>
+        var app = angular.module('demoapp', ['leaflet-directive']);
+        app.controller('BasicBoundsNominatimController', [ '$scope', function($scope) {
+            angular.extend($scope, {
+                bounds: {
+                    address: 'Bath, UK'
+                }
+            });
+       }]);
+    </script>
+    <style>
+        input {
+            width: 120px;
+            margin-right: 10px;
+        }
+    </style>
+  </head>
+  <body ng-controller="BasicBoundsNominatimController">
+     <leaflet bounds="bounds" width="100%" height="480px"></leaflet>
+     <h1>Bounds Nominatim map example</h1>
+     <input type="button" value="Bath, UK" ng-click="bounds.address='Bath, UK'" />
+     <input type="button" value="Tanger, Marocco" ng-click="bounds.address='Tanger, Marocco'" />
+     <input type="button" style="width: 180px;" value="Volendam, Netherlands" ng-click="bounds.address='Volendam, Netherlands'" />
+     <input type="button" style="width: 340px;" value="Ciudad de las Artes y las Ciencias, Valencia, Spain" ng-click="bounds.address='Ciudad de las Artes y las Ciencias, Valencia, Spain'" />
+     <input type="button" style="width: 340px;" value="kldslkds" ng-click="bounds.address='dskldslkds'" />
+     <p>You can position the map with no need to use coordinates, just address names, using the <a href="http://wiki.openstreetmap.org/wiki/Nominatim">Nominatim</a> service of OpenStreetMap. Take a look at the <strong>address</strong> property of the bounds object:</p>
+     <pre ng-bind="bounds|json"></pre>
+  </body>
+</html>

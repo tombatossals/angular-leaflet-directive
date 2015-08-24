@@ -24,6 +24,13 @@ var app = angular.module('webapp');
                 center: {}
             });
         }]);
+        app.controller('BasicBoundsNominatimController', [ '$scope', function($scope) {
+            angular.extend($scope, {
+                bounds: {
+                    address: 'Bath, UK'
+                }
+            });
+       }]);
         app.controller('BasicCenterAutodiscoverController', [ '$scope', function($scope) {
             angular.extend($scope, {
                 center: {
@@ -592,11 +599,17 @@ var app = angular.module('webapp');
                         : "http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
             });
         } ]);
-        app.controller('ControlsCustomLayerControlController', [ '$scope', function($scope) {
+        app.controller("ControlsCustomLayerControlController", [ "$scope", function($scope) {
             angular.extend($scope, {
-                ripoll: {
-                    lat: 42.20133,
-                    lng: 2.19110,
+                layercontrol: {
+                    icons: {
+                      uncheck: "fa fa-toggle-off",
+                      check: "fa fa-toggle-on"
+                    }
+                },
+                madrid: {
+                    lat: 40.415363,
+                    lng: -3.707398,
                     zoom: 11
                 },
                 markers: {
@@ -608,48 +621,60 @@ var app = angular.module('webapp');
                 layers: {
                     baselayers: {
                         osm: {
-                            name: 'OpenStreetMap',
-                            type: 'xyz',
-                            url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                            name: "OpenStreetMap",
+                            type: "xyz",
+                            url: "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
                             layerOptions: {
-                                subdomains: ['a', 'b', 'c'],
-                                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                                subdomains: ["a", "b", "c"],
+                                attribution: "&copy; <a href=\"http://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors",
                                 continuousWorld: true
                             }
                         },
                         cycle: {
-                            name: 'OpenCycleMap',
-                            type: 'xyz',
-                            url: 'http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png',
+                            name: "OpenCycleMap",
+                            type: "xyz",
+                            url: "http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png",
                             layerOptions: {
-                                subdomains: ['a', 'b', 'c'],
-                                attribution: '&copy; <a href="http://www.opencyclemap.org/copyright">OpenCycleMap</a> contributors - &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                                subdomains: ["a", "b", "c"],
+                                attribution: "&copy; <a href=\"http://www.opencyclemap.org/copyright\">OpenCycleMap</a> contributors - &copy; <a href=\"http://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors",
                                 continuousWorld: true
                             }
                         }
                     },
                     overlays: {
                         hillshade: {
-                            name: 'Hillshade Europa',
-                            type: 'wms',
-                            url: 'http://129.206.228.72/cached/hillshade',
+                            name: "Hillshade Europa",
+                            type: "wms",
+                            url: "http://129.206.228.72/cached/hillshade",
                             visible: true,
                             layerOptions: {
-                                layers: 'europe_wms:hs_srtm_europa',
-                                format: 'image/png',
+                                layers: "europe_wms:hs_srtm_europa",
+                                format: "image/png",
                                 opacity: 0.25,
-                                attribution: 'Hillshade layer by GIScience http://www.osm-wms.de',
+                                attribution: "Hillshade layer by GIScience http://www.osm-wms.de",
                                 crs: L.CRS.EPSG900913
-                            }
+                            },
+                            group: "Raster"
                         },
                         fire: {
-                            name: 'OpenFireMap',
-                            type: 'xyz',
-                            url: 'http://openfiremap.org/hytiles/{z}/{x}/{y}.png',
+                            name: "Fire Stations",
+                            type: "xyz",
+                            url: "http://openfiremap.org/hytiles/{z}/{x}/{y}.png",
                             layerOptions: {
-                                attribution: '&copy; <a href="http://www.openfiremap.org">OpenFireMap</a> contributors - &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                                attribution: "&copy; <a href=\"http://www.openfiremap.org\">OpenFireMap</a> contributors - &copy; <a href=\"http://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors",
                                 continuousWorld: true
-                            }
+                            },
+                            group: "Open Fire Map"
+                        },
+                        em: {
+                            name: "Emergency Rooms",
+                            type: "xyz",
+                            url: "http://openfiremap.org/eytiles/{z}/{x}/{y}.png",
+                            layerOptions: {
+                                attribution: "&copy; <a href=\"http://www.openfiremap.org\">OpenFireMap</a> contributors - &copy; <a href=\"http://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors",
+                                continuousWorld: true
+                            },
+                            group: "Open Fire Map"
                         }
                     }
                 },
@@ -658,38 +683,55 @@ var app = angular.module('webapp');
                 },
                 addFireLayer: function() {
                     this.layers.overlays.fire = {
-                        name: 'OpenFireMap',
-                        type: 'xyz',
-                        url: 'http://openfiremap.org/hytiles/{z}/{x}/{y}.png',
+                        name: "Fire Stations",
+                        type: "xyz",
+                        url: "http://openfiremap.org/hytiles/{z}/{x}/{y}.png",
                         layerOptions: {
-                            attribution: '&copy; <a href="http://www.openfiremap.org">OpenFireMap</a> contributors - &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                            attribution: "&copy; <a href=\"http://www.openfiremap.org\">OpenFireMap</a> contributors - &copy; <a href=\"http://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors",
                             continuousWorld: true
                         }
                     };
                 },
                 existsFireLayer: function() {
-                    return ('fire' in this.layers.overlays);
+                    return ("fire" in this.layers.overlays);
+                },
+                removeEmergencyRooms: function() {
+                    delete this.layers.overlays.em;
+                },
+                addEmergencyRooms: function() {
+                    this.layers.overlays.em = {
+                        name: "Emergency Rooms",
+                        type: "xyz",
+                        url: "http://openfiremap.org/eytiles/{z}/{x}/{y}.png",
+                        layerOptions: {
+                            attribution: "&copy; <a href=\"http://www.openfiremap.org\">OpenFireMap</a> contributors - &copy; <a href=\"http://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors",
+                            continuousWorld: true
+                        }
+                    };
+                },
+                existsEmergencyRooms: function() {
+                    return ("em" in this.layers.overlays);
                 },
                 removeHillshadeLayer: function() {
                     delete this.layers.overlays.hillshade;
                 },
                 addHillshadeLayer: function() {
                     this.layers.overlays.hillshade = {
-                        name: 'Hillshade Europa',
-                        type: 'wms',
-                        url: 'http://129.206.228.72/cached/hillshade',
+                        name: "Hillshade Europa",
+                        type: "wms",
+                        url: "http://129.206.228.72/cached/hillshade",
                         visible: true,
                         layerOptions: {
-                            layers: 'europe_wms:hs_srtm_europa',
-                            format: 'image/png',
+                            layers: "europe_wms:hs_srtm_europa",
+                            format: "image/png",
                             opacity: 0.25,
-                            attribution: 'Hillshade layer by GIScience http://www.osm-wms.de',
+                            attribution: "Hillshade layer by GIScience http://www.osm-wms.de",
                             crs: L.CRS.EPSG900913
                         }
                     };
                 },
                 existsHillshadeLayer: function() {
-                    return ('hillshade' in this.layers.overlays);
+                    return ("hillshade" in this.layers.overlays);
                 }
             });
         } ]);
@@ -1985,6 +2027,57 @@ var app = angular.module('webapp');
             $scope.$on('leafletDirectiveMap.utfgridMouseover', function(event, leafletEvent) {
                 $scope.country = leafletEvent.data.name;
             });
+        }]);
+        app.controller("LayersOverlayGeoJSONController", [ "$scope", '$http', function($scope, $http) {
+            angular.extend($scope, {
+                world: {
+                    lat: 0,
+                    lng: 0,
+                    zoom: 3
+                },
+                layers: {
+                    baselayers: {
+                        osm: {
+                        name: 'OpenStreetMap',
+                        url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                        type: 'xyz'
+                        },
+                    },
+                    overlays:{}
+                }
+            });
+        $http.get("json/countries.geo.json").success(function(data, status) {
+            angular.extend($scope.layers.overlays, {
+                countries: {
+                    name:'World Country Boundaries',
+                    type: 'geoJSONShape',
+                    data: data,
+                    layerOptions: {
+                        style: {
+                                color: '#00D',
+                                fillColor: 'red',
+                                weight: 2.0,
+                                opacity: 0.6,
+                                fillOpacity: 0.2
+                        }
+                    }
+                }
+            });
+        });
+        $http.get("json/major_cities.json").success(function(data, status) {
+                    angular.extend($scope.layers.overlays, {
+                        cities: {
+                            name:'Major Cities (Awesome Markers)',
+                            type: 'geoJSONAwesomeMarker',
+                            data: data,
+                            icon: {
+                                icon: 'heart',
+                                markerColor: 'red',
+                                prefix: 'fa'
+                            }
+                        }
+                    });
+                });
         }]);
         app.controller("LayersOverlaysHideOnZoomOutController", [ "$scope", function($scope) {
             angular.extend($scope, {
