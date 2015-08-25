@@ -2963,6 +2963,7 @@ angular.module("leaflet-directive").directive('bounds', ["$log", "$timeout", "$h
                     if (emptyBounds(bounds) || scope.settingBoundsFromScope) {
                         return;
                     }
+                    scope.settingBoundsFromLeaflet = true;
                     var newScopeBounds = {
                         northEast: {
                             lat: bounds._northEast.lat,
@@ -2977,10 +2978,15 @@ angular.module("leaflet-directive").directive('bounds', ["$log", "$timeout", "$h
                     if (!angular.equals(scope.bounds, newScopeBounds)) {
                         scope.bounds = newScopeBounds;
                     }
+                    $timeout( function() {
+                        scope.settingBoundsFromLeaflet = false;
+                    });
                 });
 
                 var lastNominatimQuery;
                 leafletScope.$watch('bounds', function (bounds) {
+                    if (scope.settingBoundsFromLeaflet)
+                        return;
                     if (isDefined(bounds.address) && bounds.address !== lastNominatimQuery) {
                         scope.settingBoundsFromScope = true;
                         nominatimService.query(bounds.address, attrs.id).then(function(data) {
@@ -3113,6 +3119,8 @@ angular.module("leaflet-directive").directive('center',
                 }
 
                 leafletScope.$watch("center", function(center) {
+                    if (scope.settingCenterFromLeaflet)
+                        return;
                     //$log.debug("updated center model...");
                     // The center from the URL has priority
                     if (isDefined(urlCenterHash)) {
@@ -3168,6 +3176,7 @@ angular.module("leaflet-directive").directive('center',
                         //$log.debug("same center in model, no need to update again.");
                         return;
                     }
+                    scope.settingCenterFromLeaflet = true;
                     safeApply(leafletScope, function(scope) {
                         if (!leafletScope.settingCenterFromScope) {
                             //$log.debug("updating center model...", map.getCenter(), map.getZoom());
@@ -3179,6 +3188,9 @@ angular.module("leaflet-directive").directive('center',
                             });
                         }
                         leafletEvents.notifyCenterChangedToBounds(leafletScope, map);
+                        $timeout( function() {
+                            scope.settingCenterFromLeaflet = false;
+                        });
                     });
                 });
 
