@@ -1,5 +1,5 @@
 /*!
-*  angular-leaflet-directive 0.8.6 2015-08-26
+*  angular-leaflet-directive 0.8.7 2015-08-26
 *  angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps
 *  git: https://github.com/tombatossals/angular-leaflet-directive
 */
@@ -3228,6 +3228,7 @@ angular.module("leaflet-directive").directive('controls', ["$log", "leafletHelpe
             var isValidControlType = leafletControlHelpers.isValidControlType;
             var leafletScope  = controller.getLeafletScope();
             var isDefined = leafletHelpers.isDefined;
+            var isArray = leafletHelpers.isArray;
             var leafletControls = {};
             var errorHeader = leafletHelpers.errorHeader + ' [Controls] ';
 
@@ -3257,12 +3258,21 @@ angular.module("leaflet-directive").directive('controls', ["$log", "leafletHelpe
 
                         if (controlType !== 'custom') {
                             control = createControl(controlType, newControls[newName]);
+                            map.addControl(control);
+                            leafletControls[newName] = control;
                         } else {
-                            control = newControls[newName];
+                            var customControlValue = newControls[newName];
+                            if (isArray(customControlValue)) {
+                                for (var i in customControlValue) {
+                                    var customControl = customControlValue[i];
+                                    map.addControl(customControl);
+                                    leafletControls[newName] = !isDefined(leafletControls[newName]) ? [customControl] : leafletControls[newName].concat([customControl]);
+                                }
+                            } else {
+                                map.addControl(customControlValue);
+                                leafletControls[newName] = customControlValue;
+                            }
                         }
-                        map.addControl(control);
-
-                        leafletControls[newName] = control;
                     }
 
                 });
