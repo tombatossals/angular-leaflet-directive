@@ -49,8 +49,8 @@ angular.module("leaflet-directive").directive('controls', function ($log, leafle
                         } else {
                             var customControlValue = newControls[newName];
                             if (isArray(customControlValue)) {
-                                for (var customControl in customControlValue) {
-                                    var customControl = customControlValue[customControl];
+                                for (var i in customControlValue) {
+                                    var customControl = customControlValue[i];
                                     map.addControl(customControl);
                                     leafletControls[newName] = !isDefined(leafletControls[newName]) ? [customControl] : leafletControls[newName].concat([customControl]);
                                 }
