@@ -14,6 +14,7 @@ angular.module("leaflet-directive").directive('controls', function ($log, leafle
             var isValidControlType = leafletControlHelpers.isValidControlType;
             var leafletScope  = controller.getLeafletScope();
             var isDefined = leafletHelpers.isDefined;
+            var isArray = leafletHelpers.isArray;
             var leafletControls = {};
             var errorHeader = leafletHelpers.errorHeader + ' [Controls] ';
 
@@ -43,12 +44,21 @@ angular.module("leaflet-directive").directive('controls', function ($log, leafle
 
                         if (controlType !== 'custom') {
                             control = createControl(controlType, newControls[newName]);
+                            map.addControl(control);
+                            leafletControls[newName] = control;
                         } else {
-                            control = newControls[newName];
+                            var customControlValue = newControls[newName];
+                            if (isArray(customControlValue)) {
+                                for (var customControl in customControlValue) {
+                                    var control = customControlValue[customControl];
+                                    map.addControl(control);
+                                    leafletControls[newName] = !isDefined(leafletControls[newName]) ? [control] : leafletControls[newName].concat([control]);
+                                }
+                            } else {
+                                map.addControl(customControlValue);
+                                leafletControls[newName] = customControlValue;
+                            }
                         }
-                        map.addControl(control);
-
-                        leafletControls[newName] = control;
                     }
 
                 });
