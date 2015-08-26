@@ -1,5 +1,5 @@
 /*!
-*  angular-leaflet-directive 0.8.6 2015-08-25
+*  angular-leaflet-directive 0.8.6 2015-08-26
 *  angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps
 *  git: https://github.com/tombatossals/angular-leaflet-directive
 */
@@ -338,6 +338,7 @@ angular.module("leaflet-directive").factory('leafletControlHelpers', ["$rootScop
                 return new L.Control.Search(params);
             }
         },
+        custom: {},
         minimap: {
             isPluginLoaded: function() {
                 if (!angular.isDefined(L.Control.MiniMap)) {
