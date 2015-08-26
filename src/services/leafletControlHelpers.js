@@ -111,6 +111,7 @@ angular.module("leaflet-directive").factory('leafletControlHelpers', function ($
                 return new L.Control.Search(params);
             }
         },
+        custom: {},
         minimap: {
             isPluginLoaded: function() {
                 if (!angular.isDefined(L.Control.MiniMap)) {
