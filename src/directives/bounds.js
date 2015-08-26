@@ -25,6 +25,7 @@ angular.module("leaflet-directive").directive('bounds', function ($log, $timeout
                     if (emptyBounds(bounds) || scope.settingBoundsFromScope) {
                         return;
                     }
+                    scope.settingBoundsFromLeaflet = true;
                     var newScopeBounds = {
                         northEast: {
                             lat: bounds._northEast.lat,
@@ -39,10 +40,15 @@ angular.module("leaflet-directive").directive('bounds', function ($log, $timeout
                     if (!angular.equals(scope.bounds, newScopeBounds)) {
                         scope.bounds = newScopeBounds;
                     }
+                    $timeout( function() {
+                        scope.settingBoundsFromLeaflet = false;
+                    });
                 });
 
                 var lastNominatimQuery;
                 leafletScope.$watch('bounds', function (bounds) {
+                    if (scope.settingBoundsFromLeaflet)
+                        return;
                     if (isDefined(bounds.address) && bounds.address !== lastNominatimQuery) {
                         scope.settingBoundsFromScope = true;
                         nominatimService.query(bounds.address, attrs.id).then(function(data) {
