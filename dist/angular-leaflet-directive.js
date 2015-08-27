@@ -1,5 +1,5 @@
 /*!
-*  angular-leaflet-directive 0.8.6 2015-08-26
+*  angular-leaflet-directive 0.8.6 2015-08-27
 *  angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps
 *  git: https://github.com/tombatossals/angular-leaflet-directive
 */
@@ -1397,7 +1397,7 @@ angular.module('leaflet-directive').service('leafletIterators', ["$log", "leafle
 }]);
 
 angular.module("leaflet-directive")
-.factory('leafletLayerHelpers', ["$rootScope", "$log", "leafletHelpers", "leafletIterators", function ($rootScope, $log, leafletHelpers, leafletIterators) {
+.factory('leafletLayerHelpers', ["$rootScope", "$q", "$log", "leafletHelpers", "leafletIterators", function ($rootScope, $q, $log, leafletHelpers, leafletIterators) {
     var Helpers = leafletHelpers;
     var isString = leafletHelpers.isString;
     var isObject = leafletHelpers.isObject;
@@ -1608,10 +1608,22 @@ angular.module("leaflet-directive")
                     $log.warn(errorHeader + ' The esri plugin is not loaded.');
                     return;
                 }
-                
+
                 params.options.url = params.url;
-                
-                return L.esri.featureLayer(params.options);
+
+                var layer = L.esri.featureLayer(params.options);
+                var load = function() {
+                    if(isDefined(params.options.loadedDefer)) {
+                        params.options.loadedDefer.resolve();
+                    }
+                };
+                layer.on('loading', function() {
+                    params.options.loadedDefer = $q.defer();
+                    layer.off('load', load);
+                    layer.on('load', load);
+                });
+
+                return layer;
             }
         },
         agsTiled: {
@@ -1621,9 +1633,9 @@ angular.module("leaflet-directive")
                     $log.warn(errorHeader + ' The esri plugin is not loaded.');
                     return;
                 }
-                
+
                 params.options.url = params.url;
-                
+
                 return L.esri.tiledMapLayer(params.options);
             }
         },
@@ -1634,9 +1646,9 @@ angular.module("leaflet-directive")
                     $log.warn(errorHeader + ' The esri plugin is not loaded.');
                     return;
                 }
-                
+
                 params.options.url = params.url;
-                
+
                 return L.esri.dynamicMapLayer(params.options);
             }
         },
@@ -1648,7 +1660,7 @@ angular.module("leaflet-directive")
                     return;
                 }
                  params.options.url = params.url;
-                
+
                 return L.esri.imageMapLayer(params.options);
             }
         },
@@ -3228,6 +3240,7 @@ angular.module("leaflet-directive").directive('controls', ["$log", "leafletHelpe
             var isValidControlType = leafletControlHelpers.isValidControlType;
             var leafletScope  = controller.getLeafletScope();
             var isDefined = leafletHelpers.isDefined;
+            var isArray = leafletHelpers.isArray;
             var leafletControls = {};
             var errorHeader = leafletHelpers.errorHeader + ' [Controls] ';
 
@@ -3257,12 +3270,21 @@ angular.module("leaflet-directive").directive('controls', ["$log", "leafletHelpe
 
                         if (controlType !== 'custom') {
                             control = createControl(controlType, newControls[newName]);
+                            map.addControl(control);
+                            leafletControls[newName] = control;
                         } else {
-                            control = newControls[newName];
+                            var customControlValue = newControls[newName];
+                            if (isArray(customControlValue)) {
+                                for (var i in customControlValue) {
+                                    var customControl = customControlValue[i];
+                                    map.addControl(customControl);
+                                    leafletControls[newName] = !isDefined(leafletControls[newName]) ? [customControl] : leafletControls[newName].concat([customControl]);
+                                }
+                            } else {
+                                map.addControl(customControlValue);
+                                leafletControls[newName] = customControlValue;
+                            }
                         }
-                        map.addControl(control);
-
-                        leafletControls[newName] = control;
                     }
 
                 });
@@ -3939,6 +3961,18 @@ angular.module("leaflet-directive").directive('layers', ["$log", "$q", "leafletD
                         isLayersControlVisible = updateLayersControl(map, mapId, isLayersControlVisible, layers.baselayers, newOverlayLayers, leafletLayers);
                         return true;
                     }
+
+                    var securedRemove = function(name) {
+                        var layerOptions = newOverlayLayers[name].layerOptions;
+                        if(isDefined(layerOptions) && isDefined(layerOptions.loadedDefer)) {
+                            layerOptions.loadedDefer.promise.then(function() {
+                                map.removeLayer(leafletLayers.overlays[name]);
+                            });
+                        } else {
+                            map.removeLayer(leafletLayers.overlays[name]);
+                        }
+                    };
+
                     // Delete layers from the array
                     for (var name in leafletLayers.overlays) {
                         if (!isDefined(newOverlayLayers[name]) || newOverlayLayers[name].doRefresh) {
@@ -3973,7 +4007,7 @@ angular.module("leaflet-directive").directive('layers', ["$log", "$q", "leafletD
                         if (newOverlayLayers[newName].visible && !map.hasLayer(leafletLayers.overlays[newName])) {
                             map.addLayer(leafletLayers.overlays[newName]);
                         } else if (newOverlayLayers[newName].visible === false && map.hasLayer(leafletLayers.overlays[newName])) {
-                            map.removeLayer(leafletLayers.overlays[newName]);
+                            securedRemove(newName);
                         }
 
                         //refresh heatmap data if present

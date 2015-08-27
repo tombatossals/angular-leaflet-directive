@@ -1,5 +1,5 @@
 angular.module("leaflet-directive")
-.factory('leafletLayerHelpers', function ($rootScope, $log, leafletHelpers, leafletIterators) {
+.factory('leafletLayerHelpers', function ($rootScope, $q, $log, leafletHelpers, leafletIterators) {
     var Helpers = leafletHelpers;
     var isString = leafletHelpers.isString;
     var isObject = leafletHelpers.isObject;
@@ -210,10 +210,22 @@ angular.module("leaflet-directive")
                     $log.warn(errorHeader + ' The esri plugin is not loaded.');
                     return;
                 }
-                
+
                 params.options.url = params.url;
-                
-                return L.esri.featureLayer(params.options);
+
+                var layer = L.esri.featureLayer(params.options);
+                var load = function() {
+                    if(isDefined(params.options.loadedDefer)) {
+                        params.options.loadedDefer.resolve();
+                    }
+                };
+                layer.on('loading', function() {
+                    params.options.loadedDefer = $q.defer();
+                    layer.off('load', load);
+                    layer.on('load', load);
+                });
+
+                return layer;
             }
         },
         agsTiled: {
@@ -223,9 +235,9 @@ angular.module("leaflet-directive")
                     $log.warn(errorHeader + ' The esri plugin is not loaded.');
                     return;
                 }
-                
+
                 params.options.url = params.url;
-                
+
                 return L.esri.tiledMapLayer(params.options);
             }
         },
@@ -236,9 +248,9 @@ angular.module("leaflet-directive")
                     $log.warn(errorHeader + ' The esri plugin is not loaded.');
                     return;
                 }
-                
+
                 params.options.url = params.url;
-                
+
                 return L.esri.dynamicMapLayer(params.options);
             }
         },
@@ -250,7 +262,7 @@ angular.module("leaflet-directive")
                     return;
                 }
                  params.options.url = params.url;
-                
+
                 return L.esri.imageMapLayer(params.options);
             }
         },

@@ -133,6 +133,18 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                         isLayersControlVisible = updateLayersControl(map, mapId, isLayersControlVisible, layers.baselayers, newOverlayLayers, leafletLayers);
                         return true;
                     }
+
+                    var securedRemove = function(name) {
+                        var layerOptions = newOverlayLayers[name].layerOptions;
+                        if(isDefined(layerOptions) && isDefined(layerOptions.loadedDefer)) {
+                            layerOptions.loadedDefer.promise.then(function() {
+                                map.removeLayer(leafletLayers.overlays[name]);
+                            });
+                        } else {
+                            map.removeLayer(leafletLayers.overlays[name]);
+                        }
+                    };
+
                     // Delete layers from the array
                     for (var name in leafletLayers.overlays) {
                         if (!isDefined(newOverlayLayers[name]) || newOverlayLayers[name].doRefresh) {
@@ -167,7 +179,7 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                         if (newOverlayLayers[newName].visible && !map.hasLayer(leafletLayers.overlays[newName])) {
                             map.addLayer(leafletLayers.overlays[newName]);
                         } else if (newOverlayLayers[newName].visible === false && map.hasLayer(leafletLayers.overlays[newName])) {
-                            map.removeLayer(leafletLayers.overlays[newName]);
+                            securedRemove(newName);
                         }
 
                         //refresh heatmap data if present
