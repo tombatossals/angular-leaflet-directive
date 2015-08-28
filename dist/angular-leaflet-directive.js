@@ -1542,6 +1542,16 @@ angular.module("leaflet-directive")
                 $it.each(params.options.layers, function(l){
                   lyrs.push(createLayer(l));
                 });
+                params.options.loadedDefer = function() {
+                    var defers = [];
+                    for (var i = 0; i < params.options.layers.length; i++) {
+                        var d = params.options.layers[i].layerOptions.loadedDefer;
+                        if(isDefined(d)) {
+                            defers.push(d);
+                        }
+                    }
+                    return defers;
+                };
                 return L.layerGroup(lyrs);
             }
         },
@@ -3965,9 +3975,25 @@ angular.module("leaflet-directive").directive('layers', ["$log", "$q", "leafletD
                     var securedRemove = function(name) {
                         var layerOptions = newOverlayLayers[name].layerOptions;
                         if(isDefined(layerOptions) && isDefined(layerOptions.loadedDefer)) {
-                            layerOptions.loadedDefer.promise.then(function() {
-                                map.removeLayer(leafletLayers.overlays[name]);
-                            });
+                            if(angular.isFunction(layerOptions.loadedDefer)) {
+                                var defers = layerOptions.loadedDefer();
+                                $log.debug('Loaded Deferred', defers);
+                                var count = defers.length;
+                                var resolve = function() {
+                                    count--;
+                                    if(count === 0) {
+                                        map.removeLayer(leafletLayers.overlays[name]);
+                                    }
+                                };
+
+                                for(var i = 0; i < defers.length; i++) {
+                                    defers[i].promise.then(resolve);
+                                }
+                            } else {
+                                layerOptions.loadedDefer.promise.then(function() {
+                                    map.removeLayer(leafletLayers.overlays[name]);
+                                });
+                            }
                         } else {
                             map.removeLayer(leafletLayers.overlays[name]);
                         }

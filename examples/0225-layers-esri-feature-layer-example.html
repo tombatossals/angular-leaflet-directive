@@ -129,6 +129,37 @@
                                 }
                             },
                             group: "Test"
+                        },
+
+                        group: {
+                            name: "Grouped",
+                            type: "group",
+                            layerOptions: {
+                                layers: [{
+                                    name: "Simple",
+                                    type: "agsFeature",
+                                    url: "https://services.arcgis.com/rOo16HdIMeOBI4Mb/arcgis/rest/services/Heritage_Trees_Portland/FeatureServer/0",
+                                    visible: true,
+                                    group: "Test"
+                                }, {
+                                    name: "Styling Points",
+                                    type: "agsFeature",
+                                    url: "https://services.arcgis.com/rOo16HdIMeOBI4Mb/arcgis/rest/services/Trimet_Transit_Stops/FeatureServer/0",
+                                    visible: false,
+                                    layerOptions: {
+                                        pointToLayer: function (geojson, latlng) {
+                                            if(geojson.properties.direction) {
+                                                return L.marker(latlng, {
+                                                    icon: $scope.busIcons[geojson.properties.direction.toLowerCase()]
+                                                });
+                                            } else {
+                                                return L.marker(latlng);
+                                            }
+                                        }
+                                    }
+                                }]
+                            }
+
                         }
                     }
                 },

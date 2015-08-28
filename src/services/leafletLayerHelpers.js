@@ -144,6 +144,16 @@ angular.module("leaflet-directive")
                 $it.each(params.options.layers, function(l){
                   lyrs.push(createLayer(l));
                 });
+                params.options.loadedDefer = function() {
+                    var defers = [];
+                    for (var i = 0; i < params.options.layers.length; i++) {
+                        var d = params.options.layers[i].layerOptions.loadedDefer;
+                        if(isDefined(d)) {
+                            defers.push(d);
+                        }
+                    }
+                    return defers;
+                };
                 return L.layerGroup(lyrs);
             }
         },
