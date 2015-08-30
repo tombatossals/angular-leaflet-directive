@@ -42,14 +42,14 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                     // Only add the visible layer to the map, layer control manages the addition to the map
                     // of layers in its control
                     if (layers.baselayers[layerName].top === true) {
-                        map.addLayer(leafletLayers.baselayers[layerName]);
+                        leafletLayers.baselayers[layerName].addTo(map);
                         oneVisibleLayer = true;
                     }
                 }
 
                 // If there is no visible layer add first to the map
                 if (!oneVisibleLayer && Object.keys(leafletLayers.baselayers).length > 0) {
-                    map.addLayer(leafletLayers.baselayers[Object.keys(layers.baselayers)[0]]);
+                    leafletLayers.baselayers[Object.keys(layers.baselayers)[0]].addTo(map);
                 }
 
                 // Setup the Overlays
@@ -65,7 +65,7 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                     leafletLayers.overlays[layerName] = newOverlayLayer;
                     // Only add the visible overlays to the map
                     if (layers.overlays[layerName].visible === true) {
-                        map.addLayer(leafletLayers.overlays[layerName]);
+                        leafletLayers.overlays[layerName].addTo(map);
                     }
                 }
 
@@ -97,12 +97,12 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                                 leafletLayers.baselayers[newName] = testBaseLayer;
                                 // Only add the visible layer to the map
                                 if (newBaseLayers[newName].top === true) {
-                                    map.addLayer(leafletLayers.baselayers[newName]);
+                                    leafletLayers.baselayers[newName].addTo(map);
                                 }
                             }
                         } else {
                             if (newBaseLayers[newName].top === true && !map.hasLayer(leafletLayers.baselayers[newName])) {
-                                map.addLayer(leafletLayers.baselayers[newName]);
+                                leafletLayers.baselayers[newName].addTo(map);
                             } else if (newBaseLayers[newName].top === false && map.hasLayer(leafletLayers.baselayers[newName])) {
                                 map.removeLayer(leafletLayers.baselayers[newName]);
                             }
@@ -120,7 +120,7 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                     }
                     // If there is no active layer make one active
                     if (!found && Object.keys(leafletLayers.baselayers).length > 0) {
-                        map.addLayer(leafletLayers.baselayers[Object.keys(leafletLayers.baselayers)[0]]);
+                        leafletLayers.baselayers[Object.keys(leafletLayers.baselayers)[0]].addTo(map);
                     }
 
                     // Only show the layers switch selector control if we have more than one baselayer + overlay
@@ -159,13 +159,13 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                             }
                             leafletLayers.overlays[newName] = testOverlayLayer;
                             if (newOverlayLayers[newName].visible === true) {
-                                map.addLayer(leafletLayers.overlays[newName]);
+                                leafletLayers.overlays[newName].addTo(map);
                             }
                         }
 
                         // check for the .visible property to hide/show overLayers
                         if (newOverlayLayers[newName].visible && !map.hasLayer(leafletLayers.overlays[newName])) {
-                            map.addLayer(leafletLayers.overlays[newName]);
+                            leafletLayers.overlays[newName].addTo(map);
                         } else if (newOverlayLayers[newName].visible === false && map.hasLayer(leafletLayers.overlays[newName])) {
                             map.removeLayer(leafletLayers.overlays[newName]);
                         }
