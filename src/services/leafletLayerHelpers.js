@@ -355,6 +355,12 @@ angular.module("leaflet-directive")
                 return L.imageOverlay(params.url, params.bounds, params.options);
             }
         },
+        iip: {
+            mustHaveUrl: true,
+            createLayer: function(params) {
+                return L.tileLayer.iip(params.url, params.options);
+            }
+        },
 
         // This "custom" type is used to accept every layer that user want to define himself.
         // We can wrap these custom layers like heatmap or yandex, but it means a lot of work/code to wrap the world,
