@@ -11,8 +11,7 @@ L.BingLayer = L.TileLayer.extend({
 
 		this._key = key;
 		this._url = null;
-		this.meta = {};
-		this.loadMetadata();
+		this.metaRequested = false;
 	},
 
 	tile2quad: function(x, y, z) {
@@ -37,17 +36,18 @@ L.BingLayer = L.TileLayer.extend({
 	},
 
 	loadMetadata: function() {
+		if (this.metaRequested) return;
+		this.metaRequested = true;
 		var _this = this;
 		var cbid = '_bing_metadata_' + L.Util.stamp(this);
 		window[cbid] = function (meta) {
-			_this.meta = meta;
 			window[cbid] = undefined;
 			var e = document.getElementById(cbid);
 			e.parentNode.removeChild(e);
 			if (meta.errorDetails) {
 				return;
 			}
-			_this.initMetadata();
+			_this.initMetadata(meta);
 		};
 		var urlScheme = (document.location.protocol === 'file:') ? 'http' : document.location.protocol.slice(0, -1);
 		var url = urlScheme + '://dev.virtualearth.net/REST/v1/Imagery/Metadata/'
@@ -60,8 +60,8 @@ L.BingLayer = L.TileLayer.extend({
 		document.getElementsByTagName('head')[0].appendChild(script);
 	},
 
-	initMetadata: function() {
-		var r = this.meta.resourceSets[0].resources[0];
+	initMetadata: function(meta) {
+		var r = meta.resourceSets[0].resources[0];
 		this.options.subdomains = r.imageUrlSubdomains;
 		this._url = r.imageUrl;
 		this._providers = [];
@@ -106,6 +106,11 @@ L.BingLayer = L.TileLayer.extend({
 				p.active = false;
 			}
 		}
+	},
+	
+	onAdd: function(map) {
+		this.loadMetadata();
+		L.TileLayer.prototype.onAdd.apply(this, [map]);
 	},
 
 	onRemove: function(map) {

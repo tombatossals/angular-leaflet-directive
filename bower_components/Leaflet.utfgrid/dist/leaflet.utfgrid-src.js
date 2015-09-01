@@ -7,7 +7,7 @@
  */
 (function (window, undefined) {
 
-L.Util.ajax = function (url, cb) {
+L.Util.ajax = function (url, success, error) {
 	// the following is from JavaScript: The Definitive Guide
 	// and https://developer.mozilla.org/en-US/docs/DOM/XMLHttpRequest/Using_XMLHttpRequest_in_IE6
 	if (window.XMLHttpRequest === undefined) {
@@ -25,15 +25,20 @@ L.Util.ajax = function (url, cb) {
 	request.open("GET", url);
 	request.onreadystatechange = function () {
 		/*jshint evil: true */
-		if (request.readyState === 4 && request.status === 200) {
-			if (window.JSON) {
-				response = JSON.parse(request.responseText);
-			} else {
-				response = eval("(" + request.responseText + ")");
+		if (request.readyState === 4) {
+			if (request.status === 200) {
+				if (window.JSON) {
+					response = JSON.parse(request.responseText);
+				} else {
+					response = eval("(" + request.responseText + ")");
+				}
+				success(response);
+			} else if (request.status !== 0 && error !== undefined) {
+				error(request.status);
 			}
-			cb(response);
 		}
 	};
+	request.ontimeout = function () { error('timeout'); };
 	request.send();
 	return request;
 };
@@ -113,11 +118,11 @@ L.UtfGrid = (L.Layer || L.Class).extend({
 
 	setUrl: function (url, noRedraw) {
 		this._url = url;
-		
+
 		if (!noRedraw) {
 			this.redraw();
 		}
-		
+
 		return this;
 	},
 
@@ -261,7 +266,7 @@ L.UtfGrid = (L.Layer || L.Class).extend({
 			self._finish_request(key);
 		};
 
-		this._queue_request(key, function () {
+		this._queue_request(key, url, function () {
 			head.appendChild(script);
 			return {
 				abort: function () {
@@ -280,20 +285,41 @@ L.UtfGrid = (L.Layer || L.Class).extend({
 		}, this.options));
 
 		var key = zoom + '_' + x + '_' + y;
-		var self = this;
-		this._queue_request(key, function () {
-			return L.Util.ajax(url, function (data) {
-				self._cache[key] = data;
-				self._finish_request(key);
-			});
-		});
+		this._queue_request(key, url, this._ajaxRequestFactory(key, url));
 	},
 
-	_queue_request: function (key, callback) {
+	_ajaxRequestFactory: function (key, url) {
+		var successCallback = this._successCallbackFactory(key);
+		var errorCallback = this._errorCallbackFactory(url);
+		return function () {
+			var request = L.Util.ajax(url, successCallback, errorCallback);
+			request.timeout = this.options.requestTimeout;
+			return request;
+		}.bind(this);
+	},
+
+	_successCallbackFactory: function (key) {
+		return function (data) {
+			this._cache[key] = data;
+			this._finish_request(key);
+		}.bind(this);
+	},
+
+	_errorCallbackFactory: function (tileurl) {
+		return function (statuscode) {
+			this.fire('tileerror', {
+				url: tileurl,
+				code: statuscode
+			});
+		}.bind(this);
+	},
+
+	_queue_request: function (key, url, callback) {
 		this._requests[key] = {
 			callback: callback,
 			timeout: null,
-			handler: null
+			handler: null,
+			url: url
 		};
 		this._request_queue.push(key);
 		this._process_queued_requests();
@@ -348,16 +374,24 @@ L.UtfGrid = (L.Layer || L.Class).extend({
 	},
 
 	_process_request: function (key) {
-		var self = this;
-		this._requests[key].timeout = window.setTimeout(function () {
-			self._abort_request(key);
-		}, this.options.requestTimeout);
 		this._requests_in_process.push(key);
 		// The callback might call _finish_request, so don't assume _requests[key] still exists.
 		var handler = this._requests[key].callback();
 		if (this._requests[key]) {
 			this._requests[key].handler = handler;
+			if (handler.timeout === undefined) {
+				var timeoutCallback = this._timeoutCallbackFactory(key);
+				this._requests[key].timeout = window.setTimeout(timeoutCallback, this.options.requestTimeout);
+			}
 		}
+	},
+
+	_timeoutCallbackFactory: function (key) {
+		var tileurl = this._requests[key].url;
+		return function () {
+			this.fire('tileerror', { url: tileurl, code: 'timeout' });
+			this._abort_request(key);
+		}.bind(this);
 	},
 
 	_utfDecode: function (c) {
@@ -377,5 +411,4 @@ L.utfGrid = function (url, options) {
 
 
 
-
-}(this));
+}(window));
