@@ -16,49 +16,49 @@
     </head>
 
 <body ng-cloak ng-app="app" ng-controller="AppController as main">
-    <div class="ui grid">
-        <div class="two wide column"></div>
-        <div class="twelve wide column">
-            <div class="ui header">
-                <div class="ui grid">
-                    <div class="five wide column">
-                        <a ng-link="home()" style="line-height: 2.5em;" ng-class="{ active: main.section == 'home' }" ng-click="main.section = 'home'"><i class="green large leaf icon"></i> angular-leaflet-directive</a>
-                    </div>
-                    <div class="eleven wide column">
-                        <div class="ui right four item pointing menu">
-                            <a class="item" ng-class="{ active: main.section == 'documentation' }" ng-click="main.section = 'documentation'" ng-link="documentation()">Documentation</a>
-                            <a class="item"  ng-class="{ active: main.section == 'examples' }" ng-click="main.section = 'examples'" href="#/examples/basic/first-example">Examples</a>
-                            <a class="item" ng-class="{ active: main.section == 'extend' }" ng-click="main.section = 'extend'" ng-link="extend()">How to extend</a>
-                            <a class="item" href="http://github.com/tombatossals/angular-leaflet-directive"><i class="github icon"></i> Github repo</a>
-                        </div>
-                    </div>
+    <div class="ui center aligned header">
+        <div class="ui stackable doubling two column grid">
+            <div class="center aligned five wide column">
+                <a ng-link="home()" style="line-height: 2em;" ng-class="{ active: main.section == 'home' }" ng-click="main.section = 'home'"><i class="green large leaf icon"></i> angular-leaflet-directive</a>
+            </div>
+            <div class="ten wide column topmenu">
+                <div class="ui right four item pointing menu">
+                    <a class="item" ng-class="{ active: main.section == 'documentation' }" ng-click="main.section = 'documentation'" ng-link="documentation()">Documentation</a>
+                    <a class="item"  ng-class="{ active: main.section == 'examples' }" ng-click="main.section = 'examples'" href="#/examples/basic/first-example">Examples</a>
+                    <a class="item" ng-class="{ active: main.section == 'extend' }" ng-click="main.section = 'extend'" ng-link="extend()">How to extend</a>
+                    <a class="item" href="http://github.com/tombatossals/angular-leaflet-directive"><i class="github icon"></i> Github repo</a>
                 </div>
             </div>
-            <div class="ui fluid card">
-                <a class="forkme" href="https://github.com/tombatossals/angular-leaflet-directive" rel="external">
-                    <img src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub">
-                </a>
-                <leaflet center="main.center" defaults="main.defaults" tiles="main.tiles" markers="main.markers" broadcast-events="main.events" id="header" height="160px"></leaflet>
-                <div class="content">
-                    Simple to use <a href="http://angularjs.org">AngularJS</a> directive for easy embedding and interacting with a map managed with the <a href="http://leafletjs.com/">leaflet map library</a>.
-                </div>
+        </div>
+        <div class="banner">
+            <a class="forkme" href="https://github.com/tombatossals/angular-leaflet-directive" rel="external">
+                <img src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub">
+            </a>
+            <leaflet center="main.center" defaults="main.defaults" tiles="main.tiles" markers="main.markers" broadcast-events="main.events" id="header" height="160px"></leaflet>
+            <div class="content">
+                Simple to use <a href="http://angularjs.org">AngularJS</a> directive for easy embedding and interacting with a map managed with the <a href="http://leafletjs.com/">leaflet map library</a>.
             </div>
-
-            <div ng-include src="'components/breadcrumb/breadcrumb.html'"></div>
         </div>
     </div>
+
 
     <div class="ui grid">
         <div class="two wide column"></div>
         <div class="seven wide column" ng-if="main.section === 'examples'">
+            <div ng-include src="'components/breadcrumb/breadcrumb.html'"></div>
+        </div>
+    </div>
+
+    <div class="ui grid center aligned">
+        <div class="seven wide column" ng-if="main.section === 'examples'">
             <div ng-viewport="left"></div>
         </div>
 
-        <div class="five wide column" ng-if="main.section === 'examples'">
+        <div class="five wide column left aligned" ng-if="main.section === 'examples'">
             <div ng-viewport="main"></div>
         </div>
 
-        <div class="twelve wide column" ng-if="main.section !== 'examples'">
+        <div class="twelve wide column left aligned" ng-if="main.section !== 'examples'">
             <div ng-viewport="main"></div>
         </div>
 

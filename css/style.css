@@ -22,9 +22,26 @@ body {
 
 .content .angular-leaflet-map {
     height: 400px;
-    border: 4px #fff solid;
     margin-bottom: 20px;
     box-shadow: 0 0 5px -1px rgba(0, 0, 0, 1);
+}
+
+.topmenu {
+    margin: 0 1em;
+}
+
+.banner {
+    margin: 1em 0;
+    border-top: 1px solid #EEE;
+    border-bottom: 2px solid #EEE;
+}
+
+.banner .angular-leaflet-map {
+    border-bottom: 4px solid #EEE;
+}
+
+.banner .content {
+    margin: 1em 0;
 }
 
 footer {
@@ -39,8 +56,6 @@ footer {
 .banner > .angular-leaflet-map {
     height: 200px;
     width: 100%;
-    border-left: 1px solid #e5e5e5;
-    border-right: 1px solid #e5e5e5;
 }
 
 .bottom-banner {
@@ -52,7 +67,6 @@ footer {
     border-left: 1px solid #e5e5e5;
     border-right: 1px solid #e5e5e5;
     margin-bottom: 20px;
-    border-radius: 0 0 4px 4px;
     box-shadow: inset 0 1px 0 rgba(255,255,255,0.15),0 1px 5px rgba(0,0,0,0.075)
 }
 
@@ -128,9 +142,6 @@ div.mainPageDemo {
     color: #555;
 }
 
-.navbar {
-    border-radius: 4px 4px 0 0;
-}
 
 .navbar-nav.navbar-right:last-child {
     margin-right: 0px;
