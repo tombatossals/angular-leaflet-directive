@@ -100,7 +100,7 @@ angular.module("leaflet-directive").directive('center',
                 }
 
                 leafletScope.$watch("center", function(center) {
-                    if (scope.settingCenterFromLeaflet)
+                    if (leafletScope.settingCenterFromLeaflet)
                         return;
                     //$log.debug("updated center model...");
                     // The center from the URL has priority
@@ -153,11 +153,11 @@ angular.module("leaflet-directive").directive('center',
                     _leafletCenter.resolve();
                     leafletEvents.notifyCenterUrlHashChanged(leafletScope, map, attrs, $location.search());
                     //$log.debug("updated center on map...");
-                    if (isSameCenterOnMap(centerModel, map) || scope.settingCenterFromScope) {
+                    if (isSameCenterOnMap(centerModel, map) || leafletScope.settingCenterFromScope) {
                         //$log.debug("same center in model, no need to update again.");
                         return;
                     }
-                    scope.settingCenterFromLeaflet = true;
+                    leafletScope.settingCenterFromLeaflet = true;
                     safeApply(leafletScope, function(scope) {
                         if (!leafletScope.settingCenterFromScope) {
                             //$log.debug("updating center model...", map.getCenter(), map.getZoom());
@@ -170,7 +170,7 @@ angular.module("leaflet-directive").directive('center',
                         }
                         leafletEvents.notifyCenterChangedToBounds(leafletScope, map);
                         $timeout( function() {
-                            scope.settingCenterFromLeaflet = false;
+                            leafletScope.settingCenterFromLeaflet = false;
                         });
                     });
                 });
