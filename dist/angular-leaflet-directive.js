@@ -1,5 +1,5 @@
 /*!
-*  angular-leaflet-directive 0.8.7 2015-09-01
+*  angular-leaflet-directive 0.8.7 2015-09-02
 *  angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps
 *  git: https://github.com/tombatossals/angular-leaflet-directive
 */
@@ -1608,9 +1608,9 @@ angular.module("leaflet-directive")
                     $log.warn(errorHeader + ' The esri plugin is not loaded.');
                     return;
                 }
-                
+
                 params.options.url = params.url;
-                
+
                 return L.esri.featureLayer(params.options);
             }
         },
@@ -1621,9 +1621,9 @@ angular.module("leaflet-directive")
                     $log.warn(errorHeader + ' The esri plugin is not loaded.');
                     return;
                 }
-                
+
                 params.options.url = params.url;
-                
+
                 return L.esri.tiledMapLayer(params.options);
             }
         },
@@ -1634,9 +1634,9 @@ angular.module("leaflet-directive")
                     $log.warn(errorHeader + ' The esri plugin is not loaded.');
                     return;
                 }
-                
+
                 params.options.url = params.url;
-                
+
                 return L.esri.dynamicMapLayer(params.options);
             }
         },
@@ -1648,7 +1648,7 @@ angular.module("leaflet-directive")
                     return;
                 }
                  params.options.url = params.url;
-                
+
                 return L.esri.imageMapLayer(params.options);
             }
         },
@@ -1751,6 +1751,12 @@ angular.module("leaflet-directive")
             mustHaveBounds : true,
             createLayer: function(params) {
                 return L.imageOverlay(params.url, params.bounds, params.options);
+            }
+        },
+        iip: {
+            mustHaveUrl: true,
+            createLayer: function(params) {
+                return L.tileLayer.iip(params.url, params.options);
             }
         },
 
@@ -1856,8 +1862,17 @@ angular.module("leaflet-directive")
         return layerTypes[layerDefinition.type].createLayer(params);
     }
 
+    function safeAddLayer(map, layer) {
+        if (layer && typeof layer.addTo === 'function') {
+            layer.addTo(map);
+        } else {
+            map.addLayer(layer);
+        }
+    }
+
     return {
-        createLayer: createLayer
+        createLayer: createLayer,
+        safeAddLayer: safeAddLayer
     };
 }]);
 
@@ -3120,7 +3135,7 @@ angular.module("leaflet-directive").directive('center',
                 }
 
                 leafletScope.$watch("center", function(center) {
-                    if (scope.settingCenterFromLeaflet)
+                    if (leafletScope.settingCenterFromLeaflet)
                         return;
                     //$log.debug("updated center model...");
                     // The center from the URL has priority
@@ -3173,11 +3188,11 @@ angular.module("leaflet-directive").directive('center',
                     _leafletCenter.resolve();
                     leafletEvents.notifyCenterUrlHashChanged(leafletScope, map, attrs, $location.search());
                     //$log.debug("updated center on map...");
-                    if (isSameCenterOnMap(centerModel, map) || scope.settingCenterFromScope) {
+                    if (isSameCenterOnMap(centerModel, map) || leafletScope.settingCenterFromScope) {
                         //$log.debug("same center in model, no need to update again.");
                         return;
                     }
-                    scope.settingCenterFromLeaflet = true;
+                    leafletScope.settingCenterFromLeaflet = true;
                     safeApply(leafletScope, function(scope) {
                         if (!leafletScope.settingCenterFromScope) {
                             //$log.debug("updating center model...", map.getCenter(), map.getZoom());
@@ -3190,7 +3205,7 @@ angular.module("leaflet-directive").directive('center',
                         }
                         leafletEvents.notifyCenterChangedToBounds(leafletScope, map);
                         $timeout( function() {
-                            scope.settingCenterFromLeaflet = false;
+                            leafletScope.settingCenterFromLeaflet = false;
                         });
                     });
                 });
@@ -3832,6 +3847,7 @@ angular.module("leaflet-directive").directive('layers', ["$log", "$q", "leafletD
                 leafletScope  = controller.getLeafletScope(),
                 layers = leafletScope.layers,
                 createLayer = leafletLayerHelpers.createLayer,
+                safeAddLayer = leafletLayerHelpers.safeAddLayer,
                 updateLayersControl = leafletControlHelpers.updateLayersControl,
                 isLayersControlVisible = false;
 
@@ -3858,14 +3874,14 @@ angular.module("leaflet-directive").directive('layers', ["$log", "$q", "leafletD
                     // Only add the visible layer to the map, layer control manages the addition to the map
                     // of layers in its control
                     if (layers.baselayers[layerName].top === true) {
-                        map.addLayer(leafletLayers.baselayers[layerName]);
+                        safeAddLayer(map, leafletLayers.baselayers[layerName]);
                         oneVisibleLayer = true;
                     }
                 }
 
                 // If there is no visible layer add first to the map
                 if (!oneVisibleLayer && Object.keys(leafletLayers.baselayers).length > 0) {
-                    map.addLayer(leafletLayers.baselayers[Object.keys(layers.baselayers)[0]]);
+                    safeAddLayer(map, leafletLayers.baselayers[Object.keys(layers.baselayers)[0]]);
                 }
 
                 // Setup the Overlays
@@ -3881,7 +3897,7 @@ angular.module("leaflet-directive").directive('layers', ["$log", "$q", "leafletD
                     leafletLayers.overlays[layerName] = newOverlayLayer;
                     // Only add the visible overlays to the map
                     if (layers.overlays[layerName].visible === true) {
-                        map.addLayer(leafletLayers.overlays[layerName]);
+                        safeAddLayer(map, leafletLayers.overlays[layerName]);
                     }
                 }
 
@@ -3913,12 +3929,12 @@ angular.module("leaflet-directive").directive('layers', ["$log", "$q", "leafletD
                                 leafletLayers.baselayers[newName] = testBaseLayer;
                                 // Only add the visible layer to the map
                                 if (newBaseLayers[newName].top === true) {
-                                    map.addLayer(leafletLayers.baselayers[newName]);
+                                    safeAddLayer(map, leafletLayers.baselayers[newName]);
                                 }
                             }
                         } else {
                             if (newBaseLayers[newName].top === true && !map.hasLayer(leafletLayers.baselayers[newName])) {
-                                map.addLayer(leafletLayers.baselayers[newName]);
+                                safeAddLayer(map, leafletLayers.baselayers[newName]);
                             } else if (newBaseLayers[newName].top === false && map.hasLayer(leafletLayers.baselayers[newName])) {
                                 map.removeLayer(leafletLayers.baselayers[newName]);
                             }
@@ -3936,7 +3952,7 @@ angular.module("leaflet-directive").directive('layers', ["$log", "$q", "leafletD
                     }
                     // If there is no active layer make one active
                     if (!found && Object.keys(leafletLayers.baselayers).length > 0) {
-                        map.addLayer(leafletLayers.baselayers[Object.keys(leafletLayers.baselayers)[0]]);
+                        safeAddLayer(map, leafletLayers.baselayers[Object.keys(leafletLayers.baselayers)[0]]);
                     }
 
                     // Only show the layers switch selector control if we have more than one baselayer + overlay
@@ -3975,15 +3991,15 @@ angular.module("leaflet-directive").directive('layers', ["$log", "$q", "leafletD
                             }
                             leafletLayers.overlays[newName] = testOverlayLayer;
                             if (newOverlayLayers[newName].visible === true) {
-                                map.addLayer(leafletLayers.overlays[newName]);
+                                safeAddLayer(map, leafletLayers.overlays[newName]);
                             }
-                        }
-
-                        // check for the .visible property to hide/show overLayers
-                        if (newOverlayLayers[newName].visible && !map.hasLayer(leafletLayers.overlays[newName])) {
-                            map.addLayer(leafletLayers.overlays[newName]);
-                        } else if (newOverlayLayers[newName].visible === false && map.hasLayer(leafletLayers.overlays[newName])) {
-                            map.removeLayer(leafletLayers.overlays[newName]);
+                        } else {
+                            // check for the .visible property to hide/show overLayers
+                            if (newOverlayLayers[newName].visible && !map.hasLayer(leafletLayers.overlays[newName])) {
+                                safeAddLayer(map, leafletLayers.overlays[newName]);
+                            } else if (newOverlayLayers[newName].visible === false && map.hasLayer(leafletLayers.overlays[newName])) {
+                                map.removeLayer(leafletLayers.overlays[newName]);
+                            }
                         }
 
                         //refresh heatmap data if present
