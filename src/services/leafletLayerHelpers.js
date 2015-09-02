@@ -210,9 +210,9 @@ angular.module("leaflet-directive")
                     $log.warn(errorHeader + ' The esri plugin is not loaded.');
                     return;
                 }
-                
+
                 params.options.url = params.url;
-                
+
                 return L.esri.featureLayer(params.options);
             }
         },
@@ -223,9 +223,9 @@ angular.module("leaflet-directive")
                     $log.warn(errorHeader + ' The esri plugin is not loaded.');
                     return;
                 }
-                
+
                 params.options.url = params.url;
-                
+
                 return L.esri.tiledMapLayer(params.options);
             }
         },
@@ -236,9 +236,9 @@ angular.module("leaflet-directive")
                     $log.warn(errorHeader + ' The esri plugin is not loaded.');
                     return;
                 }
-                
+
                 params.options.url = params.url;
-                
+
                 return L.esri.dynamicMapLayer(params.options);
             }
         },
@@ -250,7 +250,7 @@ angular.module("leaflet-directive")
                     return;
                 }
                  params.options.url = params.url;
-                
+
                 return L.esri.imageMapLayer(params.options);
             }
         },
@@ -353,6 +353,12 @@ angular.module("leaflet-directive")
             mustHaveBounds : true,
             createLayer: function(params) {
                 return L.imageOverlay(params.url, params.bounds, params.options);
+            }
+        },
+        iip: {
+            mustHaveUrl: true,
+            createLayer: function(params) {
+                return L.tileLayer.iip(params.url, params.options);
             }
         },
 
@@ -458,7 +464,16 @@ angular.module("leaflet-directive")
         return layerTypes[layerDefinition.type].createLayer(params);
     }
 
+    function safeAddLayer(map, layer) {
+        if (layer && typeof layer.addTo === 'function') {
+            layer.addTo(map);
+        } else {
+            map.addLayer(layer);
+        }
+    }
+
     return {
-        createLayer: createLayer
+        createLayer: createLayer,
+        safeAddLayer: safeAddLayer
     };
 });
