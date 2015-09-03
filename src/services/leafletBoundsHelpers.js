@@ -1,9 +1,10 @@
-angular.module("leaflet-directive").factory('leafletBoundsHelpers', function ($log, leafletHelpers) {
+angular.module("leaflet-directive").factory('leafletBoundsHelpers', function (leafletLogger, leafletHelpers) {
 
     var isArray = leafletHelpers.isArray,
         isNumber = leafletHelpers.isNumber,
         isFunction = leafletHelpers.isFunction,
-        isDefined = leafletHelpers.isDefined;
+        isDefined = leafletHelpers.isDefined,
+        $log = leafletLogger;
 
     function _isValidBounds(bounds) {
         return angular.isDefined(bounds) && angular.isDefined(bounds.southWest) &&

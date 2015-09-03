@@ -1,4 +1,5 @@
-angular.module("leaflet-directive").directive('legend', function ($log, $http, leafletHelpers, leafletLegendHelpers) {
+angular.module("leaflet-directive").directive('legend', function (leafletLogger, $http, leafletHelpers, leafletLegendHelpers) {
+        var $log = leafletLogger;
         return {
             restrict: "A",
             scope: false,
@@ -27,7 +28,7 @@ angular.module("leaflet-directive").directive('legend', function ($log, $http, l
                         position = newLegend.position || 'bottomright';
 
                         // default to arcgis
-                        type = newLegend.type || 'arcgis'; 
+                        type = newLegend.type || 'arcgis';
                     }
 
                 }, true);

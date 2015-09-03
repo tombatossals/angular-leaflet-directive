@@ -1,11 +1,8 @@
 angular.module("leaflet-directive")
-.factory('leafletMapEvents', function ($rootScope, $q, $log, leafletHelpers, leafletEventsHelpers) {
-    var safeApply = leafletHelpers.safeApply,
-        isDefined = leafletHelpers.isDefined,
-        isObject = leafletHelpers.isObject,
-        Helpers = leafletHelpers,
-        errorHeader = leafletHelpers.errorHeader,
-        fire = leafletEventsHelpers.fire;
+.factory('leafletMapEvents', function ($rootScope, $q, leafletLogger, leafletHelpers, leafletEventsHelpers) {
+    var isDefined = leafletHelpers.isDefined,
+        fire = leafletEventsHelpers.fire,
+        $log = leafletLogger;
 
     var _getAvailableMapEvents = function() {
         return [

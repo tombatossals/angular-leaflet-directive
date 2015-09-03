@@ -1,4 +1,5 @@
-angular.module("leaflet-directive").directive('tiles', function ($log, leafletData, leafletMapDefaults, leafletHelpers) {
+angular.module("leaflet-directive").directive('tiles', function (leafletLogger, leafletData, leafletMapDefaults, leafletHelpers) {
+    var $log = leafletLogger;
     return {
         restrict: "A",
         scope: false,

@@ -1,9 +1,10 @@
-angular.module("leaflet-directive").factory('leafletControlHelpers', function ($rootScope, $log, leafletHelpers, leafletLayerHelpers, leafletMapDefaults) {
-    var isDefined = leafletHelpers.isDefined;
-    var isObject = leafletHelpers.isObject;
-    var createLayer = leafletLayerHelpers.createLayer;
-    var _controls = {};
-    var errorHeader = leafletHelpers.errorHeader + ' [Controls] ';
+angular.module("leaflet-directive").factory('leafletControlHelpers', function ($rootScope, leafletLogger, leafletHelpers, leafletLayerHelpers, leafletMapDefaults) {
+    var isDefined = leafletHelpers.isDefined,
+        isObject = leafletHelpers.isObject,
+        createLayer = leafletLayerHelpers.createLayer,
+        _controls = {},
+        errorHeader = leafletHelpers.errorHeader + ' [Controls] ',
+        $log = leafletLogger;
 
     var _controlLayersMustBeVisible = function(baselayers, overlays, mapId) {
         var defaults = leafletMapDefaults.getDefaults(mapId);

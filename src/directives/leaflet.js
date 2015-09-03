@@ -1,4 +1,4 @@
-angular.module("leaflet-directive", []).directive('leaflet',
+angular.module("leaflet-directive", ['nemLogging']).directive('leaflet',
     function ($q, leafletData, leafletMapDefaults, leafletHelpers, leafletEvents) {
     return {
         restrict: "EA",

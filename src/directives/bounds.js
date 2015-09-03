@@ -1,4 +1,5 @@
-angular.module("leaflet-directive").directive('bounds', function ($log, $timeout, $http, leafletHelpers, nominatimService, leafletBoundsHelpers) {
+angular.module("leaflet-directive").directive('bounds', function (leafletLogger, $timeout, $http, leafletHelpers, nominatimService, leafletBoundsHelpers) {
+    var $log = leafletLogger;
     return {
         restrict: "A",
         scope: false,

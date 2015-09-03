@@ -1,9 +1,10 @@
 angular.module("leaflet-directive")
-.service('leafletDirectiveControlsHelpers', function ($log, leafletData, leafletHelpers) {
+.service('leafletDirectiveControlsHelpers', function (leafletLogger, leafletData, leafletHelpers) {
     var _isDefined = leafletHelpers.isDefined,
         _isString = leafletHelpers.isString,
         _isObject = leafletHelpers.isObject,
-        _mainErrorHeader = leafletHelpers.errorHeader;
+        _mainErrorHeader = leafletHelpers.errorHeader,
+        $log = leafletLogger;
 
     var _errorHeader = _mainErrorHeader + '[leafletDirectiveControlsHelpers';
 

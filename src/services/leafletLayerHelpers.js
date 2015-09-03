@@ -1,5 +1,5 @@
 angular.module("leaflet-directive")
-.factory('leafletLayerHelpers', function ($rootScope, $q, $log, leafletHelpers, leafletIterators) {
+.factory('leafletLayerHelpers', function ($rootScope, $q, leafletLogger, leafletHelpers, leafletIterators) {
     var Helpers = leafletHelpers;
     var isString = leafletHelpers.isString;
     var isObject = leafletHelpers.isObject;
@@ -7,6 +7,7 @@ angular.module("leaflet-directive")
     var isDefined = leafletHelpers.isDefined;
     var errorHeader = leafletHelpers.errorHeader;
     var $it = leafletIterators;
+    var $log = leafletLogger;
 
     var utfGridCreateLayer = function(params) {
         if (!Helpers.UTFGridPlugin.isLoaded()) {
