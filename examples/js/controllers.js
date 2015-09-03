@@ -689,7 +689,8 @@ var app = angular.module('webapp');
                         layerOptions: {
                             attribution: "&copy; <a href=\"http://www.openfiremap.org\">OpenFireMap</a> contributors - &copy; <a href=\"http://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors",
                             continuousWorld: true
-                        }
+                        },
+                        group: "Open Fire Map"
                     };
                 },
                 existsFireLayer: function() {
@@ -706,7 +707,8 @@ var app = angular.module('webapp');
                         layerOptions: {
                             attribution: "&copy; <a href=\"http://www.openfiremap.org\">OpenFireMap</a> contributors - &copy; <a href=\"http://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors",
                             continuousWorld: true
-                        }
+                        },
+                        group: "Open Fire Map"
                     };
                 },
                 existsEmergencyRooms: function() {
@@ -727,7 +729,8 @@ var app = angular.module('webapp');
                             opacity: 0.25,
                             attribution: "Hillshade layer by GIScience http://www.osm-wms.de",
                             crs: L.CRS.EPSG900913
-                        }
+                        },
+                        group: "Raster"
                     };
                 },
                 existsHillshadeLayer: function() {
@@ -1528,6 +1531,12 @@ var app = angular.module('webapp');
         }]);
         app.controller("LayersEsriFeatureLayerController", [ "$scope", function($scope) {
             angular.extend($scope, {
+                layercontrol: {
+                    icons: {
+                      uncheck: "fa fa-toggle-off",
+                      check: "fa fa-toggle-on"
+                    }
+                },
                 porland: {
 	            	lat: 45.526,
 	                lng: -122.667,
@@ -1547,7 +1556,8 @@ var app = angular.module('webapp');
                             name: "Simple",
                             type: "agsFeature",
                             url: "https://services.arcgis.com/rOo16HdIMeOBI4Mb/arcgis/rest/services/Heritage_Trees_Portland/FeatureServer/0",
-                            visible: true
+                            visible: true,
+                            group: "Test"
                         },
                         points: {
                             name: "Styling Points",
@@ -1564,7 +1574,8 @@ var app = angular.module('webapp');
                                         return L.marker(latlng);
                                     }
                                 }
-                            }
+                            },
+                            group: "Test"
                         },
                         lines: {
                             name: "Styling Lines",
@@ -1612,7 +1623,8 @@ var app = angular.module('webapp');
                                     }
                                     return {color: c, opacity: o, weight: 5};
                                 }
-                            }
+                            },
+                            group: "Test"
                         },
                         polygons: {
                             name: "Styling Polygons",
@@ -1631,6 +1643,36 @@ var app = angular.module('webapp');
                                         return { color: "white", weight: 2 };
                                     }
                                 }
+                            },
+                            group: "Test"
+                        },
+                        group: {
+                            name: "Grouped",
+                            type: "group",
+                            layerOptions: {
+                                layers: [{
+                                    name: "Simple",
+                                    type: "agsFeature",
+                                    url: "https://services.arcgis.com/rOo16HdIMeOBI4Mb/arcgis/rest/services/Heritage_Trees_Portland/FeatureServer/0",
+                                    visible: true,
+                                    group: "Test"
+                                }, {
+                                    name: "Styling Points",
+                                    type: "agsFeature",
+                                    url: "https://services.arcgis.com/rOo16HdIMeOBI4Mb/arcgis/rest/services/Trimet_Transit_Stops/FeatureServer/0",
+                                    visible: false,
+                                    layerOptions: {
+                                        pointToLayer: function (geojson, latlng) {
+                                            if(geojson.properties.direction) {
+                                                return L.marker(latlng, {
+                                                    icon: $scope.busIcons[geojson.properties.direction.toLowerCase()]
+                                                });
+                                            } else {
+                                                return L.marker(latlng);
+                                            }
+                                        }
+                                    }
+                                }]
                             }
                         }
                     }

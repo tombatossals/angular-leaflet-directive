@@ -1,5 +1,5 @@
 angular.module("leaflet-directive")
-.factory('leafletLayerHelpers', function ($rootScope, $log, leafletHelpers, leafletIterators) {
+.factory('leafletLayerHelpers', function ($rootScope, $q, $log, leafletHelpers, leafletIterators) {
     var Helpers = leafletHelpers;
     var isString = leafletHelpers.isString;
     var isObject = leafletHelpers.isObject;
@@ -144,6 +144,16 @@ angular.module("leaflet-directive")
                 $it.each(params.options.layers, function(l){
                   lyrs.push(createLayer(l));
                 });
+                params.options.loadedDefer = function() {
+                    var defers = [];
+                    for (var i = 0; i < params.options.layers.length; i++) {
+                        var d = params.options.layers[i].layerOptions.loadedDefer;
+                        if(isDefined(d)) {
+                            defers.push(d);
+                        }
+                    }
+                    return defers;
+                };
                 return L.layerGroup(lyrs);
             }
         },
@@ -213,7 +223,19 @@ angular.module("leaflet-directive")
 
                 params.options.url = params.url;
 
-                return L.esri.featureLayer(params.options);
+                var layer = L.esri.featureLayer(params.options);
+                var load = function() {
+                    if(isDefined(params.options.loadedDefer)) {
+                        params.options.loadedDefer.resolve();
+                    }
+                };
+                layer.on('loading', function() {
+                    params.options.loadedDefer = $q.defer();
+                    layer.off('load', load);
+                    layer.on('load', load);
+                });
+
+                return layer;
             }
         },
         agsTiled: {
@@ -472,8 +494,35 @@ angular.module("leaflet-directive")
         }
     }
 
+    function safeRemoveLayer(map, layer, layerOptions) {
+        if(isDefined(layerOptions) && isDefined(layerOptions.loadedDefer)) {
+            if(angular.isFunction(layerOptions.loadedDefer)) {
+                var defers = layerOptions.loadedDefer();
+                $log.debug('Loaded Deferred', defers);
+                var count = defers.length;
+                var resolve = function() {
+                    count--;
+                    if(count === 0) {
+                        map.removeLayer(layer);
+                    }
+                };
+
+                for(var i = 0; i < defers.length; i++) {
+                    defers[i].promise.then(resolve);
+                }
+            } else {
+                layerOptions.loadedDefer.promise.then(function() {
+                    map.removeLayer(layer);
+                });
+            }
+        } else {
+            map.removeLayer(layer);
+        }
+    }
+
     return {
         createLayer: createLayer,
-        safeAddLayer: safeAddLayer
+        safeAddLayer: safeAddLayer,
+        safeRemoveLayer: safeRemoveLayer
     };
 });

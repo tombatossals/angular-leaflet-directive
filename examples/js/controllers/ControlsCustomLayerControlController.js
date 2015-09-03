@@ -88,7 +88,8 @@
                         layerOptions: {
                             attribution: "&copy; <a href=\"http://www.openfiremap.org\">OpenFireMap</a> contributors - &copy; <a href=\"http://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors",
                             continuousWorld: true
-                        }
+                        },
+                        group: "Open Fire Map"
                     };
                 },
                 existsFireLayer: function() {
@@ -105,7 +106,8 @@
                         layerOptions: {
                             attribution: "&copy; <a href=\"http://www.openfiremap.org\">OpenFireMap</a> contributors - &copy; <a href=\"http://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors",
                             continuousWorld: true
-                        }
+                        },
+                        group: "Open Fire Map"
                     };
                 },
                 existsEmergencyRooms: function() {
@@ -126,7 +128,8 @@
                             opacity: 0.25,
                             attribution: "Hillshade layer by GIScience http://www.osm-wms.de",
                             crs: L.CRS.EPSG900913
-                        }
+                        },
+                        group: "Raster"
                     };
                 },
                 existsHillshadeLayer: function() {
