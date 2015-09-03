@@ -16,6 +16,8 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                 leafletScope  = controller.getLeafletScope(),
                 layers = leafletScope.layers,
                 createLayer = leafletLayerHelpers.createLayer,
+                safeAddLayer = leafletLayerHelpers.safeAddLayer,
+                safeRemoveLayer = leafletLayerHelpers.safeRemoveLayer,
                 updateLayersControl = leafletControlHelpers.updateLayersControl,
                 isLayersControlVisible = false;
 
@@ -42,14 +44,14 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                     // Only add the visible layer to the map, layer control manages the addition to the map
                     // of layers in its control
                     if (layers.baselayers[layerName].top === true) {
-                        map.addLayer(leafletLayers.baselayers[layerName]);
+                        safeAddLayer(map, leafletLayers.baselayers[layerName]);
                         oneVisibleLayer = true;
                     }
                 }
 
                 // If there is no visible layer add first to the map
                 if (!oneVisibleLayer && Object.keys(leafletLayers.baselayers).length > 0) {
-                    map.addLayer(leafletLayers.baselayers[Object.keys(layers.baselayers)[0]]);
+                    safeAddLayer(map, leafletLayers.baselayers[Object.keys(layers.baselayers)[0]]);
                 }
 
                 // Setup the Overlays
@@ -65,7 +67,7 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                     leafletLayers.overlays[layerName] = newOverlayLayer;
                     // Only add the visible overlays to the map
                     if (layers.overlays[layerName].visible === true) {
-                        map.addLayer(leafletLayers.overlays[layerName]);
+                        safeAddLayer(map, leafletLayers.overlays[layerName]);
                     }
                 }
 
@@ -97,12 +99,12 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                                 leafletLayers.baselayers[newName] = testBaseLayer;
                                 // Only add the visible layer to the map
                                 if (newBaseLayers[newName].top === true) {
-                                    map.addLayer(leafletLayers.baselayers[newName]);
+                                    safeAddLayer(map, leafletLayers.baselayers[newName]);
                                 }
                             }
                         } else {
                             if (newBaseLayers[newName].top === true && !map.hasLayer(leafletLayers.baselayers[newName])) {
-                                map.addLayer(leafletLayers.baselayers[newName]);
+                                safeAddLayer(map, leafletLayers.baselayers[newName]);
                             } else if (newBaseLayers[newName].top === false && map.hasLayer(leafletLayers.baselayers[newName])) {
                                 map.removeLayer(leafletLayers.baselayers[newName]);
                             }
@@ -120,7 +122,7 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                     }
                     // If there is no active layer make one active
                     if (!found && Object.keys(leafletLayers.baselayers).length > 0) {
-                        map.addLayer(leafletLayers.baselayers[Object.keys(leafletLayers.baselayers)[0]]);
+                        safeAddLayer(map, leafletLayers.baselayers[Object.keys(leafletLayers.baselayers)[0]]);
                     }
 
                     // Only show the layers switch selector control if we have more than one baselayer + overlay
@@ -134,39 +136,13 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                         return true;
                     }
 
-                    var securedRemove = function(name) {
-                        var layerOptions = newOverlayLayers[name].layerOptions;
-                        if(isDefined(layerOptions) && isDefined(layerOptions.loadedDefer)) {
-                            if(angular.isFunction(layerOptions.loadedDefer)) {
-                                var defers = layerOptions.loadedDefer();
-                                $log.debug('Loaded Deferred', defers);
-                                var count = defers.length;
-                                var resolve = function() {
-                                    count--;
-                                    if(count === 0) {
-                                        map.removeLayer(leafletLayers.overlays[name]);
-                                    }
-                                };
-
-                                for(var i = 0; i < defers.length; i++) {
-                                    defers[i].promise.then(resolve);
-                                }
-                            } else {
-                                layerOptions.loadedDefer.promise.then(function() {
-                                    map.removeLayer(leafletLayers.overlays[name]);
-                                });
-                            }
-                        } else {
-                            map.removeLayer(leafletLayers.overlays[name]);
-                        }
-                    };
-
                     // Delete layers from the array
                     for (var name in leafletLayers.overlays) {
                         if (!isDefined(newOverlayLayers[name]) || newOverlayLayers[name].doRefresh) {
                             // Remove from the map if it's on it
                             if (map.hasLayer(leafletLayers.overlays[name])) {
-                                map.removeLayer(leafletLayers.overlays[name]);
+                                // Safe remove when ArcGIS layers is loading.
+                                safeRemoveLayer(map, leafletLayers.overlays[name], newOverlayLayers[name].layerOptions);
                             }
                             // TODO: Depending on the layer type we will have to delete what's included on it
                             delete leafletLayers.overlays[name];
@@ -187,15 +163,16 @@ angular.module("leaflet-directive").directive('layers', function ($log, $q, leaf
                             }
                             leafletLayers.overlays[newName] = testOverlayLayer;
                             if (newOverlayLayers[newName].visible === true) {
-                                map.addLayer(leafletLayers.overlays[newName]);
+                                safeAddLayer(map, leafletLayers.overlays[newName]);
                             }
-                        }
-
-                        // check for the .visible property to hide/show overLayers
-                        if (newOverlayLayers[newName].visible && !map.hasLayer(leafletLayers.overlays[newName])) {
-                            map.addLayer(leafletLayers.overlays[newName]);
-                        } else if (newOverlayLayers[newName].visible === false && map.hasLayer(leafletLayers.overlays[newName])) {
-                            securedRemove(newName);
+                        } else {
+                            // check for the .visible property to hide/show overLayers
+                            if (newOverlayLayers[newName].visible && !map.hasLayer(leafletLayers.overlays[newName])) {
+                                safeAddLayer(map, leafletLayers.overlays[newName]);
+                            } else if (newOverlayLayers[newName].visible === false && map.hasLayer(leafletLayers.overlays[newName])) {
+                                // Safe remove when ArcGIS layers is loading.
+                                safeRemoveLayer(map, leafletLayers.overlays[newName], newOverlayLayers[newName].layerOptions);
+                            }
                         }
 
                         //refresh heatmap data if present

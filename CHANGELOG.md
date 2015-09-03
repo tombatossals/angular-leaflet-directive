@@ -1,3 +1,24 @@
+<a name"0.8.7"></a>
+### 0.8.7 (2015-08-26)
+
+
+#### Bug Fixes
+
+* **code:** Deleted uneeded file ([5be6c453](https://github.com/tombatossals/angular-leaflet-directive/commit/5be6c453))
+* **controls:** Solved a problem with loading custom controls, as reported by @adgoncal here: ([a1843f20](https://github.com/tombatossals/angular-leaflet-directive/commit/a1843f20))
+* **dependencies:**
+  * remove dependency font-awesome ([f735e856](https://github.com/tombatossals/angular-leaflet-directive/commit/f735e856))
+  * utfgrid now specifies main file ([79c6a252](https://github.com/tombatossals/angular-leaflet-directive/commit/79c6a252))
+* **paths:** Better log description with a path inside overlay error ([a02c3046](https://github.com/tombatossals/angular-leaflet-directive/commit/a02c3046))
+
+
+#### Features
+
+* **examples:**
+  * Added new example of loading custom controls ([979a7333](https://github.com/tombatossals/angular-leaflet-directive/commit/979a7333))
+  * Compiled the examples with the new GeoGJSON Shape Layer added by @stev-0 here: h ([1f5e86a2](https://github.com/tombatossals/angular-leaflet-directive/commit/1f5e86a2))
+
+
 <a name"0.8.6"></a>
 ### 0.8.6 (2015-07-28)
 

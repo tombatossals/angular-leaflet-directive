@@ -8,13 +8,6 @@ describe 'Directive: leaflet: layers.overlays.markers', ->
     $timeout = $q = scope = leafletData = $rootScope = $compile = leafletMarkersHelper = undefined
     beforeEach ->
 
-        angular.module('leaflet-directive').config ($provide) ->
-            $provide.decorator '$timeout', ($delegate, $browser) ->
-                $delegate.hasPendingTasks = ->
-                    $browser.deferredFns.length > 0
-
-                $delegate
-
         module('leaflet-directive')
 
 
@@ -46,7 +39,8 @@ describe 'Directive: leaflet: layers.overlays.markers', ->
                                 'b'
                                 'c'
                             ]
-                            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                            attribution:
+                                '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                             continuousWorld: true
                     overlays:
                         cars:
@@ -94,7 +88,8 @@ describe 'Directive: leaflet: layers.overlays.markers', ->
                                 'b'
                                 'c'
                             ]
-                            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                            attribution:
+                                '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                             continuousWorld: true
                     overlays:
                         cars:
@@ -129,7 +124,8 @@ describe 'Directive: leaflet: layers.overlays.markers', ->
                                     'b'
                                     'c'
                                 ]
-                                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                attribution:
+                                    '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                                 continuousWorld: true
                     overlays:
                         cars:
@@ -170,7 +166,8 @@ describe 'Directive: leaflet: layers.overlays.markers', ->
                                 'b'
                                 'c'
                             ]
-                            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                            attribution:
+                                '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                             continuousWorld: true
                     overlays:
                         cars:
@@ -200,7 +197,8 @@ describe 'Directive: leaflet: layers.overlays.markers', ->
                                     'b'
                                     'c'
                                 ]
-                                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                attribution:
+                                    '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                                 continuousWorld: true
                     overlays:
                         cars:
