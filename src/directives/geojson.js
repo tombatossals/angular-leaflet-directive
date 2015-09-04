@@ -1,13 +1,13 @@
 angular.module("leaflet-directive")
-.directive('geojson', function ($log, $rootScope, leafletData, leafletHelpers,
+.directive('geojson', function (leafletLogger, $rootScope, leafletData, leafletHelpers,
     leafletWatchHelpers, leafletDirectiveControlsHelpers,leafletIterators,
     leafletGeoJsonEvents) {
-
     var _maybeWatch = leafletWatchHelpers.maybeWatch,
         _watchOptions = leafletHelpers.watchOptions,
         _extendDirectiveControls = leafletDirectiveControlsHelpers.extend,
         hlp = leafletHelpers,
         $it = leafletIterators;
+        // $log = leafletLogger;
 
     return {
         restrict: "A",

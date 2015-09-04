@@ -1,12 +1,12 @@
 angular.module("leaflet-directive")
-.factory('leafletPathEvents', function ($rootScope, $q, $log, leafletHelpers, leafletLabelEvents, leafletEventsHelpers) {
-    var safeApply = leafletHelpers.safeApply,
-        isDefined = leafletHelpers.isDefined,
+.factory('leafletPathEvents', function ($rootScope, $q, leafletLogger, leafletHelpers, leafletLabelEvents, leafletEventsHelpers) {
+    var isDefined = leafletHelpers.isDefined,
         isObject = leafletHelpers.isObject,
         Helpers = leafletHelpers,
         errorHeader = leafletHelpers.errorHeader,
         lblHelp = leafletLabelEvents,
-        fire = leafletEventsHelpers.fire;
+        fire = leafletEventsHelpers.fire,
+        $log = leafletLogger;
 
     var _genDispatchPathEvent = function (eventName, logic, leafletScope, lObject, name, model, layerName) {
         return function (e) {

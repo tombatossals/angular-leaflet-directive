@@ -6,12 +6,13 @@
 ['markers', 'geojson'].forEach(function(name){
     angular.module("leaflet-directive").directive(name + 'WatchOptions', [
         '$log', '$rootScope', '$q', 'leafletData', 'leafletHelpers',
-        function ($log, $rootScope, $q, leafletData, leafletHelpers) {
+        function (leafletLogger, $rootScope, $q, leafletData, leafletHelpers) {
 
             var isDefined = leafletHelpers.isDefined,
                 errorHeader = leafletHelpers.errorHeader,
                 isObject = leafletHelpers.isObject,
-                _watchOptions = leafletHelpers.watchOptions;
+                _watchOptions = leafletHelpers.watchOptions,
+                $log = leafletLogger;
 
             return {
                 restrict: "A",

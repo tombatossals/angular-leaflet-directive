@@ -1,4 +1,4 @@
-angular.module('leaflet-directive').service('leafletIterators', function ($log, leafletHelpers) {
+angular.module('leaflet-directive').service('leafletIterators', function (leafletLogger, leafletHelpers) {
 
   var lHlp = leafletHelpers,
   errorHeader = leafletHelpers.errorHeader + 'leafletIterators: ';
@@ -7,6 +7,7 @@ angular.module('leaflet-directive').service('leafletIterators', function ($log, 
   var _keys = Object.keys;
   var _isFunction = lHlp.isFunction;
   var _isObject = lHlp.isObject;
+  var $log = leafletLogger;
 
   // Helper for collection methods to determine whether a collection
   // should be iterated as an array or as an object

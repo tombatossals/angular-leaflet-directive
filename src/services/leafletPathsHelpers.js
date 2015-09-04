@@ -1,8 +1,10 @@
-angular.module("leaflet-directive").factory('leafletPathsHelpers', function ($rootScope, $log, leafletHelpers) {
+angular.module("leaflet-directive").factory('leafletPathsHelpers', function ($rootScope, leafletLogger, leafletHelpers) {
     var isDefined = leafletHelpers.isDefined,
         isArray = leafletHelpers.isArray,
         isNumber = leafletHelpers.isNumber,
-        isValidPoint = leafletHelpers.isValidPoint;
+        isValidPoint = leafletHelpers.isValidPoint,
+        $log = leafletLogger;
+        
     var availableOptions = [
         // Path options
         'stroke', 'weight', 'color', 'opacity',

@@ -1,12 +1,9 @@
 angular.module("leaflet-directive")
-.factory('leafletGeoJsonEvents', function ($rootScope, $q, $log, leafletHelpers,
+.factory('leafletGeoJsonEvents', function ($rootScope, $q, leafletLogger, leafletHelpers,
   leafletEventsHelpersFactory, leafletLabelEvents, leafletData) {
     var safeApply = leafletHelpers.safeApply,
-        isDefined = leafletHelpers.isDefined,
-        Helpers = leafletHelpers,
-        lblHelp = leafletLabelEvents,
         EventsHelper = leafletEventsHelpersFactory;
-
+        // $log = leafletLogger;
 
     var GeoJsonEvents = function(){
       EventsHelper.call(this,'leafletDirectiveGeoJson', 'geojson');
