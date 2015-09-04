@@ -2,7 +2,9 @@ var centerDirectiveTypes = ['center', 'lfCenter'],
     centerDirectives = {};
 
 centerDirectiveTypes.forEach(function(directiveName) {
-    centerDirectives[directiveName] = function(leafletLogger, $q, $location, $timeout, leafletMapDefaults, leafletHelpers,
+    centerDirectives[directiveName] = ['leafletLogger', '$q', '$location', '$timeout', 'leafletMapDefaults', 'leafletHelpers',
+        'leafletBoundsHelpers', 'leafletEvents',
+        function(leafletLogger, $q, $location, $timeout, leafletMapDefaults, leafletHelpers,
       leafletBoundsHelpers, leafletEvents) {
 
         var isDefined = leafletHelpers.isDefined,
@@ -207,7 +209,8 @@ centerDirectiveTypes.forEach(function(directiveName) {
                 });
             }
         };
-    };
+    }
+    ];
 });
 
 centerDirectiveTypes.forEach(function(dirType){
