@@ -83,6 +83,8 @@ some documentation:
 
 ## How to use it
 
+Include [angular-simple-logger](https://github.com/nmccready/angular-simple-logger) before Angular-Leaflet js files. Logger gets installed as a requirement of Angular-Leaflet with `bower install` or `npm install`.
+
 You must include the leaflet-directive dependency on your angular module:
 ```
 var app = angular.module("demoapp", ["leaflet-directive"]);
