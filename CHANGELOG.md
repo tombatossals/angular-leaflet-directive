@@ -15,6 +15,11 @@
 * **lf-center:** lfCenter or 'lf-center' added which is a dupe of center. center to be deprecated ([06b5a3fa](https://github.com/tombatossals/angular-leaflet-directive/commit/06b5a3fa))
 
 
+#### Breaking changes
+
+* **logger:** Add new independent logger requirement to replace Angular $log. Remember to include angular-simple-logger before Angular-Leaflet from your bower assets. ([4f35bf6](https://github.com/tombatossals/angular-leaflet-directive/commit/4f35bf6))
+
+
 <a name"0.8.7"></a>
 ### 0.8.7 (2015-08-26)
 
