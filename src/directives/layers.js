@@ -140,10 +140,11 @@ angular.module("leaflet-directive").directive('layers', function (leafletLogger,
                     // Delete layers from the array
                     for (var name in leafletLayers.overlays) {
                         if (!isDefined(newOverlayLayers[name]) || newOverlayLayers[name].doRefresh) {
+                        	var layerToRemove = leafletLayers.overlays[name];
                             // Remove from the map if it's on it
-                            if (map.hasLayer(leafletLayers.overlays[name])) {
+                            if (map.hasLayer(layerToRemove)) {
                                 // Safe remove when ArcGIS layers is loading.
-                                safeRemoveLayer(map, leafletLayers.overlays[name], newOverlayLayers[name].layerOptions);
+                                safeRemoveLayer(map, layerToRemove, layerToRemove.layerOptions);
                             }
                             // TODO: Depending on the layer type we will have to delete what's included on it
                             delete leafletLayers.overlays[name];
