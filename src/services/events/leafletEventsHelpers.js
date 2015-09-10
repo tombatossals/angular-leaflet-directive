@@ -1,10 +1,11 @@
 angular.module("leaflet-directive")
-.factory('leafletEventsHelpersFactory', function ($rootScope, $q, $log, leafletHelpers) {
+.factory('leafletEventsHelpersFactory', function ($rootScope, $q, leafletLogger, leafletHelpers) {
         var safeApply = leafletHelpers.safeApply,
             isDefined = leafletHelpers.isDefined,
             isObject = leafletHelpers.isObject,
             isArray = leafletHelpers.isArray,
-            errorHeader = leafletHelpers.errorHeader;
+            errorHeader = leafletHelpers.errorHeader,
+            $log = leafletLogger;;
 
         var EventsHelper = function(rootBroadcastName, lObjectType){
             this.rootBroadcastName = rootBroadcastName;

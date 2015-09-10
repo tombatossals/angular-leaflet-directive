@@ -1,7 +1,8 @@
-angular.module("leaflet-directive").service('leafletData', function ($log, $q, leafletHelpers) {
+angular.module("leaflet-directive").service('leafletData', function (leafletLogger, $q, leafletHelpers) {
     var getDefer = leafletHelpers.getDefer,
         getUnresolvedDefer = leafletHelpers.getUnresolvedDefer,
         setResolvedDefer = leafletHelpers.setResolvedDefer;
+        // $log = leafletLogger;
 
     var _private = {};
     var self = this;

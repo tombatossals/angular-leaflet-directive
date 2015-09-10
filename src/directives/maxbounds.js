@@ -1,4 +1,5 @@
-angular.module("leaflet-directive").directive('maxbounds', function ($log, leafletMapDefaults, leafletBoundsHelpers, leafletHelpers) {
+angular.module("leaflet-directive").directive('maxbounds', function (leafletLogger, leafletMapDefaults, leafletBoundsHelpers, leafletHelpers) {
+    // var $log = leafletLogger;
     return {
         restrict: "A",
         scope: false,
@@ -18,14 +19,14 @@ angular.module("leaflet-directive").directive('maxbounds', function ($log, leafl
                         map.setMaxBounds();
                         return;
                     }
-                    
+
                     var leafletBounds = leafletBoundsHelpers.createLeafletBounds(maxbounds);
                     if(isNumber(maxbounds.pad)) {
                       leafletBounds = leafletBounds.pad(maxbounds.pad);
                     }
 
                     map.setMaxBounds(leafletBounds);
-                    if (!attrs.center) {
+                    if (!attrs.center && !attrs.lfCenter) {
                         map.fitBounds(leafletBounds);
                     }
                 });

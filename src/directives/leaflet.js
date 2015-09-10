@@ -1,10 +1,11 @@
-angular.module("leaflet-directive", []).directive('leaflet',
+angular.module("leaflet-directive", ['nemLogging']).directive('leaflet',
     function ($q, leafletData, leafletMapDefaults, leafletHelpers, leafletEvents) {
     return {
         restrict: "EA",
         replace: true,
         scope: {
             center         : '=',
+            lfCenter       : '=',
             defaults       : '=',
             maxbounds      : '=',
             bounds         : '=',
@@ -93,7 +94,7 @@ angular.module("leaflet-directive", []).directive('leaflet',
             var map = new L.Map(element[0], leafletMapDefaults.getMapCreationDefaults(attrs.id));
             ctrl._leafletMap.resolve(map);
 
-            if (!isDefined(attrs.center)) {
+            if (!isDefined(attrs.center) && !isDefined(attrs.lfCenter)) {
                 map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
             }
 
