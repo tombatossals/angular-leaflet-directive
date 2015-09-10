@@ -1,5 +1,5 @@
 /*!
-*  angular-leaflet-directive 0.8.8 2015-09-04
+*  angular-leaflet-directive 0.8.8 2015-09-09
 *  angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps
 *  git: https://github.com/tombatossals/angular-leaflet-directive
 */
@@ -4105,7 +4105,9 @@ angular.module("leaflet-directive").directive('layers', function (leafletLogger,
                             // Remove from the map if it's on it
                             if (map.hasLayer(leafletLayers.overlays[name])) {
                                 // Safe remove when ArcGIS layers is loading.
-                                safeRemoveLayer(map, leafletLayers.overlays[name], newOverlayLayers[name].layerOptions);
+                                var options = isDefined(newOverlayLayers[name])?
+                                    newOverlayLayers[name].layerOptions:null;
+                                safeRemoveLayer(map, leafletLayers.overlays[name], options);
                             }
                             // TODO: Depending on the layer type we will have to delete what's included on it
                             delete leafletLayers.overlays[name];
