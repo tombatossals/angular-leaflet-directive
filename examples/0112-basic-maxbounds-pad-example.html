@@ -55,7 +55,7 @@
 </head>
 
 <body ng-controller="BasicMaxBoundsPadController">
-    <leaflet center="center" layers="layers" markers="markers" maxbounds="maxbounds" width="100%" height="480px"></leaflet>
+    <leaflet lf-center="center" layers="layers" markers="markers" maxbounds="maxbounds" width="100%" height="480px"></leaflet>
     <h1>Extend Maxbounds with Pad</h1>
     <p>You can extend maxbounds with a pad property. <a href=http://leafletjs.com/reference.html#latlngbounds-pad>Pad</a> is a percentage by which the latLngBounds will be extended.</p>
     <pre ng-bind="maxbounds | json"></pre>
