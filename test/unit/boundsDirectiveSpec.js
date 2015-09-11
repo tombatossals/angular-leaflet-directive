@@ -37,7 +37,7 @@ describe('Directive: bounds', function() {
             bounds: bounds,
             center: {}
         });
-        var element = angular.element('<leaflet bounds="bounds" center="center"></leaflet>');
+        var element = angular.element('<leaflet bounds="bounds" lf-center="center"></leaflet>');
         element = $compile(element)(scope);
 
         var map;
@@ -58,7 +58,7 @@ describe('Directive: bounds', function() {
             bounds: {},
             center: {}
         });
-        var element = angular.element('<leaflet bounds="bounds" center="center"></leaflet>');
+        var element = angular.element('<leaflet bounds="bounds" lf-center="center"></leaflet>');
         element = $compile(element)(scope);
 
         var map;
@@ -78,7 +78,7 @@ describe('Directive: bounds', function() {
             bounds: {},
             center: { lat: 5 , lng: -3, zoom: 4 }
         });
-        var element = angular.element('<leaflet bounds="bounds" center="center"></leaflet>');
+        var element = angular.element('<leaflet bounds="bounds" lf-center="center"></leaflet>');
         element = $compile(element)(scope);
 
         var map;
@@ -104,7 +104,7 @@ describe('Directive: bounds', function() {
             bounds: bounds,
             center: {}
         });
-        var element = angular.element('<leaflet bounds="bounds" center="center"></leaflet>');
+        var element = angular.element('<leaflet bounds="bounds" lf-center="center"></leaflet>');
         element = $compile(element)(scope);
 
         var map;
@@ -133,7 +133,7 @@ describe('Directive: bounds', function() {
             bounds: bounds,
             center: {}
         });
-        var element = angular.element('<leaflet bounds="bounds" center="center"></leaflet>');
+        var element = angular.element('<leaflet bounds="bounds" lf-center="center"></leaflet>');
         element = $compile(element)(scope);
 
         var map;

@@ -43,7 +43,7 @@
     </script>
 </head>
 <body ng-controller="LayersWebGLHeatmapController">
-    <leaflet center="center" layers="layers" width="100%" height="480px"></leaflet>
+    <leaflet lf-center="center" layers="layers" width="100%" height="480px"></leaflet>
     <h1>HeatMap WebGL overlay example</h1>
     <p>You can use the <a href="https://github.com/ursudio/webgl-heatmap-leaflet">WebGL HeatMap overlay plugin</a>, like this. Please read the heatmap plugin documentation to use it.</p>
     <pre ng-bind="layers | json"></pre>
