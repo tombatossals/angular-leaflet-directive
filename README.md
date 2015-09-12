@@ -135,13 +135,13 @@ angular.module('myModule').controller('MapController', ['$scope', 'leafletData',
 
 Finally, you must include the markup directive on your HTML page, like this:
 ```html
-<leaflet defaults="defaults" center="center" height="480px" width="640px"></leaflet>
+<leaflet defaults="defaults" lf-center="center" height="480px" width="640px"></leaflet>
 ```
 
 If you want to have more than one map on the page and access their respective map objects, add an *id* attribute to your leaflet directive in HTML, like this:
 
 ```html
-<leaflet id="mymap" defaults="defaults" center="center" height="480px" width="640px"></leaflet>
+<leaflet id="mymap" defaults="defaults" lf-center="center" height="480px" width="640px"></leaflet>
 ```
 
 And then you can use this id in ```getMap()``` like this:
