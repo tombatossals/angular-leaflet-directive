@@ -81,6 +81,16 @@ angular.module("leaflet-directive")
                 });
             }
         },
+        geoJSONVectorMarker: {
+            mustHaveUrl: false,
+            createLayer: function(params) {
+                    return new L.geoJson(params.data, {
+                        pointToLayer: function (feature, latlng) {
+                            return L.marker(latlng, {icon: L.VectorMarkers.icon(params.icon)});
+                    }
+                });
+            }
+        },
         utfGrid: {
             mustHaveUrl: true,
             createLayer: utfGridCreateLayer

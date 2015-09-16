@@ -269,6 +269,29 @@ angular.module("leaflet-directive").service('leafletHelpers', function ($q, $log
             }
         },
 
+        VectorMarkersPlugin: {
+            isLoaded: function() {
+                return angular.isDefined(L.VectorMarkers) && angular.isDefined(L.VectorMarkers.Icon);
+            },
+            is: function(icon) {
+                if (this.isLoaded()) {
+                    return icon instanceof L.VectorMarkers.Icon;
+                } else {
+                    return false;
+                }
+            },
+            equal: function (iconA, iconB) {
+                if (!this.isLoaded()) {
+                    return false;
+                }
+                if (this.is(iconA)) {
+                    return angular.equals(iconA, iconB);
+                } else {
+                    return false;
+                }
+            }
+        },
+
         DomMarkersPlugin: {
             isLoaded: function () {
                 if (angular.isDefined(L.DomMarkers) && angular.isDefined(L.DomMarkers.Icon)) {

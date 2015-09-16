@@ -14,6 +14,7 @@
     "dist/angular-leaflet-directive.js"
   ],
   "dependencies": {
+    "Leaflet.vector-markers": "https://github.com/hiasinho/Leaflet.vector-markers",
     "angular": "1.x",
     "angular-simple-logger": "~0.0.1",
     "leaflet": "0.7.x"
@@ -32,6 +33,7 @@
     "leaflet-tilelayer-geojson": "*",
     "Leaflet.utfgrid": "danzel/Leaflet.utfgrid",
     "Leaflet.awesome-markers": "*",
+    "Leaflet.vector-markers": "hiasinho/Leaflet.vector-markers",
     "webgl-heatmap-leaflet": "*",
     "leaflet-plugins": "*",
     "esri-leaflet": "*",
