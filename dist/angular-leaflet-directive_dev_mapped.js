@@ -1,5 +1,5 @@
 /*!
-*  angular-leaflet-directive 0.8.8 2015-09-09
+*  angular-leaflet-directive 0.8.8 2015-09-16
 *  angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps
 *  git: https://github.com/tombatossals/angular-leaflet-directive
 */
@@ -5110,6 +5110,7 @@ angular.module("leaflet-directive")
             'drag',
             'dragend',
             'zoomstart',
+            'zoomanim',
             'zoomend',
             'zoomlevelschange',
             'resize',
