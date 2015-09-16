@@ -27,6 +27,7 @@ angular.module("leaflet-directive")
             'drag',
             'dragend',
             'zoomstart',
+            'zoomanim',
             'zoomend',
             'zoomlevelschange',
             'resize',
