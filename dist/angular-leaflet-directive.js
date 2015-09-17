@@ -1,5 +1,5 @@
 /*!
-*  angular-leaflet-directive 0.8.8 2015-09-09
+*  angular-leaflet-directive 0.8.8 2015-09-16
 *  angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps
 *  git: https://github.com/tombatossals/angular-leaflet-directive
 */
@@ -1589,10 +1589,12 @@ angular.module("leaflet-directive")
                 });
                 params.options.loadedDefer = function() {
                     var defers = [];
-                    for (var i = 0; i < params.options.layers.length; i++) {
-                        var d = params.options.layers[i].layerOptions.loadedDefer;
-                        if(isDefined(d)) {
-                            defers.push(d);
+                    if(isDefined(params.options.layers)) {
+                        for (var i = 0; i < params.options.layers.length; i++) {
+                            var d = params.options.layers[i].layerOptions.loadedDefer;
+                            if(isDefined(d)) {
+                                defers.push(d);
+                            }
                         }
                     }
                     return defers;
@@ -1943,15 +1945,19 @@ angular.module("leaflet-directive")
                 var defers = layerOptions.loadedDefer();
                 $log.debug('Loaded Deferred', defers);
                 var count = defers.length;
-                var resolve = function() {
-                    count--;
-                    if(count === 0) {
-                        map.removeLayer(layer);
-                    }
-                };
+                if(count > 0) {
+                    var resolve = function() {
+                        count--;
+                        if(count === 0) {
+                            map.removeLayer(layer);
+                        }
+                    };
 
-                for(var i = 0; i < defers.length; i++) {
-                    defers[i].promise.then(resolve);
+                    for(var i = 0; i < defers.length; i++) {
+                        defers[i].promise.then(resolve);
+                    }
+                } else {
+                    map.removeLayer(layer);
                 }
             } else {
                 layerOptions.loadedDefer.promise.then(function() {
@@ -5110,6 +5116,7 @@ angular.module("leaflet-directive")
             'drag',
             'dragend',
             'zoomstart',
+            'zoomanim',
             'zoomend',
             'zoomlevelschange',
             'resize',
