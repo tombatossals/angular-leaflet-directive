@@ -58,6 +58,6 @@ angular.module("leaflet-directive").factory('leafletLegendHelpers', function () 
 	return {
 		getOnAddLegend: _getOnAddLegend,
 		getOnAddArrayLegend: _getOnAddArrayLegend,
-		updateLegend: _updateLegend,
+		updateLegend: _updateLegend
 	};
 });
