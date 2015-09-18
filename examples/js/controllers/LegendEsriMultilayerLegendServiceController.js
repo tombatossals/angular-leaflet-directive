@@ -1,4 +1,4 @@
-        app.controller("LayersEsriLegendServiceController", [ "$scope", function($scope) {
+        app.controller("LegendEsriMultilayerLegendServiceController", [ "$scope", function($scope) {
             angular.extend($scope, {
             	options: {
             		controls: {
