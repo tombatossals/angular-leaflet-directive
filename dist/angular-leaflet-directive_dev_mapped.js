@@ -1,5 +1,5 @@
 /*!
-*  angular-leaflet-directive 0.8.8 2015-09-16
+*  angular-leaflet-directive 0.8.8 2015-09-23
 *  angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps
 *  git: https://github.com/tombatossals/angular-leaflet-directive
 */
@@ -2036,7 +2036,7 @@ angular.module("leaflet-directive").factory('leafletLegendHelpers', function () 
 	return {
 		getOnAddLegend: _getOnAddLegend,
 		getOnAddArrayLegend: _getOnAddArrayLegend,
-		updateLegend: _updateLegend,
+		updateLegend: _updateLegend
 	};
 });
 
