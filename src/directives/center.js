@@ -155,6 +155,24 @@ centerDirectiveTypes.forEach(function(directiveName) {
 
                         //$log.debug("updating map center...", center);
                         leafletScope.settingCenterFromScope = true;
+
+                    	//adding support for center offset, it can be a number or an array of two values where if it's a number
+                    	//it's the offset from the left and if it's an array the first position is the offset from the left and
+    					//the second one is from the top, if negative values are provided the orientation is reversed
+                        var centerPoint = [center.lat, center.lng];
+                        if (center.offset) {
+                        	var targetPoint;
+    						if (angular.isNumber(center.offset)) {
+    							targetPoint = map.project(centerPoint, center.zoom).subtract([center.offset / 2, 0]);
+    							centerPoint = map.unproject(targetPoint, center.zoom);
+    						} else if (angular.isArray(center.offset)) {
+    							targetPoint = map.project(centerPoint, center.zoom).subtract([center.offset[0] / 2, center.offset[1] / 2]);
+    							centerPoint = map.unproject(targetPoint, center.zoom);
+    						} else {
+    							$log.warn(errorHeader + " invalid 'center offset'");
+    						}
+                        }
+                        
                         map.setView([center.lat, center.lng], center.zoom);
                         leafletEvents.notifyCenterChangedToBounds(leafletScope, map);
                         $timeout(function() {
