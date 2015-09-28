@@ -3,6 +3,7 @@ angular.module("leaflet-directive").service('leafletMarkersHelpers', function ($
         defaultTo = leafletHelpers.defaultTo,
         MarkerClusterPlugin = leafletHelpers.MarkerClusterPlugin,
         AwesomeMarkersPlugin = leafletHelpers.AwesomeMarkersPlugin,
+        VectorMarkersPlugin = leafletHelpers.VectorMarkersPlugin,
         MakiMarkersPlugin = leafletHelpers.MakiMarkersPlugin,
         ExtraMarkersPlugin = leafletHelpers.ExtraMarkersPlugin,
         DomMarkersPlugin = leafletHelpers.DomMarkersPlugin,
@@ -37,6 +38,14 @@ angular.module("leaflet-directive").service('leafletMarkersHelpers', function ($
             }
 
             return new L.AwesomeMarkers.icon(iconData);
+        }
+
+        if (isDefined(iconData) && isDefined(iconData.type) && iconData.type === 'vectorMarker') {
+            if (!VectorMarkersPlugin.isLoaded()) {
+                $log.error(errorHeader + ' The VectorMarkers Plugin is not loaded.');
+            }
+
+            return new L.VectorMarkers.icon(iconData);
         }
 
         if (isDefined(iconData) && isDefined(iconData.type) && iconData.type === 'makiMarker') {
