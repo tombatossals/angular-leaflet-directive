@@ -15,7 +15,7 @@
   ],
   "dependencies": {
     "angular": "1.x",
-    "angular-simple-logger": "~0.0.1",
+    "angular-simple-logger": "0.1.X",
     "leaflet": "0.7.x"
   },
   "devDependencies": {
