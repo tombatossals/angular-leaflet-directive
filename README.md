@@ -1,4 +1,4 @@
-# Angular Leaflet Directive - WORK IN PROFRESS (WIP)
+# Angular Leaflet Directive - WORK IN PROGRESS (WIP)
 
 [AngularJS](http://angularjs.org/) directive for the [Leaflet](http://www.leafletjs.com/) Javascript
 Library. This software aims to easily embed maps managed by Leaflet on your project.
