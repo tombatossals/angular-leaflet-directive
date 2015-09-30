@@ -1,5 +1,5 @@
 /*!
-*  angular-leaflet-directive 0.8.8 2015-09-16
+*  angular-leaflet-directive 0.8.8 2015-09-30
 *  angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps
 *  git: https://github.com/tombatossals/angular-leaflet-directive
 */
@@ -895,6 +895,29 @@ angular.module("leaflet-directive").service('leafletHelpers', ["$q", "$log", fun
             }
         },
 
+        VectorMarkersPlugin: {
+            isLoaded: function() {
+                return angular.isDefined(L.VectorMarkers) && angular.isDefined(L.VectorMarkers.Icon);
+            },
+            is: function(icon) {
+                if (this.isLoaded()) {
+                    return icon instanceof L.VectorMarkers.Icon;
+                } else {
+                    return false;
+                }
+            },
+            equal: function (iconA, iconB) {
+                if (!this.isLoaded()) {
+                    return false;
+                }
+                if (this.is(iconA)) {
+                    return angular.equals(iconA, iconB);
+                } else {
+                    return false;
+                }
+            }
+        },
+
         DomMarkersPlugin: {
             isLoaded: function () {
                 if (angular.isDefined(L.DomMarkers) && angular.isDefined(L.DomMarkers.Icon)) {
@@ -1523,6 +1546,16 @@ angular.module("leaflet-directive")
                 });
             }
         },
+        geoJSONVectorMarker: {
+            mustHaveUrl: false,
+            createLayer: function(params) {
+                    return new L.geoJson(params.data, {
+                        pointToLayer: function (feature, latlng) {
+                            return L.marker(latlng, {icon: L.VectorMarkers.icon(params.icon)});
+                    }
+                });
+            }
+        },
         utfGrid: {
             mustHaveUrl: true,
             createLayer: utfGridCreateLayer
@@ -2036,7 +2069,7 @@ angular.module("leaflet-directive").factory('leafletLegendHelpers', function () 
 	return {
 		getOnAddLegend: _getOnAddLegend,
 		getOnAddArrayLegend: _getOnAddArrayLegend,
-		updateLegend: _updateLegend,
+		updateLegend: _updateLegend
 	};
 });
 
@@ -2219,6 +2252,7 @@ angular.module("leaflet-directive").service('leafletMarkersHelpers', ["$rootScop
         defaultTo = leafletHelpers.defaultTo,
         MarkerClusterPlugin = leafletHelpers.MarkerClusterPlugin,
         AwesomeMarkersPlugin = leafletHelpers.AwesomeMarkersPlugin,
+        VectorMarkersPlugin = leafletHelpers.VectorMarkersPlugin,
         MakiMarkersPlugin = leafletHelpers.MakiMarkersPlugin,
         ExtraMarkersPlugin = leafletHelpers.ExtraMarkersPlugin,
         DomMarkersPlugin = leafletHelpers.DomMarkersPlugin,
@@ -2253,6 +2287,14 @@ angular.module("leaflet-directive").service('leafletMarkersHelpers', ["$rootScop
             }
 
             return new L.AwesomeMarkers.icon(iconData);
+        }
+
+        if (isDefined(iconData) && isDefined(iconData.type) && iconData.type === 'vectorMarker') {
+            if (!VectorMarkersPlugin.isLoaded()) {
+                $log.error(errorHeader + ' The VectorMarkers Plugin is not loaded.');
+            }
+
+            return new L.VectorMarkers.icon(iconData);
         }
 
         if (isDefined(iconData) && isDefined(iconData.type) && iconData.type === 'makiMarker') {
