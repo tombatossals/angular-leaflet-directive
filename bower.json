@@ -2,7 +2,7 @@
   "name": "angular-leaflet-directive",
   "author": "https://github.com/tombatossals/angular-leaflet-directive/graphs/contributors",
   "description": "angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps",
-  "version": "0.8.8",
+  "version": "1.0.0-dev",
   "homepage": "http://tombatossals.github.io/angular-leaflet-directive/",
   "keywords": [
     "angularjs",
@@ -13,10 +13,13 @@
   "main": [
     "dist/angular-leaflet-directive.js"
   ],
+  "resolutions": {
+    "leaflet": "http://cdn.leafletjs.com/downloads/leaflet-1.0.0-b1.zip"
+  },
   "dependencies": {
     "angular": "1.x",
     "angular-simple-logger": "~0.0.1",
-    "leaflet": "0.7.x"
+    "leaflet": "http://cdn.leafletjs.com/downloads/leaflet-1.0.0-b1.zip"
   },
   "devDependencies": {
     "jquery": "*",
@@ -50,6 +53,9 @@
     "esri-leaflet-heatmap-feature-layer": "~1.0.x",
     "leaflet-search": "~1.5.8"
   },
+  "ignoredDependencies": [
+    "leaflet-dist"
+  ],
   "ignore": [
     "**/.*",
     "src",
