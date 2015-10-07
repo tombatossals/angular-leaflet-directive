@@ -58,6 +58,15 @@ angular.module("leaflet-directive").directive('paths', function (leafletLogger, 
                                 return;
                             }
                             setPathOptions(leafletPath, pathData.type, pathData);
+                        	// Show label if defined
+                            if (isDefined(leafletPath) && leafletHelpers.LabelPlugin.isLoaded() && isDefined(pathData.label) && isDefined(pathData.label.message)) {
+                            	leafletPath.bindLabel(pathData.label.message, pathData.label.options);
+                            }
+
+                        	// bind popup if defined
+                            if (isDefined(leafletPath) && isDefined(pathData.message)) {
+                            	leafletPath.bindPopup(pathData.message, pathData.popupOptions);
+                            }
                         }, true);
                     };
 
