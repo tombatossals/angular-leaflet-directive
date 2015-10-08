@@ -26,5 +26,5 @@ module.exports = function (grunt, options) {
                 logConcurrentOutput: true
             }
         }
-    }
+    };
 };
