@@ -1,3 +1,8 @@
+## Bug fixes and new features
+- Added support for center offset.
+- Fixed edition of path that wasn't updating labels and popups.
+- Fixed edition of markers that was hiding the popup that was visible.
+
 # angular-leaflet-directive
 ## [tombatossals](http://github.com/tombatossals/angular-leaflet-directive) - main upstream
 [![Join the chat at https://gitter.im/tombatossals/angular-leaflet-directive](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/tombatossals/angular-leaflet-directive?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
