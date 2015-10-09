@@ -7,13 +7,15 @@
 describe('Directive: leaflet', function() {
     var $compile, $rootScope, leafletData, scope;
 
-    beforeEach(module('leaflet-directive'));
-    beforeEach(inject(function(_$compile_, _$rootScope_, _leafletData_){
-        $compile = _$compile_;
-        $rootScope = _$rootScope_;
-        leafletData = _leafletData_;
-        scope = $rootScope.$new();
-    }));
+    beforeEach(function(){
+      module('leaflet-directive');
+      inject(function(_$compile_, _$rootScope_, _leafletData_){
+          $compile = _$compile_;
+          $rootScope = _$rootScope_;
+          leafletData = _leafletData_;
+          scope = $rootScope.$new();
+      });
+    });
 
     afterEach(inject(function($rootScope) {
         $rootScope.$apply();

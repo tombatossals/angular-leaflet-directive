@@ -3,9 +3,9 @@ var centerDirectiveTypes = ['center', 'lfCenter'],
 
 centerDirectiveTypes.forEach(function(directiveName) {
     centerDirectives[directiveName] = ['leafletLogger', '$q', '$location', '$timeout', 'leafletMapDefaults', 'leafletHelpers',
-        'leafletBoundsHelpers', 'leafletEvents',
+        'leafletBoundsHelpers', 'leafletMapEvents',
         function(leafletLogger, $q, $location, $timeout, leafletMapDefaults, leafletHelpers,
-      leafletBoundsHelpers, leafletEvents) {
+      leafletBoundsHelpers, leafletMapEvents) {
 
         var isDefined = leafletHelpers.isDefined,
             isNumber = leafletHelpers.isNumber,
@@ -156,7 +156,7 @@ centerDirectiveTypes.forEach(function(directiveName) {
                         //$log.debug("updating map center...", center);
                         leafletScope.settingCenterFromScope = true;
                         map.setView([center.lat, center.lng], center.zoom);
-                        leafletEvents.notifyCenterChangedToBounds(leafletScope, map);
+                        leafletMapEvents.notifyCenterChangedToBounds(leafletScope, map);
                         $timeout(function() {
                             leafletScope.settingCenterFromScope = false;
                             //$log.debug("allow center scope updates");
@@ -170,7 +170,7 @@ centerDirectiveTypes.forEach(function(directiveName) {
                     map.on('moveend', function( /* event */ ) {
                         // Resolve the center after the first map position
                         _leafletCenter.resolve();
-                        leafletEvents.notifyCenterUrlHashChanged(leafletScope, map, attrs, $location.search());
+                        leafletMapEvents.notifyCenterUrlHashChanged(leafletScope, map, attrs, $location.search());
                         //$log.debug("updated center on map...");
                         if (isSameCenterOnMap(centerModel, map) || leafletScope.settingCenterFromScope) {
                             //$log.debug("same center in model, no need to update again.");
@@ -187,7 +187,7 @@ centerDirectiveTypes.forEach(function(directiveName) {
                                     autoDiscover: false
                                 });
                             }
-                            leafletEvents.notifyCenterChangedToBounds(leafletScope, map);
+                            leafletMapEvents.notifyCenterChangedToBounds(leafletScope, map);
                             $timeout(function() {
                                 leafletScope.settingCenterFromLeaflet = false;
                             });
@@ -199,10 +199,10 @@ centerDirectiveTypes.forEach(function(directiveName) {
                             $log.warn(errorHeader + " The Geolocation API is unauthorized on this page.");
                             if (isValidCenter(centerModel)) {
                                 map.setView([centerModel.lat, centerModel.lng], centerModel.zoom);
-                                leafletEvents.notifyCenterChangedToBounds(leafletScope, map);
+                                leafletMapEvents.notifyCenterChangedToBounds(leafletScope, map);
                             } else {
                                 map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
-                                leafletEvents.notifyCenterChangedToBounds(leafletScope, map);
+                                leafletMapEvents.notifyCenterChangedToBounds(leafletScope, map);
                             }
                         });
                     }
