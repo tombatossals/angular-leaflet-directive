@@ -1,4 +1,4 @@
-angular.module("leaflet-directive").directive('paths', function (leafletLogger, $q, leafletData, leafletMapDefaults, leafletHelpers, leafletPathsHelpers, leafletEvents) {
+angular.module("leaflet-directive").directive('paths', function (leafletLogger, $q, leafletData, leafletMapDefaults, leafletHelpers, leafletPathsHelpers, leafletPathEvents) {
     var $log = leafletLogger;
     return {
         restrict: "A",
@@ -13,7 +13,7 @@ angular.module("leaflet-directive").directive('paths', function (leafletLogger, 
                 leafletScope  = mapController.getLeafletScope(),
                 paths     = leafletScope.paths,
                 createPath = leafletPathsHelpers.createPath,
-                bindPathEvents = leafletEvents.bindPathEvents,
+                bindPathEvents = leafletPathEvents.bindPathEvents,
                 setPathOptions = leafletPathsHelpers.setPathOptions;
 
             mapController.getMap().then(function(map) {
@@ -139,7 +139,7 @@ angular.module("leaflet-directive").directive('paths', function (leafletLogger, 
                                     }
                                 }
 
-                                bindPathEvents(newPath, newName, pathData, leafletScope);
+                                bindPathEvents(attrs.id, newPath, newName, pathData, leafletScope);
                             }
                         }
                     });

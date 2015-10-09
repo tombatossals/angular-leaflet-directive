@@ -86,7 +86,7 @@ describe 'Directive: leaflet', ->
             element = angular.element('<leaflet markers="markers"></leaflet>')
             element = $compile(element)($rootScope)
             @digest $rootScope
-            leafletData.getMarkers().then (leafletMarkers) =>
+            leafletData.getMarkers().then (leafletMarkers) ->
                 expect(Object.keys(leafletMarkers).length).toBe(markers1.length)
             .then =>
                 $rootScope.markers = markers2
@@ -554,8 +554,9 @@ describe 'Directive: leaflet', ->
         $rootScope.$digest()
         expect(markers.paris._popup._content).toEqual 'this is paris'
         return
+
     describe 'setting markers watches', ->
-        `var mainMarkers`
+        mainMarkers = null
         leafIcon = undefined
         defaultIcon = undefined
         mainMarkers = undefined

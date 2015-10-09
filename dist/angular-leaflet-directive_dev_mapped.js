@@ -1,12 +1,12 @@
 /*!
-*  angular-leaflet-directive 0.8.8 2015-10-07
+*  angular-leaflet-directive 0.8.8 2015-10-09
 *  angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps
 *  git: https://github.com/tombatossals/angular-leaflet-directive
 */
 (function(angular){
 'use strict';
 angular.module("leaflet-directive", ['nemLogging']).directive('leaflet',
-    function ($q, leafletData, leafletMapDefaults, leafletHelpers, leafletEvents) {
+    function ($q, leafletData, leafletMapDefaults, leafletHelpers, leafletMapEvents) {
     return {
         restrict: "EA",
         replace: true,
@@ -43,9 +43,9 @@ angular.module("leaflet-directive", ['nemLogging']).directive('leaflet',
 
         link: function(scope, element, attrs, ctrl) {
             var isDefined = leafletHelpers.isDefined,
-                defaults = leafletMapDefaults.setDefaults(scope.defaults, attrs.id),
-                mapEvents = leafletEvents.getAvailableMapEvents(),
-                addEvents = leafletEvents.addEvents;
+                defaults  = leafletMapDefaults.setDefaults(scope.defaults, attrs.id),
+                mapEvents = leafletMapEvents.getAvailableMapEvents(),
+                addEvents = leafletMapEvents.addEvents;
 
             scope.mapId =  attrs.id;
             leafletData.setDirectiveControls({}, attrs.id);
@@ -521,28 +521,6 @@ angular.module("leaflet-directive")
     return {
         extend: _extend
     };
-});
-
-angular.module("leaflet-directive").factory('leafletEvents',
-    function (leafletMapEvents, leafletMarkerEvents, leafletPathEvents, leafletIterators) {
-        //NOTE THIS SHOULD BE DEPRECATED infavor of getting a specific events helper
-        var instance = angular.extend({},
-            leafletMapEvents, {
-                bindMarkerEvents: leafletMarkerEvents.bindEvents,
-                getAvailableMarkerEvents: leafletMarkerEvents.getAvailableEvents
-            }, leafletPathEvents);
-
-        var genDispatchMapEvent = instance.genDispatchMapEvent;
-
-        instance.addEvents =  function(map, mapEvents, contextName, scope, logic){
-            leafletIterators.each(mapEvents, function(eventName) {
-                var context = {};
-                context[contextName] = eventName;
-                map.on(eventName, genDispatchMapEvent(scope, eventName, logic), context);
-            });
-        };
-
-        return instance;
 });
 
 angular.module("leaflet-directive")
@@ -3188,9 +3166,9 @@ var centerDirectiveTypes = ['center', 'lfCenter'],
 
 centerDirectiveTypes.forEach(function(directiveName) {
     centerDirectives[directiveName] = ['leafletLogger', '$q', '$location', '$timeout', 'leafletMapDefaults', 'leafletHelpers',
-        'leafletBoundsHelpers', 'leafletEvents',
+        'leafletBoundsHelpers', 'leafletMapEvents',
         function(leafletLogger, $q, $location, $timeout, leafletMapDefaults, leafletHelpers,
-      leafletBoundsHelpers, leafletEvents) {
+      leafletBoundsHelpers, leafletMapEvents) {
 
         var isDefined = leafletHelpers.isDefined,
             isNumber = leafletHelpers.isNumber,
@@ -3341,7 +3319,7 @@ centerDirectiveTypes.forEach(function(directiveName) {
                         //$log.debug("updating map center...", center);
                         leafletScope.settingCenterFromScope = true;
                         map.setView([center.lat, center.lng], center.zoom);
-                        leafletEvents.notifyCenterChangedToBounds(leafletScope, map);
+                        leafletMapEvents.notifyCenterChangedToBounds(leafletScope, map);
                         $timeout(function() {
                             leafletScope.settingCenterFromScope = false;
                             //$log.debug("allow center scope updates");
@@ -3355,7 +3333,7 @@ centerDirectiveTypes.forEach(function(directiveName) {
                     map.on('moveend', function( /* event */ ) {
                         // Resolve the center after the first map position
                         _leafletCenter.resolve();
-                        leafletEvents.notifyCenterUrlHashChanged(leafletScope, map, attrs, $location.search());
+                        leafletMapEvents.notifyCenterUrlHashChanged(leafletScope, map, attrs, $location.search());
                         //$log.debug("updated center on map...");
                         if (isSameCenterOnMap(centerModel, map) || leafletScope.settingCenterFromScope) {
                             //$log.debug("same center in model, no need to update again.");
@@ -3372,7 +3350,7 @@ centerDirectiveTypes.forEach(function(directiveName) {
                                     autoDiscover: false
                                 });
                             }
-                            leafletEvents.notifyCenterChangedToBounds(leafletScope, map);
+                            leafletMapEvents.notifyCenterChangedToBounds(leafletScope, map);
                             $timeout(function() {
                                 leafletScope.settingCenterFromLeaflet = false;
                             });
@@ -3384,10 +3362,10 @@ centerDirectiveTypes.forEach(function(directiveName) {
                             $log.warn(errorHeader + " The Geolocation API is unauthorized on this page.");
                             if (isValidCenter(centerModel)) {
                                 map.setView([centerModel.lat, centerModel.lng], centerModel.zoom);
-                                leafletEvents.notifyCenterChangedToBounds(leafletScope, map);
+                                leafletMapEvents.notifyCenterChangedToBounds(leafletScope, map);
                             } else {
                                 map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
-                                leafletEvents.notifyCenterChangedToBounds(leafletScope, map);
+                                leafletMapEvents.notifyCenterChangedToBounds(leafletScope, map);
                             }
                         });
                     }
@@ -3534,7 +3512,7 @@ angular.module("leaflet-directive").directive("decorations", function(leafletLog
 	};
 });
 
-angular.module("leaflet-directive").directive('eventBroadcast', function (leafletLogger, $rootScope, leafletHelpers, leafletEvents, leafletIterators) {
+angular.module("leaflet-directive").directive('eventBroadcast', function (leafletLogger, $rootScope, leafletHelpers, leafletMapEvents, leafletIterators) {
     var $log = leafletLogger;
     return {
         restrict: "A",
@@ -3547,8 +3525,8 @@ angular.module("leaflet-directive").directive('eventBroadcast', function (leafle
                 isDefined = leafletHelpers.isDefined,
                 leafletScope  = controller.getLeafletScope(),
                 eventBroadcast = leafletScope.eventBroadcast,
-                availableMapEvents = leafletEvents.getAvailableMapEvents(),
-                addEvents = leafletEvents.addEvents;
+                availableMapEvents = leafletMapEvents.getAvailableMapEvents(),
+                addEvents = leafletMapEvents.addEvents;
 
             controller.getMap().then(function(map) {
 
@@ -3595,8 +3573,7 @@ angular.module("leaflet-directive").directive('eventBroadcast', function (leafle
 
 angular.module("leaflet-directive")
 .directive('geojson', function (leafletLogger, $rootScope, leafletData, leafletHelpers,
-    leafletWatchHelpers, leafletDirectiveControlsHelpers,leafletIterators,
-    leafletGeoJsonEvents) {
+    leafletWatchHelpers, leafletDirectiveControlsHelpers,leafletIterators, leafletGeoJsonEvents) {
     var _maybeWatch = leafletWatchHelpers.maybeWatch,
         _watchOptions = leafletHelpers.watchOptions,
         _extendDirectiveControls = leafletDirectiveControlsHelpers.extend,
@@ -3630,7 +3607,7 @@ angular.module("leaflet-directive")
                                 layer.bindLabel(feature.properties.description);
                             }
 
-                            leafletGeoJsonEvents.bindEvents(layer, null, feature,
+                            leafletGeoJsonEvents.bindEvents(attrs.id, layer, null, feature,
                                 leafletScope, maybeName,
                                 {resetStyleOnMouseout: geojson.resetStyleOnMouseout,
                                 mapId: attrs.id});
@@ -4391,7 +4368,7 @@ angular.module("leaflet-directive").directive('markers',
         return true;
     };
     //TODO: move to leafletMarkersHelpers??? or make a new class/function file (leafletMarkersHelpers is large already)
-    var _addMarkers = function(markersToRender, oldModels, map, layers, leafletMarkers, leafletScope,
+    var _addMarkers = function(mapId, markersToRender, oldModels, map, layers, leafletMarkers, leafletScope,
                                watchOptions, maybeLayerName, skips){
         for (var newName in markersToRender) {
             if(skips[newName])
@@ -4455,7 +4432,7 @@ angular.module("leaflet-directive").directive('markers',
                 }
 
                 listenMarkerEvents(marker, model, leafletScope, watchOptions.individual.doWatch, map);
-                leafletMarkerEvents.bindEvents(marker, pathToMarker, model, leafletScope, layerName);
+                leafletMarkerEvents.bindEvents(mapId, marker, pathToMarker, model, leafletScope, layerName);
             }
             else {
                 var oldModel = isDefined(oldModel)? oldModels[newName] : undefined;
@@ -4564,13 +4541,13 @@ angular.module("leaflet-directive").directive('markers',
                             $it.each(models, function(markersToAdd, layerName) {
                                 var oldModel = isDefined(oldModel)? oldModels[layerName] : undefined;
                                 skips = _getNewModelsToSkipp(models[layerName], oldModel, leafletMarkers[layerName]);
-                                _addMarkers(markersToAdd, oldModels, map, layers, leafletMarkers, leafletScope,
+                                _addMarkers(attrs.id, markersToAdd, oldModels, map, layers, leafletMarkers, leafletScope,
                                     watchOptions, layerName, skips);
                             });
                             return;
                         }
                         skips = _getNewModelsToSkipp(models, oldModels, leafletMarkers);
-                        _addMarkers(models, oldModels, map, layers, leafletMarkers, leafletScope,
+                        _addMarkers(attrs.id, models, oldModels, map, layers, leafletMarkers, leafletScope,
                             watchOptions, undefined, skips);
                     };
                     extendDirectiveControls(attrs.id, 'markers', _create, _clean);
@@ -4622,7 +4599,7 @@ angular.module("leaflet-directive").directive('maxbounds', function (leafletLogg
     };
 });
 
-angular.module("leaflet-directive").directive('paths', function (leafletLogger, $q, leafletData, leafletMapDefaults, leafletHelpers, leafletPathsHelpers, leafletEvents) {
+angular.module("leaflet-directive").directive('paths', function (leafletLogger, $q, leafletData, leafletMapDefaults, leafletHelpers, leafletPathsHelpers, leafletPathEvents) {
     var $log = leafletLogger;
     return {
         restrict: "A",
@@ -4637,7 +4614,7 @@ angular.module("leaflet-directive").directive('paths', function (leafletLogger, 
                 leafletScope  = mapController.getLeafletScope(),
                 paths     = leafletScope.paths,
                 createPath = leafletPathsHelpers.createPath,
-                bindPathEvents = leafletEvents.bindPathEvents,
+                bindPathEvents = leafletPathEvents.bindPathEvents,
                 setPathOptions = leafletPathsHelpers.setPathOptions;
 
             mapController.getMap().then(function(map) {
@@ -4763,7 +4740,7 @@ angular.module("leaflet-directive").directive('paths', function (leafletLogger, 
                                     }
                                 }
 
-                                bindPathEvents(newPath, newName, pathData, leafletScope);
+                                bindPathEvents(attrs.id, newPath, newName, pathData, leafletScope);
                             }
                         }
                     });
@@ -4889,15 +4866,16 @@ angular.module("leaflet-directive")
             isObject = leafletHelpers.isObject,
             isArray = leafletHelpers.isArray,
             errorHeader = leafletHelpers.errorHeader,
-            $log = leafletLogger;;
+            $log = leafletLogger;
 
         var EventsHelper = function(rootBroadcastName, lObjectType){
             this.rootBroadcastName = rootBroadcastName;
+            $log.debug("leafletEventsHelpersFactory: lObjectType: " + lObjectType + "rootBroadcastName: " + rootBroadcastName);
             //used to path/key out certain properties based on the type , "markers", "geojson"
             this.lObjectType = lObjectType;
         };
 
-        EventsHelper.prototype.getAvailableEvents = function(){return []};
+        EventsHelper.prototype.getAvailableEvents = function(){return [];};
 
         /*
          argument: name: Note this can be a single string or dot notation
@@ -4917,10 +4895,16 @@ angular.module("leaflet-directive")
          //would yield name of
          name = "cars.m1"
          */
-        EventsHelper.prototype.genDispatchEvent = function(eventName, logic, leafletScope, lObject, name, model, layerName, extra) {
+        EventsHelper.prototype.genDispatchEvent = function(maybeMapId, eventName, logic, leafletScope, lObject, name, model, layerName, extra) {
             var _this = this;
+
+            maybeMapId = maybeMapId || '';
+            if (maybeMapId)
+              maybeMapId = '.' + maybeMapId;
+
             return function (e) {
-                var broadcastName = _this.rootBroadcastName + '.' + eventName;
+                var broadcastName = _this.rootBroadcastName + maybeMapId + '.' + eventName;
+                $log.debug(broadcastName);
                 _this.fire(leafletScope, broadcastName, logic, e, e.target || lObject, model, name, layerName, extra);
             };
         };
@@ -4945,7 +4929,7 @@ angular.module("leaflet-directive")
             });
         };
 
-        EventsHelper.prototype.bindEvents = function (lObject, name, model, leafletScope, layerName, extra) {
+        EventsHelper.prototype.bindEvents = function (maybeMapId, lObject, name, model, leafletScope, layerName, extra) {
             var events = [];
             var logic = 'emit';
             var _this = this;
@@ -5027,7 +5011,7 @@ angular.module("leaflet-directive")
             }
 
             events.forEach(function(eventName){
-                lObject.on(eventName,_this.genDispatchEvent(eventName, logic, leafletScope, lObject, name, model, layerName, extra));
+                lObject.on(eventName,_this.genDispatchEvent(maybeMapId, eventName, logic, leafletScope, lObject, name, model, layerName, extra));
             });
           return logic;
         };
@@ -5040,7 +5024,7 @@ angular.module("leaflet-directive")
 
 angular.module("leaflet-directive")
 .factory('leafletGeoJsonEvents', function ($rootScope, $q, leafletLogger, leafletHelpers,
-  leafletEventsHelpersFactory, leafletLabelEvents, leafletData) {
+  leafletEventsHelpersFactory, leafletData) {
     var safeApply = leafletHelpers.safeApply,
         EventsHelper = leafletEventsHelpersFactory;
         // $log = leafletLogger;
@@ -5051,9 +5035,8 @@ angular.module("leaflet-directive")
 
     GeoJsonEvents.prototype =  new EventsHelper();
 
-
-    GeoJsonEvents.prototype.genDispatchEvent = function(eventName, logic, leafletScope, lObject, name, model, layerName, extra) {
-        var base = EventsHelper.prototype.genDispatchEvent.call(this, eventName, logic, leafletScope, lObject, name, model, layerName),
+    GeoJsonEvents.prototype.genDispatchEvent = function(maybeMapId, eventName, logic, leafletScope, lObject, name, model, layerName, extra) {
+        var base = EventsHelper.prototype.genDispatchEvent.call(this, maybeMapId, eventName, logic, leafletScope, lObject, name, model, layerName),
         _this = this;
 
         return function(e){
@@ -5097,10 +5080,10 @@ angular.module("leaflet-directive")
         };
         LabelEvents.prototype =  new EventsHelper();
 
-        LabelEvents.prototype.genDispatchEvent = function(eventName, logic, leafletScope, lObject, name, model, layerName) {
+        LabelEvents.prototype.genDispatchEvent = function(maybeMapId, eventName, logic, leafletScope, lObject, name, model, layerName) {
             var markerName = name.replace('markers.', '');
             return EventsHelper.prototype
-                .genDispatchEvent.call(this, eventName, logic, leafletScope, lObject, markerName, model, layerName);
+                .genDispatchEvent.call(this, maybeMapId, eventName, logic, leafletScope, lObject, markerName, model, layerName);
         };
 
         LabelEvents.prototype.getAvailableEvents = function(){
@@ -5114,26 +5097,25 @@ angular.module("leaflet-directive")
             ];
         };
 
-        LabelEvents.prototype.genEvents = function (eventName, logic, leafletScope, lObject, name, model, layerName) {
+        LabelEvents.prototype.genEvents = function (maybeMapId, eventName, logic, leafletScope, lObject, name, model, layerName) {
             var _this = this;
             var labelEvents = this.getAvailableEvents();
             var scopeWatchName = Helpers.getObjectArrayPath("markers." + name);
             labelEvents.forEach(function(eventName) {
                 lObject.label.on(eventName, _this.genDispatchEvent(
-                    eventName, logic, leafletScope, lObject.label, scopeWatchName, model, layerName));
+                    maybeMapId, eventName, logic, leafletScope, lObject.label, scopeWatchName, model, layerName));
             });
         };
 
-        LabelEvents.prototype.bindEvents = function (lObject, name, model, leafletScope, layerName) {};
+        LabelEvents.prototype.bindEvents = function (maybeMapId, lObject, name, model, leafletScope, layerName) {};
 
         return new LabelEvents();
 });
 
 angular.module("leaflet-directive")
-.factory('leafletMapEvents', function ($rootScope, $q, leafletLogger, leafletHelpers, leafletEventsHelpers) {
+.factory('leafletMapEvents', function ($rootScope, $q, leafletLogger, leafletHelpers, leafletEventsHelpers, leafletIterators) {
     var isDefined = leafletHelpers.isDefined,
-        fire = leafletEventsHelpers.fire,
-        $log = leafletLogger;
+        fire = leafletEventsHelpers.fire;
 
     var _getAvailableMapEvents = function() {
         return [
@@ -5184,15 +5166,15 @@ angular.module("leaflet-directive")
         ];
     };
 
-    var _genDispatchMapEvent = function(scope, eventName, logic) {
-        // (nmccready) We should consider passing mapId as an argument or using it from scope
+    var _genDispatchMapEvent = function(scope, eventName, logic, maybeMapId) {
+        if (maybeMapId)
+          maybeMapId = maybeMapId + '.';
         return function(e) {
             // Put together broadcast name
-            // (nmccready) We should consider passing mapId joining mapId to the broadcastName to keep the event unique. Same should be done for all directives so we know what map it comes from.
-            // problem with this is it will cause a minor bump and break backwards compat
-            var broadcastName = 'leafletDirectiveMap.' + eventName;
+            var broadcastName = 'leafletDirectiveMap.' + maybeMapId + eventName;
+            leafletLogger.debug(broadcastName);
             // Safely broadcast the event
-            fire(scope, broadcastName, logic, e, e.target, scope)
+            fire(scope, broadcastName, logic, e, e.target, scope);
         };
     };
 
@@ -5212,11 +5194,20 @@ angular.module("leaflet-directive")
         }
     };
 
+    var _addEvents =  function(map, mapEvents, contextName, scope, logic){
+        leafletIterators.each(mapEvents, function(eventName) {
+            var context = {};
+            context[contextName] = eventName;
+            map.on(eventName, _genDispatchMapEvent(scope, eventName, logic, map._container.id || ''), context);
+        });
+    };
+
     return {
         getAvailableMapEvents: _getAvailableMapEvents,
         genDispatchMapEvent: _genDispatchMapEvent,
         notifyCenterChangedToBounds: _notifyCenterChangedToBounds,
-        notifyCenterUrlHashChanged: _notifyCenterUrlHashChanged
+        notifyCenterUrlHashChanged: _notifyCenterUrlHashChanged,
+        addEvents: _addEvents
     };
 });
 
@@ -5233,11 +5224,11 @@ angular.module("leaflet-directive")
       EventsHelper.call(this,'leafletDirectiveMarker', 'markers');
     };
 
-    MarkerEvents.prototype =  new EventsHelper();
+    MarkerEvents.prototype = new EventsHelper();
 
-    MarkerEvents.prototype.genDispatchEvent = function(eventName, logic, leafletScope, lObject, name, model, layerName) {
+    MarkerEvents.prototype.genDispatchEvent = function(maybeMapId, eventName, logic, leafletScope, lObject, name, model, layerName) {
         var handle = EventsHelper.prototype
-            .genDispatchEvent.call(this, eventName, logic, leafletScope, lObject, name, model, layerName);
+            .genDispatchEvent.call(this, maybeMapId, eventName, logic, leafletScope, lObject, name, model, layerName);
         return function(e){
             // Broadcast old marker click name for backwards compatibility
             if (eventName === "click") {
@@ -5279,11 +5270,11 @@ angular.module("leaflet-directive")
         ];
     };
 
-    MarkerEvents.prototype.bindEvents = function (lObject, name, model, leafletScope, layerName) {
-      var logic = EventsHelper.prototype.bindEvents.call(this,lObject, name, model, leafletScope, layerName);
+    MarkerEvents.prototype.bindEvents = function (maybeMapId, lObject, name, model, leafletScope, layerName) {
+      var logic = EventsHelper.prototype.bindEvents.call(this, maybeMapId, lObject, name, model, leafletScope, layerName);
 
       if (Helpers.LabelPlugin.isLoaded() && isDefined(lObject.label)) {
-          lblHelp.genEvents(name, logic, leafletScope, lObject, model, layerName);
+          lblHelp.genEvents(maybeMapId, name, logic, leafletScope, lObject, model, layerName);
       }
     };
 
@@ -5300,15 +5291,24 @@ angular.module("leaflet-directive")
         fire = leafletEventsHelpers.fire,
         $log = leafletLogger;
 
-    var _genDispatchPathEvent = function (eventName, logic, leafletScope, lObject, name, model, layerName) {
-        return function (e) {
-            var broadcastName = 'leafletDirectivePath.' + eventName;
+    /*
+    TODO (nmccready) This EventsHelper needs to be derrived from leafletEventsHelpers to elminate copy and paste code.
+    */
 
+    var _genDispatchPathEvent = function (maybeMapId, eventName, logic, leafletScope, lObject, name, model, layerName) {
+        maybeMapId = maybeMapId || '';
+
+        if (maybeMapId)
+          maybeMapId = '.' + maybeMapId;
+
+        return function (e) {
+            var broadcastName = 'leafletDirectivePath' + maybeMapId + '.' + eventName;
+            $log.debug(broadcastName);
             fire(leafletScope, broadcastName, logic, e, e.target || lObject, model, name, layerName);
         };
     };
 
-    var _bindPathEvents = function (lObject, name, model, leafletScope) {
+    var _bindPathEvents = function (maybeMapId, lObject, name, model, leafletScope) {
         var pathEvents = [],
             i,
             eventName,
@@ -5400,11 +5400,11 @@ angular.module("leaflet-directive")
 
         for (i = 0; i < pathEvents.length; i++) {
             eventName = pathEvents[i];
-            lObject.on(eventName, _genDispatchPathEvent(eventName, logic, leafletScope, pathEvents, name));
+            lObject.on(eventName, _genDispatchPathEvent(maybeMapId, eventName, logic, leafletScope, pathEvents, name));
         }
 
         if (Helpers.LabelPlugin.isLoaded() && isDefined(lObject.label)) {
-            lblHelp.genEvents(name, logic, leafletScope, lObject, model);
+            lblHelp.genEvents(maybeMapId, name, logic, leafletScope, lObject, model);
         }
     };
 

@@ -9,10 +9,10 @@ angular.module("leaflet-directive")
         };
         LabelEvents.prototype =  new EventsHelper();
 
-        LabelEvents.prototype.genDispatchEvent = function(eventName, logic, leafletScope, lObject, name, model, layerName) {
+        LabelEvents.prototype.genDispatchEvent = function(maybeMapId, eventName, logic, leafletScope, lObject, name, model, layerName) {
             var markerName = name.replace('markers.', '');
             return EventsHelper.prototype
-                .genDispatchEvent.call(this, eventName, logic, leafletScope, lObject, markerName, model, layerName);
+                .genDispatchEvent.call(this, maybeMapId, eventName, logic, leafletScope, lObject, markerName, model, layerName);
         };
 
         LabelEvents.prototype.getAvailableEvents = function(){
@@ -26,17 +26,17 @@ angular.module("leaflet-directive")
             ];
         };
 
-        LabelEvents.prototype.genEvents = function (eventName, logic, leafletScope, lObject, name, model, layerName) {
+        LabelEvents.prototype.genEvents = function (maybeMapId, eventName, logic, leafletScope, lObject, name, model, layerName) {
             var _this = this;
             var labelEvents = this.getAvailableEvents();
             var scopeWatchName = Helpers.getObjectArrayPath("markers." + name);
             labelEvents.forEach(function(eventName) {
                 lObject.label.on(eventName, _this.genDispatchEvent(
-                    eventName, logic, leafletScope, lObject.label, scopeWatchName, model, layerName));
+                    maybeMapId, eventName, logic, leafletScope, lObject.label, scopeWatchName, model, layerName));
             });
         };
 
-        LabelEvents.prototype.bindEvents = function (lObject, name, model, leafletScope, layerName) {};
+        LabelEvents.prototype.bindEvents = function (maybeMapId, lObject, name, model, leafletScope, layerName) {};
 
         return new LabelEvents();
 });

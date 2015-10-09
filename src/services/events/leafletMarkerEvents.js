@@ -11,11 +11,11 @@ angular.module("leaflet-directive")
       EventsHelper.call(this,'leafletDirectiveMarker', 'markers');
     };
 
-    MarkerEvents.prototype =  new EventsHelper();
+    MarkerEvents.prototype = new EventsHelper();
 
-    MarkerEvents.prototype.genDispatchEvent = function(eventName, logic, leafletScope, lObject, name, model, layerName) {
+    MarkerEvents.prototype.genDispatchEvent = function(maybeMapId, eventName, logic, leafletScope, lObject, name, model, layerName) {
         var handle = EventsHelper.prototype
-            .genDispatchEvent.call(this, eventName, logic, leafletScope, lObject, name, model, layerName);
+            .genDispatchEvent.call(this, maybeMapId, eventName, logic, leafletScope, lObject, name, model, layerName);
         return function(e){
             // Broadcast old marker click name for backwards compatibility
             if (eventName === "click") {
@@ -57,11 +57,11 @@ angular.module("leaflet-directive")
         ];
     };
 
-    MarkerEvents.prototype.bindEvents = function (lObject, name, model, leafletScope, layerName) {
-      var logic = EventsHelper.prototype.bindEvents.call(this,lObject, name, model, leafletScope, layerName);
+    MarkerEvents.prototype.bindEvents = function (maybeMapId, lObject, name, model, leafletScope, layerName) {
+      var logic = EventsHelper.prototype.bindEvents.call(this, maybeMapId, lObject, name, model, leafletScope, layerName);
 
       if (Helpers.LabelPlugin.isLoaded() && isDefined(lObject.label)) {
-          lblHelp.genEvents(name, logic, leafletScope, lObject, model, layerName);
+          lblHelp.genEvents(maybeMapId, name, logic, leafletScope, lObject, model, layerName);
       }
     };
 

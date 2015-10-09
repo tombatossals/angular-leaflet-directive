@@ -1,8 +1,7 @@
 angular.module("leaflet-directive")
-.factory('leafletMapEvents', function ($rootScope, $q, leafletLogger, leafletHelpers, leafletEventsHelpers) {
+.factory('leafletMapEvents', function ($rootScope, $q, leafletLogger, leafletHelpers, leafletEventsHelpers, leafletIterators) {
     var isDefined = leafletHelpers.isDefined,
-        fire = leafletEventsHelpers.fire,
-        $log = leafletLogger;
+        fire = leafletEventsHelpers.fire;
 
     var _getAvailableMapEvents = function() {
         return [
@@ -53,15 +52,15 @@ angular.module("leaflet-directive")
         ];
     };
 
-    var _genDispatchMapEvent = function(scope, eventName, logic) {
-        // (nmccready) We should consider passing mapId as an argument or using it from scope
+    var _genDispatchMapEvent = function(scope, eventName, logic, maybeMapId) {
+        if (maybeMapId)
+          maybeMapId = maybeMapId + '.';
         return function(e) {
             // Put together broadcast name
-            // (nmccready) We should consider passing mapId joining mapId to the broadcastName to keep the event unique. Same should be done for all directives so we know what map it comes from.
-            // problem with this is it will cause a minor bump and break backwards compat
-            var broadcastName = 'leafletDirectiveMap.' + eventName;
+            var broadcastName = 'leafletDirectiveMap.' + maybeMapId + eventName;
+            leafletLogger.debug(broadcastName);
             // Safely broadcast the event
-            fire(scope, broadcastName, logic, e, e.target, scope)
+            fire(scope, broadcastName, logic, e, e.target, scope);
         };
     };
 
@@ -81,10 +80,19 @@ angular.module("leaflet-directive")
         }
     };
 
+    var _addEvents =  function(map, mapEvents, contextName, scope, logic){
+        leafletIterators.each(mapEvents, function(eventName) {
+            var context = {};
+            context[contextName] = eventName;
+            map.on(eventName, _genDispatchMapEvent(scope, eventName, logic, map._container.id || ''), context);
+        });
+    };
+
     return {
         getAvailableMapEvents: _getAvailableMapEvents,
         genDispatchMapEvent: _genDispatchMapEvent,
         notifyCenterChangedToBounds: _notifyCenterChangedToBounds,
-        notifyCenterUrlHashChanged: _notifyCenterUrlHashChanged
+        notifyCenterUrlHashChanged: _notifyCenterUrlHashChanged,
+        addEvents: _addEvents
     };
 });

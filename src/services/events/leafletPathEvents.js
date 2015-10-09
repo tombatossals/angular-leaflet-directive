@@ -8,15 +8,24 @@ angular.module("leaflet-directive")
         fire = leafletEventsHelpers.fire,
         $log = leafletLogger;
 
-    var _genDispatchPathEvent = function (eventName, logic, leafletScope, lObject, name, model, layerName) {
-        return function (e) {
-            var broadcastName = 'leafletDirectivePath.' + eventName;
+    /*
+    TODO (nmccready) This EventsHelper needs to be derrived from leafletEventsHelpers to elminate copy and paste code.
+    */
 
+    var _genDispatchPathEvent = function (maybeMapId, eventName, logic, leafletScope, lObject, name, model, layerName) {
+        maybeMapId = maybeMapId || '';
+
+        if (maybeMapId)
+          maybeMapId = '.' + maybeMapId;
+
+        return function (e) {
+            var broadcastName = 'leafletDirectivePath' + maybeMapId + '.' + eventName;
+            $log.debug(broadcastName);
             fire(leafletScope, broadcastName, logic, e, e.target || lObject, model, name, layerName);
         };
     };
 
-    var _bindPathEvents = function (lObject, name, model, leafletScope) {
+    var _bindPathEvents = function (maybeMapId, lObject, name, model, leafletScope) {
         var pathEvents = [],
             i,
             eventName,
@@ -108,11 +117,11 @@ angular.module("leaflet-directive")
 
         for (i = 0; i < pathEvents.length; i++) {
             eventName = pathEvents[i];
-            lObject.on(eventName, _genDispatchPathEvent(eventName, logic, leafletScope, pathEvents, name));
+            lObject.on(eventName, _genDispatchPathEvent(maybeMapId, eventName, logic, leafletScope, pathEvents, name));
         }
 
         if (Helpers.LabelPlugin.isLoaded() && isDefined(lObject.label)) {
-            lblHelp.genEvents(name, logic, leafletScope, lObject, model);
+            lblHelp.genEvents(maybeMapId, name, logic, leafletScope, lObject, model);
         }
     };
 

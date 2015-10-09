@@ -5,14 +5,15 @@
 /* jasmine specs for directives go here */
 
 describe('Directive: leaflet', function() {
-    var $compile = null, $rootScope = null, leafletData = null, leafletHelpers = null;
+    var $compile = null, $rootScope = null, leafletData = null, leafletHelpers = null, leafletLogger = null;
 
     beforeEach(module('leaflet-directive'));
-    beforeEach(inject(function(_$compile_, _$rootScope_, _leafletData_, _leafletHelpers_){
+    beforeEach(inject(function(_$compile_, _$rootScope_, _leafletData_, _leafletHelpers_, _leafletLogger_){
         $compile = _$compile_;
         $rootScope = _$rootScope_;
         leafletData = _leafletData_;
         leafletHelpers = _leafletHelpers_;
+        leafletLogger = _leafletLogger_;
     }));
 
 
@@ -20,7 +21,74 @@ describe('Directive: leaflet', function() {
         $rootScope.$apply();
     }));
 
-    it('should broadcast events from the rootscope when triggered leaflet events',function(){
+    ['', '1'].forEach(function(mapId){
+      it( mapId + ' should broadcast events from the rootscope when triggered leaflet events',function(){
+          var element = mapId? angular.element('<leaflet id="' + mapId + '" events="events"></leaflet>') :angular.element('<leaflet events="events"></leaflet>');
+          element = $compile(element)($rootScope);
+          var scope = element.scope();
+          var check = {};
+          var mapEvents = [
+              'click',
+              //'dblclick',
+              'mousedown',
+              'mouseup',
+              'mouseover',
+              'mouseout',
+              'mousemove',
+              'contextmenu',
+              'focus',
+              'blur',
+              'preclick',
+              'load',
+              'unload',
+              'viewreset',
+              'movestart',
+              'move',
+              //'moveend',
+              'dragstart',
+              'drag',
+              'dragend',
+              'zoomstart',
+              'zoomend',
+              'zoomlevelschange',
+              'resize',
+              'autopanstart',
+              //'layeradd',
+              //'layerremove',
+              'baselayerchange',
+              'overlayadd',
+              'overlayremove',
+              'locationfound',
+              'locationerror',
+              'popupopen',
+              'popupclose'
+          ];
+
+          function setEventTrue(origEventName, eventName) {
+              leafletLogger.debug(eventName + ' called.');
+              check[origEventName] = true;
+          }
+
+          if(mapId)
+            mapId = mapId + '.';
+
+          leafletData.getMap().then(function(map) {
+              mapEvents.forEach(function(origEventName){
+                  var eventName = 'leafletDirectiveMap.' + mapId + origEventName;
+                  // leafletLogger.log(eventName); // Inspect
+                  scope.$on(eventName, function(){
+                     setEventTrue(origEventName, eventName);
+                   });
+                  map.fireEvent([origEventName]);
+                  expect(check[origEventName]).toEqual(true);
+                  check[origEventName] = undefined;
+              });
+          });
+
+        });
+    });
+
+    it('invalid MAPID should NOT broadcast events from the rootscope when triggered leaflet events',function(){
         var element = angular.element('<leaflet events="events"></leaflet>');
         element = $compile(element)($rootScope);
         var scope = element.scope();
@@ -62,22 +130,26 @@ describe('Directive: leaflet', function() {
             'popupclose'
         ];
 
-        function setEventTrue(position) {
-            check[mapEvents[position]] = true;
+        function setEventTrue(origEventName, eventName) {
+            leafletLogger.info(eventName + ' called.');
+            check[origEventName] = true;
         }
 
         leafletData.getMap().then(function(map) {
-            for (var k in mapEvents){
-                var eventName = 'leafletDirectiveMap.' + mapEvents[k];
-                // console.log(eventName); // Inspect
-                scope.$on(eventName, setEventTrue(k));
-                map.fireEvent([mapEvents[k]]);
-                expect(check[mapEvents[k]]).toEqual(true);
-            }
+            mapEvents.forEach(function(origEventName){
+                var eventName = 'leafletDirectiveMap.2.' + origEventName;
+                // leafletLogger.log(eventName); // Inspect
+                scope.$on(eventName, function(){
+                   setEventTrue(origEventName, eventName);
+                 });
+                map.fireEvent([origEventName]);
+                expect(check[origEventName]).not.toEqual(true);
+            });
         });
-    });
 
-    it('should NOT broadcast map events from the rootscope if the event-broadcast option is not an object',function() {
+      });
+
+    xit('should NOT broadcast map events from the rootscope if the event-broadcast option is not an object',function() {
         //TODO: pending until problems resolved, see issue #137 in
         // https://github.com/tombatossals/angular-leaflet-directive
         /*var $scope = $rootScope.$new();
@@ -95,7 +167,7 @@ describe('Directive: leaflet', function() {
         expect(true).toBe(true);
     });
 
-    it('should broadcast map events (backward compatibility) from the rootscope if the event-broadcast does not have a map attribute',function() {
+    xit('should broadcast map events (backward compatibility) from the rootscope if the event-broadcast does not have a map attribute',function() {
         //TODO: pending until problems resolved, see issue #137 in
         // https://github.com/tombatossals/angular-leaflet-directive
         var $scope = $rootScope.$new();
@@ -108,7 +180,7 @@ describe('Directive: leaflet', function() {
         expect(true).toBe(true);
     });
 
-    it('should NOT broadcast map events from the rootscope if the event-broadcast map attribute is not an object',function() {
+    xit('should NOT broadcast map events from the rootscope if the event-broadcast map attribute is not an object',function() {
         //TODO: pending until problems resolved, see issue #137 in
         // https://github.com/tombatossals/angular-leaflet-directive
         var $scope = $rootScope.$new();
@@ -118,7 +190,7 @@ describe('Directive: leaflet', function() {
         expect(true).toBe(true);
     });
 
-    it('should broadcast map events from the rootscope if the event-broadcast map attribute does not have logic defined',function() {
+    xit('should broadcast map events from the rootscope if the event-broadcast map attribute does not have logic defined',function() {
         //TODO: pending until problems resolved, see issue #137 in
         // https://github.com/tombatossals/angular-leaflet-directive
         var $scope = $rootScope.$new();
@@ -130,7 +202,7 @@ describe('Directive: leaflet', function() {
         expect(true).toBe(true);
     });
 
-    it('should NOT broadcast map events from the rootscope if the event-broadcast map attribute has logic defined but is not "emit" or "broadcast"',function() {
+    xit('should NOT broadcast map events from the rootscope if the event-broadcast map attribute has logic defined but is not "emit" or "broadcast"',function() {
         //TODO: pending until problems resolved, see issue #137 in
         // https://github.com/tombatossals/angular-leaflet-directive
         var $scope = $rootScope.$new();
@@ -143,7 +215,7 @@ describe('Directive: leaflet', function() {
         expect(true).toBe(true);
     });
 
-    it('should emit map events from the rootscope if the event-broadcast map attribute has logic defined "emit"',function() {
+    xit('should emit map events from the rootscope if the event-broadcast map attribute has logic defined "emit"',function() {
         //TODO: pending until problems resolved, see issue #137 in
         // https://github.com/tombatossals/angular-leaflet-directive
         var $scope = $rootScope.$new();
@@ -156,7 +228,7 @@ describe('Directive: leaflet', function() {
         expect(true).toBe(true);
     });
 
-    it('should broadcast map events from the rootscope if the event-broadcast map attribute has logic defined as "broadcast"',function() {
+    xit('should broadcast map events from the rootscope if the event-broadcast map attribute has logic defined as "broadcast"',function() {
         //TODO: pending until problems resolved, see issue #137 in
         // https://github.com/tombatossals/angular-leaflet-directive
         var $scope = $rootScope.$new();
@@ -169,7 +241,7 @@ describe('Directive: leaflet', function() {
         expect(true).toBe(true);
     });
 
-    it('should NOT broadcast map events from the rootscope if the event-broadcast map attribute has enabled and disabled defined',function() {
+    xit('should NOT broadcast map events from the rootscope if the event-broadcast map attribute has enabled and disabled defined',function() {
         //TODO: pending until problems resolved, see issue #137 in
         // https://github.com/tombatossals/angular-leaflet-directive
         var $scope = $rootScope.$new();
@@ -183,7 +255,7 @@ describe('Directive: leaflet', function() {
         expect(true).toBe(true);
     });
 
-    it('should NOT broadcast map events from the rootscope if the event-broadcast map attribute does not have enabled and disabled defined',function() {
+    xit('should NOT broadcast map events from the rootscope if the event-broadcast map attribute does not have enabled and disabled defined',function() {
         //TODO: pending until problems resolved, see issue #137 in
         // https://github.com/tombatossals/angular-leaflet-directive
         var $scope = $rootScope.$new();
@@ -195,7 +267,7 @@ describe('Directive: leaflet', function() {
         expect(true).toBe(true);
     });
 
-    it('should NOT broadcast some map events from the rootscope if the event-broadcast map attribute disables them',function() {
+    xit('should NOT broadcast some map events from the rootscope if the event-broadcast map attribute disables them',function() {
         //TODO: pending until problems resolved, see issue #137 in
         // https://github.com/tombatossals/angular-leaflet-directive
         var $scope = $rootScope.$new();
@@ -208,7 +280,7 @@ describe('Directive: leaflet', function() {
         expect(true).toBe(true);
     });
 
-    it('should NOT emit some map events from the rootscope if the event-broadcast map attribute disables them',function() {
+    xit('should NOT emit some map events from the rootscope if the event-broadcast map attribute disables them',function() {
         //TODO: pending until problems resolved, see issue #137 in
         // https://github.com/tombatossals/angular-leaflet-directive
         var $scope = $rootScope.$new();
@@ -221,7 +293,7 @@ describe('Directive: leaflet', function() {
         expect(true).toBe(true);
     });
 
-    it('should broadcast some map events from the rootscope if the event-broadcast map attribute enables them',function() {
+    xit('should broadcast some map events from the rootscope if the event-broadcast map attribute enables them',function() {
         //TODO: pending until problems resolved, see issue #137 in
         // https://github.com/tombatossals/angular-leaflet-directive
         var $scope = $rootScope.$new();
@@ -234,7 +306,7 @@ describe('Directive: leaflet', function() {
         expect(true).toBe(true);
     });
 
-    it('should emit some map events from the rootscope if the event-broadcast map attribute enables them',function() {
+    xit('should emit some map events from the rootscope if the event-broadcast map attribute enables them',function() {
         //TODO: pending until problems resolved, see issue #137 in
         // https://github.com/tombatossals/angular-leaflet-directive
         var $scope = $rootScope.$new();
@@ -247,7 +319,7 @@ describe('Directive: leaflet', function() {
         expect(true).toBe(true);
     });
 
-    it('should NOT broadcast some map events from the rootscope if the event-broadcast map attribute disables them although there is an invalid event name',function() {
+    xit('should NOT broadcast some map events from the rootscope if the event-broadcast map attribute disables them although there is an invalid event name',function() {
         //TODO: pending until problems resolved, see issue #137 in
         // https://github.com/tombatossals/angular-leaflet-directive
         var $scope = $rootScope.$new();
@@ -260,7 +332,7 @@ describe('Directive: leaflet', function() {
         expect(true).toBe(true);
     });
 
-    it('should NOT emit some map events from the rootscope if the event-broadcast map attribute disables them although there is an invalid event name',function() {
+    xit('should NOT emit some map events from the rootscope if the event-broadcast map attribute disables them although there is an invalid event name',function() {
         //TODO: pending until problems resolved, see issue #137 in
         // https://github.com/tombatossals/angular-leaflet-directive
         var $scope = $rootScope.$new();
@@ -273,7 +345,7 @@ describe('Directive: leaflet', function() {
         expect(true).toBe(true);
     });
 
-    it('should broadcast some map events from the rootscope if the event-broadcast map attribute enables them although there is an invalid event name',function() {
+    xit('should broadcast some map events from the rootscope if the event-broadcast map attribute enables them although there is an invalid event name',function() {
         //TODO: pending until problems resolved, see issue #137 in
         // https://github.com/tombatossals/angular-leaflet-directive
         var $scope = $rootScope.$new();
@@ -286,7 +358,7 @@ describe('Directive: leaflet', function() {
         expect(true).toBe(true);
     });
 
-    it('should emit some map events from the rootscope if the event-broadcast map attribute enables them although there is an invalid event name',function() {
+    xit('should emit some map events from the rootscope if the event-broadcast map attribute enables them although there is an invalid event name',function() {
         //TODO: pending until problems resolved, see issue #137 in
         // https://github.com/tombatossals/angular-leaflet-directive
         var $scope = $rootScope.$new();
@@ -299,7 +371,7 @@ describe('Directive: leaflet', function() {
         expect(true).toBe(true);
     });
 
-    it('should broadcast marker events (backward compatibility) from the rootscope if the event-broadcast does not have a marker attribute',function() {
+    xit('should broadcast marker events (backward compatibility) from the rootscope if the event-broadcast does not have a marker attribute',function() {
         //TODO: pending until problems resolved, see issue #137 in
         // https://github.com/tombatossals/angular-leaflet-directive
         var $scope = $rootScope.$new();
@@ -312,7 +384,7 @@ describe('Directive: leaflet', function() {
         expect(true).toBe(true);
     });
 
-    it('should NOT broadcast marker events from the rootscope if the event-broadcast marker attribute is not an object',function() {
+    xit('should NOT broadcast marker events from the rootscope if the event-broadcast marker attribute is not an object',function() {
         //TODO: pending until problems resolved, see issue #137 in
         // https://github.com/tombatossals/angular-leaflet-directive
         var $scope = $rootScope.$new();
@@ -322,7 +394,7 @@ describe('Directive: leaflet', function() {
         expect(true).toBe(true);
     });
 
-    it('should broadcast marker events from the rootscope if the event-broadcast marker attribute does not have logic defined',function() {
+    xit('should broadcast marker events from the rootscope if the event-broadcast marker attribute does not have logic defined',function() {
         //TODO: pending until problems resolved, see issue #137 in
         // https://github.com/tombatossals/angular-leaflet-directive
         var $scope = $rootScope.$new();
@@ -334,7 +406,7 @@ describe('Directive: leaflet', function() {
         expect(true).toBe(true);
     });
 
-    it('should NOT broadcast marker events from the rootscope if the event-broadcast marker attribute has logic defined but is not "emit" or "broadcast"',function() {
+    xit('should NOT broadcast marker events from the rootscope if the event-broadcast marker attribute has logic defined but is not "emit" or "broadcast"',function() {
         //TODO: pending until problems resolved, see issue #137 in
         // https://github.com/tombatossals/angular-leaflet-directive
         var $scope = $rootScope.$new();
@@ -347,7 +419,7 @@ describe('Directive: leaflet', function() {
         expect(true).toBe(true);
     });
 
-    it('should emit marker events from the rootscope if the event-broadcast marker attribute has logic defined "emit"',function() {
+    xit('should emit marker events from the rootscope if the event-broadcast marker attribute has logic defined "emit"',function() {
         //TODO: pending until problems resolved, see issue #137 in
         // https://github.com/tombatossals/angular-leaflet-directive
         var $scope = $rootScope.$new();
@@ -360,7 +432,7 @@ describe('Directive: leaflet', function() {
         expect(true).toBe(true);
     });
 
-    it('should broadcast marker events from the rootscope if the event-broadcast marker attribute has logic defined as "broadcast"',function() {
+    xit('should broadcast marker events from the rootscope if the event-broadcast marker attribute has logic defined as "broadcast"',function() {
         //TODO: pending until problems resolved, see issue #137 in
         // https://github.com/tombatossals/angular-leaflet-directive
         var $scope = $rootScope.$new();
@@ -373,7 +445,7 @@ describe('Directive: leaflet', function() {
         expect(true).toBe(true);
     });
 
-    it('should NOT broadcast marker events from the rootscope if the event-broadcast marker attribute has enabled and disabled defined',function() {
+    xit('should NOT broadcast marker events from the rootscope if the event-broadcast marker attribute has enabled and disabled defined',function() {
         //TODO: pending until problems resolved, see issue #137 in
         // https://github.com/tombatossals/angular-leaflet-directive
         var $scope = $rootScope.$new();
@@ -387,7 +459,7 @@ describe('Directive: leaflet', function() {
         expect(true).toBe(true);
     });
 
-    it('should NOT broadcast marker events from the rootscope if the event-broadcast marker attribute does not have enabled and disabled defined',function() {
+    xit('should NOT broadcast marker events from the rootscope if the event-broadcast marker attribute does not have enabled and disabled defined',function() {
         //TODO: pending until problems resolved, see issue #137 in
         // https://github.com/tombatossals/angular-leaflet-directive
         var $scope = $rootScope.$new();
@@ -399,7 +471,7 @@ describe('Directive: leaflet', function() {
         expect(true).toBe(true);
     });
 
-    it('should NOT broadcast some marker events from the rootscope if the event-broadcast marker attribute disables them',function() {
+    xit('should NOT broadcast some marker events from the rootscope if the event-broadcast marker attribute disables them',function() {
         //TODO: pending until problems resolved, see issue #137 in
         // https://github.com/tombatossals/angular-leaflet-directive
         var $scope = $rootScope.$new();
@@ -412,7 +484,7 @@ describe('Directive: leaflet', function() {
         expect(true).toBe(true);
     });
 
-    it('should NOT emit some marker events from the rootscope if the event-broadcast marker attribute disables them',function() {
+    xit('should NOT emit some marker events from the rootscope if the event-broadcast marker attribute disables them',function() {
         //TODO: pending until problems resolved, see issue #137 in
         // https://github.com/tombatossals/angular-leaflet-directive
         var $scope = $rootScope.$new();
@@ -425,7 +497,7 @@ describe('Directive: leaflet', function() {
         expect(true).toBe(true);
     });
 
-    it('should broadcast some marker events from the rootscope if the event-broadcast marker attribute enables them',function() {
+    xit('should broadcast some marker events from the rootscope if the event-broadcast marker attribute enables them',function() {
         //TODO: pending until problems resolved, see issue #137 in
         // https://github.com/tombatossals/angular-leaflet-directive
         var $scope = $rootScope.$new();
@@ -438,7 +510,7 @@ describe('Directive: leaflet', function() {
         expect(true).toBe(true);
     });
 
-    it('should emit some marker events from the rootscope if the event-broadcast marker attribute enables them',function() {
+    xit('should emit some marker events from the rootscope if the event-broadcast marker attribute enables them',function() {
         //TODO: pending until problems resolved, see issue #137 in
         // https://github.com/tombatossals/angular-leaflet-directive
         var $scope = $rootScope.$new();
@@ -451,7 +523,7 @@ describe('Directive: leaflet', function() {
         expect(true).toBe(true);
     });
 
-    it('should NOT broadcast some marker events from the rootscope if the event-broadcast marker attribute disables them although there is an invalid event name',function() {
+    xit('should NOT broadcast some marker events from the rootscope if the event-broadcast marker attribute disables them although there is an invalid event name',function() {
         //TODO: pending until problems resolved, see issue #137 in
         // https://github.com/tombatossals/angular-leaflet-directive
         var $scope = $rootScope.$new();
@@ -464,7 +536,7 @@ describe('Directive: leaflet', function() {
         expect(true).toBe(true);
     });
 
-    it('should NOT emit some marker events from the rootscope if the event-broadcast marker attribute disables them although there is an invalid event name',function() {
+    xit('should NOT emit some marker events from the rootscope if the event-broadcast marker attribute disables them although there is an invalid event name',function() {
         //TODO: pending until problems resolved, see issue #137 in
         // https://github.com/tombatossals/angular-leaflet-directive
         var $scope = $rootScope.$new();
@@ -477,7 +549,7 @@ describe('Directive: leaflet', function() {
         expect(true).toBe(true);
     });
 
-    it('should broadcast some marker events from the rootscope if the event-broadcast marker attribute enables them although there is an invalid event name',function() {
+    xit('should broadcast some marker events from the rootscope if the event-broadcast marker attribute enables them although there is an invalid event name',function() {
         //TODO: pending until problems resolved, see issue #137 in
         // https://github.com/tombatossals/angular-leaflet-directive
         var $scope = $rootScope.$new();
@@ -490,7 +562,7 @@ describe('Directive: leaflet', function() {
         expect(true).toBe(true);
     });
 
-    it('should emit some marker events from the rootscope if the event-broadcast marker attribute enables them although there is an invalid event name',function() {
+    xit('should emit some marker events from the rootscope if the event-broadcast marker attribute enables them although there is an invalid event name',function() {
         //TODO: pending until problems resolved, see issue #137 in
         // https://github.com/tombatossals/angular-leaflet-directive
         var $scope = $rootScope.$new();
@@ -507,7 +579,7 @@ describe('Directive: leaflet', function() {
     // ***************************************************************************
     //
 
-    it('should broadcast path events (backward compatibility) from the rootscope if the event-broadcast does not have a path attribute',function() {
+    xit('should broadcast path events (backward compatibility) from the rootscope if the event-broadcast does not have a path attribute',function() {
         //TODO: pending until problems resolved, see issue #137 in
         // https://github.com/tombatossals/angular-leaflet-directive
         var $scope = $rootScope.$new();
@@ -520,7 +592,7 @@ describe('Directive: leaflet', function() {
         expect(true).toBe(true);
     });
 
-    it('should NOT broadcast path events from the rootscope if the event-broadcast path attribute is not an object',function() {
+    xit('should NOT broadcast path events from the rootscope if the event-broadcast path attribute is not an object',function() {
         //TODO: pending until problems resolved, see issue #137 in
         // https://github.com/tombatossals/angular-leaflet-directive
         var $scope = $rootScope.$new();
@@ -530,7 +602,7 @@ describe('Directive: leaflet', function() {
         expect(true).toBe(true);
     });
 
-    it('should broadcast path events from the rootscope if the event-broadcast path attribute does not have logic defined',function() {
+    xit('should broadcast path events from the rootscope if the event-broadcast path attribute does not have logic defined',function() {
         //TODO: pending until problems resolved, see issue #137 in
         // https://github.com/tombatossals/angular-leaflet-directive
         var $scope = $rootScope.$new();
@@ -542,7 +614,7 @@ describe('Directive: leaflet', function() {
         expect(true).toBe(true);
     });
 
-    it('should NOT broadcast path events from the rootscope if the event-broadcast path attribute has logic defined but is not "emit" or "broadcast"',function() {
+    xit('should NOT broadcast path events from the rootscope if the event-broadcast path attribute has logic defined but is not "emit" or "broadcast"',function() {
         //TODO: pending until problems resolved, see issue #137 in
         // https://github.com/tombatossals/angular-leaflet-directive
         var $scope = $rootScope.$new();
@@ -555,7 +627,7 @@ describe('Directive: leaflet', function() {
         expect(true).toBe(true);
     });
 
-    it('should emit path events from the rootscope if the event-broadcast path attribute has logic defined "emit"',function() {
+    xit('should emit path events from the rootscope if the event-broadcast path attribute has logic defined "emit"',function() {
         //TODO: pending until problems resolved, see issue #137 in
         // https://github.com/tombatossals/angular-leaflet-directive
         var $scope = $rootScope.$new();
@@ -568,7 +640,7 @@ describe('Directive: leaflet', function() {
         expect(true).toBe(true);
     });
 
-    it('should broadcast path events from the rootscope if the event-broadcast path attribute has logic defined as "broadcast"',function() {
+    xit('should broadcast path events from the rootscope if the event-broadcast path attribute has logic defined as "broadcast"',function() {
         //TODO: pending until problems resolved, see issue #137 in
         // https://github.com/tombatossals/angular-leaflet-directive
         var $scope = $rootScope.$new();
@@ -581,7 +653,7 @@ describe('Directive: leaflet', function() {
         expect(true).toBe(true);
     });
 
-    it('should NOT broadcast path events from the rootscope if the event-broadcast path attribute has enabled and disabled defined',function() {
+    xit('should NOT broadcast path events from the rootscope if the event-broadcast path attribute has enabled and disabled defined',function() {
         //TODO: pending until problems resolved, see issue #137 in
         // https://github.com/tombatossals/angular-leaflet-directive
         var $scope = $rootScope.$new();
@@ -595,7 +667,7 @@ describe('Directive: leaflet', function() {
         expect(true).toBe(true);
     });
 
-    it('should NOT broadcast path events from the rootscope if the event-broadcast path attribute does not have enabled and disabled defined',function() {
+    xit('should NOT broadcast path events from the rootscope if the event-broadcast path attribute does not have enabled and disabled defined',function() {
         //TODO: pending until problems resolved, see issue #137 in
         // https://github.com/tombatossals/angular-leaflet-directive
         var $scope = $rootScope.$new();
@@ -607,7 +679,7 @@ describe('Directive: leaflet', function() {
         expect(true).toBe(true);
     });
 
-    it('should NOT broadcast some path events from the rootscope if the event-broadcast path attribute disables them',function() {
+    xit('should NOT broadcast some path events from the rootscope if the event-broadcast path attribute disables them',function() {
         //TODO: pending until problems resolved, see issue #137 in
         // https://github.com/tombatossals/angular-leaflet-directive
         var $scope = $rootScope.$new();
@@ -620,7 +692,7 @@ describe('Directive: leaflet', function() {
         expect(true).toBe(true);
     });
 
-    it('should NOT emit some path events from the rootscope if the event-broadcast path attribute disables them',function() {
+    xit('should NOT emit some path events from the rootscope if the event-broadcast path attribute disables them',function() {
         //TODO: pending until problems resolved, see issue #137 in
         // https://github.com/tombatossals/angular-leaflet-directive
         var $scope = $rootScope.$new();
@@ -633,7 +705,7 @@ describe('Directive: leaflet', function() {
         expect(true).toBe(true);
     });
 
-    it('should broadcast some path events from the rootscope if the event-broadcast path attribute enables them',function() {
+    xit('should broadcast some path events from the rootscope if the event-broadcast path attribute enables them',function() {
         //TODO: pending until problems resolved, see issue #137 in
         // https://github.com/tombatossals/angular-leaflet-directive
         var $scope = $rootScope.$new();
@@ -646,7 +718,7 @@ describe('Directive: leaflet', function() {
         expect(true).toBe(true);
     });
 
-    it('should emit some path events from the rootscope if the event-broadcast path attribute enables them',function() {
+    xit('should emit some path events from the rootscope if the event-broadcast path attribute enables them',function() {
         //TODO: pending until problems resolved, see issue #137 in
         // https://github.com/tombatossals/angular-leaflet-directive
         var $scope = $rootScope.$new();
@@ -659,7 +731,7 @@ describe('Directive: leaflet', function() {
         expect(true).toBe(true);
     });
 
-    it('should NOT broadcast some path events from the rootscope if the event-broadcast path attribute disables them although there is an invalid event name',function() {
+    xit('should NOT broadcast some path events from the rootscope if the event-broadcast path attribute disables them although there is an invalid event name',function() {
         //TODO: pending until problems resolved, see issue #137 in
         // https://github.com/tombatossals/angular-leaflet-directive
         var $scope = $rootScope.$new();
@@ -672,7 +744,7 @@ describe('Directive: leaflet', function() {
         expect(true).toBe(true);
     });
 
-    it('should NOT emit some path events from the rootscope if the event-broadcast path attribute disables them although there is an invalid event name',function() {
+    xit('should NOT emit some path events from the rootscope if the event-broadcast path attribute disables them although there is an invalid event name',function() {
         //TODO: pending until problems resolved, see issue #137 in
         // https://github.com/tombatossals/angular-leaflet-directive
         var $scope = $rootScope.$new();
@@ -685,7 +757,7 @@ describe('Directive: leaflet', function() {
         expect(true).toBe(true);
     });
 
-    it('should broadcast some path events from the rootscope if the event-broadcast path attribute enables them although there is an invalid event name',function() {
+    xit('should broadcast some path events from the rootscope if the event-broadcast path attribute enables them although there is an invalid event name',function() {
         //TODO: pending until problems resolved, see issue #137 in
         // https://github.com/tombatossals/angular-leaflet-directive
         var $scope = $rootScope.$new();
@@ -698,7 +770,7 @@ describe('Directive: leaflet', function() {
         expect(true).toBe(true);
     });
 
-    it('should emit some path events from the rootscope if the event-broadcast path attribute enables them although there is an invalid event name',function() {
+    xit('should emit some path events from the rootscope if the event-broadcast path attribute enables them although there is an invalid event name',function() {
         //TODO: pending until problems resolved, see issue #137 in
         // https://github.com/tombatossals/angular-leaflet-directive
         var $scope = $rootScope.$new();
