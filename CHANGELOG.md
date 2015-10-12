@@ -3,7 +3,7 @@
 
 #### Breaking changes
 
-* **events:** refactor(rootScope map events): If the id attribute is set for the leaflet directive then the id will be used in the rootScope leaflet events. Example: `<leaflet id="1" >`, Will fire  leafletDirectiveMap.1.click. ([d22b3f0](https://github.com/tombatossals/angular-leaflet-directive/commit/d22b3f0))
+* **events:** refactor(rootScope map events): If the id attribute is set for the leaflet directive then the id will be used in the rootScope leaflet events. Example: `<leaflet id="firstMap">`, Will fire  `leafletDirectiveMap.firstMap.click` ([d22b3f0](https://github.com/tombatossals/angular-leaflet-directive/commit/d22b3f0))
 
 #### Bug Fixes
 
