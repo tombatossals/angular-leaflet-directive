@@ -1,5 +1,5 @@
 angular.module("leaflet-directive", ['nemLogging']).directive('leaflet',
-    function ($q, leafletData, leafletMapDefaults, leafletHelpers, leafletEvents) {
+    function ($q, leafletData, leafletMapDefaults, leafletHelpers, leafletMapEvents) {
     return {
         restrict: "EA",
         replace: true,
@@ -36,9 +36,9 @@ angular.module("leaflet-directive", ['nemLogging']).directive('leaflet',
 
         link: function(scope, element, attrs, ctrl) {
             var isDefined = leafletHelpers.isDefined,
-                defaults = leafletMapDefaults.setDefaults(scope.defaults, attrs.id),
-                mapEvents = leafletEvents.getAvailableMapEvents(),
-                addEvents = leafletEvents.addEvents;
+                defaults  = leafletMapDefaults.setDefaults(scope.defaults, attrs.id),
+                mapEvents = leafletMapEvents.getAvailableMapEvents(),
+                addEvents = leafletMapEvents.addEvents;
 
             scope.mapId =  attrs.id;
             leafletData.setDirectiveControls({}, attrs.id);

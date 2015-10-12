@@ -434,6 +434,18 @@ angular.module("leaflet-directive").service('leafletHelpers', function ($q, $log
                 }
             }
         },
+        LeafletProviderPlugin: {
+            isLoaded: function() {
+                return angular.isDefined(L.TileLayer.Provider);
+            },
+            is: function(layer) {
+                if (this.isLoaded()) {
+                    return layer instanceof L.TileLayer.Provider;
+                } else {
+                    return false;
+                }
+            }
+        },          
         ChinaLayerPlugin: {
             isLoaded: function() {
                 return angular.isDefined(L.tileLayer.chinaProvider);

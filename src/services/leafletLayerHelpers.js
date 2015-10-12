@@ -186,6 +186,16 @@ angular.module("leaflet-directive")
                 return new L.Google(type, params.options);
             }
         },
+        here: {
+            mustHaveUrl: false,
+            createLayer: function(params) {
+                var provider = params.provider || 'HERE.terrainDay';
+                if (!Helpers.LeafletProviderPlugin.isLoaded()) {
+                    return;
+                }
+                return new L.TileLayer.Provider(provider, params.options);
+            }
+        },            
         china:{
             mustHaveUrl:false,
             createLayer:function(params){

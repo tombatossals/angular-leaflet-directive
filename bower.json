@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "angular": "1.x",
-    "angular-simple-logger": "~0.0.1",
+    "angular-simple-logger": "~0.1.4",
     "leaflet": "http://cdn.leafletjs.com/downloads/leaflet-1.0.0-b1.zip"
   },
   "devDependencies": {
@@ -35,6 +35,7 @@
     "leaflet-tilelayer-geojson": "*",
     "Leaflet.utfgrid": "danzel/Leaflet.utfgrid",
     "Leaflet.awesome-markers": "*",
+    "leaflet-providers": "~1.1.5",
     "leaflet.vector-markers": "~0.0.3",
     "webgl-heatmap-leaflet": "*",
     "leaflet-plugins": "*",
