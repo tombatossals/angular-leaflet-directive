@@ -1,3 +1,12 @@
+<a name"0.9.8"></a>
+### 0.9.8 (2015-10-12)
+
+
+#### Bug Fixes
+
+* **build:** Added "core" to .gitignore to avoid more "core" files inside distributed version ([2ff48c3e](https://github.com/tombatossals/angular-leaflet-directive/commit/2ff48c3e))
+
+
 <a name"0.8.8"></a>
 ### 0.8.8 (2015-09-04)
 
