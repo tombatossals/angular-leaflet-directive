@@ -1,11 +1,18 @@
-<a name"0.9.8"></a>
-### 0.9.8 (2015-10-12)
+<a name"0.9.0"></a>
+### 0.9.0 (2015-10-12)
 
+#### Breaking changes
+
+* **events:** refactor(rootScope map events): If the id attribute is set for the leaflet directive then the id will be used in the rootScope leaflet events. Example: `<leaflet id="1" >`, Will fire  leafletDirectiveMap.1.click. ([d22b3f0](https://github.com/tombatossals/angular-leaflet-directive/commit/d22b3f0))
 
 #### Bug Fixes
 
 * **build:** Added "core" to .gitignore to avoid more "core" files inside distributed version ([2ff48c3e](https://github.com/tombatossals/angular-leaflet-directive/commit/2ff48c3e))
 
+#### Features
+
+* **Leaflet.vector-markers:** Add support for Leaflet plugin 'Leaflet.vector-markers' ([eb386a1](https://github.com/tombatossals/angular-leaflet-directive/commit/eb386a1))
+* **Nokia Maps:** Added Nokia here maps. ([83b71ef](https://github.com/tombatossals/angular-leaflet-directive/commit/83b71ef))
 
 <a name"0.8.8"></a>
 ### 0.8.8 (2015-09-04)
