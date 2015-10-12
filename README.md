@@ -11,7 +11,7 @@ Library. This software aims to easily embed maps managed by Leaflet on your proj
 [![Dependencies](https://david-dm.org/tombatossals/angular-leaflet-directive/dev-status.svg)](https://david-dm.org/tombatossals/angular-leaflet-directive) [![Coverage
 Status](https://coveralls.io/repos/tombatossals/angular-leaflet-directive/badge.png?branch=master)](http://tombatossals.github.io/angular-leaflet-directive/coverage/PhantomJS%201.9.7%20%28Linux%29/lcov-report/dist/angular-leaflet-directive.js.html)
 
-## [realtymaps](http://github.com/realtymaps/angular-leaflet-directive)
+## [realtymaps](http://github.com/realtymaps/angular-leaflet-directive?branch=master)
 [![Build Status](https://travis-ci.org/realtymaps/angular-leaflet-directive.png)](https://travis-ci.org/realtymaps/angular-leaflet-directive) [![Dependencies](https://david-dm.org/realtymaps/angular-leaflet-directive.svg)](https://david-dm.org/realtymaps/angular-leaflet-directive)&nbsp;
 [![Dependencies](https://david-dm.org/realtymaps/angular-leaflet-directive/dev-status.svg)](https://david-dm.org/realtymaps/angular-leaflet-directive) [![Coverage
 Status](https://coveralls.io/repos/realtymaps/angular-leaflet-directive/badge.png?branch=master)](http://realtymaps.github.io/angular-leaflet-directive/coverage/PhantomJS%201.9.7%20%28Linux%29/lcov-report/dist/angular-leaflet-directive.js.html)
