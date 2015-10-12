@@ -1,5 +1,5 @@
 /*!
-*  angular-leaflet-directive 0.8.8 2015-10-09
+*  angular-leaflet-directive 0.8.8 2015-10-12
 *  angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps
 *  git: https://github.com/tombatossals/angular-leaflet-directive
 */
@@ -1038,6 +1038,18 @@ angular.module("leaflet-directive").service('leafletHelpers', function ($q, $log
                 }
             }
         },
+        LeafletProviderPlugin: {
+            isLoaded: function() {
+                return angular.isDefined(L.TileLayer.Provider);
+            },
+            is: function(layer) {
+                if (this.isLoaded()) {
+                    return layer instanceof L.TileLayer.Provider;
+                } else {
+                    return false;
+                }
+            }
+        },          
         ChinaLayerPlugin: {
             isLoaded: function() {
                 return angular.isDefined(L.tileLayer.chinaProvider);
@@ -1629,6 +1641,16 @@ angular.module("leaflet-directive")
                 return new L.Google(type, params.options);
             }
         },
+        here: {
+            mustHaveUrl: false,
+            createLayer: function(params) {
+                var provider = params.provider || 'HERE.terrainDay';
+                if (!Helpers.LeafletProviderPlugin.isLoaded()) {
+                    return;
+                }
+                return new L.TileLayer.Provider(provider, params.options);
+            }
+        },            
         china:{
             mustHaveUrl:false,
             createLayer:function(params){
