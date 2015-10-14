@@ -140,7 +140,7 @@ angular.module("leaflet-directive").directive('markers',
                 leafletMarkerEvents.bindEvents(mapId, marker, pathToMarker, model, leafletScope, layerName);
             }
             else {
-                var oldModel = isDefined(oldModel)? oldModels[newName] : undefined;
+                var oldModel = isDefined(oldModels)? oldModels[newName] : undefined;
                 updateMarker(model, oldModel, maybeLMarker, pathToMarker, leafletScope, layers, map);
             }
         }
@@ -231,7 +231,7 @@ angular.module("leaflet-directive").directive('markers',
                     var _clean = function(models, oldModels){
                         if(isNested) {
                             $it.each(models, function(markerToMaybeDel, layerName) {
-                                var oldModel = isDefined(oldModel)? oldModels[layerName] : undefined;
+                                var oldModel = isDefined(oldModels)? oldModels[layerName] : undefined;
                                 _destroy(markerToMaybeDel, oldModel, leafletMarkers[layerName], map, layers);
                             });
                             return;
@@ -244,7 +244,7 @@ angular.module("leaflet-directive").directive('markers',
                         var skips = null;
                         if(isNested) {
                             $it.each(models, function(markersToAdd, layerName) {
-                                var oldModel = isDefined(oldModel)? oldModels[layerName] : undefined;
+                                var oldModel = isDefined(oldModels)? oldModels[layerName] : undefined;
                                 skips = _getNewModelsToSkipp(models[layerName], oldModel, leafletMarkers[layerName]);
                                 _addMarkers(attrs.id, markersToAdd, oldModels, map, layers, leafletMarkers, leafletScope,
                                     watchOptions, layerName, skips);
