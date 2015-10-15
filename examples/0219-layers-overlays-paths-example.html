@@ -3,7 +3,7 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="../bower_components/angular/angular.min.js"></script>
-    <script src="../bower_components/leaflet-dist/leaflet.js"></script>
+    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
     <script src="../bower_components/angular-simple-logger/dist/angular-simple-logger.js"></script>
     <script src="../dist/angular-leaflet-directive_dev_mapped.js"></script>
     <link rel="stylesheet" href="../bower_components/leaflet-dist/leaflet.css" />
@@ -122,7 +122,7 @@
                             [ markers.London, markers.Lincoln ],
                             [ markers.Manchester, markers.Worcester]
                         ],
-                        type: 'multiPolyline',
+                        type: 'polyline',
                         layer: 'lines'
 
                     },
@@ -156,7 +156,7 @@
                             [ markers.London, markers.Worcester, markers.Northhampton ],
                             [ markers.Manchester, markers.Lincoln, markers.York ]
                         ],
-                        type: 'multiPolygon',
+                        type: 'polygon',
                         layer: 'shapes'
                     },
                     r1: {

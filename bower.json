@@ -14,12 +14,12 @@
     "dist/angular-leaflet-directive.js"
   ],
   "resolutions": {
-    "leaflet": "http://cdn.leafletjs.com/downloads/leaflet-1.0.0-b1.zip"
+    "leaflet": "1.0.x"
   },
   "dependencies": {
     "angular": "1.x",
     "angular-simple-logger": "~0.1.4",
-    "leaflet": "http://cdn.leafletjs.com/downloads/leaflet-1.0.0-b1.zip"
+    "leaflet": "1.0.x"
   },
   "devDependencies": {
     "jquery": "*",

@@ -53,7 +53,7 @@ describe("Directive: leaflet: layers.overlays", function () {
                             { lat: 1.02, lng: 3.04 }
                         ]
                     ],
-                    type: 'multiPolyline',
+                    type: 'polyline',
                     layer: 'lines'
                 }
             }
@@ -113,7 +113,7 @@ describe("Directive: leaflet: layers.overlays", function () {
                             { lat: 1.02, lng: 3.04 }
                         ]
                     ],
-                    type: 'multiPolyline',
+                    type: 'polyline',
                     layer: 'lines'
                 }
             }
@@ -172,7 +172,7 @@ describe("Directive: leaflet: layers.overlays", function () {
                             { lat: 1.02, lng: 3.04 }
                         ]
                     ],
-                    type: 'multiPolyline',
+                    type: 'polyline',
                     layer: 'shapes'
                 }
             }

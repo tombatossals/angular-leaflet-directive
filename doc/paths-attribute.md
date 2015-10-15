@@ -25,9 +25,7 @@ Types of paths
 We can define these types of paths:
 
 * polyline.
-* multiPolyline.
 * polygon.
-* multiPolygon.
 * rectangle.
 * circle.
 * circleMarker.

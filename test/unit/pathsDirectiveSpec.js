@@ -119,7 +119,7 @@ describe('Directive: leaflet', function() {
                             { lat: 1.02, lng: 3.04 }
                         ]
                     ],
-                    type: 'multiPolyline'
+                    type: 'polyline'
                 }
             }
         });
@@ -156,14 +156,15 @@ describe('Directive: leaflet', function() {
         leafletData.getPaths().then(function(paths) {
             var polygon = paths.p1;
             latlngs = polygon.getLatLngs();
-            expect(latlngs[0].lat).toBeCloseTo(0.966);
-            expect(latlngs[0].lng).toBeCloseTo(2.02);
-            expect(latlngs[1].lat).toBeCloseTo(2.02);
-            expect(latlngs[1].lng).toBeCloseTo(4.04);
-            expect(latlngs[2].lat).toBeCloseTo(0.466);
-            expect(latlngs[2].lng).toBeCloseTo(1.02);
-            expect(latlngs[3].lat).toBeCloseTo(1.02);
-            expect(latlngs[3].lng).toBeCloseTo(3.04);
+            expect(latlngs.length).toEqual(1);
+            expect(latlngs[0][0].lat).toBeCloseTo(0.966);
+            expect(latlngs[0][0].lng).toBeCloseTo(2.02);
+            expect(latlngs[0][1].lat).toBeCloseTo(2.02);
+            expect(latlngs[0][1].lng).toBeCloseTo(4.04);
+            expect(latlngs[0][2].lat).toBeCloseTo(0.466);
+            expect(latlngs[0][2].lng).toBeCloseTo(1.02);
+            expect(latlngs[0][3].lat).toBeCloseTo(1.02);
+            expect(latlngs[0][3].lng).toBeCloseTo(3.04);
         });
     });
 
@@ -181,7 +182,7 @@ describe('Directive: leaflet', function() {
             { lat: 1.466, lng: 2.02 },
             { lat: 2.02, lng: 4.04 }
         ];
-        angular.extend(scope, { paths : { p1: { latlngs : [ latlngs1, latlngs2 ], type: 'multiPolygon' }}});
+        angular.extend(scope, { paths : { p1: { latlngs : [ latlngs1, latlngs2 ], type: 'polygon' }}});
         var element = angular.element('<leaflet paths="paths"></leaflet>');
         element = $compile(element)(scope);
         scope.$digest();
@@ -365,8 +366,8 @@ describe('Directive: leaflet', function() {
         scope.$digest();
         leafletData.getPaths().then(function(paths) {
             var latlngs = paths.p1.getLatLngs();
-            expect(latlngs[0].lat).toBeCloseTo(0.97);
-            expect(latlngs[0].lng).toBeCloseTo(2.00);
+            expect(latlngs[0][0].lat).toBeCloseTo(0.97);
+            expect(latlngs[0][0].lng).toBeCloseTo(2.00);
         });
     });
 

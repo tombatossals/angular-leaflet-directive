@@ -5,7 +5,7 @@
     <script src="../bower_components/angular/angular.min.js"></script>
     <script src="../bower_components/leaflet/dist/leaflet.js"></script>
   <script src="../bower_components/angular-simple-logger/dist/angular-simple-logger.js"></script>
-    <script src="../dist/angular-leaflet-directive.min.js"></script>
+    <script src="../dist/angular-leaflet-directive.js"></script>
     <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
     <script>
         var app = angular.module("demoapp", ["leaflet-directive"]);
@@ -48,7 +48,7 @@
                     latlngs: [ europeCapitals.London, europeCapitals.Madrid, europeCapitals.Rome ]
                 },
                 multiPolyline: {
-                    type: "multiPolyline",
+                    type: "polyline",
                     latlngs: [
                         [ europeCapitals.London, europeCapitals.Lisbon ],
                         [ europeCapitals.Paris, europeCapitals.Madrid ],
@@ -60,7 +60,7 @@
                    latlngs: [ europeCapitals.London, europeCapitals.Lisbon , europeCapitals.Madrid, europeCapitals.Paris ]
                 },
                 multiPolygon: {
-                    type: "multiPolygon",
+                    type: "polygon",
                     latlngs: [
                                 [ europeCapitals.London, europeCapitals.Lisbon , europeCapitals.Madrid, europeCapitals.Paris ],
                                 [ europeCapitals.Berlin, europeCapitals.Rome, europeCapitals.Brussels ]

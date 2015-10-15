@@ -4,7 +4,7 @@ angular.module("leaflet-directive").factory('leafletPathsHelpers', function ($ro
         isNumber = leafletHelpers.isNumber,
         isValidPoint = leafletHelpers.isValidPoint,
         $log = leafletLogger;
-        
+
     var availableOptions = [
         // Path options
         'stroke', 'weight', 'color', 'opacity',
@@ -16,11 +16,17 @@ angular.module("leaflet-directive").factory('leafletPathsHelpers', function ($ro
         'smoothFactor', 'noClip'
     ];
     function _convertToLeafletLatLngs(latlngs) {
-        return latlngs.filter(function(latlng) {
+        var latlngsFiltered = latlngs.filter(function(latlng) {
             return isValidPoint(latlng);
-        }).map(function (latlng) {
-            return _convertToLeafletLatLng(latlng);
         });
+        var flat = latlngsFiltered.length > 0 || latlngs.length === 0;
+        if(flat) {
+            return latlngsFiltered.map(function (latlng) {
+                return _convertToLeafletLatLng(latlng);
+            });
+        } else {
+            return _convertToLeafletMultiLatLngs(latlngs);
+        }
     }
 
     function _convertToLeafletLatLng(latlng) {
@@ -70,6 +76,14 @@ angular.module("leaflet-directive").factory('leafletPathsHelpers', function ($ro
         for (var i = 0; i < latlngs.length; i++) {
             var point = latlngs[i];
             if (!isValidPoint(point)) {
+                var line = point;
+                if(isArray(line)) {
+                    if(!_isValidPolyline(line)) {
+                        return false;
+                    } else {
+                        continue;
+                    }
+                }
                 return false;
             }
         }
@@ -91,6 +105,7 @@ angular.module("leaflet-directive").factory('leafletPathsHelpers', function ($ro
                 return;
             }
         },
+        /*
         multiPolyline: {
             isValid: function(pathData) {
                 var latlngs = pathData.latlngs;
@@ -115,7 +130,7 @@ angular.module("leaflet-directive").factory('leafletPathsHelpers', function ($ro
                 _updatePathOptions(path, data);
                 return;
             }
-        } ,
+        },*/
         polygon: {
             isValid: function(pathData) {
                 var latlngs = pathData.latlngs;
@@ -125,11 +140,13 @@ angular.module("leaflet-directive").factory('leafletPathsHelpers', function ($ro
                 return new L.Polygon([], options);
             },
             setPath: function(path, data) {
+                $log.debug('Polygon latlngs', _convertToLeafletLatLngs(data.latlngs));
                 path.setLatLngs(_convertToLeafletLatLngs(data.latlngs));
                 _updatePathOptions(path, data);
                 return;
             }
         },
+        /*
         multiPolygon: {
             isValid: function(pathData) {
                 var latlngs = pathData.latlngs;
@@ -156,6 +173,7 @@ angular.module("leaflet-directive").factory('leafletPathsHelpers', function ($ro
                 return;
             }
         },
+        */
         rectangle: {
             isValid: function(pathData) {
                 var latlngs = pathData.latlngs;
