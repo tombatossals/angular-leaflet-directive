@@ -329,6 +329,10 @@ angular.module("leaflet-directive").service('leafletMarkersHelpers', function ($
                 marker.unbindPopup();
                 if (isString(markerData.message)) {
                     marker.bindPopup(markerData.message, markerData.popupOptions);
+                    // if marker has been already focused, reopen popup
+                    if (map.hasLayer(marker) && markerData.focus === true) {
+                        marker.openPopup();
+                    }
                 }
             }
 
