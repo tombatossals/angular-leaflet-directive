@@ -296,14 +296,14 @@ var app = angular.module('webapp');
         });
         app.controller('BasicDynamicAddRemoveMapExample', [ '$scope', 'leafletData', function($scope, leafletData) {
         } ]);
-        app.controller("BasicEventsController", [ "$scope", "leafletEvents", function($scope, leafletEvents) {
+        app.controller("BasicEventsController", [ "$scope", "leafletMapEvents", function($scope, leafletMapEvents) {
             $scope.center  = {
                 lat: 51.505,
                 lng: -0.09,
                 zoom: 8
             };
             $scope.eventDetected = "No events yet...";
-            var mapEvents = leafletEvents.getAvailableMapEvents();
+            var mapEvents = leafletMapEvents.getAvailableMapEvents();
             for (var k in mapEvents){
                 var eventName = 'leafletDirectiveMap.' + mapEvents[k];
                 $scope.$on(eventName, function(event){
@@ -803,9 +803,10 @@ var app = angular.module('webapp');
                     }
                 },
                 controls: {
-                    fullscreen: {
-                        position: 'topleft'
-                    }
+                    custom: new L.Control.Fullscreen()
+                }
+           });
+       }]);
                 }
            });
        }]);
@@ -2094,6 +2095,7 @@ var app = angular.module('webapp');
                     name:'World Country Boundaries',
                     type: 'geoJSONShape',
                     data: data,
+                    visible: true,
                     layerOptions: {
                         style: {
                                 color: '#00D',
@@ -2112,6 +2114,7 @@ var app = angular.module('webapp');
                             name:'Major Cities (Awesome Markers)',
                             type: 'geoJSONAwesomeMarker',
                             data: data,
+                            visible: true,
                             icon: {
                                 icon: 'heart',
                                 markerColor: 'red',
@@ -3264,7 +3267,7 @@ var app = angular.module('webapp');
                 });
             });
         } ]);
-        app.controller("MarkersEventsController", [ "$scope", "leafletEvents", function($scope, leafletEvents) {
+        app.controller("MarkersEventsController", [ "$scope", "leafletMarkerEvents", function($scope, leafletMarkerEvents) {
             $scope.center = {
                 lat: 51.505,
                 lng: -0.09,
@@ -3281,14 +3284,18 @@ var app = angular.module('webapp');
             }
             $scope.events = {
                 markers: {
-                    enable: leafletEvents.getAvailableMarkerEvents(),
+                    enable: leafletMarkerEvents.getAvailableEvents(),
                 }
             };
             $scope.eventDetected = "No events yet...";
-            var markerEvents = leafletEvents.getAvailableMarkerEvents();
+            var markerEvents = leafletMarkerEvents.getAvailableEvents();
             for (var k in markerEvents){
                 var eventName = 'leafletDirectiveMarker.' + markerEvents[k];
                 $scope.$on(eventName, function(event, args){
+                    $scope.eventDetected = event.name;
+                });
+            }
+        }]); args){
                     $scope.eventDetected = event.name;
                 });
             }
@@ -3410,6 +3417,11 @@ var app = angular.module('webapp');
                 },
                 awesomeMarkerIcon: {
                     type: 'awesomeMarker',
+                    icon: 'tag',
+                    markerColor: 'red'
+                },
+                vectorMarkerIcon: {
+                    type: 'vectorMarker',
                     icon: 'tag',
                     markerColor: 'red'
                 },
@@ -3809,7 +3821,7 @@ var app = angular.module('webapp');
                     });
                 });
             });
-        }]);
+        }]);        }]);
         app.controller("MixedLayersOverlaysGeoJSONController", ["$scope", function($scope){
             angular.extend($scope, {
                 sanfrancisco: {
@@ -4092,7 +4104,8 @@ var app = angular.module('webapp');
             });
         }
     }]);
-        app.controller("PathEventsController", [ "$scope", function($scope) {
+        app.controller("PathEventsController", function($scope, leafletLogger) {
+            // leafletLogger.currentLevel = leafletLogger.LEVELS.debug;
             var paths = {};
             $scope.clicked = 0;
             var marylandIslands = {
@@ -4148,7 +4161,8 @@ var app = angular.module('webapp');
             $scope.$on('leafletDirectivePath.mouseover', function (event, path) {
                 $scope.mouseover = path.modelName;
             });
-        }]);
+        });
+        });
         app.controller("PathSimpleController", [ "$scope", function($scope) {
             angular.extend($scope, {
                 london: {
