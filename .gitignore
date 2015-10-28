@@ -1,23 +1,34 @@
-temp
+# OS
+# ===========
+.DS_Store
+Thumbs.db
+
+# Project
+# ===========
+dist/angular-leaflet-directive.pre.js
+dist/angular-leaflet-directive.min.no-header.js
+js/angular-leaflet-directive-webpage.ngmin.js
+
+# Related ecosystem
+# ===========
 node_modules
-libpeerconnection.log
+bower_components
+coverage
+saucelabs.json
+
+# General
+# ===========
+temp
+*.log
 *.swp
 .*.swp
 *~
 *.iml
 .idea
 .project
-node_modules
-dist/angular-leaflet-directive.pre.js
-dist/angular-leaflet-directive.min.no-header.js
-js/angular-leaflet-directive-webpage.ngmin.js
-coverage
-bower_components
-saucelabs.json
 core
 lib
 tags
 .tags
 TAGS
 .TAGS
-npm-debug.log
