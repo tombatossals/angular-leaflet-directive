@@ -1,0 +1,34 @@
+{% extends "layout/base.template.html" %}
+
+{% block body %}
+
+<h1>{$ doc.codeName $}</h1>
+<p>{$ doc.description | marked $}</p>
+
+
+{%- if doc.members %}
+{%- for member in doc.members %}
+<h2>{$ member.name $}</h2>
+<p>{$ member.description | marked $}</p>
+{%- endfor %}
+{%- endif %}
+
+{%- if doc.params %}
+<h2>Params</h2>
+<ul>
+{%- for param in doc.params %}
+  <li>
+    <strong>{$ param.name $}</strong> { {$ param.typeList $} } - {$ param.description $}
+  </li>
+{%- endfor %}
+</ul>
+{%- endif %}
+
+{%- if doc.returns %}
+<h2>Returns</h2>
+<p>
+  { {$ doc.returns.typeList $} } - {$ doc.returns.description $}
+</p>
+{%- endif %}
+
+{% endblock %}

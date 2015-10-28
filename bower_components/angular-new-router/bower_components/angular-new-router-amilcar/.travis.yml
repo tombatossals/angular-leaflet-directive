@@ -1,0 +1,21 @@
+language: node_js
+node_js:
+  - 0.10
+env:
+  global:
+  - BROWSER_PROVIDER_READY_FILE=/tmp/sauce-connect-ready
+  - LOGS_DIR=/tmp/angular-router-build/logs
+  - SAUCE_USERNAME=angular-ci
+  - SAUCE_ACCESS_KEY=9b988f434ff8-fbca-8aa4-4ae3-35442987
+  - secure: cVw9xEN22lkUElPhE41ESL+4D/fVS7uTrYEre8zvH8TlnigaYvfc3SWuMCrsywUJnR86xC4/OClDVxoTCIVWWINJILfs0MJl+/ZhdxJwoqhWC/oenHyPRAK8OGxNhW0dXTbqTaQpiOeuT+d0D244sxPSvXhfziDUg/nPc357dqk=
+install:
+  - mkdir -p $LOGS_DIR
+  - ./scripts/sauce_connect_setup.sh
+  - npm install -g npm
+  - npm install -g gulp karma-cli protractor
+  - npm install
+  - ./scripts/wait_for_browser_provider.sh
+script:
+  - ./scripts/test_on_sauce.sh
+after_success:
+  - ./scripts/deploy_docs_to_gh_pages.sh

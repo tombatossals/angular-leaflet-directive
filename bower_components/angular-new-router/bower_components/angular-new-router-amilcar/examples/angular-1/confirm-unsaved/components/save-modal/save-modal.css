@@ -1,0 +1,28 @@
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 999;
+  overflow: hidden;
+  background-color: rgba(0, 0, 0, 0.75);
+}
+
+.modal-inner, .modal--show .modal-inner {
+  position: absolute;
+  top: 60px;
+  left: 50%;
+  z-index: 20;
+  margin-left: -200px;
+  padding: 1em;
+  width: 400px;
+
+  border-radius: 2px;
+  background: #FFF;
+  -webkit-box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
+  max-width: 100%;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}

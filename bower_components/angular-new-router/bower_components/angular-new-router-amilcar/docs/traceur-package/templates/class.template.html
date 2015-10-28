@@ -1,0 +1,15 @@
+{% extends 'layout/base.template.html' %}
+
+{% block body %}
+<h1>{$ doc.name $}</h1>
+<p>{$ doc.description | marked $}</p>
+
+<h2>Methods</h2>
+{% for member in doc.members %}
+{%- if member.description %}
+  <h3>{$ member.name $}</h3>
+  <p>{$ member.description | marked $}</p>
+{% endif %}
+{% endfor %}
+
+{% endblock %}

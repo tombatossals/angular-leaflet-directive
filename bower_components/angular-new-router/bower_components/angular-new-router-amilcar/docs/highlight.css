@@ -1,0 +1,117 @@
+
+/* from google code prettify */
+/* Pretty printing styles. Used with prettify.js. */
+/* SPAN elements with the classes below are added by prettyprint. */
+.pln {
+  color: white;
+}
+
+/* plain text */
+@media screen {
+  .str,
+  .string,
+  .value {
+    color: #e6db74;
+  }
+
+  /* a keyword */
+  .kwd,
+  .keyword {
+    color: #66D9EF;
+  }
+
+  /* a comment */
+  .com,
+  .comment,
+  .line-comment,
+  .block-comment {
+    color: #75715E;
+  }
+
+  .param {
+    color: #FD971F;
+    font-style: italic;
+  }
+
+  .typ,
+  .lang-html .attribute {
+    color: #a6e22e;
+  }
+
+  /* a type name */
+  .lit,
+  .number,
+  .numeric,
+  .boolean {
+    color: #ae81ff;
+  }
+
+  /* a literal value */
+  /* punctuation, lisp open bracket, lisp close bracket */
+  /* .pun, .opn, .clo { color: #660 } */
+  .lang-html .title,
+  .control-flow,
+  .operator {
+    color: #f92672;
+  }
+
+  /* a markup tag name */
+  .atn {
+    color: #a6e22e;
+  }
+
+  /* a markup attribute name */
+  .atv {
+    color: #e6db74;
+  }
+
+  /* a markup attribute value */
+  /*.dec, .var { color: #606 }*/
+  /* a declaration; a variable name */
+  .fun {
+    color: red;
+  }
+}
+
+/* Use higher contrast and text-weight for printable form. */
+@media print, projection {
+  .str {
+    color: #006600;
+  }
+
+  .kwd {
+    color: #006;
+    font-weight: bold;
+  }
+
+  .com {
+    color: #600;
+    font-style: italic;
+  }
+
+  .typ {
+    color: #404;
+    font-weight: bold;
+  }
+
+  .lit {
+    color: #004444;
+  }
+
+  .pun, .opn, .clo {
+    color: #444400;
+  }
+
+  .tag {
+    color: #006;
+    font-weight: bold;
+  }
+
+  .atn {
+    color: #440044;
+  }
+
+  .atv {
+    color: #006600;
+  }
+}

@@ -1,0 +1,157 @@
+From 29859b18c82760e13304ab8d74fee5ac1a0eda73 Mon Sep 17 00:00:00 2001
+From: Vojta Jina <vojta.jina@gmail.com>
+Date: Tue, 22 Apr 2014 17:01:38 -0700
+Subject: [PATCH] Allow shadom DOM, using both prefixed and unprefixed
+
+---
+ chrome/test/chromedriver/js/call_function.js | 77 +++++++++++++++++++++-------
+ chrome/test/chromedriver/js/focus.js         | 15 +++++-
+ 2 files changed, 72 insertions(+), 20 deletions(-)
+
+diff --git a/chrome/test/chromedriver/js/call_function.js b/chrome/test/chromedriver/js/call_function.js
+index f31f95f..aa2ef93 100644
+--- a/chrome/test/chromedriver/js/call_function.js
++++ b/chrome/test/chromedriver/js/call_function.js
+@@ -32,7 +32,18 @@ var ELEMENT_KEY = 'ELEMENT';
+  * @const
+  * @type {boolean}
+  */
+-var SHADOW_DOM_ENABLED = typeof ShadowRoot === 'function';
++var SHADOW_DOM_ENABLED = false;
++var ShadowRootCls = null;
++var SHADOW_ROOT_PROPERTY = null;
++if (typeof ShadowRoot === 'function') {
++  ShadowRootCls = ShadowRoot;
++  SHADOW_ROOT_PROPERTY = 'shadowRoot';
++  SHADOW_DOM_ENABLED = true;
++} else if (typeof WebKitShadowRoot === 'function') {
++  ShadowRootCls = WebKitShadowRoot;
++  SHADOW_ROOT_PROPERTY = 'webkitShadowRoot';
++  SHADOW_DOM_ENABLED = true;
++}
+ 
+ /**
+  * A cache which maps IDs <-> cached objects for the purpose of identifying
+@@ -97,12 +108,44 @@ Cache.prototype = {
+     * @return {boolean} If the nodes is reachable.
+     */
+   isNodeReachable_: function(node) {
+-    var nodeRoot = getNodeRoot(node);
+-    if (nodeRoot == document)
+-      return true;
+-    else if (SHADOW_DOM_ENABLED && nodeRoot instanceof ShadowRoot)
++    while (node) {
++      if (node == document)
++        return true;
++
++      // WC3 spec states "The parentNode and parentElement attributes of the
++      // shadow root object must always return null." Use alternate approach to
++      // determine if it is reachable.
++      if (SHADOW_DOM_ENABLED && node instanceof ShadowRootCls)
++        return this.isShadowRootReachable_(node);
++
++      node = node.parentNode;
++    }
++    return false;
++  },
++
++  /**
++   * @private
++   * @param {!WebKitShadowRoot} shadow_root
++   * @param {Node} [node=document]
++   */
++  isShadowRootReachable_: function(shadow_root, node) {
++    if (node == null)
++      node = document;
++
++    if (node == shadow_root) {
+       return true;
++    }
+ 
++    if (node[SHADOW_ROOT_PROPERTY]
++        && this.isShadowRootReachable_(shadow_root, node[SHADOW_ROOT_PROPERTY])) {
++        return true;
++    }
++    var children = node.childNodes;
++    for (var i = 0; i < children.length; i++) {
++       var child = children[i];
++       if (this.isShadowRootReachable_(shadow_root, child))
++         return true;
++    }
+     return false;
+   }
+ };
+@@ -144,11 +187,9 @@ function getPageCache(opt_doc) {
+ function wrap(value) {
+   if (typeof(value) == 'object' && value != null) {
+     var nodeType = value['nodeType'];
+-    if (nodeType == NodeType.ELEMENT || nodeType == NodeType.DOCUMENT
+-        || (SHADOW_DOM_ENABLED && value instanceof ShadowRoot)) {
++    if (nodeType == NodeType.ELEMENT || nodeType == NodeType.DOCUMENT) {
+       var wrapped = {};
+-      var root = getNodeRoot(value);
+-      wrapped[ELEMENT_KEY] = getPageCache(root).storeItem(value);
++      wrapped[ELEMENT_KEY] = getPageCache(value.ownerDocument).storeItem(value);
+       return wrapped;
+     }
+ 
+@@ -204,15 +245,15 @@ function unwrap(value, cache) {
+ function callFunction(shadowHostIds, func, args, opt_unwrappedReturn) {
+   var cache = getPageCache();
+   cache.clearStale();
+-  if (shadowHostIds && SHADOW_DOM_ENABLED) {
+-    for (var i = 0; i < shadowHostIds.length; i++) {
+-      var host = cache.retrieveItem(shadowHostIds[i]);
+-      // TODO(zachconrad): Use the olderShadowRoot API when available to check
+-      // all of the shadow roots.
+-      cache = getPageCache(host.webkitShadowRoot);
+-      cache.clearStale();
+-    }
+-  }
++//  if (shadowHostIds && SHADOW_DOM_ENABLED) {
++//    for (var i = 0; i < shadowHostIds.length; i++) {
++//      var host = cache.retrieveItem(shadowHostIds[i]);
++//      // TODO(zachconrad): Use the olderShadowRoot API when available to check
++//      // all of the shadow roots.
++//      cache = getPageCache(host.webkitShadowRoot);
++//      cache.clearStale();
++//    }
++//  }
+ 
+   if (opt_unwrappedReturn)
+     return func.apply(null, unwrap(args, cache));
+diff --git a/chrome/test/chromedriver/js/focus.js b/chrome/test/chromedriver/js/focus.js
+index 2945a34..0243d80 100644
+--- a/chrome/test/chromedriver/js/focus.js
++++ b/chrome/test/chromedriver/js/focus.js
+@@ -24,7 +24,7 @@ function focus(element) {
+   //     input, which still have setSelectionRange defined. For chrome 29+, V8
+   //     throws a DOMException with code InvalidStateError.
+   var doc = element.ownerDocument || element;
+-  var prevActiveElement = doc.activeElement;
++  var prevActiveElement = getActiveElement(doc);
+   if (element != prevActiveElement && prevActiveElement)
+     prevActiveElement.blur();
+   element.focus();
+@@ -38,6 +38,17 @@ function focus(element) {
+         throw error;
+     }
+   }
+-  if (element != doc.activeElement)
++  if (element != getActiveElement(doc))
+     throw new Error('cannot focus element');
+ }
++
++function getActiveElement(doc) {
++  var activeElement = doc.activeElement;
++  var shadowRootProperty = activeElement.hasOwnProperty('shadowRoot') ? 'shadowRoot' : 'webkitShadowRoot';
++
++  while (activeElement[shadowRootProperty]
++      && activeElement[shadowRootProperty].activeElement) {
++    activeElement = activeElement[shadowRootProperty].activeElement;
++  }
++  return activeElement;
++}
+-- 
+1.9.0
+

@@ -1,0 +1,24 @@
+Instructions:
+  1) Apply selenium_shadow_dom.patch to selenium.
+
+     $ cd <selenium_dir>
+     $ git apply <path_to_templating/chromedriver>/selenium_shadow_dom.patch
+     $ ./go //javascript/chrome-driver:atoms
+
+  2) Copy the output to chromedriver.
+
+    $ cp build/javascript/chrome-driver/atoms.* \
+          <chromium_dir>/src/third_party/webdriver/
+
+  3) Apply the chromedriver_shadow_dom.patch to chromedriver.
+
+    $ cd <chromium_dir>
+    $ git apply <README_dir>/chromedriver_shadow_dom.patch
+
+  4) Build chromedriver.
+
+    $ ninja -C out/Release chromedriver
+
+  5) Copy the new version of chromedriver to this directory
+
+    $ cp <chromium dir>/src/out/Release/chromedriver <path_to_templating/chromedriver>/

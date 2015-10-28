@@ -1,0 +1,280 @@
+From 912d7168543e44c2af64cfeb93ce100ac188552c Mon Sep 17 00:00:00 2001
+From: Vojta Jina <vojta.jina@gmail.com>
+Date: Tue, 22 Apr 2014 16:53:47 -0700
+Subject: [PATCH] Use both prefixed and non-prefixed
+
+---
+ javascript/atoms/dom.js             | 136 +++++++++++++++++++++++++++++++-----
+ javascript/chrome-driver/atoms.js   |  15 +++-
+ javascript/chrome-driver/build.desc |   6 ++
+ 3 files changed, 138 insertions(+), 19 deletions(-)
+
+diff --git a/javascript/atoms/dom.js b/javascript/atoms/dom.js
+index 1d2495a..8ec0b79 100644
+--- a/javascript/atoms/dom.js
++++ b/javascript/atoms/dom.js
+@@ -36,6 +36,9 @@ goog.require('goog.style');
+ goog.require('goog.userAgent');
+ 
+ 
++var div = document.createElement('div');
++var shadowRootProperty = div.hasOwnProperty('shadowRoot') ? 'shadowRoot' : (div.hasOwnProperty('webkitShadowRoot') ? 'webkitShadowRoot' : null);
++
+ /**
+  * Retrieves the active element for a node's owner document.
+  * @param {!(Node|Window)} nodeOrWindow The node whose owner document to get
+@@ -473,6 +476,67 @@ bot.dom.getParentElement = function(node) {
+   return /** @type {Element} */ (bot.dom.isElement(elem) ? elem : null);
+ };
+ 
++/**
++ * @param {!Node} node
++ * @return {Element}
++ */
++bot.dom.getEffectiveParentElement = function(node) {
++  // If the parent node has a shadow root, then the effective parent is the
++  // parent of the <content> node in the shadow DOM.
++  var parentElement = bot.dom.getParentElement(node);
++  if (parentElement && parentElement[shadowRootProperty]) {
++    var contentNode = parentElement[shadowRootProperty].querySelector('content');
++    if (contentNode) {
++      parentElement = bot.dom.getParentElement(contentNode);
++    }
++  }
++  // If parentElement is null, the node might be in the shadow DOM.  The
++  // effective parent is the host of the shadow DOM.
++  if (parentElement == null) {
++    var shadowRoot = bot.dom.getShadowRoot(node);
++    if (shadowRoot) {
++      parentElement = bot.dom.getShadowHost(node);
++    }
++  }
++  return parentElement;
++}
++
++/**
++ * @param {!Node} node
++ * @return {DocumentFragment}
++ */
++bot.dom.getShadowRoot = function(node) {
++  var n = node;
++  while (n.parentNode) {
++    n = n.parentNode
++  }
++  return /** @type {DocumentFragment} */ ((n.constructor.name == 'ShadowRoot' || n.constructor.name == 'WebKitShadowRoot') ? n : null);
++}
++
++/**
++ * @param {!Node} node
++ * @return {Element}
++ */
++bot.dom.getShadowHost = function(node) {
++  var shadowRoot = bot.dom.getShadowRoot(node);
++  if (!shadowRoot) {
++    return null;
++  }
++  function dfs(elem) {
++    if (elem[shadowRootProperty] == shadowRoot) {
++      return elem;
++    }
++    var children = elem.childNodes;
++    for (var i = 0; i < children.length; ++i) {
++      var child = children[i];
++      var result = dfs(child);
++      if (result) return result;
++    }
++    return null;
++  }
++
++  return /** @type {Element} */ (dfs(node.ownerDocument));
++}
+ 
+ /**
+  * Retrieves an explicitly-set, inline style value of an element. This returns
+@@ -537,6 +601,12 @@ bot.dom.getCascadedStyle_ = function(elem, styleName) {
+     return goog.isDef(value) ? value : null;
+   }
+   var parent = bot.dom.getParentElement(elem);
++//  if (parent == null) {
++//    var shadowRoot = bot.dom.getShadowRoot(elem);
++//    if (shadowRoot && !shadowRoot['resetStyleInheritance']) {
++//      parent = bot.dom.getShadowHost(elem);
++//    }
++//  }
+   return parent ? bot.dom.getCascadedStyle_(parent, styleName) : null;
+ };
+ 
+@@ -600,7 +670,7 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
+     if (bot.dom.getEffectiveStyle(e, 'display') == 'none') {
+       return false;
+     }
+-    var parent = bot.dom.getParentElement(e);
++    var parent = bot.dom.getEffectiveParentElement(e);
+     return !parent || displayed(parent);
+   }
+   if (!displayed(elem)) {
+@@ -624,14 +694,25 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
+       var strokeWidth = bot.dom.getEffectiveStyle(e, 'stroke-width');
+       return !!strokeWidth && (parseInt(strokeWidth, 10) > 0);
+     }
++    function checkChildSize(n) {
++      if (n.nodeType == goog.dom.NodeType.TEXT) {
++        return true;
++      }
++      var shadowHost;
++      if (bot.dom.isElement(n, 'CONTENT')
++          && (shadowHost = bot.dom.getShadowHost(n))) {
++        return goog.array.some(shadowHost.childNodes, checkChildSize);
++      }
++      return bot.dom.isElement(n) && positiveSize(n);
++    }
+     // Zero-sized elements should still be considered to have positive size
+     // if they have a child element or text node with positive size, unless
+     // the element has an 'overflow' style of 'hidden'.
++    var childNodes = e[shadowRootProperty]
++      ? e[shadowRootProperty].childNodes
++      : e.childNodes;
+     return bot.dom.getEffectiveStyle(e, 'overflow') != 'hidden' &&
+-        goog.array.some(e.childNodes, function(n) {
+-          return n.nodeType == goog.dom.NodeType.TEXT ||
+-                 (bot.dom.isElement(n) && positiveSize(n));
+-        });
++        goog.array.some(childNodes, checkChildSize);
+   }
+   if (!positiveSize(elem)) {
+     return false;
+@@ -639,10 +720,19 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
+ 
+   // Elements that are hidden by overflow are not shown.
+   function hiddenByOverflow(e) {
++    function checkChildHidden(n) {
++      var shadowHost;
++      if (bot.dom.isElement(n, 'CONTENT')
++          && (shadowHost = bot.dom.getShadowHost(n))) {
++        return goog.array.every(shadowHost.childNodes, checkChildHidden);
++      }
++      return !bot.dom.isElement(n) || hiddenByOverflow(n);
++    }
++    var childNodes = e[shadowRootProperty]
++      ? e[shadowRootProperty].childNodes
++      : e.childNodes;
+     return bot.dom.getOverflowState(e) == bot.dom.OverflowState.HIDDEN &&
+-        goog.array.every(e.childNodes, function(n) {
+-          return !bot.dom.isElement(n) || hiddenByOverflow(n);
+-        });
++        goog.array.every(childNodes, checkChildHidden);
+   }
+   return !hiddenByOverflow(elem);
+ };
+@@ -1093,6 +1183,22 @@ bot.dom.appendVisibleTextLinesFromElement_ = function(elem, lines) {
+   function currLine() {
+     return /** @type {string|undefined} */ (goog.array.peek(lines)) || '';
+   }
++  function processNode(shown, node) {
++    var shadowHost;
++    if (node.nodeType == goog.dom.NodeType.TEXT && shown) {
++      var textNode = /** @type {!Text} */ (node);
++      bot.dom.appendVisibleTextLinesFromTextNode_(textNode, lines,
++          whitespace, textTransform);
++    } else if (bot.dom.isElement(node, 'CONTENT')
++            && (shadowHost = bot.dom.getShadowHost(node))) {
++      // If in the shadow DOM, <content> tags embed the content of the host of
++      // the shadow DOM.
++      goog.array.forEach(shadowHost.childNodes, goog.partial(processNode, shown));
++    } else if (bot.dom.isElement(node)) {
++      var castElem = /** @type {!Element} */ (node);
++      bot.dom.appendVisibleTextLinesFromElement_(castElem, lines);
++    }
++  }
+ 
+   // TODO: Add case here for textual form elements.
+   if (bot.dom.isElement(elem, goog.dom.TagName.BR)) {
+@@ -1136,16 +1242,10 @@ bot.dom.appendVisibleTextLinesFromElement_ = function(elem, lines) {
+       textTransform = bot.dom.getEffectiveStyle(elem, 'text-transform');
+     }
+ 
+-    goog.array.forEach(elem.childNodes, function(node) {
+-      if (node.nodeType == goog.dom.NodeType.TEXT && shown) {
+-        var textNode = /** @type {!Text} */ (node);
+-        bot.dom.appendVisibleTextLinesFromTextNode_(textNode, lines,
+-            whitespace, textTransform);
+-      } else if (bot.dom.isElement(node)) {
+-        var castElem = /** @type {!Element} */ (node);
+-        bot.dom.appendVisibleTextLinesFromElement_(castElem, lines);
+-      }
+-    });
++    var childNodes = elem[shadowRootProperty]
++        ? elem[shadowRootProperty].childNodes
++        : elem.childNodes;
++    goog.array.forEach(childNodes, goog.partial(processNode, shown));
+ 
+     var line = currLine();
+ 
+diff --git a/javascript/chrome-driver/atoms.js b/javascript/chrome-driver/atoms.js
+index 969f5ba..088b308 100644
+--- a/javascript/chrome-driver/atoms.js
++++ b/javascript/chrome-driver/atoms.js
+@@ -20,6 +20,7 @@
+ 
+ goog.provide('webdriver.chrome');
+ 
++goog.require('bot.userAgent');
+ goog.require('goog.dom');
+ goog.require('goog.math.Coordinate');
+ goog.require('goog.math.Rect');
+@@ -124,7 +125,13 @@ webdriver.chrome.scrollIntoView_ = function(elem, region, center) {
+ 
+   offset = goog.style.getClientPosition(elem);
+   var windowSize = goog.dom.getDomHelper(elem).getViewportSize();
+-  scrollHelper(doc.body, windowSize, offset, region, center);
++  // From Chrome 32+, setting scrollTop/Left properties of both
++  // document.documentElement and document.body differs according to the HTML
++  // mode used (strict or quirks).
++  if (bot.userAgent.isProductVersion(32) && doc.compatMode == "CSS1Compat")
++    scrollHelper(doc.documentElement, windowSize, offset, region, center);
++  else
++    scrollHelper(doc.body, windowSize, offset, region, center);
+ };
+ 
+ 
+@@ -206,7 +213,13 @@ webdriver.chrome.isElementClickable = function(elem, coord) {
+     return dict;
+   }
+ 
++  var shadowRootProperty = elem.hasOwnProperty('shadowRoot') ? 'shadowRoot' : 'webkitShadowRoot';
++
+   var elemAtPoint = elem.ownerDocument.elementFromPoint(coord.x, coord.y);
++  while (elemAtPoint && elemAtPoint[shadowRootProperty]) {
++    elemAtPoint = elemAtPoint[shadowRootProperty];
++    elemAtPoint = elemAtPoint.elementFromPoint(coord.x, coord.y);
++  }
+   if (elemAtPoint == elem)
+     return makeResult(true);
+ 
+diff --git a/javascript/chrome-driver/build.desc b/javascript/chrome-driver/build.desc
+index 546ffd5..e707db6 100644
+--- a/javascript/chrome-driver/build.desc
++++ b/javascript/chrome-driver/build.desc
+@@ -24,6 +24,11 @@ js_fragment(name = "get_page_zoom",
+   function = "webdriver.chrome.getPageZoom",
+   deps = [ ":deps" ])
+ 
++js_fragment(name = "touch_single_tap",
++  module = "bot.action",
++  function = "bot.action.tap",
++  deps = [ "//javascript/atoms:deps" ])
++
+ js_test(name = "test",
+   srcs = [ "test/*_test.html" ],
+   deps = [
+@@ -53,6 +58,7 @@ js_fragment_cpp(name = "atoms",
+     "//javascript/chrome-driver:get_location_in_view:chrome",
+     "//javascript/chrome-driver:get_page_zoom:chrome",
+     "//javascript/chrome-driver:is_element_clickable:chrome",
++    "//javascript/chrome-driver:touch_single_tap:chrome",
+     "//javascript/webdriver/atoms/fragments:clear_local_storage:chrome",
+     "//javascript/webdriver/atoms/fragments:clear_session_storage:chrome",
+     "//javascript/webdriver/atoms/fragments:get_appcache_status:chrome",
+-- 
+1.9.0
+

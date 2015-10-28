@@ -1,0 +1,39 @@
+{
+  "name": "angular-simple-logger",
+  "version": "0.1.5",
+  "description": "Basic logger with level logging which can also be independent.",
+  "main": "./dist/angular-simple-logger.js",
+  "homepage": "https://github.com/nmccready/angular-simple-logger",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/nmccready/angular-simple-logger.git"
+  },
+  "author": "Nicholas McCready",
+  "license": "MIT",
+  "dependencies": {
+    "angular": "^1.2"
+  },
+  "devDependencies": {
+    "angular-mocks": "^1.2"
+  },
+  "resolutions": {
+    "angular": "1.4.X"
+  },
+  "ignore": [
+    ".*",
+    "spec",
+    "*.coffee",
+    "*.json",
+    ".gitignore",
+    ".travis.yml",
+    "*.html",
+    "package.js",
+    "*.md",
+    "src",
+    "gulp",
+    "scripts",
+    "node_modules",
+    "bower_components",
+    "tmp"
+  ]
+}

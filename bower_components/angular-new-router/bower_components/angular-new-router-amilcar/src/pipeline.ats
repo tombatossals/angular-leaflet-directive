@@ -1,0 +1,30 @@
+export class Pipeline {
+  constructor() {
+    this.steps = [
+      instruction => instruction.router.makeDescendantRouters(instruction),
+      instruction => instruction.router.canDeactivatePorts(instruction),
+      instruction => instruction.router.traversePorts((port, name) => {
+        return boolToPromise(port.canActivate(instruction.viewports[name]));
+      }),
+      instruction => instruction.router.activatePorts(instruction)
+    ];
+  }
+  process(instruction) {
+    // make a copy
+    var steps = this.steps.slice(0);
+
+    function processOne(result) {
+      if (steps.length === 0) {
+        return result;
+      }
+      var step = steps.shift();
+      return Promise.resolve(step(instruction)).then(processOne);
+    }
+
+    return processOne();
+  }
+}
+
+function boolToPromise (value) {
+  return value ? Promise.resolve(value) : Promise.reject();
+}

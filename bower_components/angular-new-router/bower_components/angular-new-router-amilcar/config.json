@@ -1,0 +1,19 @@
+{
+  "build": {
+    "dir": "dist"
+  },
+  "traceur": {
+    "modules": "amd",
+    "script": false,
+    "asyncFunctions": true,
+    "types": true,
+    "typeAssertions": true,
+    "typeAssertionModule": "assert",
+    "annotations": true,
+    "sourceMaps": true
+  },
+  "server": {
+    "host": "0.0.0.0",
+    "port": 8000
+  }
+}
