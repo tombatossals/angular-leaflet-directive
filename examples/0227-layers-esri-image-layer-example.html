@@ -5,6 +5,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <script src="../bower_components/angular/angular.min.js"></script>
     <script src="../bower_components/leaflet/dist/leaflet.js"></script>
+  <script src="../bower_components/angular-simple-logger/dist/angular-simple-logger.js"></script>
     <script src="../bower_components/esri-leaflet/dist/esri-leaflet.js"></script>
     <script src="../dist/angular-leaflet-directive.min.js"></script>
     <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
@@ -44,7 +45,7 @@
     </script>
 </head>
 <body ng-controller="LayersEsriImageLayerController">
-    <leaflet center="center" layers="layers" width="100%" height="480px"></leaflet>
+    <leaflet lf-center="center" layers="layers" width="100%" height="480px"></leaflet>
     <h1>Esri ArcGIS Image Layer</h1>
     <p>
         Display NAIP imagery from an ArcGIS image service and use the band IDs parameter to show the near infrared band in a

@@ -1,4 +1,4 @@
-        app.controller("MarkersEventsController", [ "$scope", "leafletEvents", function($scope, leafletEvents) {
+        app.controller("MarkersEventsController", [ "$scope", "leafletMarkerEvents", function($scope, leafletMarkerEvents) {
             $scope.center = {
                 lat: 51.505,
                 lng: -0.09,
@@ -15,14 +15,18 @@
             }
             $scope.events = {
                 markers: {
-                    enable: leafletEvents.getAvailableMarkerEvents(),
+                    enable: leafletMarkerEvents.getAvailableEvents(),
                 }
             };
             $scope.eventDetected = "No events yet...";
-            var markerEvents = leafletEvents.getAvailableMarkerEvents();
+            var markerEvents = leafletMarkerEvents.getAvailableEvents();
             for (var k in markerEvents){
                 var eventName = 'leafletDirectiveMarker.' + markerEvents[k];
                 $scope.$on(eventName, function(event, args){
+                    $scope.eventDetected = event.name;
+                });
+            }
+        }]); args){
                     $scope.eventDetected = event.name;
                 });
             }

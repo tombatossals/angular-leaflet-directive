@@ -4,7 +4,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="../bower_components/angular/angular.min.js"></script>
     <script src="../bower_components/leaflet-dist/leaflet.js"></script>
-    <script src="../dist/angular-leaflet-directive.js"></script>
+    <script src="../bower_components/angular-simple-logger/dist/angular-simple-logger.js"></script>
+    <script src="../dist/angular-leaflet-directive_dev_mapped.js"></script>
     <link rel="stylesheet" href="../bower_components/leaflet-dist/leaflet.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script>
@@ -169,7 +170,7 @@
     </script>
 </head>
 <body ng-controller="LayersOverlaysPathsController">
-    <leaflet center="cen" markers="markers" paths="paths" layers="layers" height="480px" width="100%"></leaflet>
+    <leaflet lf-center="cen" markers="markers" paths="paths" layers="layers" height="480px" width="100%"></leaflet>
     <h1>Different overlays for paths</h1>
     <p>
     In this example we create two layer groups lines, and shapes. We insert markers in both layers (note that on is initially

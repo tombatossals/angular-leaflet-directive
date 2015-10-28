@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html ng-app="demoApp">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../bower_components/angular/angular.js"></script>
+    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="../bower_components/angular-simple-logger/dist/angular-simple-logger.js"></script>
+    <script src="../bower_components/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+    <script src="../dist/angular-leaflet-directive_dev_mapped.js"></script>
+    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="../bower_components/leaflet.markercluster/dist/MarkerCluster.Default.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        angular.module('demoApp', ['leaflet-directive'])
+            .controller('Ctrl', ["$scope", function($scope) {
+                var ssmarkers = [];
+                var filterMarkers = function() {
+                    var tempMar = [];
+                    console.log('sdf');
+                    angular.forEach(somemarkers, function(val) {
+                        if (val.lat != 44) {
+                            tempMar.push(val);
+                        }
+                    });
+                    console.log('tempMar', tempMar)
+                    $scope.markers = tempMar;
+                };
+
+                var backMarkers = function() {
+                    $scope.markers = backupMarkers;
+                };
+                var somemarkers = [{
+                    lat: 33,
+                    lng: 33,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 44,
+                    lng: 44,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 33,
+                    lng: 33,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 44,
+                    lng: 44,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 33,
+                    lng: 33,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 44,
+                    lng: 44,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 33,
+                    lng: 33,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 44,
+                    lng: 44,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 33,
+                    lng: 33,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 44,
+                    lng: 44,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 33,
+                    lng: 33,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 44,
+                    lng: 44,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 33,
+                    lng: 33,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 44,
+                    lng: 44,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 33,
+                    lng: 33,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 44,
+                    lng: 44,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 33,
+                    lng: 33,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 44,
+                    lng: 44,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 33,
+                    lng: 33,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 44,
+                    lng: 44,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 33,
+                    lng: 33,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 44,
+                    lng: 44,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 33,
+                    lng: 33,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 44,
+                    lng: 44,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 33,
+                    lng: 33,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 44,
+                    lng: 44,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 33,
+                    lng: 33,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 44,
+                    lng: 44,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 33,
+                    lng: 33,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 44,
+                    lng: 44,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 33,
+                    lng: 33,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 44,
+                    lng: 44,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 33,
+                    lng: 33,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 44,
+                    lng: 44,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 33,
+                    lng: 33,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 44,
+                    lng: 44,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 33,
+                    lng: 33,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 44,
+                    lng: 44,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 33,
+                    lng: 33,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 44,
+                    lng: 44,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 33,
+                    lng: 33,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 44,
+                    lng: 44,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 33,
+                    lng: 33,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 44,
+                    lng: 44,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 33,
+                    lng: 33,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 44,
+                    lng: 44,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 33,
+                    lng: 33,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 44,
+                    lng: 44,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 33,
+                    lng: 33,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 44,
+                    lng: 44,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 33,
+                    lng: 33,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 44,
+                    lng: 44,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 33,
+                    lng: 33,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 44,
+                    lng: 44,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 33,
+                    lng: 33,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 44,
+                    lng: 44,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 33,
+                    lng: 33,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 44,
+                    lng: 44,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 33,
+                    lng: 33,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 44,
+                    lng: 44,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 33,
+                    lng: 33,
+                    layer: 'clusterGroup'
+                }, {
+                    lat: 44,
+                    lng: 44,
+                    layer: 'clusterGroup'
+                }, ];
+                var backupMarkers = somemarkers;
+                ssmarkers = somemarkers;
+                $scope.filterMarkers = filterMarkers;
+                $scope.backMarkers = backMarkers;
+                angular.extend($scope, {
+
+                    defaults: {
+                        tileLayer: "http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png",
+                        maxZoom: 14,
+                        path: {
+                            weight: 10,
+                            color: '#800000',
+                            opacity: 1
+                        },
+
+                    },
+                    markers: ssmarkers,
+                    layers: {
+                        baselayers: {
+                            osm: {
+                                name: "OpenStreetMap (XYZ)",
+                                type: "xyz",
+                                url: 'https://a.tiles.mapbox.com/v4/ws-perelyainen.lmbjo2b2/{z}/{x}/{y}.png?access_token=sk.eyJ1IjoiYWhtYXlvdSIsImEiOiJVWDFvQkFFIn0.NrRBJdoyt62hjQllNtAF3A',
+                                // url: 'https://{s}.tiles.mapbox.com/v4/ws-perelyainen.lmbjo2b2/{z}/{x}/{y}.png?access_token=pk.eyJ1Ijoid3MtcGVyZWx5YWluZW4iLCJhIjoiWXA0QUt5NCJ9.Ux4vRCSyXNn4ZvfUh03K5w',
+                                layerOptions: {
+                                    subdomains: ['a', 'b', 'c'],
+                                    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                                    continuousWorld: false,
+                                }
+                            }
+                        },
+                        overlays: {
+                            clusterGroup: {
+                                name: 'cluster Group',
+                                type: 'markercluster',
+                                visible: true,
+                                layerOptions: {
+                                    showCoverageOnHover: false
+                                }
+                            }
+                        }
+                    }
+                });
+            }]);
+    </script>
+</head>
+
+<body ng-controller="Ctrl">
+    <div>
+          <button ng-click="filterMarkers()">Filter</button>
+
+          <button ng-click="backMarkers()">Back</button>
+          <leaflet width="100%" height="480px" markers="markers" layers="layers"></leaflet>
+    </div>
+</body>
+
+</html>

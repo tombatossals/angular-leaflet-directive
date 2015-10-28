@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html ng-app="demoapp">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="../bower_components/angular-simple-logger/dist/angular-simple-logger.js"></script>
+    <script src="../dist/angular-leaflet-directive.min.js"></script>
+    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
+    <script>
+        var app = angular.module("demoapp", ["leaflet-directive"]);
+        app.controller('MarkersChangeOpacityController', [ '$scope', function($scope) {
+            angular.extend($scope, {
+                chicago: {
+                    lat: 41.85,
+                    lng: -87.65,
+                    zoom: 8
+                },
+                markers: {
+                    m1: {
+                        lat: 41.85,
+                        lng: -87.65,
+                        message: "I'm a static marker with defaultIcon",
+                        focus: false,
+                        opacity: 1
+                    },
+                }
+            });
+        } ]);
+    </script>
+  </head>
+  <body ng-controller="MarkersChangeOpacityController   ">
+    <leaflet lf-center="chicago" markers="markers" height="480px" width="100%"></leaflet>
+    <h1>Change icon opacity</h1>
+    <p>Move the slider to change the icon opacity.</p>
+    <input type="range" min="0" max="1" step="0.01" ng-model="markers.m1.opacity" />
+  </body>
+</html>

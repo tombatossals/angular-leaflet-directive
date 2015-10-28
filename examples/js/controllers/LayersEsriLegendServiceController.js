@@ -33,7 +33,7 @@
                    overlays: {
 				    	usa_pop: {
 					    	name: "USA 2000-2010 Population Change",
-					        type: "dynamic",
+					        type: "agsDynamic",
 					        url: "http://services.arcgisonline.com/arcgis/rest/services/Demographics/USA_1990-2000_Population_Change/MapServer",
 					        visible: true,
 					        layerOptions: {
@@ -43,7 +43,7 @@
 				    	},
 				    	usa_social: {
 					    	name: "USA Social Vulnerability Index",
-					        type: "dynamic",
+					        type: "agsDynamic",
 					        url: "http://services.arcgisonline.com/arcgis/rest/services/Demographics/USA_Social_Vulnerability_Index/MapServer",
 					        visible: false,
 					        layerOptions: {

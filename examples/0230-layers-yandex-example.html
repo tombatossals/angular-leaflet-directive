@@ -8,6 +8,7 @@
     <script src="http://api-maps.yandex.ru/2.0/?load=package.map&lang=ru-RU" type="text/javascript"></script>
     <script src="../bower_components/angular/angular.min.js"></script>
     <script src="../bower_components/leaflet/dist/leaflet.js"></script>
+  <script src="../bower_components/angular-simple-logger/dist/angular-simple-logger.js"></script>
     <script src="../bower_components/leaflet-plugins/layer/tile/Yandex.js"></script>
     <script src="../dist/angular-leaflet-directive.min.js"></script>
     <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
@@ -50,7 +51,7 @@
     </script>
 </head>
 <body ng-controller="LayersYandexController">
-    <leaflet center="berlin" layers="layers" markers="markers" height="480px" width="100%"></leaflet>
+    <leaflet lf-center="berlin" layers="layers" markers="markers" height="480px" width="100%"></leaflet>
     <h1>Yandex layer example</h1>
     <p>Use the Layer Switch Control on the top rigth of the map to select another Yandex Layer.</p>
 </body>

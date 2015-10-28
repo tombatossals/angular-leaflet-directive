@@ -44,6 +44,11 @@
                     icon: 'tag',
                     markerColor: 'red'
                 },
+                vectorMarkerIcon: {
+                    type: 'vectorMarker',
+                    icon: 'tag',
+                    markerColor: 'red'
+                },
                 makiMarkerIcon: {
                     type: 'makiMarker',
                     icon: 'beer',

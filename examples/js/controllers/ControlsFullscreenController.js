@@ -15,9 +15,10 @@
                     }
                 },
                 controls: {
-                    fullscreen: {
-                        position: 'topleft'
-                    }
+                    custom: new L.Control.Fullscreen()
+                }
+           });
+       }]);
                 }
            });
        }]);

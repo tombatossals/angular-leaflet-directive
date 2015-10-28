@@ -5,6 +5,7 @@
     <script src="../bower_components/jquery/dist/jquery.min.js"></script>
     <script src="../bower_components/angular/angular.min.js"></script>
     <script src="../bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="../bower_components/angular-simple-logger/dist/angular-simple-logger.js"></script>
     <script src="../dist/angular-leaflet-directive.js"></script>
     <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
@@ -102,7 +103,8 @@
                         layerOptions: {
                             attribution: "&copy; <a href=\"http://www.openfiremap.org\">OpenFireMap</a> contributors - &copy; <a href=\"http://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors",
                             continuousWorld: true
-                        }
+                        },
+                        group: "Open Fire Map"
                     };
                 },
                 existsFireLayer: function() {
@@ -119,7 +121,8 @@
                         layerOptions: {
                             attribution: "&copy; <a href=\"http://www.openfiremap.org\">OpenFireMap</a> contributors - &copy; <a href=\"http://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors",
                             continuousWorld: true
-                        }
+                        },
+                        group: "Open Fire Map"
                     };
                 },
                 existsEmergencyRooms: function() {
@@ -140,7 +143,8 @@
                             opacity: 0.25,
                             attribution: "Hillshade layer by GIScience http://www.osm-wms.de",
                             crs: L.CRS.EPSG900913
-                        }
+                        },
+                        group: "Raster"
                     };
                 },
                 existsHillshadeLayer: function() {
@@ -152,46 +156,46 @@
 </head>
 <body ng-controller="ControlsCustomLayerControlController">
     <style>
-      .angular-leaflet-control-layers {
-        position: absolute;
-        background: white;
-        z-index: 100;
-        left: 10px;
-        top: 100px;
-        width: 200px;
-        box-shadow: 1px 1px 5px #333;
-        padding: 5px;
-      }
+        .angular-leaflet-control-layers {
+            position: absolute;
+            background: white;
+            z-index: 100;
+            left: 10px;
+            top: 100px;
+            width: 200px;
+            box-shadow: 1px 1px 5px #333;
+            padding: 5px;
+        }
 
-      .angular-leaflet-control-layers .lf-row label {
-        cursor: pointer;
-        width: 75%;
-      }
+        .angular-leaflet-control-layers .lf-row label {
+            cursor: pointer;
+            width: 75%;
+        }
 
-      .angular-leaflet-control-layers .lf-row .lf-icon-ol {
-          padding-left: 8px;
-      }
+        .angular-leaflet-control-layers .lf-row .lf-icon-ol {
+            padding-left: 8px;
+        }
 
-      .angular-leaflet-control-layers .lf-row .lf-icon {
-        cursor: pointer;
-        float: left;
-        margin-right: 5px;
-        padding-top: 2px;
-      }
+        .angular-leaflet-control-layers .lf-row .lf-icon {
+            cursor: pointer;
+            float: left;
+            margin-right: 5px;
+            padding-top: 2px;
+        }
 
-      .angular-leaflet-control-layers .lf-row label .lf-text {
-        float: left;
-      }
+        .angular-leaflet-control-layers .lf-row label .lf-text {
+            float: left;
+        }
 
-      .angular-leaflet-control-layers .lf-row .lf-icon-ol-group {
-         color: #00650a;
-      }
+        .angular-leaflet-control-layers .lf-row .lf-icon-ol-group {
+            color: #00650a;
+        }
 
-      .angular-leaflet-control-layers .lf-row .lf-icons {
-        float: right;
-      }
+        .angular-leaflet-control-layers .lf-row .lf-icons {
+            float: right;
+        }
     </style>
-    <leaflet center="madrid" layers="layers" height="480px" width="100%">
+    <leaflet lf-center="madrid" layers="layers" height="480px" width="100%">
         <layercontrol order="normal" icons="layercontrol.icons" auto-hide-opacity="true" show-groups="true"
             title="Layer Manager" base-title="Base Layers" overlays-title="Overlays Layers"></layercontrol>
     </leaflet>

@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="../bower_components/angular/angular.min.js"></script>
     <script src="../bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="../bower_components/angular-simple-logger/dist/angular-simple-logger.js"></script>
     <script src="../bower_components/leaflet-minimap/dist/Control.MiniMap.min.js"></script>
     <script src="../dist/angular-leaflet-directive.js"></script>
     <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
@@ -51,7 +52,7 @@
     </script>
   </head>
   <body ng-controller="ControlsMinimapController">
-    <leaflet center="bogota" controls="controls" tiles="tiles" width="100%" height="480px"></leaflet>
+    <leaflet lf-center="bogota" controls="controls" tiles="tiles" width="100%" height="480px"></leaflet>
     <h1>Minimap control example</h1>
     <p>Minimap control with the <a href="https://github.com/Norkart/Leaflet-MiniMap">Leaflet minimap</a> plugin.</p>
   </body>

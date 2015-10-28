@@ -4,6 +4,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="../bower_components/angular/angular.min.js"></script>
     <script src="../bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="../bower_components/angular-simple-logger/dist/angular-simple-logger.js"></script>
     <script src="../dist/angular-leaflet-directive.min.js"></script>
     <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
     <script>
@@ -81,10 +82,10 @@
     <h1>Different map events broadcasting</h1>
     <p>We can filter which leaflet events we propagate upwars using the event-broadcast directive property, let's see how it works:</p>
     <h3>This map propagates all events</h3>
-    <leaflet event-broadcast="events" center="london" markers="markers" width="100%" height="320px" defaults="defaults"></leaflet>
+    <leaflet event-broadcast="events" lf-center="london" markers="markers" width="100%" height="320px" defaults="defaults"></leaflet>
     <p>Event: <strong ng-bind="eventDetected"></strong></p>
     <h3>This map propagates the "click" and "dblclick" events</h3>
-    <leaflet center="spain" event-broadcast="events2" markers="markers2" width="100%" height="320px"></leaflet>
+    <leaflet lf-center="spain" event-broadcast="events2" markers="markers2" width="100%" height="320px"></leaflet>
     <p>Event: <strong ng-bind="eventDetected2"></strong></p>
   </body>
 </html>

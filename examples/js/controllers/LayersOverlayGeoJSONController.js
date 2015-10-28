@@ -22,6 +22,7 @@
                     name:'World Country Boundaries',
                     type: 'geoJSONShape',
                     data: data,
+                    visible: true,
                     layerOptions: {
                         style: {
                                 color: '#00D',
@@ -40,6 +41,7 @@
                             name:'Major Cities (Awesome Markers)',
                             type: 'geoJSONAwesomeMarker',
                             data: data,
+                            visible: true,
                             icon: {
                                 icon: 'heart',
                                 markerColor: 'red',

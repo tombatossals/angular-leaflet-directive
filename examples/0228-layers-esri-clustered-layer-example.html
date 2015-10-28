@@ -5,6 +5,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <script src="../bower_components/angular/angular.min.js"></script>
     <script src="../bower_components/leaflet/dist/leaflet.js"></script>
+  <script src="../bower_components/angular-simple-logger/dist/angular-simple-logger.js"></script>
     <script src="../bower_components/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
     <script src="../bower_components/esri-leaflet/dist/esri-leaflet.js"></script>
     <script src="../bower_components/esri-leaflet-clustered-feature-layer/dist/esri-leaflet-clustered-feature-layer.js"></script>
@@ -44,7 +45,7 @@
     </script>
 </head>
 <body ng-controller="LayersEsriClusteredLayerController">
-    <leaflet center="porland" layers="layers" width="100%" height="480px"></leaflet>
+    <leaflet lf-center="porland" layers="layers" width="100%" height="480px"></leaflet>
     <h1>Esri ArcGIS Clustered Layer</h1>
     <p>
         Visualize dense services as clusters of points with the

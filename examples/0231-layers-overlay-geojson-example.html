@@ -7,9 +7,10 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <script src="../bower_components/angular/angular.min.js"></script>
     <script src="../bower_components/leaflet/dist/leaflet.js"></script>
+  <script src="../bower_components/angular-simple-logger/dist/angular-simple-logger.js"></script>
     <script src="../bower_components/Leaflet.awesome-markers/dist/leaflet.awesome-markers.js"></script>
     <script src="../bower_components/leaflet-plugins/layer/Icon.Canvas.js"></script>
-    <script src="../dist/angular-leaflet-directive.js"></script>
+    <script src="../dist/angular-leaflet-directive_dev_mapped.js"></script>
     <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="../bower_components/Leaflet.awesome-markers/dist/leaflet.awesome-markers.css" />
     <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.css" />
@@ -40,6 +41,7 @@
                     name:'World Country Boundaries',
                     type: 'geoJSONShape',
                     data: data,
+                    visible: true,
                     layerOptions: {
                         style: {
                                 color: '#00D',
@@ -59,6 +61,7 @@
                             name:'Major Cities (Awesome Markers)',
                             type: 'geoJSONAwesomeMarker',
                             data: data,
+                            visible: true,
                             icon: {
                                 icon: 'heart',
                                 markerColor: 'red',
@@ -72,7 +75,7 @@
     </script>
 </head>
 <body ng-controller="LayersOverlayGeoJSONController">
-    <leaflet center="world" layers="layers" height="480px" width="100%"></leaflet>
+    <leaflet lf-center="world" layers="layers" height="480px" width="100%"></leaflet>
     <h1>GeoJSON Shape Layer and GeoJSON Awesome Marker Layer</h1>
     <p>Use the layer control to add a geoJSON shape layer. This is different from a GeoJSON layer, which is a Tile Layer</p>
     <p>The example also includes a geoJSON Awesome Markers layer, which you can use to customise marker icons easily.</p>

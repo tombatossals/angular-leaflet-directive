@@ -4,6 +4,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="../bower_components/angular/angular.min.js"></script>
     <script src="../bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="../bower_components/angular-simple-logger/dist/angular-simple-logger.js"></script>
     <script src="../bower_components/Leaflet.utfgrid/dist/leaflet.utfgrid.js"></script>
     <script src="../dist/angular-leaflet-directive.min.js"></script>
     <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
@@ -53,7 +54,7 @@
     </style>
 </head>
 <body ng-controller="LayersUTFGridController">
-    <leaflet center="center" layers="layers" width="100%" height="480px"></leaflet>
+    <leaflet lf-center="center" layers="layers" width="100%" height="480px"></leaflet>
     <h1>Baselayer with UTFGrid interactivity in Overlay</h1>
     <p>Mouse over the map regions to interact with UTFGrid.</p>
     <h2>{{interactivity}}</h2>
