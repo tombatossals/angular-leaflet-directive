@@ -6,6 +6,9 @@ digraph dependencies {
     "leaflet-directive"[label="leaflet-directive", color=1]
 
     
+      "nemLogging"[label="nemLogging", color=1]
+      "nemLogging" -> "leaflet-directive"
+    
 
 
     node[shape="ellipse"]
@@ -24,6 +27,9 @@ digraph dependencies {
       "leafletGeoJsonHelpers"[label="leafletGeoJsonHelpers", color=5]
       "leaflet-directive" -> "leafletGeoJsonHelpers"
     
+      "leafletHelpers"[label="leafletHelpers", color=5]
+      "leaflet-directive" -> "leafletHelpers"
+    
       "leafletIterators"[label="leafletIterators", color=5]
       "leaflet-directive" -> "leafletIterators"
     
@@ -32,6 +38,9 @@ digraph dependencies {
     
       "leafletWatchHelpers"[label="leafletWatchHelpers", color=5]
       "leaflet-directive" -> "leafletWatchHelpers"
+    
+      "leafletLogger"[label="leafletLogger", color=5]
+      "leaflet-directive" -> "leafletLogger"
     
       "leafletEventsHelpers"[label="leafletEventsHelpers", color=5]
       "leaflet-directive" -> "leafletEventsHelpers"
@@ -43,12 +52,6 @@ digraph dependencies {
     
       "leafletControlHelpers"[label="leafletControlHelpers", color=6]
       "leaflet-directive" -> "leafletControlHelpers"
-    
-      "leafletEvents"[label="leafletEvents", color=6]
-      "leaflet-directive" -> "leafletEvents"
-    
-      "leafletHelpers"[label="leafletHelpers", color=6]
-      "leaflet-directive" -> "leafletHelpers"
     
       "leafletLayerHelpers"[label="leafletLayerHelpers", color=6]
       "leaflet-directive" -> "leafletLayerHelpers"
@@ -96,6 +99,9 @@ digraph dependencies {
     
       "center"[label="center", color=3]
       "leaflet-directive" -> "center"
+    
+      "lfCenter"[label="lfCenter", color=3]
+      "leaflet-directive" -> "lfCenter"
     
       "controls"[label="controls", color=3]
       "leaflet-directive" -> "controls"
@@ -159,10 +165,13 @@ digraph dependencies {
         "leafletHelpers"[label="leafletHelpers"]
         "leafletHelpers" -> "leaflet"
       
-        "leafletEvents"[label="leafletEvents"]
-        "leafletEvents" -> "leaflet"
+        "leafletMapEvents"[label="leafletMapEvents"]
+        "leafletMapEvents" -> "leaflet"
       
     
+      
+        "leafletLogger"[label="leafletLogger"]
+        "leafletLogger" -> "bounds"
       
         "leafletHelpers"[label="leafletHelpers"]
         "leafletHelpers" -> "bounds"
@@ -175,6 +184,9 @@ digraph dependencies {
       
     
       
+        "leafletLogger"[label="leafletLogger"]
+        "leafletLogger" -> "center"
+      
         "leafletMapDefaults"[label="leafletMapDefaults"]
         "leafletMapDefaults" -> "center"
       
@@ -184,10 +196,30 @@ digraph dependencies {
         "leafletBoundsHelpers"[label="leafletBoundsHelpers"]
         "leafletBoundsHelpers" -> "center"
       
-        "leafletEvents"[label="leafletEvents"]
-        "leafletEvents" -> "center"
+        "leafletMapEvents"[label="leafletMapEvents"]
+        "leafletMapEvents" -> "center"
       
     
+      
+        "leafletLogger"[label="leafletLogger"]
+        "leafletLogger" -> "lfCenter"
+      
+        "leafletMapDefaults"[label="leafletMapDefaults"]
+        "leafletMapDefaults" -> "lfCenter"
+      
+        "leafletHelpers"[label="leafletHelpers"]
+        "leafletHelpers" -> "lfCenter"
+      
+        "leafletBoundsHelpers"[label="leafletBoundsHelpers"]
+        "leafletBoundsHelpers" -> "lfCenter"
+      
+        "leafletMapEvents"[label="leafletMapEvents"]
+        "leafletMapEvents" -> "lfCenter"
+      
+    
+      
+        "leafletLogger"[label="leafletLogger"]
+        "leafletLogger" -> "controls"
       
         "leafletHelpers"[label="leafletHelpers"]
         "leafletHelpers" -> "controls"
@@ -197,21 +229,30 @@ digraph dependencies {
       
     
       
+        "leafletLogger"[label="leafletLogger"]
+        "leafletLogger" -> "decorations"
+      
         "leafletHelpers"[label="leafletHelpers"]
         "leafletHelpers" -> "decorations"
       
     
       
+        "leafletLogger"[label="leafletLogger"]
+        "leafletLogger" -> "eventBroadcast"
+      
         "leafletHelpers"[label="leafletHelpers"]
         "leafletHelpers" -> "eventBroadcast"
       
-        "leafletEvents"[label="leafletEvents"]
-        "leafletEvents" -> "eventBroadcast"
+        "leafletMapEvents"[label="leafletMapEvents"]
+        "leafletMapEvents" -> "eventBroadcast"
       
         "leafletIterators"[label="leafletIterators"]
         "leafletIterators" -> "eventBroadcast"
       
     
+      
+        "leafletLogger"[label="leafletLogger"]
+        "leafletLogger" -> "geojson"
       
         "leafletData"[label="leafletData"]
         "leafletData" -> "geojson"
@@ -233,6 +274,9 @@ digraph dependencies {
       
     
       
+        "leafletLogger"[label="leafletLogger"]
+        "leafletLogger" -> "layercontrol"
+      
         "leafletData"[label="leafletData"]
         "leafletData" -> "layercontrol"
       
@@ -240,6 +284,9 @@ digraph dependencies {
         "leafletHelpers" -> "layercontrol"
       
     
+      
+        "leafletLogger"[label="leafletLogger"]
+        "leafletLogger" -> "layers"
       
         "leafletData"[label="leafletData"]
         "leafletData" -> "layers"
@@ -255,6 +302,9 @@ digraph dependencies {
       
     
       
+        "leafletLogger"[label="leafletLogger"]
+        "leafletLogger" -> "legend"
+      
         "leafletHelpers"[label="leafletHelpers"]
         "leafletHelpers" -> "legend"
       
@@ -262,6 +312,9 @@ digraph dependencies {
         "leafletLegendHelpers" -> "legend"
       
     
+      
+        "leafletLogger"[label="leafletLogger"]
+        "leafletLogger" -> "markers"
       
         "leafletData"[label="leafletData"]
         "leafletData" -> "markers"
@@ -289,6 +342,9 @@ digraph dependencies {
       
     
       
+        "leafletLogger"[label="leafletLogger"]
+        "leafletLogger" -> "maxbounds"
+      
         "leafletMapDefaults"[label="leafletMapDefaults"]
         "leafletMapDefaults" -> "maxbounds"
       
@@ -299,6 +355,9 @@ digraph dependencies {
         "leafletHelpers" -> "maxbounds"
       
     
+      
+        "leafletLogger"[label="leafletLogger"]
+        "leafletLogger" -> "paths"
       
         "leafletData"[label="leafletData"]
         "leafletData" -> "paths"
@@ -312,10 +371,13 @@ digraph dependencies {
         "leafletPathsHelpers"[label="leafletPathsHelpers"]
         "leafletPathsHelpers" -> "paths"
       
-        "leafletEvents"[label="leafletEvents"]
-        "leafletEvents" -> "paths"
+        "leafletPathEvents"[label="leafletPathEvents"]
+        "leafletPathEvents" -> "paths"
       
     
+      
+        "leafletLogger"[label="leafletLogger"]
+        "leafletLogger" -> "tiles"
       
         "leafletData"[label="leafletData"]
         "leafletData" -> "tiles"
@@ -349,10 +411,16 @@ digraph dependencies {
 
     
       
+        "leafletLogger"[label="leafletLogger"]
+        "leafletLogger" -> "leafletData"
+      
         "leafletHelpers"[label="leafletHelpers"]
         "leafletHelpers" -> "leafletData"
       
     
+      
+        "leafletLogger"[label="leafletLogger"]
+        "leafletLogger" -> "leafletDirectiveControlsHelpers"
       
         "leafletData"[label="leafletData"]
         "leafletData" -> "leafletDirectiveControlsHelpers"
@@ -370,6 +438,11 @@ digraph dependencies {
       
     
       
+    
+      
+        "leafletLogger"[label="leafletLogger"]
+        "leafletLogger" -> "leafletIterators"
+      
         "leafletHelpers"[label="leafletHelpers"]
         "leafletHelpers" -> "leafletIterators"
       
@@ -378,10 +451,18 @@ digraph dependencies {
         "leafletHelpers"[label="leafletHelpers"]
         "leafletHelpers" -> "leafletMarkersHelpers"
       
+        "leafletLogger"[label="leafletLogger"]
+        "leafletLogger" -> "leafletMarkersHelpers"
+      
         "leafletGeoJsonHelpers"[label="leafletGeoJsonHelpers"]
         "leafletGeoJsonHelpers" -> "leafletMarkersHelpers"
       
     
+      
+    
+      
+        "nemSimpleLogger"[label="nemSimpleLogger"]
+        "nemSimpleLogger" -> "leafletLogger"
       
     
       
@@ -392,10 +473,16 @@ digraph dependencies {
 
     
       
+        "leafletLogger"[label="leafletLogger"]
+        "leafletLogger" -> "leafletBoundsHelpers"
+      
         "leafletHelpers"[label="leafletHelpers"]
         "leafletHelpers" -> "leafletBoundsHelpers"
       
     
+      
+        "leafletLogger"[label="leafletLogger"]
+        "leafletLogger" -> "leafletControlHelpers"
       
         "leafletHelpers"[label="leafletHelpers"]
         "leafletHelpers" -> "leafletControlHelpers"
@@ -408,21 +495,8 @@ digraph dependencies {
       
     
       
-        "leafletMapEvents"[label="leafletMapEvents"]
-        "leafletMapEvents" -> "leafletEvents"
-      
-        "leafletMarkerEvents"[label="leafletMarkerEvents"]
-        "leafletMarkerEvents" -> "leafletEvents"
-      
-        "leafletPathEvents"[label="leafletPathEvents"]
-        "leafletPathEvents" -> "leafletEvents"
-      
-        "leafletIterators"[label="leafletIterators"]
-        "leafletIterators" -> "leafletEvents"
-      
-    
-      
-    
+        "leafletLogger"[label="leafletLogger"]
+        "leafletLogger" -> "leafletLayerHelpers"
       
         "leafletHelpers"[label="leafletHelpers"]
         "leafletHelpers" -> "leafletLayerHelpers"
@@ -439,6 +513,9 @@ digraph dependencies {
       
     
       
+        "leafletLogger"[label="leafletLogger"]
+        "leafletLogger" -> "leafletPathsHelpers"
+      
         "leafletHelpers"[label="leafletHelpers"]
         "leafletHelpers" -> "leafletPathsHelpers"
       
@@ -452,10 +529,16 @@ digraph dependencies {
       
     
       
+        "leafletLogger"[label="leafletLogger"]
+        "leafletLogger" -> "leafletEventsHelpersFactory"
+      
         "leafletHelpers"[label="leafletHelpers"]
         "leafletHelpers" -> "leafletEventsHelpersFactory"
       
     
+      
+        "leafletLogger"[label="leafletLogger"]
+        "leafletLogger" -> "leafletGeoJsonEvents"
       
         "leafletHelpers"[label="leafletHelpers"]
         "leafletHelpers" -> "leafletGeoJsonEvents"
@@ -463,13 +546,13 @@ digraph dependencies {
         "leafletEventsHelpersFactory"[label="leafletEventsHelpersFactory"]
         "leafletEventsHelpersFactory" -> "leafletGeoJsonEvents"
       
-        "leafletLabelEvents"[label="leafletLabelEvents"]
-        "leafletLabelEvents" -> "leafletGeoJsonEvents"
-      
         "leafletData"[label="leafletData"]
         "leafletData" -> "leafletGeoJsonEvents"
       
     
+      
+        "leafletLogger"[label="leafletLogger"]
+        "leafletLogger" -> "leafletLabelEvents"
       
         "leafletHelpers"[label="leafletHelpers"]
         "leafletHelpers" -> "leafletLabelEvents"
@@ -479,13 +562,22 @@ digraph dependencies {
       
     
       
+        "leafletLogger"[label="leafletLogger"]
+        "leafletLogger" -> "leafletMapEvents"
+      
         "leafletHelpers"[label="leafletHelpers"]
         "leafletHelpers" -> "leafletMapEvents"
       
         "leafletEventsHelpers"[label="leafletEventsHelpers"]
         "leafletEventsHelpers" -> "leafletMapEvents"
       
+        "leafletIterators"[label="leafletIterators"]
+        "leafletIterators" -> "leafletMapEvents"
+      
     
+      
+        "leafletLogger"[label="leafletLogger"]
+        "leafletLogger" -> "leafletMarkerEvents"
       
         "leafletHelpers"[label="leafletHelpers"]
         "leafletHelpers" -> "leafletMarkerEvents"
@@ -497,6 +589,9 @@ digraph dependencies {
         "leafletLabelEvents" -> "leafletMarkerEvents"
       
     
+      
+        "leafletLogger"[label="leafletLogger"]
+        "leafletLogger" -> "leafletPathEvents"
       
         "leafletHelpers"[label="leafletHelpers"]
         "leafletHelpers" -> "leafletPathEvents"
