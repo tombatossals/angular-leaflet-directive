@@ -4,7 +4,7 @@ Renders GeoJSON tiles on an L.GeoJSON layer.
 ## Docs
 
 ### Usage example
-The following example shows how to render a GeoJSON Tile Layer for US road line GeoJSON tiles (borrowed from http://openstreetmap.us/~migurski/vector-datasource/). [See demo](http://bl.ocks.org/glenrobertson/6203331).
+The following example shows how to render a GeoJSON Tile Layer for a tile endpoint at http://tile.example.com/{z}/{x}/{y}.json.
 
         var style = {
             "clickable": true,
@@ -18,7 +18,7 @@ The following example shows how to render a GeoJSON Tile Layer for US road line 
             "fillOpacity": 0.5
         };
 
-        var geojsonURL = 'http://polymaps.appspot.com/state/{z}/{x}/{y}.json';
+        var geojsonURL = 'http://tile.example.com/{z}/{x}/{y}.json';
         var geojsonTileLayer = new L.TileLayer.GeoJSON(geojsonURL, {
                 clipTiles: true,
                 unique: function (feature) {

@@ -140,7 +140,8 @@ var _ = _self.Prism = {
 			}
 		}
 	},
-
+	plugins: {},
+	
 	highlightAll: function(async, callback) {
 		var elements = document.querySelectorAll('code[class*="language-"], [class*="language-"] code, code[class*="lang-"], [class*="lang-"] code');
 
@@ -172,17 +173,7 @@ var _ = _self.Prism = {
 			parent.className = parent.className.replace(lang, '').replace(/\s+/g, ' ') + ' language-' + language;
 		}
 
-		if (!grammar) {
-			return;
-		}
-
 		var code = element.textContent;
-
-		if(!code) {
-			return;
-		}
-
-		code = code.replace(/^(?:\r?\n|\r)/,'');
 
 		var env = {
 			element: element,
@@ -191,13 +182,18 @@ var _ = _self.Prism = {
 			code: code
 		};
 
+		if (!code || !grammar) {
+			_.hooks.run('complete', env);
+			return;
+		}
+
 		_.hooks.run('before-highlight', env);
 
 		if (async && _self.Worker) {
 			var worker = new Worker(_.filename);
 
 			worker.onmessage = function(evt) {
-				env.highlightedCode = Token.stringify(JSON.parse(evt.data), language);
+				env.highlightedCode = evt.data;
 
 				_.hooks.run('before-insert', env);
 
@@ -205,11 +201,13 @@ var _ = _self.Prism = {
 
 				callback && callback.call(env.element);
 				_.hooks.run('after-highlight', env);
+				_.hooks.run('complete', env);
 			};
 
 			worker.postMessage(JSON.stringify({
 				language: env.language,
-				code: env.code
+				code: env.code,
+				immediateClose: true
 			}));
 		}
 		else {
@@ -222,6 +220,7 @@ var _ = _self.Prism = {
 			callback && callback.call(element);
 
 			_.hooks.run('after-highlight', env);
+			_.hooks.run('complete', env);
 		}
 	},
 
@@ -380,7 +379,7 @@ Token.stringify = function(o, language, parent) {
 	var attributes = '';
 
 	for (var name in env.attributes) {
-		attributes += name + '="' + (env.attributes[name] || '') + '"';
+		attributes += (attributes ? ' ' : '') + name + '="' + (env.attributes[name] || '') + '"';
 	}
 
 	return '<' + env.tag + ' class="' + env.classes.join(' ') + '" ' + attributes + '>' + env.content + '</' + env.tag + '>';
@@ -396,10 +395,13 @@ if (!_self.document) {
 	_self.addEventListener('message', function(evt) {
 		var message = JSON.parse(evt.data),
 		    lang = message.language,
-		    code = message.code;
+		    code = message.code,
+		    immediateClose = message.immediateClose;
 
-		_self.postMessage(JSON.stringify(_.util.encode(_.tokenize(code, _.languages[lang]))));
-		_self.close();
+		_self.postMessage(_.highlight(code, _.languages[lang], lang));
+		if (immediateClose) {
+			_self.close();
+		}
 	}, false);
 
 	return _self.Prism;
@@ -424,4 +426,9 @@ return _self.Prism;
 
 if (typeof module !== 'undefined' && module.exports) {
 	module.exports = Prism;
+}
+
+// hack for components to work correctly in node.js
+if (typeof global !== 'undefined') {
+	global.Prism = Prism;
 }

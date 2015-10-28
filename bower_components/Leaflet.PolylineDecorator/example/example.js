@@ -25,8 +25,8 @@ function init() {
             arrowOffset = 0;
     }, 100);
 
-    // --- Polygon ---
-    var polygon = L.polygon([[54, -6], [55, -7], [56, -2], [55, 1], [53, 0], [54, -6]], {color: "#ff7800", weight: 1}).addTo(map);
+    // --- Polygon, with an inner ring ---
+    var polygon = L.polygon([[[54, -6], [55, -7], [56, -2], [55, 1], [53, 0]], [[54, -3], [54, -2], [55, -1], [55, -5]]], {color: "#ff7800", weight: 1}).addTo(map);
     var pd = L.polylineDecorator(polygon, {
         patterns: [
             {offset: 0, repeat: 10, symbol: L.Symbol.dash({pixelSize: 0})}
@@ -51,7 +51,7 @@ function init() {
             { offset: '5%', repeat: '10%', symbol: L.Symbol.marker()}
         ]
     }).addTo(map);
-    
+
     // --- Example with a rotated marker --- 
     var pathPattern = L.polylineDecorator(
         [ [ 42.9, -15 ], [ 44.18, -11.4 ], [ 45.77, -8.0 ], [ 47.61, -6.4 ], [ 49.41, -6.1 ], [ 51.01, -7.2 ] ],
@@ -81,18 +81,6 @@ function init() {
     L.polylineDecorator(multiCoords1, {
         patterns: [
             {offset: 25, repeat: 50, symbol: L.Symbol.arrowHead({pixelSize: 15, pathOptions: {fillOpacity: 1, weight: 0}})}
-        ]
-    }).addTo(map);
-
-    // --- Example with a MultiPolygon ---
-    var multiCoords2 = [
-        [[55.4788, 4.1748], [53.7487, 4.5263], [52.4560, 7.3388], [56.3165, 7.8662]],
-        [[53.9302, 9.2724] , [52.8027, 9.8876], [52.1604, 12.0849], [53.5141, 14.5019], [54.9523, 14.3261], [55.5037, 10.5908]]
-    ];
-    var multiPl = L.multiPolygon(multiCoords2, {weight: 0, fillOpacity: 0}).addTo(map);
-    L.polylineDecorator(multiPl, {
-        patterns: [
-            {offset: 0, repeat: 10, symbol: L.Symbol.dash({pixelSize: 0, pathOptions: {color: '#080'}})}
         ]
     }).addTo(map);
 }

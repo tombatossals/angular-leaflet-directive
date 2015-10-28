@@ -3,12 +3,12 @@
 <head>
 	<title>Leaflet debug page</title>
 
-	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css" />
-	<script src="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js"></script>
+	<link rel="stylesheet" href="../node_modules/leaflet/dist/leaflet.css" />
+	<script src="../node_modules/leaflet/dist/leaflet.js"></script>
 
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<script src="../src/leaflet.utfgrid.js"></script>
+	<script src="../dist/leaflet.utfgrid.js"></script>
 </head>
 <body>
 
@@ -16,7 +16,7 @@
 	Use the layers dialog to turn interaction on and off.
 	<div id="click"></div>
 	<div id="hover"></div>
-	
+
 	<script type="text/javascript">
 
 		var tiles = L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png', {
@@ -30,15 +30,15 @@
 		});
 
 		var utfGrid = new L.UtfGrid('http://{s}.tiles.mapbox.com/v3/mapbox.geography-class/{z}/{x}/{y}.grid.json?callback={cb}');
-		
+
 		//Use a LayerGroup to group together a TileLayer and our UtfGrid layer
 		//This enables us to toggle them both together in the layers dialog
 		var interactiveLayerGroup = L.layerGroup([
 			tiles2,
 			utfGrid
 		]);
-		
-		
+
+
 		//Events
 		utfGrid.on('click', function (e) {
 			if (e.data) {
@@ -46,7 +46,7 @@
 			} else {
 				document.getElementById('click').innerHTML = 'click: nothing';
 			}
-		}); 
+		});
 		utfGrid.on('mouseover', function (e) {
 			if (e.data) {
 				document.getElementById('hover').innerHTML = 'hover: ' + e.data.admin;

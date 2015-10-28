@@ -1,6 +1,6 @@
 {
   "name": "Proj4Leaflet",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "homepage": "https://github.com/kartena/Proj4Leaflet",
   "authors": [
     "Per Liedman <per.liedman@kartena.se> (https://github.com/perliedman/)"
@@ -29,13 +29,13 @@
   ],
   "dependencies": {
     "proj4": "~2.1.2",
-    "leaflet-dist": "~0.7.2"
+    "leaflet": "~0.7.2"
   },
-  "_release": "0.7.1",
+  "_release": "0.7.2",
   "_resolution": {
     "type": "version",
-    "tag": "0.7.1",
-    "commit": "2c5d717789cc804da2b64702db563dcf124d3e4c"
+    "tag": "0.7.2",
+    "commit": "22b8542a74b115ddc675220f918fce298771c82a"
   },
   "_source": "git://github.com/kartena/Proj4Leaflet.git",
   "_target": "*",

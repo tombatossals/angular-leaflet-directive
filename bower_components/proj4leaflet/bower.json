@@ -1,6 +1,6 @@
 {
   "name": "Proj4Leaflet",
-  "version": "0.7.0",
+  "version": "0.7.2",
   "homepage": "https://github.com/kartena/Proj4Leaflet",
   "authors": [
     "Per Liedman <per.liedman@kartena.se> (https://github.com/perliedman/)"
@@ -29,6 +29,6 @@
   ],
   "dependencies": {
     "proj4": "~2.1.2",
-    "leaflet-dist": "~0.7.2"
+    "leaflet": "~0.7.2"
   }
 }
