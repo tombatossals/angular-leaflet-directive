@@ -12,5 +12,5 @@
             });
             $scope.changeLocation = function(centerHash) {
                 $location.search({ c: centerHash });
-            }
+            };
         }]);

@@ -12,7 +12,7 @@
 
     <script>
         var app = angular.module("demoapp", ["leaflet-directive"]);
-        app.controller("ControlsFullscreenController", [ "$scope", function($scope) {
+        app.controller("ControlsCustomController", [ "$scope", function($scope) {
             angular.extend($scope, {
                 london: {
                     lat: 37.8,
@@ -35,7 +35,7 @@
        }]);
     </script>
   </head>
-  <body ng-controller="ControlsFullscreenController">
+  <body ng-controller="ControlsCustomController">
     <leaflet lf-center="london" controls="controls" tiles="tiles" width="100%" height="480px"></leaflet>
     <h1>Fullscreen control example</h1>
     <p>Fullscreen control with the <a href="https://github.com/Leaflet/Leaflet.fullscreen">Leaflet fullscreen</a> plugin.</p>

@@ -1,4 +1,4 @@
-        app.controller("ControlsFullscreenController", [ "$scope", function($scope) {
+        app.controller("ControlsCustomController", [ "$scope", function($scope) {
             angular.extend($scope, {
                 london: {
                     lat: 37.8,
@@ -15,9 +15,7 @@
                     }
                 },
                 controls: {
-                    fullscreen: {
-                        position: 'topleft'
-                    }
+                    custom: new L.Control.Fullscreen()
                 }
            });
        }]);
