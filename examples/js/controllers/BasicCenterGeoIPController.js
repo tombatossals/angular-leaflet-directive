@@ -13,9 +13,9 @@
                         lat: res.latitude,
                         lng: res.longitude,
                         zoom: 10
-                    }
+                    };
                     $scope.ip = res.ip;
-                })
+                });
             };
             $scope.searchIP("");
        }]);

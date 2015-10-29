@@ -1,5 +1,4 @@
-        app.controller("MarkersEventsController", [ "$scope", "leafletMarkerEvents", "leafletLogger", function($scope, leafletMarkerEvents, leafletLogger) {
-          // leafletLogger.currentLevel =  leafletLogger.LEVELS.debug;
+        app.controller("MarkersEventsWithIDController", [ "$scope", "leafletMarkerEvents", function($scope, leafletMarkerEvents) {
             $scope.center = {
                 lat: 51.505,
                 lng: -0.09,
@@ -22,7 +21,7 @@
             $scope.eventDetected = "No events yet...";
             var markerEvents = leafletMarkerEvents.getAvailableEvents();
             for (var k in markerEvents){
-                var eventName = 'leafletDirectiveMarker.myMap.' + markerEvents[k];
+                var eventName = 'leafletDirectiveMarker.' + markerEvents[k];
                 $scope.$on(eventName, function(event, args){
                     $scope.eventDetected = event.name;
                 });
