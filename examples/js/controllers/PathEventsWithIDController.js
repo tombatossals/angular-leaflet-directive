@@ -1,21 +1,7 @@
-<!DOCTYPE html>
-<html ng-app="demoapp">
-  <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="../bower_components/angular/angular.min.js"></script>
-    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
-    <script src="../bower_components/angular-simple-logger/dist/angular-simple-logger.js"></script>
-    <script src="../bower_components/Leaflet.label/dist/leaflet.label.js"></script>
-    <script src="../dist/angular-leaflet-directive.js"></script>
-    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
-    <link rel="stylesheet" href="../bower_components/Leaflet.label/dist/leaflet.label.css" />
-    <script>
-        var app = angular.module("demoapp", ["leaflet-directive"]);
         app.controller("PathEventsWithIDController", function($scope, leafletLogger) {
             // leafletLogger.currentLevel = leafletLogger.LEVELS.debug;
             var paths = {};
             $scope.clicked = 0;
-
             var marylandIslands = {
                 'Fort Carroll': {
                     lat: 39.214766,
@@ -30,7 +16,6 @@
                     lng: -76.457334
                 }
             };
-
             angular.forEach(marylandIslands, function (v, k) {
                 paths[k] = {
                     type: "circleMarker",
@@ -42,7 +27,6 @@
                     clickable: true
                 };
             });
-
             angular.extend($scope, {
                 center: {
                     lat:38.976492,
@@ -65,23 +49,10 @@
                 },
                 paths: paths
             });
-
             $scope.$on('leafletDirectivePath.click', function (event) {
                 $scope.clicked++;
             });
-
             $scope.$on('leafletDirectivePath.mouseover', function (event, path) {
                 $scope.mouseover = path.modelName;
             });
-
         });
-    </script>
-  </head>
-  <body ng-controller="PathEventsWithIDController">
-    <leaflet lf-center="center" paths="paths" layers="layers" event-broadcast="events" paths="paths" width="100%" height="480px"></leaflet>
-    <h1>Paths specific events propagation exampl</h1>
-    <p>Click on path points to trigger an event</p>
-    <p>Mouse over: <strong ng-bind="mouseover"></strong></p>
-    <p>You clicked <b>{{clicked}}</b> times </p>
-  </body>
-</html>

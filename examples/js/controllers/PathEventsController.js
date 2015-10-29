@@ -49,11 +49,10 @@
                 },
                 paths: paths
             });
-            $scope.$on('leafletDirectivePath.click', function (event) {
+            $scope.$on('leafletDirectivePath.myMap.click', function (event) {
                 $scope.clicked++;
             });
-            $scope.$on('leafletDirectivePath.mouseover', function (event, path) {
+            $scope.$on('leafletDirectivePath.myMap.mouseover', function (event, path) {
                 $scope.mouseover = path.modelName;
             });
-        });
         });
