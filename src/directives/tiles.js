@@ -19,7 +19,7 @@ angular.module("leaflet-directive").directive('tiles', function (leafletLogger, 
             controller.getMap().then(function(map) {
                 var defaults = leafletMapDefaults.getDefaults(attrs.id);
                 var tileLayerObj;
-                leafletScope.$watch("tiles", function(tiles) {
+                leafletScope.$watch("tiles", function(tiles, oldtiles) {
                     var tileLayerOptions = defaults.tileLayerOptions;
                     var tileLayerUrl = defaults.tileLayer;
 
@@ -39,19 +39,31 @@ angular.module("leaflet-directive").directive('tiles', function (leafletLogger, 
                             tileLayerUrl = tiles.url;
                         }
 
-                        tileLayerObj = L.tileLayer(tileLayerUrl, tileLayerOptions);
+                        if (tiles.type === 'wms') {
+                            tileLayerObj = L.tileLayer.wms(tileLayerUrl, tileLayerOptions);
+                        } else {
+                            tileLayerObj = L.tileLayer(tileLayerUrl, tileLayerOptions);
+                        }
+
                         tileLayerObj.addTo(map);
                         leafletData.setTiles(tileLayerObj, attrs.id);
                         return;
                     }
 
                     // If the options of the tilelayer is changed, we need to redraw the layer
-                    if (isDefined(tiles.url) && isDefined(tiles.options) && !angular.equals(tiles.options, tileLayerOptions)) {
+                    if (isDefined(tiles.url) && isDefined(tiles.options) &&
+                        (tiles.type !== oldtiles.type || !angular.equals(tiles.options, tileLayerOptions))) {
                         map.removeLayer(tileLayerObj);
                         tileLayerOptions = defaults.tileLayerOptions;
                         angular.copy(tiles.options, tileLayerOptions);
                         tileLayerUrl = tiles.url;
-                        tileLayerObj = L.tileLayer(tileLayerUrl, tileLayerOptions);
+
+                        if (tiles.type === 'wms') {
+                            tileLayerObj = L.tileLayer.wms(tileLayerUrl, tileLayerOptions);
+                        } else {
+                            tileLayerObj = L.tileLayer(tileLayerUrl, tileLayerOptions);
+                        }
+
                         tileLayerObj.addTo(map);
                         leafletData.setTiles(tileLayerObj, attrs.id);
                         return;

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html ng-app="demoapp">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="../bower_components/angular-simple-logger/dist/angular-simple-logger.js"></script>
+    <script src="../dist/angular-leaflet-directive.min.js"></script>
+    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
+    <script>
+        var app = angular.module("demoapp", ["leaflet-directive"]);
+        app.controller('BasicTilesWMSController', [ '$scope', function($scope) {
+            var tilesDict = {
+                standard: {
+                    name: 'MAP Standard',
+                    type: 'wms',
+                    url: 'https://api.minu.mn/wms',
+                    layerParams: {
+                        layers: 'layer:standard',
+                        format: 'image/png',
+                        transparent: true,
+                        tiled: true,
+                        version: '1.3.0',
+                        maxZoom: 19
+                    }
+                },
+                blue: {
+                    name: 'MAP Blue',
+                    type: 'wms',
+                    url: 'https://api.minu.mn/wms',
+                    layerParams: {
+                        layers: 'layer:blue',
+                        format: 'image/png',
+                        transparent: true,
+                        tiled: true,
+                        version: '1.3.0',
+                        maxZoom: 19
+                    }
+                }
+            };
+
+            angular.extend($scope, {
+                london: {
+                    lat: 51.505,
+                    lng: -0.09,
+                    zoom: 8
+                },
+                tiles: tilesDict.standard
+            });
+
+            $scope.changeTiles = function(tiles) {
+                $scope.tiles = tilesDict[tiles];
+            };
+        } ]);
+    </script>
+  </head>
+  <body ng-controller="BasicTilesWMSController">
+      <leaflet lf-center="london" tiles="tiles" defaults="defaults" width="100%" height="480px"></leaflet>
+      <h1>Loading WMS tilesDict example</h1>
+      <p>Change tiles clicking in the buttons below:</p>
+      <p>
+          <button ng-click="changeTiles('standard')" class="btn btn-default">Standard Tiles</button>
+          <button ng-click="changeTiles('blue')" class="btn btn-default">Blue Tiles</button>
+      </p>
+      <p>Current TileLayer WMS Url: <strong ng-bind="tiles.url"></strong></p>
+  </body>
+</html>
