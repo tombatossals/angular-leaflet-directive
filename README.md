@@ -5,9 +5,13 @@ Library. This software aims to easily embed maps managed by Leaflet on your proj
 
 ## [tombatossals](http://github.com/tombatossals/angular-leaflet-directive)
 
+This is my personal project, which has been coded by me helped by many people for some years. I continue evolving it frequently, but if you need enterprise support of it, sorry, I can't give you more support that my spare time allows me.
+
 [![Build Status](https://travis-ci.org/tombatossals/angular-leaflet-directive.png?branch=master)](https://travis-ci.org/tombatossals/angular-leaflet-directive) [![Dependencies](https://david-dm.org/tombatossals/angular-leaflet-directive.svg)](https://david-dm.org/tombatossals/angular-leaflet-directive)&nbsp;
 [![Dependencies](https://david-dm.org/tombatossals/angular-leaflet-directive/dev-status.svg)](https://david-dm.org/tombatossals/angular-leaflet-directive) [![Coverage
 Status](https://coveralls.io/repos/tombatossals/angular-leaflet-directive/badge.png?branch=master)](http://tombatossals.github.io/angular-leaflet-directive/coverage/PhantomJS%201.9.7%20%28Linux%29/lcov-report/dist/angular-leaflet-directive.js.html)
+
+If you need better response time with your doubts and needs, take a look at the [angular-ui](http://github.com/angular-ui/ui-leaflet) fork of this project, it's lead by really awesome developers which have helped me evolving the project for some time.
 
 ## [angular-ui](http://github.com/angular-ui/ui-leaflet)
 [![Build Status](https://travis-ci.org/angular-ui/ui-leaflet.png?branch=master)](https://travis-ci.org/angular-ui/ui-leaflet) [![Dependencies](https://david-dm.org/angular-ui/ui-leaflet.svg)](https://david-dm.org/angular-ui/ui-leaflet)&nbsp;
@@ -20,38 +24,23 @@ Status](https://coveralls.io/repos/angular-ui/ui-leaflet/badge.png?branch=master
 
 ## Documentation
 
-See https://tombatossals.github.com/angular-leaflet-directive
+Still working on it. In the meantime, take a look at this URL for some minimal descriptions: https://tombatossals.github.com/angular-leaflet-directive
 
-## How to use it
-
-Include [angular-simple-logger](https://github.com/nmccready/angular-simple-logger) before Angular-Leaflet js files. Logger gets installed as a requirement of Angular-Leaflet with `bower install` or `npm install`. Note if your using the browser to load it without CommonJS (browserify, webpack) please use angular-simple-logger.js (not index.js) .
+## Getting started/How to use it
 
 Include the `leaflet-directive` dependency on your Angular module:
 ```
-var app = angular.module('demoapp', ['nemLogging','leaflet-directive']);
+var app = angular.module('demoapp', ['leaflet-directive']);
 ```
 
-After that, you can change the default values of the directive on
-your angular controller. For example, you can change the tiles source, the
-maxzoom on the Leaflet map or the polyline path properties.
+After that, you are ready to rock. Just define some objects with the basic configuration you want reflected in your map and the rendered map will obey you. Also, you can modify that configuration dinamically if you need to. Let's see an example.
 
-```javascript
-angular.extend($scope, {
-    defaults: {
-        tileLayer: 'http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png',
-        maxZoom: 14,
-        path: {
-            weight: 10,
-            color: '#800000',
-            opacity: 1
-        }
-    }
-});
-```
+### center
 
-If you want to set the start of the map to a precise position, you can define
-the "center" property of the scope (lat, lng, zoom). It will be updated
+If you want to set the map view to a precise position, you can define
+the "center" property of the scope (lat, lng, zoom). It will also be updated
 interacting on the scope and on the leaflet map in two-way binding. Example:
+
 ```javascript
 angular.extend($scope, {
     center: {
@@ -62,37 +51,13 @@ angular.extend($scope, {
 });
 ```
 
-If you need to run any method on the map object, use `leafletData` as following (notice the map object is returned in a form of a promise):
-
-```javascript
-angular.module('myModule').controller('MapController', ['$scope', 'leafletData',
-    function($scope, leafletData) {
-        leafletData.getMap().then(function(map) {
-            L.GeoIP.centerMapOnPosition(map, 15);
-        });
-    }
-]);
-```
-
-Finally, you must include the markup directive on your HTML page:
+Finally, you must include the markup directive on your HTML page. One important thing is that you must define the map width&height, as attributes of the directive or with CSS code, as you wish.
 ```html
-<leaflet defaults="defaults" lf-center="center" height="480px" width="640px"></leaflet>
+<leaflet lf-center="center" height="480px" width="640px"></leaflet>
 ```
 
 If you want to have more than one map on the page and access their respective map objects, add an *id* attribute to your leaflet directive in HTML:
 
 ```html
-<leaflet id="mymap" defaults="defaults" lf-center="center" height="480px" width="640px"></leaflet>
-```
-
-And then you can use this id in `getMap()`:
-
-```javascript
-angular.module('myModule').controller('MapController', ['$scope', 'leafletData',
-    function($scope, leafletData) {
-        leafletData.getMap('mymap').then(function(map) {
-            L.GeoIP.centerMapOnPosition(map, 15);
-        });
-    }
-]);
+<leaflet id="mymap" lf-center="center" height="480px" width="640px"></leaflet>
 ```
