@@ -1,7 +1,7 @@
 {
   "author": "Pavel Shramov",
   "name": "leaflet-plugins",
-  "version": "1.3.11",
+  "version": "1.3.12",
   "description": "Miscellaneous plugins for Leaflet library for services that need to display route information and need satellite imagery from different providers",
   "license": "MIT",
   "repository": {

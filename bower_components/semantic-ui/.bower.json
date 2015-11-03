@@ -19,19 +19,17 @@
     "css3",
     "framework"
   ],
-  "license": [
-    "http://semantic-ui.mit-license.org/"
-  ],
+  "license": "MIT",
   "ignore": [
     "src/site",
     "test"
   ],
-  "version": "2.1.4",
-  "_release": "2.1.4",
+  "version": "2.1.5",
+  "_release": "2.1.5",
   "_resolution": {
     "type": "version",
-    "tag": "2.1.4",
-    "commit": "1cdfbd8bb69baa623fe6e524755b83c018b247ab"
+    "tag": "2.1.5",
+    "commit": "f2b82bd1b6e24ca9d5af7d0d3f284ff70c0a5ab0"
   },
   "_source": "git://github.com/Semantic-Org/Semantic-UI.git",
   "_target": "*",

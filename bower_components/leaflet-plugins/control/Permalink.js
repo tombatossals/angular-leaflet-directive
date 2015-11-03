@@ -94,13 +94,14 @@ L.Control.Permalink = L.Control.extend({
 
 	_set_urlvars: function()
 	{
-		this._url_base = window.location.href.split('#')[0].split('?')[0];
-
 		var p;
-		if (this.options.useAnchor)
+		if (this.options.useAnchor) {
 			p = L.UrlUtil.queryParse(L.UrlUtil.hash());
-		else
+			this._url_base = window.location.href.split('#')[0];
+		} else {
 			p = L.UrlUtil.queryParse(L.UrlUtil.query());
+			this._url_base = window.location.href.split('#')[0].split('?')[0];
+		}
 		
 		function eq(x, y) {
 			for(var i in x)
