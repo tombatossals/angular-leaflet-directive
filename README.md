@@ -3,8 +3,6 @@
 [AngularJS](http://angularjs.org/) directive for the [Leaflet](http://www.leafletjs.com/) Javascript
 Library. This software aims to easily embed maps managed by Leaflet on your project.
 
-[![Join the chat at https://gitter.im/tombatossals/angular-leaflet-directive](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/tombatossals/angular-leaflet-directive?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
 ## [tombatossals](http://github.com/tombatossals/angular-leaflet-directive)
 
 [![Build Status](https://travis-ci.org/tombatossals/angular-leaflet-directive.png?branch=master)](https://travis-ci.org/tombatossals/angular-leaflet-directive) [![Dependencies](https://david-dm.org/tombatossals/angular-leaflet-directive.svg)](https://david-dm.org/tombatossals/angular-leaflet-directive)&nbsp;
