@@ -5,12 +5,14 @@ Library. This software aims to easily embed maps managed by Leaflet on your proj
 
 ### [tombatossals/angular-leaflet-directive](http://github.com/tombatossals/angular-leaflet-directive)
 This is my personal project, which has been coded by me helped by many people for some years. I continue evolving it frequently, but if you need enterprise support of it, sorry, I can't give you more support that my spare time allows me.
+
 [![Build Status](https://travis-ci.org/tombatossals/angular-leaflet-directive.png?branch=master)](https://travis-ci.org/tombatossals/angular-leaflet-directive) [![Dependencies](https://david-dm.org/tombatossals/angular-leaflet-directive.svg)](https://david-dm.org/tombatossals/angular-leaflet-directive)&nbsp;
 [![Dependencies](https://david-dm.org/tombatossals/angular-leaflet-directive/dev-status.svg)](https://david-dm.org/tombatossals/angular-leaflet-directive) [![Coverage
 Status](https://coveralls.io/repos/tombatossals/angular-leaflet-directive/badge.png?branch=master)](http://tombatossals.github.io/angular-leaflet-directive/coverage/PhantomJS%201.9.7%20%28Linux%29/lcov-report/dist/angular-leaflet-directive.js.html)
 
 ### [angular-ui](http://github.com/angular-ui/ui-leaflet)
 If you need better response time with your doubts and needs, take a look at the [angular-ui](http://github.com/angular-ui/ui-leaflet) fork of this project, it's lead by really awesome developers which have helped me evolving the project for some time.
+
 [![Build Status](https://travis-ci.org/angular-ui/ui-leaflet.png?branch=master)](https://travis-ci.org/angular-ui/ui-leaflet) [![Dependencies](https://david-dm.org/angular-ui/ui-leaflet.svg)](https://david-dm.org/angular-ui/ui-leaflet)&nbsp;
 [![Dependencies](https://david-dm.org/angular-ui/ui-leaflet/dev-status.svg)](https://david-dm.org/angular-ui/ui-leaflet) [![Coverage
 Status](https://coveralls.io/repos/angular-ui/ui-leaflet/badge.png?branch=master)](http://realtymaps.github.io/ui-leaflet/coverage/PhantomJS%201.9.7%20%28Linux%29/lcov-report/dist/ui-leaflet.js.html)
