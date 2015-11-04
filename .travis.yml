@@ -1,15 +1,24 @@
+sudo: false
 language: node_js
-
+cache:
+  directories:
+    - node_modules
+notifications:
+  email: false
 node_js:
-  - "0.10"
+  - '4'
+before_install:
+  - npm i -g npm@^2.0.0
+before_script:
+  - npm prune
+after_success:
+  - npm run semantic-release
+branches:
+  except:
+    - "/^v\\d+\\.\\d+\\.\\d+$/"
 
 env:
   global:
     - secure: "Ugov4QqHxEN4976jaQvtQigwwB7wiG0vxiE4pIDiZKJ67py0d0kLZXI4CzNs8zV5EOrkR+ug2cs9vTmA8CdSmhQcx4SVwFoim/ReoQb9AK76+tgEso+F3nZpE1jeIorKN2/LAXtwkHOZa9WaDwhMlCULJxJ8DZoMsXkc5Xq3c6A="
     - secure: "QW7a9wCfc4u+MGnPyLzE+HHRhAhTf0a1mqixoUB2MVNL/hZ7+nXAOL/oz3LxodPpwH3NEl4RyqteGS15XpJvZKuKXiyHWbrfSLHz7DD1LYuIzc7UOgyBTXF0C97DP5ae7zui+qvDOe67ud+qBerroP9jdcx+mSVQgMIAfF1uWY4="
     - secure: "gflE27IYzgjICndyY7800KdoNKem0oMWKtIjXQuSTJFuWJvBVWkUajT8maNbv1+c46r6iFptd27m5Arzl9hqAh2deHqLxwRGqietcY737q7oRJzKRfA4MGycF8fKHEh8U5KupXTC7UXuESLWGA+bpWA6KNJ5CImAw2MWJXmsX9c="
-
-before_script:
-  - npm install -g grunt-cli
-  - npm install -g bower
-  - bower install --config.interactive=false

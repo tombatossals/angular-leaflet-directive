@@ -1,8 +1,8 @@
 {
   "author": "https://github.com/tombatossals/angular-leaflet-directive/graphs/contributors",
   "name": "angular-leaflet-directive",
-  "description": "angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps",
   "version": "0.9.0",
+  "description": "angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps",
   "homepage": "http://tombatossals.github.io/angular-leaflet-directive/",
   "repository": {
     "type": "git",
@@ -61,7 +61,8 @@
   "scripts": {
     "test": "grunt travis --verbose",
     "karmaChrome": "grunt test-unit-chrome",
-    "karmaChromeOnce": "grunt karma:unit-chrome-once"
+    "karmaChromeOnce": "grunt karma:unit-chrome-once",
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "main": "dist/angular-leaflet-directive",
   "dependencies": {
