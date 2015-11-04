@@ -11,6 +11,9 @@ before_install:
   - npm i -g npm@^2.0.0
 before_script:
   - npm prune
+  - npm install -g grunt-cli
+  - npm install -g bower
+  - bower install --config.interactive=false
 after_success:
   - npm run semantic-release
 branches:
