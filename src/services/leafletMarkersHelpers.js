@@ -1,4 +1,4 @@
-angular.module("leaflet-directive").service('leafletMarkersHelpers', function ($rootScope, $timeout, leafletHelpers, leafletLogger, $compile, leafletGeoJsonHelpers) {
+angular.module("leaflet-directive").service('leafletMarkersHelpers', function ($rootScope, $timeout, leafletHelpers, $log, $compile, leafletGeoJsonHelpers) {
     var isDefined = leafletHelpers.isDefined,
         defaultTo = leafletHelpers.defaultTo,
         MarkerClusterPlugin = leafletHelpers.MarkerClusterPlugin,
@@ -14,9 +14,7 @@ angular.module("leaflet-directive").service('leafletMarkersHelpers', function ($
         isObject = leafletHelpers.isObject,
         groups = {},
         geoHlp = leafletGeoJsonHelpers,
-        errorHeader = leafletHelpers.errorHeader,
-        $log = leafletLogger;
-
+        errorHeader = leafletHelpers.errorHeader;
 
     var _string = function (marker) {
         //this exists since JSON.stringify barfs on cyclic

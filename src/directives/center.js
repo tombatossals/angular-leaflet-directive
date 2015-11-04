@@ -2,9 +2,9 @@ var centerDirectiveTypes = ['center', 'lfCenter'],
     centerDirectives = {};
 
 centerDirectiveTypes.forEach(function(directiveName) {
-    centerDirectives[directiveName] = ['leafletLogger', '$q', '$location', '$timeout', 'leafletMapDefaults', 'leafletHelpers',
+    centerDirectives[directiveName] = [ '$log', '$q', '$location', '$timeout', 'leafletMapDefaults', 'leafletHelpers',
         'leafletBoundsHelpers', 'leafletMapEvents',
-        function(leafletLogger, $q, $location, $timeout, leafletMapDefaults, leafletHelpers,
+        function($log, $q, $location, $timeout, leafletMapDefaults, leafletHelpers,
       leafletBoundsHelpers, leafletMapEvents) {
 
         var isDefined = leafletHelpers.isDefined,
@@ -14,8 +14,7 @@ centerDirectiveTypes.forEach(function(directiveName) {
             isValidCenter = leafletHelpers.isValidCenter,
             isValidBounds = leafletBoundsHelpers.isValidBounds,
             isUndefinedOrEmpty = leafletHelpers.isUndefinedOrEmpty,
-            errorHeader = leafletHelpers.errorHeader,
-            $log = leafletLogger;
+            errorHeader = leafletHelpers.errorHeader;
 
         var shouldInitializeMapWithBounds = function(bounds, center) {
             return isDefined(bounds) && isValidBounds(bounds) && isUndefinedOrEmpty(center);

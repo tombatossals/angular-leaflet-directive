@@ -1,5 +1,5 @@
-angular.module("leaflet-directive").directive('paths', function (leafletLogger, $q, leafletData, leafletMapDefaults, leafletHelpers, leafletPathsHelpers, leafletPathEvents) {
-    var $log = leafletLogger;
+angular.module("leaflet-directive").directive('paths', function ($log, $q, leafletData, leafletMapDefaults, leafletHelpers, leafletPathsHelpers, leafletPathEvents) {
+
     return {
         restrict: "A",
         scope: false,

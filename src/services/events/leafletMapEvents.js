@@ -1,5 +1,5 @@
 angular.module("leaflet-directive")
-.factory('leafletMapEvents', function ($rootScope, $q, leafletLogger, leafletHelpers, leafletEventsHelpers, leafletIterators) {
+.factory('leafletMapEvents', function ($rootScope, $q, $log, leafletHelpers, leafletEventsHelpers, leafletIterators) {
     var isDefined = leafletHelpers.isDefined,
         fire = leafletEventsHelpers.fire;
 
@@ -58,7 +58,7 @@ angular.module("leaflet-directive")
         return function(e) {
             // Put together broadcast name
             var broadcastName = 'leafletDirectiveMap.' + maybeMapId + eventName;
-            leafletLogger.debug(broadcastName);
+            $log.debug(broadcastName);
             // Safely broadcast the event
             fire(scope, broadcastName, logic, e, e.target, scope);
         };

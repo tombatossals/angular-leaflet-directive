@@ -1,5 +1,5 @@
-angular.module("leaflet-directive").directive("decorations", function(leafletLogger, leafletHelpers) {
-	var $log = leafletLogger;
+angular.module("leaflet-directive").directive("decorations", function($log, leafletHelpers) {
+
 	return {
 		restrict: "A",
 		scope: false,

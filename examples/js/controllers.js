@@ -3343,8 +3343,7 @@ var app = angular.module('webapp');
                 });
             });
         } ]);
-        app.controller("MarkersEventsController", [ "$scope", "leafletMarkerEvents", "leafletLogger", function($scope, leafletMarkerEvents, leafletLogger) {
-          // leafletLogger.currentLevel =  leafletLogger.LEVELS.debug;
+        app.controller("MarkersEventsController", [ "$scope", "leafletMarkerEvents", "$log", function($scope, leafletMarkerEvents, $log) {
             $scope.center = {
                 lat: 51.505,
                 lng: -0.09,
@@ -4302,8 +4301,7 @@ var app = angular.module('webapp');
             });
         }
     }]);
-        app.controller("PathEventsController", function($scope, leafletLogger) {
-            // leafletLogger.currentLevel = leafletLogger.LEVELS.debug;
+        app.controller("PathEventsController", function($scope, $log) {
             var paths = {};
             $scope.clicked = 0;
             var marylandIslands = {
@@ -4360,8 +4358,7 @@ var app = angular.module('webapp');
                 $scope.mouseover = path.modelName;
             });
         });
-        app.controller("PathEventsWithIDController", function($scope, leafletLogger) {
-            // leafletLogger.currentLevel = leafletLogger.LEVELS.debug;
+        app.controller("PathEventsWithIDController", function($scope, $log) {
             var paths = {};
             $scope.clicked = 0;
             var marylandIslands = {

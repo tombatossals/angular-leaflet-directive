@@ -1,5 +1,5 @@
-angular.module("leaflet-directive").directive('legend', function (leafletLogger, $http, leafletHelpers, leafletLegendHelpers) {
-        var $log = leafletLogger;
+angular.module("leaflet-directive").directive('legend', function ($log, $http, leafletHelpers, leafletLegendHelpers) {
+
         return {
             restrict: "A",
             scope: false,

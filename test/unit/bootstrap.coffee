@@ -10,8 +10,6 @@ beforeEach ->
                 $browser.deferredFns.length > 0
 
             $delegate
-    .run (leafletLogger) ->
-        leafletLogger.currentLevel = leafletLogger.LEVELS.info
 
     @digest = (scope, fn) ->
         while ngLeafLetTestGlobals.$timeout.hasPendingTasks()

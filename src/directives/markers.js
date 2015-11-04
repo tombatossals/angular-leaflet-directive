@@ -1,5 +1,5 @@
 angular.module("leaflet-directive").directive('markers',
-    function (leafletLogger, $rootScope, $q, leafletData, leafletHelpers, leafletMapDefaults,
+    function ($log, $rootScope, $q, leafletData, leafletHelpers, leafletMapDefaults,
               leafletMarkersHelpers, leafletMarkerEvents, leafletIterators, leafletWatchHelpers,
               leafletDirectiveControlsHelpers) {
     //less terse vars to helpers
@@ -16,8 +16,7 @@ angular.module("leaflet-directive").directive('markers',
         $it = leafletIterators,
         _markersWatchOptions = leafletHelpers.watchOptions,
         maybeWatch = leafletWatchHelpers.maybeWatch,
-        extendDirectiveControls = leafletDirectiveControlsHelpers.extend,
-        $log = leafletLogger;
+        extendDirectiveControls = leafletDirectiveControlsHelpers.extend;
 
     var _getLMarker = function(leafletMarkers, name, maybeLayerName){
         if(!Object.keys(leafletMarkers).length) return;

@@ -1,13 +1,12 @@
 angular.module("leaflet-directive")
-.factory('leafletPathEvents', function ($rootScope, $q, leafletLogger, leafletHelpers, leafletLabelEvents, leafletEventsHelpers) {
+.factory('leafletPathEvents', function ($rootScope, $q, $log, leafletHelpers, leafletLabelEvents, leafletEventsHelpers) {
     var isDefined = leafletHelpers.isDefined,
         isObject = leafletHelpers.isObject,
         Helpers = leafletHelpers,
         errorHeader = leafletHelpers.errorHeader,
         lblHelp = leafletLabelEvents,
-        fire = leafletEventsHelpers.fire,
-        $log = leafletLogger;
-
+        fire = leafletEventsHelpers.fire;
+        
     /*
     TODO (nmccready) This EventsHelper needs to be derrived from leafletEventsHelpers to elminate copy and paste code.
     */

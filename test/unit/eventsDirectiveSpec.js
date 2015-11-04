@@ -5,15 +5,15 @@
 /* jasmine specs for directives go here */
 
 describe('Directive: leaflet', function() {
-    var $compile = null, $rootScope = null, leafletData = null, leafletHelpers = null, leafletLogger = null;
+    var $compile = null, $rootScope = null, leafletData = null, leafletHelpers = null, $log = null;
 
     beforeEach(module('leaflet-directive'));
-    beforeEach(inject(function(_$compile_, _$rootScope_, _leafletData_, _leafletHelpers_, _leafletLogger_){
+    beforeEach(inject(function(_$compile_, _$rootScope_, _leafletData_, _leafletHelpers_, _$log_){
         $compile = _$compile_;
         $rootScope = _$rootScope_;
         leafletData = _leafletData_;
         leafletHelpers = _leafletHelpers_;
-        leafletLogger = _leafletLogger_;
+        $log = _$log_;
     }));
 
 
@@ -65,7 +65,7 @@ describe('Directive: leaflet', function() {
           ];
 
           function setEventTrue(origEventName, eventName) {
-              leafletLogger.debug(eventName + ' called.');
+              $log.debug(eventName + ' called.');
               check[origEventName] = true;
           }
 
@@ -75,7 +75,6 @@ describe('Directive: leaflet', function() {
           leafletData.getMap().then(function(map) {
               mapEvents.forEach(function(origEventName){
                   var eventName = 'leafletDirectiveMap.' + mapId + origEventName;
-                  // leafletLogger.log(eventName); // Inspect
                   scope.$on(eventName, function(){
                      setEventTrue(origEventName, eventName);
                    });
@@ -131,14 +130,13 @@ describe('Directive: leaflet', function() {
         ];
 
         function setEventTrue(origEventName, eventName) {
-            leafletLogger.info(eventName + ' called.');
+            $log.info(eventName + ' called.');
             check[origEventName] = true;
         }
 
         leafletData.getMap().then(function(map) {
             mapEvents.forEach(function(origEventName){
                 var eventName = 'leafletDirectiveMap.2.' + origEventName;
-                // leafletLogger.log(eventName); // Inspect
                 scope.$on(eventName, function(){
                    setEventTrue(origEventName, eventName);
                  });
