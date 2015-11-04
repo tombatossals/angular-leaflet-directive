@@ -55,7 +55,6 @@
   "main": "dist/angular-leaflet-directive",
   "dependencies": {
     "angular": "1.x",
-    "angular-simple-logger": "~0.1.4",
     "leaflet": "0.7.x"
   }
 }
