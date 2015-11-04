@@ -1,5 +1,4 @@
-        app.controller("PathEventsWithIDController", function($scope, leafletLogger) {
-            // leafletLogger.currentLevel = leafletLogger.LEVELS.debug;
+        app.controller("PathEventsWithIDController", function($scope, $log) {
             var paths = {};
             $scope.clicked = 0;
             var marylandIslands = {

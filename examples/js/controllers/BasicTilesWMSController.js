@@ -1,13 +1,3 @@
-<!DOCTYPE html>
-<html ng-app="demoapp">
-  <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="../bower_components/angular/angular.min.js"></script>
-    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
-    <script src="../dist/angular-leaflet-directive.min.js"></script>
-    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
-    <script>
-        var app = angular.module("demoapp", ["leaflet-directive"]);
         app.controller('BasicTilesWMSController', [ '$scope', function($scope) {
             var tilesDict = {
                 openstreetmap: {
@@ -43,7 +33,6 @@
                     }
                 }
             };
-
             angular.extend($scope, {
                 ulaanbaatar: {
                     lat: 47.918464,
@@ -52,22 +41,7 @@
                 },
                 tiles: tilesDict.openstreetmap
             });
-
             $scope.changeTiles = function(tiles) {
                 $scope.tiles = tilesDict[tiles];
             };
         } ]);
-    </script>
-  </head>
-  <body ng-controller="BasicTilesWMSController">
-      <leaflet lf-center="ulaanbaatar" tiles="tiles" defaults="defaults" width="100%" height="480px"></leaflet>
-      <h1>Loading WMS tilesDict example</h1>
-      <p>Change tiles clicking in the buttons below:</p>
-      <p>
-          <button ng-click="changeTiles('openstreetmap')" class="btn btn-default">OpenStreetMap Tiles</button>
-          <button ng-click="changeTiles('standard')" class="btn btn-default">Standard WMS Tiles</button>
-          <button ng-click="changeTiles('blue')" class="btn btn-default">Blue WMS Tiles</button>
-      </p>
-      <p>Current TileLayer Url: <strong ng-bind="tiles.url"></strong></p>
-  </body>
-</html>

@@ -1,5 +1,4 @@
-        app.controller("MarkersEventsController", [ "$scope", "leafletMarkerEvents", "leafletLogger", function($scope, leafletMarkerEvents, leafletLogger) {
-          // leafletLogger.currentLevel =  leafletLogger.LEVELS.debug;
+        app.controller("MarkersEventsController", [ "$scope", "leafletMarkerEvents", "$log", function($scope, leafletMarkerEvents, $log) {
             $scope.center = {
                 lat: 51.505,
                 lng: -0.09,
