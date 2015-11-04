@@ -20,7 +20,17 @@ angular.module("leaflet-directive")
   to set watching to once and its watch depth.
   */
   var _maybeWatch = function(scope, thingToWatchStr, watchOptions, initCb){
-      return _maybe(scope, '$watch', thingToWatchStr, watchOptions, initCb);
+      var localWatchOptions, watchMethod;
+      if(watchOptions.doWatch !== 'collection') {
+          localWatchOptions = watchOptions;
+          watchMethod = '$watch';
+      }
+      else {
+          localWatchOptions = { doWatch: true, isDeep: watchOptions.isDeep };
+          watchMethod = '$watchCollection';
+      }
+
+      return _maybe(scope, watchMethod, thingToWatchStr, localWatchOptions, initCb);
   };
 
   /*
