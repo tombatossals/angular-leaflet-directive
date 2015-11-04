@@ -1,0 +1,30 @@
+{
+    "dist": {
+        "options": {
+            "banner": "/*!\n*  <%= pkg.name %> <%= pkgFunction().version %> <%= grunt.template.today(\"yyyy-mm-dd\") %>\n*  <%= pkg.description %>\n*  <%= pkg.repository.type %>: <%= pkg.repository.url %>\n*/\n(function(angular){\n'use strict';\n",
+            "footer": "\n}(angular));"
+        },
+        "src": [
+            "src/directives/leaflet.js",
+            "src/services/*.js",
+            "src/**/*.js"
+
+        ],
+        "dest": "dist/angular-leaflet-directive.pre.js"
+    },
+    "license": {
+        "src": [
+            "src/header-MIT-license.txt",
+            "dist/angular-leaflet-directive.min.no-header.js"
+        ],
+        "dest": "dist/angular-leaflet-directive.min.js"
+    },
+    "examples": {
+        "options": {
+            "banner": "(function(angular){ \nvar app = angular.module('webapp');\n",
+            "footer": "}(angular));"
+        },
+        "src": ["examples/js/controllers/*.js"],
+        "dest": "examples/js/controllers.js"
+    }
+}
