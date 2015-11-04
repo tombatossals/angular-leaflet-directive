@@ -1,7 +1,7 @@
 {
     "dist": {
         "options": {
-            "banner": "/*!\n*  <%= pkg.name %> <%= pkgFunction().version %> <%= grunt.template.today(\"yyyy-mm-dd\") %>\n*  <%= pkg.description %>\n*  <%= pkg.repository.type %>: <%= pkg.repository.url %>\n*/\n(function(angular){\n'use strict';\n",
+            "banner": "/*!\n*  <%= pkg.name %> <%= pkg.version %> <%= grunt.template.today(\"yyyy-mm-dd\") %>\n*  <%= pkg.description %>\n*  <%= pkg.repository.type %>: <%= pkg.repository.url %>\n*/\n(function(angular){\n'use strict';\n",
             "footer": "\n}(angular));"
         },
         "src": [

@@ -1,0 +1,20 @@
+{
+    "options": {
+        "keepAlive": false,
+        "configFile": "test/protractor.conf.js",
+        "nocolor": false,
+        "args": {
+            "specs": [ "test/e2e/*.js" ]
+        }
+    },
+    "run": {},
+    "saucelabs": {
+        "options": {
+            "args": {
+                "baseUrl": "http://tombatossals.github.io/angular-leaflet-directive/examples/",
+                "sauceUser": "<%= saucelabs.SAUCE_USERNAME %>",
+                "sauceKey": "<% saucelabs.SAUCE_ACCESS_KEY %>"
+            }
+        }
+    }
+}

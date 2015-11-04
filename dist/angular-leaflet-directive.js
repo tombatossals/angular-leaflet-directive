@@ -1,5 +1,5 @@
 /*!
-*  angular-leaflet-directive 0.9.0 2015-10-12
+*  angular-leaflet-directive 0.9.1 2015-11-04
 *  angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps
 *  git: https://github.com/tombatossals/angular-leaflet-directive
 */
@@ -2578,6 +2578,10 @@ angular.module("leaflet-directive").service('leafletMarkersHelpers', ["$rootScop
                 marker.unbindPopup();
                 if (isString(markerData.message)) {
                     marker.bindPopup(markerData.message, markerData.popupOptions);
+                    // if marker has been already focused, reopen popup
+                    if (map.hasLayer(marker) && markerData.focus === true) {
+                        marker.openPopup();
+                    }
                 }
             }
 
@@ -4793,7 +4797,7 @@ angular.module("leaflet-directive").directive('tiles', ["leafletLogger", "leafle
             controller.getMap().then(function(map) {
                 var defaults = leafletMapDefaults.getDefaults(attrs.id);
                 var tileLayerObj;
-                leafletScope.$watch("tiles", function(tiles) {
+                leafletScope.$watch("tiles", function(tiles, oldtiles) {
                     var tileLayerOptions = defaults.tileLayerOptions;
                     var tileLayerUrl = defaults.tileLayer;
 
@@ -4813,19 +4817,31 @@ angular.module("leaflet-directive").directive('tiles', ["leafletLogger", "leafle
                             tileLayerUrl = tiles.url;
                         }
 
-                        tileLayerObj = L.tileLayer(tileLayerUrl, tileLayerOptions);
+                        if (tiles.type === 'wms') {
+                            tileLayerObj = L.tileLayer.wms(tileLayerUrl, tileLayerOptions);
+                        } else {
+                            tileLayerObj = L.tileLayer(tileLayerUrl, tileLayerOptions);
+                        }
+
                         tileLayerObj.addTo(map);
                         leafletData.setTiles(tileLayerObj, attrs.id);
                         return;
                     }
 
                     // If the options of the tilelayer is changed, we need to redraw the layer
-                    if (isDefined(tiles.url) && isDefined(tiles.options) && !angular.equals(tiles.options, tileLayerOptions)) {
+                    if (isDefined(tiles.url) && isDefined(tiles.options) &&
+                        (tiles.type !== oldtiles.type || !angular.equals(tiles.options, tileLayerOptions))) {
                         map.removeLayer(tileLayerObj);
                         tileLayerOptions = defaults.tileLayerOptions;
                         angular.copy(tiles.options, tileLayerOptions);
                         tileLayerUrl = tiles.url;
-                        tileLayerObj = L.tileLayer(tileLayerUrl, tileLayerOptions);
+
+                        if (tiles.type === 'wms') {
+                            tileLayerObj = L.tileLayer.wms(tileLayerUrl, tileLayerOptions);
+                        } else {
+                            tileLayerObj = L.tileLayer(tileLayerUrl, tileLayerOptions);
+                        }
+
                         tileLayerObj.addTo(map);
                         leafletData.setTiles(tileLayerObj, attrs.id);
                         return;

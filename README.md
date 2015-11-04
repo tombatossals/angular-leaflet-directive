@@ -4,7 +4,8 @@
 Library. This software aims to easily embed maps managed by Leaflet on your project.
 
 ### [tombatossals/angular-leaflet-directive](http://github.com/tombatossals/angular-leaflet-directive)
-This is my personal project, which has been coded by me helped by many people for some years. I continue evolving it frequently, but if you need enterprise support of it, sorry, I can't give you more support that my spare time allows me.
+This is a personal project, which has been coded by me helped by many people for some years. I continue evolving it frequently, but if you need enterprise support of it, sorry, I can't give you more support that my spare time allows me. If you want to help it would be really appreciated, first of all, please, read the * [CONTRIBUTING documentation](https://github.com/tombatossals/angular-leaflet-directive/blob/master/CONTRIBUTING.md)
+
 
 [![Build Status](https://travis-ci.org/tombatossals/angular-leaflet-directive.png?branch=master)](https://travis-ci.org/tombatossals/angular-leaflet-directive) [![Dependencies](https://david-dm.org/tombatossals/angular-leaflet-directive.svg)](https://david-dm.org/tombatossals/angular-leaflet-directive)&nbsp;
 [![Dependencies](https://david-dm.org/tombatossals/angular-leaflet-directive/dev-status.svg)](https://david-dm.org/tombatossals/angular-leaflet-directive) [![Coverage

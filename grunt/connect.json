@@ -1,0 +1,18 @@
+{
+    "options": {
+        "base": ""
+    },
+    "testserver": {
+        "options": {
+            "port": 9999
+        }
+    },
+    "coverage": {
+        "options": {
+            "base": "coverage/",
+            "directory": "coverage/",
+            "port": 5555,
+            "keepalive": true
+        }
+    }
+}

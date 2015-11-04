@@ -1,0 +1,10 @@
+{
+    "options": {
+        "banner": "/*!\n*  <%= pkg.name %> <%= pkg.version %> <%= grunt.template.today(\"yyyy-mm-dd\") %>\n*  <%= pkg.description %>\n*  <%= pkg.repository.type %>: <%= pkg.repository.url %>\n*/\n(function(angular){\n'use strict';\n"
+    },
+    "dist": {
+        "files": {
+            "dist/<%= pkg.name %>.min.no-header.js": ["dist/angular-leaflet-directive.js"]
+        }
+    }
+}
