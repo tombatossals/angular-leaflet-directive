@@ -4,7 +4,10 @@
 /*jshint globalstrict: true*/
 /* jasmine specs for directives go here */
 describe('Directive: leaflet: layers.watch', function() {
-  var $compile, $rootScope, leafletData, scope;
+  var $compile;
+  var $rootScope;
+  var leafletData;
+  var scope;
 
   beforeEach(module('leaflet-directive'));
   beforeEach(inject(function(_$compile_, _$rootScope_, _leafletData_) {

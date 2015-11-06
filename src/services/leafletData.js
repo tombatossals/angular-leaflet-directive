@@ -19,7 +19,7 @@ angular.module('leaflet-directive').service('leafletData', function($log, $q, le
       'geoJSON',
       'UTFGrid', //odd ball on naming convention keeping to not break
       'decorations',
-      'directiveControls', ];
+      'directiveControls',];
 
   //init
   _privateItems.forEach(function(itemName) {
