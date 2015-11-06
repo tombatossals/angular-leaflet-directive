@@ -4,15 +4,16 @@
 Library. This software aims to easily embed maps managed by Leaflet on your project.
 
 ### [tombatossals/angular-leaflet-directive](http://github.com/tombatossals/angular-leaflet-directive)
-This is a personal project, which has been coded by me helped by many people for some years. I continue evolving it frequently, but if you need enterprise support of it, sorry, I can't give you more support that my spare time allows me. If you want to help it would be really appreciated, first of all, please, read the * [CONTRIBUTING documentation](https://github.com/tombatossals/angular-leaflet-directive/blob/master/CONTRIBUTING.md)
+This is a personal project, which has been coded by me helped by many people for some years. I'm evolving it frequently, actually I'm making the code transition to Leaflet 1.0 and Angular 2. If you need enterprise for older versions, sorry, I can't give you more support that my spare time allows me. If you want to help with the actual code it would be really appreciated, but first of all, please, read the * [CONTRIBUTING documentation](https://github.com/tombatossals/angular-leaflet-directive/blob/master/CONTRIBUTING.md)
 
 
 [![Build Status](https://travis-ci.org/tombatossals/angular-leaflet-directive.png?branch=master)](https://travis-ci.org/tombatossals/angular-leaflet-directive) [![Dependencies](https://david-dm.org/tombatossals/angular-leaflet-directive.svg)](https://david-dm.org/tombatossals/angular-leaflet-directive)&nbsp;
 [![Dependencies](https://david-dm.org/tombatossals/angular-leaflet-directive/dev-status.svg)](https://david-dm.org/tombatossals/angular-leaflet-directive) [![Coverage
 Status](https://coveralls.io/repos/tombatossals/angular-leaflet-directive/badge.png?branch=master)](http://tombatossals.github.io/angular-leaflet-directive/coverage/PhantomJS%201.9.7%20%28Linux%29/lcov-report/dist/angular-leaflet-directive.js.html)
+[![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 
 ### [angular-ui](http://github.com/angular-ui/ui-leaflet)
-If you need better response time with your doubts and needs, take a look at the [angular-ui](http://github.com/angular-ui/ui-leaflet) fork of this project, it's lead by really awesome developers which have helped me evolving the project for some time.
+If you need better response time with your doubts and needs with the code of version 0.9.0, take a look at the [angular-ui](http://github.com/angular-ui/ui-leaflet) fork of this project, it's lead by really awesome developers which have helped me evolving the project for some time.
 
 [![Build Status](https://travis-ci.org/angular-ui/ui-leaflet.png?branch=master)](https://travis-ci.org/angular-ui/ui-leaflet) [![Dependencies](https://david-dm.org/angular-ui/ui-leaflet.svg)](https://david-dm.org/angular-ui/ui-leaflet)&nbsp;
 [![Dependencies](https://david-dm.org/angular-ui/ui-leaflet/dev-status.svg)](https://david-dm.org/angular-ui/ui-leaflet) [![Coverage

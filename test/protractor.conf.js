@@ -16,17 +16,21 @@ exports.config = {
 
   // The location of the selenium standalone server .jar file.
   seleniumServerJar: '../node_modules/protractor/selenium/selenium-server-standalone-2.47.1.jar',
+
   // The port to start the selenium server on, or null if the server should
   // find its own unused port.
   seleniumPort: null,
+
   // Chromedriver location is used to help the selenium standalone server
   // find chromedriver. This will be passed to the selenium jar as
   // the system property webdriver.chrome.driver. If null, selenium will
   // attempt to find chromedriver using PATH.
   chromeDriver: '../node_modules/protractor/selenium/chromedriver',
+
   // If true, only chromedriver will be started, not a standalone selenium.
   // Tests for browsers other than chrome will not run.
   chromeOnly: false,
+
   // Additional command line options to pass to selenium. For example,
   // if you need to change the browser timeout, use
   // seleniumArgs: ['-browserTimeout=60'],
@@ -60,7 +64,7 @@ exports.config = {
   // and
   // https://code.google.com/p/selenium/source/browse/javascript/webdriver/capabilities.js
   capabilities: {
-    'browserName': 'chrome'
+    browserName: 'chrome',
   },
 
   // ----- More information for your tests ----
@@ -92,8 +96,8 @@ exports.config = {
   params: {
     login: {
       user: 'Jane',
-      password: '1234'
-    }
+      password: '1234',
+    },
   },
 
   // ----- Options to be passed to minijasminenode -----
@@ -102,13 +106,17 @@ exports.config = {
   jasmineNodeOpts: {
     // onComplete will be called just before the driver quits.
     onComplete: null,
+
     // If true, display spec names.
     isVerbose: true,
+
     // If true, print colors to the terminal.
     showColors: true,
+
     // If true, include stack traces in failures.
     includeStackTrace: true,
+
     // Default time to wait in ms before a test fails.
-    defaultTimeoutInterval: 30000
-  }
+    defaultTimeoutInterval: 30000,
+  },
 };
