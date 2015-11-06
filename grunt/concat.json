@@ -8,11 +8,17 @@
             "src/directives/leaflet.js",
             "src/services/*.js",
             "src/**/*.js"
-
         ],
         "dest": "dist/angular-leaflet-directive.pre.js"
     },
     "license": {
+        "src": [
+            "src/header-MIT-license.txt",
+            "dist/angular-leaflet-directive.no-header.js"
+        ],
+        "dest": "dist/angular-leaflet-directive.js"
+    },
+    "license-minified": {
         "src": [
             "src/header-MIT-license.txt",
             "dist/angular-leaflet-directive.min.no-header.js"

@@ -35,12 +35,12 @@ fast-build:
     - 'concat:dist'
     - 'ngAnnotate'
     - 'uglify'
+    - 'concat:license'
+    - 'concat:license-minified'    
 
 build:
     - 'fast-build'
-    - 'uglify'
     - 'test-unit'
-    - 'concat:license'
     - 'clean:pre'
 
 travis:
