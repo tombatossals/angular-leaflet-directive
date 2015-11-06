@@ -492,7 +492,7 @@ angular.module('leaflet-directive').service('leafletData', ["$log", "$q", "leafl
       'geoJSON',
       'UTFGrid', //odd ball on naming convention keeping to not break
       'decorations',
-      'directiveControls', ];
+      'directiveControls',];
 
   //init
   _privateItems.forEach(function(itemName) {
@@ -5147,7 +5147,7 @@ angular.module('leaflet-directive').directive('tiles', ["$log", "leafletData", "
               });
             },
           };
-        }, ]);
+        },]);
 });
 
 angular.module('leaflet-directive')
@@ -5160,7 +5160,7 @@ angular.module('leaflet-directive')
 
   var EventsHelper = function(rootBroadcastName, lObjectType) {
     this.rootBroadcastName = rootBroadcastName;
-    $log.debug('leafletEventsHelpersFactory: lObjectType: ' + lObjectType + 'rootBroadcastName: ' + rootBroadcastName);
+    $log.debug('LeafletEventsHelpersFactory: lObjectType: ' + lObjectType + 'rootBroadcastName: ' + rootBroadcastName);
 
     //used to path/key out certain properties based on the type , "markers", "geojson"
     this.lObjectType = lObjectType;
@@ -5317,10 +5317,10 @@ angular.module('leaflet-directive')
 }]);
 
 angular.module('leaflet-directive')
-.factory('leafletGeoJsonEvents', ["$rootScope", "$q", "$log", "leafletHelpers", "leafletEventsHelpersFactory", "leafletData", function($rootScope, $q, $log, leafletHelpers,
-  leafletEventsHelpersFactory, leafletData) {
+.factory('leafletGeoJsonEvents', ["$rootScope", "$q", "$log", "leafletHelpers", "LeafletEventsHelpersFactory", "leafletData", function($rootScope, $q, $log, leafletHelpers,
+  LeafletEventsHelpersFactory, leafletData) {
   var safeApply = leafletHelpers.safeApply;
-  var EventsHelper = leafletEventsHelpersFactory;
+  var EventsHelper = LeafletEventsHelpersFactory;
 
   var GeoJsonEvents = function() {
       EventsHelper.call(this, 'leafletDirectiveGeoJson', 'geojson');
@@ -5365,9 +5365,9 @@ angular.module('leaflet-directive')
 }]);
 
 angular.module('leaflet-directive')
-.factory('leafletLabelEvents', ["$rootScope", "$q", "$log", "leafletHelpers", "leafletEventsHelpersFactory", function($rootScope, $q, $log, leafletHelpers, leafletEventsHelpersFactory) {
+.factory('leafletLabelEvents', ["$rootScope", "$q", "$log", "leafletHelpers", "LeafletEventsHelpersFactory", function($rootScope, $q, $log, leafletHelpers, LeafletEventsHelpersFactory) {
   var Helpers = leafletHelpers;
-  var EventsHelper = leafletEventsHelpersFactory;
+  var EventsHelper = LeafletEventsHelpersFactory;
 
   var LabelEvents = function() {
           EventsHelper.call(this, 'leafletDirectiveLabel', 'markers');
@@ -5509,12 +5509,12 @@ angular.module('leaflet-directive')
 }]);
 
 angular.module('leaflet-directive')
-.factory('leafletMarkerEvents', ["$rootScope", "$q", "$log", "leafletHelpers", "leafletEventsHelpersFactory", "leafletLabelEvents", function($rootScope, $q, $log, leafletHelpers, leafletEventsHelpersFactory, leafletLabelEvents) {
+.factory('leafletMarkerEvents', ["$rootScope", "$q", "$log", "leafletHelpers", "LeafletEventsHelpersFactory", "leafletLabelEvents", function($rootScope, $q, $log, leafletHelpers, LeafletEventsHelpersFactory, leafletLabelEvents) {
   var safeApply = leafletHelpers.safeApply;
   var isDefined = leafletHelpers.isDefined;
   var Helpers = leafletHelpers;
   var lblHelp = leafletLabelEvents;
-  var EventsHelper = leafletEventsHelpersFactory;
+  var EventsHelper = LeafletEventsHelpersFactory;
 
   var MarkerEvents = function() {
       EventsHelper.call(this, 'leafletDirectiveMarker', 'markers');

@@ -1,10 +1,10 @@
 angular.module('leaflet-directive')
-.factory('leafletMarkerEvents', function($rootScope, $q, $log, leafletHelpers, leafletEventsHelpersFactory, leafletLabelEvents) {
+.factory('leafletMarkerEvents', function($rootScope, $q, $log, leafletHelpers, LeafletEventsHelpersFactory, leafletLabelEvents) {
   var safeApply = leafletHelpers.safeApply;
   var isDefined = leafletHelpers.isDefined;
   var Helpers = leafletHelpers;
   var lblHelp = leafletLabelEvents;
-  var EventsHelper = leafletEventsHelpersFactory;
+  var EventsHelper = LeafletEventsHelpersFactory;
 
   var MarkerEvents = function() {
       EventsHelper.call(this, 'leafletDirectiveMarker', 'markers');

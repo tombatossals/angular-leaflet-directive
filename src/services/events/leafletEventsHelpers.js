@@ -8,7 +8,7 @@ angular.module('leaflet-directive')
 
   var EventsHelper = function(rootBroadcastName, lObjectType) {
     this.rootBroadcastName = rootBroadcastName;
-    $log.debug('leafletEventsHelpersFactory: lObjectType: ' + lObjectType + 'rootBroadcastName: ' + rootBroadcastName);
+    $log.debug('LeafletEventsHelpersFactory: lObjectType: ' + lObjectType + 'rootBroadcastName: ' + rootBroadcastName);
 
     //used to path/key out certain properties based on the type , "markers", "geojson"
     this.lObjectType = lObjectType;
