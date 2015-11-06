@@ -1,5 +1,5 @@
 angular.module("leaflet-directive")
-.factory('leafletEventsHelpersFactory', function ($rootScope, $q, $log, leafletHelpers) {
+.factory('LeafletEventsHelpersFactory', function ($rootScope, $q, $log, leafletHelpers) {
         var safeApply = leafletHelpers.safeApply,
             isDefined = leafletHelpers.isDefined,
             isObject = leafletHelpers.isObject,
@@ -47,7 +47,7 @@ angular.module("leaflet-directive")
             };
         };
 
-        EventsHelper.prototype.fire = function(scope, broadcastName, logic, event, lObject, model, modelName, layerName, extra){
+        EventsHelper.prototype.fire = function(scope, broadcastName, logic, event, lObject, model, modelName, layerName){
             // Safely broadcast the event
             safeApply(scope, function(){
                 var toSend = {
@@ -156,6 +156,6 @@ angular.module("leaflet-directive")
 
         return EventsHelper;
 })
-.service('leafletEventsHelpers', function(leafletEventsHelpersFactory){
-    return new leafletEventsHelpersFactory();
+.service('leafletEventsHelpers', function(LeafletEventsHelpersFactory){
+    return new LeafletEventsHelpersFactory();
 });

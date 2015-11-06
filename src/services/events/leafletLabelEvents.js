@@ -35,7 +35,7 @@ angular.module("leaflet-directive")
             });
         };
 
-        LabelEvents.prototype.bindEvents = function (maybeMapId, lObject, name, model, leafletScope, layerName) {};
+        LabelEvents.prototype.bindEvents = function () {};
 
         return new LabelEvents();
 });
