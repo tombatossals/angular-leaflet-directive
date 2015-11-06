@@ -1,0 +1,63 @@
+/*
+Author: Mathias Schneider
+License: MIT
+Version: 1.0
+*/
+/* Marker setup */
+.vector-marker {
+  width: 35px;
+  height: 46px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: block;
+  text-align: center;
+}
+.vector-marker path {
+  stroke: black;
+  stroke-opacity: 0.4;
+  stroke-width: 1;
+}
+.vector-marker.not-accepted {
+  opacity: 0.5;
+}
+
+.vector-marker-shadow {
+  background: url("assets/shadow.png") no-repeat 0 0;
+  width: 36px;
+  height: 16px;
+}
+
+/* Retina displays */
+@media (min--moz-device-pixel-ratio: 1.5), (-o-min-device-pixel-ratio: 3 / 2), (-webkit-min-device-pixel-ratio: 1.5), (min-device-pixel-ratio: 1.5), (min-resolution: 1.5dppx) {
+  .vector-marker {
+    background-size: 720px 46px;
+  }
+
+  .vector-marker-shadow {
+    background-image: url("assets/shadow@2x.png");
+    background-size: 54px 51px;
+  }
+}
+.vector-marker i {
+  position: absolute;
+  top: 8px;
+  left: 0;
+  width: 32px;
+  color: #333;
+  margin: auto;
+  display: inline-block;
+  font-size: 14px;
+}
+
+.vector-marker i.maki-icon {
+  width: 24px;
+  left: 4px;
+  top: 4px;
+}
+
+.vector-marker .icon-white {
+  color: #fff;
+}
+
+/*# sourceMappingURL=Leaflet.vector-markers.css.map */

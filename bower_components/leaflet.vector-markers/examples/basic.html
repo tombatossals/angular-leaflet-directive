@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Vector Markers Example: Basic</title>
+  <meta charset="utf-8" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link href="http://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.css" rel="stylesheet">
+  <link rel="stylesheet" href="../dist/Leaflet.vector-markers.css">
+  <link rel="stylesheet" href="http://cdn.Leafletjs.com/leaflet-0.7.3/leaflet.css" />
+  <!--[if lte IE 8]>
+      <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.ie.css" />
+  <![endif]-->
+</head>
+<body>
+  <div id="map" style="position: absolute; top: 0; right: 0; bottom: 0; left: 0; width: 100%; height: 100%"></div>
+  
+  <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+  <script src="../dist/leaflet.vector-markers.js"></script>
+  <script>
+    var map = L.map('map').setView([48.15491,11.54183], 14);
+
+    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+      detectRetina: true
+    }).addTo(map);
+
+    L.marker([48.15491,11.54183], {icon: L.VectorMarkers.icon({icon: 'spinner', prefix: 'fa', markerColor: '#cb4b16', spin: true}) }).addTo(map);
+    L.marker([48.15391,11.53283], {icon: L.VectorMarkers.icon({icon: 'rocket', prefix: 'fa', markerColor: '#002b36', iconColor: '#eee8d5'}) }).addTo(map);
+    L.marker([48.15391,11.52283], {icon: L.VectorMarkers.icon({icon: 'rocket', prefix: 'fa', markerColor: '#eee8d5', iconColor: '#002b36'}) }).addTo(map);
+  </script>
+</body>
+</html>
