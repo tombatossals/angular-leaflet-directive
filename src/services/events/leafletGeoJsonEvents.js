@@ -1,45 +1,47 @@
-angular.module("leaflet-directive")
-.factory('leafletGeoJsonEvents', function ($rootScope, $q, $log, leafletHelpers,
+angular.module('leaflet-directive')
+.factory('leafletGeoJsonEvents', function($rootScope, $q, $log, leafletHelpers,
   leafletEventsHelpersFactory, leafletData) {
-    var safeApply = leafletHelpers.safeApply,
-        EventsHelper = leafletEventsHelpersFactory;
+  var safeApply = leafletHelpers.safeApply;
+  var EventsHelper = leafletEventsHelpersFactory;
 
-    var GeoJsonEvents = function(){
-      EventsHelper.call(this,'leafletDirectiveGeoJson', 'geojson');
+  var GeoJsonEvents = function() {
+      EventsHelper.call(this, 'leafletDirectiveGeoJson', 'geojson');
     };
 
-    GeoJsonEvents.prototype =  new EventsHelper();
+  GeoJsonEvents.prototype =  new EventsHelper();
 
-    GeoJsonEvents.prototype.genDispatchEvent = function(maybeMapId, eventName, logic, leafletScope, lObject, name, model, layerName, extra) {
-        var base = EventsHelper.prototype.genDispatchEvent.call(this, maybeMapId, eventName, logic, leafletScope, lObject, name, model, layerName),
-        _this = this;
+  GeoJsonEvents.prototype.genDispatchEvent = function(maybeMapId, eventName, logic, leafletScope, lObject, name, model, layerName, extra) {
+    var base = EventsHelper.prototype.genDispatchEvent.call(this, maybeMapId, eventName, logic, leafletScope, lObject, name, model, layerName);
+    var _this = this;
 
-        return function(e){
-            if (eventName === 'mouseout') {
-                if (extra.resetStyleOnMouseout) {
-                    leafletData.getGeoJSON(extra.mapId)
-                    .then(function(leafletGeoJSON){
-                        //this is broken on nested needs to traverse or user layerName (nested)
-                        var lobj = layerName? leafletGeoJSON[layerName]: leafletGeoJSON;
-                        lobj.resetStyle(e.target);
+    return function(e) {
+      if (eventName === 'mouseout') {
+        if (extra.resetStyleOnMouseout) {
+          leafletData.getGeoJSON(extra.mapId)
+                    .then(function(leafletGeoJSON) {
+                      //this is broken on nested needs to traverse or user layerName (nested)
+                      var lobj = layerName ? leafletGeoJSON[layerName] : leafletGeoJSON;
+                      lobj.resetStyle(e.target);
                     });
 
-                }
-                safeApply(leafletScope, function() {
-                    $rootScope.$broadcast(_this.rootBroadcastName + '.mouseout', e);
-                });
-            }
-            base(e); //common
-        };
-    };
+        }
 
-    GeoJsonEvents.prototype.getAvailableEvents = function(){ return [
-        'click',
-        'dblclick',
-        'mouseover',
-        'mouseout',
-        ];
-    };
+        safeApply(leafletScope, function() {
+          $rootScope.$broadcast(_this.rootBroadcastName + '.mouseout', e);
+        });
+      }
 
-    return new GeoJsonEvents();
+      base(e); //common
+    };
+  };
+
+  GeoJsonEvents.prototype.getAvailableEvents = function() { return [
+      'click',
+      'dblclick',
+      'mouseover',
+      'mouseout',
+      ];
+  };
+
+  return new GeoJsonEvents();
 });
