@@ -1,5 +1,5 @@
  {
-  "src": ["src/directives/*.js", "src/services/**/*.js"],
+  "src": ["src/directives/*.js", "src/services/**/*.js", "test/**/*.js"],
   "options": {
     "config": ".jscsrc",
     "fix": true
