@@ -18,8 +18,6 @@ test-e2e-firefox:
 
 coverage:
     - 'karma:unit_coverage'
-    - 'open:coverage'
-    - 'connect:coverage'
 
 install:
     - 'shell:npm_install'
