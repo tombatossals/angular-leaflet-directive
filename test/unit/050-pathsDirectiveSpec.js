@@ -5,7 +5,10 @@
 /* jasmine specs for directives go here */
 
 describe('Directive: leaflet', function() {
-  var $compile, $rootScope, leafletData, scope;
+  var $compile;
+  var $rootScope;
+  var leafletData;
+  var scope;
 
   beforeEach(function() {
       module('leaflet-directive');

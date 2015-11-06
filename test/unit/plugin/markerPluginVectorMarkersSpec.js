@@ -5,7 +5,11 @@
 /* jasmine specs for directives go here */
 
 describe('Plugin: VectorMarkers', function() {
-  var $compile, $rootScope, scope, leafletData, leafletHelpers;
+  var $compile;
+  var $rootScope;
+  var scope;
+  var leafletData;
+  var leafletHelpers;
 
   beforeEach(module('leaflet-directive'));
   beforeEach(inject(function(_$compile_, _$rootScope_, _leafletData_, _leafletHelpers_) {
