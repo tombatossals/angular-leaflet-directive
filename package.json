@@ -1,6 +1,7 @@
 {
   "author": "https://github.com/tombatossals/angular-leaflet-directive/graphs/contributors",
   "name": "angular-leaflet-directive",
+  "versoin": "0.10.1",
   "description": "angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps",
   "homepage": "http://tombatossals.github.io/angular-leaflet-directive/",
   "repository": {
