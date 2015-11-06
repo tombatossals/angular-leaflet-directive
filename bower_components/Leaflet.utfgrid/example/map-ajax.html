@@ -3,12 +3,12 @@
 <head>
 	<title>Leaflet debug page</title>
 
-	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css" />
-	<script src="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js"></script>
+	<link rel="stylesheet" href="../node_modules/leaflet/dist/leaflet.css" />
+	<script src="../node_modules/leaflet/dist/leaflet.js"></script>
 
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<script src="../src/leaflet.utfgrid.js"></script>
+	<script src="../dist/leaflet.utfgrid-src.js"></script>
 </head>
 <body>
 
@@ -33,7 +33,7 @@
 			} else {
 				document.getElementById('click').innerHTML = 'click: nothing';
 			}
-		}); 
+		});
 		utfGrid.on('mouseover', function (e) {
 			if (e.data) {
 				document.getElementById('hover').innerHTML = 'hover: ' + e.data.admin;

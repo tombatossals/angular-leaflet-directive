@@ -2,7 +2,7 @@
   "name": "angular-leaflet-directive",
   "author": "https://github.com/tombatossals/angular-leaflet-directive/graphs/contributors",
   "description": "angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps",
-  "version": "0.8.6",
+  "version": "0.9.0",
   "homepage": "http://tombatossals.github.io/angular-leaflet-directive/",
   "keywords": [
     "angularjs",
@@ -22,38 +22,33 @@
     "semantic-ui": "*",
     "bootstrap": "*",
     "prism": "*",
+    "angular-route": "1.x",
     "angular-animate": "1.x",
     "angular-mocks": "1.x",
-    "angular-new-router": "*",
     "leaflet.markercluster": "*",
     "leaflet.draw": "*",
     "Leaflet.label": "*",
     "leaflet-tilelayer-geojson": "*",
     "Leaflet.utfgrid": "danzel/Leaflet.utfgrid",
-    "geodata": "mahemoff/geodata",
-    "gfm.css": "ngoldman/gfm.css",
     "Leaflet.awesome-markers": "*",
+    "leaflet-providers": "*",
+    "leaflet.vector-markers": "*",
     "webgl-heatmap-leaflet": "*",
     "leaflet-plugins": "*",
     "esri-leaflet": "*",
     "proj4": "*",
-    "font-awesome": "~4.3.x",
+    "font-awesome": "*",
     "proj4leaflet": "*",
     "Leaflet.MakiMarkers": "*",
     "Leaflet.heat": "https://github.com/Leaflet/Leaflet.heat/archive/gh-pages.tar.gz",
     "Leaflet.ExtraMarkers": "https://github.com/coryasilva/Leaflet.ExtraMarkers/archive/v1.0.1.tar.gz",
     "Leaflet.fullscreen": "http://github.com/Leaflet/Leaflet.fullscreen/archive/v0.0.4.tar.gz",
     "Leaflet.PolylineDecorator": "bbecquet/Leaflet.PolylineDecorator",
-    "ionrangeslider": "~1.9.3",
-    "leaflet-minimap": "~2.2.0",
+    "ionrangeslider": "*",
+    "leaflet-minimap": "*",
     "esri-leaflet-clustered-feature-layer": "~1.0.x",
     "esri-leaflet-heatmap-feature-layer": "~1.0.x",
-    "leaflet-search": "~1.5.8"
-  },
-  "overrides": {
-    "Leaflet.utfgrid": {
-      "main": "dist/leaflet.utfgrid.js"
-    }
+    "leaflet-search": "*"
   },
   "ignore": [
     "**/.*",
@@ -65,8 +60,5 @@
     "Gruntfile.js",
     "package.json",
     "bower.json"
-  ],
-  "resolutions": {
-    "angular": "1.4.4"
-  }
+  ]
 }

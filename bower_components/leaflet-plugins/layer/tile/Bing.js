@@ -11,6 +11,7 @@ L.BingLayer = L.TileLayer.extend({
 
 		this._key = key;
 		this._url = null;
+		this._providers = [];
 		this.metaRequested = false;
 	},
 
@@ -64,7 +65,6 @@ L.BingLayer = L.TileLayer.extend({
 		var r = meta.resourceSets[0].resources[0];
 		this.options.subdomains = r.imageUrlSubdomains;
 		this._url = r.imageUrl;
-		this._providers = [];
 		if (r.imageryProviders) {
 			for (var i = 0; i < r.imageryProviders.length; i++) {
 				var p = r.imageryProviders[i];

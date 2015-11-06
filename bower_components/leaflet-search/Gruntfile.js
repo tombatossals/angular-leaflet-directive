@@ -7,6 +7,7 @@ grunt.loadNpmTasks('grunt-contrib-concat');
 grunt.loadNpmTasks('grunt-contrib-clean');
 grunt.loadNpmTasks('grunt-contrib-cssmin');
 grunt.loadNpmTasks('grunt-contrib-jshint');
+grunt.loadNpmTasks("grunt-remove-logging");
 grunt.loadNpmTasks('grunt-contrib-watch');
 grunt.loadNpmTasks('grunt-todos');
 
@@ -17,7 +18,7 @@ grunt.initConfig({
 		'/* \n'+
 		' * Leaflet Control Search v<%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %> \n'+
 		' * \n'+
-		' * Copyright 2014 <%= pkg.author.name %> \n'+
+		' * Copyright <%= grunt.template.today("yyyy") %> <%= pkg.author.name %> \n'+
 		' * <%= pkg.author.email %> \n'+
 		' * <%= pkg.author.url %> \n'+
 		' * \n'+
@@ -36,15 +37,20 @@ grunt.initConfig({
 			src: ['dist/*']
 		}
 	},
+	removelogging: {
+		dist: {
+			src: 'dist/*.js'
+		}
+	},	
 	jshint: {
 		options: {
 			globals: {
-				console: true,
+				'no-console': true,
 				module: true
 			},
-			"-W099": true,	//ignora tabs e space warning
-			"-W033": true,
-			"-W044": true	//ignore regexp
+			'-W099': true,	//ignora tabs e space warning
+			'-W033': true,
+			'-W044': true	//ignore regexp
 		},
 		files: ['src/*.js']
 	},
@@ -107,6 +113,7 @@ grunt.registerTask('default', [
 	'clean',
 	'concat',	
 	'cssmin',
+	'removelogging',	
 	'jshint',
 	'uglify',
 	'todos'

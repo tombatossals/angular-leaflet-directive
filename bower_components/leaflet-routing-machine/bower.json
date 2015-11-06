@@ -1,6 +1,6 @@
 {
   "name": "leaflet-routing-machine",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "homepage": "https://github.com/perliedman/leaflet-routing-machine",
   "authors": [
     "Per Liedman <per@liedman.net> (http://www.liedman.net/)"
@@ -11,6 +11,13 @@
     "route"
   ],
   "license": "MIT",
+  "main": [
+    "dist/leaflet.routing.icons.png",
+    "dist/leaflet-routing-machine.css",
+    "dist/leaflet.routing.icons.svg",
+    "dist/leaflet-routing-machine.js",
+    "dist/routing-icon.png"
+  ],
   "ignore": [
     "**/.*",
     "node_modules",

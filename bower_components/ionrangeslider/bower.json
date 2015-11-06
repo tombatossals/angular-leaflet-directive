@@ -1,6 +1,6 @@
 {
-    "name": "ion.rangeSlider",
-    "version": "1.9.3",
+    "name": "ion.rangeslider",
+    "version": "2.1.2",
     "homepage": "https://github.com/IonDen/ion.rangeSlider",
     "authors": [
         {
@@ -18,16 +18,16 @@
         "js/ion.rangeSlider.js",
         "css/ion.rangeSlider.css",
         "css/ion.rangeSlider.skinFlat.css",
-        "css/ion.rangeSlider.skinNice.css",
-        "css/ion.rangeSlider.skinSimple.css",
-        "img/sprite-skin-flat.png",
-        "img/sprite-skin-nice.png",
-        "img/sprite-skin-simple.png"
+        "img/sprite-skin-flat.png"
     ],
+    "dependencies": {
+        "jquery": ">=1.8"
+    },
     "moduleType": [
         "globals"
     ],
     "keywords": [
+        "jquery-plugin",
         "diapason",
         "ion",
         "range",

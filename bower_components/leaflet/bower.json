@@ -1,9 +1,8 @@
 {
   "name": "leaflet",
-  "version": "0.7.3",
+  "version": "0.7.7",
   "description": "JavaScript library for mobile-friendly interactive maps",
   "main": [
-    "dist/leaflet.js",
     "dist/leaflet.css",
     "dist/leaflet-src.js",
     "dist/images/layers-2x.png",

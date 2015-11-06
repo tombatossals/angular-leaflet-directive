@@ -75,13 +75,16 @@
 	top:100%;
 	left:0;
 	float:left;
+	list-style: none;
+	padding-left: 0;
 	min-width:120px;
 	max-height:122px;
 	box-shadow: 1px 1px 6px rgba(0,0,0,0.4);
 	background-color: rgba(0, 0, 0, 0.25);
 	z-index:1010;
 	overflow-y:auto;
-	overflow-x:hidden;	
+	overflow-x:hidden;
+	cursor: pointer;
 }
 .leaflet-control-search .search-tip {
 	margin:2px;

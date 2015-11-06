@@ -35,7 +35,7 @@
   }
 
   function isNotHighlighted(language) {
-    return /no-?highlight|plain|text/.test(language);
+    return (/^(no-?highlight|plain|text)$/i).test(language);
   }
 
   function blockLanguage(block) {
@@ -44,19 +44,18 @@
 
     classes += block.parentNode ? block.parentNode.className : '';
 
-    // language-* takes precedence over non-prefixed class names and
-    match = /\blang(?:uage)?-([\w-]+)\b/.exec(classes);
+    // language-* takes precedence over non-prefixed class names
+    match = (/\blang(?:uage)?-([\w-]+)\b/i).exec(classes);
     if (match) {
       return getLanguage(match[1]) ? match[1] : 'no-highlight';
     }
 
     classes = classes.split(/\s+/);
-    for(i = 0, length = classes.length; i < length; i++) {
-      if(getLanguage(classes[i]) || isNotHighlighted(classes[i])) {
+    for (i = 0, length = classes.length; i < length; i++) {
+      if (getLanguage(classes[i]) || isNotHighlighted(classes[i])) {
         return classes[i];
       }
     }
-
   }
 
   function inherit(parent, obj) {
@@ -646,6 +645,7 @@
   }
 
   function getLanguage(name) {
+    name = name.toLowerCase();
     return languages[name] || languages[aliases[name]];
   }
 
@@ -844,6 +844,44 @@ hljs.registerLanguage('1c', function(hljs){
       },
       {className: 'preprocessor', begin: '#', end: '$'},
       {className: 'date', begin: '\'\\d{2}\\.\\d{2}\\.(\\d{2}|\\d{4})\''}
+    ]
+  };
+});
+
+hljs.registerLanguage('accesslog', function(hljs) {
+  return {
+    contains: [
+      // IP
+      {
+        className: 'number',
+        begin: '\\b\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}(:\\d{1,5})?\\b'
+      },
+      // Other numbers
+      {
+        className: 'number',
+        begin: '\\b\\d+\\b',
+        relevance: 0
+      },
+      // Requests
+      {
+        className: 'string',
+        begin: '"(GET|POST|HEAD|PUT|DELETE|CONNECT|OPTIONS|PATCH|TRACE)', end: '"',
+        keywords: 'GET POST HEAD PUT DELETE CONNECT OPTIONS PATCH TRACE',
+        illegal: '\\n',
+        relevance: 10
+      },
+      // Dates
+      {
+        className: 'string',
+        begin: /\[/, end: /\]/,
+        illegal: '\\n'
+      },
+      // Strings
+      {
+        className: 'string',
+        begin: '"', end: '"',
+        illegal: '\\n'
+      }
     ]
   };
 });
@@ -3780,7 +3818,7 @@ hljs.registerLanguage('ceylon', function(hljs) {
       // character literal
       className: 'string',
       begin: "'",
-      end: "'",
+      end: "'"
     },
     {
       // numeric literal
@@ -3813,7 +3851,7 @@ hljs.registerLanguage('clojure', function(hljs) {
   var keywords = {
     built_in:
       // Clojure keywords
-      'def cond apply if-not if-let if not not= = < > <= >= == + / * - rem '+
+      'def defonce cond apply if-not if-let if not not= = < > <= >= == + / * - rem '+
       'quot neg? pos? delay? symbol? keyword? true? false? integer? empty? coll? list? '+
       'set? ifn? fn? associative? sequential? sorted? counted? reversible? number? decimal? '+
       'class? distinct? isa? float? rational? reduced? ratio? odd? even? char? seq? vector? '+
@@ -4130,6 +4168,33 @@ hljs.registerLanguage('cpp', function(hljs) {
     ]
   };
 
+  var PREPROCESSOR =       {
+    className: 'preprocessor',
+    begin: '#', end: '$',
+    keywords: 'if else elif endif define undef warning error line ' +
+              'pragma ifdef ifndef',
+    contains: [
+      {
+        begin: /\\\n/, relevance: 0
+      },
+      {
+        beginKeywords: 'include', end: '$',
+        contains: [
+          STRINGS,
+          {
+            className: 'string',
+            begin: '<', end: '>',
+            illegal: '\\n',
+          }
+        ]
+      },
+      STRINGS,
+      NUMBERS,
+      hljs.C_LINE_COMMENT_MODE,
+      hljs.C_BLOCK_COMMENT_MODE
+    ]
+  };
+
   var FUNCTION_TITLE = hljs.IDENT_RE + '\\s*\\(';
 
   var CPP_KEYWORDS = {
@@ -4154,6 +4219,7 @@ hljs.registerLanguage('cpp', function(hljs) {
       'vfprintf vprintf vsprintf',
     literal: 'true false nullptr NULL'
   };
+
   return {
     aliases: ['c', 'cc', 'h', 'c++', 'h++', 'hpp'],
     keywords: CPP_KEYWORDS,
@@ -4164,32 +4230,7 @@ hljs.registerLanguage('cpp', function(hljs) {
       hljs.C_BLOCK_COMMENT_MODE,
       NUMBERS,
       STRINGS,
-      {
-        className: 'preprocessor',
-        begin: '#', end: '$',
-        keywords: 'if else elif endif define undef warning error line ' +
-                  'pragma ifdef ifndef',
-        contains: [
-          {
-            begin: /\\\n/, relevance: 0
-          },
-          {
-            beginKeywords: 'include', end: '$',
-            contains: [
-              STRINGS,
-              {
-                className: 'string',
-                begin: '<', end: '>',
-                illegal: '\\n',
-              }
-            ]
-          },
-          STRINGS,
-          NUMBERS,
-          hljs.C_LINE_COMMENT_MODE,
-          hljs.C_BLOCK_COMMENT_MODE,
-        ]
-      },
+      PREPROCESSOR,
       {
         begin: '\\b(deque|list|queue|stack|vector|map|set|bitset|multiset|multimap|unordered_map|unordered_set|unordered_multiset|unordered_multimap|array)\\s*<', end: '>',
         keywords: CPP_KEYWORDS,
@@ -4211,6 +4252,7 @@ hljs.registerLanguage('cpp', function(hljs) {
         returnBegin: true, end: /[{;=]/,
         excludeEnd: true,
         keywords: CPP_KEYWORDS,
+        illegal: /[^\w\s\*&]/,
         contains: [
           {
             begin: FUNCTION_TITLE, returnBegin: true,
@@ -4230,10 +4272,164 @@ hljs.registerLanguage('cpp', function(hljs) {
             ]
           },
           hljs.C_LINE_COMMENT_MODE,
-          hljs.C_BLOCK_COMMENT_MODE
+          hljs.C_BLOCK_COMMENT_MODE,
+          PREPROCESSOR
         ]
       }
     ]
+  };
+});
+
+hljs.registerLanguage('crystal', function(hljs) {
+  var NUM_SUFFIX = '(_[uif](8|16|32|64))?';
+  var CRYSTAL_IDENT_RE = '[a-zA-Z_]\\w*[!?=]?';
+  var CRYSTAL_METHOD_RE = '[a-zA-Z_]\\w*[!?=]?|[-+~]\\@|<<|>>|=~|===?|<=>|[<>]=?|\\*\\*|[-/+%^&*~`|]|\\[\\][=?]?';
+  var CRYSTAL_KEYWORDS = {
+    keyword:
+      'abstract alias asm begin break case class def do else elsif end ensure enum extend for fun if ifdef ' +
+      'include instance_sizeof is_a? lib macro module next of out pointerof private protected rescue responds_to? ' +
+      'return require self sizeof struct super then type undef union unless until when while with yield ' +
+      '__DIR__ __FILE__ __LINE__',
+    literal: 'false nil true'
+  };
+  var SUBST = {
+    className: 'subst',
+    begin: '#\\{', end: '}',
+    keywords: CRYSTAL_KEYWORDS
+  };
+  var EXPANSION = {
+    className: 'expansion',
+    variants: [
+      {begin: '\\{\\{', end: '\\}\\}'},
+      {begin: '\\{%', end: '%\\}'}
+    ],
+    keywords: CRYSTAL_KEYWORDS,
+    relevance: 10
+  };
+  var
+  STRING = {
+    className: 'string',
+    contains: [hljs.BACKSLASH_ESCAPE, SUBST],
+    variants: [
+      {begin: /'/, end: /'/},
+      {begin: /"/, end: /"/},
+      {begin: /`/, end: /`/},
+      {begin: '%w?\\(', end: '\\)'},
+      {begin: '%w?\\[', end: '\\]'},
+      {begin: '%w?{', end: '}'},
+      {begin: '%w?<', end: '>'},
+      {begin: '%w?/', end: '/'},
+      {begin: '%w?%', end: '%'},
+      {begin: '%w?-', end: '-'},
+      {begin: '%w?\\|', end: '\\|'},
+    ],
+    relevance: 0,
+  };
+  var CRYSTAL_DEFAULT_CONTAINS = [
+    EXPANSION,
+    STRING,
+    hljs.HASH_COMMENT_MODE,
+    {
+      className: 'class',
+      beginKeywords: 'class module struct', end: '$|;',
+      illegal: /=/,
+      contains: [
+        hljs.HASH_COMMENT_MODE,
+        hljs.inherit(hljs.TITLE_MODE, {begin: '[A-Za-z_]\\w*(::\\w+)*(\\?|\\!)?'}),
+        {
+          className: 'inheritance',
+          begin: '<\\s*',
+          contains: [{
+            className: 'parent',
+            begin: '(' + hljs.IDENT_RE + '::)?' + hljs.IDENT_RE
+          }]
+        }
+      ]
+    },
+    {
+      className: 'class',
+      beginKeywords: 'lib enum union', end: '$|;',
+      illegal: /=/,
+      contains: [
+        hljs.HASH_COMMENT_MODE,
+        hljs.inherit(hljs.TITLE_MODE, {begin: '[A-Za-z_]\\w*(::\\w+)*(\\?|\\!)?'}),
+      ],
+      relevance: 10
+    },
+    {
+      className: 'function',
+      beginKeywords: 'def', end: /\B\b/,
+      contains: [
+        hljs.inherit(hljs.TITLE_MODE, {
+          begin: CRYSTAL_METHOD_RE,
+          endsParent: true
+        })
+      ]
+    },
+    {
+      className: 'function',
+      beginKeywords: 'fun macro', end: /\B\b/,
+      contains: [
+        hljs.inherit(hljs.TITLE_MODE, {
+          begin: CRYSTAL_METHOD_RE,
+          endsParent: true
+        })
+      ],
+      relevance: 5
+    },
+    {
+      className: 'constant',
+      begin: '(::)?(\\b[A-Z]\\w*(::)?)+',
+      relevance: 0
+    },
+    {
+      className: 'symbol',
+      begin: hljs.UNDERSCORE_IDENT_RE + '(\\!|\\?)?:',
+      relevance: 0
+    },
+    {
+      className: 'symbol',
+      begin: ':',
+      contains: [STRING, {begin: CRYSTAL_METHOD_RE}],
+      relevance: 0
+    },
+    {
+      className: 'number',
+      variants: [
+        { begin: '\\b0b([01_]+)' + NUM_SUFFIX },
+        { begin: '\\b0o([0-7_]+)' + NUM_SUFFIX },
+        { begin: '\\b0x([A-Fa-f0-9_]+)' + NUM_SUFFIX },
+        { begin: '\\b(\\d[\\d_]*(\\.[0-9_]+)?([eE][+-]?[0-9_]+)?)' + NUM_SUFFIX}
+      ],
+      relevance: 0
+    },
+    {
+      className: 'variable',
+      begin: '(\\$\\W)|((\\$|\\@\\@?|%)(\\w+))'
+    },
+    { // regexp container
+      begin: '(' + hljs.RE_STARTERS_RE + ')\\s*',
+      contains: [
+        hljs.HASH_COMMENT_MODE,
+        {
+          className: 'regexp',
+          contains: [hljs.BACKSLASH_ESCAPE, SUBST],
+          variants: [
+            {begin: '/', end: '/[a-z]*'},
+          ]
+        }
+      ],
+      relevance: 0
+    }
+  ];
+  SUBST.contains = CRYSTAL_DEFAULT_CONTAINS;
+  EXPANSION.contains = CRYSTAL_DEFAULT_CONTAINS.slice(1); // without EXPANSION
+
+  return {
+    aliases: ['cr'],
+    lexemes: CRYSTAL_IDENT_RE,
+    keywords: CRYSTAL_KEYWORDS,
+    contains: CRYSTAL_DEFAULT_CONTAINS
   };
 });
 
@@ -5348,8 +5544,7 @@ hljs.registerLanguage('elm', function(hljs) {
     begin: '\\(', end: '\\)',
     illegal: '"',
     contains: [
-      {className: 'type', begin: '\\b[A-Z][\\w]*(\\((\\.\\.|,|\\w+)\\))?'},
-      hljs.inherit(hljs.TITLE_MODE, {begin: '[_a-z][\\w\']*'})
+      {className: 'type', begin: '\\b[A-Z][\\w]*(\\((\\.\\.|,|\\w+)\\))?'}
     ].concat(COMMENT_MODES)
   };
 
@@ -5499,7 +5694,6 @@ hljs.registerLanguage('ruby', function(hljs) {
     {
       className: 'function',
       beginKeywords: 'def', end: '$|;',
-      relevance: 0,
       contains: [
         hljs.inherit(hljs.TITLE_MODE, {begin: RUBY_METHOD_RE}),
         PARAMS
@@ -5852,7 +6046,7 @@ hljs.registerLanguage('fortran', function(hljs) {
       'c_new_line c_carriage_return c_horizontal_tab c_vertical_tab iso_c_binding c_loc c_funloc c_associated  c_f_pointer ' +
       'c_ptr c_funptr iso_fortran_env character_storage_size error_unit file_storage_size input_unit iostat_end iostat_eor ' +
       'numeric_storage_size output_unit c_f_procpointer ieee_arithmetic ieee_support_underflow_control ' +
-      'ieee_get_underflow_mode ieee_set_underflow_mode newunit contiguous ' +
+      'ieee_get_underflow_mode ieee_set_underflow_mode newunit contiguous recursive ' +
       'pad position action delim readwrite eor advance nml interface procedure namelist include sequence elemental pure',
     built_in: 'alog alog10 amax0 amax1 amin0 amin1 amod cabs ccos cexp clog csin csqrt dabs dacos dasin datan datan2 dcos dcosh ddim dexp dint ' +
       'dlog dlog10 dmax1 dmin1 dmod dnint dsign dsin dsinh dsqrt dtan dtanh float iabs idim idint idnint ifix isign max0 max1 min0 min1 sngl ' +
@@ -5879,7 +6073,7 @@ hljs.registerLanguage('fortran', function(hljs) {
     keywords: F_KEYWORDS,
     contains: [
       hljs.inherit(hljs.APOS_STRING_MODE, {className: 'string', relevance: 0}),
-      hljs.inherit(hljs.QUOTE_STRING_MODE,{className: 'string', relevance: 0}),
+      hljs.inherit(hljs.QUOTE_STRING_MODE, {className: 'string', relevance: 0}),
       {
         className: 'function',
         beginKeywords: 'subroutine function program',
@@ -5907,9 +6101,6 @@ hljs.registerLanguage('fsharp', function(hljs) {
   return {
     aliases: ['fs'],
     keywords:
-      // monad builder keywords (at top, matches before non-bang kws)
-      'yield! return! let! do!' +
-      // regular keywords
       'abstract and as assert base begin class default delegate do done ' +
       'downcast downto elif else end exception extern false finally for ' +
       'fun function global if in inherit inline interface internal lazy let ' +
@@ -5917,6 +6108,11 @@ hljs.registerLanguage('fsharp', function(hljs) {
       'override private public rec return sig static struct then to ' +
       'true try type upcast use val void when while with yield',
     contains: [
+      {
+        // monad builder keywords (matches before non-bang kws)
+        className: 'keyword',
+        begin: /\b(yield|return|let|do)!/
+      },
       {
         className: 'string',
         begin: '@"', end: '"',
@@ -5948,6 +6144,43 @@ hljs.registerLanguage('fsharp', function(hljs) {
       hljs.C_LINE_COMMENT_MODE,
       hljs.inherit(hljs.QUOTE_STRING_MODE, {illegal: null}),
       hljs.C_NUMBER_MODE
+    ]
+  };
+});
+
+hljs.registerLanguage('gams', function (hljs) {
+  var KEYWORDS =
+    'abort acronym acronyms alias all and assign binary card diag display else1 eps eq equation equations file files ' +
+    'for1 free ge gt if inf integer le loop lt maximizing minimizing model models na ne negative no not option ' +
+    'options or ord parameter parameters positive prod putpage puttl repeat sameas scalar scalars semicont semiint ' +
+    'set1 sets smax smin solve sos1 sos2 sum system table then until using variable variables while1 xor yes';
+
+  return {
+    aliases: ['gms'],
+    case_insensitive: true,
+    keywords: KEYWORDS,
+    contains: [
+      {
+        className: 'section',
+        beginKeywords: 'sets parameters variables equations',
+        end: ';',
+        contains: [
+          {
+            begin: '/',
+            end: '/',
+            contains: [hljs.NUMBER_MODE]
+          }
+        ]
+      },
+      {
+        className: 'string',
+        begin: '\\*{3}', end: '\\*{3}'
+      },
+      hljs.NUMBER_MODE,
+      {
+        className: 'number',
+        begin: '\\$[a-zA-Z0-9]+'
+      }
     ]
   };
 });
@@ -6189,6 +6422,30 @@ hljs.registerLanguage('go', function(hljs) {
       hljs.C_NUMBER_MODE
     ]
   };
+});
+
+hljs.registerLanguage('golo', function(hljs) {
+    return {
+      keywords: {
+        keyword:
+          'println readln print import module function local return let var ' +
+          'while for foreach times in case when match with break continue ' +
+          'augment augmentation each find filter reduce ' +
+          'if then else otherwise try catch finally raise throw orIfNull',
+        typename:
+          'DynamicObject|10 DynamicVariable struct Observable map set vector list array',
+        literal:
+          'true false null'
+      },
+      contains: [
+        hljs.HASH_COMMENT_MODE,
+        hljs.QUOTE_STRING_MODE,
+        hljs.C_NUMBER_MODE,
+        {
+          className: 'annotation', begin: '@[A-Za-z]+'
+        }
+      ]
+    }
 });
 
 hljs.registerLanguage('gradle', function(hljs) {
@@ -6685,14 +6942,14 @@ hljs.registerLanguage('inform7', function(hljs) {
       // Some keywords more or less unique to I7, for relevance.
       keyword:
         // kind:
-        'thing|10 room|10 person|10 man|10 woman|10 animal|10 container ' +
-        'supporter|10 backdrop|10 door|10 ' +
+        'thing room person man woman animal container ' +
+        'supporter backdrop door ' +
         // characteristic:
-        'scenery|10 open closed|10 locked|10 inside|10 gender|10 ' +
+        'scenery open closed locked inside gender ' +
         // verb:
-        'is are say|10 understand|10 ' +
+        'is are say understand ' +
         // misc keyword:
-        'kind|10 of rule|10'
+        'kind of rule'
     },
     contains: [
       {
@@ -6708,31 +6965,21 @@ hljs.registerLanguage('inform7', function(hljs) {
       },
       {
         className: 'title',
-        beginKeywords: '^Volume ^Book ^Part ^Chapter ^Section',
-        end: '$',
-        relevance: 10
-      },
-      {
-        // Table
-        className: 'title',
-        beginKeywords: '^Table',
-        end: '$',
-        relevance: 10
+        begin: /^(Volume|Book|Part|Chapter|Section|Table)\b/,
+        end: '$'
       },
       {
         // Rule definition
         // This is here for relevance.
-        begin: '^\\b(Check|Carry out|Report|Instead of|To|Rule|When|Before|After)',
+        begin: /^(Check|Carry out|Report|Instead of|To|Rule|When|Before|After)\b/,
         end: ':',
         contains: [
           {
             //Rule name
             begin: '\\b\\(This',
-            end: '\\)',
-            relevance: 10
+            end: '\\)'
           }
-        ],
-        relevance: 10
+        ]
       },
       {
         className: 'comment',
@@ -6798,6 +7045,81 @@ hljs.registerLanguage('ini', function(hljs) {
             relevance: 0
           }
         ]
+      }
+    ]
+  };
+});
+
+hljs.registerLanguage('irpf90', function(hljs) {
+  var PARAMS = {
+    className: 'params',
+    begin: '\\(', end: '\\)'
+  };
+
+  var F_KEYWORDS = {
+    constant: '.False. .True.',
+    type: 'integer real character complex logical dimension allocatable|10 parameter ' +
+      'external implicit|10 none double precision assign intent optional pointer ' +
+      'target in out common equivalence data',
+    keyword: 'kind do while private call intrinsic where elsewhere ' +
+      'type endtype endmodule endselect endinterface end enddo endif if forall endforall only contains default return stop then ' +
+      'public subroutine|10 function program .and. .or. .not. .le. .eq. .ge. .gt. .lt. ' +
+      'goto save else use module select case ' +
+      'access blank direct exist file fmt form formatted iostat name named nextrec number opened rec recl sequential status unformatted unit ' +
+      'continue format pause cycle exit ' +
+      'c_null_char c_alert c_backspace c_form_feed flush wait decimal round iomsg ' +
+      'synchronous nopass non_overridable pass protected volatile abstract extends import ' +
+      'non_intrinsic value deferred generic final enumerator class associate bind enum ' +
+      'c_int c_short c_long c_long_long c_signed_char c_size_t c_int8_t c_int16_t c_int32_t c_int64_t c_int_least8_t c_int_least16_t ' +
+      'c_int_least32_t c_int_least64_t c_int_fast8_t c_int_fast16_t c_int_fast32_t c_int_fast64_t c_intmax_t C_intptr_t c_float c_double ' +
+      'c_long_double c_float_complex c_double_complex c_long_double_complex c_bool c_char c_null_ptr c_null_funptr ' +
+      'c_new_line c_carriage_return c_horizontal_tab c_vertical_tab iso_c_binding c_loc c_funloc c_associated  c_f_pointer ' +
+      'c_ptr c_funptr iso_fortran_env character_storage_size error_unit file_storage_size input_unit iostat_end iostat_eor ' +
+      'numeric_storage_size output_unit c_f_procpointer ieee_arithmetic ieee_support_underflow_control ' +
+      'ieee_get_underflow_mode ieee_set_underflow_mode newunit contiguous recursive ' +
+      'pad position action delim readwrite eor advance nml interface procedure namelist include sequence elemental pure ' +
+      // IRPF90 special keywords
+      'begin_provider &begin_provider end_provider begin_shell end_shell begin_template end_template subst assert touch ' +
+      'soft_touch provide no_dep free irp_if irp_else irp_endif irp_write irp_read',
+    built_in: 'alog alog10 amax0 amax1 amin0 amin1 amod cabs ccos cexp clog csin csqrt dabs dacos dasin datan datan2 dcos dcosh ddim dexp dint ' +
+      'dlog dlog10 dmax1 dmin1 dmod dnint dsign dsin dsinh dsqrt dtan dtanh float iabs idim idint idnint ifix isign max0 max1 min0 min1 sngl ' +
+      'algama cdabs cdcos cdexp cdlog cdsin cdsqrt cqabs cqcos cqexp cqlog cqsin cqsqrt dcmplx dconjg derf derfc dfloat dgamma dimag dlgama ' +
+      'iqint qabs qacos qasin qatan qatan2 qcmplx qconjg qcos qcosh qdim qerf qerfc qexp qgamma qimag qlgama qlog qlog10 qmax1 qmin1 qmod ' +
+      'qnint qsign qsin qsinh qsqrt qtan qtanh abs acos aimag aint anint asin atan atan2 char cmplx conjg cos cosh exp ichar index int log ' +
+      'log10 max min nint sign sin sinh sqrt tan tanh print write dim lge lgt lle llt mod nullify allocate deallocate ' +
+      'adjustl adjustr all allocated any associated bit_size btest ceiling count cshift date_and_time digits dot_product ' +
+      'eoshift epsilon exponent floor fraction huge iand ibclr ibits ibset ieor ior ishft ishftc lbound len_trim matmul ' +
+      'maxexponent maxloc maxval merge minexponent minloc minval modulo mvbits nearest pack present product ' +
+      'radix random_number random_seed range repeat reshape rrspacing scale scan selected_int_kind selected_real_kind ' +
+      'set_exponent shape size spacing spread sum system_clock tiny transpose trim ubound unpack verify achar iachar transfer ' +
+      'dble entry dprod cpu_time command_argument_count get_command get_command_argument get_environment_variable is_iostat_end ' +
+      'ieee_arithmetic ieee_support_underflow_control ieee_get_underflow_mode ieee_set_underflow_mode ' +
+      'is_iostat_eor move_alloc new_line selected_char_kind same_type_as extends_type_of'  +
+      'acosh asinh atanh bessel_j0 bessel_j1 bessel_jn bessel_y0 bessel_y1 bessel_yn erf erfc erfc_scaled gamma log_gamma hypot norm2 ' +
+      'atomic_define atomic_ref execute_command_line leadz trailz storage_size merge_bits ' +
+      'bge bgt ble blt dshiftl dshiftr findloc iall iany iparity image_index lcobound ucobound maskl maskr ' +
+      'num_images parity popcnt poppar shifta shiftl shiftr this_image ' +
+      // IRPF90 special built_ins
+      'IRP_ALIGN irp_here'
+  };
+  return {
+    case_insensitive: true,
+    keywords: F_KEYWORDS, 
+    contains: [
+      hljs.inherit(hljs.APOS_STRING_MODE, {className: 'string', relevance: 0}),
+      hljs.inherit(hljs.QUOTE_STRING_MODE, {className: 'string', relevance: 0}),
+      {
+        className: 'function',
+        beginKeywords: 'subroutine function program',
+        illegal: '[${=\\n]',
+        contains: [hljs.UNDERSCORE_TITLE_MODE, PARAMS]
+      },
+      hljs.COMMENT('!', '$', {relevance: 0}),
+      hljs.COMMENT('begin_doc', 'end_doc', {relevance: 10}),
+      {
+        className: 'number',
+        begin: '(?=\\b|\\+|\\-|\\.)(?=\\.\\d|\\d)(?:\\d+)?(?:\\.?\\d*)(?:[de][+-]?\\d+)?\\b\\.?',
+        relevance: 0
       }
     ]
   };
@@ -6981,8 +7303,7 @@ hljs.registerLanguage('javascript', function(hljs) {
             contains: [
               hljs.C_LINE_COMMENT_MODE,
               hljs.C_BLOCK_COMMENT_MODE
-            ],
-            illegal: /["'\(]/
+            ]
           }
         ],
         illegal: /\[|%/
@@ -7092,7 +7413,7 @@ hljs.registerLanguage('julia', function(hljs) {
       'true false ANY ARGS CPU_CORES C_NULL DL_LOAD_PATH DevNull ENDIAN_BOM ENV I|0 Inf Inf16 Inf32 ' +
       'InsertionSort JULIA_HOME LOAD_PATH MS_ASYNC MS_INVALIDATE MS_SYNC MergeSort NaN NaN16 NaN32 OS_NAME QuickSort ' +
       'RTLD_DEEPBIND RTLD_FIRST RTLD_GLOBAL RTLD_LAZY RTLD_LOCAL RTLD_NODELETE RTLD_NOLOAD RTLD_NOW RoundDown ' +
-      'RoundFromZero RoundNearest RoundToZero RoundUp STDERR STDIN STDOUT VERSION WORD_SIZE catalan cglobal e eu ' +
+      'RoundFromZero RoundNearest RoundToZero RoundUp STDERR STDIN STDOUT VERSION WORD_SIZE catalan cglobal e|0 eu|0 ' +
       'eulergamma golden im nothing pi γ π φ',
 
     // # built_in generator:
@@ -8991,7 +9312,7 @@ hljs.registerLanguage('nimrod', function(hljs) {
   return {
     aliases: ['nim'],
     keywords: {
-      keyword: 'addr and as asm bind block break|0 case|0 cast const|0 continue|0 converter discard distinct|10 div do elif else|0 end|0 enum|0 except export finally for from generic if|0 import|0 in include|0 interface is isnot|10 iterator|10 let|0 macro method|10 mixin mod nil not notin|10 object|0 of or out proc|10 ptr raise ref|10 return shl shr static template|10 try|0 tuple type|0 using|0 var|0 when while|0 with without xor yield',
+      keyword: 'addr and as asm bind block break|0 case|0 cast const|0 continue|0 converter discard distinct|10 div do elif else|0 end|0 enum|0 except export finally for from generic if|0 import|0 in include|0 interface is isnot|10 iterator|10 let|0 macro method|10 mixin mod nil not notin|10 object|0 of or out proc|10 ptr raise ref|10 return shl shr static template try|0 tuple type|0 using|0 var|0 when while|0 with without xor yield',
       literal: 'shared guarded stdin stdout stderr result|10 true false'
     },
     contains: [ {
@@ -9283,7 +9604,8 @@ hljs.registerLanguage('ocaml', function(hljs) {
     contains: [
       {
         className: 'literal',
-        begin: '\\[(\\|\\|)?\\]|\\(\\)'
+        begin: '\\[(\\|\\|)?\\]|\\(\\)',
+        relevance: 0
       },
       hljs.COMMENT(
         '\\(\\*',
@@ -9378,7 +9700,6 @@ hljs.registerLanguage('openscad', function(hljs) {
 			NUMBERS,
 			PREPRO,
 			STRING,
-			PARAMS,
 			SPECIAL_VARS,
 			MODIFIERS,
 			FUNCTIONS
@@ -9543,14 +9864,14 @@ hljs.registerLanguage('pf', function(hljs) {
         'max-src-conn-rate overload flush' +
         'scrub|5 max-mss min-ttl no-df|10 random-id',
       literal:
-        'all any no-route self urpf-failed egress|5 unknown',
+        'all any no-route self urpf-failed egress|5 unknown'
     },
     contains: [
       hljs.HASH_COMMENT_MODE,
       hljs.NUMBER_MODE,
       hljs.QUOTE_STRING_MODE,
       MACRO,
-      TABLE,
+      TABLE
     ]
   };
 });
@@ -9616,8 +9937,17 @@ hljs.registerLanguage('php', function(hljs) {
       ),
       {
         className: 'string',
-        begin: '<<<[\'"]?\\w+[\'"]?$', end: '^\\w+;',
-        contains: [hljs.BACKSLASH_ESCAPE]
+        begin: /<<<['"]?\w+['"]?$/, end: /^\w+;?$/,
+        contains: [
+          hljs.BACKSLASH_ESCAPE,
+          {
+            className: 'subst',
+            variants: [
+              {begin: /\$\w+/},
+              {begin: /\{\$/, end: /\}/}
+            ]
+          }
+        ]
       },
       PREPROCESSOR,
       VARIABLE,
@@ -9674,10 +10004,6 @@ hljs.registerLanguage('php', function(hljs) {
 hljs.registerLanguage('powershell', function(hljs) {
   var backtickEscape = {
     begin: '`[\\s\\S]',
-    relevance: 0
-  };
-  var dollarEscape = {
-    begin: '\\$\\$[\\s\\S]',
     relevance: 0
   };
   var VAR = {
@@ -10102,7 +10428,7 @@ hljs.registerLanguage('python', function(hljs) {
       keyword:
         'and elif is global as in if from raise for except finally print import pass return ' +
         'exec else break not with class assert yield try while continue del or def lambda ' +
-        'nonlocal|10 None True False',
+        'async await nonlocal|10 None True False',
       built_in:
         'Ellipsis NotImplemented'
     },
@@ -10427,6 +10753,12 @@ hljs.registerLanguage('rust', function(hljs) {
         'float f32 f64 ' +
         'str char bool',
       built_in:
+        // prelude
+        'Copy Send Sized Sync Drop Fn FnMut FnOnce drop Box ToOwned Clone ' +
+        'PartialEq PartialOrd Eq Ord AsRef AsMut Into From Default Iterator ' +
+        'Extend IntoIterator DoubleEndedIterator ExactSizeIterator Option ' +
+        'Some None Result Ok Err SliceConcatExt String ToString Vec ' +
+        // macros
         'assert! assert_eq! bitflags! bytes! cfg! col! concat! concat_idents! ' +
         'debug_assert! debug_assert_eq! env! panic! file! format! format_args! ' +
         'include_bin! include_str! line! local_data_key! module_path! ' +
@@ -11052,14 +11384,14 @@ hljs.registerLanguage('sql', function(hljs) {
   var COMMENT_MODE = hljs.COMMENT('--', '$');
   return {
     case_insensitive: true,
-    illegal: /[<>]/,
+    illegal: /[<>{}*]/,
     contains: [
       {
         className: 'operator',
         beginKeywords:
           'begin end start commit rollback savepoint lock alter create drop rename call ' +
           'delete do handler insert load replace select truncate update set show pragma grant ' +
-          'merge describe use explain help declare prepare execute deallocate savepoint release|0 ' +
+          'merge describe use explain help declare prepare execute deallocate release ' +
           'unlock purge reset change stop analyze cache flush optimize repair kill ' +
           'install uninstall checksum restore check backup revoke',
         end: /;/, endsWithParent: true,
@@ -11111,11 +11443,11 @@ hljs.registerLanguage('sql', function(hljs) {
             'initial initialized initially initrans inmemory inner innodb input insert install instance instantiable ' +
             'instr interface interleaved intersect into invalidate invisible is is_free_lock is_ipv4 is_ipv4_compat ' +
             'is_not is_not_null is_used_lock isdate isnull isolation iterate java join json json_exists ' +
-            'k keep keep_duplicates key keys kill l language large last|0 last_day last_insert_id last_value lax lcase ' +
+            'k keep keep_duplicates key keys kill l language large last last_day last_insert_id last_value lax lcase ' +
             'lead leading least leaves left len lenght length less level levels library like like2 like4 likec limit ' +
-            'lines link|0 list|0 listagg little ln load load_file lob lobs local localtime localtimestamp locate ' +
-            'locator lock|0 locked log log10 log2 logfile logfiles logging logical logical_reads_per_call ' +
-            'logoff logon logs long loop|0 low low_priority lower lpad lrtrim ltrim m main make_set makedate maketime ' +
+            'lines link list listagg little ln load load_file lob lobs local localtime localtimestamp locate ' +
+            'locator lock locked log log10 log2 logfile logfiles logging logical logical_reads_per_call ' +
+            'logoff logon logs long loop low low_priority lower lpad lrtrim ltrim m main make_set makedate maketime ' +
             'managed management manual map mapping mask master master_pos_wait match matched materialized max ' +
             'maxextents maximize maxinstances maxlen maxlogfiles maxloghistory maxlogmembers maxsize maxtrans ' +
             'md5 measures median medium member memcompress memory merge microsecond mid migration min minextents ' +
@@ -11139,15 +11471,15 @@ hljs.registerLanguage('sql', function(hljs) {
             'prediction_cost prediction_details prediction_probability prediction_set prepare present preserve ' +
             'prior priority private private_sga privileges procedural procedure procedure_analyze processlist ' +
             'profiles project prompt protection public publishingservername purge quarter query quick quiesce quota ' +
-            'quotename radians raise|0 rand range rank raw read reads readsize rebuild record records ' +
+            'quotename radians raise rand range rank raw read reads readsize rebuild record records ' +
             'recover recovery recursive recycle redo reduced ref reference referenced references referencing refresh ' +
             'regexp_like register regr_avgx regr_avgy regr_count regr_intercept regr_r2 regr_slope regr_sxx regr_sxy ' +
-            'reject rekey relational relative relaylog release|0 release_lock relies_on relocate rely rem remainder ' +
+            'reject rekey relational relative relaylog release release_lock relies_on relocate rely rem remainder rename ' +
             'repair repeat replace replicate replication required reset resetlogs resize resource respect restore ' +
             'restricted result result_cache resumable resume retention return returning returns reuse reverse revoke ' +
             'right rlike role roles rollback rolling rollup round row row_count rowdependencies rowid rownum rows ' +
             'rtrim rules safe salt sample save savepoint sb1 sb2 sb4 scan schema schemacheck scn scope scroll ' +
-            'sdo_georaster sdo_topo_geometry search sec_to_time second section securefile security seed segment ' +
+            'sdo_georaster sdo_topo_geometry search sec_to_time second section securefile security seed segment select ' +
             'self sequence sequential serializable server servererror session session_user sessions_per_user set ' +
             'sets settings sha sha1 sha2 share shared shared_pool short show shrink shutdown si_averagecolor ' +
             'si_colorhistogram si_featurelist si_positionalcolor si_stillimage si_texture siblings sid sign sin ' +
@@ -11743,7 +12075,7 @@ hljs.registerLanguage('stylus', function(hljs) {
 
 hljs.registerLanguage('swift', function(hljs) {
   var SWIFT_KEYWORDS = {
-      keyword: 'class deinit enum extension func import init let protocol static ' +
+      keyword: 'class deinit enum extension func init let protocol static ' +
         'struct subscript typealias var break case continue default do ' +
         'else fallthrough if in for return switch where while as dynamicType ' +
         'is new super self Self Type __COLUMN__ __FILE__ __FUNCTION__ ' +
@@ -11847,6 +12179,10 @@ hljs.registerLanguage('swift', function(hljs) {
                   '@NSCopying|@NSManaged|@objc|@optional|@required|@auto_closure|' +
                   '@noreturn|@IBAction|@IBDesignable|@IBInspectable|@IBOutlet|' +
                   '@infix|@prefix|@postfix)'
+      },
+      {
+        beginKeywords: 'import', end: /$/,
+        contains: [hljs.C_LINE_COMMENT_MODE, BLOCK_COMMENT]
       }
     ]
   };
@@ -12009,11 +12345,11 @@ hljs.registerLanguage('tp', function(hljs) {
     className: 'number',
     begin: '[1-9][0-9]*', /* no leading zeros */
     relevance: 0
-  }
+  };
   var TPLABEL = {
     className: 'comment',
     begin: ':[^\\]]+'
-  }
+  };
   var TPDATA = {
     className: 'built_in',
     begin: '(AR|P|PAYLOAD|PR|R|SR|RSR|LBL|VR|UALM|MESSAGE|UTOOL|UFRAME|TIMER|\
@@ -12045,7 +12381,7 @@ hljs.registerLanguage('tp', function(hljs) {
         'Tool_Offset UF UT UFRAME_NUM UTOOL_NUM UNLOCK WAIT X Y Z W P R STRLEN ' +
         'SUBSTR FINDSTR VOFFSET',
       constant:
-        'ON OFF max_speed LPOS JPOS ENABLE DISABLE START STOP RESET',
+        'ON OFF max_speed LPOS JPOS ENABLE DISABLE START STOP RESET'
     },
     contains: [
       TPDATA,
@@ -12711,7 +13047,9 @@ hljs.registerLanguage('x86asm', function(hljs) {
 });
 
 hljs.registerLanguage('xl', function(hljs) {
-  var BUILTIN_MODULES = 'ObjectLoader Animate MovieCredits Slides Filters Shading Materials LensFlare Mapping VLCAudioVideo StereoDecoder PointCloud NetworkAccess RemoteControl RegExp ChromaKey Snowfall NodeJS Speech Charts';
+  var BUILTIN_MODULES =
+    'ObjectLoader Animate MovieCredits Slides Filters Shading Materials LensFlare Mapping VLCAudioVideo ' +
+    'StereoDecoder PointCloud NetworkAccess RemoteControl RegExp ChromaKey Snowfall NodeJS Speech Charts';
 
   var XL_KEYWORDS = {
     keyword: 'if then else do while until for loop import with is as where when by data constant',
@@ -12719,7 +13057,12 @@ hljs.registerLanguage('xl', function(hljs) {
     type: 'integer real text name boolean symbol infix prefix postfix block tree',
     built_in: 'in mod rem and or xor not abs sign floor ceil sqrt sin cos tan asin acos atan exp expm1 log log2 log10 log1p pi at',
     module: BUILTIN_MODULES,
-    id: 'text_length text_range text_find text_replace contains page slide basic_slide title_slide title subtitle fade_in fade_out fade_at clear_color color line_color line_width texture_wrap texture_transform texture scale_?x scale_?y scale_?z? translate_?x translate_?y translate_?z? rotate_?x rotate_?y rotate_?z? rectangle circle ellipse sphere path line_to move_to quad_to curve_to theme background contents locally time mouse_?x mouse_?y mouse_buttons'
+    id:
+      'text_length text_range text_find text_replace contains page slide basic_slide title_slide title subtitle ' +
+      'fade_in fade_out fade_at clear_color color line_color line_width texture_wrap texture_transform texture ' +
+      'scale_?x scale_?y scale_?z? translate_?x translate_?y translate_?z? rotate_?x rotate_?y rotate_?z? rectangle ' +
+      'circle ellipse sphere path line_to move_to quad_to curve_to theme background contents locally time mouse_?x ' +
+      'mouse_?y mouse_buttons'
   };
 
   var XL_CONSTANT = {

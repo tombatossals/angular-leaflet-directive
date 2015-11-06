@@ -1,6 +1,6 @@
 {
   "name": "leaflet-plugins",
-  "version": "1.3.10",
+  "version": "1.3.12",
   "homepage": "https://github.com/shramov/leaflet-plugins/",
   "license": "MIT",
   "authors": [
@@ -44,11 +44,11 @@
   "ignore": [
     "build"
   ],
-  "_release": "1.3.10",
+  "_release": "1.3.12",
   "_resolution": {
     "type": "version",
-    "tag": "1.3.10",
-    "commit": "e24daae99a4d7774d09288b1439fb9492dbba6cf"
+    "tag": "1.3.12",
+    "commit": "3e1b1162eb6d5c58f2c97345609610e85ff07be7"
   },
   "_source": "git://github.com/shramov/leaflet-plugins.git",
   "_target": "*",
