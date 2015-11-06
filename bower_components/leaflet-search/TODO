@@ -1,26 +1,27 @@
 Tasks found in: src/leaflet-search.js
-    [Line: 22] [low] 		//TODO important! implements uniq option 'sourceData' that recognizes source type: url,array,callback or layer		
-    [Line: 23] [low] 		//TODO implement can do research on multiple sources
-    [Line: 38] [low] 		//TODO add option for persist markerLoc after collapse!
-    [Line: 53] [low] //TODO important optimization!!! always append data in this._recordsCache
-    [Line: 57] [low] //TODO here insert function that search inputText FIRST in _recordsCache keys and if not find results.. 
-    [Line: 60] [low] //TODO change structure of _recordsCache
-    [Line: 363] [low] 		//TODO add option for case sesitive search, also showLocation
-    [Line: 366] [low] 		//TODO use .filter or .map
-    [Line: 428] [low] 		//TODO throw new Error("propertyName '"+propName+"' not found in JSON data");
-    [Line: 433] [low] 		//TODO remove script node after call run
-    [Line: 442] [low] 			//TODO add rnd param or randomize callback name! in recordsFromJsonp
-    [Line: 461] [low] 			//TODO add rnd param or randomize callback name! in recordsFromAjax			
-    [Line: 524] [low] 		//TODO implements autype without selection(useful for mobile device)
-    [Line: 625] [low] //TODO important optimization!!! always append data in this._recordsCache
-    [Line: 629] [low] //TODO here insert function that search inputText FIRST in _recordsCache keys and if not find results.. 
-    [Line: 632] [low] //TODO change structure of _recordsCache
-    [Line: 684] [low] 	    //TODO refact _handleAutoresize now is not accurate
-    [Line: 780] [low] 			//TODO showLocation: start animation after setView or panTo, maybe with map.on('moveend')...	
-    [Line: 869] [low] 	//TODO refact animate() more smooth! like this: http://goo.gl/DDlRs
-    [Line: 893] [low] 						//TODO use create event 'animateEnd' in SearchMarker 
-    [Line: 50] [med] //FIXME option condition problem {autoCollapse: true, markerLocation: true} not show location
-    [Line: 51] [med] //FIXME option condition problem {autoCollapse: false }
-    [Line: 379] [med] 	//FIXME problem with jsonp/ajax when remote filter has different behavior of this._filterRecords
-    [Line: 753] [med] 				//FIXME if collapse in _handleSubmit hide _markerLoc!
-    [Line: 783] [med] 		//FIXME autoCollapse option hide this._markerLoc before that visualized!!
+    [Line: 23] [low] 		//TODO implements uniq option 'sourceData' that recognizes source type: url,array,callback or layer		
+    [Line: 24] [low] 		//TODO implement can do research on multiple sources layers and remote
+    [Line: 42] [low] 		//TODO add option for persist markerLoc after collapse!
+    [Line: 53] [low] 		//TODO history: false,		//show latest searches in tooltip		
+    [Line: 58] [low] //TODO important optimization!!! always append data in this._recordsCache
+    [Line: 62] [low] //TODO here insert function that search inputText FIRST in _recordsCache keys and if not find results.. 
+    [Line: 65] [low] //TODO change structure of _recordsCache
+    [Line: 373] [low] 		//TODO use .filter or .map
+    [Line: 429] [low] 		//TODO throw new Error("propertyName '"+propName+"' not found in JSON data");
+    [Line: 438] [low] 			//TODO add rnd param or randomize callback name! in recordsFromJsonp
+    [Line: 459] [low] 		//TODO add rnd param or randomize callback name! in recordsFromAjax			
+    [Line: 519] [low]                 //TODO: Optimize
+    [Line: 534] [low] 		//TODO implements autype without selection(useful for mobile device)
+    [Line: 648] [low] //TODO important optimization!!! always append data in this._recordsCache
+    [Line: 652] [low] //TODO here insert function that search inputText FIRST in _recordsCache keys and if not find results.. 
+    [Line: 655] [low] //TODO change structure of _recordsCache
+    [Line: 670] [low] 			//TODO _recordsFromLayer must return array of objects, formatted from _formatData
+    [Line: 691] [low] 				//TODO refact!
+    [Line: 705] [low] 	    //TODO refact _handleAutoresize now is not accurate
+    [Line: 801] [low] 			//TODO showLocation: start animation after setView or panTo, maybe with map.on('moveend')...	
+    [Line: 890] [low] 	//TODO refact animate() more smooth! like this: http://goo.gl/DDlRs
+    [Line: 914] [low] 						//TODO use create event 'animateEnd' in L.Control.Search.Marker 
+    [Line: 55] [med] //FIXME option condition problem {autoCollapse: true, markerLocation: true} not show location
+    [Line: 56] [med] //FIXME option condition problem {autoCollapse: false }
+    [Line: 774] [med] 				//FIXME if collapse in _handleSubmit hide _markerLoc!
+    [Line: 804] [med] 		//FIXME autoCollapse option hide this._markerLoc before that visualized!!

@@ -16,6 +16,6 @@
     "commit": "512e9672a22cc459ba79216b5c2716c8bb8c6922"
   },
   "_source": "git://github.com/Esri/esri-leaflet-clustered-feature-layer.git",
-  "_target": "~1.0.0-rc.4",
+  "_target": "~1.0.x",
   "_originalSource": "esri-leaflet-clustered-feature-layer"
 }

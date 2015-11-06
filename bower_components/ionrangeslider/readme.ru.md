@@ -1,41 +1,58 @@
-# Ion.Range Slider 1.9.3
+![ion.rangeSlider](_tmp/logo-ion-range-slider.png)
 
 > <a href="readme.md">English description</a> | Описание на русском
 
-Удобный легкий слайдер диапазонов. <a href="http://ionden.com/a/plugins/ion.rangeSlider/">Страница проекта и демо</a>
-
-Скачать: <a href="http://ionden.com/a/plugins/ion.rangeSlider/ion.rangeSlider-1.9.3.zip">ion.rangeSlider-1.9.3.zip</a>
+Удобный, гибкий и отзывчивый слайдер диапазонов
 
 ***
 
+* Версия: 2.1.2
+* <a href="http://ionden.com/a/plugins/ion.rangeSlider/index.html">Страница проекта и демо</a>
+* <a href="http://ionden.com/a/plugins/ion.rangeSlider/ion.rangeSlider-2.1.2.zip">Загрузить ZIP-архив</a>
+
+[![](https://pledgie.com/campaigns/25694.png?skin_name=chrome)](https://pledgie.com/campaigns/25694)
+
 ## Описание
-* Ion.RangeSlider — классный, удобный и легко настраиваемый слайдер диапазонов
+* Ion.RangeSlider — классный, удобный, отзывчивый и легко настраиваемый слайдер диапазонов
 * Слайдер поддерживает события и публичные методы, имеет гибкие настройки, может быть полностью видоизменен через CSS
 * Кроссбраузерная поддержка: Google Chrome, Mozilla Firefox 3.6+, Opera 12+, Safari 5+, Internet Explorer 8+
 * Плагин поддерживает устройства с touch-экраном (iPhone, iPad, Nexus, etc.)
 * <a href="https://github.com/IonDen/ion.rangeSlider">Репозиторий на GitHub</a>
 * Плагин свободно распространяется на условиях <a href="http://ionden.com/a/plugins/licence.html" target="_blank">лицензии MIT</a>
+* Используюя этот плагин, вы сможете создавать крутейшие слайдеры диапазонов, такие как этот:
+
+![ion.rangeSlider](http://ionden.com/a/plugins/ion.rangeSlider/static/img/ion-range-slider.png)
 
 ## Ключевые особенности
-* Поддержка скинов. (3 скина в комплекте и PSD для изготовления собственных)
+* Поддержка скинов. (5 скина в комплекте и PSD для изготовления собственных)
 * Неограниченное кол-во слайдеров на одной странице без существенных потерь производительности и конфликтов между ними
 * Два режима работы с 1 или 2 ползунками
 * Поддержка отрицательных и дробных значений
-* Возможность редактировать шаг
-* Поддержка собственного диапазона значений (см. пример с месяцами)
-* Автоматически генерируемая сетка
+* Возможность редактировать шаг и привязывать сетку к шагу
+* Можно использовать собственный массив значений для слайдера
+* Настраиваемая сетка значений
 * Отключаемые элементы интерфейса (мин. и макс. значение, текущие значение, сетка)
 * Постфиксы и префиксы для указания единиц измерения ($20, 20 &euro; и т.п.)
 * Дополнительный постфикс для максимального значения (например $0 — $100<b>+</b>)
-* Воможнось улучшить читабельность больших цифр (например 10000000 -> 10 000 000)
+* Воможнось улучшить читабельность больших цифр (например 10000000 -> 10 000 000 или 10.000.000)
 * Слайдер пишет свое значение прямо в value исходного поля input, что позволяет вставить сладер прямо внутрь любой формы
 * Любой параметр слайдера можно так же задать через data-атрибут (например data-min="10")
 * Слайдер поддерживает параметр disabled, позволяет делать слайдер неактивным
-* Слайдер поддерживает внешние методы (update и remove), позволяющие управлять слайдером уже после создания
-* Для продвинутых пользователей есть поддержка функций обратного вызова (onLoad, onChange, onFinish). Слайдер передает свои значения в эти функции первым аргументом в виде объекта
+* Слайдер поддерживает внешние методы (update, reset и remove), позволяющие управлять слайдером уже после создания
+* Для продвинутых пользователей есть поддержка колбэков (onStart, onChange, onFinish, onUpdate). Слайдер передает свои значения в эти функции первым аргументом в виде объекта
+* Слайдер поддерживает работу с датой и временем
+
+
+## Демо
+
+* <a href="http://ionden.com/a/plugins/ion.rangeSlider/demo.html" class="switch__item">Базовые настройки</a>
+* <a href="http://ionden.com/a/plugins/ion.rangeSlider/demo_advanced.html" class="switch__item">Расширенные настройки</a>
+* <a href="http://ionden.com/a/plugins/ion.rangeSlider/demo_interactions.html" class="switch__item">Взаимодействия</a>
+
 
 ## Зависимости
-* <a href="http://jquery.com/" target="_blank">jQuery 1.9+</a>
+
+* <a href="http://jquery.com/" target="_blank">jQuery 1.8.x+</a>
 
 
 ## Использование
@@ -45,30 +62,60 @@
 * ion.rangeSlider.min.js
 
 Подключаем стили:
-* normalize.min.css (желательно, если он у вас еще не подключен)
+* <a href="http://necolas.github.io/normalize.css/" target="_blank">normalize.css</a> (желательно, если он у вас еще не подключен)
 * ion.rangeSlider.css
 
-Не забываем про скин. 2 скина включены в архив:
-* ion.rangeSlider.skinNice.css
-* ion.rangeSlider.skinSimple.css
-
-Не забудьте подключить картинку-спрайт скина:
-* sprite-skin-simple.png - простецкий скин
-* sprite-skin-nice.png - приличный скин
+Не забываем про скин. 5 скинов включены в архив. Выберите один:
+* ion.rangeSlider.skinFlat.css + sprite-skin-flat.png
+* ion.rangeSlider.skinHTML5.css + без картинок
+* ion.rangeSlider.skinModern.css + sprite-skin-modern.png
+* ion.rangeSlider.skinNice.css + sprite-skin-nice.png
+* ion.rangeSlider.skinSimple.css + sprite-skin-simple.png
+                            
 Либо воспользуйтесь вложенным в архив PSD файлом, и нарисуйте собственный скин (не забудьте модифицировать размеры элементов в CSS файле)
+
+
+## Устанавливаем с помощью bower
+
+* bower install ionrangeslider
+
+
+## Устанавливаем с помощью npm
+
+* npm install ion-rangeslider
+
+
+## Устанавливаем с помощью spm [![](http://spmjs.io/badge/ion-rangeslider)](http://spmjs.io/package/ion-rangeslider)
+
+* spm install ion-rangeslider
 
 
 ## Инициализация
 
 Создаем базовое поле <code>input type="text"</code>:
 ```html
-<input type="text" id="example_id" name="example_name" value="10;100" />
+<input type="text" id="example_id" name="example_name" value="" />
 ```
 
 Чтобы запустить слайдер, вызовите ionRangeSlider для нужного элемента:
 ```javascript
 $("#example_id").ionRangeSlider();
 ```
+
+## Демо для новичков
+Если вы новичок в веб разработке и не уверены как правильно подключить этот плагин на вашу страницу, то скачайте вот
+<a href="http://ionden.com/a/plugins/ion.rangeSlider/ionRangeSliderDemo.zip" class="button">этот демо пример</a>
+
+
+## Миграция с версии 1.x на 2.x
+* Все параметры (кроме функций) теперь записываются так: <b>param_name</b>, а не paramName
+* Изменились названия некоторых параметров: hasGrid &rarr; <b>grid</b>, onLoad &rarr; <b>onStart</b>
+* Изменился формат объекта с данными слайдера, возвращаемый в колбэки. Например: fromNumber &rarr; <b>from</b>
+* Слайдер теперь постоянно записывает свои значения в поле value и в атрибуты data-from и data-to
+
+
+## <a href="http://jsfiddle.net/IonDen/qv6yrjrv/" target="_blank">Площадка для эксперементов с плагином</a>
+
 
 ## Настройка
 
@@ -77,224 +124,370 @@ $("#example_id").ionRangeSlider();
         <tr>
             <th>Атрибут</th>
             <th>По умолчанию</th>
+            <th>Тип</th>
             <th>Описание</th>
         </tr>
     </thead>
     <tbody>
-        <tr>
-            <td>type</td>
+        <tr class="options__step">
+            <td>type<div><sup>data-type</sup></div></td>
             <td>"single"</td>
-            <td>Не обязательный параметр, позволяет выбрать тип слайдера, может принимать значение <code>single</code> - для одиночного слайдера или <code>double</code> - для двойного слайдера</td>
+            <td>string</td>
+            <td>Позволяет выбрать тип слайдера, может принимать значение <code>single</code> - для одиночного слайдера или <code>double</code> - для двойного слайдера</td>
         </tr>
+
         <tr>
-            <td>min</td>
+            <td>min<div><sup>data-min</sup></div></td>
             <td>10</td>
-            <td>Не обязательный параметр, автоматически устанавливается из атрибута <code>value</code> базового поля input. Например если value="10;100", то примет значение 10</td>
+            <td>number</td>
+            <td>Обозначает минимальное возможное значение слайдера.</td>
         </tr>
         <tr>
-            <td>max</td>
+            <td>max<div><sup>data-max</sup></div></td>
             <td>100</td>
-            <td>Не обязательный параметр, автоматически устанавливается из атрибута <code>value</code> базового поля input. Например если value="10;100", то примет значение 100</td>
+            <td>number</td>
+            <td>Обозначает максимальное возможное значение слайдера.</td>
         </tr>
         <tr>
-            <td>from</td>
+            <td>from<div><sup>data-from</sup></div></td>
             <td>min</td>
-            <td>Не обязательный параметр, по умолчанию равен значению min. Позволяет задать стартовую позицию слайдера "ОТ"</td>
+            <td>number</td>
+            <td>Позволяет задать стартовую позицию левого ползунка (или единственного ползунка)</td>
         </tr>
         <tr>
-            <td>to</td>
+            <td>to<div><sup>data-to</sup></div></td>
             <td>max</td>
-            <td>Не обязательный параметр, по умолчанию равен значению max. Позволяет задать стартовую позицию слайдера "ДО"</td>
+            <td>number</td>
+            <td>Позволяет задать стартовую позицию правого ползунка</td>
         </tr>
-        <tr>
-            <td>step</td>
+        <tr class="options__step">
+            <td>step<div><sup>data-step</sup></div></td>
             <td>1</td>
-            <td>Не обязательный параметр, задает шаг слайдера</td>
+            <td>number</td>
+            <td>Задает шаг движения ползунков. Всегда больше нуля. Может быть дробным.</td>
         </tr>
+
         <tr>
-            <td>prefix</td>
-            <td>-</td>
-            <td>Не обязательный параметр, добавляет текст до всех значений. Например prefix - "$" модифицирует значение "100" в "$100"</td>
+            <td>min_interval<div><sup>data-min-interval</sup></div></td>
+            <td>—</td>
+            <td>number</td>
+            <td>Задает минимальный диапазон между ползунками. Только для типа "double"</td>
         </tr>
-        <tr>
-            <td>postfix</td>
-            <td>-</td>
-            <td>Не обязательный параметр, добавляет текст после всех значений. Например postfix - " &euro;" модифицирует значение "100" в "100 &euro;"</td>
+        <tr class="options__step">
+            <td>max_interval<div><sup>data-max-interval</sup></div></td>
+            <td>—</td>
+            <td>number</td>
+            <td>Задает максимальный диапазон между ползунками. Только для типа "double"</td>
         </tr>
-        <tr>
-            <td>maxPostfix</td>
-            <td>-</td>
-            <td>Не обязательный параметр, добавляет для максимального значения. Например maxPostfix - "+" модифицирует значение "100" в "100+"</td>
-        </tr>
-        <tr>
-            <td>hasGrid</td>
+        <tr class="options__step">
+            <td>drag_interval<div><sup>data-drag-interval</sup></div></td>
             <td>false</td>
-            <td>Не обязательный параметр, включает сетку ниже слайдера (высота увеличивается на 20px и это можно настроить через CSS)</td>
+            <td>boolean</td>
+            <td>Разрешает пользователю перетаскивать весь диапазон. Только для типа "double" (beta)</td>
         </tr>
-        <tr>
-            <td>gridMargin</td>
-            <td>0</td>
-            <td>Не обязательный параметр, устанавливает отсуп от края сетки до края слайдера</td>
+
+        <tr class="options__step">
+            <td>values<div><sup>data-values</sup></div></td>
+            <td>[]</td>
+            <td>array</td>
+            <td>Переопределяет значения слайдера, значениями взятыми из массива values. Параметры min, max, step переопределяются автоматически.</td>
         </tr>
-        <tr>
-            <td>hideMinMax</td>
+
+        <tr class="options__new">
+            <td>from_fixed<div><sup>data-from-fixed</sup></div></td>
             <td>false</td>
-            <td>Не обязательный параметр, отключает поля Min и Max</td>
+            <td>boolean</td>
+            <td>Фиксирует позицию левого ползунка (или единственного ползунка).</td>
         </tr>
-        <tr>
-            <td>hideFromTo</td>
+        <tr class="options__new">
+            <td>from_min<div><sup>data-from-min</sup></div></td>
+            <td>min</td>
+            <td>number</td>
+            <td>Ограничивает минимальную позицию левого ползунка.</td>
+        </tr>
+        <tr class="options__new">
+            <td>from_max<div><sup>data-from-max</sup></div></td>
+            <td>max</td>
+            <td>number</td>
+            <td>Ограничивает максимальную позицию левого ползунка.</td>
+        </tr>
+        <tr class="options__new">
+            <td>from_shadow<div><sup>data-from-shadow</sup></div></td>
             <td>false</td>
-            <td>Не обязательный параметр, отключает поля From и To</td>
+            <td>boolean</td>
+            <td>Подсвечивает ограничения наложенные на левый ползунок.</td>
         </tr>
+
+        <tr class="options__new">
+            <td>to_fixed<div><sup>data-to-fixed</sup></div></td>
+            <td>false</td>
+            <td>boolean</td>
+            <td>Фиксирует позицию правого ползунка.</td>
+        </tr>
+        <tr class="options__new">
+            <td>to_min<div><sup>data-to-min</sup></div></td>
+            <td>min</td>
+            <td>number</td>
+            <td>Ограничивает минимальную позицию правого ползунка.</td>
+        </tr>
+        <tr class="options__new">
+            <td>to_max<div><sup>data-to-max</sup></div></td>
+            <td>max</td>
+            <td>number</td>
+            <td>Ограничивает максимальную позицию правого ползунка.</td>
+        </tr>
+        <tr class="options__new options__step">
+            <td>to_shadow<div><sup>data-to-shadow</sup></div></td>
+            <td>false</td>
+            <td>boolean</td>
+            <td>Подсвечивает ограничения наложенные на правый ползунок.</td>
+        </tr>
+
         <tr>
-            <td>prettify</td>
+            <td>prettify_enabled<div><sup>data-prettify-enabled</sup></div></td>
             <td>true</td>
-            <td>Не обязательный параметр, позволяет разделять длинные цифры пробелами, например 10 000 вместо 10000</td>
+            <td>boolean</td>
+            <td>Улучшает внешний вид длинных цифр. 10000000 &rarr; 10 000 000</td>
         </tr>
-        <tr>
-            <td>disable</td>
-            <td>false</td>
-            <td>Визуально отключает слайдер</td>
+        <tr class="options__new">
+            <td>prettify_separator<div><sup>data-prettify-separator</sup></div></td>
+            <td>" "</td>
+            <td>string</td>
+            <td>Позволяет выбирать разделитель для улучшения читаемости длинных цифр. 10 000, 10.000, 10-000 и т.п.</td>
         </tr>
-        <tr>
-            <td>values</td>
+        <tr class="options__new options__step">
+            <td>prettify<div><sup>—</sup></div></td>
             <td>null</td>
-            <td>Массив предустановленных значений: [a, b, c] и т.п.</td>
+            <td>function</td>
+            <td>Собственная функция для постобработки значений слайдера. Позволяет делать с цифрами всё что угодно, например приобразовывать в даты и время.</td>
+        </tr>
+
+        <tr class="options__new options__step">
+            <td>force_edges<div><sup>data-force-edges</sup></div></td>
+            <td>false</td>
+            <td>boolean</td>
+            <td>Заставляет слайдер всегда оставаться внутри границ своего контейнера.</td>
+        </tr>
+
+        <tr class="options__new">
+            <td>keyboard<div><sup>data-keyboard</sup></div></td>
+            <td>false</td>
+            <td>boolean</td>
+            <td>Активирует управление слайдером с помощью клавиатуры. Влево: &larr, &darr, A, S. Вправо: &rarr, &uarr, W, D.</td>
+        </tr>
+        <tr class="options__new options__step">
+            <td>keyboard_step<div><sup>data-keyboard-step</sup></div></td>
+            <td>5</td>
+            <td>number</td>
+            <td>Шаг движения ползунка при управлении с клавиатуры. Задается в процентах.</td>
+        </tr>
+
+        <tr>
+            <td>grid<div><sup>data-grid</sup></div></td>
+            <td>false</td>
+            <td>boolean</td>
+            <td>Включает отображение сетки значений.</td>
+        </tr>
+        <tr>
+            <td>grid_margin<div><sup>data-grid-margin</sup></div></td>
+            <td>true</td>
+            <td>boolean</td>
+            <td>Выравнивает сетку по крайним позициям ползунков, либо по границам контейнера.</td>
+        </tr>
+        <tr class="options__new">
+            <td>grid_num<div><sup>data-grid-num</sup></div></td>
+            <td>4</td>
+            <td>number</td>
+            <td>Количество ячеек в сетке.</td>
+        </tr>
+        <tr class="options__new options__step">
+            <td>grid_snap<div><sup>data-grid-snap</sup></div></td>
+            <td>false</td>
+            <td>boolean</td>
+            <td>Привязка сетки к шагу слайдера (параметр step). Если активирован, то параметр grid_num не учитывается.</td>
+        </tr>
+
+        <tr>
+            <td>hide_min_max<div><sup>data-hide-min-max</sup></div></td>
+            <td>false</td>
+            <td>boolean</td>
+            <td>Прячет лейблы "min" и "max"</td>
+        </tr>
+        <tr class="options__step">
+            <td>hide_from_to<div><sup>data-hide-from-to</sup></div></td>
+            <td>false</td>
+            <td>boolean</td>
+            <td>Прячет лейблы "from" и "to"</td>
+        </tr>
+
+        <tr>
+            <td>prefix<div><sup>data-prefix</sup></div></td>
+            <td>—</td>
+            <td>string</td>
+            <td>Отобразить префикс для значений слайдера. Будет отображен перед цифрой, например $100.</td>
+        </tr>
+        <tr>
+            <td>postfix<div><sup>data-postfix</sup></div></td>
+            <td>—</td>
+            <td>string</td>
+            <td>Отобразить постфикс для значений слайдера. Будет отображен после цифры, например 100 руб.</td>
+        </tr>
+        <tr>
+            <td>max_postfix<div><sup>data-max-postfix</sup></div></td>
+            <td>—</td>
+            <td>string</td>
+            <td>Отобразить дополнительный постфикс для максимального значения слайдера. Будет отображен если один из ползунков достигнет крайнего правого значения. Например 0 — 100+</td>
+        </tr>
+        <tr class="options__new">
+            <td>decorate_both<div><sup>data-decorate-both</sup></div></td>
+            <td>true</td>
+            <td>boolean</td>
+            <td>Используется для типа "double", в случае если задан prefix и/или postfix. Определяет, как декорировать близко расположенные значения.<br/>Например: $10k — $100k или же $10 — 100k</td>
+        </tr>
+        <tr class="options__new options__step">
+            <td>values_separator<div><sup>data-values-separator</sup></div></td>
+            <td>" — "</td>
+            <td>string</td>
+            <td>Разделитель для близко расположенных значений. Используется для типа "double". Например: 10 — 100, 10 to 100, 10 + 100, 10 &rarr; 100 и т.д.</td>
+        </tr>
+        
+        <tr class="options__step">
+            <td>input_values_separator<div><sup>data-input-values-separator</sup></div></td>
+            <td>" ; "</td>
+            <td>string</td>
+            <td>Разделитель для двойных значений в поле value у базового input-элемента</td>
+        </tr>
+
+        <tr class="options__step">
+            <td>disable<div><sup>data-disable</sup></div></td>
+            <td>false</td>
+            <td>boolean</td>
+            <td>Блокирует слайдер, делает его не активным.</td>
+        </tr>
+
+        <tr>
+            <td>onStart<div><sup>—</sup></div></td>
+            <td>null</td>
+            <td>function</td>
+            <td>Коллбэк. Вызывается при старте слайдера.</td>
+        </tr>
+        <tr>
+            <td>onChange<div><sup>—</sup></div></td>
+            <td>null</td>
+            <td>function</td>
+            <td>Коллбэк. Вызывается каждый раз когда обновляются значения слайдера.</td>
+        </tr>
+        <tr>
+            <td>onFinish<div><sup>—</sup></div></td>
+            <td>null</td>
+            <td>function</td>
+            <td>Коллбэк. Вызывается когда пользователь заканчивает перемещать ползунок.</td>
+        </tr>
+        <tr class="options__new">
+            <td>onUpdate<div><sup>—</sup></div></td>
+            <td>null</td>
+            <td>function</td>
+            <td>Коллбэк. Вызывается когда слайдер обновляется методом <code>update</code> или <code>reset</code>.</td>
         </tr>
     </tbody>
 </table>
 
 
-## Колбэки
+## Описание данных передаваемых в колбэки (onChange и т.д):
 
-<table class="options">
-    <thead>
-        <tr>
-            <th>Атрибут</th>
-            <th>По умолчанию</th>
-            <th>Описание</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>onLoad</td>
-            <td>-</td>
-            <td>Функция обратного вызова, вызывается один раз при инициализации слайдера или после обновления через метод Update</td>
-        </tr>
-        <tr>
-            <td>onChange</td>
-            <td>-</td>
-            <td>Callback функция, вызывается каждый раз при смене состояния слайдера, возвращает объект, содержащий параметры слайдера</td>
-        </tr>
-        <tr>
-            <td>onFinish</td>
-            <td>-</td>
-            <td>Callback функция, вызывается один раз при смене состояния слайдера, когда работа слайдера завершена. Возвращает объект, содержащий параметры слайдера</td>
-        </tr>
-    </tbody>
-</table>
-
-
-## Описание данных передаваемых в функцию обратного вызова:
-В любую функцию обратного вызова передается объект с данными сладера:
+Результат имеет тип object и передается коллбэк первым аргументом:
 ```javascript
 Obj: {
     "input": object,    // jQuery-ссылка на input
     "slider": object,   // jQuery-ссылка на контейнер слайдера
-    "min": 10,          // значение MIN
-    "max": 20,          // значение MAX
-    "fromNumber": 10,   // значение ОТ
-    "toNumber": 20,     // значение ДО
-    "fromPers": 25,     // значение ОТ в процентах
-    "toPers": 75,       // значение ДО в процентах
-    "fromX": 100,       // координата x ползунка-ОТ в пикселях
-    "toX": 200          // координата x ползунка-ДО в пикселях
+    "min": 0,           // значение MIN
+    "max": 1000,        // значение MAX
+    "from": 100,        // значение ОТ (значение левого или единственного ползунка)
+    "from_percent": 10, // значение ОТ в процентах
+    "from_value": 0,    // индекс ОТ массива values (если используется)
+    "to": 900,          // значение ДО (значение правого ползунка)
+    "to_percent": 90,   // значение ДО в процентах
+    "to_value": 0       // индекс ДО массива values (если используется)
 }
 ```
 
-## Создание слайдера (подробно)
-Пример слайдера, запущенного с параметрами:
+## Создание слайдера c параметрами
+
+Пример
 ```javascript
-$("#someID").ionRangeSlider({
-    min: 10,                        // минимальное значение
-    max: 100,                       // максимальное значение
-    from: 30,                       // предустановленное значение ОТ
-    to: 80,                         // предустановленное значение ДО
-    type: "single",                 // тип слайдера
-    step: 10,                       // шаг слайдера
-    prefix: "$",                    // префикс значение
-    postfix: " €",                  // постфикс значение
-    maxPostfix: "+",                // постфикс для максимального значения
-    hasGrid: true,                  // показать сетку
-    gridMargin: 7,                  // отсуп от края сетки до края слайдера
-    hideMinMax: true,               // спрятать поля Min и Max
-    hideFromTo: true,               // спрятать поля From и To
-    prettify: true,                 // разделять цифры пробелами 10 000
-    disable: false,                 // заблокировать слайдер
-    values: ["a", "b", "c"],        // массив предустановленных значений
-    onLoad: function (obj) {        // callback, вызывается при запуске и обновлении
-        console.log(obj);
-    },
-    onChange: function (obj) {      // callback, вызывается при каждом изменении состояния
-        console.log(obj);
-    },
-    onFinish: function (obj) {      // callback, вызывается один раз в конце использования
-        console.log(obj);
-    }
+$("#example").ionRangeSlider({
+    min: 0,
+    max: 10000,
+    from: 1000,
+    to: 9000,
+    type: 'double',
+    prefix: "$",
+    grid: true,
+    grid_num: 10
 });
 ```
 
 Слайдер с параметрами можно также инициализировать используя атрибуты <code>data-*</code> у тэга <code>input</code>:
 ```html
-data-from="30"                      // предустановленное значение ОТ
-data-to="70"                        // предустановленное значение ДО
-data-type="double"                  // тип слайдера
-data-step="10"                      // шаг слайдера
-data-prefix="$"                     // префикс значение
-data-postfix=" €"                   // постфикс значение
-data-maxpostfix="+"                 // постфикс значение для максимального числа
-data-hasgrid="true"                 // показать сетку
-data-gridmargin="7"                 // устанавливаем отступ сетки от края
-data-hideminmax="true"              // спрятать поля Min и Max
-data-hidefromto="true"              // спрятать поля From и To
-data-prettify="false"               // не разделять цифры пробелами 10000 вместо 10 000
-data-disable="true"                 // отключить слайдер
-data-values="a,b,c"                 // предустановленные значения, элементы через запятую
+data-min="0"
+data-max="10000"
+data-from="1000"
+data-to="9000"
+data-type="double"
+data-prefix="$"
+data-grid="true"
+data-grid-num="10"
 ```
 
 ## Публичные методы
 
-Обновление слайдера, метод <code>update</code>:
+Для того чтобы использовать публичные методы, вначале нужно записать значение слайдера в переменную::
 ```javascript
-$("#someID").ionRangeSlider("update", {
-    min: 20,                        // меняем минимальное значение
-    max: 90,                        // меняем максимальное значение
-    from: 40,                       // меняем предустановленное значение ОТ
-    to: 70,                         // меняем предустановленное значение ДО
-    step: 5                         // меняем шаг слайдера
+// Запускаем слайдер
+$("#range").ionRangeSlider({
+    type: "double",
+    min: 0,
+    max: 1000,
+    from: 200,
+    to: 500,
+    grid: true
 });
+
+// Записываем инстанс в переменную
+var slider = $("#range").data("ionRangeSlider");
+
+// Запускаем публичный метод
+slider.reset();
 ```
 
-Удаление слайдера, метод <code>remove</code>:
+Всего существует 3 публичных метода:
 ```javascript
-$("#someID").ionRangeSlider("remove");
+// UPDATE - обновляет значения слайдера (можно менять любые значения)
+slider.update({
+    from: 300,
+    to: 400
+});
+
+// RESET - сбрасывает слайдер к исходным значениям
+slider.reset();
+
+// DESTROY - убивает слайдер и восстанавливает исходный input
+slider.destroy();
 ```
 
-## История обновлений
-* 1.9.3: 06.08.2014 - Добавлена поддержка bower
-* 1.9.2: 04.08.2014 - Новый параметр gridMargin. Выполнены задачи: #89, #94, #96, #97, #98, #103
-* 1.9.1: 15.04.2014 - Исправлено несколько багов. Задачи: #81, #82, #85
-* 16.03.2014 - Обновление описания плагина. Новый дизайн демок. Несколько новых параметров. Задачи: #65, #68, #70, #77, #78
-* 12.01.2014 - Исправлены баги, добавлены новые функции. Задачи: #12, #30, #33, #43, #47, #52, #58
-* 31.10.2013 - Исправлены баги: #13, #31, #35, #37, #40, несколько мелких оптимизаций кода
-* 10.10.2013 - Новый скин Flat UI. Общие оптимизации скинов. Исправлен баг #25.
-* 08.10.2013 - Исправлены задачи #20, #21, #23, #24, #26. Удален параметр hideText. Новый метод и настройки. Несколько мелких оптимизаций и улучшено оформление кода.
-* 11.09.2013 - Исправлен баг в браузерах на Android-устройствах. Добавлена поддержка отрицательных и дробных чисел. Issues #15, #16
-* 23.08.2013 - Исправлено несколько багов и добавлены новые возможности. Так же исправлены Issues #7, #8, #9, #10
-* 30.06.2013 - исправление мелких багов, новый параметр hideText
-* 21.06.2013 - добавлена возможность показывать сетку
-* 21.06.2013 - исправление мелких багов
-* 06.06.2013 - добавлены публичные методы и произведена оптимизация кода
-* 06.06.2013 - мелкие обновления CSS файлов
-* 30.04.2013 - добавлен новый метод onFinish
-* 15.02.2013 - добавлена возможность настраивать слайдер через атрибуты data-*
+## Еще раз взглянем на демо
+
+* <a href="http://ionden.com/a/plugins/ion.rangeSlider/demo.html" class="switch__item">Базовые настройки</a>
+* <a href="http://ionden.com/a/plugins/ion.rangeSlider/demo_advanced.html" class="switch__item">Расширенные настройки</a>
+* <a href="http://ionden.com/a/plugins/ion.rangeSlider/demo_interactions.html" class="switch__item">Взаимодействия</a>
+
+В демках есть примеры использования всех опций слайдера
+
+
+### <a href="history.md">История обновлений</a>
+
+***
+
+Поддержите плагин:
+
+[![](https://pledgie.com/campaigns/25694.png?skin_name=chrome)](https://pledgie.com/campaigns/25694)

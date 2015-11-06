@@ -34,6 +34,6 @@
     "commit": "29de01bc8dfaf8be1cdbe511b00da172e9c6d29f"
   },
   "_source": "git://github.com/hiasinho/Leaflet.vector-markers.git",
-  "_target": "~0.0.3",
+  "_target": "*",
   "_originalSource": "leaflet.vector-markers"
 }

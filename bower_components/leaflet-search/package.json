@@ -1,6 +1,6 @@
 {
   "name": "leaflet-search",
-  "version": "1.5.9",
+  "version": "1.8.3",
   "description": "Leaflet Control for searching markers/features by attribute on map or remote searching in jsonp/ajax",
   "repository": {
     "type": "git",
@@ -30,6 +30,7 @@
     "grunt-contrib-jshint": "^0.7.2",
     "grunt-contrib-uglify": "^0.2.7",
     "grunt-contrib-watch": "^0.5.3",
+    "grunt-remove-logging": "^0.2.0",
     "grunt-todos": "^0.2.0"
   }
 }

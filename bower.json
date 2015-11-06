@@ -2,7 +2,7 @@
   "name": "angular-leaflet-directive",
   "author": "https://github.com/tombatossals/angular-leaflet-directive/graphs/contributors",
   "description": "angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps",
-  "version": "0.8.5",
+  "version": "0.9.0",
   "homepage": "http://tombatossals.github.io/angular-leaflet-directive/",
   "keywords": [
     "angularjs",
@@ -14,45 +14,41 @@
     "dist/angular-leaflet-directive.js"
   ],
   "dependencies": {
-    "angular": "1.4.x",
-    "leaflet": "0.7.x",
-    "font-awesome": "~4.3.x",
-    "angular-simple-logger": "~0.1.5"
+    "angular": "1.x",
+    "leaflet": "0.7.x"
   },
   "devDependencies": {
     "jquery": "*",
     "semantic-ui": "*",
     "bootstrap": "*",
     "prism": "*",
-    "angular-route": "1.4.x",
-    "angular-animate": "1.4.x",
-    "angular-mocks": "1.4.x",
+    "angular-route": "1.x",
+    "angular-animate": "1.x",
+    "angular-mocks": "1.x",
     "leaflet.markercluster": "*",
     "leaflet.draw": "*",
     "Leaflet.label": "*",
     "leaflet-tilelayer-geojson": "*",
     "Leaflet.utfgrid": "danzel/Leaflet.utfgrid",
     "Leaflet.awesome-markers": "*",
+    "leaflet-providers": "*",
+    "leaflet.vector-markers": "*",
     "webgl-heatmap-leaflet": "*",
     "leaflet-plugins": "*",
     "esri-leaflet": "*",
     "proj4": "*",
+    "font-awesome": "*",
     "proj4leaflet": "*",
     "Leaflet.MakiMarkers": "*",
     "Leaflet.heat": "https://github.com/Leaflet/Leaflet.heat/archive/gh-pages.tar.gz",
     "Leaflet.ExtraMarkers": "https://github.com/coryasilva/Leaflet.ExtraMarkers/archive/v1.0.1.tar.gz",
     "Leaflet.fullscreen": "http://github.com/Leaflet/Leaflet.fullscreen/archive/v0.0.4.tar.gz",
     "Leaflet.PolylineDecorator": "bbecquet/Leaflet.PolylineDecorator",
-    "ionrangeslider": "~1.9.3",
-    "leaflet-minimap": "~2.2.0",
-    "esri-leaflet-clustered-feature-layer": "~1.0.0-rc.4",
-    "esri-leaflet-heatmap-feature-layer": "~1.0.0-rc.4",
-    "leaflet-search": "~1.5.8"
-  },
-  "overrides": {
-    "Leaflet.utfgrid": {
-      "main": "dist/leaflet.utfgrid.js"
-    }
+    "ionrangeslider": "*",
+    "leaflet-minimap": "*",
+    "esri-leaflet-clustered-feature-layer": "~1.0.x",
+    "esri-leaflet-heatmap-feature-layer": "~1.0.x",
+    "leaflet-search": "*"
   },
   "ignore": [
     "**/.*",

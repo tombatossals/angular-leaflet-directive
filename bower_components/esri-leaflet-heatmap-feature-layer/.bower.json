@@ -16,6 +16,6 @@
     "commit": "c5a5abbb69f19b6a9d8e128d92e09252a7ed3dd6"
   },
   "_source": "git://github.com/Esri/esri-leaflet-heatmap-feature-layer.git",
-  "_target": "~1.0.0-rc.4",
+  "_target": "~1.0.x",
   "_originalSource": "esri-leaflet-heatmap-feature-layer"
 }

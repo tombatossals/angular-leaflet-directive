@@ -50,6 +50,7 @@
 .extra-marker-circle-orange       { background-position: -72px      0 }
 .extra-marker-circle-yellow       { background-position: -108px     0 }
 .extra-marker-circle-blue-dark    { background-position: -144px     0 }
+.extra-marker-circle-blue         { background-position: -180px     0 }
 .extra-marker-circle-cyan         { background-position: -216px     0 }
 .extra-marker-circle-purple       { background-position: -252px     0 }
 .extra-marker-circle-violet       { background-position: -288px     0 }
@@ -65,6 +66,7 @@
 .extra-marker-square-orange       { background-position: -72px      -46px }
 .extra-marker-square-yellow       { background-position: -108px     -46px }
 .extra-marker-square-blue-dark    { background-position: -144px     -46px }
+.extra-marker-square-blue         { background-position: -180px     -46px }
 .extra-marker-square-cyan         { background-position: -216px     -46px }
 .extra-marker-square-purple       { background-position: -252px     -46px }
 .extra-marker-square-violet       { background-position: -288px     -46px }
@@ -80,6 +82,7 @@
 .extra-marker-star-orange         { background-position: -72px      -92px }
 .extra-marker-star-yellow         { background-position: -108px     -92px }
 .extra-marker-star-blue-dark      { background-position: -144px     -92px }
+.extra-marker-star-blue           { background-position: -180px     -92px }
 .extra-marker-star-cyan           { background-position: -216px     -92px }
 .extra-marker-star-purple         { background-position: -252px     -92px }
 .extra-marker-star-violet         { background-position: -288px     -92px }
@@ -95,6 +98,7 @@
 .extra-marker-penta-orange        { background-position: -72px      -138px }
 .extra-marker-penta-yellow        { background-position: -108px     -138px }
 .extra-marker-penta-blue-dark     { background-position: -144px     -138px }
+.extra-marker-penta-blue          { background-position: -180px     -138px }
 .extra-marker-penta-cyan          { background-position: -216px     -138px }
 .extra-marker-penta-purple        { background-position: -252px     -138px }
 .extra-marker-penta-violet        { background-position: -288px     -138px }

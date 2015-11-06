@@ -1,6 +1,8 @@
 Leaflet Control Search
 ============
 
+[![npm version](https://badge.fury.io/js/leaflet-search.svg)](http://badge.fury.io/js/leaflet-search)
+
 A Leaflet control that search markers/features location by custom property.<br />
 Support ajax/jsonp autocompletion and JSON data filter/remapping.
 
@@ -37,7 +39,7 @@ map.addControl( new L.Control.Search({layer: searchLayer}) );
 
 Short way:
 ```javascript
-var map = new L.Map('map', { searchControl: {layer: searchLayer} });
+L.map('map', { searchControl: {layer: searchLayer} });
 ```
 
 #Advanced Examples
@@ -76,7 +78,7 @@ map.addControl(searchControl);
 ```
 
 Static data source:
-```
+```javascript
 var data = [
 	{"loc":[41.575330,13.102411], "title":"aquamarine"},
 	{"loc":[41.575730,13.002411], "title":"black"},

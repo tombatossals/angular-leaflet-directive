@@ -1,6 +1,6 @@
 {
   "name": "Leafet.extra-markers",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "homepage": "https://github.com/coryasilva/Leaflet.ExtraMarkers",
   "authors": [
     "Cory Silva"
@@ -26,12 +26,12 @@
   "dependencies": {},
   "devDependencies": {},
   "_cacheHeaders": {
-    "ETag": "\"e73747fedd2550d5ee352aec6eee61d34441e7dd\"",
+    "ETag": "\"936e96cc208811fefb340c4b45e49e430ebba02b\"",
     "Content-Type": "application/x-gzip",
-    "Content-Disposition": "attachment; filename=Leaflet.ExtraMarkers-1.0.1.tar.gz"
+    "Content-Disposition": "attachment; filename=Leaflet.ExtraMarkers-1.0.2.tar.gz"
   },
-  "_release": "e-tag:e73747fed",
-  "_source": "https://github.com/coryasilva/Leaflet.ExtraMarkers/archive/v1.0.1.tar.gz",
+  "_release": "e-tag:936e96cc2",
+  "_source": "https://github.com/coryasilva/Leaflet.ExtraMarkers/archive/v1.0.2.tar.gz",
   "_target": "*",
-  "_originalSource": "https://github.com/coryasilva/Leaflet.ExtraMarkers/archive/v1.0.1.tar.gz"
+  "_originalSource": "https://github.com/coryasilva/Leaflet.ExtraMarkers/archive/v1.0.2.tar.gz"
 }
