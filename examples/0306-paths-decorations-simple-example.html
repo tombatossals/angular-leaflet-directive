@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="../bower_components/angular/angular.min.js"></script>
     <script src="../bower_components/leaflet/dist/leaflet.js"></script>
-    <script src="../bower_components/Leaflet.PolylineDecorator/leaflet.polylineDecorator.min.js"></script>
+    <script src="../bower_components/Leaflet.PolylineDecorator/leaflet.polylineDecorator.js"></script>
     <script src="../dist/angular-leaflet-directive.min.js"></script>
     <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
     <script>
@@ -77,7 +77,7 @@
     </script>
   </head>
   <body ng-controller="PathsDecorationsSimpleController">
-    <leaflet center="london" decorations="decorations" height="480px" width="640px"></leaflet>
+    <leaflet lf-center="london" decorations="decorations" height="480px" width="640px"></leaflet>
     <h1>Path decoration example</h1>
     <button ng-click="changePattern('slash')">Slash pattern</button>
     <button ng-click="changePattern('dot')">Dot pattern</button>

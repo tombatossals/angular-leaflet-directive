@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="../bower_components/angular/angular.min.js"></script>
     <script src="../bower_components/leaflet/dist/leaflet.js"></script>
-    <script src="../dist/angular-leaflet-directive_dev_mapped.js"></script>
+    <script src="../dist/angular-leaflet-directive.js"></script>
     <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" type="text/css" href="http://cloud.github.com/downloads/lafeber/world-flags-sprite/flags32.css" />
     <style>
@@ -179,7 +179,7 @@
     </style>
   </head>
   <body ng-controller="MixedGeoJSONEventsController">
-      <leaflet center="center" events="events" legend="legend" geojson="geojson"></leaflet>
+      <leaflet lf-center="center" events="events" legend="legend" geojson="geojson"></leaflet>
       <div class="worldmap country f32">
         <div ng-show="selectedCountry" class="flag" ng-class="countries[selectedCountry.id]['alpha-2']|lowercase"></div>
         {{ selectedCountry.properties.name || 'No country'}}

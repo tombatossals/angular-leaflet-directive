@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html ng-app="demoapp">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="../dist/angular-leaflet-directive.min.js"></script>
+    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
+    <script>
+        var app = angular.module("demoapp", ["leaflet-directive"]);
+        app.controller("MarkersDelayedEventsController", ["$scope", "leafletEvents", function($scope, leafletEvents){
+            angular.extend($scope, {
+                london: {
+                    lat: 51.505,
+                    lng: -0.09,
+                    zoom: 8
+                },
+                markers: {}
+            });
+
+            $scope.addMarkers = function() {
+                angular.extend($scope, {
+                    markers: {
+                        m1: {
+                            lat: 51.505,
+                            lng: -0.09,
+                            message: "I'm a static marker",
+                        },
+                        m2: {
+                            lat: 51,
+                            lng: 0,
+                            focus: true,
+                            message: "Hey, drag me if you want",
+                            draggable: true
+                        }
+                    }
+                });
+            };
+
+            $scope.events = {
+                markers: {
+                    enable: leafletEvents.getAvailableMarkerEvents(),
+                }
+            };
+
+            $scope.eventDetected = "No events yet...";
+            var markerEvents = leafletEvents.getAvailableMarkerEvents();
+            for (var k in markerEvents){
+                var eventName = 'leafletDirectiveMarker.' + markerEvents[k];
+                $scope.$on(eventName, function(event, args){
+                    $scope.eventDetected = event.name;
+                });
+            }
+
+            $scope.removeMarkers = function() {
+                $scope.markers = {};
+            }
+
+            //$scope.addMarkers();
+        }]);
+    </script>
+  </head>
+  <body ng-controller="MarkersDelayedEventsController">
+      <leaflet events-broadcast="events" lf-center="london" markers="markers" height="480px" width="100%"></leaflet>
+      <h1>Markers delayed events example</h1>
+      <button ng-click="removeMarkers()">Remove markers</button>
+      <button ng-click="addMarkers()">Add markers</button>
+      <ul ng-cloak>
+        <li><strong ng-bind="eventDetected"></strong> event caught in listener.</li>
+      </ul>
+  </body>
+</html>

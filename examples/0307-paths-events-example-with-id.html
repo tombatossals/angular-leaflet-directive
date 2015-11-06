@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html ng-app="demoapp">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="../bower_components/Leaflet.label/dist/leaflet.label.js"></script>
+    <script src="../dist/angular-leaflet-directive.js"></script>
+    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="../bower_components/Leaflet.label/dist/leaflet.label.css" />
+    <script>
+        var app = angular.module("demoapp", ["leaflet-directive"]);
+        app.controller("PathEventsController", function($scope, $log) {
+            var paths = {};
+            $scope.clicked = 0;
+
+            var marylandIslands = {
+                'Fort Carroll': {
+                    lat: 39.214766,
+                    lng: -76.519003
+                },
+                    'Gibson Island': {
+                    lat: 39.077642,
+                    lng: -76.433344
+                },
+                    'Solomons Island': {
+                    lat: 38.320145,
+                    lng: -76.457334
+                }
+            };
+
+            angular.forEach(marylandIslands, function (v, k) {
+                paths[k] = {
+                    type: "circleMarker",
+                    latlngs: v,
+                    stroke: false,
+                    fillColor: "#00FFFF",
+                    fillOpacity: 0.7,
+                    radius: 10,
+                    clickable: true
+                };
+            });
+
+            angular.extend($scope, {
+                center: {
+                    lat:38.976492,
+                    lng:-76.49231,
+                    zoom: 8
+                },
+                layers: {
+                    baselayers: {
+                        xyz: {
+                            name: 'OpenStreetMap (XYZ)',
+                            url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                            type: 'xyz'
+                        }
+                    }
+                },
+                events: {
+                    path: {
+                        enable: [ 'click', 'mouseover' ]
+                    }
+                },
+                paths: paths
+            });
+
+            $scope.$on('leafletDirectivePath.myMap.click', function (event) {
+                $scope.clicked++;
+            });
+
+            $scope.$on('leafletDirectivePath.myMap.mouseover', function (event, path) {
+                $scope.mouseover = path.modelName;
+            });
+
+        });
+    </script>
+  </head>
+  <body ng-controller="PathEventsController">
+    <leaflet id="myMap" lf-center="center" paths="paths" layers="layers" event-broadcast="events" paths="paths" width="100%" height="480px"></leaflet>
+    <h1>Paths specific events propagation exampl</h1>
+    <p>Click on path points to trigger an event</p>
+    <p>Mouse over: <strong ng-bind="mouseover"></strong></p>
+    <p>You clicked <b>{{clicked}}</b> times </p>
+  </body>
+</html>

@@ -81,10 +81,10 @@
     <h1>Different map events broadcasting</h1>
     <p>We can filter which leaflet events we propagate upwars using the event-broadcast directive property, let's see how it works:</p>
     <h3>This map propagates all events</h3>
-    <leaflet event-broadcast="events" center="london" markers="markers" width="100%" height="320px" defaults="defaults"></leaflet>
+    <leaflet event-broadcast="events" lf-center="london" markers="markers" width="100%" height="320px" defaults="defaults"></leaflet>
     <p>Event: <strong ng-bind="eventDetected"></strong></p>
     <h3>This map propagates the "click" and "dblclick" events</h3>
-    <leaflet center="spain" event-broadcast="events2" markers="markers2" width="100%" height="320px"></leaflet>
+    <leaflet lf-center="spain" event-broadcast="events2" markers="markers2" width="100%" height="320px"></leaflet>
     <p>Event: <strong ng-bind="eventDetected2"></strong></p>
   </body>
 </html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html ng-app="demoapp">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="../bower_components/esri-leaflet/dist/esri-leaflet.js"></script>
+    <script src="../dist/angular-leaflet-directive.min.js"></script>
+    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
+
+    <style>
+		.info {
+			padding: 20px;
+			font-family: 'Lato', sans-serif;
+			font-size: 1em;
+			background: rgba(255, 255, 255, 0.9);
+			box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+		}
+		.info h4 {
+			margin: 0 0 5px;
+			color: #3D3938;
+		}
+		.legend-esri {
+			color: #555555;
+			line-height: 18px;
+			max-height: 250px;
+			width: 215px;
+			padding-bottom: 10px;
+			padding-top: 10px;
+			overflow: auto;
+		}
+		.legend-esri .outline {
+			border: 1px solid #CCCCCC;
+			border-radius: 6px 6px 6px 6px;
+			float: left;
+			height: 12px;
+			margin: 3px 10px 3px 3px;
+			padding: 2px;
+			width: 12px;
+		}
+		.legend-esri .outline i {
+			border-radius: 4px 4px 4px 4px;
+			float: left;
+			height: 6px;
+			width: 6px;
+		}
+		.legend-esri .inline {
+			clear: both;
+			float: left;
+			margin-right: 10px;
+		}
+		.legend-esri .info-title {
+			clear: both;
+			float: left;
+			font-size: 0.9em;
+			font-weight: bold;
+			margin: 5px 0;
+			width: 100%;
+		}
+		.legend-esri .info-label {
+			float: left;
+			width: 170px;
+			font-size: 0.8em;
+		}
+    </style>
+
+    <script>
+        var app = angular.module("demoapp", ["leaflet-directive"]);
+        app.controller("LegendEsriLegendServiceController", [ "$scope", function($scope) {
+            angular.extend($scope, {
+            	options: {
+            		controls: {
+            			layers: {
+            				visible: false
+            			}
+            		}
+            	},
+                usa: {
+	            	lat: 39.931486,
+	                lng: -101.406250,
+	                zoom: 3
+	            },
+                markers: {
+                    m1: {
+                        lat: 39.931486,
+	                	lng: -101.406250,
+                    }
+                },
+                layers: {
+					baselayers: {
+                        mapbox_light: {
+                            name: 'Mapbox Light',
+                            url: 'http://api.tiles.mapbox.com/v4/{mapid}/{z}/{x}/{y}.png?access_token={apikey}',
+                            type: 'xyz',
+                            layerOptions: {
+                                apikey: 'pk.eyJ1IjoiYnVmYW51dm9scyIsImEiOiJLSURpX0pnIn0.2_9NrLz1U9bpwMQBhVk97Q',
+                                mapid: 'bufanuvols.lia22g09'
+                            }
+						}
+                   },
+                   overlays: {
+				    	usa_pop: {
+					    	name: "USA 2000-2010 Population Change",
+					        type: "agsDynamic",
+					        url: "http://services.arcgisonline.com/arcgis/rest/services/Demographics/USA_1990-2000_Population_Change/MapServer",
+					        visible: true,
+					        layerOptions: {
+				                opacity: 0.85,
+				                attribution: "Copyright:© 2014 Esri, DeLorme, HERE, TomTom"
+					        }
+				    	},
+				    	usa_social: {
+					    	name: "USA Social Vulnerability Index",
+					        type: "agsDynamic",
+					        url: "http://services.arcgisonline.com/arcgis/rest/services/Demographics/USA_Social_Vulnerability_Index/MapServer",
+					        visible: false,
+					        layerOptions: {
+				                opacity: 0.85,
+				                attribution: "Copyright:© 2014 Esri, FAO, NOAA"
+					        }
+				    	},
+                    },
+                },
+
+                legend: {
+                	url: "http://services.arcgisonline.com/arcgis/rest/services/Demographics/USA_1990-2000_Population_Change/MapServer/legend?f=json",
+                	legendClass: "info legend-esri",
+					position: "bottomleft",
+                },
+
+                legendURL1: "http://services.arcgisonline.com/arcgis/rest/services/Demographics/USA_1990-2000_Population_Change/MapServer/legend?f=json",
+                legendURL2: "http://services.arcgisonline.com/arcgis/rest/services/Demographics/USA_Social_Vulnerability_Index/MapServer/legend?f=json",
+
+                switchLegend: function() {
+                	$scope.layers.overlays.usa_social.visible = !$scope.layers.overlays.usa_social.visible;
+                	$scope.legend.url =
+                		$scope.legend.url == $scope.legendURL1? $scope.legendURL2:$scope.legendURL1;
+                }
+            });
+        }]);
+    </script>
+</head>
+<body ng-controller="LegendEsriLegendServiceController">
+    <leaflet lf-center="usa" layers="layers" markers="markers" height="480px" width="100%"
+        legend="legend" defaults="options"></leaflet>
+    <h1>Esri ArcGIS Legend Service</h1>
+    <p>Use the button to switch another Esri Legend.</p>
+    <br/>
+    <button ng-click="switchLegend()">Switch Legend</button>
+</body>
+</html>

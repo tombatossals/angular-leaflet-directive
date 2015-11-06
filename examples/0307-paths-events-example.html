@@ -5,18 +5,13 @@
     <script src="../bower_components/angular/angular.min.js"></script>
     <script src="../bower_components/leaflet/dist/leaflet.js"></script>
     <script src="../bower_components/Leaflet.label/dist/leaflet.label.js"></script>
-    <script src="../bower_components/Leaflet.awesome-markers/dist/leaflet.awesome-markers.js"></script>
     <script src="../dist/angular-leaflet-directive.js"></script>
     <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="../bower_components/Leaflet.label/dist/leaflet.label.css" />
-    <link rel="stylesheet" href="../bower_components/font-awesome/css/font-awesome.min.css">
-    <link rel="stylesheet" href="../bower_components/Leaflet.awesome-markers/dist/leaflet.awesome-markers.css">
     <script>
         var app = angular.module("demoapp", ["leaflet-directive"]);
-        app.controller("PathEventsController", [ "$scope", "leafletBoundsHelpers", function($scope, leafletBoundsHelpers) {
-
+        app.controller("PathEventsWithIDController", function($scope, $log) {
             var paths = {};
-            var markers = {};
             $scope.clicked = 0;
 
             var marylandIslands = {
@@ -24,47 +19,26 @@
                     lat: 39.214766,
                     lng: -76.519003
                 },
-                'Gibson Island': {
+                    'Gibson Island': {
                     lat: 39.077642,
                     lng: -76.433344
                 },
-                'Solomons Island': {
+                    'Solomons Island': {
                     lat: 38.320145,
                     lng: -76.457334
                 }
             };
 
-            var last = {}
             angular.forEach(marylandIslands, function (v, k) {
-                markers[k] = {
-                    lat: v.lat,
-                    lng: v.lng,
-                    label: {
-                        message: k,
-                        direction: 'auto'
-                    },
-                    icon: {
-                        type: 'awesomeMarker',
-                        icon: 'fa-star',
-                        color: 'blue',
-                        prefix: 'fa',
-                        shape: 'circle',
-                        labelAnchor: [10, -24]
-                    },
-                    riseOnHover: true
+                paths[k] = {
+                    type: "circleMarker",
+                    latlngs: v,
+                    stroke: false,
+                    fillColor: "#00FFFF",
+                    fillOpacity: 0.7,
+                    radius: 10,
+                    clickable: true
                 };
-
-                if (last.name && last.value) {
-                    paths[k + '_' + last.name] = {
-                        type: 'polyline',
-                        weight: 8,
-                        color: 'yellow',
-                        originalColor: 'yellow',
-                        latlngs: [ v, last.value ]
-                    };
-                }
-                last.value = v;
-                last.name = k;
             });
 
             angular.extend($scope, {
@@ -84,63 +58,28 @@
                 },
                 events: {
                     path: {
-                        enable: [ 'click', 'mouseover', 'mouseout' ]
-                    },
-                    marker: {
                         enable: [ 'click', 'mouseover' ]
                     }
                 },
-                paths: paths,
-                markers: markers,
-                bounds: {}
+                paths: paths
             });
 
-            $scope.$on('leafletDirectiveMarker.click', function (event, marker) {
-                angular.extend($scope.center, {
-                    lat: $scope.markers[marker.modelName].lat,
-                    lng: $scope.markers[marker.modelName].lng
-                })
-                $scope.clicked++;
-            });
-
-            $scope.$on('leafletDirectivePath.click', function (event, path) {
-                var n1 = $scope.markers[path.modelName.split('_')[0]];
-                var n2 = $scope.markers[path.modelName.split('_')[1]];
-                $scope.bounds = leafletBoundsHelpers.createBoundsFromArray([[n1.lat, n1.lng], [n2.lat, n2.lng]]);
+            $scope.$on('leafletDirectivePath.click', function (event) {
                 $scope.clicked++;
             });
 
             $scope.$on('leafletDirectivePath.mouseover', function (event, path) {
-                $scope.paths[path.modelName].color = "white";
-                $scope.mouseover = path.modelName + ' path';
+                $scope.mouseover = path.modelName;
             });
 
-            $scope.$on('leafletDirectiveMarker.mouseover', function (event, marker) {
-                $scope.markers[marker.modelName].icon = {
-                    type: 'awesomeMarker',
-                    icon: 'fa-star',
-                    color: 'yellow',
-                    prefix: 'fa',
-                    shape: 'circle',
-                    labelAnchor: [10, -24]
-                };
-
-                console.log($scope.markers[marker.modelName]);
-                $scope.mouseover = marker.modelName + ' marker';
-            });
-
-            $scope.$on('leafletDirectivePath.mouseout', function (event, path) {
-                $scope.paths[path.modelName].color = $scope.paths[path.modelName].originalColor;
-            });
-
-        }]);
+        });
     </script>
   </head>
-  <body ng-controller="PathEventsController">
-    <leaflet center="center" paths="paths" markers="markers" bounds="bounds" layers="layers" event-broadcast="events" paths="paths" width="100%" height="480px"></leaflet>
-    <h1>Paths specific events propagation example</h1>
-    <p>Click on marker or path points to center map and trigger an event</p>
+  <body ng-controller="PathEventsWithIDController">
+    <leaflet lf-center="center" paths="paths" layers="layers" event-broadcast="events" paths="paths" width="100%" height="480px"></leaflet>
+    <h1>Paths specific events propagation exampl</h1>
+    <p>Click on path points to trigger an event</p>
     <p>Mouse over: <strong ng-bind="mouseover"></strong></p>
-    <p>You clicked in paths and markers <b>{{clicked}}</b> times </p>
+    <p>You clicked <b>{{clicked}}</b> times </p>
   </body>
 </html>

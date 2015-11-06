@@ -51,7 +51,7 @@
     </script>
 </head>
 <body ng-controller="LayersHideOverlaysOnSelectorController">
-    <leaflet center="center" defaults="defaults" layers="layers" width="100%" height="480px"></leaflet>
+    <leaflet lf-center="center" defaults="defaults" layers="layers" width="100%" height="480px"></leaflet>
     <h1>Overlay not shown in selector</h1>
     <button ng-click="layers.overlays.wms.layerParams.showOnSelector = !layers.overlays.wms.layerParams.showOnSelector">Toggle Overlay visibility on Selector</button>
     <button ng-click="layers.baselayers.xyz.layerOptions.showOnSelector = !layers.baselayers.xyz.layerOptions.showOnSelector">Toggle BaseLayer visibility on Selector</button>

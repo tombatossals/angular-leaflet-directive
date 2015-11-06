@@ -2,9 +2,9 @@
 <html ng-app="demoapp">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/angular/angular.js"></script>
     <script src="../bower_components/leaflet/dist/leaflet.js"></script>
-    <script src="../dist/angular-leaflet-directive.min.js"></script>
+    <script src="../dist/angular-leaflet-directive.js"></script>
     <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
     <script src="../bower_components/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
     <link rel="stylesheet" href="../bower_components/leaflet.markercluster/dist/MarkerCluster.css" />
@@ -106,7 +106,7 @@
     </script>
 </head>
 <body ng-controller="LayersOverlaysMarkerclusterController">
-    <leaflet center="ripoll" markers="markers" layers="layers" height="480px" width="100%"></leaflet>
+    <leaflet lf-center="ripoll" markers="markers" layers="layers" height="480px" width="100%"></leaflet>
     <h1>This is a map with overlays and a markercluster</h1>
     <p>
     In this example we use a <a href="https://github.com/Leaflet/Leaflet.markercluster">MarkerCluster</a> overlay to group the markers instead of a LayerGroup.

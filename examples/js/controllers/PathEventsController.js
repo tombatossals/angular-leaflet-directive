@@ -1,4 +1,4 @@
-        app.controller("PathEventsController", [ "$scope", function($scope) {
+        app.controller("PathEventsController", function($scope, $log) {
             var paths = {};
             $scope.clicked = 0;
             var marylandIslands = {
@@ -48,10 +48,10 @@
                 },
                 paths: paths
             });
-            $scope.$on('leafletDirectivePath.click', function (event) {
+            $scope.$on('leafletDirectivePath.myMap.click', function (event) {
                 $scope.clicked++;
             });
-            $scope.$on('leafletDirectivePath.mouseover', function (event, path) {
+            $scope.$on('leafletDirectivePath.myMap.mouseover', function (event, path) {
                 $scope.mouseover = path.modelName;
             });
-        }]);
+        });

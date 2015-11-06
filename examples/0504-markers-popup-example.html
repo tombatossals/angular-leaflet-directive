@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="../bower_components/angular/angular.min.js"></script>
     <script src="../bower_components/leaflet/dist/leaflet.js"></script>
-    <script src="../dist/angular-leaflet-directive_dev_mapped.js"></script>
+    <script src="../dist/angular-leaflet-directive.js"></script>
     <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
     <script>
         var app = angular.module("demoapp", ["leaflet-directive"]);
@@ -43,7 +43,7 @@
     </script>
   </head>
   <body ng-controller="MarkersPopupController">
-    <leaflet center="london" markers="markers" event-broadcast="events" height="480px" width="100%"></leaflet>
+    <leaflet lf-center="london" markers="markers" event-broadcast="events" height="480px" width="100%"></leaflet>
     <h1>Marker Popup properties</h1>
     <h3>Marker position</h3>
         Latitude: <input ng-model="markers.m1.lat" type="number" />

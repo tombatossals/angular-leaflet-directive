@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="../bower_components/angular/angular.min.js"></script>
     <script src="../bower_components/leaflet/dist/leaflet.js"></script>
-    <script src="../dist/angular-leaflet-directive_dev_mapped.js"></script>
+    <script src="../dist/angular-leaflet-directive.js"></script>
     <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
     <script>
     var app = angular.module("demoapp", ["leaflet-directive"]);
@@ -75,7 +75,7 @@
     </script>
 </head>
 <body ng-controller="GeoJSONNonNestedController">
-    <leaflet center="japan" geojson="geojson" width="100%" height="480px"></leaflet>
+    <leaflet lf-center="japan" geojson="geojson" width="100%" height="480px"></leaflet>
     <h1>GeoJSON non nested example</h1>
     <input type="button" value="center usa" ng-click="centerJSON(1)" />
     <input type="button" value="center jpn" ng-click="centerJSON(0)" />

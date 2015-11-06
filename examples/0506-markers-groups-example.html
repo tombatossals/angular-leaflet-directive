@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="../bower_components/angular/angular.min.js"></script>
     <script src="../bower_components/leaflet/dist/leaflet.js"></script>
-    <script src="../dist/angular-leaflet-directive.min.js"></script>
+    <script src="../dist/angular-leaflet-directive.js"></script>
     <script src="../bower_components/jquery/dist/jquery.min.js"></script>
     <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
     <script>
@@ -110,9 +110,9 @@
     </style>
 </head>
 <body ng-controller="MarkersGroupController">
-    <leaflet center="london" markers="markers" layers="layers" height="480px" width="100%"></leaflet>
-    <h1>This is a map with two hidden marker groups</h1>
-    <p>Click here to hide or show the groups:</p>
+    <leaflet lf-center="london" markers="markers" layers="layers" height="480px" width="100%"></leaflet>
+    <h1>Marker groups</h1>
+    <p>This is a map with two hidden marker groups, click here to hide or show the groups:</p>
     <button type="button" ng-click="toggleLayer('red')" class="btn btn-default">Red</button>
     <button type="button" ng-click="toggleLayer('blue')" class="btn btn-default">blue</button>
 </body>

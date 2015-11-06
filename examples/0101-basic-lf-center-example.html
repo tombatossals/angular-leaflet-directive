@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html ng-app="demoapp">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="../dist/angular-leaflet-directive.js"></script>
+    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
+    <script>
+        var app = angular.module('demoapp', ['leaflet-directive']);
+        app.controller('BasicLFCenterController', [ '$scope', function($scope) {
+            angular.extend($scope, {
+                london: {
+                    lat: 51.505,
+                    lng: -0.09,
+                    zoom: 4
+                }
+            });
+       }]);
+    </script>
+    <style>
+        input {
+            width: 120px;
+            margin-right: 10px;
+        }
+    </style>
+  </head>
+  <body ng-controller="BasicLFCenterController">
+     <leaflet lf-center="london" width="100%" height="480px"></leaflet>
+     <h1>Center map example</h1>
+     <ul>
+         <li><input type="number" step="any" ng-model="london.lat" /> Latitude</li>
+         <li><input type="number" step="any" ng-model="london.lng" /> Longitude</li>
+         <li><input type="number" step="any" ng-model="london.zoom" /> Zoom</li>
+     </ul>
+  </body>
+</html>

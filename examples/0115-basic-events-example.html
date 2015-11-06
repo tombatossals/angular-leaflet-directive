@@ -4,11 +4,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="../bower_components/angular/angular.min.js"></script>
     <script src="../bower_components/leaflet/dist/leaflet.js"></script>
-    <script src="../dist/angular-leaflet-directive.min.js"></script>
+    <script src="../dist/angular-leaflet-directive.js"></script>
     <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
     <script>
         var app = angular.module("demoapp", ["leaflet-directive"]);
-        app.controller("BasicEventsController", [ "$scope", "leafletEvents", function($scope, leafletEvents) {
+        app.controller("BasicEventsController", [ "$scope", "leafletMapEvents", function($scope, leafletMapEvents) {
 
             $scope.center  = {
                 lat: 51.505,
@@ -17,7 +17,7 @@
             };
 
             $scope.eventDetected = "No events yet...";
-            var mapEvents = leafletEvents.getAvailableMapEvents();
+            var mapEvents = leafletMapEvents.getAvailableMapEvents();
             for (var k in mapEvents){
                 var eventName = 'leafletDirectiveMap.' + mapEvents[k];
                 $scope.$on(eventName, function(event){
@@ -28,7 +28,7 @@
     </script>
   </head>
   <body ng-controller="BasicEventsController">
-    <leaflet center="center" width="100%" height="400px"></leaflet>
+    <leaflet lf-center="center" width="100%" height="400px"></leaflet>
     <h1>Events example</h1>
     <p>All map events are propagated by default.</p>
     <ul>

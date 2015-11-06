@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html ng-app="demoapp">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="../dist/angular-leaflet-directive.js"></script>
+    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" type="text/css" href="http://cloud.github.com/downloads/lafeber/world-flags-sprite/flags32.css" />
+    <style>
+        html {
+            font-family: sans-serif;
+        }
+
+        body, html { height: 100%; }
+
+        .worldmap {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 5px;
+        }
+
+        .legend {
+            padding: 6px 8px;
+            font: 14px/16px Arial, Helvetica, sans-serif;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 5px;
+            font-weight: bold;
+            line-height: 18px;
+            color: #555;
+            width: 100px;
+        }
+
+        .legend i {
+            clear: both;
+            width: 16px;
+            height: 16px;
+            float: left;
+            opacity: 0.7;
+            margin-right: 8px;
+        }
+
+        div.worldmap.box {
+            position: absolute;
+            top: 1em;
+            right: 1em;
+            z-index: 100;
+            padding: 1em;
+            text-align: center;
+        }
+
+        div.worldmap.country {
+            font-size: 2em;
+            font-weight: bold;
+            position: absolute;
+            bottom: 1em;
+            left: 1em;
+            z-index: 100;
+            padding: .2em .5em;
+            line-height: 1.1em;
+            text-align: center;
+        }
+    </style>
+    <script>
+        var app = angular.module("demoapp", ["leaflet-directive"]);
+        app.controller('MixedGeoJSONEventsWithIDController', [ "$scope", "$http", function($scope, $http) {
+
+            $scope.$on("leafletDirectiveGeoJson.myMap.mouseover", function(ev, leafletPayload) {
+                countryMouseover(leafletPayload.leafletObject.feature, leafletPayload.leafletEvent);
+            });
+
+            $scope.$on("leafletDirectiveGeoJson.myMap.click", function(ev, leafletPayload) {
+                countryClick(leafletPayload.leafletObject, leafletPayload.leafletEvent);
+            });
+
+            var continentProperties= {
+                    "009": {
+                            name: 'Oceania',
+                            colors: [ '#CC0066', '#993366', '#990066', '#CC3399', '#CC6699' ]
+                    },
+                    "019": {
+                            name: 'America',
+                            colors: [ '#006699', '#336666', '#003366', '#3399CC', '#6699CC' ]
+                    },
+                    "150": {
+                            name: 'Europe',
+                            colors: [ '#FF0000', '#CC3333', '#990000', '#FF3333', '#FF6666' ]
+                    },
+                    "002": {
+                            name: 'Africa',
+                            colors: [ '#00CC00', '#339933', '#009900', '#33FF33', '#66FF66' ]
+                    },
+                    "142": {
+                            name: 'Asia',
+                            colors: [ '#FFCC00', '#CC9933', '#999900', '#FFCC33', '#FFCC66' ]
+                    },
+            };
+
+            angular.extend($scope, {
+                center: {
+                    lat: 40.8471,
+                    lng: 14.0625,
+                    zoom: 2
+                },
+                legend: {
+                    colors: [ '#CC0066', '#006699', '#FF0000', '#00CC00', '#FFCC00' ],
+                    labels: [ 'Oceania', 'America', 'Europe', 'Africa', 'Asia' ]
+                }
+            });
+
+            function countryClick(country, event) {
+                country = country.feature;
+                console.log(country.properties.name);
+            }
+
+            // Get a country paint color from the continents array of colors
+            function getColor(country) {
+                if (!country || !country["region-code"]) {
+                    return "#FFF";
+                }
+
+                var colors = continentProperties[country["region-code"]].colors;
+                var index = country["alpha-3"].charCodeAt(0) % colors.length ;
+                return colors[index];
+            }
+
+            function style(feature) {
+                return {
+                    fillColor: getColor($scope.countries[feature.id]),
+                    weight: 2,
+                    opacity: 1,
+                    color: 'white',
+                    dashArray: '3',
+                    fillOpacity: 0.7
+                };
+            }
+
+            // Mouse over function, called from the Leaflet Map Events
+            function countryMouseover(feature, leafletEvent) {
+                var layer = leafletEvent.target;
+                layer.setStyle({
+                    weight: 2,
+                    color: '#666',
+                    fillColor: 'white'
+                });
+                layer.bringToFront();
+                $scope.selectedCountry = feature;
+                console.log(feature);
+            }
+
+            // Get the countries data from a JSON
+            $http.get("json/all.json").success(function(data, status) {
+
+                // Put the countries on an associative array
+                $scope.countries = {};
+                for (var i=0; i< data.length; i++) {
+                    var country = data[i];
+                    $scope.countries[country['alpha-3']] = country;
+                }
+
+                // Get the countries geojson data from a JSON
+                $http.get("json/countries.geo.json").success(function(data, status) {
+                    angular.extend($scope, {
+                        geojson: {
+                            data: data,
+                            style: style,
+                            resetStyleOnMouseout: true
+                        },
+                        selectedCountry: {}
+                    });
+                });
+            });
+        }]);
+    </script>
+    <style>
+        .angular-leaflet-map {
+            height: 100%;
+        }
+    </style>
+  </head>
+  <body ng-controller="MixedGeoJSONEventsWithIDController">
+      <leaflet id="myMap" lf-center="center" events="events" legend="legend" geojson="geojson"></leaflet>
+      <div class="worldmap country f32">
+        <div ng-show="selectedCountry" class="flag" ng-class="countries[selectedCountry.id]['alpha-2']|lowercase"></div>
+        {{ selectedCountry.properties.name || 'No country'}}
+      </div>
+      <div class="worldmap box">Map center: [ lat: {{ center.lat | number:4 }}, lng: {{ center.lng | number:4 }} ]</div>
+      <h1>World map flags example</h1>
+  </body>
+</html>
