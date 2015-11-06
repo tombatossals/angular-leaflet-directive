@@ -26,7 +26,7 @@
                     <a class="item" ng-class="{ active: main.section == 'documentation' }" ng-click="main.section = 'documentation'" ng-link="documentation()">Documentation</a>
                     <a class="item"  ng-class="{ active: main.section == 'examples' }" ng-click="main.section = 'examples'" href="#/examples/basic/first-example">Examples</a>
                     <a class="item" ng-class="{ active: main.section == 'extend' }" ng-click="main.section = 'extend'" ng-link="extend()">How to extend</a>
-                    <a class="item" href="http://github.com/tombatossals/angular-leaflet-directive"><i class="github icon"></i> Github repo</a>
+                    <a class="item" href="http://github.com/tombatossals/angular-leaflet-directive"><i class="github big icon"></i> Github repo</a>
                 </div>
             </div>
         </div>
@@ -34,7 +34,7 @@
             <a class="forkme" href="https://github.com/tombatossals/angular-leaflet-directive" rel="external">
                 <img src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub">
             </a>
-            <leaflet center="main.center" defaults="main.defaults" tiles="main.tiles" markers="main.markers" broadcast-events="main.events" id="header" height="160px"></leaflet>
+            <leaflet lf-center="main.center" lf-defaults="main.defaults" lf-tiles="main.tiles" lf-markers="main.markers" broadcast-events="main.events" id="header" height="160px"></leaflet>
             <div class="content">
                 Simple to use <a href="http://angularjs.org">AngularJS</a> directive for easy embedding and interacting with a map managed with the <a href="http://leafletjs.com/">leaflet map library</a>.
             </div>
