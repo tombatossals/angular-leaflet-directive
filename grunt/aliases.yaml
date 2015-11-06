@@ -32,11 +32,12 @@ default:
 fast-build:
     - 'clean:dist'
     - 'jshint'
+    - 'jscs'
     - 'concat:dist'
     - 'ngAnnotate'
     - 'uglify'
     - 'concat:license'
-    - 'concat:license-minified'    
+    - 'concat:license-minified'
 
 build:
     - 'fast-build'
