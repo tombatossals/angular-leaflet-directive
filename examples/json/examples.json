@@ -169,7 +169,7 @@
             "title": "Two maps sharing center example"
         },
         {
-            "date": "2015-11-07T21:17:15.973Z",
+            "date": "2015-11-07T21:29:27.553Z",
             "section": "basic",
             "onlyStandAlone": false,
             "id": "/basic/double-map-toggle-example",
@@ -209,7 +209,7 @@
             "title": "GeoJSON nested example"
         },
         {
-            "date": "2015-11-06T19:56:51.706Z",
+            "date": "2015-11-07T21:31:07.480Z",
             "section": "basic",
             "onlyStandAlone": false,
             "id": "/basic/bounds-nominatim-example",
@@ -217,12 +217,12 @@
             "title": "Bounds Nominatim map example"
         },
         {
-            "date": "2015-11-07T18:55:28.520Z",
+            "date": "2015-11-07T21:33:16.596Z",
             "section": "basic",
             "onlyStandAlone": false,
             "id": "/basic/tiles-wms-example",
             "extUrl": "0127-basic-tiles-wms-example.html",
-            "title": "Loading WMS tilesDict example"
+            "title": "Loading WMS tiles example"
         }
     ],
     "layers": [
@@ -315,7 +315,7 @@
             "title": "Layer Groups with nested layer definitions"
         },
         {
-            "date": "2015-11-07T18:48:41.746Z",
+            "date": "2015-11-07T21:38:30.206Z",
             "section": "layers",
             "onlyStandAlone": false,
             "id": "/layers/hide-overlays-on-selector-example",

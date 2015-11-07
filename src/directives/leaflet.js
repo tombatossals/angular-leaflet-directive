@@ -93,12 +93,12 @@ angular.module('leaflet-directive', []).directive('leaflet', function($q, leafle
       var map = new L.Map(element[0], leafletMapDefaults.getMapCreationDefaults(attrs.id));
       ctrl._leafletMap.resolve(map);
 
-      if (!isDefined(attrs.center) && !isDefined(attrs.lfCenter)) {
+      if (!isDefined(attrs.lfCenter)) {
         map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
       }
 
       // If no layers nor tiles defined, set the default tileLayer
-      if (!isDefined(attrs.tiles) && (!isDefined(attrs.layers))) {
+      if (!isDefined(attrs.lfTiles) && (!isDefined(attrs.lfLayers))) {
         var tileLayerObj = L.tileLayer(defaults.tileLayer, defaults.tileLayerOptions);
         tileLayerObj.addTo(map);
         leafletData.setTiles(tileLayerObj, attrs.id);
@@ -121,7 +121,7 @@ angular.module('leaflet-directive', []).directive('leaflet', function($q, leafle
       }
 
       // if no event-broadcast attribute, all events are broadcasted
-      if (!isDefined(attrs.eventBroadcast)) {
+      if (!isDefined(attrs.lfEvents)) {
         var logic = 'broadcast';
         addEvents(map, mapEvents, 'eventName', scope, logic);
       }
