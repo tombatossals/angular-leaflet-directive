@@ -1,5 +1,5 @@
 angular.module('leaflet-directive')
-.factory('leafletMapEvents', function($rootScope, $q, $log, leafletHelpers, leafletEventsHelpers, leafletIterators) {
+.factory('leafletMapEvents', function($rootScope, $q, leafletLogger, leafletHelpers, leafletEventsHelpers, leafletIterators) {
   var isDefined = leafletHelpers.isDefined;
   var fire = leafletEventsHelpers.fire;
 
@@ -58,7 +58,6 @@ angular.module('leaflet-directive')
     return function(e) {
       // Put together broadcast name
       var broadcastName = 'leafletDirectiveMap.' + maybeMapId + eventName;
-      $log.debug(broadcastName);
 
       // Safely broadcast the event
       fire(scope, broadcastName, logic, e, e.target, scope);
@@ -77,7 +76,6 @@ angular.module('leaflet-directive')
     var center = map.getCenter();
     var centerUrlHash = (center.lat).toFixed(4) + ':' + (center.lng).toFixed(4) + ':' + map.getZoom();
     if (!isDefined(search.c) || search.c !== centerUrlHash) {
-      //$log.debug("notified new center...");
       scope.$emit('centerUrlHash', centerUrlHash);
     }
   };

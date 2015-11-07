@@ -1,4 +1,4 @@
-angular.module('leaflet-directive').factory('leafletBoundsHelpers', function($log, leafletHelpers) {
+angular.module('leaflet-directive').factory('leafletBoundsHelpers', function(leafletLogger, leafletHelpers) {
 
   var isArray = leafletHelpers.isArray;
   var isNumber = leafletHelpers.isNumber;
@@ -28,7 +28,7 @@ angular.module('leaflet-directive').factory('leafletBoundsHelpers', function($lo
             boundsArray[0].length === 2 && boundsArray[1].length === 2 &&
             isNumber(boundsArray[0][0]) && isNumber(boundsArray[0][1]) &&
             isNumber(boundsArray[1][0]) && isNumber(boundsArray[1][1]))) {
-        $log.error('[AngularJS - Leaflet] The bounds array is not valid.');
+        leafletLogger.error('The bounds array is not valid.');
         return;
       }
 
@@ -46,7 +46,7 @@ angular.module('leaflet-directive').factory('leafletBoundsHelpers', function($lo
 
     createBoundsFromLeaflet: function(lfBounds) {
       if (!(isDefined(lfBounds) && isFunction(lfBounds.getNorthEast) && isFunction(lfBounds.getSouthWest))) {
-        $log.error('[AngularJS - Leaflet] The leaflet bounds is not valid object.');
+        leafletLogger.error('The leaflet bounds is not valid object.');
         return;
       }
 

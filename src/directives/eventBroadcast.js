@@ -1,4 +1,4 @@
-angular.module('leaflet-directive').directive('eventBroadcast', function($log, $rootScope, leafletHelpers, leafletMapEvents, leafletIterators) {
+angular.module('leaflet-directive').directive('eventBroadcast', function(leafletLogger, $rootScope, leafletHelpers, leafletMapEvents, leafletIterators) {
 
   return {
     restrict: 'A',
@@ -25,19 +25,19 @@ angular.module('leaflet-directive').directive('eventBroadcast', function($log, $
           mapEvents = availableMapEvents;
         } else if (!isObject(eventBroadcast.map)) {
           // Not a valid object
-          $log.warn('[AngularJS - Leaflet] event-broadcast.map must be an object check your model.');
+          leafletLogger.warn('event-broadcast.map must be an object check your model.', 'events');
         } else {
           // We have a possible valid map object
           // Event propadation logic
           if (eventBroadcast.map.logic !== 'emit' && eventBroadcast.map.logic !== 'broadcast') {
             // This is an error
-            $log.warn('[AngularJS - Leaflet] Available event propagation logic are: \'emit\' or \'broadcast\'.');
+            leafletLogger.warn('Available event propagation logic are: \'emit\' or \'broadcast\'.', 'events');
           } else {
             logic = eventBroadcast.map.logic;
           }
 
           if (!(isObject(eventBroadcast.map.enable) && eventBroadcast.map.enable.length >= 0)) {
-            $log.warn('[AngularJS - Leaflet] event-broadcast.map.enable must be an object check your model.');
+            leafletLogger.warn('[AngularJS - Leaflet] event-broadcast.map.enable must be an object check your model.', 'events');
           } else {
             // Enable events
             leafletIterators.each(eventBroadcast.map.enable, function(eventName) {

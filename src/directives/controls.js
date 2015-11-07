@@ -1,4 +1,4 @@
-angular.module('leaflet-directive').directive('controls', function($log, leafletHelpers, leafletControlHelpers) {
+angular.module('leaflet-directive').directive('controls', function(leafletLogger, leafletHelpers, leafletControlHelpers) {
 
   return {
     restrict: 'A',
@@ -17,7 +17,6 @@ angular.module('leaflet-directive').directive('controls', function($log, leaflet
       var isDefined = leafletHelpers.isDefined;
       var isArray = leafletHelpers.isArray;
       var leafletControls = {};
-      var errorHeader = leafletHelpers.errorHeader + ' [Controls] ';
 
       controller.getMap().then(function(map) {
 
@@ -40,7 +39,7 @@ angular.module('leaflet-directive').directive('controls', function($log, leaflet
             var controlType = isDefined(newControls[newName].type) ? newControls[newName].type : newName;
 
             if (!isValidControlType(controlType)) {
-              $log.error(errorHeader + ' Invalid control type: ' + controlType + '.');
+              leafletLogger.error(' Invalid control type: ' + controlType, 'controls');
               return;
             }
 

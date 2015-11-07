@@ -1,9 +1,8 @@
-angular.module('leaflet-directive').factory('leafletControlHelpers', function($rootScope, $log, leafletHelpers, leafletLayerHelpers, leafletMapDefaults) {
+angular.module('leaflet-directive').factory('leafletControlHelpers', function($rootScope, leafletLogger, leafletHelpers, leafletLayerHelpers, leafletMapDefaults) {
   var isDefined = leafletHelpers.isDefined;
   var isObject = leafletHelpers.isObject;
   var createLayer = leafletLayerHelpers.createLayer;
   var _controls = {};
-  var errorHeader = leafletHelpers.errorHeader + ' [Controls] ';
 
   var _controlLayersMustBeVisible = function(baselayers, overlays, mapId) {
     var defaults = leafletMapDefaults.getDefaults(mapId);
@@ -58,7 +57,7 @@ angular.module('leaflet-directive').factory('leafletControlHelpers', function($r
     draw: {
       isPluginLoaded: function() {
         if (!angular.isDefined(L.Control.Draw)) {
-          $log.error(errorHeader + ' Draw plugin is not loaded.');
+          leafletLogger.error('Draw plugin is not loaded.');
           return false;
         }
 
@@ -89,7 +88,7 @@ angular.module('leaflet-directive').factory('leafletControlHelpers', function($r
     fullscreen: {
       isPluginLoaded: function() {
         if (!angular.isDefined(L.Control.Fullscreen)) {
-          $log.error(errorHeader + ' Fullscreen plugin is not loaded.');
+          leafletLogger.error('Fullscreen plugin is not loaded.');
           return false;
         }
 
@@ -107,7 +106,7 @@ angular.module('leaflet-directive').factory('leafletControlHelpers', function($r
     search: {
       isPluginLoaded: function() {
         if (!angular.isDefined(L.Control.Search)) {
-          $log.error(errorHeader + ' Search plugin is not loaded.');
+          leafletLogger.error(' Search plugin is not loaded.');
           return false;
         }
 
@@ -126,7 +125,7 @@ angular.module('leaflet-directive').factory('leafletControlHelpers', function($r
     minimap: {
       isPluginLoaded: function() {
         if (!angular.isDefined(L.Control.MiniMap)) {
-          $log.error(errorHeader + ' Minimap plugin is not loaded.');
+          leafletLogger.error('Minimap plugin is not loaded.');
           return false;
         }
 
@@ -135,7 +134,7 @@ angular.module('leaflet-directive').factory('leafletControlHelpers', function($r
 
       checkValidParams: function(params) {
         if (!isDefined(params.layer)) {
-          $log.warn(errorHeader + ' minimap "layer" option should be defined.');
+          leafletLogger.warn('minimap "layer" option should be defined.');
           return false;
         }
 
@@ -146,7 +145,7 @@ angular.module('leaflet-directive').factory('leafletControlHelpers', function($r
         var layer = createLayer(params.layer);
 
         if (!isDefined(layer)) {
-          $log.warn(errorHeader + ' minimap control "layer" could not be created.');
+          leafletLogger.warn('minimap control "layer" could not be created.');
           return;
         }
 

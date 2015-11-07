@@ -1,4 +1,4 @@
-angular.module('leaflet-directive').directive('legend', function($log, $http, leafletHelpers, leafletLegendHelpers) {
+angular.module('leaflet-directive').directive('legend', function(leafletLogger, $http, leafletHelpers, leafletLegendHelpers) {
 
   return {
     restrict: 'A',
@@ -49,14 +49,14 @@ angular.module('leaflet-directive').directive('legend', function($log, $http, le
 
           if (!isDefined(newLegend.url) && (type === 'arcgis') && (!isArray(newLegend.colors) || !isArray(newLegend.labels) || newLegend.colors.length !== newLegend.labels.length)) {
 
-            $log.warn('[AngularJS - Leaflet] legend.colors and legend.labels must be set.');
+            leafletLogger.warn('legend.colors and legend.labels must be set.', 'legend');
 
             return;
           }
 
           if (isDefined(newLegend.url)) {
 
-            $log.info('[AngularJS - Leaflet] loading legend service.');
+            leafletLogger.info('loading legend service.', 'legend');
 
             return;
           }
@@ -104,7 +104,7 @@ angular.module('leaflet-directive').directive('legend', function($log, $http, le
                               }
                             })
                             .error(function() {
-                              $log.warn('[AngularJS - Leaflet] legend.url not loaded.');
+                              leafletLogger.warn('legend.url not loaded.', 'legend');
                             });
         });
 

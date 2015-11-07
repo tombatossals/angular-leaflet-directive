@@ -1,4 +1,4 @@
-angular.module('leaflet-directive').directive('bounds', function($log, $timeout, $http, leafletHelpers, nominatimService, leafletBoundsHelpers) {
+angular.module('leaflet-directive').directive('lfBounds', function(leafletLogger, $timeout, $http, leafletHelpers, nominatimService, leafletBoundsHelpers) {
 
   return {
     restrict: 'A',
@@ -11,7 +11,6 @@ angular.module('leaflet-directive').directive('bounds', function($log, $timeout,
       var createLeafletBounds = leafletBoundsHelpers.createLeafletBounds;
       var leafletScope = controller[0].getLeafletScope();
       var mapController = controller[0];
-      var errorHeader = leafletHelpers.errorHeader + ' [Bounds] ';
 
       var emptyBounds = function(bounds) {
         return (bounds._southWest.lat === 0 && bounds._southWest.lng === 0 &&
@@ -60,7 +59,7 @@ angular.module('leaflet-directive').directive('bounds', function($log, $timeout,
               map.fitBounds(newBounds);
             }, function(errMsg) {
 
-              $log.error(errorHeader + ' ' + errMsg + '.');
+              leafletLogger.error(errMsg, 'bounds');
             });
 
             lastNominatimQuery = bounds.address;

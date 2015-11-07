@@ -1,9 +1,8 @@
 angular.module('leaflet-directive')
-.factory('leafletPathEvents', function($rootScope, $q, $log, leafletHelpers, leafletLabelEvents, leafletEventsHelpers) {
+.factory('leafletPathEvents', function($rootScope, $q, leafletLogger, leafletHelpers, leafletLabelEvents, leafletEventsHelpers) {
   var isDefined = leafletHelpers.isDefined;
   var isObject = leafletHelpers.isObject;
   var Helpers = leafletHelpers;
-  var errorHeader = leafletHelpers.errorHeader;
   var lblHelp = leafletLabelEvents;
   var fire = leafletEventsHelpers.fire;
 
@@ -19,7 +18,6 @@ angular.module('leaflet-directive')
 
     return function(e) {
       var broadcastName = 'leafletDirectivePath' + maybeMapId + '.' + eventName;
-      $log.debug(broadcastName);
       fire(leafletScope, broadcastName, logic, e, e.target || lObject, model, name, layerName);
     };
   };
@@ -35,7 +33,7 @@ angular.module('leaflet-directive')
       pathEvents = _getAvailablePathEvents();
     } else if (!isObject(leafletScope.eventBroadcast)) {
       // Not a valid object
-      $log.error(errorHeader + 'event-broadcast must be an object check your model.');
+      leafletLogger.error('event-broadcast must be an object check your model.');
     } else {
       // We have a possible valid object
       if (!isDefined(leafletScope.eventBroadcast.path)) {
@@ -43,7 +41,7 @@ angular.module('leaflet-directive')
         pathEvents = _getAvailablePathEvents();
       } else if (isObject(leafletScope.eventBroadcast.paths)) {
         // Not a valid object
-        $log.warn(errorHeader + 'event-broadcast.path must be an object check your model.');
+        leafletLogger.warn('event-broadcast.path must be an object check your model.');
       } else {
         // We have a possible valid map object
         // Event propadation logic
@@ -51,7 +49,7 @@ angular.module('leaflet-directive')
           // We take care of possible propagation logic
           if (leafletScope.eventBroadcast.path.logic !== 'emit' && leafletScope.eventBroadcast.path.logic !== 'broadcast') {
             // This is an error
-            $log.warn(errorHeader + 'Available event propagation logic are: \'emit\' or \'broadcast\'.');
+            leafletLogger.warn('Available event propagation logic are: \'emit\' or \'broadcast\'.');
           } else if (leafletScope.eventBroadcast.path.logic === 'emit') {
             logic = 'emit';
           }
@@ -74,10 +72,10 @@ angular.module('leaflet-directive')
 
         if (pathEventsEnable && pathEventsDisable) {
           // Both are active, this is an error
-          $log.warn(errorHeader + 'can not enable and disable events at the same time');
+          leafletLogger.warn('can not enable and disable events at the same time');
         } else if (!pathEventsEnable && !pathEventsDisable) {
           // Both are inactive, this is an error
-          $log.warn(errorHeader + 'must enable or disable events');
+          leafletLogger.warn('must enable or disable events');
         } else {
           // At this point the path object is OK, lets enable or disable events
           if (pathEventsEnable) {
@@ -88,12 +86,12 @@ angular.module('leaflet-directive')
               // Do we have already the event enabled?
               if (pathEvents.indexOf(eventName) !== -1) {
                 // Repeated event, this is an error
-                $log.warn(errorHeader + 'This event ' + eventName + ' is already enabled');
+                leafletLogger.warn('This event ' + eventName + ' is already enabled');
               } else {
                 // Does the event exists?
                 if (_getAvailablePathEvents().indexOf(eventName) === -1) {
                   // The event does not exists, this is an error
-                  $log.warn(errorHeader + 'This event ' + eventName + ' does not exist');
+                  leafletLogger.warn('This event ' + eventName + ' does not exist');
                 } else {
                   // All ok enable the event
                   pathEvents.push(eventName);
@@ -108,7 +106,7 @@ angular.module('leaflet-directive')
               var index = pathEvents.indexOf(eventName);
               if (index === -1) {
                 // The event does not exist
-                $log.warn(errorHeader + 'This event ' + eventName + ' does not exist or has been already disabled');
+                leafletLogger.warn('This event ' + eventName + ' does not exist or has been already disabled');
 
               } else {
                 pathEvents.splice(index, 1);

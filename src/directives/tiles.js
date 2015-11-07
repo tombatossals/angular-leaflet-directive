@@ -1,4 +1,13 @@
-angular.module('leaflet-directive').directive('tiles', function($log, leafletData, leafletMapDefaults, leafletHelpers) {
+angular.module('leaflet-directive').directive('tiles', function(leafletLogger) {
+  return {
+    link: function() {
+      leafletLogger.error('The "tiles" markup code is deprecated now. Please ' +
+                 'update your HTML with "lf-tiles" markup attributes.', 'tiles');
+    },
+  };
+});
+
+angular.module('leaflet-directive').directive('lfTiles', function(leafletLogger, leafletData, leafletMapDefaults, leafletHelpers) {
 
   return {
     restrict: 'A',
@@ -12,14 +21,16 @@ angular.module('leaflet-directive').directive('tiles', function($log, leafletDat
       var tiles = leafletScope.tiles;
 
       if (!isDefined(tiles) ||  !isDefined(tiles.url)) {
-        $log.warn('[AngularJS - Leaflet] The \'tiles\' definition doesn\'t have the \'url\' property.');
+        leafletLogger.warn('[AngularJS - Leaflet] The \'tiles\' definition doesn\'t have the \'url\' property.', 'tiles');
         return;
       }
 
       controller.getMap().then(function(map) {
         var defaults = leafletMapDefaults.getDefaults(attrs.id);
         var tileLayerObj;
+
         leafletScope.$watch('tiles', function(tiles, oldtiles) {
+
           var tileLayerOptions = defaults.tileLayerOptions;
           var tileLayerUrl = defaults.tileLayer;
 
@@ -50,7 +61,7 @@ angular.module('leaflet-directive').directive('tiles', function($log, leafletDat
             return;
           }
 
-          // If the options of the tilelayer is changed, we need to redraw the layer
+          // If the options of the tilelayer are changed, we need to redraw the layer
           if (isDefined(tiles.url) && isDefined(tiles.options) &&
               (tiles.type !== oldtiles.type || !angular.equals(tiles.options, tileLayerOptions))) {
             map.removeLayer(tileLayerObj);

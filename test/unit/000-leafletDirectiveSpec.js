@@ -62,7 +62,7 @@ describe('Directive: leaflet', function() {
 
   it('should set the max zoom if specified', function() {
     angular.extend(scope, { defaults: { maxZoom: 15 } });
-    var element = angular.element('<leaflet defaults="defaults"></leaflet>');
+    var element = angular.element('<leaflet lf-defaults="defaults"></leaflet>');
     element = $compile(element)(scope);
     var leafletMap;
     leafletData.getMap().then(function(map) {
@@ -75,7 +75,7 @@ describe('Directive: leaflet', function() {
 
   it('should set the min zoom if specified', function() {
     angular.extend(scope, { defaults: { minZoom: 4 } });
-    var element = angular.element('<leaflet defaults="defaults"></leaflet>');
+    var element = angular.element('<leaflet lf-defaults="defaults"></leaflet>');
     element = $compile(element)(scope);
     var leafletMap;
     leafletData.getMap().then(function(map) {
@@ -87,7 +87,7 @@ describe('Directive: leaflet', function() {
   });
 
   it('should set the CSS width and height if they are passed as string attributes', function() {
-    var element = angular.element('<leaflet defaults="defaults" width="640px" height="480px"></leaflet>');
+    var element = angular.element('<leaflet lf-defaults="defaults" width="640px" height="480px"></leaflet>');
     element = $compile(element)(scope);
 
     expect(element.css('width')).toBe('640px');
@@ -95,7 +95,7 @@ describe('Directive: leaflet', function() {
   });
 
   it('should set the CSS width and height if they are passed as number attributes', function() {
-    var element = angular.element('<leaflet defaults="defaults" width=640 height=480></leaflet>');
+    var element = angular.element('<leaflet lf-defaults="defaults" width=640 height=480></leaflet>');
     element = $compile(element)(scope);
 
     expect(element.css('width')).toBe('640px');
@@ -112,7 +112,7 @@ describe('Directive: leaflet', function() {
         },
       },
     });
-    var element = angular.element('<leaflet defaults="defaults"></leaflet>');
+    var element = angular.element('<leaflet lf-defaults="defaults"></leaflet>');
     element = $compile(element)(scope);
     var leafletTiles;
     leafletData.getTiles().then(function(tiles) {
@@ -133,7 +133,7 @@ describe('Directive: leaflet', function() {
         zoomControlPosition: 'topright',
       },
     });
-    var element = angular.element('<leaflet defaults="defaults"></leaflet>');
+    var element = angular.element('<leaflet lf-defaults="defaults"></leaflet>');
     element = $compile(element)(scope);
     var leafletMap;
     leafletData.getMap().then(function(map) {
@@ -150,7 +150,7 @@ describe('Directive: leaflet', function() {
         zoomControl: false,
       },
     });
-    var element = angular.element('<leaflet defaults="defaults"></leaflet>');
+    var element = angular.element('<leaflet lf-defaults="defaults"></leaflet>');
     element = $compile(element)(scope);
     var leafletMap;
     leafletData.getMap().then(function(map) {
@@ -187,7 +187,7 @@ describe('Directive: leaflet', function() {
         },
       },
     });
-    var element = angular.element('<leaflet defaults="defaults"></leaflet>');
+    var element = angular.element('<leaflet lf-defaults="defaults"></leaflet>');
     element = $compile(element)(scope);
     var leafletMap;
     leafletData.getMap().then(function(map) {

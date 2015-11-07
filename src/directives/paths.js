@@ -1,4 +1,4 @@
-angular.module('leaflet-directive').directive('paths', function($log, $q, leafletData, leafletMapDefaults, leafletHelpers, leafletPathsHelpers, leafletPathEvents) {
+angular.module('leaflet-directive').directive('paths', function(leafletLogger, $q, leafletData, leafletMapDefaults, leafletHelpers, leafletPathsHelpers, leafletPathEvents) {
 
   return {
     restrict: 'A',
@@ -80,7 +80,7 @@ angular.module('leaflet-directive').directive('paths', function($log, $q, leafle
               }
 
               if (newName.search('-') !== -1) {
-                $log.error('[AngularJS - Leaflet] The path name "' + newName + '" is not valid. It must not include "-" and a number.');
+                leafletLogger.error('The path name "' + newName + '" is not valid. It must not include "-" and a number.', 'paths');
                 continue;
               }
 
@@ -102,23 +102,23 @@ angular.module('leaflet-directive').directive('paths', function($log, $q, leafle
                 if (isDefined(pathData) && isDefined(pathData.layer)) {
 
                   if (!isString(pathData.layer)) {
-                    $log.error('[AngularJS - Leaflet] A layername must be a string');
+                    leafletLogger.error('A layername must be a string', 'paths');
                     continue;
                   }
 
                   if (!isDefined(layers)) {
-                    $log.error('[AngularJS - Leaflet] You must add layers to the directive if the markers are going to use this functionality.');
+                    leafletLogger.error('You must add layers to the directive if the markers are going to use this functionality', 'paths');
                     continue;
                   }
 
                   if (!isDefined(layers.overlays) || !isDefined(layers.overlays[pathData.layer])) {
-                    $log.error('[AngularJS - Leaflet] A path can only be added to a layer of type "group"');
+                    leafletLogger.error('A path can only be added to a layer of type "group"', 'paths');
                     continue;
                   }
 
                   var layerGroup = layers.overlays[pathData.layer];
                   if (!(layerGroup instanceof L.LayerGroup || layerGroup instanceof L.FeatureGroup)) {
-                    $log.error('[AngularJS - Leaflet] Adding a path to an overlay needs a overlay of the type "group" or "featureGroup"');
+                    leafletLogger.error('Adding a path to an overlay needs a overlay of the type "group" or "featureGroup"', 'paths');
                     continue;
                   }
 

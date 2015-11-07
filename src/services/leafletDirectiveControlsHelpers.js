@@ -1,17 +1,13 @@
 angular.module('leaflet-directive')
-.service('leafletDirectiveControlsHelpers', function($log, leafletData, leafletHelpers) {
+.service('leafletDirectiveControlsHelpers', function(leafletLogger, leafletData, leafletHelpers) {
   var _isDefined = leafletHelpers.isDefined;
   var _isString = leafletHelpers.isString;
   var _isObject = leafletHelpers.isObject;
-  var _mainErrorHeader = leafletHelpers.errorHeader;
-
-  var _errorHeader = _mainErrorHeader + '[leafletDirectiveControlsHelpers';
 
   var _extend = function(id, thingToAddName, createFn, cleanFn) {
-    var _fnHeader = _errorHeader + '.extend] ';
     var extender = {};
     if (!_isDefined(thingToAddName)) {
-      $log.error(_fnHeader + 'thingToAddName cannot be undefined');
+      leafletLogger.error('control name cannot be undefined');
       return;
     }
 
@@ -23,7 +19,7 @@ angular.module('leaflet-directive')
     }    else if (_isObject(thingToAddName) && !_isDefined(createFn) && !_isDefined(cleanFn)) {
       extender = thingToAddName;
     }    else {
-      $log.error(_fnHeader + 'incorrect arguments');
+      leafletLogger.error('incorrect arguments');
       return;
     }
 

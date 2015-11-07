@@ -1,5 +1,4 @@
-angular.module('leaflet-directive').service('leafletHelpers', function($q, $log) {
-  var _errorHeader = '[AngularJS - Leaflet] ';
+angular.module('leaflet-directive').service('leafletHelpers', function($q, leafletLogger) {
   var _copy = angular.copy;
   var _clone = _copy;
   /*
@@ -71,7 +70,7 @@ angular.module('leaflet-directive').service('leafletHelpers', function($q, $log)
           }
         }
       } else {
-        $log.error(_errorHeader + '- You have more than 1 map on the DOM, you must provide the map ID to the leafletData.getXXX call');
+        leafletLogger.error('You have more than 1 map on the DOM, you must provide the map ID to the leafletData.getXXX call');
       }
     } else {
       id = mapId;
@@ -145,7 +144,6 @@ angular.module('leaflet-directive').service('leafletHelpers', function($q, $log)
     directiveNormalize: directiveNormalize,
     copy:_copy,
     clone:_clone,
-    errorHeader: _errorHeader,
     getObjectValue: _getObjectValue,
     getObjectArrayPath:_getObjectArrayPath,
     getObjectDotPath: _getObjectDotPath,
@@ -658,7 +656,7 @@ angular.module('leaflet-directive').service('leafletHelpers', function($q, $log)
         if (this.isLoaded()) {
           return layer instanceof L.UtfGrid;
         } else {
-          $log.error('[AngularJS - Leaflet] No UtfGrid plugin found.');
+          leafletLogger.error('No UtfGrid plugin found.');
           return false;
         }
       },

@@ -1,4 +1,4 @@
-angular.module('leaflet-directive').directive('decorations', function($log, leafletHelpers) {
+angular.module('leaflet-directive').directive('decorations', function(leafletLogger, leafletHelpers) {
 
   return {
     restrict: 'A',
@@ -16,7 +16,7 @@ angular.module('leaflet-directive').directive('decorations', function($log, leaf
       function createDecoration(options) {
         if (isDefined(options) && isDefined(options.coordinates)) {
           if (!PolylineDecoratorPlugin.isLoaded()) {
-            $log.error('[AngularJS - Leaflet] The PolylineDecorator Plugin is not loaded.');
+            leafletLogger.error('The PolylineDecorator Plugin is not loaded.', 'decorations');
           }
         }
 

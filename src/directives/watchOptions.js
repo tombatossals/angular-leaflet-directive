@@ -5,13 +5,12 @@
 */
 ['markers', 'geojson'].forEach(function(name) {
   angular.module('leaflet-directive').directive(name + 'WatchOptions', [
-      '$log', '$rootScope', '$q', 'leafletData', 'leafletHelpers',
-        function($log, $rootScope, $q, leafletData, leafletHelpers) {
+      'leafletLogger', '$rootScope', '$q', 'leafletData', 'leafletHelpers',
+        function(leafletLogger, $rootScope, $q, leafletData, leafletHelpers) {
 
-          var isDefined = leafletHelpers.isDefined,
-              errorHeader = leafletHelpers.errorHeader,
-              isObject = leafletHelpers.isObject,
-              _watchOptions = leafletHelpers.watchOptions;
+          var isDefined = leafletHelpers.isDefined;
+          var isObject = leafletHelpers.isObject;
+          var _watchOptions = leafletHelpers.watchOptions;
 
           return {
             restrict: 'A',
@@ -28,7 +27,7 @@
                   if (isObject(scope[name + 'WatchOptions']))
                       angular.extend(_watchOptions, scope[name + 'WatchOptions']);
                   else
-                      $log.error(errorHeader + '[' + name + 'WatchOptions] is not an object');
+                      leafletLogger.error('is not an object', 'watch options');
                   leafletScope[name + 'WatchOptions'] = _watchOptions;
                 }
               });

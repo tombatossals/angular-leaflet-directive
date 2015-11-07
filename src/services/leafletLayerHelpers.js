@@ -1,16 +1,15 @@
 angular.module('leaflet-directive')
-.factory('leafletLayerHelpers', function($rootScope, $log, $q, leafletHelpers, leafletIterators) {
+.factory('leafletLayerHelpers', function($rootScope, leafletLogger, $q, leafletHelpers, leafletIterators) {
   var Helpers = leafletHelpers;
   var isString = leafletHelpers.isString;
   var isObject = leafletHelpers.isObject;
   var isArray = leafletHelpers.isArray;
   var isDefined = leafletHelpers.isDefined;
-  var errorHeader = leafletHelpers.errorHeader;
   var $it = leafletIterators;
 
   var utfGridCreateLayer = function(params) {
     if (!Helpers.UTFGridPlugin.isLoaded()) {
-      $log.error('[AngularJS - Leaflet] The UTFGrid plugin is not loaded.');
+      leafletLogger.error('The UTFGrid plugin is not loaded');
       return;
     }
 
@@ -253,7 +252,7 @@ angular.module('leaflet-directive')
       mustHaveUrl: true,
       createLayer: function(params) {
         if (!Helpers.AGSFeatureLayerPlugin.isLoaded()) {
-          $log.warn(errorHeader + ' The esri plugin is not loaded.');
+          leafletLogger.warn('The AGS Feature plugin is not loaded.');
           return;
         }
 
@@ -279,7 +278,7 @@ angular.module('leaflet-directive')
       mustHaveUrl: true,
       createLayer: function(params) {
         if (!Helpers.AGSTiledMapLayerPlugin.isLoaded()) {
-          $log.warn(errorHeader + ' The esri plugin is not loaded.');
+          leafletLogger.warn(' The AGS Tiled plugin is not loaded');
           return;
         }
 
@@ -292,7 +291,7 @@ angular.module('leaflet-directive')
       mustHaveUrl: true,
       createLayer: function(params) {
         if (!Helpers.AGSDynamicMapLayerPlugin.isLoaded()) {
-          $log.warn(errorHeader + ' The esri plugin is not loaded.');
+          leafletLogger.warn(' The AGS Dynamic plugin is not loaded.');
           return;
         }
 
@@ -305,7 +304,7 @@ angular.module('leaflet-directive')
       mustHaveUrl: true,
       createLayer: function(params) {
         if (!Helpers.AGSImageMapLayerPlugin.isLoaded()) {
-          $log.warn(errorHeader + ' The esri plugin is not loaded.');
+          leafletLogger.warn('The AGSIImageMapLayer plugin is not loaded.');
           return;
         }
 
@@ -318,12 +317,12 @@ angular.module('leaflet-directive')
       mustHaveUrl: true,
       createLayer: function(params) {
         if (!Helpers.AGSClusteredLayerPlugin.isLoaded()) {
-          $log.warn(errorHeader + ' The esri clustered layer plugin is not loaded.');
+          leafletLogger.warn(' The AGS clustered layer plugin is not loaded.');
           return;
         }
 
         if (!Helpers.MarkerClusterPlugin.isLoaded()) {
-          $log.warn(errorHeader + ' The markercluster plugin is not loaded.');
+          leafletLogger.warn('The markercluster plugin is not loaded.');
           return;
         }
 
@@ -334,12 +333,12 @@ angular.module('leaflet-directive')
       mustHaveUrl: true,
       createLayer: function(params) {
         if (!Helpers.AGSHeatmapLayerPlugin.isLoaded()) {
-          $log.warn(errorHeader + ' The esri heatmap layer plugin is not loaded.');
+          leafletLogger.warn('The AGS heatmap layer plugin is not loaded.');
           return;
         }
 
         if (!Helpers.HeatLayerPlugin.isLoaded()) {
-          $log.warn(errorHeader + ' The heatlayer plugin is not loaded.');
+          leafletLogger.warn('The heatlayer plugin is not loaded.');
           return;
         }
 
@@ -350,7 +349,7 @@ angular.module('leaflet-directive')
       mustHaveUrl: false,
       createLayer: function(params) {
         if (!Helpers.MarkerClusterPlugin.isLoaded()) {
-          $log.warn(errorHeader + ' The markercluster plugin is not loaded.');
+          leafletLogger.warn('The markercluster plugin is not loaded.');
           return;
         }
 
@@ -438,7 +437,7 @@ angular.module('leaflet-directive')
         if (params.layer instanceof L.Class) {
           return angular.copy(params.layer);
         }        else {
-          $log.error('[AngularJS - Leaflet] A custom layer must be a leaflet Class');
+          leafletLogger.error('A custom layer must be a leaflet Class');
         }
       },
     },
@@ -453,38 +452,38 @@ angular.module('leaflet-directive')
   function isValidLayerType(layerDefinition) {
     // Check if the baselayer has a valid type
     if (!isString(layerDefinition.type)) {
-      $log.error('[AngularJS - Leaflet] A layer must have a valid type defined.');
+      leafletLogger.error('A layer must have a valid type defined.');
       return false;
     }
 
     if (Object.keys(layerTypes).indexOf(layerDefinition.type) === -1) {
-      $log.error('[AngularJS - Leaflet] A layer must have a valid type: ' + Object.keys(layerTypes));
+      leafletLogger.error('A layer must have a valid type: ' + Object.keys(layerTypes));
       return false;
     }
 
     // Check if the layer must have an URL
     if (layerTypes[layerDefinition.type].mustHaveUrl && !isString(layerDefinition.url)) {
-      $log.error('[AngularJS - Leaflet] A base layer must have an url');
+      leafletLogger.error('A base layer must have an url');
       return false;
     }
 
     if (layerTypes[layerDefinition.type].mustHaveData && !isDefined(layerDefinition.data)) {
-      $log.error('[AngularJS - Leaflet] The base layer must have a "data" array attribute');
+      leafletLogger.error('The base layer must have a "data" array attribute');
       return false;
     }
 
     if (layerTypes[layerDefinition.type].mustHaveLayer && !isDefined(layerDefinition.layer)) {
-      $log.error('[AngularJS - Leaflet] The type of layer ' + layerDefinition.type + ' must have an layer defined');
+      leafletLogger.error('The type of layer ' + layerDefinition.type + ' must have an layer defined');
       return false;
     }
 
     if (layerTypes[layerDefinition.type].mustHaveBounds && !isDefined(layerDefinition.bounds)) {
-      $log.error('[AngularJS - Leaflet] The type of layer ' + layerDefinition.type + ' must have bounds defined');
+      leafletLogger.error('The type of layer ' + layerDefinition.type + ' must have bounds defined');
       return false;
     }
 
     if (layerTypes[layerDefinition.type].mustHaveKey && !isDefined(layerDefinition.key)) {
-      $log.error('[AngularJS - Leaflet] The type of layer ' + layerDefinition.type + ' must have key defined');
+      leafletLogger.error('The type of layer ' + layerDefinition.type + ' must have key defined');
       return false;
     }
 
@@ -497,7 +496,7 @@ angular.module('leaflet-directive')
     }
 
     if (!isString(layerDefinition.name)) {
-      $log.error('[AngularJS - Leaflet] A base layer must have a name');
+      leafletLogger.error('A base layer must have a name');
       return;
     }
 
@@ -545,7 +544,6 @@ angular.module('leaflet-directive')
     if (isDefined(layerOptions) && isDefined(layerOptions.loadedDefer)) {
       if (angular.isFunction(layerOptions.loadedDefer)) {
         var defers = layerOptions.loadedDefer();
-        $log.debug('Loaded Deferred', defers);
         var count = defers.length;
         if (count > 0) {
           var resolve = function() {

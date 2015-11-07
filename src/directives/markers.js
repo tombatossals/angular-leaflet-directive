@@ -1,10 +1,9 @@
 angular.module('leaflet-directive').directive('markers',
-    function($log, $rootScope, $q, leafletData, leafletHelpers, leafletMapDefaults,
+    function(leafletLogger, $rootScope, $q, leafletData, leafletHelpers, leafletMapDefaults,
               leafletMarkersHelpers, leafletMarkerEvents, leafletIterators, leafletWatchHelpers,
               leafletDirectiveControlsHelpers) {
       //less terse vars to helpers
       var isDefined = leafletHelpers.isDefined;
-      var errorHeader = leafletHelpers.errorHeader;
       var Helpers = leafletHelpers;
       var isString = leafletHelpers.isString;
       var addMarkerWatcher = leafletMarkersHelpers.addMarkerWatcher;
@@ -42,23 +41,23 @@ angular.module('leaflet-directive').directive('markers',
       var _maybeAddMarkerToLayer = function(layerName, layers, model, marker, doIndividualWatch, map) {
 
         if (!isString(layerName)) {
-          $log.error(errorHeader + ' A layername must be a string');
+          leafletLogger.error('A layername must be a string', 'markers');
           return false;
         }
 
         if (!isDefined(layers)) {
-          $log.error(errorHeader + ' You must add layers to the directive if the markers are going to use this functionality.');
+          leafletLogger.error('You must add layers to the directive if the markers are going to use this functionality.', 'markers');
           return false;
         }
 
         if (!isDefined(layers.overlays) || !isDefined(layers.overlays[layerName])) {
-          $log.error(errorHeader + ' A marker can only be added to a layer of type "group"');
+          leafletLogger.error('A marker can only be added to a layer of type "group"', 'markers');
           return false;
         }
 
         var layerGroup = layers.overlays[layerName];
         if (!(layerGroup instanceof L.LayerGroup || layerGroup instanceof L.FeatureGroup)) {
-          $log.error(errorHeader + ' Adding a marker to an overlay needs a overlay of the type "group" or "featureGroup"');
+          leafletLogger.error('Adding a marker to an overlay needs a overlay of the type "group" or "featureGroup"', 'markers');
           return false;
         }
 
@@ -82,7 +81,7 @@ angular.module('leaflet-directive').directive('markers',
               continue;
 
           if (newName.search('-') !== -1) {
-            $log.error('The marker can\'t use a "-" on his key name: "' + newName + '".');
+            leafletLogger.error('The marker can\'t use a "-" on his key name: "' + newName + '".', 'markers');
             continue;
           }
 
@@ -97,7 +96,7 @@ angular.module('leaflet-directive').directive('markers',
             var marker = createMarker(model);
             var layerName = (model ? model.layer : undefined) || maybeLayerName; //original way takes pref
             if (!isDefined(marker)) {
-              $log.error(errorHeader + ' Received invalid data on the marker ' + newName + '.');
+              leafletLogger.error('Received invalid data on the marker ' + newName, 'markers');
               continue;
             }
 
@@ -157,7 +156,6 @@ angular.module('leaflet-directive').directive('markers',
         var doCheckOldModel =  isDefined(oldMarkerModels);
         for (var name in lMarkers) {
           if (!hasLogged) {
-            $log.debug(errorHeader + '[markers] destroy: ');
             hasLogged = true;
           }
 
@@ -183,7 +181,7 @@ angular.module('leaflet-directive').directive('markers',
       var _destroy = function(markerModels, oldMarkerModels, lMarkers, map, layers) {
         _seeWhatWeAlreadyHave(markerModels, oldMarkerModels, lMarkers, false,
             function(newMarker, oldMarker, lMarkerName) {
-              $log.debug(errorHeader + '[marker] is deleting marker: ' + lMarkerName);
+              leafletLogger.debug('Deleting marker: ' + lMarkerName, 'markers');
               deleteMarker(lMarkers[lMarkerName], map, layers);
               delete lMarkers[lMarkerName];
             });
@@ -193,7 +191,7 @@ angular.module('leaflet-directive').directive('markers',
         var skips = {};
         _seeWhatWeAlreadyHave(newModels, oldModels, lMarkers, true,
             function(newMarker, oldMarker, lMarkerName) {
-              $log.debug(errorHeader + '[marker] is already rendered, marker: ' + lMarkerName);
+              leafletLogger.debug('Already rendered marker: ' + lMarkerName, 'markers');
               skips[lMarkerName] = newMarker;
             });
 

@@ -1,4 +1,4 @@
-angular.module('leaflet-directive').service('leafletMarkersHelpers', function($rootScope, $timeout, leafletHelpers, $log, $compile, leafletGeoJsonHelpers) {
+angular.module('leaflet-directive').service('leafletMarkersHelpers', function($rootScope, $timeout, leafletHelpers, leafletLogger, $compile, leafletGeoJsonHelpers) {
   var isDefined = leafletHelpers.isDefined;
   var defaultTo = leafletHelpers.defaultTo;
   var MarkerClusterPlugin = leafletHelpers.MarkerClusterPlugin;
@@ -14,7 +14,6 @@ angular.module('leaflet-directive').service('leafletMarkersHelpers', function($r
   var isObject = leafletHelpers.isObject;
   var groups = {};
   var geoHlp = leafletGeoJsonHelpers;
-  var errorHeader = leafletHelpers.errorHeader;
 
   var _string = function(marker) {
     //this exists since JSON.stringify barfs on cyclic
@@ -26,15 +25,10 @@ angular.module('leaflet-directive').service('leafletMarkersHelpers', function($r
     return '[leafletMarker] : \n' + retStr;
   };
 
-  var _log = function(marker, useConsole) {
-    var logger = useConsole ? console : $log;
-    logger.debug(_string(marker));
-  };
-
   var createLeafletIcon = function(iconData) {
     if (isDefined(iconData) && isDefined(iconData.type) && iconData.type === 'awesomeMarker') {
       if (!AwesomeMarkersPlugin.isLoaded()) {
-        $log.error(errorHeader + ' The AwesomeMarkers Plugin is not loaded.');
+        leafletLogger.error('The AwesomeMarkers Plugin is not loaded.');
       }
 
       return new L.AwesomeMarkers.icon(iconData);
@@ -42,7 +36,7 @@ angular.module('leaflet-directive').service('leafletMarkersHelpers', function($r
 
     if (isDefined(iconData) && isDefined(iconData.type) && iconData.type === 'vectorMarker') {
       if (!VectorMarkersPlugin.isLoaded()) {
-        $log.error(errorHeader + ' The VectorMarkers Plugin is not loaded.');
+        leafletLogger.error('The VectorMarkers Plugin is not loaded.');
       }
 
       return new L.VectorMarkers.icon(iconData);
@@ -50,7 +44,7 @@ angular.module('leaflet-directive').service('leafletMarkersHelpers', function($r
 
     if (isDefined(iconData) && isDefined(iconData.type) && iconData.type === 'makiMarker') {
       if (!MakiMarkersPlugin.isLoaded()) {
-        $log.error(errorHeader + 'The MakiMarkers Plugin is not loaded.');
+        leafletLogger.error('The MakiMarkers Plugin is not loaded.');
       }
 
       return new L.MakiMarkers.icon(iconData);
@@ -58,7 +52,7 @@ angular.module('leaflet-directive').service('leafletMarkersHelpers', function($r
 
     if (isDefined(iconData) && isDefined(iconData.type) && iconData.type === 'extraMarker') {
       if (!ExtraMarkersPlugin.isLoaded()) {
-        $log.error(errorHeader + 'The ExtraMarkers Plugin is not loaded.');
+        leafletLogger.error('The ExtraMarkers Plugin is not loaded.');
       }
 
       return new L.ExtraMarkers.icon(iconData);
@@ -70,7 +64,7 @@ angular.module('leaflet-directive').service('leafletMarkersHelpers', function($r
 
     if (isDefined(iconData) && isDefined(iconData.type) && iconData.type === 'dom') {
       if (!DomMarkersPlugin.isLoaded()) {
-        $log.error(errorHeader + 'The DomMarkers Plugin is not loaded.');
+        leafletLogger.error('The DomMarkers Plugin is not loaded.');
       }
 
       var markerScope = angular.isFunction(iconData.getMarkerScope) ? iconData.getMarkerScope() : $rootScope;
@@ -188,7 +182,7 @@ angular.module('leaflet-directive').service('leafletMarkersHelpers', function($r
 
     if (compileMessage) {
       if (!isDefined(marker._popup) || !isDefined(marker._popup._contentNode)) {
-        $log.error(errorHeader + 'Popup is invalid or does not have any content.');
+        leafletLogger.error('Popup is invalid or does not have any content.');
         return false;
       }
 
@@ -220,7 +214,7 @@ angular.module('leaflet-directive').service('leafletMarkersHelpers', function($r
 
     // Update the lat-lng property (always present in marker properties)
     if (!geoHlp.validateCoords(markerData)) {
-      $log.warn('There are problems with lat-lng data, please verify your marker model');
+      leafletLogger.warn('There are problems with lat-lng data, please verify your marker model');
       _deleteMarker(marker, map, layers);
       return;
     }
@@ -271,14 +265,14 @@ angular.module('leaflet-directive').service('leafletMarkersHelpers', function($r
 
       // The markerData.layer is defined so we add the marker to the layer if it is different from the old data
       if (!isDefined(layers.overlays[markerData.layer])) {
-        $log.error(errorHeader + 'You must use a name of an existing layer');
+        leafletLogger.error('You must use a name of an existing layer');
         return;
       }
 
       // Is a group layer?
       var layerGroup = layers.overlays[markerData.layer];
       if (!(layerGroup instanceof L.LayerGroup || layerGroup instanceof L.FeatureGroup)) {
-        $log.error(errorHeader + 'A marker can only be added to a layer of type "group" or "featureGroup"');
+        leafletLogger.error('A marker can only be added to a layer of type "group" or "featureGroup"');
         return;
       }
 
@@ -453,14 +447,14 @@ angular.module('leaflet-directive').service('leafletMarkersHelpers', function($r
 
     createMarker: function(markerData) {
       if (!isDefined(markerData) || !geoHlp.validateCoords(markerData)) {
-        $log.error(errorHeader + 'The marker definition is not valid.');
+        leafletLogger.error('The marker definition is not valid.');
         return;
       }
 
       var coords = geoHlp.getCoords(markerData);
 
       if (!isDefined(coords)) {
-        $log.error(errorHeader + 'Unable to get coordinates from markerData.');
+        leafletLogger.error('Unable to get coordinates from markerData.');
         return;
       }
 
@@ -492,12 +486,12 @@ angular.module('leaflet-directive').service('leafletMarkersHelpers', function($r
 
     addMarkerToGroup: function(marker, groupName, groupOptions, map) {
       if (!isString(groupName)) {
-        $log.error(errorHeader + 'The marker group you have specified is invalid.');
+        leafletLogger.error('The marker group you have specified is invalid.');
         return;
       }
 
       if (!MarkerClusterPlugin.isLoaded()) {
-        $log.error(errorHeader + 'The MarkerCluster plugin is not loaded.');
+        leafletLogger.error('The MarkerCluster plugin is not loaded.');
         return;
       }
 
@@ -551,6 +545,5 @@ angular.module('leaflet-directive').service('leafletMarkersHelpers', function($r
     },
 
     string: _string,
-    log: _log,
   };
 });

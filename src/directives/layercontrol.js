@@ -1,4 +1,4 @@
-angular.module('leaflet-directive').directive('layercontrol', function($filter, $log, leafletData, leafletHelpers) {
+angular.module('leaflet-directive').directive('layercontrol', function($filter, leafletLogger, leafletData, leafletHelpers) {
 
   return {
     restrict: 'E',
@@ -14,7 +14,6 @@ angular.module('leaflet-directive').directive('layercontrol', function($filter, 
     transclude: false,
     require: '^leaflet',
     controller: function($scope, $element, $sce) {
-      $log.debug('[Angular Directive - Layers] layers', $scope, $element);
       var safeApply = leafletHelpers.safeApply;
       var isDefined = leafletHelpers.isDefined;
       angular.extend($scope, {

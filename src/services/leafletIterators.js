@@ -1,7 +1,6 @@
-angular.module('leaflet-directive').service('leafletIterators', function($log, leafletHelpers) {
+angular.module('leaflet-directive').service('leafletIterators', function(leafletLogger, leafletHelpers) {
 
   var lHlp = leafletHelpers;
-  var errorHeader = leafletHelpers.errorHeader + 'leafletIterators: ';
 
   //BEGIN COPY from underscore
   var _keys = Object.keys;
@@ -142,7 +141,7 @@ angular.module('leaflet-directive').service('leafletIterators', function($log, l
 
     if (!lHlp.isFunction(cb)) {
       cbName = lHlp.defaultTo(cb, 'cb');
-      $log.error(errorHeader + cbName + ' is not a function');
+      leafletLogger.error(cbName + ' is not a function', 'iterators');
       return true;
     }
 

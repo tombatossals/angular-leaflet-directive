@@ -1,4 +1,4 @@
-angular.module('leaflet-directive').factory('leafletPathsHelpers', function($rootScope, $log, leafletHelpers) {
+angular.module('leaflet-directive').factory('leafletPathsHelpers', function($rootScope, leafletLogger, leafletHelpers) {
   var isDefined = leafletHelpers.isDefined;
   var isArray = leafletHelpers.isArray;
   var isNumber = leafletHelpers.isNumber;
@@ -265,7 +265,7 @@ angular.module('leaflet-directive').factory('leafletPathsHelpers', function($roo
       var pathData = _getPathData(path);
 
       if (!pathTypes[path.type].isValid(pathData)) {
-        $log.error('[AngularJS - Leaflet] Invalid data passed to the ' + path.type + ' path');
+        leafletLogger.error('Invalid data passed to the ' + path.type + ' path');
         return;
       }
 
