@@ -521,8 +521,9 @@ angular.module('leaflet-directive').service('leafletMarkersHelpers', function($r
 
       marker.on('add', function(/* event */) {
         safeApply(leafletScope, function() {
-          if ('label' in markerData)
-              _manageOpenLabel(marker, markerData);
+          if ('label' in markerData) {
+            _manageOpenLabel(marker, markerData);
+          }
         });
       });
     },

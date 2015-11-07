@@ -61,7 +61,7 @@
     </script>
   </head>
   <body ng-controller="MarkersDelayedEventsController">
-      <leaflet events-broadcast="events" lf-center="london" markers="markers" height="480px" width="100%"></leaflet>
+      <leaflet lf-events="events" lf-center="london" lf-markers="markers" height="480px" width="100%"></leaflet>
       <h1>Markers delayed events example</h1>
       <button ng-click="removeMarkers()">Remove markers</button>
       <button ng-click="addMarkers()">Add markers</button>

@@ -48,7 +48,7 @@ describe('Plugin: VectorMarkers', function() {
       },
     });
 
-    var element = angular.element('<leaflet markers="markers"></leaflet>');
+    var element = angular.element('<leaflet lf-markers="markers"></leaflet>');
     element = $compile(element)(scope);
     scope.$digest();
 
@@ -84,7 +84,7 @@ describe('Plugin: VectorMarkers', function() {
       },
     });
 
-    var element = angular.element('<leaflet markers="markers"></leaflet>');
+    var element = angular.element('<leaflet lf-markers="markers"></leaflet>');
     element = $compile(element)(scope);
     scope.$digest();
 

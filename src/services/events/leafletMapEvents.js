@@ -53,8 +53,10 @@ angular.module('leaflet-directive')
   };
 
   var _genDispatchMapEvent = function(scope, eventName, logic, maybeMapId) {
-    if (maybeMapId)
+    if (maybeMapId) {
       maybeMapId = maybeMapId + '.';
+    }
+
     return function(e) {
       // Put together broadcast name
       var broadcastName = 'leafletDirectiveMap.' + maybeMapId + eventName;

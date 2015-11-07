@@ -45,7 +45,7 @@ describe('Directive: leaflet: layers.creation', function() {
     });
 
     // If we not provide layers the system will use the default
-    var element = angular.element('<leaflet layers="layers"></leaflet>');
+    var element = angular.element('<leaflet lf-layers="layers"></leaflet>');
     element = $compile(element)(scope);
     scope.$digest();
     leafletData.getLayers().then(function(layers) {
@@ -62,7 +62,7 @@ describe('Directive: leaflet: layers.creation', function() {
         overlays: {},
       },
     });
-    var element = angular.element('<leaflet layers="layers"></leaflet>');
+    var element = angular.element('<leaflet lf-layers="layers"></leaflet>');
     element = $compile(element)(scope);
     scope.$digest();
     leafletData.getLayers().then(function(layers) {
@@ -90,7 +90,7 @@ describe('Directive: leaflet: layers.creation', function() {
         overlays: {},
       },
     });
-    var element = angular.element('<leaflet layers="layers"></leaflet>');
+    var element = angular.element('<leaflet lf-layers="layers"></leaflet>');
     element = $compile(element)(scope);
     var map;
     leafletData.getMap().then(function(leafletMap) {
@@ -117,7 +117,7 @@ describe('Directive: leaflet: layers.creation', function() {
         },
       },
     });
-    var element = angular.element('<leaflet layers="layers"></leaflet>');
+    var element = angular.element('<leaflet lf-layers="layers"></leaflet>');
     element = $compile(element)(scope);
     var map;
     leafletData.getMap().then(function(leafletMap) {
@@ -159,7 +159,7 @@ describe('Directive: leaflet: layers.creation', function() {
         overlays: {},
       },
     });
-    var element = angular.element('<leaflet layers="layers"></leaflet>');
+    var element = angular.element('<leaflet lf-layers="layers"></leaflet>');
     element = $compile(element)(scope);
     var map;
     leafletData.getMap().then(function(leafletMap) {
@@ -201,7 +201,7 @@ describe('Directive: leaflet: layers.creation', function() {
         overlays: {},
       },
     });
-    var element = angular.element('<leaflet layers="layers"></leaflet>');
+    var element = angular.element('<leaflet lf-layers="layers"></leaflet>');
     element = $compile(element)(scope);
     leafletData.getLayers().then(function(layers) {
       expect(Object.keys(layers.baselayers).length).toEqual(2);
@@ -296,7 +296,7 @@ describe('Directive: leaflet: layers.creation', function() {
         overlays: {},
       },
     });
-    var element = angular.element('<leaflet layers="layers"></leaflet>');
+    var element = angular.element('<leaflet lf-layers="layers"></leaflet>');
     element = $compile(element)(scope);
     leafletData.getLayers().then(function(layers) {
       expect(Object.keys(layers.baselayers).length).toEqual(0);

@@ -190,7 +190,7 @@ describe('Directive: leaflet: layers.watch', function() {
                         type: 'Polygon',
                         coordinates: [[[22.65715, 44.234923], [22.944832, 43.823785], [22.65715, 44.234923]]],
                       },
-                    },],
+                    }, ],
             },
       layerOptions: {
         style: {

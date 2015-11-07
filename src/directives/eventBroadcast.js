@@ -1,4 +1,4 @@
-angular.module('leaflet-directive').directive('eventBroadcast', function(leafletLogger, $rootScope, leafletHelpers, leafletMapEvents, leafletIterators) {
+angular.module('leaflet-directive').directive('lfEvents', function(leafletLogger, $rootScope, leafletHelpers, leafletMapEvents, leafletIterators) {
 
   return {
     restrict: 'A',

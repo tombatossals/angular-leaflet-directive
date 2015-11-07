@@ -12,8 +12,7 @@ module.exports = function(karma) {
         'bower_components/leaflet.vector-markers/dist/Leaflet.vector-markers.js',
         'bower_components/Leaflet.PolylineDecorator/leaflet.polylineDecorator.js',
         'dist/angular-leaflet-directive.js',
-        'test/unit/*.js',
-        'test/unit/**/marker*.js',
+        'test/unit/**/*.js',
     ],
 
     // Frameworks

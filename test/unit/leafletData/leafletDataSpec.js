@@ -11,18 +11,17 @@
     $q = geojsonData = mainLayers = leafletHelpers = leafletData = $rootScope = $compile = void 0;
     beforeEach(function() {
       module('leaflet-directive');
-      return inject(function(_$compile_, _$rootScope_, _$timeout_, _leafletData_, _leafletHelpers_, _$q_) {
+      inject(function(_$compile_, _$rootScope_, _$timeout_, _leafletData_, _leafletHelpers_, _$q_) {
         var $timeout;
         $q = _$q_;
         $compile = _$compile_;
         $rootScope = _$rootScope_;
         leafletData = _leafletData_;
         $timeout = _$timeout_;
-        return window.ngLeafLetTestGlobals.$timeout = $timeout;
       });
     });
 
-    return describe('no mapId', function() {
+    describe('no mapId', function() {
       beforeEach(function() {
         this.knownMarkers = [1, 2, 3];
         this.knownGeoJSON = ['1', '2', '3'];

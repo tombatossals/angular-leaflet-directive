@@ -75,8 +75,9 @@ describe('Directive: leaflet', function() {
             check[origEventName] = true;
           }
 
-          if (mapId)
+          if (mapId) {
             mapId = mapId + '.';
+          }
 
           leafletData.getMap().then(function(map) {
             mapEvents.forEach(function(origEventName) {

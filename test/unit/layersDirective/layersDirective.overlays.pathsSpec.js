@@ -61,7 +61,7 @@ describe('Directive: leaflet: layers.overlays', function() {
         },
       },
     });
-    var element = angular.element('<leaflet layers="layers" paths="paths"></leaflet>');
+    var element = angular.element('<leaflet lf-layers="layers" paths="paths"></leaflet>');
     element = $compile(element)(scope);
     var map;
     leafletData.getMap().then(function(leafletMap) {
@@ -122,7 +122,7 @@ describe('Directive: leaflet: layers.overlays', function() {
         },
       },
     });
-    var element = angular.element('<leaflet layers="layers" paths="paths"></leaflet>');
+    var element = angular.element('<leaflet lf-layers="layers" paths="paths"></leaflet>');
     element = $compile(element)(scope);
     var map;
     leafletData.getMap().then(function(leafletMap) {
@@ -183,7 +183,7 @@ describe('Directive: leaflet: layers.overlays', function() {
         },
       },
     });
-    var element = angular.element('<leaflet layers="layers" paths="paths"></leaflet>');
+    var element = angular.element('<leaflet lf-layers="layers" paths="paths"></leaflet>');
     element = $compile(element)(scope);
     leafletData.getPaths().then(function(paths) {
       expect(Object.keys(paths).length).toEqual(0);

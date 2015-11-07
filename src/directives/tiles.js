@@ -1,12 +1,3 @@
-angular.module('leaflet-directive').directive('tiles', function(leafletLogger) {
-  return {
-    link: function() {
-      leafletLogger.error('The "tiles" markup code is deprecated now. Please ' +
-                 'update your HTML with "lf-tiles" markup attributes.', 'tiles');
-    },
-  };
-});
-
 angular.module('leaflet-directive').directive('lfTiles', function(leafletLogger, leafletData, leafletMapDefaults, leafletHelpers) {
 
   return {

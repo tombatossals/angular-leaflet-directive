@@ -5,8 +5,9 @@ angular.module('leaflet-directive')
     //watchOptions.isDeep is/should be ignored in $watchCollection
     var unWatch = scope[watchFunctionName](thingToWatchStr, function(newValue, oldValue) {
       initCb(newValue, oldValue);
-      if (!watchOptions.doWatch)
-          unWatch();
+      if (!watchOptions.doWatch) {
+        unWatch();
+      }
     }, watchOptions.isDeep);
 
     return unWatch;

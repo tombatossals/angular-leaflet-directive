@@ -1,5 +1,5 @@
 angular.module('leaflet-directive')
-.directive('geojson', function(leafletLogger, $rootScope, leafletData, leafletHelpers,
+.directive('lfGeojson', function(leafletLogger, $rootScope, leafletData, leafletHelpers,
     leafletWatchHelpers, leafletDirectiveControlsHelpers, leafletIterators, leafletGeoJsonEvents) {
   var _maybeWatch = leafletWatchHelpers.maybeWatch;
   var _watchOptions = leafletHelpers.watchOptions;
@@ -47,8 +47,10 @@ angular.module('leaflet-directive')
             hlp.isTruthy(attrs.geojsonNested));
 
         var _clean = function() {
-          if (!leafletGeoJSON)
-              return;
+          if (!leafletGeoJSON) {
+            return;
+          }
+
           var _remove = function(lObject) {
             if (isDefined(lObject) && map.hasLayer(lObject)) {
               map.removeLayer(lObject);
@@ -105,8 +107,10 @@ angular.module('leaflet-directive')
         var _create = function(model) {
           _clean();
           if (isNested) {
-            if (!model || !Object.keys(model).length)
-                return;
+            if (!model || !Object.keys(model).length) {
+              return;
+            }
+
             $it.each(model, function(m, name) {
               //name could be layerName and or groupName
               //for now it is not tied to a layer

@@ -86,8 +86,8 @@ describe('Directive: leaflet', function() {
     });
 
     var elements = [];
-    elements.push(angular.element('<leaflet id="map1" layers="layers1" markers="markers1"></leaflet>'));
-    elements.push(angular.element('<leaflet id="map2" layers="layers2" markers="markers2"></leaflet>'));
+    elements.push(angular.element('<leaflet id="map1" lf-layers="layers1" lf-markers="markers1"></leaflet>'));
+    elements.push(angular.element('<leaflet id="map2" lf-layers="layers2" lf-markers="markers2"></leaflet>'));
 
     var ctrl = [];
     ctrl.push($compile(elements[0])(scope));
@@ -176,8 +176,8 @@ describe('Directive: leaflet', function() {
     });
 
     var elements = [];
-    elements.push(angular.element('<leaflet id="map1" layers="layers1" markers="markers1"></leaflet>'));
-    elements.push(angular.element('<leaflet id="map2" layers="layers2" markers="markers2"></leaflet>'));
+    elements.push(angular.element('<leaflet id="map1" lf-layers="layers1" lf-markers="markers1"></leaflet>'));
+    elements.push(angular.element('<leaflet id="map2" lf-layers="layers2" lf-markers="markers2"></leaflet>'));
 
     var ctrl = [];
     ctrl.push($compile(elements[0])(scope));

@@ -40,7 +40,7 @@ describe('Directive: leaflet', function() {
         zoomAnimation: false,
       },
     });
-    var element = angular.element('<leaflet defaults="defaults" maxbounds="maxbounds"></leaflet>');
+    var element = angular.element('<leaflet lf-defaults="defaults" lf-maxbounds="maxbounds"></leaflet>');
     element = $compile(element)($rootScope);
     var leafletMap;
     leafletData.getMap().then(function(map) {

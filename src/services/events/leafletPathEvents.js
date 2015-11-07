@@ -13,8 +13,9 @@ angular.module('leaflet-directive')
   var _genDispatchPathEvent = function(maybeMapId, eventName, logic, leafletScope, lObject, name, model, layerName) {
     maybeMapId = maybeMapId || '';
 
-    if (maybeMapId)
+    if (maybeMapId) {
       maybeMapId = '.' + maybeMapId;
+    }
 
     return function(e) {
       var broadcastName = 'leafletDirectivePath' + maybeMapId + '.' + eventName;

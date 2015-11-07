@@ -49,8 +49,10 @@ angular.module('leaflet-directive').directive('lfBounds', function(leafletLogger
 
         var lastNominatimQuery;
         leafletScope.$watch('bounds', function(bounds) {
-          if (scope.settingBoundsFromLeaflet)
-              return;
+          if (scope.settingBoundsFromLeaflet) {
+            return;
+          }
+
           if (isDefined(bounds.address) && bounds.address !== lastNominatimQuery) {
             scope.settingBoundsFromScope = true;
             nominatimService.query(bounds.address, attrs.id).then(function(data) {

@@ -7,7 +7,6 @@ angular.module('leaflet-directive')
 
   var EventsHelper = function(rootBroadcastName, lObjectType) {
     this.rootBroadcastName = rootBroadcastName;
-    leafletLogger.debug('LeafletEventsHelpersFactory: lObjectType: ' + lObjectType + 'rootBroadcastName: ' + rootBroadcastName);
 
     //used to path/key out certain properties based on the type , "markers", "geojson"
     this.lObjectType = lObjectType;
@@ -37,8 +36,9 @@ angular.module('leaflet-directive')
     var _this = this;
 
     maybeMapId = maybeMapId || '';
-    if (maybeMapId)
+    if (maybeMapId) {
       maybeMapId = '.' + maybeMapId;
+    }
 
     return function(e) {
       var broadcastName = _this.rootBroadcastName + maybeMapId + '.' + eventName;
@@ -55,8 +55,9 @@ angular.module('leaflet-directive')
         modelName: modelName,
         model: model,
       };
-      if (isDefined(layerName))
-          angular.extend(toSend, {layerName: layerName});
+      if (isDefined(layerName)) {
+        angular.extend(toSend, {layerName: layerName});
+      }
 
       if (logic === 'emit') {
         scope.$emit(broadcastName, toSend);
@@ -91,19 +92,23 @@ angular.module('leaflet-directive')
         if (isDefined(leafletScope.eventBroadcast[this.lObjectType].logic)) {
           // We take care of possible propagation logic
           if (leafletScope.eventBroadcast[_this.lObjectType].logic !== 'emit' &&
-              leafletScope.eventBroadcast[_this.lObjectType].logic !== 'broadcast')
-                  leafletLogger.warn('Available event propagation logic are: \'emit\' or \'broadcast\'.');
+              leafletScope.eventBroadcast[_this.lObjectType].logic !== 'broadcast') {
+            leafletLogger.warn('Available event propagation logic are: \'emit\' or \'broadcast\'.');
+          }
         }
 
         // Enable / Disable
         var eventsEnable = false;
         var eventsDisable = false;
         if (isDefined(leafletScope.eventBroadcast[_this.lObjectType].enable) &&
-            isArray(leafletScope.eventBroadcast[_this.lObjectType].enable))
-                eventsEnable = true;
+            isArray(leafletScope.eventBroadcast[_this.lObjectType].enable)) {
+          eventsEnable = true;
+        }
+
         if (isDefined(leafletScope.eventBroadcast[_this.lObjectType].disable) &&
-            isArray(leafletScope.eventBroadcast[_this.lObjectType].disable))
-                eventsDisable = true;
+            isArray(leafletScope.eventBroadcast[_this.lObjectType].disable)) {
+          eventsDisable = true;
+        }
 
         if (eventsEnable && eventsDisable) {
           // Both are active, this is an error

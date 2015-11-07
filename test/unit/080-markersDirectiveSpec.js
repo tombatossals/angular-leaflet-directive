@@ -11,43 +11,46 @@ describe('Directive: leaflet', function() {
   var leafletHelpers;
   var mainLayers;
   var mainMarkers;
+  var scope;
 
   mainLayers = mainMarkers = leafletHelpers = leafletData = $rootScope = $compile = void 0;
   beforeEach(module('leaflet-directive'));
   beforeEach(inject(function(_$compile_, _$rootScope_, _$timeout_, _leafletData_, _leafletHelpers_) {
-      var $timeout;
-      $compile = _$compile_;
-      $rootScope = _$rootScope_;
-      leafletData = _leafletData_;
-      leafletHelpers = _leafletHelpers_;
-      $timeout = _$timeout_;
-    }));
+    var $timeout;
+    $compile = _$compile_;
+    $rootScope = _$rootScope_;
+    leafletData = _leafletData_;
+    leafletHelpers = _leafletHelpers_;
+    $timeout = _$timeout_;
+
+    scope = $rootScope.$new();
+  }));
 
   beforeEach(function() {
-      mainMarkers = {
-        paris: {
-          lat: 0.966,
-          lng: 2.02,
-        },
-        madrid: {
-          lat: 2.02,
-          lng: 4.04,
-        },
-      };
-      mainLayers = {
-        baselayers: {
-          osm: {
-            name: 'OpenStreetMap',
-            type: 'xyz',
-            url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-            layerOptions: {
-              subdomains: ['a', 'b', 'c'],
-              attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-              continuousWorld: true,
-            },
+    mainMarkers = {
+      paris: {
+        lat: 0.966,
+        lng: 2.02,
+      },
+      madrid: {
+        lat: 2.02,
+        lng: 4.04,
+      },
+    };
+    mainLayers = {
+      baselayers: {
+        osm: {
+          name: 'OpenStreetMap',
+          type: 'xyz',
+          url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+          layerOptions: {
+            subdomains: ['a', 'b', 'c'],
+            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            continuousWorld: true,
           },
         },
-        overlays: {
+      },
+      overlays: {
           cars: {
             name: 'cars',
             type: 'group',
@@ -59,12 +62,12 @@ describe('Directive: leaflet', function() {
             visible: false,
           },
         },
-      };
-    });
+    };
+  });
 
   afterEach(inject(function($rootScope) {
-      $rootScope.$apply();
-    }));
+    $rootScope.$apply();
+  }));
 
   it('should create main marker on the map', function() {
       var element;
@@ -73,14 +76,14 @@ describe('Directive: leaflet', function() {
         lng: 2.02,
       };
 
-      angular.extend($rootScope, {
+      angular.extend(scope, {
         markers: {
           mainMarker: mainMarker,
         },
       });
-      element = angular.element('<leaflet markers="markers"></leaflet>');
-      element = $compile(element)($rootScope);
-      $rootScope.$digest();
+      element = angular.element('<leaflet lf-markers="markers"></leaflet>');
+      element = $compile(element)(scope);
+      scope.$digest();
       leafletData.getMarkers().then(function(leafletMarkers) {
         var leafletMainMarker;
         leafletMainMarker = leafletMarkers.mainMarker;
@@ -117,7 +120,7 @@ describe('Directive: leaflet', function() {
         angular.extend($rootScope, {
           markers: markers1,
         });
-        element = angular.element('<leaflet markers="markers"></leaflet>');
+        element = angular.element('<leaflet lf-markers="markers"></leaflet>');
         element = $compile(element)($rootScope);
         $rootScope.$digest();
         leafletData.getMarkers().then(function(leafletMarkers) {
@@ -154,7 +157,7 @@ describe('Directive: leaflet', function() {
             mainMarker = preRunnerRet ? preRunnerRet : mainMarker;
           }
 
-          element = angular.element('<leaflet markers="markers" markers-nested="true"></leaflet>');
+          element = angular.element('<leaflet lf-markers="markers" markers-nested="true"></leaflet>');
           element = $compile(element)($rootScope);
           $rootScope.$digest();
           leafletData.getMarkers().then(function(leafletMarkers) {
@@ -194,60 +197,64 @@ describe('Directive: leaflet', function() {
     });
 
   it('should bind popup to main marker if message is given', function() {
-      var element;
-      var marker = {
-        lat: 0.966,
-        lng: 2.02,
-        message: 'this is paris',
-      };
+    var element;
+    var marker = {
+      lat: 0.966,
+      lng: 2.02,
+      message: 'this is paris',
+    };
 
-      angular.extend($rootScope, {
-        markers: {
-          marker: marker,
-        },
-      });
-      element = angular.element('<leaflet markers="markers"></leaflet>');
-      element = $compile(element)($rootScope);
-      $rootScope.$digest();
-      leafletData.getMarkers().then(function(leafletMarkers) {
-        var leafletMainMarker;
-        leafletMainMarker = leafletMarkers.marker;
-        expect(leafletMainMarker._popup._content).toEqual('this is paris');
-      });
+    angular.extend($rootScope, {
+      markers: {
+        marker: marker,
+      },
     });
 
-  it('message should be compiled if angular template is given', function() {
-      var element;
+    element = angular.element('<leaflet lf-markers="markers"></leaflet>');
+    element = $compile(element)($rootScope);
+    $rootScope.$digest();
+    leafletData.getMarkers().then(function(leafletMarkers) {
       var leafletMainMarker;
-      var marker = {
-        lat: 0.966,
-        lng: 2.02,
-        message: '<p>{{model.color}}</p>',
-        focus: true,
-      };
-
-      angular.extend($rootScope, {
-        markers: {
-          marker: marker,
-        },
-      }, {
-        model: {
-          color: 'blue',
-        },
-      });
-      element = angular.element('<leaflet markers="markers"></leaflet>');
-      element = $compile(element)($rootScope);
-      $rootScope.$digest();
-      leafletMainMarker = void 0;
-      leafletData.getMarkers().then(function(leafletMarkers) {
-        leafletMainMarker = leafletMarkers.marker;
-      });
-
-      $rootScope.$digest();
-      leafletMainMarker.openPopup();
-      $rootScope.$digest();
-      expect(leafletMainMarker._popup._contentNode.innerHTML).toEqual('<p class="ng-binding">blue</p>');
+      leafletMainMarker = leafletMarkers.marker;
+      expect(leafletMainMarker._popup._content).toEqual('this is paris');
     });
+  });
+
+  fit('message should be compiled if angular template is given', function() {
+    angular.extend(scope, {
+      markers: {
+        marker: {
+          lat: 0.966,
+          lng: 2.02,
+          message: '<p>{{model.color}}</p>',
+          focus: true,
+        },
+      },
+      model: {
+        color: 'blue',
+      },
+    });
+
+    var element = angular.element('<leaflet lf-markers="markers"></leaflet>');
+    element = $compile(element)(scope);
+    scope.$digest();
+
+    var leafletMap;
+    leafletData.getMap().then(function(map) {
+      leafletMap = map;
+    });
+
+    scope.$digest();
+    var leafletMainMarker;
+    leafletData.getMarkers().then(function(leafletMarkers) {
+      leafletMainMarker = leafletMarkers.marker;
+    });
+
+    scope.$digest();
+    leafletMainMarker.openPopup();
+    scope.$digest();
+    expect(leafletMainMarker._popup._contentNode.innerHTML).toEqual('<p class="ng-binding">blue</p>');
+  });
 
   it('message should be compiled in specified scope', function() {
       var arbitraryIsolateScope;
@@ -275,7 +282,7 @@ describe('Directive: leaflet', function() {
           marker: marker,
         },
       });
-      element = angular.element('<leaflet markers="markers"></leaflet>');
+      element = angular.element('<leaflet lf-markers="markers"></leaflet>');
       element = $compile(element)($rootScope);
       $rootScope.$digest();
       leafletMainMarker = void 0;
@@ -323,7 +330,7 @@ describe('Directive: leaflet', function() {
           marker: marker,
         },
       });
-      element = angular.element('<leaflet markers="markers"></leaflet>');
+      element = angular.element('<leaflet lf-markers="markers"></leaflet>');
       $compile(element)($rootScope);
       $rootScope.$digest();
       leafletData.getMarkers().then(function(leafletMarkers) {
@@ -346,7 +353,7 @@ describe('Directive: leaflet', function() {
       angular.extend($rootScope, {
         markers: mainMarkers,
       });
-      element = angular.element('<leaflet markers="markers"></leaflet>');
+      element = angular.element('<leaflet lf-markers="markers"></leaflet>');
       element = $compile(element)($rootScope);
       $rootScope.$digest();
       leafletData.getMarkers().then(function(leafletMarkers) {
@@ -366,7 +373,7 @@ describe('Directive: leaflet', function() {
           angular.extend($rootScope, {
             markers: mainMarkers,
           });
-          element = angular.element('<leaflet markers="markers"></leaflet>');
+          element = angular.element('<leaflet lf-markers="markers"></leaflet>');
           element = $compile(element)($rootScope);
           map = void 0;
           map = leafletData.getMap().then(function(leafletMap) {
@@ -392,7 +399,7 @@ describe('Directive: leaflet', function() {
           angular.extend($rootScope, {
             markers: mainMarkers,
           });
-          element = angular.element('<leaflet markers="markers"></leaflet>');
+          element = angular.element('<leaflet lf-markers="markers"></leaflet>');
           element = $compile(element)($rootScope);
           map = void 0;
           leafletData.getMap().then(function(leafletMap) {
@@ -418,7 +425,7 @@ describe('Directive: leaflet', function() {
           angular.extend($rootScope, {
             markers: mainMarkers,
           });
-          element = angular.element('<leaflet markers="markers"></leaflet>');
+          element = angular.element('<leaflet lf-markers="markers"></leaflet>');
           element = $compile(element)($rootScope);
           map = void 0;
           leafletData.getMap().then(function(leafletMap) {
@@ -444,7 +451,7 @@ describe('Directive: leaflet', function() {
           angular.extend($rootScope, {
             markers: mainMarkers,
           });
-          element = angular.element('<leaflet markers="markers"></leaflet>');
+          element = angular.element('<leaflet lf-markers="markers"></leaflet>');
           element = $compile(element)($rootScope);
           map = void 0;
           leafletData.getMap().then(function(leafletMap) {
@@ -470,7 +477,7 @@ describe('Directive: leaflet', function() {
           angular.extend($rootScope, {
             markers: mainMarkers,
           });
-          element = angular.element('<leaflet markers="markers"></leaflet>');
+          element = angular.element('<leaflet lf-markers="markers"></leaflet>');
           element = $compile(element)($rootScope);
           map = void 0;
           leafletData.getMap().then(function(leafletMap) {
@@ -496,7 +503,7 @@ describe('Directive: leaflet', function() {
           angular.extend($rootScope, {
             markers: mainMarkers,
           });
-          element = angular.element('<leaflet markers="markers"></leaflet>');
+          element = angular.element('<leaflet lf-markers="markers"></leaflet>');
           element = $compile(element)($rootScope);
           map = void 0;
           leafletData.getMap().then(function(leafletMap) {
@@ -522,7 +529,7 @@ describe('Directive: leaflet', function() {
           angular.extend($rootScope, {
             markers: mainMarkers,
           });
-          element = angular.element('<leaflet markers="markers"></leaflet>');
+          element = angular.element('<leaflet lf-markers="markers"></leaflet>');
           element = $compile(element)($rootScope);
           map = void 0;
           leafletData.getMap().then(function(leafletMap) {
@@ -548,7 +555,7 @@ describe('Directive: leaflet', function() {
           angular.extend($rootScope, {
             markers: mainMarkers,
           });
-          element = angular.element('<leaflet markers="markers"></leaflet>');
+          element = angular.element('<leaflet lf-markers="markers"></leaflet>');
           element = $compile(element)($rootScope);
           map = void 0;
           leafletData.getMap().then(function(leafletMap) {
@@ -575,42 +582,43 @@ describe('Directive: leaflet', function() {
           var overlays;
           mainMarkers.paris.layer = 'cars';
           mainMarkers.madrid.layer = 'trucks';
-          angular.extend($rootScope, {
+          angular.extend(scope, {
             markers: mainMarkers,
             layers: mainLayers,
           });
-          element = angular.element('<leaflet markers="markers" layers="layers"></leaflet>');
-          element = $compile(element)($rootScope);
+          element = angular.element('<leaflet lf-markers="markers" lf-layers="layers"></leaflet>');
+          element = $compile(element)(scope);
           map = void 0;
           leafletData.getMap().then(function(leafletMap) {
             map = leafletMap;
           });
 
+          scope.$digest();
           markers = void 0;
           leafletData.getMarkers().then(function(leafletMarkers) {
             markers = leafletMarkers;
           });
 
-          $rootScope.$digest();
+          scope.$digest();
           layers = void 0;
           leafletData.getLayers().then(function(leafletLayers) {
             layers = leafletLayers;
           });
 
-          $rootScope.$digest();
+          scope.$digest();
           overlays = layers.overlays;
           expect(map.hasLayer(markers.madrid)).toBe(false);
-          $rootScope.$digest();
+          scope.$digest();
           expect(overlays.trucks.hasLayer(markers.madrid)).toBe(true);
           mainMarkers.madrid.lng = 'not a number :P';
-          $rootScope.$digest();
+          scope.$digest();
           expect(map.hasLayer(markers.madrid)).toBe(false);
           expect(overlays.trucks.hasLayer(markers.madrid)).toBe(false);
-          $rootScope.$digest();
+          scope.$digest();
           expect(map.hasLayer(markers.paris)).toBe(true);
           expect(overlays.cars.hasLayer(markers.paris)).toBe(true);
           mainMarkers.paris.lat = 'not a number :P';
-          $rootScope.$digest();
+          scope.$digest();
           expect(map.hasLayer(markers.paris)).toBe(false);
           expect(overlays.cars.hasLayer(markers.paris)).toBe(false);
         });
@@ -629,7 +637,7 @@ describe('Directive: leaflet', function() {
             markers: mainMarkers,
             layers: mainLayers,
           });
-          element = angular.element('<leaflet markers="markers" layers="layers"></leaflet>');
+          element = angular.element('<leaflet lf-markers="markers" lf-layers="layers"></leaflet>');
           element = $compile(element)($rootScope);
           map = void 0;
           leafletData.getMap().then(function(leafletMap) {
@@ -672,7 +680,7 @@ describe('Directive: leaflet', function() {
         angular.extend($rootScope, {
           markers: mainMarkers,
         });
-        element = angular.element('<leaflet markers="markers"></leaflet>');
+        element = angular.element('<leaflet lf-markers="markers"></leaflet>');
         element = $compile(element)($rootScope);
         map = void 0;
         leafletData.getMap().then(function(leafletMap) {
@@ -720,7 +728,7 @@ describe('Directive: leaflet', function() {
           markers: mainMarkers,
           layers: mainLayers,
         });
-        element = angular.element('<leaflet markers="markers" layers="layers"></leaflet>');
+        element = angular.element('<leaflet lf-markers="markers" lf-layers="layers"></leaflet>');
         element = $compile(element)($rootScope);
         map = void 0;
         leafletData.getMap().then(function(leafletMap) {
@@ -771,7 +779,7 @@ describe('Directive: leaflet', function() {
       angular.extend($rootScope, {
         markers: mainMarkers,
       });
-      element = angular.element('<leaflet markers="markers"></leaflet>');
+      element = angular.element('<leaflet lf-markers="markers"></leaflet>');
       element = $compile(element)($rootScope);
       map = void 0;
       leafletData.getMap().then(function(leafletMap) {
@@ -834,7 +842,7 @@ describe('Directive: leaflet', function() {
         var element;
         var icon;
         var markers;
-        element = angular.element('<leaflet markers="markers" watchMarkers="true"></leaflet>');
+        element = angular.element('<leaflet lf-markers="markers" watchMarkers="true"></leaflet>');
         element = $compile(element)(scope);
         markers = void 0;
         leafletData.getMarkers().then(function(leafletMarkers) {
@@ -852,7 +860,7 @@ describe('Directive: leaflet', function() {
     it('does not watch on markers when watch is disabled', function() {
         var element;
         var markers;
-        element = angular.element('<leaflet markers="markers" watch-markers="false"></leaflet>');
+        element = angular.element('<leaflet lf-markers="markers" watch-markers="false"></leaflet>');
         element = $compile(element)(scope);
         markers = void 0;
         leafletData.getMarkers().then(function(leafletMarkers) {

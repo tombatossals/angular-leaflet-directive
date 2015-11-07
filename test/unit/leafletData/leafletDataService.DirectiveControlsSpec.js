@@ -18,7 +18,6 @@
         leafletData = _leafletData_;
         leafletHelpers = _leafletHelpers_;
         $timeout = _$timeout_;
-        return window.ngLeafLetTestGlobals.$timeout = $timeout;
       });
 
       mainMarkers = {
@@ -62,7 +61,7 @@
           preRunnerRet = preRunnerCb();
         }
 
-        element = angular.element('<leaflet markers=\'markers\' geojson=\'geojson\'></leaflet>');
+        element = angular.element('<leaflet lf-markers="markers" lf-geojson="geojson"></leaflet>');
         element = $compile(element)($rootScope);
         $rootScope.$digest();
         return leafletData.getDirectiveControls().then(function(controls) {

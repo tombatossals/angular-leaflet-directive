@@ -1,153 +1,160 @@
-angular.module('leaflet-directive').directive('markers',
-    function(leafletLogger, $rootScope, $q, leafletData, leafletHelpers, leafletMapDefaults,
-              leafletMarkersHelpers, leafletMarkerEvents, leafletIterators, leafletWatchHelpers,
-              leafletDirectiveControlsHelpers) {
-      //less terse vars to helpers
-      var isDefined = leafletHelpers.isDefined;
-      var Helpers = leafletHelpers;
-      var isString = leafletHelpers.isString;
-      var addMarkerWatcher = leafletMarkersHelpers.addMarkerWatcher;
-      var updateMarker = leafletMarkersHelpers.updateMarker;
-      var listenMarkerEvents = leafletMarkersHelpers.listenMarkerEvents;
-      var addMarkerToGroup = leafletMarkersHelpers.addMarkerToGroup;
-      var createMarker = leafletMarkersHelpers.createMarker;
-      var deleteMarker = leafletMarkersHelpers.deleteMarker;
-      var $it = leafletIterators;
-      var _markersWatchOptions = leafletHelpers.watchOptions;
-      var maybeWatch = leafletWatchHelpers.maybeWatch;
-      var extendDirectiveControls = leafletDirectiveControlsHelpers.extend;
+angular.module('leaflet-directive').directive('lfMarkers', function(leafletLogger, $rootScope, $q, leafletData, leafletHelpers, leafletMapDefaults, leafletMarkersHelpers, leafletMarkerEvents, leafletIterators, leafletWatchHelpers, leafletDirectiveControlsHelpers) {
+  var isDefined = leafletHelpers.isDefined;
+  var Helpers = leafletHelpers;
+  var isString = leafletHelpers.isString;
+  var addMarkerWatcher = leafletMarkersHelpers.addMarkerWatcher;
+  var updateMarker = leafletMarkersHelpers.updateMarker;
+  var listenMarkerEvents = leafletMarkersHelpers.listenMarkerEvents;
+  var addMarkerToGroup = leafletMarkersHelpers.addMarkerToGroup;
+  var createMarker = leafletMarkersHelpers.createMarker;
+  var deleteMarker = leafletMarkersHelpers.deleteMarker;
+  var $it = leafletIterators;
+  var _markersWatchOptions = leafletHelpers.watchOptions;
+  var maybeWatch = leafletWatchHelpers.maybeWatch;
+  var extendDirectiveControls = leafletDirectiveControlsHelpers.extend;
 
-      var _getLMarker = function(leafletMarkers, name, maybeLayerName) {
-        if (!Object.keys(leafletMarkers).length) return;
+  var _getLMarker = function(leafletMarkers, name, maybeLayerName) {
+    if (!Object.keys(leafletMarkers).length) {
+      return;
+    }
+
+    if (maybeLayerName && isString(maybeLayerName)) {
+      if (!leafletMarkers[maybeLayerName] || !Object.keys(leafletMarkers[maybeLayerName]).length) {
+        return;
+      }
+
+      return leafletMarkers[maybeLayerName][name];
+    }
+
+    return leafletMarkers[name];
+  };
+
+  var _setLMarker = function(lObject, leafletMarkers, name, maybeLayerName) {
         if (maybeLayerName && isString(maybeLayerName)) {
-          if (!leafletMarkers[maybeLayerName] || !Object.keys(leafletMarkers[maybeLayerName]).length)
-              return;
-          return leafletMarkers[maybeLayerName][name];
+          if (!isDefined(leafletMarkers[maybeLayerName])) {
+            leafletMarkers[maybeLayerName] = {};
+          }
+
+          leafletMarkers[maybeLayerName][name] = lObject;
+        } else {
+          leafletMarkers[name] = lObject;
         }
 
-        return leafletMarkers[name];
-      };
-
-      var _setLMarker = function(lObject, leafletMarkers, name, maybeLayerName) {
-        if (maybeLayerName && isString(maybeLayerName)) {
-          if (!isDefined(leafletMarkers[maybeLayerName]))
-              leafletMarkers[maybeLayerName] = {};
-          leafletMarkers[maybeLayerName][name] = lObject;
-        } else
-            leafletMarkers[name] = lObject;
         return lObject;
       };
 
-      var _maybeAddMarkerToLayer = function(layerName, layers, model, marker, doIndividualWatch, map) {
+  var _maybeAddMarkerToLayer = function(layerName, layers, model, marker, doIndividualWatch, map) {
 
-        if (!isString(layerName)) {
-          leafletLogger.error('A layername must be a string', 'markers');
-          return false;
+    if (!isString(layerName)) {
+      leafletLogger.error('A layername must be a string', 'markers');
+      return false;
+    }
+
+    if (!isDefined(layers)) {
+      leafletLogger.error('You must add layers to the directive if the markers are going to use this functionality.', 'markers');
+      return false;
+    }
+
+    if (!isDefined(layers.overlays) || !isDefined(layers.overlays[layerName])) {
+      leafletLogger.error('A marker can only be added to a layer of type "group"', 'markers');
+      return false;
+    }
+
+    var layerGroup = layers.overlays[layerName];
+    if (!(layerGroup instanceof L.LayerGroup || layerGroup instanceof L.FeatureGroup)) {
+      leafletLogger.error('Adding a marker to an overlay needs a overlay of the type "group" or "featureGroup"', 'markers');
+      return false;
+    }
+
+    // The marker goes to a correct layer group, so first of all we add it
+    layerGroup.addLayer(marker);
+
+    // The marker is automatically added to the map depending on the visibility
+    // of the layer, so we only have to open the popup if the marker is in the map
+    if (!doIndividualWatch && map.hasLayer(marker) && model.focus === true) {
+      marker.openPopup();
+    }
+
+    return true;
+  };
+
+  //TODO: move to leafletMarkersHelpers??? or make a new class/function file (leafletMarkersHelpers is large already)
+  var _addMarkers = function(mapId, markersToRender, oldModels, map, layers, leafletMarkers, leafletScope,
+                             watchOptions, maybeLayerName, skips) {
+    for (var newName in markersToRender) {
+      if (skips[newName]) {
+        continue;
+      }
+
+      if (newName.search('-') !== -1) {
+        leafletLogger.error('The marker can\'t use a "-" on his key name: "' + newName + '".', 'markers');
+        continue;
+      }
+
+      var model = Helpers.copy(markersToRender[newName]);
+      var pathToMarker = Helpers.getObjectDotPath(maybeLayerName ? [maybeLayerName, newName] : [newName]);
+      var maybeLMarker = _getLMarker(leafletMarkers, newName, maybeLayerName);
+      if (!isDefined(maybeLMarker)) {
+        //(nmccready) very important to not have model changes when lObject is changed
+        //this might be desirable in some cases but it causes two-way binding to lObject which is not ideal
+        //if it is left as the reference then all changes from oldModel vs newModel are ignored
+        //see _destroy (where modelDiff becomes meaningless if we do not copy here)
+        var marker = createMarker(model);
+        var layerName = (model ? model.layer : undefined) || maybeLayerName; //original way takes pref
+        if (!isDefined(marker)) {
+          leafletLogger.error('Received invalid data on the marker ' + newName, 'markers');
+          continue;
         }
 
-        if (!isDefined(layers)) {
-          leafletLogger.error('You must add layers to the directive if the markers are going to use this functionality.', 'markers');
-          return false;
+        _setLMarker(marker, leafletMarkers, newName, maybeLayerName);
+
+        // Bind message
+        if (isDefined(model.message)) {
+          marker.bindPopup(model.message, model.popupOptions);
         }
 
-        if (!isDefined(layers.overlays) || !isDefined(layers.overlays[layerName])) {
-          leafletLogger.error('A marker can only be added to a layer of type "group"', 'markers');
-          return false;
+        // Add the marker to a cluster group if needed
+        if (isDefined(model.group)) {
+          var groupOptions = isDefined(model.groupOption) ? model.groupOption : null;
+          addMarkerToGroup(marker, model.group, groupOptions, map);
         }
 
-        var layerGroup = layers.overlays[layerName];
-        if (!(layerGroup instanceof L.LayerGroup || layerGroup instanceof L.FeatureGroup)) {
-          leafletLogger.error('Adding a marker to an overlay needs a overlay of the type "group" or "featureGroup"', 'markers');
-          return false;
+        // Show label if defined
+        if (Helpers.LabelPlugin.isLoaded() && isDefined(model.label) && isDefined(model.label.message)) {
+          marker.bindLabel(model.label.message, model.label.options);
         }
 
-        // The marker goes to a correct layer group, so first of all we add it
-        layerGroup.addLayer(marker);
+        // Check if the marker should be added to a layer
+        if (isDefined(model) && (isDefined(model.layer) || isDefined(maybeLayerName))) {
 
-        // The marker is automatically added to the map depending on the visibility
-        // of the layer, so we only have to open the popup if the marker is in the map
-        if (!doIndividualWatch && map.hasLayer(marker) && model.focus === true) {
-          marker.openPopup();
-        }
-
-        return true;
-      };
-
-      //TODO: move to leafletMarkersHelpers??? or make a new class/function file (leafletMarkersHelpers is large already)
-      var _addMarkers = function(mapId, markersToRender, oldModels, map, layers, leafletMarkers, leafletScope,
-                                 watchOptions, maybeLayerName, skips) {
-        for (var newName in markersToRender) {
-          if (skips[newName])
-              continue;
-
-          if (newName.search('-') !== -1) {
-            leafletLogger.error('The marker can\'t use a "-" on his key name: "' + newName + '".', 'markers');
-            continue;
+          var pass = _maybeAddMarkerToLayer(layerName, layers, model, marker,
+              watchOptions.individual.doWatch, map);
+          if (!pass) {
+            continue; //something went wrong move on in the loop
           }
-
-          var model = Helpers.copy(markersToRender[newName]);
-          var pathToMarker = Helpers.getObjectDotPath(maybeLayerName ? [maybeLayerName, newName] : [newName]);
-          var maybeLMarker = _getLMarker(leafletMarkers, newName, maybeLayerName);
-          if (!isDefined(maybeLMarker)) {
-            //(nmccready) very important to not have model changes when lObject is changed
-            //this might be desirable in some cases but it causes two-way binding to lObject which is not ideal
-            //if it is left as the reference then all changes from oldModel vs newModel are ignored
-            //see _destroy (where modelDiff becomes meaningless if we do not copy here)
-            var marker = createMarker(model);
-            var layerName = (model ? model.layer : undefined) || maybeLayerName; //original way takes pref
-            if (!isDefined(marker)) {
-              leafletLogger.error('Received invalid data on the marker ' + newName, 'markers');
-              continue;
-            }
-
-            _setLMarker(marker, leafletMarkers, newName, maybeLayerName);
-
-            // Bind message
-            if (isDefined(model.message)) {
-              marker.bindPopup(model.message, model.popupOptions);
-            }
-
-            // Add the marker to a cluster group if needed
-            if (isDefined(model.group)) {
-              var groupOptions = isDefined(model.groupOption) ? model.groupOption : null;
-              addMarkerToGroup(marker, model.group, groupOptions, map);
-            }
-
-            // Show label if defined
-            if (Helpers.LabelPlugin.isLoaded() && isDefined(model.label) && isDefined(model.label.message)) {
-              marker.bindLabel(model.label.message, model.label.options);
-            }
-
-            // Check if the marker should be added to a layer
-            if (isDefined(model) && (isDefined(model.layer) || isDefined(maybeLayerName))) {
-
-              var pass = _maybeAddMarkerToLayer(layerName, layers, model, marker,
-                  watchOptions.individual.doWatch, map);
-              if (!pass)
-                  continue; //something went wrong move on in the loop
-            } else if (!isDefined(model.group)) {
-              // We do not have a layer attr, so the marker goes to the map layer
-              map.addLayer(marker);
-              if (!watchOptions.individual.doWatch && model.focus === true) {
-                marker.openPopup();
-              }
-            }
-
-            if (watchOptions.individual.doWatch) {
-              addMarkerWatcher(marker, pathToMarker, leafletScope, layers, map,
-                  watchOptions.individual.isDeep);
-            }
-
-            listenMarkerEvents(marker, model, leafletScope, watchOptions.individual.doWatch, map);
-            leafletMarkerEvents.bindEvents(mapId, marker, pathToMarker, model, leafletScope, layerName);
-          }          else {
-            var oldModel = isDefined(oldModel) ? oldModels[newName] : undefined;
-            updateMarker(model, oldModel, maybeLMarker, pathToMarker, leafletScope, layers, map);
+        } else if (!isDefined(model.group)) {
+          // We do not have a layer attr, so the marker goes to the map layer
+          map.addLayer(marker);
+          if (!watchOptions.individual.doWatch && model.focus === true) {
+            marker.openPopup();
           }
         }
-      };
 
-      var _seeWhatWeAlreadyHave = function(markerModels, oldMarkerModels, lMarkers, isEqual, cb) {
+        if (watchOptions.individual.doWatch) {
+          addMarkerWatcher(marker, pathToMarker, leafletScope, layers, map,
+              watchOptions.individual.isDeep);
+        }
+
+        listenMarkerEvents(marker, model, leafletScope, watchOptions.individual.doWatch, map);
+        leafletMarkerEvents.bindEvents(mapId, marker, pathToMarker, model, leafletScope, layerName);
+      }          else {
+        var oldModel = isDefined(oldModel) ? oldModels[newName] : undefined;
+        updateMarker(model, oldModel, maybeLMarker, pathToMarker, leafletScope, layers, map);
+      }
+    }
+  };
+
+  var _seeWhatWeAlreadyHave = function(markerModels, oldMarkerModels, lMarkers, isEqual, cb) {
         var hasLogged = false;
         var equals = false;
         var oldMarker;
@@ -172,13 +179,14 @@ angular.module('leaflet-directive').directive('markers',
               !isDefined(markerModels[name]) ||
               !Object.keys(markerModels[name]).length ||
               equals) {
-            if (cb && Helpers.isFunction(cb))
-                cb(newMarker, oldMarker, name);
+            if (cb && Helpers.isFunction(cb)) {
+              cb(newMarker, oldMarker, name);
+            }
           }
         }
       };
 
-      var _destroy = function(markerModels, oldMarkerModels, lMarkers, map, layers) {
+  var _destroy = function(markerModels, oldMarkerModels, lMarkers, map, layers) {
         _seeWhatWeAlreadyHave(markerModels, oldMarkerModels, lMarkers, false,
             function(newMarker, oldMarker, lMarkerName) {
               leafletLogger.debug('Deleting marker: ' + lMarkerName, 'markers');
@@ -187,7 +195,7 @@ angular.module('leaflet-directive').directive('markers',
             });
       };
 
-      var _getNewModelsToSkipp =  function(newModels, oldModels, lMarkers) {
+  var _getNewModelsToSkipp =  function(newModels, oldModels, lMarkers) {
         var skips = {};
         _seeWhatWeAlreadyHave(newModels, oldModels, lMarkers, true,
             function(newMarker, oldMarker, lMarkerName) {
@@ -198,7 +206,7 @@ angular.module('leaflet-directive').directive('markers',
         return skips;
       };
 
-      return {
+  return {
         restrict: 'A',
         scope: false,
         replace: false,
@@ -226,9 +234,10 @@ angular.module('leaflet-directive').directive('markers',
             var watchOptions = leafletScope.markersWatchOptions || _markersWatchOptions;
 
             // backwards compat
-            if (isDefined(attrs.watchMarkers))
-                watchOptions.doWatch = watchOptions.individual.doWatch =
-                    (!isDefined(attrs.watchMarkers) || Helpers.isTruthy(attrs.watchMarkers));
+            if (isDefined(attrs.watchMarkers)) {
+              watchOptions.doWatch = watchOptions.individual.doWatch =
+                  (!isDefined(attrs.watchMarkers) || Helpers.isTruthy(attrs.watchMarkers));
+            }
 
             var isNested = (isDefined(attrs.markersNested) && Helpers.isTruthy(attrs.markersNested));
 
@@ -275,4 +284,4 @@ angular.module('leaflet-directive').directive('markers',
           });
         },
       };
-    });
+});

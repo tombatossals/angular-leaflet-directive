@@ -1,4 +1,4 @@
-angular.module('leaflet-directive').directive('controls', function(leafletLogger, leafletHelpers, leafletControlHelpers) {
+angular.module('leaflet-directive').directive('lfControls', function(leafletLogger, leafletHelpers, leafletControlHelpers) {
 
   return {
     restrict: 'A',

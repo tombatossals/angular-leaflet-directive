@@ -50,7 +50,7 @@ describe('Directive: leaflet: layers.watch.markers', function() {
         },
       },
     });
-    var element = angular.element('<leaflet layers="layers"></leaflet>');
+    var element = angular.element('<leaflet lf-layers="layers"></leaflet>');
     element = $compile(element)(scope);
     var layers;
     leafletData.getLayers().then(function(leafletLayers) {
@@ -130,7 +130,7 @@ describe('Directive: leaflet: layers.watch.markers', function() {
         },
       },
     });
-    var element = angular.element('<leaflet layers="layers"></leaflet>');
+    var element = angular.element('<leaflet lf-layers="layers"></leaflet>');
     element = $compile(element)(scope);
     scope.$digest();
     var layers;
@@ -215,7 +215,7 @@ describe('Directive: leaflet: layers.watch.markers', function() {
         },
       },
     });
-    var element = angular.element('<leaflet layers="layers" markers="markers"></leaflet>');
+    var element = angular.element('<leaflet lf-layers="layers" lf-markers="markers"></leaflet>');
     element = $compile(element)(scope);
     var map;
     leafletData.getMap().then(function(leafletMap) {
@@ -328,7 +328,7 @@ describe('Directive: leaflet: layers.watch.markers', function() {
         },
       },
     });
-    var element = angular.element('<leaflet layers="layers" markers="markers"></leaflet>');
+    var element = angular.element('<leaflet lf-layers="layers" lf-markers="markers"></leaflet>');
     element = $compile(element)(scope);
     var map;
     leafletData.getMap().then(function(leafletMap) {
@@ -386,7 +386,7 @@ describe('Directive: leaflet: layers.watch.markers', function() {
         },
       },
     });
-    var element = angular.element('<leaflet layers="layers"></leaflet>');
+    var element = angular.element('<leaflet lf-layers="layers"></leaflet>');
     element = $compile(element)(scope);
     var map;
     leafletData.getMap().then(function(leafletMap) {
@@ -437,7 +437,7 @@ describe('Directive: leaflet: layers.watch.markers', function() {
         },
       },
     });
-    var element = angular.element('<leaflet layers="layers"></leaflet>');
+    var element = angular.element('<leaflet lf-layers="layers"></leaflet>');
     element = $compile(element)(scope);
     var map;
     leafletData.getMap().then(function(leafletMap) {
@@ -487,7 +487,7 @@ describe('Directive: leaflet: layers.watch.markers', function() {
         },
       },
     });
-    var element = angular.element('<leaflet layers="layers"></leaflet>');
+    var element = angular.element('<leaflet lf-layers="layers"></leaflet>');
     element = $compile(element)(scope);
     var map;
     leafletData.getMap().then(function(leafletMap) {
@@ -547,7 +547,7 @@ describe('Directive: leaflet: layers.watch.markers', function() {
         },
       },
     });
-    var element = angular.element('<leaflet layers="layers"></leaflet>');
+    var element = angular.element('<leaflet lf-layers="layers"></leaflet>');
     element = $compile(element)(scope);
     var map;
     leafletData.getMap().then(function(leafletMap) {
@@ -621,7 +621,7 @@ describe('Directive: leaflet: layers.watch.markers', function() {
         },
       },
     });
-    var element = angular.element('<leaflet layers="layers" markers="markers"></leaflet>');
+    var element = angular.element('<leaflet lf-layers="layers" lf-markers="markers"></leaflet>');
     element = $compile(element)(scope);
     var map;
     leafletData.getMap().then(function(leafletMap) {

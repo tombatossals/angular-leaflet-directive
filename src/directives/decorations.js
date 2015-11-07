@@ -1,4 +1,13 @@
-angular.module('leaflet-directive').directive('decorations', function(leafletLogger, leafletHelpers) {
+angular.module('leaflet-directive').directive('decorations', function(leafletLogger) {
+  return {
+    link: function() {
+      leafletLogger.error('The "decorations" markup code is deprecated now. Please ' +
+                 'update your HTML with "lf-decorations" markup attributes.', 'decorations');
+    },
+  };
+});
+
+angular.module('leaflet-directive').directive('lfDecorations', function(leafletLogger, leafletHelpers) {
 
   return {
     restrict: 'A',

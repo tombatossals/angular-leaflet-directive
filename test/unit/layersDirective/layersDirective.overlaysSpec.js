@@ -39,7 +39,7 @@ describe('Directive: leaflet: layers.overlays', function() {
         },
       },
     });
-    var element = angular.element('<leaflet layers="layers"></leaflet>');
+    var element = angular.element('<leaflet lf-layers="layers"></leaflet>');
     element = $compile(element)(scope);
     leafletData.getLayers().then(function(layers) {
       expect(layers.overlays).not.toBe(null);
@@ -67,7 +67,7 @@ describe('Directive: leaflet: layers.overlays', function() {
         overlays: {},
       },
     });
-    var element = angular.element('<leaflet layers="layers"></leaflet>');
+    var element = angular.element('<leaflet lf-layers="layers"></leaflet>');
     element = $compile(element)(scope);
     leafletData.getLayers().then(function(layers) {
       expect(layers.overlays).not.toBe(null);
@@ -123,7 +123,7 @@ describe('Directive: leaflet: layers.overlays', function() {
     });
 
     scope.$digest();
-    var element = angular.element('<leaflet layers="layers"></leaflet>');
+    var element = angular.element('<leaflet lf-layers="layers"></leaflet>');
     element = $compile(element)(scope);
     leafletData.getLayers().then(function(layers) {
       expect(layers.overlays).not.toBe(null);
@@ -183,7 +183,7 @@ describe('Directive: leaflet: layers.overlays', function() {
 
     scope.$digest();
 
-    var element = angular.element('<leaflet layers="layers"></leaflet>');
+    var element = angular.element('<leaflet lf-layers="layers"></leaflet>');
     element = $compile(element)(scope);
     leafletData.getLayers().then(function(layers) {
       expect(layers.overlays).not.toBe(null);
@@ -221,7 +221,7 @@ describe('Directive: leaflet: layers.overlays', function() {
           },
         },
       });
-      var element = angular.element('<leaflet layers="layers"></leaflet>');
+      var element = angular.element('<leaflet lf-layers="layers"></leaflet>');
       element = $compile(element)(scope);
       var map;
       leafletData.getMap().then(function(leafletMap) {
@@ -266,7 +266,7 @@ describe('Directive: leaflet: layers.overlays', function() {
           },
         },
       });
-      var element = angular.element('<leaflet layers="layers"></leaflet>');
+      var element = angular.element('<leaflet lf-layers="layers"></leaflet>');
       element = $compile(element)(scope);
       var map;
       leafletData.getMap().then(function(leafletMap) {
@@ -317,7 +317,7 @@ describe('Directive: leaflet: layers.overlays', function() {
           },
         },
       });
-      var element = angular.element('<leaflet layers="layers" markers="markers"></leaflet>');
+      var element = angular.element('<leaflet lf-layers="layers" markers="markers"></leaflet>');
       element = $compile(element)(scope);
       var map;
       leafletData.getMap().then(function(leafletMap) {

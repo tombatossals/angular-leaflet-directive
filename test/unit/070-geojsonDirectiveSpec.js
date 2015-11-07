@@ -29,7 +29,7 @@ describe('Directive: geojson', function() {
       angular.extend(scope, {
         geojson: {},
       });
-      element = angular.element('<leaflet geojson="geojson"></leaflet>');
+      element = angular.element('<leaflet lf-geojson="geojson"></leaflet>');
       element = $compile(element)(scope);
       leafletData.getGeoJSON().then(function(geoJSON) {
         return expect(geoJSON).not.toBeDefined();
@@ -79,7 +79,7 @@ describe('Directive: geojson', function() {
           },
         },
       });
-      element = angular.element('<leaflet geojson="geojson"></leaflet>');
+      element = angular.element('<leaflet lf-geojson="geojson"></leaflet>');
       element = $compile(element)(scope);
       leafletData.getGeoJSON().then(function(geoJSON) {
         expect(geoJSON).toBeDefined();
@@ -132,7 +132,7 @@ describe('Directive: geojson', function() {
           },
         },
       });
-      element = angular.element('<leaflet geojson="geojson"></leaflet>');
+      element = angular.element('<leaflet lf-geojson="geojson"></leaflet>');
       element = $compile(element)(scope);
       leafletGeoJSON = void 0;
       leafletMap = void 0;
@@ -215,7 +215,7 @@ describe('Directive: geojson', function() {
             },
           },
         });
-        element = angular.element('<leaflet geojson="geojson" geojson-nested="true"></leaflet>');
+        element = angular.element('<leaflet lf-geojson="geojson" geojson-nested="true"></leaflet>');
         element = $compile(element)(scope);
         leafletData.getGeoJSON().then(function(geoJSON) {
           expect(geoJSON).toBeDefined();
@@ -289,7 +289,7 @@ describe('Directive: geojson', function() {
             },
           },
         });
-        element = angular.element('<leaflet geojson="geojson" geojson-nested="true"></leaflet>');
+        element = angular.element('<leaflet lf-geojson="geojson" geojson-nested="true"></leaflet>');
         element = $compile(element)(scope);
         leafletGeoJSON = void 0;
         leafletMap = void 0;

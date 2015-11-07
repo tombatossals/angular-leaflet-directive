@@ -38,7 +38,7 @@ describe('Directive: leaflet', function() {
       },
     });
 
-    var element = angular.element('<leaflet paths="paths"></leaflet>');
+    var element = angular.element('<leaflet lf-paths="paths"></leaflet>');
     element = $compile(element)(scope);
     scope.$digest();
 
@@ -64,7 +64,7 @@ describe('Directive: leaflet', function() {
         p2: { latlngs: latlngs2 },
       },
     });
-    var element = angular.element('<leaflet paths="paths"></leaflet>');
+    var element = angular.element('<leaflet lf-paths="paths"></leaflet>');
     element = $compile(element)(scope);
     scope.$digest();
     leafletData.getPaths().then(function(paths) {
@@ -94,7 +94,7 @@ describe('Directive: leaflet', function() {
         p1: { latlngs: latlngs },
       },
     });
-    var element = angular.element('<leaflet paths="paths"></leaflet>');
+    var element = angular.element('<leaflet lf-paths="paths"></leaflet>');
     element = $compile(element)(scope);
     scope.$digest();
     leafletData.getPaths().then(function(paths) {
@@ -126,7 +126,7 @@ describe('Directive: leaflet', function() {
         },
       },
     });
-    var element = angular.element('<leaflet paths="paths"></leaflet>');
+    var element = angular.element('<leaflet lf-paths="paths"></leaflet>');
     element = $compile(element)(scope);
     scope.$digest();
     leafletData.getPaths().then(function(paths) {
@@ -152,7 +152,7 @@ describe('Directive: leaflet', function() {
         { lat: 1.02, lng: 3.04 },
     ];
     angular.extend(scope, { paths: { p1: { latlngs: latlngs, type: 'polygon' }}});
-    var element = angular.element('<leaflet paths="paths"></leaflet>');
+    var element = angular.element('<leaflet lf-paths="paths"></leaflet>');
     element = $compile(element)(scope);
 
     scope.$digest();
@@ -185,7 +185,7 @@ describe('Directive: leaflet', function() {
         { lat: 2.02, lng: 4.04 },
     ];
     angular.extend(scope, { paths: { p1: { latlngs: [latlngs1, latlngs2], type: 'multiPolygon' }}});
-    var element = angular.element('<leaflet paths="paths"></leaflet>');
+    var element = angular.element('<leaflet lf-paths="paths"></leaflet>');
     element = $compile(element)(scope);
     scope.$digest();
     leafletData.getPaths().then(function(paths) {
@@ -222,7 +222,7 @@ describe('Directive: leaflet', function() {
         { lat: 1.02, lng: 3.04 },
     ];
     angular.extend(scope, { paths: { p1: { latlngs: latlngs1, type: 'rectangle' }, p2: { latlngs: latlngs2, type: 'rectangle' }}});
-    var element = angular.element('<leaflet paths="paths"></leaflet>');
+    var element = angular.element('<leaflet lf-paths="paths"></leaflet>');
     element = $compile(element)(scope);
     scope.$digest();
     leafletData.getPaths().then(function(paths) {
@@ -259,7 +259,7 @@ describe('Directive: leaflet', function() {
       type: 'circle',
     };
     angular.extend(scope, { paths: { p1: c1, p2: c2 }});
-    var element = angular.element('<leaflet paths="paths"></leaflet>');
+    var element = angular.element('<leaflet lf-paths="paths"></leaflet>');
     element = $compile(element)(scope);
     scope.$digest();
 
@@ -293,7 +293,7 @@ describe('Directive: leaflet', function() {
       type: 'circleMarker',
     };
     angular.extend(scope, { paths: { p1: c1, p2: c2 }});
-    var element = angular.element('<leaflet paths="paths"></leaflet>');
+    var element = angular.element('<leaflet lf-paths="paths"></leaflet>');
     element = $compile(element)(scope);
     scope.$digest();
     leafletData.getPaths().then(function(paths) {
@@ -322,7 +322,7 @@ describe('Directive: leaflet', function() {
         { lat: 1.02, lng: 3.04 },
     ];
     angular.extend(scope, { paths: { p1: { latlngs: latlngs, type: 'polygon', color: 'white', fillColor: 'red' }}});
-    var element = angular.element('<leaflet paths="paths"></leaflet>');
+    var element = angular.element('<leaflet lf-paths="paths"></leaflet>');
     element = $compile(element)(scope);
 
     scope.$digest();
@@ -350,7 +350,7 @@ describe('Directive: leaflet', function() {
         { lat: 1.02, lng: 3.04 },
     ];
     angular.extend(scope, { paths: { p1: { latlngs: latlngs, type: 'polygon', color: 'white', fillColor: 'red' }}});
-    var element = angular.element('<leaflet paths="paths"></leaflet>');
+    var element = angular.element('<leaflet lf-paths="paths"></leaflet>');
     element = $compile(element)(scope);
 
     scope.$digest();

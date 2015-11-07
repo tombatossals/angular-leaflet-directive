@@ -114,8 +114,8 @@
     </script>
   </head>
   <body ng-controller="MarkersTwoMapsEventsController">
-      <leaflet defaults="defaults" event-broadcast="events" lf-center="center" markers="markers" layers="layers" id="global-map" width="100%" height="240px"></leaflet>
-      <leaflet defaults="defaults2" event-broadcast="events2" lf-center="center2" markers="markers2" layers="layers2" id="global-map2" width="100%" height="240px"></leaflet>
+      <leaflet lf-defaults="defaults" lf-events="events" lf-center="center" lf-markers="markers" lf-layers="layers" id="global-map" width="100%" height="240px"></leaflet>
+      <leaflet lf-defaults="defaults2" lf-events="events2" lf-center="center2" lf-markers="markers2" lf-layers="layers2" id="global-map2" width="100%" height="240px"></leaflet>
       <h1>Two maps with markers and events</h1>
       <p>Click on any of the markers to show a popup with a message.</p>
   </body>
