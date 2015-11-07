@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="../bower_components/Leaflet.label/dist/leaflet.label.css" />
     <script>
         var app = angular.module("demoapp", ["leaflet-directive"]);
-        app.controller("PathEventsController", function($scope, $log) {
+        app.controller("PathEventsController", function($scope, leafletLogger) {
             var paths = {};
             $scope.clicked = 0;
 

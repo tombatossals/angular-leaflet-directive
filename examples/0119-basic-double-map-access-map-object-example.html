@@ -14,7 +14,7 @@
     </style>
     <script>
         var app = angular.module("demoapp", ["leaflet-directive"]);
-        app.controller("BasicDoubleMapAccessMapObjectController", [ "$scope", "$log", "leafletData", function($scope, $log, leafletData) {
+        app.controller("BasicDoubleMapAccessMapObjectController", [ "$scope", "leafletLogger", "leafletData", function($scope, leafletLogger, leafletData) {
             angular.extend($scope, {
                 london: {
                     lat: 51.505,
@@ -34,7 +34,7 @@
             });
             $scope.logLeafletData = function(name) {
                 leafletData.getMap(name).then(function(map) {
-                    $log.info(map);
+                    leafletLogger.info(map);
                 });
             };
         }]);
@@ -51,8 +51,8 @@
 
     <h1>Accesing the map object with two (or more) maps on screen</h1>
     <p>The <strong>leafletData service</strong> allows us to access the internals of the leaflet library (map object, markers, layers, etc.). If two or more maps are on screen we need to pass an <strong>id</strong> to the map, so we can retrieve the leaflet object of the map specified by that id.</p>
-    <input type="button" value="$log.info leafletData object" ng-click="logLeafletData('map1')" />
-    <input type="button" value="$log.info leafletData object" ng-click="logLeafletData('map2')" />
+    <input type="button" value="leafletLogger.info leafletData object" ng-click="logLeafletData('map1')" />
+    <input type="button" value="leafletLogger.info leafletData object" ng-click="logLeafletData('map2')" />
     <br style="clear: both;" />
   </body>
 </html>

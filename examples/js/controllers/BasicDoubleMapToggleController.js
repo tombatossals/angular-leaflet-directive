@@ -1,4 +1,4 @@
-        app.controller("BasicDoubleMapToggleController", [ "$scope", "$log", "leafletData", function($scope, $log, leafletData) {
+        app.controller("BasicDoubleMapToggleController", [ "$scope", "leafletLogger", "leafletData", function($scope, leafletLogger, leafletData) {
             angular.extend($scope, {
                 center: {
                     lat: 51.505,

@@ -12,11 +12,11 @@ describe('Directive: leaflet', function() {
   var mainLayers;
   var mainMarkers;
   var scope;
+  var $timeout;
 
   mainLayers = mainMarkers = leafletHelpers = leafletData = $rootScope = $compile = void 0;
   beforeEach(module('leaflet-directive'));
   beforeEach(inject(function(_$compile_, _$rootScope_, _$timeout_, _leafletData_, _leafletHelpers_) {
-    var $timeout;
     $compile = _$compile_;
     $rootScope = _$rootScope_;
     leafletData = _leafletData_;
@@ -220,8 +220,8 @@ describe('Directive: leaflet', function() {
     });
   });
 
-  fit('message should be compiled if angular template is given', function() {
-    angular.extend(scope, {
+  it('message should be compiled if angular template is given', function() {
+    angular.extend($rootScope, {
       markers: {
         marker: {
           lat: 0.966,
@@ -229,31 +229,32 @@ describe('Directive: leaflet', function() {
           message: '<p>{{model.color}}</p>',
           focus: true,
         },
-      },
-      model: {
+      }, model: {
         color: 'blue',
       },
     });
 
     var element = angular.element('<leaflet lf-markers="markers"></leaflet>');
-    element = $compile(element)(scope);
-    scope.$digest();
+    element = $compile(element)($rootScope);
+    $rootScope.$digest();
 
     var leafletMap;
     leafletData.getMap().then(function(map) {
       leafletMap = map;
     });
 
-    scope.$digest();
+    $rootScope.$digest();
     var leafletMainMarker;
     leafletData.getMarkers().then(function(leafletMarkers) {
       leafletMainMarker = leafletMarkers.marker;
     });
 
-    scope.$digest();
+    $rootScope.$digest();
     leafletMainMarker.openPopup();
-    scope.$digest();
+    $rootScope.$digest();
+
     expect(leafletMainMarker._popup._contentNode.innerHTML).toEqual('<p class="ng-binding">blue</p>');
+
   });
 
   it('message should be compiled in specified scope', function() {
@@ -575,7 +576,6 @@ describe('Directive: leaflet', function() {
         });
 
         it('validates (lng not a number) for a marker in a layer group', function() {
-          var element;
           var layers;
           var map;
           var markers;
@@ -586,21 +586,18 @@ describe('Directive: leaflet', function() {
             markers: mainMarkers,
             layers: mainLayers,
           });
-          element = angular.element('<leaflet lf-markers="markers" lf-layers="layers"></leaflet>');
+          var element = angular.element('<leaflet lf-markers="markers" lf-layers="layers"></leaflet>');
           element = $compile(element)(scope);
-          map = void 0;
           leafletData.getMap().then(function(leafletMap) {
             map = leafletMap;
           });
 
           scope.$digest();
-          markers = void 0;
           leafletData.getMarkers().then(function(leafletMarkers) {
             markers = leafletMarkers;
           });
 
           scope.$digest();
-          layers = void 0;
           leafletData.getLayers().then(function(leafletLayers) {
             layers = leafletLayers;
           });
@@ -608,7 +605,6 @@ describe('Directive: leaflet', function() {
           scope.$digest();
           overlays = layers.overlays;
           expect(map.hasLayer(markers.madrid)).toBe(false);
-          scope.$digest();
           expect(overlays.trucks.hasLayer(markers.madrid)).toBe(true);
           mainMarkers.madrid.lng = 'not a number :P';
           scope.$digest();

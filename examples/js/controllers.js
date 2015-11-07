@@ -1,6 +1,6 @@
 (function(angular){ 
 var app = angular.module('webapp');
-        app.controller("BasicAccessLeafletObjectController", [ "$scope", "$log", "leafletData", function($scope, $log, leafletData) {
+        app.controller("BasicAccessLeafletObjectController", [ "$scope", "leafletLogger", "leafletData", function($scope, leafletLogger, leafletData) {
             angular.extend($scope, {
                 london: {
                     lat: 51.505,
@@ -103,7 +103,7 @@ var app = angular.module('webapp');
                 }
             });
         }]);
-        app.controller("BasicDoubleMapAccessMapObjectController", [ "$scope", "$log", "leafletData", function($scope, $log, leafletData) {
+        app.controller("BasicDoubleMapAccessMapObjectController", [ "$scope", "leafletLogger", "leafletData", function($scope, leafletLogger, leafletData) {
             angular.extend($scope, {
                 london: {
                     lat: 51.505,
@@ -123,11 +123,11 @@ var app = angular.module('webapp');
             });
             $scope.logLeafletData = function(name) {
                 leafletData.getMap(name).then(function(map) {
-                    $log.info(map);
+                    leafletLogger.info(map);
                 });
             };
         }]);
-        app.controller("BasicDoubleMapEventsController", [ "$scope", "$log", "leafletData", "leafletEvents", function($scope, $log, leafletData, leafletEvents) {
+        app.controller("BasicDoubleMapEventsController", [ "$scope", "leafletLogger", "leafletData", "leafletEvents", function($scope, leafletLogger, leafletData, leafletEvents) {
             angular.extend($scope, {
                 london: {
                     lat: 51.505,
@@ -189,7 +189,7 @@ var app = angular.module('webapp');
                 });
             }
         }]);
-        app.controller("BasicDoubleMapSharingAttributesController", [ "$scope", "$log", "$http", "leafletData", function($scope, $log, $http, leafletData) {
+        app.controller("BasicDoubleMapSharingAttributesController", [ "$scope", "leafletLogger", "$http", "leafletData", function($scope, leafletLogger, $http, leafletData) {
             angular.extend($scope, {
                 center: {
                     lat: 43.7350,
@@ -231,7 +231,7 @@ var app = angular.module('webapp');
                 $scope.toronto2 = data;
             });
         }]);
-        app.controller("BasicDoubleMapToggleController", [ "$scope", "$log", "leafletData", function($scope, $log, leafletData) {
+        app.controller("BasicDoubleMapToggleController", [ "$scope", "leafletLogger", "leafletData", function($scope, leafletLogger, leafletData) {
             angular.extend($scope, {
                 center: {
                     lat: 51.505,
@@ -424,15 +424,6 @@ var app = angular.module('webapp');
                 }
             });
         });
-        app.controller('BasicLFCenterController', [ '$scope', function($scope) {
-            angular.extend($scope, {
-                london: {
-                    lat: 51.505,
-                    lng: -0.09,
-                    zoom: 4
-                }
-            });
-       }]);
         app.controller('BasicLegendController', [ '$scope', function($scope) {
             angular.extend($scope, {
                 london: {
@@ -2064,8 +2055,8 @@ var app = angular.module('webapp');
                 }
             });
         }]);
-        app.controller("LayersImageOverlayController", [ "$scope", "$log", "leafletData", "leafletBoundsHelpers", function($scope, $log, leafletData, leafletBoundsHelpers) {
-            var maxBounds = leafletBoundsHelpers.createBoundsFromArray([[-540, -960], [540, 960]]);
+        app.controller("LayersImageOverlayController", [ "$scope", "leafletLogger", "leafletData", "leafletBoundsHelpers", function($scope, leafletLogger, leafletData, leafletBoundsHelpers) {
+            var maxbounds = leafletBoundsHelpers.createBoundsFromArray([[-540, -960], [540, 960]]);
             angular.extend($scope, {
                 defaults: {
                   scrollWheelZoom: false,
@@ -2077,7 +2068,7 @@ var app = angular.module('webapp');
                     lng: 0,
                     zoom: 0
                 },
-                maxBounds: maxBounds,
+                maxbounds: maxbounds,
                 layers: {
                     baselayers: {
                         sanfrancisco: {
@@ -3343,7 +3334,7 @@ var app = angular.module('webapp');
                 });
             });
         } ]);
-        app.controller("MarkersEventsController", [ "$scope", "leafletMarkerEvents", "$log", function($scope, leafletMarkerEvents, $log) {
+        app.controller("MarkersEventsController", [ "$scope", "leafletMarkerEvents", "leafletLogger", function($scope, leafletMarkerEvents, leafletLogger) {
             $scope.center = {
                 lat: 51.505,
                 lng: -0.09,
@@ -4301,7 +4292,7 @@ var app = angular.module('webapp');
             });
         }
     }]);
-        app.controller("PathEventsController", function($scope, $log) {
+        app.controller("PathEventsController", function($scope, leafletLogger) {
             var paths = {};
             $scope.clicked = 0;
             var marylandIslands = {
@@ -4358,7 +4349,7 @@ var app = angular.module('webapp');
                 $scope.mouseover = path.modelName;
             });
         });
-        app.controller("PathEventsWithIDController", function($scope, $log) {
+        app.controller("PathEventsWithIDController", function($scope, leafletLogger) {
             var paths = {};
             $scope.clicked = 0;
             var marylandIslands = {

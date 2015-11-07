@@ -1,4 +1,4 @@
-        app.controller("BasicAccessLeafletObjectController", [ "$scope", "$log", "leafletData", function($scope, $log, leafletData) {
+        app.controller("BasicAccessLeafletObjectController", [ "$scope", "leafletLogger", "leafletData", function($scope, leafletLogger, leafletData) {
             angular.extend($scope, {
                 london: {
                     lat: 51.505,

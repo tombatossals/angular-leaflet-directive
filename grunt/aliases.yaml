@@ -30,7 +30,6 @@ default:
 fast-build:
     - 'clean:dist'
     - 'jshint'
-    - 'jscs'
     - 'concat:dist'
     - 'ngAnnotate'
     - 'uglify'

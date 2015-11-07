@@ -1,4 +1,4 @@
-        app.controller("BasicDoubleMapSharingAttributesController", [ "$scope", "$log", "$http", "leafletData", function($scope, $log, $http, leafletData) {
+        app.controller("BasicDoubleMapSharingAttributesController", [ "$scope", "leafletLogger", "$http", "leafletData", function($scope, leafletLogger, $http, leafletData) {
             angular.extend($scope, {
                 center: {
                     lat: 43.7350,

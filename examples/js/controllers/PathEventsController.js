@@ -1,4 +1,4 @@
-        app.controller("PathEventsController", function($scope, $log) {
+        app.controller("PathEventsController", function($scope, leafletLogger) {
             var paths = {};
             $scope.clicked = 0;
             var marylandIslands = {
