@@ -317,7 +317,7 @@ describe('Directive: leaflet: layers.overlays', function() {
           },
         },
       });
-      var element = angular.element('<leaflet lf-layers="layers" markers="markers"></leaflet>');
+      var element = angular.element('<leaflet lf-layers="layers" lf-markers="markers"></leaflet>');
       element = $compile(element)(scope);
       var map;
       leafletData.getMap().then(function(leafletMap) {

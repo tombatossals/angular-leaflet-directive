@@ -6,6 +6,7 @@ describe('leafletData', function() {
   var leafletData;
   var leafletHelpers;
   var mainLayers;
+  var setPromise;
 
   $q = geojsonData = mainLayers = leafletHelpers = leafletData = $rootScope = $compile = void 0;
   beforeEach(function() {
@@ -25,7 +26,7 @@ describe('leafletData', function() {
     beforeEach(function() {
       scope.knownMarkers = [1, 2, 3];
       scope.knownGeoJSON = ['1', '2', '3'];
-      scope.setPromise = $q.all([leafletData.setMarkers(scope.knownMarkers), leafletData.setGeoJSON(scope.knownGeoJSON)]);
+      setPromise = $q.all([leafletData.setMarkers(scope.knownMarkers), leafletData.setGeoJSON(scope.knownGeoJSON)]);
     });
 
     it('has unique data', function(done) {
@@ -35,9 +36,8 @@ describe('leafletData', function() {
       _geoJSON = null;
       _markers = null;
       _allGet = null;
-      $rootScope.$digest();
 
-      scope.setPromise.then(function() {
+      setPromise.then(function() {
         _allGet = $q.all([
           leafletData.getMarkers().then(function(lObjs) {
             _markers = lObjs;
@@ -48,25 +48,25 @@ describe('leafletData', function() {
       });
 
       $rootScope.$digest();
+
       _allGet.then(function() {
         expect(scope.knownMarkers).toBe(_markers);
         expect(scope.knownGeoJSON).toBe(_geoJSON);
         expect(_geoJSON !== _markers).toBeTruthy();
         done();
       });
+
+      $rootScope.$digest();
     });
 
     it('modifying localScope modifies leafletData\'s version', function(done) {
       var _allGet;
       var _geoJSON;
       var _markers;
-      _geoJSON = null;
-      _markers = null;
-      _allGet = null;
       scope.knownMarkers.push(4);
       scope.knownGeoJSON.push('4');
-      $rootScope.$digest();
-      scope.setPromise.then(function() {
+
+      setPromise.then(function() {
         _allGet = $q.all([
           leafletData.getMarkers().then(function(lObjs) {
             _markers = lObjs;
@@ -83,6 +83,8 @@ describe('leafletData', function() {
         expect(_geoJSON !== _markers).toBeTruthy();
         done();
       });
+
+      $rootScope.$digest();
     });
   });
 });

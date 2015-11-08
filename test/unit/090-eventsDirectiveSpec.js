@@ -831,7 +831,7 @@ describe('Directive: leaflet', function() {
       },
     });
 
-    var element = angular.element('<leaflet testing="testing" markers="markers"></leaflet>');
+    var element = angular.element('<leaflet testing="testing" lf-markers="markers"></leaflet>');
     $compile(element)($rootScope);
     $rootScope.$digest();
     leafletData.getMarkers().then(function(leafletMarkers) {

@@ -50,7 +50,7 @@ describe('Directive: leaflet: layers.watch', function() {
         },
       },
     });
-    var element = angular.element('<leaflet layers="layers"></leaflet>');
+    var element = angular.element('<leaflet lf-layers="layers"></leaflet>');
     element = $compile(element)(scope);
     var layers;
     leafletData.getLayers().then(function(leafletLayers) {
@@ -130,7 +130,7 @@ describe('Directive: leaflet: layers.watch', function() {
         },
       },
     });
-    var element = angular.element('<leaflet layers="layers"></leaflet>');
+    var element = angular.element('<leaflet lf-layers="layers"></leaflet>');
     element = $compile(element)(scope);
     scope.$digest();
     var layers;
@@ -183,15 +183,18 @@ describe('Directive: leaflet: layers.watch', function() {
     scope.layers.overlays.countries = {
       name: 'Countries',
       type: 'geoJSONShape',
-      data: {type: 'FeatureCollection',
-                    features: [{
-                      type:'Feature',
-                      geometry: {
-                        type: 'Polygon',
-                        coordinates: [[[22.65715, 44.234923], [22.944832, 43.823785], [22.65715, 44.234923]]],
-                      },
-                    }, ],
+      data: {
+        type: 'FeatureCollection',
+        features: [
+          {
+            type:'Feature',
+            geometry: {
+              type: 'Polygon',
+              coordinates: [[[22.65715, 44.234923], [22.944832, 43.823785], [22.65715, 44.234923]]],
             },
+          },
+        ],
+      },
       layerOptions: {
         style: {
           color: '#00D',

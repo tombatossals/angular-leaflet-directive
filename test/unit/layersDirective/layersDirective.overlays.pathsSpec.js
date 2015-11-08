@@ -61,12 +61,15 @@ describe('Directive: leaflet: layers.overlays', function() {
         },
       },
     });
-    var element = angular.element('<leaflet lf-layers="layers" paths="paths"></leaflet>');
+
+    var element = angular.element('<leaflet lf-layers="layers" lf-paths="paths"></leaflet>');
     element = $compile(element)(scope);
     var map;
     leafletData.getMap().then(function(leafletMap) {
       map = leafletMap;
     });
+
+    scope.$digest();
 
     var paths;
     leafletData.getPaths().then(function(leafletPaths) {
@@ -122,7 +125,7 @@ describe('Directive: leaflet: layers.overlays', function() {
         },
       },
     });
-    var element = angular.element('<leaflet lf-layers="layers" paths="paths"></leaflet>');
+    var element = angular.element('<leaflet lf-layers="layers" lf-paths="paths"></leaflet>');
     element = $compile(element)(scope);
     var map;
     leafletData.getMap().then(function(leafletMap) {

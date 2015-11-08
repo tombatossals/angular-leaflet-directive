@@ -4,7 +4,7 @@ angular.module('leaflet-directive').directive('lfPaths', function(leafletLogger,
     restrict: 'A',
     scope: false,
     replace: false,
-    require: ['leaflet', '?layers'],
+    require: ['leaflet', '?lfLayers'],
 
     link: function(scope, element, attrs, controller) {
       var mapController = controller[0];

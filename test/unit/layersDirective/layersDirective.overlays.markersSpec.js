@@ -70,24 +70,27 @@ describe('Directive: leaflet: layers.overlays.markers', function() {
           },
         },
       });
-      element = angular.element('<leaflet lf-layers="layers" markers="markers" markers-nested="true"></leaflet>');
+      element = angular.element('<leaflet lf-layers="layers" lf-markers="markers" markers-nested="true"></leaflet>');
       element = $compile(element)(scope);
 
       scope.$digest();
-      $q.all([leafletData.getMap(), leafletData.getMarkers(), leafletData.getLayers()]).then(function(promiseArray) {
+      $q.all([leafletData.getMap(), leafletData.getLayers(), leafletData.getMarkers()]).then(function(promiseArray) {
         var layers;
         var map;
         var markerToCheck;
         var markers;
-        map = promiseArray[0], markers = promiseArray[1], layers = promiseArray[2];
+
+        map = promiseArray[0], layers = promiseArray[1], markers = promiseArray[2];
         expect(Object.keys(markers).length).toEqual(1);
         expect(Object.keys(markers.cars).length).toEqual(2);
         markerToCheck = markers.cars.m1;
         expect(markerToCheck instanceof L.Marker).toBe(true);
         expect(map.hasLayer(markerToCheck)).toBe(true);
         expect(layers.overlays.cars.hasLayer(markerToCheck)).toBe(true);
-        return done();
+        done();
       });
+
+      $rootScope.$digest();
     });
 
     it('should check for a marker in a wrong layer group', function() {
@@ -123,7 +126,7 @@ describe('Directive: leaflet: layers.overlays.markers', function() {
           },
         },
       });
-      element = angular.element('<leaflet lf-layers="layers" markers="markers" markers-nested="true"></leaflet>');
+      element = angular.element('<leaflet lf-layers="layers" lf-markers="markers" markers-nested="true"></leaflet>');
       element = $compile(element)(scope);
       leafletData.getMarkers().then(function(markers) {
         expect(Object.keys(markers).length).toEqual(0);
@@ -166,7 +169,7 @@ describe('Directive: leaflet: layers.overlays.markers', function() {
           },
         },
       });
-      element = angular.element('<leaflet lf-layers="layers" markers="markers"></leaflet>');
+      element = angular.element('<leaflet lf-layers="layers" lf-markers="markers"></leaflet>');
       element = $compile(element)(scope);
       map = void 0;
       leafletData.getMap().then(function(leafletMap) {
@@ -221,7 +224,7 @@ describe('Directive: leaflet: layers.overlays.markers', function() {
           },
         },
       });
-      element = angular.element('<leaflet lf-layers="layers" markers="markers"></leaflet>');
+      element = angular.element('<leaflet lf-layers="layers" lf-markers="markers"></leaflet>');
       element = $compile(element)(scope);
       leafletData.getMarkers().then(function(markers) {
         expect(Object.keys(markers).length).toEqual(0);
@@ -260,7 +263,7 @@ describe('Directive: leaflet: layers.overlays.markers', function() {
           },
         },
       });
-      element = angular.element('<leaflet lf-layers="layers" markers="markers"></leaflet>');
+      element = angular.element('<leaflet lf-layers="layers" lf-markers="markers"></leaflet>');
       element = $compile(element)(scope);
       map = void 0;
       leafletData.getMap().then(function(leafletMap) {
