@@ -1,5 +1,5 @@
-var app = angular.module('app.void', []);
+var app = angular.module('webapp.void', []);
 
-app.controller('VoidController', [ VoidController ]);
+app.controller('VoidController', VoidController);
 
 function VoidController() {}

@@ -1,4 +1,4 @@
-var app = angular.module('app.exlist', []);
+var app = angular.module('webapp.exlist', []);
 
 app.controller('ExlistController', ExlistController);
 

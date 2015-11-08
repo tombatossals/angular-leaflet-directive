@@ -4,7 +4,7 @@
             "banner": "(function(angular){\n'use strict';\n",
             "footer": "\n}(window.angular));"
         },
-        "src": [ "src/app.js", "src/directives.js", "src/controllers.js", "src/services.js", "components/**/*.js" ],
+        "src": [ "src/app.js", "src/directives.js", "src/controllers.js", "examples/js/controllers.js", "src/services.js", "components/**/*.js" ],
         "dest": "dist/angular-leaflet-directive-webpage.pre.js"
     },
     "license": {

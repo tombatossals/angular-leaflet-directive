@@ -1,4 +1,4 @@
-var app = angular.module('app.extend', []);
+var app = angular.module('webapp.extend', []);
 
 app.controller('ExtendController', [ ExtendController ]);
 

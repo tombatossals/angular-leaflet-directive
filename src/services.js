@@ -1,4 +1,4 @@
-var app = angular.module('app.services', []);
+var app = angular.module('webapp.services', []);
 
 app.factory('Examples', Examples);
 

@@ -1,4 +1,4 @@
-var app = angular.module('app.directives', []);
+var app = angular.module('webapp.directives', []);
 
 app.directive('ngExample', function($http, $compile) {
   return {

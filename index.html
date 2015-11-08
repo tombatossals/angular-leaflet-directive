@@ -10,12 +10,13 @@
         <link rel="stylesheet" href="bower_components/leaflet/dist/leaflet.css" />
         <link rel="stylesheet" href="bower_components/highlightjs/styles/github.css" />
         <link rel="stylesheet" href="bower_components/Leaflet.label/dist/leaflet.label.css" />
+        <link rel="stylesheet" href="bower_components/leaflet-minimap/dist/Control.MiniMap.min.css" />
         <link rel="stylesheet" type="text/css" href="http://cloud.github.com/downloads/lafeber/world-flags-sprite/flags32.css" />
         <link rel="stylesheet" href="bower_components/gfm.css/gfm.css" />
         <link rel="stylesheet" href="css/style.css" />
     </head>
 
-<body ng-cloak ng-app="app" ng-controller="AppController as main">
+<body ng-cloak ng-app="webapp" ng-controller="AppController as main">
     <div class="ui center aligned header">
         <div class="ui stackable doubling two column grid">
             <div class="center aligned five wide column">
@@ -49,12 +50,12 @@
           </div>
         </div>
         <div class="row" ng-if="main.section === 'examples'">
-          <div class="two wide column"></div>
+          <div class="one wide column"></div>
           <div class="three wide column">
               <div ng-viewport="left"></div>
           </div>
 
-          <div class="nine wide column">
+          <div class="eleven wide column">
               <div ng-viewport="main"></div>
           </div>
       </div>
@@ -98,6 +99,7 @@
     <script src="bower_components/angular-highlightjs/angular-highlightjs.min.js"></script>
     <script src="bower_components/marked/marked.min.js"></script>
     <script src="bower_components/angular-marked/angular-marked.min.js"></script>
+    <script src="bower_components/leaflet-minimap/dist/Control.MiniMap.min.js"></script>
     <script src="dist/angular-leaflet-directive.min.js"></script>
     <script src="dist/angular-leaflet-directive-webpage.no-header.js"></script>
 </body>

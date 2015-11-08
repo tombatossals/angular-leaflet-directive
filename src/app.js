@@ -1,4 +1,18 @@
-var app = angular.module('app', ['ngNewRouter', 'leaflet-directive', 'hljs', 'hc.marked', 'app.directives', 'app.services', 'app.home', 'app.void', 'app.exlist', 'app.documentation', 'app.examples', 'app.extend']);
+var app = angular.module('webapp', [
+  'ngNewRouter',
+  'leaflet-directive',
+  'hljs',
+  'hc.marked',
+  'webapp.directives',
+  'webapp.services',
+  'webapp.home',
+  'webapp.void',
+  'webapp.exlist',
+  'webapp.documentation',
+  'webapp.examples',
+  'webapp.extend',
+]);
+
 var controller = app.controller('AppController', AppController);
 
 app.config(function(markedProvider) {
@@ -66,7 +80,6 @@ function AppController($router, $scope, $location, $http, $q, $interval, $rootSc
       };
 
       Examples.getExample(location).then(function(example) {
-        console.log('ye', example);
         scope.example = example;
       });
     }

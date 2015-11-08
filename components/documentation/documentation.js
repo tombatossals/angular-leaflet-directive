@@ -1,4 +1,4 @@
-var app = angular.module('app.documentation', []);
+var app = angular.module('webapp.documentation', []);
 
 app.controller('DocumentationController', DocumentationController);
 
