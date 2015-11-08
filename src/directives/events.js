@@ -10,7 +10,7 @@ angular.module('leaflet-directive').directive('lfEvents', function(leafletLogger
       var isObject = leafletHelpers.isObject;
       var isDefined = leafletHelpers.isDefined;
       var leafletScope  = controller.getLeafletScope();
-      var eventBroadcast = leafletScope.eventBroadcast;
+      var eventBroadcast = leafletScope.lfEvents;
       var availableMapEvents = leafletMapEvents.getAvailableMapEvents();
       var addEvents = leafletMapEvents.addEvents;
 
@@ -20,7 +20,7 @@ angular.module('leaflet-directive').directive('lfEvents', function(leafletLogger
         var logic = 'broadcast';
 
         // We have a possible valid object
-        if (!isDefined(eventBroadcast.map)) {
+        if (!isDefined(eventBroadcast) || !isDefined(eventBroadcast.map)) {
           // We do not have events enable/disable do we do nothing (all enabled by default)
           mapEvents = availableMapEvents;
         } else if (!isObject(eventBroadcast.map)) {

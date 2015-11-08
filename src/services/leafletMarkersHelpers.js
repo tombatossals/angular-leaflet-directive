@@ -385,7 +385,7 @@ angular.module('leaflet-directive').service('leafletMarkersHelpers', function($r
     }
 
     // The markerData.focus property must be true so we update if there wasn't a previous value or it wasn't true
-    if (markerData.focus === true && (!isDefined(oldMarkerData.focus) || oldMarkerData.focus === false) || (isInitializing && markerData.focus === true)) {
+    if (markerData.focus === true && (markerData.lat !== oldMarkerData.lat || markerData.lng !== oldMarkerData.lng || !isDefined(oldMarkerData.focus) || oldMarkerData.focus === false) || (isInitializing && markerData.focus === true)) {
       // Reopen the popup when focus is still true
       marker.openPopup();
       updatedFocus = true;
