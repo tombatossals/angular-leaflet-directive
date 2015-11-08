@@ -1,4 +1,4 @@
-        app.controller("BasicDoubleMapAccessMapObjectController", [ "$scope", "$log", "leafletData", function($scope, $log, leafletData) {
+        app.controller("BasicDoubleMapAccessMapObjectController", [ "$scope", "leafletLogger", "leafletData", function($scope, leafletLogger, leafletData) {
             angular.extend($scope, {
                 london: {
                     lat: 51.505,
@@ -18,7 +18,7 @@
             });
             $scope.logLeafletData = function(name) {
                 leafletData.getMap(name).then(function(map) {
-                    $log.info(map);
+                    leafletLogger.info(map);
                 });
             };
         }]);

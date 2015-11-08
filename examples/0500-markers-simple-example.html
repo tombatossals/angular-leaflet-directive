@@ -47,9 +47,8 @@
     </script>
   </head>
   <body ng-controller="MarkersSimpleController">
-    <!-- <leaflet lf-center="london" markers="markers" height="480px" width="100%"></leaflet> EVENTS WILL STILL FIRE but all will for each directive-->
     <!-- NOTICE events attribute is optional it is more for options in whitelisting (enable), blacklisting (disable), and logic (emit or broadcast)  -->
-    <leaflet lf-center="london" event-broadcast="events" markers="markers" height="480px" width="100%"></leaflet>
+    <leaflet lf-center="london" lf-events="events" lf-markers="markers" height="480px" width="100%"></leaflet>
     <h1>Markers simple example</h1>
     <p>Initial marker position (lat/lng): <strong ng-bind="markers.mainMarker.lat"></strong> / <strong ng-bind="markers.mainMarker.lng"></strong></p>
     <p>Actual marker position (lat/lng): <strong  ng-bind="position.lat"></strong> / <strong ng-bind="position.lng"></strong></p>

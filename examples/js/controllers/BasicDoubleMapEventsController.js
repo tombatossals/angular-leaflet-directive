@@ -1,4 +1,4 @@
-        app.controller("BasicDoubleMapEventsController", [ "$scope", "$log", "leafletData", "leafletEvents", function($scope, $log, leafletData, leafletEvents) {
+        app.controller("BasicDoubleMapEventsController", [ "$scope", "leafletLogger", "leafletData", "leafletEvents", function($scope, leafletLogger, leafletData, leafletEvents) {
             angular.extend($scope, {
                 london: {
                     lat: 51.505,

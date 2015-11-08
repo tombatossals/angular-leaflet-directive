@@ -8,8 +8,8 @@
     <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
     <script>
         var app = angular.module("demoapp", ["leaflet-directive"]);
-        app.controller("LayersImageOverlayController", [ "$scope", "$log", "leafletData", "leafletBoundsHelpers", function($scope, $log, leafletData, leafletBoundsHelpers) {
-            var maxBounds = leafletBoundsHelpers.createBoundsFromArray([[-540, -960], [540, 960]]);
+        app.controller("LayersImageOverlayController", [ "$scope", "leafletLogger", "leafletData", "leafletBoundsHelpers", function($scope, leafletLogger, leafletData, leafletBoundsHelpers) {
+            var maxbounds = leafletBoundsHelpers.createBoundsFromArray([[-540, -960], [540, 960]]);
             angular.extend($scope, {
                 defaults: {
                   scrollWheelZoom: false,
@@ -21,7 +21,7 @@
                     lng: 0,
                     zoom: 0
                 },
-                maxBounds: maxBounds,
+                maxbounds: maxbounds,
                 layers: {
                     baselayers: {
                         sanfrancisco: {
@@ -42,7 +42,7 @@
     </script>
   </head>
   <body ng-controller="LayersImageOverlayController">
-    <leaflet lf-center="center" defaults="defaults" layers="layers" maxBounds="maxBounds" height="480px" width="100%"></leaflet>
+    <leaflet lf-center="center" lf-defaults="defaults" lf-layers="layers" lf-maxbounds="maxbounds" height="480px" width="100%"></leaflet>
     <h1>Layer with image overlay and maxBounds</h1>
   </body>
 </html>

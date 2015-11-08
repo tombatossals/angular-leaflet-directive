@@ -1,5 +1,5 @@
-        app.controller("LayersImageOverlayController", [ "$scope", "$log", "leafletData", "leafletBoundsHelpers", function($scope, $log, leafletData, leafletBoundsHelpers) {
-            var maxBounds = leafletBoundsHelpers.createBoundsFromArray([[-540, -960], [540, 960]]);
+        app.controller("LayersImageOverlayController", [ "$scope", "leafletLogger", "leafletData", "leafletBoundsHelpers", function($scope, leafletLogger, leafletData, leafletBoundsHelpers) {
+            var maxbounds = leafletBoundsHelpers.createBoundsFromArray([[-540, -960], [540, 960]]);
             angular.extend($scope, {
                 defaults: {
                   scrollWheelZoom: false,
@@ -11,7 +11,7 @@
                     lng: 0,
                     zoom: 0
                 },
-                maxBounds: maxBounds,
+                maxbounds: maxbounds,
                 layers: {
                     baselayers: {
                         sanfrancisco: {

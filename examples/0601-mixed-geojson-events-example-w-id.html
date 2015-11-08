@@ -179,7 +179,7 @@
     </style>
   </head>
   <body ng-controller="MixedGeoJSONEventsWithIDController">
-      <leaflet id="myMap" lf-center="center" events="events" legend="legend" geojson="geojson"></leaflet>
+      <leaflet id="myMap" lf-center="center" lf-events="events" lf-legend="legend" lf-geojson="geojson"></leaflet>
       <div class="worldmap country f32">
         <div ng-show="selectedCountry" class="flag" ng-class="countries[selectedCountry.id]['alpha-2']|lowercase"></div>
         {{ selectedCountry.properties.name || 'No country'}}

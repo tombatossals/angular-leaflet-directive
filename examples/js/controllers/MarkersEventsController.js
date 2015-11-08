@@ -1,4 +1,4 @@
-        app.controller("MarkersEventsController", [ "$scope", "leafletMarkerEvents", "$log", function($scope, leafletMarkerEvents, $log) {
+        app.controller("MarkersEventsController", [ "$scope", "leafletMarkerEvents", "leafletLogger", function($scope, leafletMarkerEvents, leafletLogger) {
             $scope.center = {
                 lat: 51.505,
                 lng: -0.09,
