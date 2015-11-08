@@ -1,5 +1,5 @@
 var app = angular.module('app', ['ngNewRouter', 'leaflet-directive', 'hljs', 'hc.marked', 'app.directives', 'app.services', 'app.home', 'app.void', 'app.exlist', 'app.documentation', 'app.examples', 'app.extend']);
-var controller = app.controller('AppController', ['$router', '$scope', '$location', '$http', '$q', '$interval', '$rootScope', '$window', AppController]);
+var controller = app.controller('AppController', AppController);
 
 app.config(function(markedProvider) {
   markedProvider.setOptions({
@@ -11,7 +11,7 @@ app.config(function(markedProvider) {
   });
 });
 
-function AppController($router, $scope, $location, $http, $q, $interval, $rootScope, $window) {
+function AppController($router, $scope, $location, $http, $q, $interval, $rootScope, $window, Examples) {
   var scope = this;
 
   $router.config([
@@ -57,6 +57,18 @@ function AppController($router, $scope, $location, $http, $q, $interval, $rootSc
 
     if (scope.section === 'documentation') {
       scope.subsection = getSubsectionFromUrl($location.path());
+    }
+
+    if (scope.section === 'examples') {
+      var location = {
+        section: 'basic',
+        example: 'first-example',
+      };
+
+      Examples.getExample(location).then(function(example) {
+        console.log('ye', example);
+        scope.example = example;
+      });
     }
 
     scope.name = locationData[scope.section];

@@ -17,8 +17,9 @@ function Examples($http, $q) {
     },
 
     getExample: function(location) {
-      return df.promise.then(function(examples) {
+      var df2 = $q.defer();
 
+      df.promise.then(function(examples) {
         if (!examples[location.section]) {
           return;
         }
@@ -30,8 +31,17 @@ function Examples($http, $q) {
           }
         });
 
-        return found;
+        if (found) {
+          return $http.get('examples/' + found.extUrl).success(function(data) {
+            found.source = data;
+            df2.resolve(found);
+          });
+        } else {
+          df2.resolve(found);
+        }
       });
+
+      return df2.promise;
     },
 
     getSections: function() {
@@ -40,7 +50,7 @@ function Examples($http, $q) {
           return {
             id: section,
             name: section.charAt(0).toUpperCase() + section.slice(1),
-            active: false
+            active: false,
           };
         });
       });
