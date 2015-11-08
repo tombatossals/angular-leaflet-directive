@@ -1,0 +1,8 @@
+{
+     "options": {},
+     "dist": {
+         "files": {
+             "dist/angular-leaflet-directive-webpage.no-header.js": [ "dist/angular-leaflet-directive-webpage.pre.js" ]
+         }
+     }
+}

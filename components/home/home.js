@@ -10,7 +10,7 @@ function HomeFirstExampleController($scope) {
         center: {
             lat: 51.505,
             lng: -0.09,
-            zoom: 4
+            zoom: 6
         },
         tiles: {
             url: "http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png"

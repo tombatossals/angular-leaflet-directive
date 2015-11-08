@@ -1,0 +1,14 @@
+default:
+  - 'build'
+
+build:
+  - 'clean:dist'
+  - 'jshint'
+  - 'concat:dist'
+  - 'ngAnnotate'
+  - 'uglify'
+  - 'concat:license'
+
+examples:
+  - 'shell:examples'
+  - 'concat:examples'

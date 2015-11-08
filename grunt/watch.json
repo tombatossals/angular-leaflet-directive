@@ -1,0 +1,9 @@
+{
+    "options": {
+        "livereload": 7777
+    },
+    "fast": {
+        "files": [ "src/**/*.js" ],
+        "tasks": [ "build" ]
+    }
+}

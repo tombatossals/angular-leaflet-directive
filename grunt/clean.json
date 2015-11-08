@@ -1,0 +1,4 @@
+{
+    "dist": ["dist/*webpage*.js"],
+    "pre": ["dist/*.pre.js"]
+}

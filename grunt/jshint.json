@@ -1,0 +1,8 @@
+ {
+  "options": {
+    "jshintrc": true
+  },
+  "source": {
+    "src": [ "src/**/*.js" ]
+  }
+}
