@@ -1,10 +1,10 @@
 'defaults' Attribute Documentation
 ==================================
 
-This sub-directive needs the **leaflet** main directive, so it is normally used as an attribute of the *leaflet* tag, like this:
+This attribute is used with the the **leaflet** main directive, like this:
 
 ```
-<leaflet defaults="defaults"></leaflet>
+&lt;leaflet defaults="defaults">&lt;/leaflet>
 ```
 
 It will define the default parameters from which we want to initialize our map. It's not used as a bi-directional attribute, so it will only apply the initial map parameters and nothing more. Let's see the possibilities.
@@ -43,7 +43,7 @@ angular.extend($scope, {
 
 And after that, in our HTML code we will define our leaflet directive like this:
 ```
-<leaflet defaults="defaults"></leaflet>
+&lt;leaflet defaults="defaults">&tl;/leaflet>
 ```
 
-And that's all. A full example of using this attribute can be found [here](http://tombatossals.github.io/angular-leaflet-directive/examples/custom-parameters-example.html).
+And that's all. An example of how to use this attribute can be found [here](http://tombatossals.github.io/angular-leaflet-directive/examples/0104-basic-custom-parameters-example.html).

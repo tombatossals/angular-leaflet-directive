@@ -1,3 +1,14 @@
+<div class="ui yellow inverted nine item menu">
+    <a class="item" ng-class="{ active: main.subsection == 'leaflet' }" ng-click="main.subsection = 'leaflet'" href="#/documentation/leaflet">leaflet</a>
+    <a class="item" ng-class="{ active: main.subsection == 'defaults' }" ng-click="main.subsection = 'defaults'" href="#/documentation/defaults">defaults</a>
+    <a class="item"  ng-class="{ active: main.subsection == 'lf-center' }" ng-click="main.subsection = 'lf-center'" href="#/documentation/lf-center">lf-center</a>
+    <a class="item"  ng-class="{ active: main.subsection == 'lf-tiles' }" ng-click="main.subsection = 'lf-tiles'" href="#/documentation/lf-tiles">lf-tiles</a>
+    <a class="item"  ng-class="{ active: main.subsection == 'lf-paths' }" ng-click="main.subsection = 'lf-paths'" href="#/documentation/lf-paths">lf-paths</a>
+    <a class="item"  ng-class="{ active: main.subsection == 'lf-layers' }" ng-click="main.subsection = 'lf-layers'" href="#/documentation/lf-layers">lf-layers</a>
+    <a class="item"  ng-class="{ active: main.subsection == 'lf-markers' }" ng-click="main.subsection = 'lf-markers'" href="#/documentation/lf-markers">lf-markers</a>
+    <a class="item"  ng-class="{ active: main.subsection == 'lf-geojson' }" ng-click="main.subsection = 'lf-geojson'" href="#/documentation/lf-geojson">lf-geojson</a>
+    <a class="item"  ng-class="{ active: main.subsection == 'lf-controls' }" ng-click="main.subsection = 'lf-controls'" href="#/documentation/lf-controls">lf-controls</a>
+</div>
 <div class="markdown-body">
-    <div marked ng-include="'doc/leaflet-directive.md'"></div>
+    <div marked ng-include="'doc/' + main.subsection + '.md'"></div>
 </div>
