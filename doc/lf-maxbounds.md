@@ -4,7 +4,7 @@
 This sub-directive needs the **leaflet** main directive, so it is normally used as an attribute of the *leaflet* tag, like this:
 
 ```
-&lt;leaflet maxbounds="maxbounds">&lt;/leaflet>
+&lt;leaflet lf-maxbounds="maxbounds">&lt;/leaflet>
 ```
 
 The functionality will be to limit the panning of the rendered map to the bounds set inside the _maxbounds_ object. It's not a bidirectional relationship, only the changes made to our _maxbounds_ object on the controller scope will affect the map, but no vice versa.
