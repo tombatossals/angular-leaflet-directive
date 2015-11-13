@@ -1,4 +1,4 @@
-'center' Attribute Documentation
+'lf-center' Documentation
 ================================
 
 This sub-directive needs the **leaflet** main directive, so it is normally used as an attribute of the *leaflet* tag, like this:
@@ -79,7 +79,6 @@ Adding the attribute _allowUrlHashCenter_ will synchronize the map center with a
 
 You can take a look of this feature on this [demo](http://tombatossals.github.io/angular-leaflet-directive/examples/0103-basic-center-url-hash-example.html).
 
-Finally, there's one possibility to center the map without a _center_ atribute, you could use the the _lfBounds_ sub-directive and the center attribute will be set automatically.
-
-More useful examples:
+More useful examples
+--------------------
  * [center the map based in the IP of the client](http://tombatossals.github.io/angular-leaflet-directive/examples/0109-basic-center-geoip-example.html).

@@ -26,13 +26,18 @@ angular.module('leaflet-directive').directive('lfCenter', function(leafletLogger
 
     link: function(scope, element, attrs, controller) {
       var leafletScope = controller.getLeafletScope();
-      var centerModel = leafletScope.center;
 
+      if (!isDefined(leafletScope.center)) {
+        leafletLogger.error('The scope "center" variable is not defined', 'center');
+        leafletScope.center = {};
+      }
+
+      var centerModel = leafletScope.center;
       controller.getMap().then(function(map) {
         var defaults = leafletMapDefaults.getDefaults(attrs.id);
 
         if (attrs.lfCenter.search('-') !== -1) {
-          leafletLogger.error(' The "center" variable can\'t use a "-" on its key name: "' + attrs.lfCenter, 'center');
+          leafletLogger.error('The "center" variable can\'t use a "-" on its key name: "' + attrs.lfCenter, 'center');
           map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
           return;
         } else if (shouldInitializeMapWithBounds(leafletScope.bounds, centerModel)) {
