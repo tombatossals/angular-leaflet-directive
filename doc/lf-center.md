@@ -1,13 +1,13 @@
 'center' Attribute Documentation
-==================================
+================================
 
 This sub-directive needs the **leaflet** main directive, so it is normally used as an attribute of the *leaflet* tag, like this:
 
 ```
-<leaflet center="center"></leaflet>
+&lt;leaflet lf-center="center">&lt;/leaflet>
 ```
 
-It will map an object _center_ of our controller scope with the corresponding object on our directive isolated scope. It's a bidirectional relationship, so a change in this object on the controller scope will affect the map center position, or an interaction on the map which changes the map center will update our _center_ values. Let's define the center model with an example:
+It will map an object _center_ of our controller scope with the corresponding object on our directive isolated scope. It's a bidirectional relationship, so a change in this object on the controller scope will affect the map center position, or an interaction on the map which changes the map center will update our _center_ values. Let's define the basic center model with an example:
 
 ```
 $scope.center = {
@@ -34,10 +34,12 @@ angular.extend($scope, {
 
 And after that, in our HTML code we will define our leaflet directive like this:
 ```
-<leaflet center="center"></leaflet>
+&lt;leaflet lf-center="center">&lt;/leaflet>
 ```
 
-And that's all. A full example of using this attribute can be found [here](http://tombatossals.github.io/angular-leaflet-directive/examples/center-example.html).
+And that's all. A full example of using this attribute can be found [here](http://tombatossals.github.io/angular-leaflet-directive/examples/0101-basic-center-example.html).
+
+Let's see more properties we can use with the center sub-directive.
 
 Autodiscover
 ------------
@@ -56,21 +58,28 @@ angular.extend($scope, {
 });
 ```
 
-We can see an example of how to use it [here](http://tombatossals.github.io/angular-leaflet-directive/examples/center-autodiscover-example.html).
+We can see an example of how to use it [here](http://tombatossals.github.io/angular-leaflet-directive/examples/0102-basic-center-autodiscover-example.html).
 
 
 Center position coded on a hash URL param
 ------------------------------------------
-We can use a special feature of the center attribute which allow us to synchronize the center position of the map with the URL, adding to it a special GET parameter where the center is coded. Then we can persist the map position on the browser URL.
+We can use a special feature of the center attribute which allow us to synchronize the center position of the map with a URL hash. This feature is inspired in the project [leaflet-hash](https://github.com/mlevans/leaflet-hash).
+
 ```
-<leaflet center="center" url-hash-center="yes" />
+angular.extend($scope, {
+    center: {
+        lat: 51.505,
+        lng: -0.09,
+        zoom: 4,
+        allowUrlHashCenter: true
+    }
 ```
 
-Adding that attribute will synchronize the center with a GET parameter on the URL of this form `?c=lat:lng:zoom`. Furthermore, whenever the map center is changed a new event `urlCenterHash` will be emitted to the parent scope so you can update your `$location.search` with the new info (if you want).
+Adding the attribute _allowUrlHashCenter_ will synchronize the map center with a GET parameter on the URL of this form `?c=lat:lng:zoom`. Furthermore, whenever the map center is changed a new event `urlCenterHash` will be emitted to the parent scope so you can update your `$location.search` with the new info (if you want).
 
-You can take a look of this feature on this [demo](http://tombatossals.github.io/angular-leaflet-directive/examples/url-hash-center-example.html).
+You can take a look of this feature on this [demo](http://tombatossals.github.io/angular-leaflet-directive/examples/0103-basic-center-url-hash-example.html).
 
-Development information
------------------------
-Each change to our scope defined _center_ object will update the map, or vice versa. This is accomplished via an angularJS watcher, defined [here](https://github.com/tombatossals/angular-leaflet-directive/blob/v0.7.0/src/directives/center.js#L34) in our code. When we change our map center or zoom, our _center_ object will be updated, these events are defined [here](https://github.com/tombatossals/angular-leaflet-directive/blob/v0.7.0/src/directives/center.js#L47) in our code.
+Finally, there's one possibility to center the map without a _center_ atribute, you could use the the _lfBounds_ sub-directive and the center attribute will be set automatically.
 
+More useful examples:
+ * [center the map based in the IP of the client](http://tombatossals.github.io/angular-leaflet-directive/examples/0109-basic-center-geoip-example.html).
