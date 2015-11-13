@@ -37,7 +37,6 @@ angular.module('leaflet-directive').directive('lfCenter', function(leafletLogger
           return;
         } else if (shouldInitializeMapWithBounds(leafletScope.bounds, centerModel)) {
           map.fitBounds(leafletBoundsHelpers.createLeafletBounds(leafletScope.bounds), leafletScope.bounds.options);
-          centerModel = map.getCenter();
           safeApply(leafletScope, function(scope) {
             angular.extend(scope.center, {
               lat: map.getCenter().lat,
@@ -70,7 +69,7 @@ angular.module('leaflet-directive').directive('lfCenter', function(leafletLogger
 
         var urlCenterHash;
         var mapReady;
-        if (attrs.urlHashCenter === 'yes') {
+        if (centerModel.allowUrlHashCenter === true) {
           var extractCenterFromUrl = function() {
             var search = $location.search();
             var centerParam;
@@ -81,6 +80,7 @@ angular.module('leaflet-directive').directive('lfCenter', function(leafletLogger
                   lat: parseFloat(cParam[0]),
                   lng: parseFloat(cParam[1]),
                   zoom: parseInt(cParam[2], 10),
+                  allowUrlHashCenter: centerModel.allowUrlHashCenter,
                 };
               }
             }
@@ -99,6 +99,7 @@ angular.module('leaflet-directive').directive('lfCenter', function(leafletLogger
                 lat: urlCenter.lat,
                 lng: urlCenter.lng,
                 zoom: urlCenter.zoom,
+                allowUrlHashCenter: centerModel.allowUrlHashCenter,
               });
             }
           });
@@ -159,50 +160,52 @@ angular.module('leaflet-directive').directive('lfCenter', function(leafletLogger
         }, true);
 
         map.whenReady(function() {
-              mapReady = true;
-            });
+          mapReady = true;
+        });
 
         map.on('moveend', function(/* event */) {
-              // Resolve the center after the first map position
-              _leafletCenter.resolve();
-              leafletMapEvents.notifyCenterUrlHashChanged(leafletScope, map, attrs, $location.search());
+          // Resolve the center after the first map position
+          _leafletCenter.resolve();
 
-              if (isSameCenterOnMap(centerModel, map) || leafletScope.settingCenterFromScope) {
-                return;
-              }
+          if (centerModel.allowUrlHashCenter === true) {
+            leafletMapEvents.notifyCenterUrlHashChanged(leafletScope, map, $location.search());
+          }
 
-              leafletScope.settingCenterFromLeaflet = true;
-              safeApply(leafletScope, function(scope) {
-                if (!leafletScope.settingCenterFromScope) {
-                  angular.extend(scope.center, {
-                    lat: map.getCenter().lat,
-                    lng: map.getCenter().lng,
-                    zoom: map.getZoom(),
-                    autoDiscover: false,
-                  });
-                }
+          if (isSameCenterOnMap(centerModel, map) || leafletScope.settingCenterFromScope) {
+            return;
+          }
 
-                leafletMapEvents.notifyCenterChangedToBounds(leafletScope, map);
-                $timeout(function() {
-                  leafletScope.settingCenterFromLeaflet = false;
-                });
+          leafletScope.settingCenterFromLeaflet = true;
+          safeApply(leafletScope, function(scope) {
+            if (!leafletScope.settingCenterFromScope) {
+              angular.extend(scope.center, {
+                lat: map.getCenter().lat,
+                lng: map.getCenter().lng,
+                zoom: map.getZoom(),
+                autoDiscover: false,
               });
+            }
+
+            leafletMapEvents.notifyCenterChangedToBounds(leafletScope, map);
+            $timeout(function() {
+              leafletScope.settingCenterFromLeaflet = false;
             });
+          });
+        });
 
         if (centerModel.autoDiscover === true) {
           map.on('locationerror', function() {
-                leafletLogger.warn('The Geolocation API is unauthorized on this page.', 'center');
-                if (isValidCenter(centerModel)) {
-                  map.setView([centerModel.lat, centerModel.lng], centerModel.zoom);
-                  leafletMapEvents.notifyCenterChangedToBounds(leafletScope, map);
-                } else {
-                  map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
-                  leafletMapEvents.notifyCenterChangedToBounds(leafletScope, map);
-                }
-              });
+            leafletLogger.warn('The Geolocation API is unauthorized on this page.', 'center');
+            if (isValidCenter(centerModel)) {
+              map.setView([centerModel.lat, centerModel.lng], centerModel.zoom);
+              leafletMapEvents.notifyCenterChangedToBounds(leafletScope, map);
+            } else {
+              map.setView([defaults.center.lat, defaults.center.lng], defaults.center.zoom);
+              leafletMapEvents.notifyCenterChangedToBounds(leafletScope, map);
+            }
+          });
         }
       });
     },
   };
-}
-);
+});

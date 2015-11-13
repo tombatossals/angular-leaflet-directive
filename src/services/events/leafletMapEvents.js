@@ -70,11 +70,7 @@ angular.module('leaflet-directive')
     scope.$broadcast('boundsChanged');
   };
 
-  var _notifyCenterUrlHashChanged = function(scope, map, attrs, search) {
-    if (!isDefined(attrs.urlHashCenter)) {
-      return;
-    }
-
+  var _notifyCenterUrlHashChanged = function(scope, map, search) {
     var center = map.getCenter();
     var centerUrlHash = (center.lat).toFixed(4) + ':' + (center.lng).toFixed(4) + ':' + map.getZoom();
     if (!isDefined(search.c) || search.c !== centerUrlHash) {
