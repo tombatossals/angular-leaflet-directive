@@ -1,13 +1,13 @@
-'maxbounds' Attribute Documentation
-===================================
+'lf-maxbounds' Documentation
+============================
 
 This sub-directive needs the **leaflet** main directive, so it is normally used as an attribute of the *leaflet* tag, like this:
 
 ```
-<leaflet maxbounds="maxbounds"></leaflet>
+&lt;leaflet maxbounds="maxbounds">&lt;/leaflet>
 ```
 
-It will map an object _maxbounds_ of our controller scope with the corresponding object on our leaflet directive isolated scope. It's not a bidirectional relationship, only the changes made to our _maxbounds_ object on the controller scope will affect the map, but no vice versa.
+The functionality will be to limit the panning of the rendered map to the bounds set inside the _maxbounds_ object. It's not a bidirectional relationship, only the changes made to our _maxbounds_ object on the controller scope will affect the map, but no vice versa.
 
 ```
 $scope.maxbounds = {
@@ -37,4 +37,4 @@ app.controller("DemoController", [ "$scope", "leafletBoundsHelpers", function($s
 });
 ```
 
-And that's all, we can see how the map is affected when we change the _maxbounds_ scope values, like [this example](http://tombatossals.github.io/angular-leaflet-directive/examples/maxbounds-example.html).
+And that's all, we can see how the map is affected when we change the _maxbounds_ scope values, like [this example](http://tombatossals.github.io/angular-leaflet-directive/examples/0106-basic-maxbounds-example.html).
