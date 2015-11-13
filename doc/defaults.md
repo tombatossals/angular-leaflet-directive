@@ -1,4 +1,4 @@
-'defaults' Attribute Documentation
+'defaults' Documentation
 ==================================
 
 This attribute is used with the the **leaflet** main directive, like this:
@@ -43,7 +43,7 @@ angular.extend($scope, {
 
 And after that, in our HTML code we will define our leaflet directive like this:
 ```
-&lt;leaflet defaults="defaults">&tl;/leaflet>
+&lt;leaflet defaults="defaults">&lt;/leaflet>
 ```
 
 And that's all. An example of how to use this attribute can be found [here](http://tombatossals.github.io/angular-leaflet-directive/examples/0104-basic-custom-parameters-example.html).

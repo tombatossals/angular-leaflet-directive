@@ -13,12 +13,11 @@
 
             var bounds = leafletBoundsHelpers.createBoundsFromArray([
                 [ 51.508742458803326, -0.087890625 ],
-                [ 51.508742458803326, -0.087890625 ]
+                [ 51.508742458803326, -0.087890625 ],
             ]);
 
             angular.extend($scope, {
-                bounds: bounds,
-                center: {}
+                bounds: bounds
             });
 
         }]);
@@ -38,5 +37,7 @@
         Lat : <input type="number" step="any" ng-model="bounds.northEast.lat" />
         Lng : <input type="number" step="any" ng-model="bounds.northEast.lng" />
     </form>
+    <h2>Map Center</h2>
+    <pre ng-bind="center|json"></pre>
   </body>
 </html>
