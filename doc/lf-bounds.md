@@ -1,10 +1,10 @@
 'lf-bounds' Documentation
 =========================
 
-This sub-directive needs the **leaflet** main directive, so it is normally used as an attribute of the *leaflet* tag, like this:
+This sub-directive needs the **leaflet** main directive, so it is normally used as an attribute of the *leaflet* tag, in conjuction with others, like this:
 
 ```
-&lt;leaflet lf-bounds="bounds" lf-center="center">&lt;/leaflet>
+&lt;leaflet lf-bounds="bounds" lf-center="center" ...>&lt;/leaflet>
 ```
 
 It will map an object _bounds_ of our controller scope with the corresponding object on our leaflet directive isolated scope. It's a bidirectional relationship, so a change in this object on the controller scope object will affect the map bounds, or an interaction on the map which changes the map position will update our _bounds_ values. Let's define the bounds model with an example:

@@ -1,10 +1,10 @@
 'lf-tiles' Documentation
 ========================
 
-This sub-directive needs the **leaflet** main directive, so it is normally used as an attribute of the *leaflet* tag, like this:
+This sub-directive needs the **leaflet** main directive, so it is normally used as an attribute of the *leaflet* tag, in conjuction with others, like this:
 
 ```
-&lt;leaflet lf-tiles="tiles">&lt;/leaflet>
+&lt;leaflet lf-tiles="tiles" ... >&lt;/leaflet>
 ```
 
 We will use this object to set the basic tiles of our map. If you need more complex functionality you need to take a look at the _lf-layers_ sub-directive. It's not a bi-directional object. Changes to the scope object will affect the map tiles rendered on screen.
@@ -25,4 +25,4 @@ The options passed to this object can be set with a lot of attributes, and are t
 And that's all, we can see how the map is affected when we change the _tiles_ scope object values in these examples:
 
 * [Tiles basic example](http://tombatossals.github.io/angular-leaflet-directive/examples/0107-basic-tiles-example.html).
-* [Change tiles with zoom example](http://tombatossals.github.io/angular-leaflet-directive/examples/0108-basic-tiles-zoom-changer-example.html).
+mi

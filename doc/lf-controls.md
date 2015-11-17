@@ -1,14 +1,13 @@
-'layers' Attribute Documentation
-==================================
+'lf-layers' Documentation
+=========================
 
-This sub-directive needs the **leaflet** main directive, so it is normally used as an attribute of the *leaflet* tag, like this:
+As the others, it's normally used as an attribute of the *leaflet* tag, like this:
 
 ```
-<leaflet layers="layers"></leaflet>
+&lt;leaflet layers="layers">&lt;/leaflet>
 ```
 
-It will map an object _layers_ of our controller scope with the corresponding object on our directive isolated scope. It's not a bidirectional relationship, so only the changes made in this object on the controller scope will affect the layers definition in
-our leaflet map. Let's define the layers model with an example:
+It will map an object _layers_ of our controller scope with the corresponding object on our directive isolated scope. It's a bidirectional relationship, so we could change our _layers_ scope object to change dinamically the layers of the map. Let's see a basic example:
 
 ```
 $scope.layers = {
@@ -31,7 +30,9 @@ $scope.layers = {
 }
 ```
 
-We can see that the _layers_ definition is conformed by lot attributes that we are going to describe below. When we associate that object with our _leaflet-directive_ the unidirectional relation will start, and the first layer will be shown on the map and a new layer-switcher-control will appear on our map.
+This directive is normally used when you want to visualize more complex information composed by an initial layer, with overlays of information, or when we want to allow the user to change the visualización of the tiles.
+
+We can see that the _layers_ definition is conformed by lot attributes that we are going to describe below. When we associate that object with our _leaflet-directive_ the bi-directional relation will start, and the first layer will be shown on the map and a new layer-switcher-control will appear on our map.
 
 The layer-switcher-control will only appear if there are more than one layer (baselayer or overlay) that could be changed interactively by the user, if there's only one layer, no control will be visible.
 
