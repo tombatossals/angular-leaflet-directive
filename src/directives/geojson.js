@@ -66,8 +66,7 @@ angular.module('leaflet-directive')
           _remove(leafletGeoJSON);
         };
 
-        var _addGeojson = function(model, maybeName) {
-          var geojson = angular.copy(model);
+        var _addGeojson = function(geojson, maybeName) {
           if (!(isDefined(geojson) && isDefined(geojson.data))) {
             return;
           }
