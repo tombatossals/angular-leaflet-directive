@@ -48,6 +48,19 @@ describe('Directive: leaflet center', function() {
     });
   });
 
+  it('should fallback to default map center if the model value is null', function () {
+    scope.center = null;
+    var element = angular.element('<leaflet center="center"></leaflet>');
+    element = $compile(element)(scope);
+    scope.$digest();
+
+    leafletData.getMap().then(function(map) {
+      expect(map.getZoom()).toEqual(1);
+      expect(map.getCenter().lat).toEqual(0);
+      expect(map.getCenter().lng).toEqual(0);
+    });
+  });
+
   it('should update the map center if the initial center scope properties are set', function() {
     var element = angular.element('<leaflet center="center"></leaflet>');
     element = $compile(element)(scope);

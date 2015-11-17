@@ -41,6 +41,52 @@
       });
     });
 
+    describe('isValidCenter', function () {
+      beforeEach(function() {
+        return this.subject = this.subject.isValidCenter;
+      });
+
+      describe('is valid', function () {
+        it('should accept', function () {
+          return expect(this.subject({lat: 0, lng: 0, zoom:1})).toBeTruthy();
+        });
+      });
+
+      describe('is invalid', function () {
+        it('null', function () {
+          return expect(this.subject(null)).toBeFalsy();
+        });
+
+        it('undefined', function () {
+          return expect(this.subject(undefined)).toBeFalsy();
+        });
+
+        it('missing longitude', function () {
+          return expect(this.subject({lat: 0, zoom:1})).toBeFalsy();
+        });
+
+        it('missing latitude', function () {
+          return expect(this.subject({lng: 0, zoom:1})).toBeFalsy();
+        });
+
+        it('invalid longitude', function () {
+          return expect(this.subject({lat: 0, lng: '0', zoom:1})).toBeFalsy();
+        });
+
+        it('invalid latitude', function () {
+          return expect(this.subject({lat: '0', lng: 0, zoom:1})).toBeFalsy();
+        });
+
+        it('null longitude', function () {
+          return expect(this.subject({lat: 0, lng: null, zoom:1})).toBeFalsy();
+        });
+
+        it('null latitude', function () {
+          return expect(this.subject({lat: null, lng: 0, zoom:1})).toBeFalsy();
+        });
+      });
+    });
+
     describe('defaultTo', function() {
       beforeEach(function() {
         return this.subject = this.subject.defaultTo;

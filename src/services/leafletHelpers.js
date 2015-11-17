@@ -179,7 +179,7 @@ angular.module('leaflet-directive').service('leafletHelpers', function($q, $log)
     equals: angular.equals,
 
     isValidCenter: function(center) {
-      return angular.isDefined(center) && angular.isNumber(center.lat) &&
+      return center !== null && angular.isObject(center) && angular.isNumber(center.lat) &&
              angular.isNumber(center.lng) && angular.isNumber(center.zoom);
     },
 
