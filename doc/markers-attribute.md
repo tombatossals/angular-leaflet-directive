@@ -22,7 +22,7 @@ $scope.markers = {
 }
 ```
 
-Look at [this first example](http://tombatossals.github.io/angular-leaflet-directive/examples/markers-simple-example.html).
+Look at [this first example](http://tombatossals.github.io/angular-leaflet-directive/examples/0500-markers-simple-example.html).
 
 The _markers_ definition is composed by a group of named objects (markers) every one of them with a set of attributes that we are going to describe below. When we associate that object with our _leaflet-directive_ the bidirectional relation will start, and the markers defined will be will be shown on the map.
 
@@ -69,7 +69,7 @@ marker: {
 }
 ```
 
-We can see an example using all this [here](http://tombatossals.github.io/angular-leaflet-directive/examples/markers-update-example.html).
+We can see an example using all this [here](http://tombatossals.github.io/angular-leaflet-directive/examples/0504-markers-popup-example.html).
 
 
 There are a special type of property called _label_ which uses the [Leaflet.label plugin ](https://github.com/Leaflet/Leaflet.label) to show a fixed special label on the marker, or on hovering it. This is the marker property we need to define to use it:
@@ -83,12 +83,12 @@ label: {
 }
 ```
 
-You can see an example of this special label [here](http://tombatossals.github.io/angular-leaflet-directive/examples/markers-label-example.html).
+You can see an example of this special label [here](http://tombatossals.github.io/angular-leaflet-directive/examples/0505-markers-label-example.html).
 
 
 The **message** property of a marker can contain an Angular template. This is supported for labels also. You can control the scope used to compile this message with the **getMessageScope** property. When defined, it must be a function that returns the wanted scope. You can disable the angular compilation process by specifying compileMessage: false. By default compilation is activated, including if not specified.
 
-You can see an example of Angular content in messages [here](http://tombatossals.github.io/angular-leaflet-directive/examples/markers-angular-template-example.html).
+You can see an example of Angular content in messages [here](http://tombatossals.github.io/angular-leaflet-directive/examples/0515-markers-angular-template-example.html).
 
 
 Markers watches
@@ -99,14 +99,14 @@ Every marker you add to the map is watched for changes by default, so a change i
 <leaflet markers="markers" watch-markers="false"></leaflet>
 ```
 
-By default the markers will be watched, so we can change its properties dynamically, like in [this demo](http://tombatossals.github.io/angular-leaflet-directive/examples/markers-update-example.html).
+By default the markers will be watched, so we can change its properties dynamically, like in [this demo](http://tombatossals.github.io/angular-leaflet-directive/examples/0504-markers-popup-example.html).
 
 
 Markers inside overlays
 -----------------------
 We can group the markers inside a layer overlay, so the layer switch selector control will appear and we could activate/deactivate overlays with their markers.
 
-Let's see an example of this feature on [this demo](http://tombatossals.github.io/angular-leaflet-directive/examples/markers-groups-example.html).
+Let's see an example of this feature on [this demo](http://tombatossals.github.io/angular-leaflet-directive/examples/0506-markers-groups-example.html).
 
 This special rendering can be accomplished defining overlays of type _group_ and with _name_ property, and the markers will need a special property _layer_ with the name of the overlay we've previously defined.
 
@@ -128,7 +128,7 @@ markers: {
     }
 ```
 
-You can see an example running this [here](http://tombatossals.github.io/angular-leaflet-directive/examples/markers-clustering-without-overlays-example.html)
+You can see an example running this [here](http://tombatossals.github.io/angular-leaflet-directive/examples/0510-markers-clustering-without-overlays-example.html)
 
 Marker clustering with overlays
 -------------------------------
@@ -164,4 +164,4 @@ markers: {
     },
 ```
 
-You can see the complete example [here](http://tombatossals.github.io/angular-leaflet-directive/examples/markers-clustering-example.html)
+You can see the complete example [here](http://tombatossals.github.io/angular-leaflet-directive/examples/0509-markers-clustering-example.html)
