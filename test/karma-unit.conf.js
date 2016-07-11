@@ -9,7 +9,7 @@ module.exports = function(karma) {
         'bower_components/angular/angular.js',
         'bower_components/angular-mocks/angular-mocks.js',
         'bower_components/leaflet.markercluster/dist/leaflet.markercluster.js',
-        'bower_components/leaflet.vector-markers/dist/Leaflet.vector-markers.js',
+        'bower_components/[Ll]eaflet.vector-markers/dist/[Ll]eaflet[\.-]vector-markers.js',
         'bower_components/Leaflet.PolylineDecorator/leaflet.polylineDecorator.js',
         'dist/angular-leaflet-directive.js',
         'test/unit/*.js',
