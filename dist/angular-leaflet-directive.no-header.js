@@ -1,5 +1,5 @@
 /*!
-*  angular-leaflet-directive  2015-11-06
+*  angular-leaflet-directive 0.10.1 2016-07-21
 *  angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps
 *  git: https://github.com/tombatossals/angular-leaflet-directive
 */
@@ -463,7 +463,7 @@ angular.module('leaflet-directive').service('leafletData', ["$log", "$q", "leafl
       'geoJSON',
       'UTFGrid', //odd ball on naming convention keeping to not break
       'decorations',
-      'directiveControls',];
+      'directiveControls', ];
 
   //init
   _privateItems.forEach(function(itemName) {
@@ -882,6 +882,32 @@ angular.module('leaflet-directive').service('leafletHelpers', ["$q", "$log", fun
       is: function(icon) {
         if (this.isLoaded()) {
           return icon instanceof L.AwesomeMarkers.Icon;
+        } else {
+          return false;
+        }
+      },
+
+      equal: function(iconA, iconB) {
+        if (!this.isLoaded()) {
+          return false;
+        }
+
+        if (this.is(iconA)) {
+          return angular.equals(iconA, iconB);
+        } else {
+          return false;
+        }
+      },
+    },
+
+    WeatherMarkersPlugin: {
+      isLoaded: function() {
+        return angular.isDefined(L.WeatherMarkers) && angular.isDefined(L.WeatherMarkers.Icon);
+      },
+
+      is: function(icon) {
+        if (this.isLoaded()) {
+          return icon instanceof L.WeatherMarkers.Icon;
         } else {
           return false;
         }
@@ -1609,6 +1635,16 @@ angular.module('leaflet-directive')
         return new L.geoJson(params.data, {
           pointToLayer: function(feature, latlng) {
             return L.marker(latlng, {icon: L.AwesomeMarkers.icon(params.icon)});
+          },
+        });
+      },
+    },
+    geoJSONWeatherMarker: {
+      mustHaveUrl: false,
+      createLayer: function(params) {
+        return new L.geoJson(params.data, {
+          pointToLayer: function(feature, latlng) {
+            return L.marker(latlng, {icon: L.WeatherMarkers.icon(params.icon)});
           },
         });
       },
@@ -2354,6 +2390,7 @@ angular.module('leaflet-directive').service('leafletMarkersHelpers', ["$rootScop
   var defaultTo = leafletHelpers.defaultTo;
   var MarkerClusterPlugin = leafletHelpers.MarkerClusterPlugin;
   var AwesomeMarkersPlugin = leafletHelpers.AwesomeMarkersPlugin;
+  var WeatherMarkersPlugin = leafletHelpers.WeatherMarkersPlugin;
   var VectorMarkersPlugin = leafletHelpers.VectorMarkersPlugin;
   var MakiMarkersPlugin = leafletHelpers.MakiMarkersPlugin;
   var ExtraMarkersPlugin = leafletHelpers.ExtraMarkersPlugin;
@@ -2389,6 +2426,14 @@ angular.module('leaflet-directive').service('leafletMarkersHelpers', ["$rootScop
       }
 
       return new L.AwesomeMarkers.icon(iconData);
+    }
+
+    if (isDefined(iconData) && isDefined(iconData.type) && iconData.type === 'weatherMarker') {
+      if (!WeatherMarkersPlugin.isLoaded()) {
+        $log.error(errorHeader + ' The WeatherMarkers Plugin is not loaded.');
+      }
+
+      return new L.WeatherMarkers.icon(iconData);
     }
 
     if (isDefined(iconData) && isDefined(iconData.type) && iconData.type === 'vectorMarker') {
@@ -3826,8 +3871,7 @@ angular.module('leaflet-directive')
           _remove(leafletGeoJSON);
         };
 
-        var _addGeojson = function(model, maybeName) {
-          var geojson = angular.copy(model);
+        var _addGeojson = function(geojson, maybeName) {
           if (!(isDefined(geojson) && isDefined(geojson.data))) {
             return;
           }
@@ -5118,7 +5162,7 @@ angular.module('leaflet-directive').directive('tiles', ["$log", "leafletData", "
               });
             },
           };
-        },]);
+        }, ]);
 });
 
 angular.module('leaflet-directive')
