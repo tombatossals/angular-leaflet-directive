@@ -31,6 +31,7 @@
     "leaflet-tilelayer-geojson": "*",
     "Leaflet.utfgrid": "danzel/Leaflet.utfgrid",
     "Leaflet.awesome-markers": "*",
+    "Leaflet.weather-markers": "*",
     "leaflet-providers": "*",
     "leaflet.vector-markers": "*",
     "webgl-heatmap-leaflet": "*",
