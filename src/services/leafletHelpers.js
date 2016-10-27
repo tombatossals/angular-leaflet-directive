@@ -198,7 +198,8 @@ angular.module('leaflet-directive').service('leafletHelpers', function($q, $log)
     isSameCenterOnMap: function(centerModel, map) {
       var mapCenter = map.getCenter();
       var zoom = map.getZoom();
-      if (centerModel.lat && centerModel.lng &&
+      if (typeof centerModel.lat === 'number' &&
+          typeof centerModel.lng === 'number' &&
           mapCenter.lat.toFixed(4) === centerModel.lat.toFixed(4) &&
           mapCenter.lng.toFixed(4) === centerModel.lng.toFixed(4) &&
           zoom === centerModel.zoom) {
