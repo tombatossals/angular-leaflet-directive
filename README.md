@@ -34,7 +34,7 @@ Include the `leaflet-directive` dependency on your Angular module:
 var app = angular.module('demoapp', ['leaflet-directive']);
 ```
 
-After that, you are ready to rock. Just define some objects with the basic configuration you want reflected in your map and the rendered map will obey you. Also, you can modify that configuration dinamically if you need to. Let's see an example.
+After that, you are ready to rock. Just define some objects with the basic configuration you want reflected in your map and the rendered map will obey you. Also, you can modify that configuration dynamically if you need to. Let's see an example.
 
 ### center
 
