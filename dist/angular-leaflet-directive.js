@@ -2283,6 +2283,14 @@ angular.module('leaflet-directive').factory('leafletMapDefaults', ["$q", "leafle
         mapDefaults.minZoom = d.minZoom;
       }
 
+      if (isDefined(d.zoomDelta)) {
+        mapDefaults.zoomDelta = d.zoomDelta;
+      }
+
+      if (isDefined(d.zoomSnap)) {
+        mapDefaults.zoomSnap = d.zoomSnap;
+      }
+
       if (isDefined(d.zoomAnimation)) {
         mapDefaults.zoomAnimation = d.zoomAnimation;
       }
@@ -2344,6 +2352,14 @@ angular.module('leaflet-directive').factory('leafletMapDefaults', ["$q", "leafle
 
         if (isDefined(userDefaults.minZoom)) {
           newDefaults.minZoom = userDefaults.minZoom;
+        }
+
+        if (isDefined(userDefaults.zoomDelta)) {
+          newDefaults.zoomDelta = userDefaults.zoomDelta;
+        }
+
+        if (isDefined(userDefaults.zoomSnap)) {
+          newDefaults.zoomSnap = userDefaults.zoomSnap;
         }
 
         if (isDefined(userDefaults.zoomAnimation)) {
