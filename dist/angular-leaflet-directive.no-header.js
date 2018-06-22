@@ -2832,7 +2832,8 @@ angular.module('leaflet-directive').service('leafletMarkersHelpers', ["$rootScop
         }
       }
 
-      var marker = new L.marker(coords, markerOptions);
+      try { var marker = new L.marker(coords, markerOptions); }
+      catch (e) { console.warn(e); return undefined; }
 
       if (!isString(markerData.message)) {
         marker.unbindPopup();
