@@ -54,7 +54,7 @@
     "karmaChromeOnce": "grunt karma:unit-chrome-once",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
-  "main": "dist/angular-leaflet-directive",
+  "main": "index.js",
   "dependencies": {
     "angular": "1.x",
     "leaflet": "0.7.x"
