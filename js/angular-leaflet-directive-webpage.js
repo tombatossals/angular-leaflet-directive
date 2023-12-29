@@ -63,26 +63,6 @@ app.controller("CenterUrlHashController", [ '$scope', '$location', function($sco
     });
 }]);
 
-app.controller("CustomParametersController", [ '$scope', function($scope) {
-
-    angular.extend($scope, {
-        london: {
-            lat: 51.505,
-            lng: -0.09,
-            zoom: 8
-        },
-        defaults: {
-            tileLayer: "http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png",
-            tileLayerOptions: {
-                opacity: 0.9,
-                detectRetina: true,
-                reuseTiles: true,
-            },
-            scrollWheelZoom: false
-        }
-    });
-}]);
-
 app.controller("CustomizedMarkersController", [ '$scope', function($scope) {
 
     var local_icons = {
@@ -131,6 +111,26 @@ app.controller("CustomizedMarkersController", [ '$scope', function($scope) {
             },
         },
         defaults: {
+            scrollWheelZoom: false
+        }
+    });
+}]);
+
+app.controller("CustomParametersController", [ '$scope', function($scope) {
+
+    angular.extend($scope, {
+        london: {
+            lat: 51.505,
+            lng: -0.09,
+            zoom: 8
+        },
+        defaults: {
+            tileLayer: "http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png",
+            tileLayerOptions: {
+                opacity: 0.9,
+                detectRetina: true,
+                reuseTiles: true,
+            },
             scrollWheelZoom: false
         }
     });
